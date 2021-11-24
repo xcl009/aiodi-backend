@@ -1,0 +1,123 @@
+{
+  "project_names": "物享云联",
+  "BASE_URL": "http://120.24.248.59:3000/",
+  "DEVICDE_CODE_URL": "https://api.cdy.kuaihuoya.net/",
+  "baidu_map_ak": "S6AzfAvWgf3o64xueWzebqTd2Eyr3Fot",
+  "baidu_statistics": "var _hmt = _hmt || []; (function() { var hm = document.createElement('script'); hm.src = 'https://hm.baidu.com/hm.js?a0e7eb33d7402b459976e556af7b143c';var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(hm, s)})()",
+  "ICP": "",
+  "admin_id": "1",
+  "default_agent_id": "96",
+  "wx_tutorial_id": "42",
+  "zfb_tutorial_id": "43",
+  "goods_key": {
+    "0": "bao",
+    "4": "wash",
+    "1": "thread",
+    "2": "massage",
+    "3": "zhuang",
+    "6": "blower",
+    "7": "condom",
+    "8": "humidifier"
+  },
+  "profit_key": {
+    "0": "",
+    "4": "wash_",
+    "1": "thread_",
+    "2": "massage_",
+    "3": "zhuang_",
+    "6": "blower_",
+    "7": "condom_",
+    "8": "humidifier_"
+  },
+  "xcx_page": {
+    "0": "pages/rent/rent",
+    "1": "packageC/pages/thread/thread",
+    "2": "packageC/pages/pillow/pillow",
+    "3": "packageC/pages/scooter/scooter",
+    "4": "packageC/pages/washer/washer",
+    "6": "packageC/pages/blower/blower",
+    "7": "packageC/pages/condom/condom",
+    "8": "packageC/pages/humidifier/humidifier"
+  },
+  "thread_time": [0.5,1,2,3,4,5,6,7,8,9,10,11,12,24],
+  "day_unit": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,22,24],
+  "condom_time": [0.5,1,2,3,4,5,6,7,8,9,10,11,12],
+  "humidifier_time": [0.5,1,2,3,4,5,6,7,8,9,10,11,12],
+  "blower_time": [3, 5, 8, 10],
+  "withdraw_way": ["银行卡", "微信提现", "支付宝提现", "微信收款码", "支付宝收款码"],
+  "pay_way": {
+    "2": "微信/支付宝",
+    "3": "钱包",
+    "4": "充值卡"
+  },
+  "mode_way": {
+    "default": {
+      "套餐": 0,
+      "预付款": 1
+    },
+    "thread": {
+       "预存+先充后付": 4,
+       "套餐": 0,
+       "预存": 3
+    },
+    "condom": {
+       "预存+先充后付": 4,
+       "套餐": 0,
+       "预存": 3
+    },
+    "humidifier": {
+       "预存+先充后付": 4,
+       "套餐": 0,
+       "预存": 3
+    },
+    "zhuang": {
+      "预付款": 1
+    }
+  },
+  "fee_xcx": {
+    "thread": {
+      "_wx": "微信",
+      "_zfb": "支付宝"
+    },
+    "humidifier": {
+      "_wx": "微信",
+      "_zfb": "支付宝"
+    },
+    "default": {"": ""}
+  },
+  "wash_type":{
+    "0": "滚筒洗衣机",
+    "1": "烘焙一体洗衣机"
+  },
+  "custom_wash_time": false,
+  "cardObj": [
+    {
+     "key": "month",
+     "name": "月卡",
+     "value": 0
+    },
+    {
+     "key": "season",
+     "name": "季卡",
+     "value": 1
+    },
+    {
+     "key": "half_year",
+     "name": "半年卡",
+     "value": 2
+    },
+    {
+     "key": "year",
+     "name": "年卡",
+     "value": 3
+    }
+  ],
+  "zhuang_power_max": 99999,
+  "steal_time_length": 4,
+  "edit_goods_type": true,
+  "system_other": {
+    "have_role": "['terminal', 'partner']",
+    "modify_fee_role": "['terminal', 'partner', 'agent']",
+    "order_amount_show": true
+  }
+}

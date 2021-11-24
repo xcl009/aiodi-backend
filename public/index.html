@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- 强制Chromium内核，作用于360浏览器、QQ浏览器等国产双核浏览器 -->
+    <meta name="renderer" content="webkit"/>
+
+    <!-- 强制Chromium内核，作用于其他双核浏览器 -->
+    <meta name="force-rendering" content="webkit"/>
+
+    <!-- 如果有安装 Google Chrome Frame 插件则强制为Chromium内核，否则强制本机支持的最高版本IE内核，作用于IE浏览器 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+
+    <meta name="baidu-site-verification" content="xFZ1lBiKWv" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- 页面描述 -->
+    <meta name="description" content="<%= webpackConfig.name %>"/>
+    <!-- 页面关键词 -->
+    <meta name="keywords" content="<%= webpackConfig.name %>,共享充电宝,共享按摩枕,共享洗衣机,充电线,充电器-贴牌代理加盟的共享SaaS平台"/>
+    <!-- 网页作者 -->
+    <meta name="author" content="深圳快活呀互联网科技有限公司"/>
+    <link rel="icon">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1594776_d60rrnuq794.css">
+    <title><%= webpackConfig.name %></title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= webpackConfig.name %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
