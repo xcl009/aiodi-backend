@@ -49,19 +49,18 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
-setRem()
+//setRem()
 
 // 改变窗口大小时重新设置 rem
-window.onresize = function () {
-  setRem()
-}
+// window.onresize = function () {
+//   setRem()
+// }
 
 import axios from 'axios'
 let startApp = function () {
   axios.get('/config.json').then((res) => {
     // 基础地址
     Vue.prototype.BASE_URL = res.data.BASE_URL
-    Vue.prototype.DEVICDE_CODE_URL = res.data.DEVICDE_CODE_URL
     Vue.prototype.config = res.data
     new Vue({
       el: '#app',

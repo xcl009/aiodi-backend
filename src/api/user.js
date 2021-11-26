@@ -1,7 +1,7 @@
 import { $post, $get } from '@/utils/request'
 
 export function login(data) {
-  return $post('/agentapi/login', data)
+  return $post('/open/login', data)
 }
 
 export function codeLogin(data) {

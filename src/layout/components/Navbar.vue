@@ -5,14 +5,6 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu flex align-center">
-      <div class="hidden-sm-and-down">
-        <span class="dnone">{{ agentInfo.id }}</span>
-        <el-button type="primary" plain size="mini" icon='el-icon-male' @click="$router.push({path: `/home/article?type=3`})">学习教程</el-button>
-        <el-button type="danger" plain size="mini" icon='el-icon-warning' @click="updateWxxcx = false; $router.push({path: `/setting/index`})" v-if="updateWxxcx && siteInfo.wx_third_api_switch">微信小程序待更新</el-button>
-        <el-button type="danger" plain size="mini" icon='el-icon-warning' @click="updateAlixcx = false; $router.push({path: `/setting/aliIndex`})" v-if="updateAlixcx && siteInfo.zfb_third_api_switch">支付宝小程序待更新</el-button>
-        <el-button type="danger" plain size="mini" icon='el-icon-question' @click="$router.push({path: `/home/feedback`})"  v-if="!checkRoles(['terminal'])">提交工单</el-button>
-      </div>
-
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
@@ -27,9 +19,6 @@
           </router-link>
           <router-link to="/user/lpw">
             <el-dropdown-item>登录密码</el-dropdown-item>
-          </router-link>
-          <router-link to="/user/wpw" v-if="!checkRoles(['terminal', 'partner']) && agentInfo.withdraw_right == 1">
-            <el-dropdown-item>提现密码</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="toAdmin()" v-if="token1">
             <span>返回总后台</span>
@@ -62,7 +51,6 @@ export default {
     ]),
     agentInfo(){
       let agentInfo = this.$store.state.user.agentInfo
-      if(this.checkRoles(['partner']) && agentInfo.id) this.getConfigs()
       return agentInfo
     },
     siteInfo(){

@@ -6,7 +6,7 @@
           <h4>运营产品：</h4>
           <el-form-item label="产品类型：">
             <el-checkbox-group v-model="selType" :min="1">
-              <el-checkbox v-for="item in agentDevice" :label="item.depend_type" v-if="item.taked == 1">{{ item.depend_name }}</el-checkbox>
+              <el-checkbox v-for="item in agentDevice" :label="item.depend_type">{{ item.depend_name }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
 
@@ -16,18 +16,11 @@
               <el-option v-for="item in role" :label="item.role_name" :value="item.role_id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="运营模式：" v-if="[3,4].indexOf(form.role_id) > -1">
-            <el-radio v-model="form.business_type" :label="0" v-if="agentInfo.business_type == 0">代理模式</el-radio>
-            <el-radio v-model="form.business_type" :label="1">员工模式</el-radio>
-          </el-form-item>
           <el-form-item label="姓名：" prop="name">
             <el-input v-model="form.name" placeholder="输入下级代理姓名" />
           </el-form-item>
-          <!-- <el-form-item label="用户名：">
-            <el-input v-model="form.user_name" placeholder="会作为用户代理登录的账户" />
-          </el-form-item> -->
-          <el-form-item label="手机号码：" prop="phone">
-            <el-input v-model="form.phone" placeholder="输入手机号" />
+          <el-form-item label="手机号码：" prop="mobile">
+            <el-input v-model="form.mobile" placeholder="输入手机号" />
             <div class="fs-s2 text-gray">此手机号码会作为登录账户</div>
           </el-form-item>
           <el-form-item label="登录密码：" v-if="!id">
@@ -37,51 +30,19 @@
             <v-distpicker :province="form.charge_province" :city="form.charge_city" :area="form.charge_county" @selected="selectCity"></v-distpicker>
           </el-form-item>
           <el-form-item label="公司地址：">
-            <el-input v-model="form.company_address" placeholder="输入公司地址" />
+            <el-input v-model="form.address" placeholder="输入公司地址" />
           </el-form-item>
 
-          <template v-if="form.business_type == 1">
-            <h4>提成比例</h4>
-            <el-form-item label="提成比例：">
-              <el-input v-model="form.devide_percent" placeholder="输入提成比例" />
-            </el-form-item>
-          </template>
-
-          <template v-else>
-            <h4>分润比例</h4>
+          <template>
+            <h4>分润比例：</h4>
             <template v-for="(item, index) in agentDevice">
               <el-form-item :label="`${item.depend_name}：`" v-if="selType.indexOf(item.depend_type) > -1">
-                <el-input v-model="form[config.profit_key[item.depend_type] + 'percent' ]" :placeholder="`最高不能超过${powerInfo[config.profit_key[item.depend_type] +'percent' ] || 100}%`">
-                  <template slot="append">%</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item :label="`套套机商品：`" v-if="selType.indexOf(item.depend_type) > -1 && item.depend_type == 7">
-                <el-input v-model="form.condom_product_percent" :placeholder="`最高不能超过${powerInfo.condom_product_percent || 100}%`">
-                  <template slot="append">%</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item :label="`会员：`" v-if="item.depend_type == 3 && selType.indexOf(item.depend_type) > -1">
-                <el-input v-model="form.member_card_percent" :placeholder="`最高不能超过${powerInfo.member_card_percent || 100}%`">
+                <el-input v-model="form.percent" :placeholder="`最高不能超过100%`">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
             </template>
           </template>
-
-          <h4>代理权限</h4>
-          <el-form-item label="基本权限：">
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.check_order" v-show="powerInfo.check_order == 1">查看订单</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.withdraw_right" v-show="powerInfo.withdraw_right == 1 || checkRoles(['partner'])" v-if="!checkRoles(['terminal'])">提现</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.finish_order" v-show="powerInfo.finish_order == 1">结束订单</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.drawback_order" v-show="powerInfo.drawback_order == 1">订单退款</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.steal_order_right" v-show="(powerInfo.steal_order_right == 1 || form.old_steal_order_right == 1) && checkRoles(['terminal','partner'])" :disabled="powerInfo.steal_order_right == 0">DD功能</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.wx_ad_right" v-if="checkRoles(['terminal'])">微信广告</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.buy_goods_right" v-if="powerInfo.buy_goods_right == 1 && checkRoles(['terminal'])">出售设备</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.take_my_product" v-if="powerInfo.take_my_product == 1 && selType.indexOf(7) > -1">添加商品</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.modify_fee_right" v-if="checkRoles(['terminal'])">编辑计费</el-checkbox>
-            <el-checkbox :true-label="1" :false-label="0" v-model="form.virtual_divide_status" v-if="powerInfo.virtual_divide_status == 1">分成不一致</el-checkbox>
-            <!-- <el-checkbox :true-label="1" :false-label="0" v-model="form.business_store_type" v-if="checkRoles(['terminal'])">车主模式</el-checkbox> -->
-          </el-form-item>
 
           <template v-if="(form.take_my_product && !checkRoles(['terminal'])) || (form.condom_manager_fee > 0)">
             <h4>售货机</h4>
@@ -92,29 +53,6 @@
             </el-form-item>
           </template>
 
-          <div v-show="false">
-            <h4>提现手续费</h4>
-            <el-form-item label="模式：">
-              <el-radio v-model="form.agent_withdraw_fee_type" :label="0" :disabled="siteInfo.agent_withdraw_fee_type != 2">税点</el-radio>
-              <el-radio v-model="form.agent_withdraw_fee_type" :label="1" :disabled="siteInfo.agent_withdraw_fee_type != 2">手续费</el-radio>
-              <el-radio v-model="form.agent_withdraw_fee_type" :label="2" :disabled="siteInfo.agent_withdraw_fee_type != 2">税点+手续费</el-radio>
-            </el-form-item>
-            <div class="flex">
-              <el-form-item class="mr-20" label="税点：">
-                <el-input v-model="form.withdraw_percent" oninput="value=value.replace(/[^\d.]/g,'')">
-                  <template slot="append">%</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item class="mr-20" label="手续费：">
-                <el-input v-model="form.withdraw_fee" oninput="value=value.replace(/[^\d.]/g,'')">
-                  <template slot="append">元</template>
-                </el-input>
-              </el-form-item>
-            </div>
-            <el-form-item>
-              <div class="fs-s2 text-gray">注：您填写增加的手续费，将在下级代理提现时以分润的方式发放到您的账户，下级代理提现手续费 = 您设置的手续费 + 总后台设置的手续费。</div>
-            </el-form-item>
-          </div>
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
           </el-form-item>
@@ -136,7 +74,6 @@
         form: {
           password: '123456',
           role_id: '',
-          business_type: 0,
           devide_percent: 0,
           agent_withdraw_fee_type: 0,
           withdraw_percent: 0,
@@ -161,7 +98,7 @@
         role: [],
         id: '',
 
-        agentDevice: [],
+        agentDevice: [{'depend_name': '密码线', 'depend_type': 1}],
         selType: [],
         id: this.$route.params.id
       }
@@ -178,9 +115,7 @@
       }
     },
     mounted() {
-      this.form.business_type = this.agentInfo.business_type
-      this.form.agent_withdraw_fee_type = this.siteInfo.agent_withdraw_fee_type
-      this.getPower()
+      //this.getPower()
     },
     methods: {
       /**

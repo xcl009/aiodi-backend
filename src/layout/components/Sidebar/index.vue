@@ -99,7 +99,6 @@ export default {
     ]),
     agentInfo() {
       const agentInfo = this.$store.state.user.agentInfo
-      if (this.checkRoles(['partner']) && agentInfo.id) this.getContract(agentInfo.id)
       return agentInfo
     },
     activeMenu() {
@@ -135,7 +134,7 @@ export default {
     }
   },
   mounted() {
-
+    
   },
   methods: {
     /**

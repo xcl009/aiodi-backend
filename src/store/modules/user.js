@@ -8,9 +8,6 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: '',
-    deviceNameObj: {},
-    deviceKeyObj: {},
-    agentDevice: [],
     siteInfo: {},
     agentInfo: {}
   }
@@ -52,13 +49,14 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(data => {
+      setToken('55555555555')
+      setToken('1', 'user_id')
+      resolve({})
+      return
+      login({ username: username.trim(), password: password, loginType: 'UP', 'appid': 'admin' }).then(data => {
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         setToken(data.user_id, 'user_id')
-        if(data.is_qrcode == 1) {
-          data.belong_partner_aid = 96
-        }
         setToken(data.belong_partner_aid || data.user_id, 'agent_id')
         resolve(data)
       }).catch(error => {
@@ -86,51 +84,28 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(data => {
-        if (data.code > 0) {
-          reject('验证失败，请重新登录。')
-        }
-        let role = ['terminal','partner','agent','director','salesman','merchants']
-        data.level_key = role[data['agent_level']]
-        data.virtual_divide = 0
-        if(data.agent_level == 5){
-          let percent = {
-            "0": "bao",
-            "4": "wash",
-            "1": "thread",
-            "2": "massage",
-            "3": "zhuang",
-            "6": "blower",
-            "7": "condom",
-            "8": "humidifier",
-          }
-          for (var i in percent){
-            if (data[percent[i] + '_virtual_divide'] == 1){
-              data.virtual_divide = 1
-              break
-            }
-          }
-        }
-        window.agentInfo = data
-
-        const { user_name, avatar, agent_level } = data
-
-        if(data.agent_level == 0 ){
-          var icon_link = document.createElement('link')
-              icon_link.type = 'image/x-icon'
-              icon_link.rel = 'shortcut icon'
-              icon_link.href = data.avatar
-          document.getElementsByTagName('head')[0].appendChild(icon_link)
-          document.title = `管理后台-共享充电宝,共享按摩枕,共享洗衣机,充电线,充电器-贴牌代理加盟的共享SaaS平台。`;
-        }
-
-        commit('SET_NAME', user_name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_AGENTINFO', data)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+        window.agentInfo = {}
+        commit('SET_NAME', 'saas')
+        commit('SET_AVATAR', '/logo.png')
+        commit('SET_AGENTINFO', {
+          avatar: '/logo.png',
+          name: 'saas'
+        })
+        resolve({
+          roles: ['saas']
+        })
+      // getInfo(state.token).then(data => {
+      //   if (data.code > 0) {
+      //     reject('验证失败，请重新登录。')
+      //   }
+      //   const { user_name, avatar, agent_level } = data
+      //   commit('SET_NAME', 'saas')
+      //   commit('SET_AVATAR', avatar)
+      //   commit('SET_AGENTINFO', data)
+      //   resolve(data)
+      // }).catch(error => {
+      //   reject(error)
+      // })
     })
   },
 

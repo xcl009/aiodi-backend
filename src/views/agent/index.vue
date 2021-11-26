@@ -1,53 +1,32 @@
 <template>
   <div>
-    <drawer ref="filterDrawer">
-      <template v-slot:defult>
-        <el-form-item label="代理类型:">
-          <el-select v-model="listQuery.search_agent_level" @change="toQuery()">
-            <el-option v-for="itme in give_role" :label="itme.role_name" :value="''+itme.role_id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="排序类型:">
-          <el-select v-model="listQuery.sort_type" @change="toQuery()">
-            <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="代理姓名:" class="hidden-sm-and-down">
-          <el-input v-model="form.search_name" />
-        </el-form-item>
-        <el-form-item label="手机号码:" class="hidden-lg-and-down">
-          <el-input v-model="form.search_phone" />
-        </el-form-item>
-        <el-form-item label="代理状态:" class="hidden-xg-and-down">
-          <el-select v-model="listQuery.activated_status" @change="toQuery()">
-            <el-option label="有效" :value="1" />
-            <el-option label="无效" :value="2" />
-            <el-option label="已删除" :value="0" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" native-type="submit" :disabled="clickSubmit">查询<i class="el-icon-search el-icon--right" /></el-button>
-          <el-button type="warning" plain @click="toQuery(1)">重置<i class="el-icon-refresh el-icon--right" /></el-button>
-          <el-button type="primary" plain @click="outTab('list_table', '代理记录')">导出<i class="el-icon-male el-icon--right" /></el-button>
-        </el-form-item>
-      </template>
-      <template v-slot:more>
-        <sel-plat v-if="checkRoles(['terminal'])" :listQuery="listQuery" @change="toQuery()"></sel-plat>
-        <el-form-item label="姓名:" class="hidden-md-and-up">
-          <el-input v-model="form.search_name" />
-        </el-form-item>
-        <el-form-item label="手机号码:" class="hidden-xg-and-up">
-          <el-input v-model="form.search_phone" />
-        </el-form-item>
-        <el-form-item label="代理状态:" class="hidden-xl-only">
-          <el-select v-model="listQuery.activated_status" @change="toQuery()">
-            <el-option label="有效" :value="1" />
-            <el-option label="无效" :value="2" />
-            <el-option label="已删除" :value="0" />
-          </el-select>
-        </el-form-item>
-      </template>
-    </drawer>
+		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+		  <template v-slot:defult>
+				<!-- <el-form-item label="代理类型:">
+				  <el-select v-model="form.search_agent_level" @change="toQuery()">
+				    <el-option v-for="itme in give_role" :label="itme.role_name" :value="''+itme.role_id" />
+				  </el-select>
+				</el-form-item> -->
+				<el-form-item label="排序类型:">
+				  <el-select v-model="form.sort" @change="toQuery()">
+				    <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
+				  </el-select>
+				</el-form-item>
+				<el-form-item label="代理姓名:">
+				  <el-input v-model="form.name" />
+				</el-form-item>
+				<el-form-item label="手机号码:">
+				  <el-input v-model="form.mobile" />
+				</el-form-item>
+				<!-- <el-form-item label="代理状态:">
+				  <el-select v-model="form.activated_status" @change="toQuery()">
+				    <el-option label="有效" :value="1" />
+				    <el-option label="无效" :value="2" />
+				    <el-option label="已删除" :value="0" />
+				  </el-select>
+				</el-form-item> -->
+		  </template>
+		</condition>
 
     <div class="p-5">
       <div class="bg-white">
@@ -94,116 +73,37 @@
               <div class="cursor">
                 &nbsp;&nbsp;&nbsp;总收益：<span class="text-blue" @click="$router.push({path: `/home/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}元</span><span class="ml-5 cursor text-gray" v-if="checkRoles(['partner'])" @click="$refs.editwiths.showDialog(scope.row)">修改</span>
               </div>
-              <div class="cursor" @click="toEdit({id: scope.row.id, type: 2})">冻结金额：<span class="text-blue">{{ scope.row.freez_money }}元</span></div>
+              <div class="cursor" @click="toEdit({id: scope.row.id, type: 2})">冻结金额：<span class="text-blue">{{ scope.row.freez_money || '0.00' }}元</span></div>
             </template>
           </el-table-column>
           <el-table-column label="可提现金额">
             <template slot-scope="scope">
-              <a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">￥{{ scope.row.money }}</a>
-              <a v-else>￥{{ scope.row.money }}</a>
+              <a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">￥{{ scope.row.money || '0.00' }}</a>
+              <a v-else>￥{{ scope.row.money || '0.00' }}</a>
             </template>
           </el-table-column>
-          <el-table-column label="分润比例">
+          <el-table-column label="操作" width="190">
             <template slot-scope="scope">
-              <div v-for="(item, index) in scope.row.percent_info">
-                {{ deviceKeyObj[index] }}：{{ item[config.goods_key[index] + '_percent'] }}%
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="贴牌操作" width="190" v-if="checkRoles(['terminal']) && user_type == 0">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/qrcode/index?son_id=${scope.row.id}`})"
-                v-if="checkRoles(['terminal'])">分配设备</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/station/oemMoney?id=${scope.row.id}`})">续费金额</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="getMapIcon(scope.row)">地图图标</el-button>
+              <!-- <el-button type="primary" size="mini" round plain class="ml-0" @click="getMapIcon(scope.row)">地图图标</el-button> -->
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/qrcode/index?son_id=${scope.row.id}`})">分配设备</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/subShop?son_id=${scope.row.id}`})">商户列表</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order/order?son_id=${scope.row.id}`})">订单列表</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="toLogin(scope.row)" v-if="checkRoles(['terminal'])">一键登录</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="copyloginUrl(scope.row)">权限设置</el-button>
               <el-button type="primary" size="mini" round plain class="ml-0" @click="copyloginUrl(scope.row)">登录地址</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="360">
-            <template slot-scope="scope">
-              <template v-if="zuo_sn">
-                <el-button type="primary" size="mini" round plain @click="setEquip(scope.row)">分配给TA</el-button>
-              </template>
-              <template v-else>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/equipment/index?agent_id=${scope.row.id}`})" v-if="!checkRoles(['terminal'])">分配设备</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/agent/equip?type=2&son_id=${scope.row.id}`})">分配记录</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/subShop?son_id=${scope.row.id}`})">商户管理</el-button>
-                <!-- <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({id: scope.row.id, type: 3})">提现费率</el-button> -->
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({id: scope.row.id, type: 1})" v-if="!checkRoles(['terminal']) || user_type == 0">修改信息</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/adver/position?son_id=${scope.row.id}`})">广告权限</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="freeDialog = true; freeObj = scope.row">免费店员</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order/morder?son_id=${scope.row.id}`})" v-if="agentInfo.check_order == 1">订单列表</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({id: scope.row.id, type: 5})">登录密码</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({id: scope.row.id, type: 7})" v-if="scope.row.role_id != 1">提现密码</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="toLogin(scope.row)" v-if="checkRoles(['terminal'])">登录后台</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/steal/${scope.row.id}?type=2`})" v-if="(agentInfo.steal_order_right == 1 || scope.row.steal_order_switch == 1) && (!checkRoles(['terminal']))"> {{ (scope.row.steal_order_right == 1 || scope.row.steal_order_switch == 1) ? 'DD开启' : 'DD关闭' }}</el-button>
-                <el-dropdown trigger="click">
-                  <el-button type="primary" size="mini" round plain>更多设置</el-button>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="$router.push({path: `/qrcode/create?aid=${scope.row.id}`})" v-if="checkRoles(['terminal']) && user_type == 0">二维码生成</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({path: `/agent/contract?son_id=${scope.row.id}&level=${scope.row.role_id}`})">合同管理</el-dropdown-item>
-                    <el-dropdown-item @click.native="deviceBindDialog = true; select_aid = scope.row.id">设备绑定</el-dropdown-item>
-                    <el-dropdown-item @click.native="toEdit({id: scope.row.id, type: 4, index: scope.$index})" v-if="listQuery.activated_status == 1">删除代理</el-dropdown-item>
-                    <el-dropdown-item @click.native="toEdit({id: scope.row.id, type: 8, index: scope.$index})" v-else>恢复显示</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({path: `/agent/agentBilling?son_id=${scope.row.id}`})" v-if="scope.row.role_id == 2 && checkRoles(['partner'])">计费与提现</el-dropdown-item>
-
-                    <template v-if="scope.row.business_type == 1 && !checkRoles(['terminal'])">
-                      <el-dropdown-item @click.native="$router.push({path: `/shop/index?son_uid=${scope.row.id}`})" v-if="user_type == 0">分配商户</el-dropdown-item>
-                      <el-dropdown-item @click.native="$router.push({path: `/shop/subShop?son_uid=${scope.row.id}&son_id=${scope.row.id}&son_type=${scope.row.business_type}`})" v-if="user_type == 0">回收商户</el-dropdown-item>
-                      <el-dropdown-item @click.native="$router.push({path: `/condom/plusGoods?son_id=${scope.row.id}`})" v-if="scope.row.percent_info[7]">补货记录</el-dropdown-item>
-                    </template>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </template>
-            </template>
-          </el-table-column>
         </el-table>
-        <div class="flex justify-center" v-if="listQuery.count > 0">
-          <pagination :page.sync="listQuery.start" :limit.sync="listQuery.limit" :total="listQuery.count" @pagination="getList" />
+        <div class="flex justify-center">
+          <pagination
+            v-show="listQuery.count > 0"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.size"
+            :page-count="listQuery.count"
+            @pagination="getList"
+          />
         </div>
       </div>
-
-      <el-dialog title="提现费率" :visible.sync="withdrawDialog">
-        <el-form>
-          <div class="mb-10 flex align-center">
-            <el-checkbox v-model="siteInfo.agent_withdraw_fee_type" :true-label="0" disabled>按比例：</el-checkbox>
-            <el-input class="flex1" oninput="value=value.replace(/[^\d.]/g,'')" v-model="withdrawObj.withdraw_percent">
-              <template slot="append">%</template>
-            </el-input>
-          </div>
-          <div class="mb-10 flex align-center">
-            <el-checkbox v-model="siteInfo.agent_withdraw_fee_type" :true-label="1" disabled>按单笔：</el-checkbox>
-            <el-input class="flex1" oninput="value=value.replace(/[^\d.]/g,'')" v-model="withdrawObj.withdraw_fee">
-              <template slot="append">元</template>
-            </el-input>
-          </div>
-          <div class="fs-s2 text-gray">注：您填写增加的手续费，将在下级代理提现时以分润的方式发放到您的账户，下级代理提现手续费 = 您设置的手续费 + 总后台设置的手续费。</div>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="withdrawDialog = false">取 消</el-button>
-          <el-button type="primary" @click="setWithdraw()">确 定</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog title="免费店员" :visible.sync="freeDialog">
-        <el-form label-width="150px">
-          <el-form-item label="免费名额：">
-            <el-input v-model="freeObj.member_num" />
-          </el-form-item>
-          <el-form-item label="每天使用次数：">
-            <el-input v-model="freeObj.member_day_count" />
-            <div class="fs-s2 text-gray">注：名额不可超过{{agentInfo.member_num}}个，每天使用次数不可超过{{agentInfo.member_day_count}}次。</div>
-          </el-form-item>
-          <el-form-item label="每次最高使用时长：">
-            <el-input v-model="freeObj.member_free_due_hours" />
-            <div class="fs-s2 text-gray">注：超过最高时长将按正常计费。</div>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="freeDialog = false">取 消</el-button>
-          <el-button type="primary" @click="toEdit({type: 6}, freeObj)">确 定</el-button>
-        </div>
-      </el-dialog>
 
       <el-dialog title="地图图标设置" :visible.sync="iconDialog">
         <el-form label-width="auto">
@@ -243,9 +143,6 @@
           <el-button type="primary" @click="deviceBindEndDialog = false">确 定</el-button>
         </div>
       </el-dialog>
-
-      <editwith ref="editwith" :type="1"></editwith>
-      <editwith ref="editwiths" :type="1" :moneyType="2"></editwith>
     </div>
   </div>
 </template>
@@ -253,20 +150,16 @@
 <script>
   import upload from '@/components/upload/two'
   import Pagination from '@/components/Pagination'
-  import drawer from '@/components/filterDrawer/filter'
-  import selPlat from '@/components/selPlat'
+  import condition from '@/components/condition/'
   import { copyText } from '@/utils/index'
   import { getToken, setToken, removeToken } from '@/utils/auth'
-  import editwith from './_editwith'
 
   export default {
     name: 'agent',
     components: {
       upload,
       Pagination,
-      drawer,
-      selPlat,
-      editwith
+      condition
     },
     props: {
       user_type: {
@@ -301,17 +194,19 @@
         form: {},
         give_role: [],
         tableMaxH: '250',
-        list: [],
+        list: [
+          {}
+        ],
         deviceNum: {},
-        listLoading: true,
+        listLoading: false,
         listQuery: {
           activated_status: 1,
           search_agent_id: '0',
           sort_type: '0',
           search_agent_level: '0',
           son_type: 0,
-          start: 1,
-          limit: 10,
+          page: 1,
+          size: 20,
           count: 10
         },
         zuo_sn: '',
@@ -349,7 +244,6 @@
       if(this.$route.meta.reload){
         this.getList()
       }else if(!this.list || this.list.length == 0) {
-        this.getPower()
         this.listQuery.son_type = this.user_type
         this.toQuery(1)
       }
@@ -373,27 +267,23 @@
     },
     methods: {
       /**
-       * 获取权限
+       * 搜索查询
        */
-      getPower() {
-        let give_role = [{
-          role_name: '全部',
-          role_id: 0
-        }]
-        this.$get('agentapi/add_agent').then(res => {
-          this.give_role = give_role.concat(res.give_role_right)
-        })
+      toQuery() {
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        this.listQuery.page = 1
+        this.listQuery.size = 20
+        this.getList()
       },
 
       /**
-       * 搜索查询
+       * 重置查询
        */
-      toQuery(type = 0) {
-        if(this.clickSubmit) return
-        this.clickSubmit = true
-        this.$refs.filterDrawer.hide()
-        if (type == 1) this.form = {}
-        this.listQuery.start = 1
+      reset(){
+        this.form = {}
+        this.listQuery.page = 1
+        this.listQuery.size = 20
         this.getList()
       },
 
@@ -401,21 +291,23 @@
        * 获取列表
        */
       getList() {
-        let url = 'SyStatistics/getSonList' //'agentapi/son_list'
-        let listQuery = Object.assign(this.form, this.listQuery, {
-          start: this.listQuery.start - 1
+        var params = Object.assign({}, this.form, this.listQuery, {
+          page: this.listQuery.page - 1
         })
-        this.$get(url, listQuery).then(res => {
+        this.$get('/brand/findPage', params).then(res => {
           this.listLoading = false
           this.list = res.list
-          this.listQuery.count = res.count
-          this.getDeviceNum(this.arrayKeys(res.list, 'id'))
-          if(listQuery.start == 0) this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          this.clickSubmit = false
+          if(params.page == 1){
+            this.count = res.count
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
         })
       },
+
 
       /**
        * 获取设备数量

@@ -33,6 +33,9 @@ const service = axios.create({
   baseURL: Vue.prototype.BASE_URL, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 60000, // request timeout
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
 })
 //service.defaults.withCredentials = true // 跨域
 // request interceptor
@@ -109,17 +112,19 @@ service.interceptors.response.use(
 
 export function $get(url, params = {}) {
   params.token = getToken()
-  params.user_id = getToken('user_id')
-  params.agent_id = params.agent_id || getToken('agent_id')
+  //params.user_id = getToken('user_id')
+  //params.agent_id = params.agent_id || getToken('agent_id')
   return service.get(url, {
     params
   })
 }
 export function $post(url, data = {}) {
-  url = url + '?token=' + getToken()
+  if(getToken()){
+    url = url + '?token=' + getToken()
+  }
   data.token = getToken()
-  data.user_id = getToken('user_id')
-  data.agent_id = data.tagent_id || getToken('agent_id')
+  //data.user_id = getToken('user_id')
+  //data.agent_id = data.tagent_id || getToken('agent_id')
   return service.post(url, data)
 }
 

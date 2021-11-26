@@ -34,15 +34,15 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    // proxy: {
-    //   [process.env.VUE_APP_BASE_API]: {
-    //     target: 'http://localhost/',
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       ['^' + process.env.VUE_APP_BASE_API]: ''
-    //     }
-    //   }
-    // },
+    proxy: {
+      ["dev-api"]: {
+        target: 'http://120.24.248.59:3000/',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
+      }
+    },
     before: require('./mock/mock-server.js')
   },
   configureWebpack: {

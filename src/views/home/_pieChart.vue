@@ -2,23 +2,23 @@
   <div>
     <el-row>
       <el-col :md="{span: 24}" :lg="{span: 12}">
-        <div id="pieChart" ref="pieChart" style="height: 360px;"></div>
+        <div id="pieChart" ref="pieChart" style="height: 450px;"></div>
       </el-col>
       <el-col :md="{span: 24}" :lg="{span: 12}" class="flex align-center">
         <div class="pb-30 pl-30 flex1">
           <div class="mb-30 mt-10 mr-30 text-right">
             <el-radio-group v-model="percentType" size="medium">
-              <el-radio-button label="0" v-if="agentInfo.business_type != 1">交易额</el-radio-button>
+              <el-radio-button label="0">交易额</el-radio-button>
               <el-radio-button label="1">订单量</el-radio-button>
             </el-radio-group>
           </div>
-          <div v-for="item in timeArr" class="mt-15 el-progress flex align-center">
+          <div v-for="item in timeArr" class="mt-20 el-progress flex align-center">
             <div class="fs-s3">{{ item.title }}</div>
             <el-progress
               class="ml-10 mr-10 flex1"
               :class="item.bg"
               :text-inside="true"
-              :stroke-width="30"
+              :stroke-width="40"
               :format="_progressFormat(percentType == 0 ? item.percent_money : item.percent_order)"
               :percentage="percentType == 0 ? (item.percent_money > 100 ? 100 : item.percent_money) : (item.percent_order > 100 ? 100 : item.percent_order)"
               :color="item.color"
@@ -57,11 +57,107 @@ export default {
       // 饼状图
       device_type: -1,
       equipData: {},
-      chartData: [],
+      chartData: [
+        {
+            "device_type": 8,
+            "value": 0,
+            "name": "加湿器"
+        },
+        {
+            "device_type": 7,
+            "value": 0,
+            "name": "套套机"
+        },
+        {
+            "device_type": 0,
+            "value": 2360,
+            "name": "充电宝"
+        },
+        {
+            "device_type": 1,
+            "value": 64654,
+            "name": "密码线"
+        },
+        {
+            "device_type": 2,
+            "value": 1,
+            "name": "按摩枕"
+        },
+        {
+            "device_type": 3,
+            "value": 24,
+            "name": "充电桩"
+        },
+        {
+            "device_type": 4,
+            "value": 75,
+            "name": "洗衣机"
+        },
+        {
+            "device_type": 6,
+            "value": 1,
+            "name": "电吹风"
+        }
+      ],
       chartTitle: [],
 
       percentType: '0',
-      timeArr: [],
+      timeArr: [
+        {
+            "money": 9078.13,
+            "percent_money": 0.37,
+            "order_num": 2276,
+            "percent_order": 0.5,
+            "title": "今日",
+            "bg": "progress1",
+            "color": "rgba(2015,154,255,1)"
+        },
+        {
+            "money": 11622.14,
+            "percent_money": 0.48,
+            "order_num": 3496,
+            "percent_order": 0.76,
+            "title": "昨日",
+            "bg": "progress2",
+            "color": "rgba(2015,154,255,1)"
+        },
+        {
+            "money": 42390.18,
+            "percent_money": 1.75,
+            "order_num": 11756,
+            "percent_order": 2.57,
+            "title": "本周",
+            "bg": "progress3",
+            "color": "rgba(151,161,254,1)"
+        },
+        {
+            "money": 84081.24,
+            "percent_money": 3.47,
+            "order_num": 22592,
+            "percent_order": 4.94,
+            "title": "上周",
+            "bg": "progress4",
+            "color": "rgba(59,183,254,1)"
+        },
+        {
+            "money": 291720.42,
+            "percent_money": 12.04,
+            "order_num": 77865,
+            "percent_order": 17.03,
+            "title": "本月",
+            "bg": "progress1",
+            "color": "rgba(237,134,140,1)"
+        },
+        {
+            "money": 386966.91,
+            "percent_money": 15.97,
+            "order_num": 76195,
+            "percent_order": 16.66,
+            "title": "上月",
+            "bg": "progress2",
+            "color": "rgba(2015,154,255,1)"
+        }
+      ],
 
       money: {},
 
@@ -70,7 +166,7 @@ export default {
   },
   computed: {
     deviceNameObj(){
-      if(this.$store.getters.agentDevice.length > 0) this.getEquipData()
+      this.getEquipData()
       return this.$store.getters.deviceNameObj
     },
     deviceKeyObj(){
@@ -81,10 +177,18 @@ export default {
     },
   },
   mounted() {
-    if(this.agentInfo.business_type == 1){
-      this.percentType = '1'
-    }
-    this.getMoney()
+
+    this.initChart([
+        "#95706d",
+        "#97b552",
+        "#2ec7c9",
+        "#b6a2de",
+        "#5ab1ef",
+        "#ffb980",
+        "#d87a80",
+        "#e5cf0d"
+    ])
+    //this.getMoney()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -113,6 +217,7 @@ export default {
      * 获取饼状图数据
      */
     getEquipData() {
+      return
       this.$get('agentapi/my_type_device_data', {
         device_type: this.device_type,
         search_agent_id: this.search_agent_id
@@ -245,19 +350,6 @@ export default {
               formatter: '{b}({d}%)' // {b}\n
             }
           },
-          // itemStyle: {
-          //   normal: {
-          //     borderColor: '#FFFFFF',
-          //     borderWidth: 5
-          //   }
-          // },
-          // data: [
-          //     {value: 335, name: '共享充电宝'},
-          //     {value: 310, name: '共享密码线'},
-          //     {value: 234, name: '共享按摩枕'},
-          //     {value: 135, name: '共享充电桩'},
-          //     {value: 1548, name: '共享洗衣机'}
-          // ],
           data: that.chartData
         }]
       })

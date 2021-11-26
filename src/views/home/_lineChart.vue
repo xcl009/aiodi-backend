@@ -1,118 +1,16 @@
 <template>
   <div>
-    <el-row :gutter="device === 'mobile' ? 0 : 5" type="flex" class="flex-wrap">
-      <el-col class="mb-5" :md="24" :lg="13">
-        <el-card :body-style="{padding: '0px'}" shadow="hover">
-          <div class="mb-10 pl-10 pt-10 flex align-center">
-            <b class="mr-15">数据图</b>
-            <el-radio-group class="flex1" v-model="date_type" @change="getStatistics()" size="mini">
-              <el-radio-button :label="5">最近7天</el-radio-button>
-              <el-radio-button :label="3">本周</el-radio-button>
-              <el-radio-button :label="4">上周</el-radio-button>
-              <el-radio-button :label="1">本月</el-radio-button>
-              <el-radio-button :label="2">上月</el-radio-button>
-            </el-radio-group>
-            <el-dropdown trigger="click">
-              <span class="pr-15 cursor el-dropdown-link">
-                {{ drop_title }}<i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item tabindex="-1" @click.native="drop(-1, '全部设备')">全部设备</el-dropdown-item>
-                <el-dropdown-item v-for="(item, key) in deviceNameObj" :tabindex="item" @click.native="drop(item, key)">
-                  {{ key }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </div>
-          <div id="lineChart" ref="lineChart" style="height: 460px;"></div>
-        </el-card>
-      </el-col>
-
-      <el-col class="mb-5" :md="24" :lg="11" v-if="!checkRoles(['merchants'])">
-        <el-card shadow="hover" :body-style="{ padding: '10px' }">
-          <div class="mb-20 flex flex-wrap align-center">
-            <b class="mr-15">运营数据</b>
-            <el-radio-group class="hidden-sm-and-down" v-model="listQuery.sel_agent_level" size="small" @change="selDataType">
-              <el-radio-button label="0">全部</el-radio-button>
-              <el-radio-button :label="key" v-if="agentInfo.agent_level < key" v-for="(item, key) in give_role">{{ item }}</el-radio-button>
-            </el-radio-group>
-            <div class="flex1"></div>
-            <router-link :to="`/home/operateData?l=${ listQuery.sel_agent_level }`" v-if="listQuery.count > 5" class="fs-s2 text-gray">更多<i class="el-icon-arrow-right el-icon--right"></i></router-link>
-          </div>
-          <el-radio-group class="hidden-sm-and-up mb-10" v-model="listQuery.sel_agent_level" size="small" @change="selDataType">
-            <el-radio-button label="0">全部</el-radio-button>
-            <el-radio-button :label="key" v-if="agentInfo.agent_level < key" v-for="(item, key) in give_role">{{ item }}</el-radio-button>
-          </el-radio-group>
-          <el-table :data="list" stripe border highlight-current-row>
-            <el-table-column label="名称">
-              <template slot-scope="scope">
-                {{ scope.row.name ? scope.row.name : scope.row.nick_name }}
-              </template>
-            </el-table-column>
-            <el-table-column label="角色">
-              <template slot-scope="scope">
-                {{ give_role[scope.row.role_id] }}
-              </template>
-            </el-table-column>
-            <el-table-column label="总交易额" v-if="agentInfo.business_type != 1">
-              <template slot-scope="scope">
-                {{ scope.row.order_total_amount }}
-              </template>
-            </el-table-column>
-            <el-table-column label="本月交易额" v-if="agentInfo.business_type != 1">
-              <template slot-scope="scope">
-                {{ scope.row.order_month_amount }}
-              </template>
-            </el-table-column>
-            <el-table-column label="今日交易额" v-if="agentInfo.business_type != 1">
-              <template slot-scope="scope">
-                {{ scope.row.order_today_amount }}
-              </template>
-            </el-table-column>
-            <el-table-column label="昨日交易额" v-if="agentInfo.business_type != 1">
-             <template slot-scope="scope">
-               {{ scope.row.order_yesterday_amount }}
-             </template>
-            </el-table-column>
-            <el-table-column label="总订单数">
-              <template slot-scope="scope">
-                {{ scope.row.order_total_num }}
-              </template>
-            </el-table-column>
-            <el-table-column label="本月订单数">
-              <template slot-scope="scope">
-                {{ scope.row.order_month_num }}
-              </template>
-            </el-table-column>
-            <el-table-column label="今日订单数">
-              <template slot-scope="scope">
-                {{ scope.row.order_today_num }}
-              </template>
-            </el-table-column>
-            <el-table-column label="昨日订单数">
-              <template slot-scope="scope">
-                {{ scope.row.order_yesterday_num }}
-              </template>
-            </el-table-column>
-            <el-table-column label="总商户">
-              <template slot-scope="scope">
-                {{ scope.row.store_num }}
-              </template>
-            </el-table-column>
-            <el-table-column label="已铺货底座">
-              <template slot-scope="scope">
-                {{ scope.row.all_zuo_num }}
-              </template>
-            </el-table-column>
-            <!-- <el-table-column label="已铺货底座">
-              <template slot-scope="scope">
-                {{ scope.row.devoted_zuo_num }}
-              </template>
-            </el-table-column> -->
-          </el-table>
-        </el-card>
-      </el-col>
-    </el-row>
+    <div class="mb-10 pl-10 pt-10 flex align-center">
+      <b class="mr-15">数据图</b>
+      <el-radio-group class="flex1" v-model="date_type" @change="getStatistics()" size="mini">
+        <el-radio-button :label="5">最近7天</el-radio-button>
+        <el-radio-button :label="3">本周</el-radio-button>
+        <el-radio-button :label="4">上周</el-radio-button>
+        <el-radio-button :label="1">本月</el-radio-button>
+        <el-radio-button :label="2">上月</el-radio-button>
+      </el-radio-group>
+    </div>
+    <div id="lineChart" ref="lineChart" style="height: 400px;"></div>
   </div>
 </template>
 
@@ -167,9 +65,53 @@
     },
 
     mounted() {
-      this.getPower()
-      this.getStatistics()
-      if(!this.checkRoles(['merchants'])) this.getList()
+      this.initChart({
+        "dayArr": [
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25"
+        ],
+        "day_order_amount": [
+            10515.23,
+            14484.7,
+            13969.25,
+            10455.24,
+            11234.67,
+            11622.14,
+            9078.13
+        ],
+        "day_order_num": [
+            3074,
+            3655,
+            3430,
+            2995,
+            2989,
+            3496,
+            2276
+        ],
+        "day_average_order_num": [
+            "3,130.71",
+            "3,130.71",
+            "3,130.71",
+            "3,130.71",
+            "3,130.71",
+            "3,130.71",
+            "3,130.71"
+        ],
+        "day_average_order_amount": [
+            11622.75,
+            11622.75,
+            11622.75,
+            11622.75,
+            11622.75,
+            11622.75,
+            11622.75
+        ]
+      })
     },
 
     methods: {
@@ -184,17 +126,6 @@
             give_role[role_i.role_id] = role_i.role_name
           }
           this.give_role = give_role
-        })
-      },
-
-      /**
-       * 获取运营数据
-       */
-      getList() {
-        let url = 'SyStatistics/getTotalBusinessData'
-        this.$get(url, this.listQuery).then(res => {
-          this.list = res.list
-          this.listQuery.count = res.count
         })
       },
 

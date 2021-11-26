@@ -1,50 +1,17 @@
 <template>
-  <div>
+  <div class="home-box bg-white">
     <panel-group :total-data="totalData" />
     <div class="p-5">
       <el-row :gutter="device === 'mobile' ? 0 : 5">
+        <device-type :platList="platList" @switchType="pieSwitchType" @switchPlat="pieSwitchPlat" />
         <el-col class="mb-5" :md="24" :lg="13">
-          <el-card :body-style="{padding: '0px'}" shadow="hover">
-            <device-type :platList="platList" @switchType="pieSwitchType" @switchPlat="pieSwitchPlat" />
-            <pie-chart ref="pieChart" />
-          </el-card>
+          <pie-chart ref="pieChart" />
         </el-col>
 
         <el-col class="mb-5" :md="24" :lg="11">
-          <el-card class="profit-table" shadow="hover">
-            <div class="flex align-center">
-              <div class="mb-10 pl-10 pr-10 pt-10 flex align-center justify-between equip-head">
-                <b class="mr-15">设备地图</b>
-              </div>
-              <!-- <device-type class="flex1" title="设备地图" :platList="platList" @switchType="pieSwitchType" @switchPlat="pieSwitchPlat" /> -->
-            </div>
-            <div class="rel">
-              <maps ref="map_box" :center="{lat: 33.272016, lng: 105.801051}" :is-edit="false" :zooms="5"
-                :height="'365px'" /> <!-- @setShopInfo="setShopInfo" -->
-              <div class="abs el-icon-full-screen cursor" @click="setMapScreen" />
-              <div class="z-99 abs map-data_content">
-                <div v-if="shopInfo.id > 0" class="p-10 fs-s3 map-data_box">
-                  <div class="mb-5 f-w text-primary">商户详情：</div>
-                  <div>
-                    <div>商户ID：{{ shopInfo.id }}</div>
-                    <div>商户名称：{{ shopInfo.store_name }}</div>
-                    <div>手机号码：{{ shopInfo.mobile }}</div>
-                    <div>地址：{{ shopInfo.address }}</div>
-                  </div>
-                  <div class="mt-10">
-                    <div v-for="item in shopInfo.device_type_arr" v-if="item.has_num > 0">
-                      {{ item.depend_name }}：{{ item.has_num }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </el-card>
+          <line-chart ref="lineChart" />
         </el-col>
       </el-row>
-
-      <todo :stat-money="statMoney" />
-
-      <line-chart ref="lineChart" />
 
       <!-- 地图全屏展示 -->
       <div v-if="mapScreen" class="fixed p-all" style="z-index: 9999;">
@@ -187,12 +154,12 @@
       }
     },
     created() {
-      if (!this.checkRoles(['terminal']) && !this.checkRoles(['merchants']) && !this.rests.informClose) this.getInform()
+
     },
     mounted() {
-      this.getMoney()
-      this.getTotalData()
-      this.getPlatList()
+      // this.getMoney()
+      // this.getTotalData()
+      // this.getPlatList()
     },
     methods: {
       /**
@@ -210,38 +177,6 @@
       getTotalData() {
         this.$get('agentapi/my_stat_data').then(res => {
           this.totalData = res
-        })
-      },
-
-      /**
-       * 服务通知
-       */
-      getInform() {
-        this.$get('agentapi/business/pending_items_bubble').then(res => {
-          let informStatus = false
-          for(var item of Object.values(res)){
-            if(item.num > 0){
-              if(!informStatus){
-                informStatus = true
-              }
-              let info = item.info
-              if(item.key == 'user_complaints'){
-                item.content = `${info.title} ${info.date}`
-              }else if(item.key == 'user_feedback'){
-                item.content = `${info.user_name} ${info.user_mobile} ${info.title}`
-              }else if(item.key == 'user_refund_apply'){
-                item.content = `${info.title} ${info.apply_mobile} ${info.store_name} ${info.date}`
-              }else if(item.key == 'agent_withdraw_apply'){
-                item.content = `${info.applier_user_name} ${info.applier_user_phone} ${info.date}`
-              }else if(item.key == 'merchant_withdraw_apply'){
-                item.content = `${info.applier_user_name} ${info.applier_user_phone} ${info.date}`
-              }else if(item.key == 'user_withdraw_apply'){
-                item.content = `${info.user_nick_name} ${info.user_mobile} ${info.date}`
-              }
-            }
-          }
-          this.informStatus = informStatus
-          this.informList = res
         })
       },
 
@@ -322,31 +257,9 @@
 </script>
 
 <style lang="scss" scoped>
-  .home {
-    &-container {
-      margin: 30px;
-    }
-
-    &-text {
-      font-size: 30px;
-      line-height: 46px;
-    }
+  .home-box{
+    min-height: calc(100vh - 40px);
   }
-
-  >>>.el-card {
-    border: none;
-  }
-
-  .profit-table {
-    >>>.el-card__body {
-      padding: 0;
-    }
-
-    >>>.el-table__row td {
-      padding: 6px 0;
-    }
-  }
-
   @media screen and (min-width: 768px) {
     .left-box {
       padding-right: 20px;

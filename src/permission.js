@@ -8,18 +8,17 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/regist', '/', '/join', '/product', '/about', '/news', '/newsDetail'] // no redirect whitelist
+const whiteList = ['/login', '/regist', '/'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
-
+  
   // set page title
   //document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
   const hasToken = getToken()
-
   if (hasToken) {
     if (to.path.indexOf('/login') > -1) {
       // if is logged in, redirect to the home page
@@ -31,26 +30,14 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
-          await store.dispatch('user/getPlatformConfig')
-          if(getToken('user_id') == 97){
-            // generate accessible routes map based on roles
-            const accessRoutes = await store.dispatch('permission/generateRoutes', ['qrcode'])
-            // dynamically add accessible routes
-            router.addRoutes(accessRoutes)
-          } else {
-            await store.dispatch('user/getDeviceType')
-            // get user info
-            const { level_key } = await store.dispatch('user/getInfo')
-            
-            // generate accessible routes map based on roles
-            const accessRoutes = await store.dispatch('permission/generateRoutes', [level_key])
-            // dynamically add accessible routes
-            router.addRoutes(accessRoutes)
-          }
+          const { roles } = await store.dispatch('user/getInfo')
+          // generate accessible routes map based on roles
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          // dynamically add accessible routes
+          router.addRoutes(accessRoutes)
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
-          next()
         } catch (error) {
           //remove token and go to login page to re-login
           console.log(error)
@@ -68,7 +55,6 @@ router.beforeEach(async(to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-
       next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
