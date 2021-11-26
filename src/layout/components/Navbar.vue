@@ -122,11 +122,7 @@ export default {
 
     async logout() {
       let url = ''
-      if(this.checkRoles(['terminal'])){
-        url = `/login`
-      } else {
-        url = `/login/${getToken('agent_id')}`
-      }
+      url = `/login`
       await this.$store.dispatch('user/logout')
       location.href = url
     },

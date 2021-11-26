@@ -19,8 +19,8 @@
         <div class="flex1">
           <el-tabs v-model="listQuery.device_status" @tab-click="toQuery()">
             <el-tab-pane :label="`全部(${numInfo.all_num || 0})`" name="0" />
-            <el-tab-pane :label="`在线(${numInfo.online_num || 0})`" name="1" />
-            <el-tab-pane :label="`离线(${numInfo.not_online_num || 0})`" name="2" />
+            <!-- <el-tab-pane :label="`在线(${numInfo.online_num || 0})`" name="1" />
+            <el-tab-pane :label="`离线(${numInfo.not_online_num || 0})`" name="2" /> -->
             <el-tab-pane :label="`已绑(${numInfo.distributed_num || 0})`" name="4" />
             <el-tab-pane :label="`未绑(${numInfo.not_distributed_num || 0})`" name="5" />
           </el-tabs>
@@ -42,20 +42,20 @@
         >
           <el-table-column type="selection" v-if="checkRoles(['terminal'])" width="50" />
           <el-table-column type="selection" v-else :selectable="checkSel" width="50" />
-          <el-table-column label="品牌商" v-if="checkRoles(['terminal'])">
+          <el-table-column label="品牌商">
             <template slot-scope="scope">
-              {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '' }}
+              {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '品牌名' }}
             </template>
           </el-table-column>
           <el-table-column label="设备名称">
             <template slot-scope="scope">
-              {{ scope.row.goods_name }}
+              {{ scope.row.goods_name || '共享密码线' }}
             </template>
           </el-table-column>
-          <el-table-column label="设备归属" width="180" v-if="user_type == 1">
+          <el-table-column label="设备归属" width="180">
             <template slot-scope="scope">
-              <div v-if="scope.row.manage_role_name">{{ scope.row.manage_name }}（{{ scope.row.manage_role_name }}）</div>
-              <div>{{ scope.row.manage_phone }}</div>
+              <div>{{ scope.row.manage_name || '用户名' }}（{{ scope.row.manage_role_name || '角色名称' }}）</div>
+              <div>{{ scope.row.manage_phone || '手机号码' }}</div>
             </template>
           </el-table-column>
           <el-table-column label="设备SN码" width="230">
@@ -66,9 +66,7 @@
           </el-table-column>
           <el-table-column label="设备属性" width="110">
             <template slot-scope="scope">
-              {{ search_factorys_condition[scope.row.device_factory_id] }}
-              {{ scope.row.device_type_classify }}
-              {{ scope.row.device_inet_type }}
+              工厂：--
             </template>
           </el-table-column>
           <el-table-column label="是否铺货" width="100">
@@ -85,33 +83,24 @@
           </el-table-column>
           <el-table-column label="订单数" width="120">
             <template slot-scope="scope">
-              <div>微信：<el-link type="primary" @click="$router.push({path: `${user_type == 0 ? '/order/meOrder' : '/order/subOrder'}?goods_sn=${scope.row.goods_sn}&mini_type=1`})">{{ scope.row.wx_mini_num }}</el-link></div>
-              <div>支付宝：<el-link type="primary" @click="$router.push({path: `${user_type == 0 ? '/order/meOrder' : '/order/subOrder'}?goods_sn=${scope.row.goods_sn}&mini_type=2`})">{{ scope.row.zfb_mini_num }}</el-link></div>
+              <div>微信：<el-link type="primary" @click="$router.push({path: `${user_type == 0 ? '/order/meOrder' : '/order/subOrder'}?goods_sn=${scope.row.goods_sn}&mini_type=1`})">{{ scope.row.wx_mini_num || 0 }}</el-link></div>
+              <div>支付宝：<el-link type="primary" @click="$router.push({path: `${user_type == 0 ? '/order/meOrder' : '/order/subOrder'}?goods_sn=${scope.row.goods_sn}&mini_type=2`})">{{ scope.row.zfb_mini_num || 0 }}</el-link></div>
             </template>
           </el-table-column>
-          <el-table-column label="交易额" width="90" v-if="checkRoles(['terminal','partner'])">
+          <el-table-column label="交易额" width="90">
             <template slot-scope="scope">
-              ￥{{ scope.row.order_amount }}
+              ￥{{ scope.row.order_amount || '0.00' }}
             </template>
           </el-table-column>
-          <el-table-column label="设备成本" width="90" v-if="checkRoles(['terminal'])">
+          <el-table-column label="状态" width="90">
             <template slot-scope="scope">
-              ￥{{ scope.row.cost_price }}
+              <div>已绑</div>
+              <div>2021-11-26 18:27</div>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="270" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" plain round @click="deviceBelong(scope.row)">设备归属</el-button>
-              <template v-if="listQuery.search_user_type == 0">
-                <el-button type="primary" size="mini" plain round class="ml-0" @click="distribu(5, scope.row)" v-if="scope.row.is_distributed == 1">房间号</el-button>
-                <el-button type="primary" size="mini" plain round v-else class="ml-0" @click="distribu(1, scope.row)">去&nbsp;铺&nbsp;货</el-button>
-                <el-button type="primary" size="mini" plain round class="ml-0" v-if="agent_id && scope.row.is_distributed == 0" @click="distribu(3, scope.row)">分配设备</el-button>
-                <el-button type="primary" size="mini" plain round class="ml-0" v-else-if="scope.row.is_distributed == 0"  @click="distribu(2, scope.row)">分配设备</el-button>
-              </template>
-              <el-button type="primary" size="mini" plain round class="ml-0" v-if="scope.row.is_distributed == 1" @click="deletedevice(scope.row)">&nbsp;解&nbsp;&nbsp;绑&nbsp;</el-button>
-              <el-button type="primary" size="mini" plain round class="ml-0" v-else-if="listQuery.search_user_type == 1 && scope.row.is_distributed == 0"  @click="distribu(4, scope.row)">回收设备</el-button>
-              <el-button type="primary" size="mini" plain round class="ml-0" @click="showCode(scope.row)">二维码</el-button>
-              <el-button size="mini" type="primary" plain round class="ml-0" v-if="checkRoles(['terminal'])" @click="costPrice(scope.row)">设备成本</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -170,7 +159,7 @@
   import condition from '@/components/condition/'
 
   export default {
-    name: 'Order',
+    name: 'device',
     components: {
       Pagination,
       condition
@@ -210,7 +199,7 @@
         numInfo: {},
         tableMaxH: '250',
         oemInfo: {},
-        list: [],
+        list: [{}],
         listLoading: false,
         listQuery: {
           device_status: this.$route.query.device_status || 0,

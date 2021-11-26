@@ -32,65 +32,51 @@
       <div class="bg-white">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
           stripe highlight-current-row :max-height="tableMaxH">
-          <el-table-column label="代理信息" width="130">
+          <el-table-column label="品牌信息" width="130">
             <template slot-scope="scope">
-              <div>{{ scope.row.name }}</div>
-              <div>{{ scope.row.phone }}</div>
-              <div>{{ scope.row.agent_name }}({{ scope.row.id }})</div>
+              <div>{{ scope.row.name || '品牌名' }}</div>
+              <div>{{ scope.row.phone || '手机号码' }}</div>
             </template>
           </el-table-column>
           <el-table-column label="运营城市" width="120">
             <template slot-scope="scope">
-              <div>{{ scope.row.charge_province }}</div>
-              <div>{{ scope.row.charge_city }}</div>
-              <div>{{ scope.row.charge_county }}</div>
+              <div>{{ scope.row.charge_province || '广东'}}</div>
+              <div>{{ scope.row.charge_city || '深圳' }}</div>
+              <div>{{ scope.row.charge_county || '深圳' }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="用户" width="150">
+          <el-table-column label="公司名称">
             <template slot-scope="scope">
-              <div class="flex align-center">
-                <el-avatar size="small" :src="scope.row.avatar" />
-                <div class="flex1 ml-5">{{ scope.row.nick_name }}</div>
-              </div>
+              {{ scope.row.child_agent_num || '--'}}
             </template>
           </el-table-column>
           <el-table-column label="设备">
             <template slot-scope="scope">
-              <div v-if="deviceNum[scope.row.id]">
-                <div v-for="(item, index) in deviceNum[scope.row.id]" class="cursor" @click="$router.push({path: `/equipment/subEquipment?son_id=${scope.row.id}&all=true`})">
-                  {{ deviceKeyObj[index] }}：<span class="text-blue">{{ item.my + item.son }}</span>
-                </div>
-              </div>
+              {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
             </template>
           </el-table-column>
-          <el-table-column label="下级总数" width="90">
+          <el-table-column label="下级总数" width="150">
             <template slot-scope="scope">
-              {{ scope.row.child_agent_num }}
+              <div>直属下级：{{ scope.row.child_agent_num || 0}}</div>
+              <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
             </template>
           </el-table-column>
           <el-table-column label="收益" width="200">
             <template slot-scope="scope">
               <div class="cursor">
-                &nbsp;&nbsp;&nbsp;总收益：<span class="text-blue" @click="$router.push({path: `/home/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}元</span><span class="ml-5 cursor text-gray" v-if="checkRoles(['partner'])" @click="$refs.editwiths.showDialog(scope.row)">修改</span>
+                总收益：<span class="text-blue">{{ scope.row.income || '0.00' }}元</span> <!-- @click="$router.push({path: `/home/income?son_id=${scope.row.id}`})" -->
               </div>
-              <div class="cursor" @click="toEdit({id: scope.row.id, type: 2})">冻结金额：<span class="text-blue">{{ scope.row.freez_money || '0.00' }}元</span></div>
-            </template>
-          </el-table-column>
-          <el-table-column label="可提现金额">
-            <template slot-scope="scope">
-              <a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">￥{{ scope.row.money || '0.00' }}</a>
-              <a v-else>￥{{ scope.row.money || '0.00' }}</a>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="190">
             <template slot-scope="scope">
-              <!-- <el-button type="primary" size="mini" round plain class="ml-0" @click="getMapIcon(scope.row)">地图图标</el-button> -->
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/qrcode/index?son_id=${scope.row.id}`})">分配设备</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/subShop?son_id=${scope.row.id}`})">商户列表</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order/order?son_id=${scope.row.id}`})">订单列表</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
               <el-button type="primary" size="mini" round plain class="ml-0" @click="toLogin(scope.row)" v-if="checkRoles(['terminal'])">一键登录</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="copyloginUrl(scope.row)">权限设置</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="">权限设置</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="">功能设置</el-button>
               <el-button type="primary" size="mini" round plain class="ml-0" @click="copyloginUrl(scope.row)">登录地址</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="getMapIcon(scope.row)">地图图标</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -99,7 +85,7 @@
             v-show="listQuery.count > 0"
             :page.sync="listQuery.page"
             :limit.sync="listQuery.size"
-            :page-count="listQuery.count"
+            :total="listQuery.count"
             @pagination="getList"
           />
         </div>

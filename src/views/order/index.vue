@@ -78,10 +78,9 @@
             <el-tab-pane :label="`使用中(${numInfo.renting_order_num || 0})`" name="1" />
             <el-tab-pane :label="`今日订单(${numInfo.today_order_num || 0})`" name="0" />
             <el-tab-pane :label="`已完成(${numInfo.finish_order_num || 0})`" name="2" />
-            <el-tab-pane :label="`超时订单(${numInfo.overtime_order_num || 0})`" name="3" />
+            <!-- <el-tab-pane :label="`超时订单(${numInfo.overtime_order_num || 0})`" name="3" /> -->
             <el-tab-pane :label="`租借失败(${numInfo.fail_order_num || 0})`" name="5" />
             <el-tab-pane :label="`扣款失败(${numInfo.deduction_failed_num || 0})`" name="7" />
-            <el-tab-pane :label="`申请退款(${numInfo.refund_apply_num || 0})`" name="8" />
           </el-tabs>
         </div>
       </div>
@@ -229,7 +228,12 @@
           </el-table-column>
         </el-table>
         <div class="flex justify-center" v-if="!xlsxStatus">
-          <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" layout='sizes, prev, pager, next, jumper' @pagination="getList" />
+          <pagination
+            v-show="listQuery.pageSize > 0"
+            :page.sync="listQuery.page"
+        		:limit.sync="listQuery.size"
+            @pagination="getList"
+          />
         </div>
       </div>
 

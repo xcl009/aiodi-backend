@@ -75,7 +75,10 @@
       return {
         platformConfig: {},
         loginType: '1',
-        loginForm: {},
+        loginForm: {
+          username: 'admin',
+          password: '123456'
+        },
         loginRules: {
           username: [{
             required: true,
@@ -223,7 +226,7 @@
     min-height: 100%;
     width: 100%;
     overflow: hidden;
-    
+
     .el-input {
       input {
         padding-left: 40px;

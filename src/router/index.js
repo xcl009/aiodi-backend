@@ -110,7 +110,7 @@ export const saasRoutes = [
       {
         path: '/subAgent',
         name: 'subAgent',
-        component: () => import('@/views/agent/index'),
+        component: () => import('@/views/agent/subAgent'),
         meta: {
           title: '下级管理',
           keepAlive: true
@@ -131,7 +131,7 @@ export const saasRoutes = [
     component: Layout,
     redirect: '/app/market',
     meta: {
-      title: '功能市场',
+      title: '服务管理',
       icon: 'agent'
     },
     children: [
@@ -140,7 +140,7 @@ export const saasRoutes = [
         name: 'payRecord',
         component: () => import('@/views/app/payRecord'),
         meta: {
-          title: '购买记录',
+          title: '服务记录',
           keepAlive: true
         }
       },
@@ -149,7 +149,7 @@ export const saasRoutes = [
         name: 'market',
         component: () => import('@/views/app/market'),
         meta: {
-          title: '功能列表',
+          title: '定价设置',
           keepAlive: true
         }
       },
@@ -158,7 +158,7 @@ export const saasRoutes = [
         name: 'create',
         component: () => import('@/views/app/edit'),
         meta: {
-          title: '添加功能'
+          title: '添加服务'
         }
       }
     ]

@@ -32,111 +32,63 @@
       <div class="bg-white">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
           stripe highlight-current-row :max-height="tableMaxH">
+          <el-table-column label="品牌信息" width="130">
+            <template slot-scope="scope">
+              <div>{{ scope.row.name || '品牌名' }}</div>
+              <div>{{ scope.row.phone || '手机号码' }}</div>
+            </template>
+          </el-table-column>
           <el-table-column label="代理信息" width="130">
             <template slot-scope="scope">
-              <div>{{ scope.row.name }}</div>
-              <div>{{ scope.row.phone }}</div>
-              <div>{{ scope.row.agent_name }}({{ scope.row.id }})</div>
+              <div>{{ scope.row.name || '姓名' }}</div>
+              <div>{{ scope.row.phone || '手机号码' }}</div>
+              <div>{{ scope.row.agent_name || '角色名' }}</div>
             </template>
           </el-table-column>
           <el-table-column label="运营城市" width="120">
             <template slot-scope="scope">
-              <div>{{ scope.row.charge_province }}</div>
-              <div>{{ scope.row.charge_city }}</div>
-              <div>{{ scope.row.charge_county }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="用户" width="150">
-            <template slot-scope="scope">
-              <div class="flex align-center">
-                <el-avatar size="small" :src="scope.row.avatar" />
-                <div class="flex1 ml-5">{{ scope.row.nick_name }}</div>
-              </div>
+              <div>{{ scope.row.charge_province || '广东'}}</div>
+              <div>{{ scope.row.charge_city || '深圳' }}</div>
+              <div>{{ scope.row.charge_county || '深圳' }}</div>
             </template>
           </el-table-column>
           <el-table-column label="设备">
             <template slot-scope="scope">
-              <div v-if="deviceNum[scope.row.id]">
-                <div v-for="(item, index) in deviceNum[scope.row.id]" class="cursor" @click="$router.push({path: `/equipment/subEquipment?son_id=${scope.row.id}&all=true`})">
-                  {{ deviceKeyObj[index] }}：<span class="text-blue">{{ item.my + item.son }}</span>
-                </div>
-              </div>
+              {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
             </template>
           </el-table-column>
-          <el-table-column label="下级总数" width="90">
+          <el-table-column label="下级总数" width="150">
             <template slot-scope="scope">
-              {{ scope.row.child_agent_num }}
+              <div>直属下级：{{ scope.row.child_agent_num || 0}}</div>
+              <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
             </template>
           </el-table-column>
           <el-table-column label="收益" width="200">
             <template slot-scope="scope">
               <div class="cursor">
-                &nbsp;&nbsp;&nbsp;总收益：<span class="text-blue" @click="$router.push({path: `/home/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}元</span><span class="ml-5 cursor text-gray" v-if="checkRoles(['partner'])" @click="$refs.editwiths.showDialog(scope.row)">修改</span>
+                总收益：<span class="text-blue">{{ scope.row.income || '0.00' }}元</span> <!-- @click="$router.push({path: `/home/income?son_id=${scope.row.id}`})" -->
               </div>
-              <div class="cursor" @click="toEdit({id: scope.row.id, type: 2})">冻结金额：<span class="text-blue">{{ scope.row.freez_money || '0.00' }}元</span></div>
             </template>
           </el-table-column>
-          <el-table-column label="可提现金额">
+          <el-table-column label="分润比例">
             <template slot-scope="scope">
-              <a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">￥{{ scope.row.money || '0.00' }}</a>
-              <a v-else>￥{{ scope.row.money || '0.00' }}</a>
+              {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '50%' }}
             </template>
           </el-table-column>
           <el-table-column label="操作" width="190">
             <template slot-scope="scope">
-              <!-- <el-button type="primary" size="mini" round plain class="ml-0" @click="getMapIcon(scope.row)">地图图标</el-button> -->
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/qrcode/index?son_id=${scope.row.id}`})">分配设备</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/subShop?son_id=${scope.row.id}`})">商户列表</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order/order?son_id=${scope.row.id}`})">订单列表</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="toLogin(scope.row)" v-if="checkRoles(['terminal'])">一键登录</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="copyloginUrl(scope.row)">权限设置</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="copyloginUrl(scope.row)">登录地址</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="">一键登录</el-button>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="操作" width="360">
-            <template slot-scope="scope">
-              <template v-if="zuo_sn">
-                <el-button type="primary" size="mini" round plain @click="setEquip(scope.row)">分配给TA</el-button>
-              </template>
-              <template v-else>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/equipment/index?agent_id=${scope.row.id}`})" v-if="!checkRoles(['terminal'])">分配设备</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/agent/equip?type=2&son_id=${scope.row.id}`})">分配记录</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/subShop?son_id=${scope.row.id}`})">商户管理</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({id: scope.row.id, type: 1})" v-if="!checkRoles(['terminal']) || user_type == 0">修改信息</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/adver/position?son_id=${scope.row.id}`})">广告权限</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="freeDialog = true; freeObj = scope.row">免费店员</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order/morder?son_id=${scope.row.id}`})" v-if="agentInfo.check_order == 1">订单列表</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({id: scope.row.id, type: 5})">登录密码</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({id: scope.row.id, type: 7})" v-if="scope.row.role_id != 1">提现密码</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="toLogin(scope.row)" v-if="checkRoles(['terminal'])">登录后台</el-button>
-                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/steal/${scope.row.id}?type=2`})" v-if="(agentInfo.steal_order_right == 1 || scope.row.steal_order_switch == 1) && (!checkRoles(['terminal']))"> {{ (scope.row.steal_order_right == 1 || scope.row.steal_order_switch == 1) ? 'DD开启' : 'DD关闭' }}</el-button>
-                <el-dropdown trigger="click">
-                  <el-button type="primary" size="mini" round plain>更多设置</el-button>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="$router.push({path: `/qrcode/create?aid=${scope.row.id}`})" v-if="checkRoles(['terminal']) && user_type == 0">二维码生成</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({path: `/agent/contract?son_id=${scope.row.id}&level=${scope.row.role_id}`})">合同管理</el-dropdown-item>
-                    <el-dropdown-item @click.native="deviceBindDialog = true; select_aid = scope.row.id">设备绑定</el-dropdown-item>
-                    <el-dropdown-item @click.native="toEdit({id: scope.row.id, type: 4, index: scope.$index})" v-if="listQuery.activated_status == 1">删除代理</el-dropdown-item>
-                    <el-dropdown-item @click.native="toEdit({id: scope.row.id, type: 8, index: scope.$index})" v-else>恢复显示</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({path: `/agent/agentBilling?son_id=${scope.row.id}`})" v-if="scope.row.role_id == 2 && checkRoles(['partner'])">计费与提现</el-dropdown-item>
-
-                    <template v-if="scope.row.business_type == 1 && !checkRoles(['terminal'])">
-                      <el-dropdown-item @click.native="$router.push({path: `/shop/index?son_uid=${scope.row.id}`})" v-if="user_type == 0">分配商户</el-dropdown-item>
-                      <el-dropdown-item @click.native="$router.push({path: `/shop/subShop?son_uid=${scope.row.id}&son_id=${scope.row.id}&son_type=${scope.row.business_type}`})" v-if="user_type == 0">回收商户</el-dropdown-item>
-                      <el-dropdown-item @click.native="$router.push({path: `/condom/plusGoods?son_id=${scope.row.id}`})" v-if="scope.row.percent_info[7]">补货记录</el-dropdown-item>
-                    </template>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </template>
-            </template>
-          </el-table-column> -->
         </el-table>
         <div class="flex justify-center">
           <pagination
             v-show="listQuery.count > 0"
             :page.sync="listQuery.page"
             :limit.sync="listQuery.size"
-            :page-count="listQuery.count"
+            :total="listQuery.count"
             @pagination="getList"
           />
         </div>

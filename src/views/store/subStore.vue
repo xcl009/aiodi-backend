@@ -73,7 +73,7 @@
         >
           <el-table-column label="品牌商">
             <template slot-scope="scope">
-              {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '品牌名' }}
+              {{ oemInfo[scope.row.aid] ? oemInfo[scope.row.aid].mini_name : '' }}
             </template>
           </el-table-column>
           <el-table-column label="门头照" width="80" v-if="checkThead.indexOf('门头照') > -1">
@@ -84,12 +84,25 @@
           </el-table-column>
           <el-table-column label="商户名称" width="200" v-if="checkThead.indexOf('商户名称') > -1">
             <template slot-scope="scope">
-              <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})" class="cursor">{{ scope.row.store_name || '--' }}</el-link>
+              <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})" class="cursor">【{{ scope.row.id }}】{{ scope.row.store_name }}</el-link>
             </template>
           </el-table-column>
           <el-table-column label="商户地址" width="120" v-if="checkThead.indexOf('商户地址') > -1">
             <template slot-scope="scope">
-              <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
+              <div class="text-cut_two">{{ scope.row.address }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="金额" width="160" v-if="agentInfo.business_type != 1">
+            <template slot-scope="scope">
+              <div>交易额：￥{{ scope.row.order_amount }}</div>
+              <div>总收益：<span class="text-blue cursor" @click="$router.push({path: `/home/income?son_id=${scope.row.aid}`})">￥{{ scope.row.profit }}</span></div>
+              <div>可提现：<a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">￥{{ scope.row.available_withdraw_money }}</a><a v-else>￥{{ scope.row.available_withdraw_money }}</a></div>
+            </template>
+          </el-table-column>
+          <el-table-column label="订单量" width="140" v-if="checkThead.indexOf('订单量') > -1">
+            <template slot-scope="scope">
+              <div>订单量：<a class="text-blue" @click="$router.push({path: `${scope.row.agent_id == agentInfo.id ? '/order/meOrder' : '/order/subOrder'}?store_name=${scope.row.store_name}`})" v-if="agentInfo.check_order == 1">{{ scope.row.order_num }}</a><a v-else>{{ scope.row.order_num }}</a></div>
+              <div>设备数：<el-link type="primary" @click="$router.push({path: `${scope.row.agent_id == agentInfo.id ? '/equipment/index' : '/equipment/subEquipment'}?store_name=${scope.row.store_name}`})">{{ scope.row.goods_sum }}</el-link></div>
             </template>
           </el-table-column>
           <el-table-column label="城市区域" v-if="checkThead.indexOf('城市区域') > -1">
@@ -99,29 +112,109 @@
           </el-table-column>
           <el-table-column label="行业分类" v-if="checkThead.indexOf('行业分类') > -1">
             <template slot-scope="scope">
-              {{ scope.row.cat_name || '--' }}
+              {{ scope.row.cat_name }}
             </template>
           </el-table-column>
-          <el-table-column label="金额" width="160" v-if="agentInfo.business_type != 1">
+          <el-table-column label="设备" v-if="checkThead.indexOf('设备') > -1">
             <template slot-scope="scope">
-              <div>交易额：￥{{ scope.row.order_amount || '0.00' }}</div>
-              <div>总收益：<span class="text-blue cursor" @click="$router.push({path: `/home/income?son_id=${scope.row.aid}`})">￥{{ scope.row.profit || '0.00' }}</span></div>
-              <div>可提现：<a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">￥{{ scope.row.available_withdraw_money || '0.00' }}</a><a v-else>￥{{ scope.row.available_withdraw_money || '0.00' }}</a></div>
-            </template>
-          </el-table-column>
-          <el-table-column label="订单量" width="140" v-if="checkThead.indexOf('订单量') > -1">
-            <template slot-scope="scope">
-              <a class="text-blue" @click="$router.push({path: `${scope.row.agent_id == agentInfo.id ? '/order/meOrder' : '/order/subOrder'}?store_name=${scope.row.store_name}`})" v-if="agentInfo.check_order == 1">{{ scope.row.order_num || '0.00' }}</a><a v-else>{{ scope.row.order_num || '0' }}</a>
-            </template>
-          </el-table-column>
-          <el-table-column label="品类" v-if="checkThead.indexOf('品类') > -1">
-            <template slot-scope="scope">
-              {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
+              {{ scope.row.depend_type_name }}
             </template>
           </el-table-column>
           <el-table-column label="创建时间" width="100" v-if="checkThead.indexOf('创建时间') > -1">
             <template slot-scope="scope">
-              {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') || '--' }}
+              {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') }}
+            </template>
+          </el-table-column>
+          <el-table-column width="270" :fixed="device == 'desktop' ? 'right' : false">
+            <template slot="header" slot-scope="scope">
+              <div class="flex">
+                <div class="flex1">操作</div>
+                <div class="cursor" @click="
+                  storeSetDialog = true;
+                  shopObj = {
+                    dialogTitle: '表头设置',
+                    type: 6
+                  }
+                ">表头设置</div>
+              </div>
+            </template>
+            <template slot-scope="scope">
+              <template v-if="zuo_sn">
+                <el-button type="danger" size="mini" round @click="distribu(scope.row)">铺货</el-button>
+              </template>
+              <template v-else-if="son_type > 0">
+                <el-button type="danger" size="mini" round @click="unbindAgent(scope.row, scope.$index)">立即回收</el-button>
+              </template>
+              <template v-else-if="son_uid > 0">
+                <el-button type="danger" size="mini" round @click="bindAgent(scope.row)">立即分配</el-button>
+              </template>
+              <template v-else>
+                <el-button type="primary" size="mini" round plain class="ml-0" @click="deviceBindDialog = true; select_aid = scope.row.aid">设备绑定</el-button>
+                <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({aid: scope.row.aid, type: 8})">提现更新</el-button>
+                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/setvip?store_id=${scope.row.id}`})">免费店员</el-button>
+                <el-button type="primary" size="mini" round plain class="ml-0" @click="toEdit({row: scope.row, type: 6 })">营业时间</el-button>
+                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/billing/${scope.row.id}`})">会员设置</el-button>
+                <el-button type="primary" size="mini" round plain class="ml-0" @click="getSetRecord(scope.row.aid)">操作记录</el-button>
+                <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/shop/edit/${scope.row.id}?user_type=${user_type}`})" v-if="!checkRoles(['terminal'])">编辑商户</el-button>
+                <el-button type="danger" size="mini" round plain class="ml-0" @click="toEdit({id: scope.row.id, type: 4, index: scope.$index})">删除商户</el-button>
+                <el-dropdown trigger="click">
+                  <el-button type="primary" size="mini" round plain>更多设置</el-button>
+                  <el-dropdown-menu slot="dropdown">
+                     <el-dropdown-item @click.native="$router.push({path: `/shop/dayStat/${scope.row.id}`})" v-if="agentInfo.business_type != 1">数据统计</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/shop/steal/${scope.row.id}`})" v-if="agentInfo.steal_order_right == 1 || scope.row.steal_order_switch == 1">{{ (scope.row.steal_order_right == 1 || scope.row.steal_order_switch == 1) ? 'DD开启' : 'DD关闭' }}</el-dropdown-item>
+                    <el-dropdown-item v-if="checkRoles(['partner'])"
+                    @click.native="
+                      storeSetDialog = true;
+                      shopObj = {
+                        deposit_drawbacke_type: scope.row.deposit_drawbacke_type,
+                        dialogTitle: '押金退款方式',
+                        store_id: scope.row.id,
+                        type: 5
+                      }
+                    ">押金退款</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/condom/shopGoods/${scope.row.id}`})" v-if="scope.row.depend_type_name.indexOf('套套机') > -1">关联商品</el-dropdown-item>
+
+                    <el-dropdown-item @click.native="$router.push({path: `/shop/billing/${scope.row.id}?type=2`})" v-if="checkRoles(['partner']) && scope.row.depend_type_name.indexOf('密码线') > -1">购买成本价</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/shop/public/${scope.row.id}`})" v-if="checkRoles(['partner']) && scope.row.depend_type_name.indexOf('密码线') > -1">先关注</el-dropdown-item>
+
+                    <el-dropdown-item @click.native="
+                      storeSetDialog = true;
+                      rowObj = scope.row;
+                      shopObj = {
+                        thread_cost_price: scope.row.thread_cost_price,
+                        cost_controll_switch: scope.row.cost_controll_switch,
+                        dialogTitle: '设备成本·商户提现控制',
+                        store_id: scope.row.id,
+                        type: 3
+                      }
+                    ">提现成本控制</el-dropdown-item>
+
+                    <el-dropdown-item @click.native="$router.push({path: `/shop/withdraw?aid=${scope.row.aid}`})" v-if="checkRoles(['partner'])">提现设置</el-dropdown-item>
+                    <el-dropdown-item @click.native="showEntranceFeeObj(scope.row)" v-if="scope.row.divide_type_1 == 2 && checkRoles(['partner'])">入场费</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/adver/setPower?son_id=${scope.row.aid}`})">广告权限</el-dropdown-item>
+                    <el-dropdown-item v-if="checkRoles(['partner'])"
+                    @click.native="
+                      storeSetDialog = true;
+                      rowObj = scope.row;
+                      shopObj = {
+                        depend_type_name: scope.row.depend_type_name,
+                        expired_bao_cost_price: scope.row.expired_bao_cost_price,
+                        expired_thread_cost_price: scope.row.expired_thread_cost_price,
+                        free_rent_minutes: scope.row.free_rent_minutes,
+                        wx_ad_right: scope.row.wx_ad_right,
+                        store_id: scope.row.id,
+                        dialogTitle: '其他设置',
+                        type: 4
+                      }
+                    ">其他设置</el-dropdown-item>
+                    <template v-if="!checkRoles(['terminal'])">
+                      <el-dropdown-item @click.native="$router.push({path: `/shop/create?fid=${scope.row.aid}`})" v-if="scope.row.major_pid == 0">添加分店</el-dropdown-item>
+                    </template>
+                    <el-dropdown-item @click.native="toEdit({aid: scope.row.aid, type: 7})">提现密码</el-dropdown-item>
+                    <el-dropdown-item @click.native="toEdit({aid: scope.row.aid, type: 5})">登录密码</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
             </template>
           </el-table-column>
         </el-table>
@@ -274,7 +367,7 @@ import {
   getToken,
   setToken
 } from '@/utils/auth'
-const defaultThead = ['门头照', '商户名称', '金额', '商户地址', '订单量', '城市区域', '行业分类', '品类', '创建时间']
+const defaultThead = ['门头照', '商户名称', '金额', '商户地址', '订单量', '城市区域', '行业分类', '设备', '创建时间']
 export default {
   name: 'subShop',
   components: {
@@ -291,7 +384,7 @@ export default {
   },
   data() {
     return {
-      allThead: ['门头照', '商户名称', '金额', '商户地址', '订单量', '城市区域', '行业分类', '品类', '创建时间'],
+      allThead: ['门头照', '商户名称', '金额', '商户地址', '订单量', '城市区域', '行业分类', '设备', '创建时间'],
       formThead: getToken(`${agentInfo.id}_check_thead`) ? JSON.parse(getToken(`${agentInfo.id}_check_thead`)) : defaultThead,
       checkThead: getToken(`${agentInfo.id}_check_thead`) ? JSON.parse(getToken(`${agentInfo.id}_check_thead`)) : defaultThead,
       beginOptions: {
@@ -325,7 +418,7 @@ export default {
       areaObj: {},
       tableMaxH: '250',
       oemInfo: {},
-      list: [{}],
+      list: [],
       listLoading: false,
       listQuery: {
         search_depend_type: '-1',
