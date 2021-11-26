@@ -8,12 +8,12 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/regist', '/'] // no redirect whitelist
+const whiteList = ['/login', '/regist'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
-  
+
   // set page title
   //document.title = getPageTitle(to.meta.title)
 

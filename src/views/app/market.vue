@@ -1,85 +1,38 @@
 <template>
   <div>
-		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
-		  <template v-slot:defult>
-				<el-form-item label="合同类型:">
-				  <el-select v-model="form.sort" @change="toQuery()">
-				    <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-				  </el-select>
-				</el-form-item>
-        <el-form-item label="时间类型:">
-          <el-select v-model="form.sort" @change="toQuery()">
-            <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-          </el-select>
-        </el-form-item>
-				<el-form-item label="品牌名称:">
-				  <el-input v-model="form.name" />
-				</el-form-item>
-				<el-form-item label="支付状态:">
-				  <el-select v-model="form.sort" @change="toQuery()">
-				    <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-				  </el-select>
-				</el-form-item>
-		  </template>
+		<condition ref="condition" :filterForm="false">
+      <template v-slot:tabs>
+        <el-tabs class="bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
+          <el-tab-pane label="全部" :name="'0'" />
+          <el-tab-pane label="品类" :name="'1'" />
+          <el-tab-pane label="系统服务" :name="'2'" />
+          <el-tab-pane label="密码线定制" :name="'3'" />
+        </el-tabs>
+      </template>
 		</condition>
 
     <div class="p-5">
       <div class="bg-white">
-        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
+        <el-table id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
           stripe highlight-current-row :max-height="tableMaxH">
-          <el-table-column label="品牌" width="90">
+          <el-table-column label="服务类型">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="支付用户" width="90">
+          <el-table-column label="基本信息">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="合同类型" width="90">
+          <el-table-column label="服务种类">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="具体类型" width="90">
+          <el-table-column label="操作">
             <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="商户单号" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="交易单号" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="支付方式" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="时间类型" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="支付金额" width="200">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="当前月数">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="备注" width="190">
-            <template slot-scope="scope">
-              {{ scope.row.mark || '--' }}
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="">修改</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -191,5 +144,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+  /deep/ .el-tabs__header{
+    margin-bottom: 0;
+  }
 </style>

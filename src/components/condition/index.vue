@@ -51,7 +51,7 @@ export default {
     }
   },
   mounted() {
-    this.controlChildren()
+    if(this.filterForm) this.controlChildren()
   },
   methods: {
     /**

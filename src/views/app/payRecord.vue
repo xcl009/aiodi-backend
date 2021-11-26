@@ -109,6 +109,7 @@
     data() {
       return {
         clickSubmit: false,
+        sort_type: [],
         form: {},
         tableMaxH: '250',
         list: [

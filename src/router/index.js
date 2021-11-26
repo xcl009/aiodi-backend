@@ -136,7 +136,7 @@ export const saasRoutes = [
     },
     children: [
       {
-        path: '/payRecord',
+        path: 'payRecord',
         name: 'payRecord',
         component: () => import('@/views/app/payRecord'),
         meta: {
@@ -145,12 +145,20 @@ export const saasRoutes = [
         }
       },
       {
-        path: '/market',
+        path: 'market',
         name: 'market',
         component: () => import('@/views/app/market'),
         meta: {
           title: '功能列表',
           keepAlive: true
+        }
+      },
+      {
+        path: 'create',
+        name: 'create',
+        component: () => import('@/views/app/edit'),
+        meta: {
+          title: '添加功能'
         }
       }
     ]
