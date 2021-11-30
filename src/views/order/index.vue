@@ -92,7 +92,7 @@
           <el-table-column type="selection" v-if="checkRoles(['partner']) && !xlsxStatus" :selectable="checkSel" width="50"/>
           <el-table-column label="品牌商">
             <template slot-scope="scope">
-              {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '' }}
+              {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
             </template>
           </el-table-column>
           <el-table-column label="小程序ID" v-if="xlsxStatus">
@@ -102,22 +102,22 @@
           </el-table-column>
           <el-table-column label="订单号" width="140">
             <template slot-scope="scope">
-              {{ scope.row.order_sn }}
+              {{ scope.row.order_sn || '--' }}
             </template>
           </el-table-column>
           <el-table-column label="交易单号" width="142">
             <template slot-scope="scope">
-              <div>{{ scope.row.transaction_id }}</div>
+              <div>{{ scope.row.transaction_id || '--' }}</div>
             </template>
           </el-table-column>
           <el-table-column label="商户单号" width="142">
             <template slot-scope="scope">
-              {{ scope.row.out_order_no }}
+              {{ scope.row.out_order_no || '--' }}
             </template>
           </el-table-column>
           <el-table-column label="类型" width="90">
             <template slot-scope="scope">
-              {{ scope.row.goods_name }}
+              {{ scope.row.goods_name || '--' }}
             </template>
           </el-table-column>
           <el-table-column label="来源" width="70">
@@ -127,7 +127,7 @@
           </el-table-column>
           <el-table-column label="支付类型" width="100">
             <template slot-scope="scope">
-              <div class="fs-s3">{{ scope.row.deposit_status }}</div>
+              <div class="fs-s3">{{ scope.row.deposit_status || '--' }}</div>
             </template>
           </el-table-column>
           <el-table-column label="用户" width="150">
@@ -448,7 +448,7 @@
         numInfo: {},
         tableMaxH: '250',
         oemInfo: {},
-        list: [],
+        list: [{}],
         listLoading: false,
         listQuery: {
           device_type: '-1',
@@ -528,11 +528,10 @@
       }
     },
     mounted(options) {
-      return
-      this.getStatNum()
-      this.getList()
-      this.getCategory()
-      this.getArea()
+      // this.getList()
+      // this.getStatNum()
+      // this.getCategory()
+      // this.getArea()
     },
     methods: {
       /**
@@ -606,7 +605,7 @@
         if (params.begin) params.begin = this.parseTime(params.begin, '{y}-{m}-{d}')
         if (params.end) params.end = this.parseTime(params.end, '{y}-{m}-{d}')
         if (params.device_type == -1) delete params.device_type
-        this.$get('agentapi/search/query_orders_new', params).then(res => {
+        this.$get('order/findPage', params).then(res => {
           if (this.xlsxStatus) {
             this.toXlsxEnd = false
             this.list = res.list

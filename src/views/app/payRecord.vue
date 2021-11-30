@@ -88,7 +88,7 @@
             v-show="listQuery.count > 0"
             :page.sync="listQuery.page"
             :limit.sync="listQuery.size"
-            :page-count="listQuery.count"
+            :total="listQuery.count"
             @pagination="getList"
           />
         </div>

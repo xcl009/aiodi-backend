@@ -160,6 +160,9 @@
       // this.getMoney()
       // this.getTotalData()
       // this.getPlatList()
+      // this.$get('getLoginMenu').then(res => {
+      //   console.log(res)
+      // })
     },
     methods: {
       /**

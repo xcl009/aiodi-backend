@@ -83,8 +83,8 @@
           </el-table-column>
           <el-table-column label="订单数" width="120">
             <template slot-scope="scope">
-              <div>微信：<el-link type="primary" @click="$router.push({path: `${user_type == 0 ? '/order/meOrder' : '/order/subOrder'}?goods_sn=${scope.row.goods_sn}&mini_type=1`})">{{ scope.row.wx_mini_num || 0 }}</el-link></div>
-              <div>支付宝：<el-link type="primary" @click="$router.push({path: `${user_type == 0 ? '/order/meOrder' : '/order/subOrder'}?goods_sn=${scope.row.goods_sn}&mini_type=2`})">{{ scope.row.zfb_mini_num || 0 }}</el-link></div>
+              <div>微信：<el-link type="primary" @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=1`})">{{ scope.row.wx_mini_num || 0 }}</el-link></div>
+              <div>支付宝：<el-link type="primary" @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=2`})">{{ scope.row.zfb_mini_num || 0 }}</el-link></div>
             </template>
           </el-table-column>
           <el-table-column label="交易额" width="90">
@@ -223,7 +223,7 @@
       }
     },
     mounted(options) {
-
+      // this.toQuery()
     },
     methods: {
       /**

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <drawer ref="filterDrawer">
+    <condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery" @savexlsx="outTab('list_table', '日金额统计')">
       <template v-slot:defult>
         <el-form-item label="时间筛选:">
           <div class="flex">
@@ -23,15 +23,10 @@
             />
           </div>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" native-type="submit">查询<i class="el-icon-search el-icon--right" /></el-button>
-          <el-button type="warning" plain @click="toQuery(1)">重置<i class="el-icon-refresh el-icon--right" /></el-button>
-          <el-button type="primary" plain @click="outTab('list_table', '日金额统计')">导出<i class="el-icon-male el-icon--right" /></el-button>
-        </el-form-item>
       </template>
-    </drawer>
+    </condition>
 
-    <div class="p-10">
+    <div class="p-5">
       <div class="pl-10 pr-10 bg-white">
         <div class="p-20 bg-white" id="moneyChart"></div>
         <el-row>
@@ -75,8 +70,8 @@
               {{ scope.row.day_order_amount }}
             </template>
           </el-table-column>
-          
-          
+
+
           <el-table-column label="微信交易额(元)">
             <template slot-scope="scope">
               {{ scope.row.day_wx_order_amount }}
@@ -92,12 +87,12 @@
               {{ scope.row.day_balance_order_amount }}
             </template>
           </el-table-column>
-          
+
           <el-table-column label="总订单量(笔)">
             <template slot-scope="scope">
               {{ scope.row.day_order_num }}
             </template>
-          </el-table-column>         
+          </el-table-column>
           <el-table-column label="微信订单量(笔)">
             <template slot-scope="scope">
               {{ scope.row.day_wx_order_num }}
@@ -113,7 +108,7 @@
               {{ scope.row.day_balance_order_num }}
             </template>
           </el-table-column>
-          
+
           <el-table-column label="总收益额(元)">
             <template slot-scope="scope">
               {{ scope.row.day_profit }}
@@ -143,14 +138,15 @@
 <script>
   import echarts from 'echarts'
   require('echarts/theme/macarons') // echarts theme
-  import drawer from '@/components/filterDrawer/filter'
+  import condition from '@/components/condition/'
   export default {
     name: 'dayMoney',
     components: {
-      drawer
+      condition
     },
     data() {
       return {
+        clickSubmit: false,
         form: {},
         list: [],
         tableList: [],
@@ -176,15 +172,30 @@
       }
     },
     mounted() {
-      this.getList()
+      //this.getList()
     },
     methods: {
       /**
        * 搜索查询
        */
-      toQuery(type = 0) {
-        if (type == 1) this.form = {}
-        this.listQuery.start = 1
+      toQuery() {
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        this.listQuery.page = 1
+        this.listQuery.size = 50
+        if (this.xlsxStatus) this.xlsxStatus = false
+        this.getList()
+      },
+
+      /**
+       * 重置查询
+       */
+      reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        this.form = {}
+        this.listQuery.page = 1
+        this.listQuery.size = 20
         this.getList()
       },
 
@@ -207,8 +218,9 @@
             this.day_order_num.push(res[i].day_order_num)
           }
           this.initChart()
+          this.clickSubmit = false
         }).catch(() => {
-
+          this.clickSubmit = false
         })
       },
 

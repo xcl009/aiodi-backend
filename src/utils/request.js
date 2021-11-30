@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
+import qs from 'qs';
 import {
   MessageBox,
   Message
@@ -44,10 +45,10 @@ service.interceptors.request.use(
     // do something before request is sent
     if (store.getters.token) {
       // let each request carry token
-      // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
 
-      //config.headers['user_id'] = getToken('user_id')
+      // config.headers['user_id'] = getToken('user_id')
+      config.headers['Authorization'] = store.getters.token
     }
     config.baseURL = Vue.prototype.BASE_URL
     return config
@@ -65,7 +66,7 @@ service.interceptors.response.use(
       return Promise.resolve(res.data)
     }
     switch (parseInt(res.data.code)) {
-      case 0:
+      case 200:
         if (res.data.data) {
           return Promise.resolve(res.data.data)
         } else {
@@ -73,15 +74,17 @@ service.interceptors.response.use(
         }
       default:
         Message.closeAll()
-        if(res.data.msg == '登录已过期，请重新登录' || res.data.msg == '验证失败，无效的token'){
+        if([10601, 10603, 10604, 10605].indexOf(res.data.code) > -1){
           Message({
-            message: res.data.msg || '网络卡住了，请刷新',
+            message: res.data.message || '网络卡住了，请刷新',
             type: 'error'
           })
-          //location.href = '/login'
+          setTimeout(()=>{
+            location.href = '/login'
+          }, 1500)
         }else{
           Message({
-            message: res.data.msg || '网络卡住了，请刷新',
+            message: res.data.message || '网络卡住了，请刷新',
             type: 'error'
           })
           return Promise.reject(res.data)
@@ -111,21 +114,15 @@ service.interceptors.response.use(
 )
 
 export function $get(url, params = {}) {
-  params.token = getToken()
-  //params.user_id = getToken('user_id')
   //params.agent_id = params.agent_id || getToken('agent_id')
   return service.get(url, {
     params
   })
 }
 export function $post(url, data = {}) {
-  if(getToken()){
-    url = url + '?token=' + getToken()
-  }
   data.token = getToken()
-  //data.user_id = getToken('user_id')
   //data.agent_id = data.tagent_id || getToken('agent_id')
-  return service.post(url, data)
+  return service.post(url, qs.stringify(data))
 }
 
 export default service

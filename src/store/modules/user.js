@@ -49,15 +49,12 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      setToken('55555555555')
-      setToken('1', 'user_id')
-      resolve({})
-      return
       login({ username: username.trim(), password: password, loginType: 'UP', 'appid': 'admin' }).then(data => {
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        setToken(data.user_id, 'user_id')
-        setToken(data.belong_partner_aid || data.user_id, 'agent_id')
+        commit('SET_TOKEN', data.loginToken.accessToken)
+        commit('SET_NAME', data.username)
+        setToken(data.loginToken.accessToken)
+        setToken(data.loginToken.refreshToken, 'refreshToken')
+        setToken(data.appid, 'appid')
         resolve(data)
       }).catch(error => {
         reject(error)

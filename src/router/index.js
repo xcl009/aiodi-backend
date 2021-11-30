@@ -75,7 +75,7 @@ export const saasRoutes = [
     ]
   },
   {
-    path: '/user',
+    path: '/userManage',
     component: Layout,
     children: [
       {
@@ -132,7 +132,7 @@ export const saasRoutes = [
     redirect: '/app/market',
     meta: {
       title: '服务管理',
-      icon: 'agent'
+      icon: 'fuwu'
     },
     children: [
       {
@@ -162,7 +162,62 @@ export const saasRoutes = [
         }
       }
     ]
-  }
+  },
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/index',
+    meta: {
+      title: '个人信息',
+      icon: 'user'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        name: 'userInfo',
+        component: () => import('@/views/user/index'),
+        meta: {
+          title: '个人信息'
+        }
+      },
+      {
+        path: 'lpw',
+        name: 'loginPw',
+        component: () => import('@/views/user/loginPw'),
+        meta: {
+          title: '登陆密码'
+        }
+      }
+    ]
+  },
+  {
+    path: '/money',
+    component: Layout,
+    redirect: '/money/index',
+    meta: {
+      title: '收益明细'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'income',
+        name: 'income',
+        component: () => import('@/views/money/income'),
+        meta: {
+          title: '收益明细'
+        }
+      },
+      {
+        path: 'dayMoney',
+        name: 'dayMoney',
+        component: () => import('@/views/money/dayMoney'),
+        meta: {
+          title: '日交易额'
+        }
+      }
+    ]
+  },
 ]
 
 /**

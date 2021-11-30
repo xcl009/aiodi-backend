@@ -64,7 +64,7 @@
           <el-table-column label="收益" width="200">
             <template slot-scope="scope">
               <div class="cursor">
-                总收益：<span class="text-blue">{{ scope.row.income || '0.00' }}元</span> <!-- @click="$router.push({path: `/home/income?son_id=${scope.row.id}`})" -->
+                总收益：<span class="text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}元</span>
               </div>
             </template>
           </el-table-column>
@@ -280,7 +280,7 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('/brand/findPage', params).then(res => {
+        this.$get('brand/findPage', params).then(res => {
           this.listLoading = false
           this.list = res.list
           this.clickSubmit = false

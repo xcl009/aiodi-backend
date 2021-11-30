@@ -105,18 +105,32 @@
           <el-table-column label="金额" width="160" v-if="agentInfo.business_type != 1">
             <template slot-scope="scope">
               <div>交易额：￥{{ scope.row.order_amount || '0.00' }}</div>
-              <div>总收益：<span class="text-blue cursor" @click="$router.push({path: `/home/income?son_id=${scope.row.aid}`})">￥{{ scope.row.profit || '0.00' }}</span></div>
+              <div>总收益：<span class="text-blue cursor" @click="$router.push({path: `/money/income?son_id=${scope.row.aid}`})">￥{{ scope.row.profit || '0.00' }}</span></div>
               <div>可提现：<a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">￥{{ scope.row.available_withdraw_money || '0.00' }}</a><a v-else>￥{{ scope.row.available_withdraw_money || '0.00' }}</a></div>
             </template>
           </el-table-column>
           <el-table-column label="订单量" width="140" v-if="checkThead.indexOf('订单量') > -1">
             <template slot-scope="scope">
-              <a class="text-blue" @click="$router.push({path: `${scope.row.agent_id == agentInfo.id ? '/order/meOrder' : '/order/subOrder'}?store_name=${scope.row.store_name}`})" v-if="agentInfo.check_order == 1">{{ scope.row.order_num || '0.00' }}</a><a v-else>{{ scope.row.order_num || '0' }}</a>
+              <el-tag
+                class="cursor"
+                :hit="true"
+                size="small"
+                effect="plain"
+                @click="$router.push({path: `/order?store_name=${scope.row.store_name}`})">
+                {{ scope.row.order_num || 0 }}
+              </el-tag>
             </template>
           </el-table-column>
           <el-table-column label="品类" v-if="checkThead.indexOf('品类') > -1">
             <template slot-scope="scope">
-              {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
+              <el-tag
+                class="radius-15 cursor"
+                :hit="true"
+                size="small"
+                effect="plain"
+                @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
+                {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
+              </el-tag>
             </template>
           </el-table-column>
           <el-table-column label="创建时间" width="100" v-if="checkThead.indexOf('创建时间') > -1">

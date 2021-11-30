@@ -18,7 +18,7 @@
           <el-input v-model="wForm.re_cash_pwd" type="password"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="postEdit(2)">确定</el-button>
+          <el-button type="primary" @click="postEdit(2)" :clickSubmit="true">确定</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -34,6 +34,7 @@
     },
     data() {
       return {
+        clickSubmit: false,
         wForm: {}
       }
     },
@@ -60,11 +61,15 @@
        */
       postEdit(type) {
         let url = 'agentapi/edit_cash_pwd_save', params = this.wForm
+        this.clickSubmit = true
         this.$post(url, params).then(res => {
           this.$message({
             message: '修改成功',
             type: 'success'
           })
+          this.clickSubmit = false
+        }).catch(()=>{
+          this.clickSubmit = false
         })
       }
     }

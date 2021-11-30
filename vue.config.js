@@ -35,11 +35,11 @@ module.exports = {
       errors: true
     },
     proxy: {
-      ["dev-api"]: {
-        target: 'http://120.24.248.59:3000/',
+      [process.env.VUE_APP_BASE_API]: {
+        target: 'http://119.23.19.216:9700/iot-saas-user/',
         changeOrigin: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          ['^/' + process.env.VUE_APP_BASE_API]: ''
         }
       }
     },
