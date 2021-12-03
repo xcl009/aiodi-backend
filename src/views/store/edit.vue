@@ -12,8 +12,7 @@
 
           <h4>基础信息</h4>
           <el-form-item label="门头照：">
-            <upload :file-list="fileList" ratio="1:1" @fileOk="fileOk" />
-            <el-input v-model="form.avatar" class="abs" type="hidden" />
+            <upload v-model="form.avatar"/>
           </el-form-item>
           <el-form-item ref="store_name" label="商户名称：" prop="store_name">
             <el-input v-model="form.store_name" placeholder="请填写商户名称" />
@@ -809,15 +808,8 @@ export default {
     },
 
     /**
-     * 上传文件成功通知
+     * 商户经纬度
      */
-    fileOk(arr) {
-      this.form.avatar = arr[0] || ''
-    },
-
-    /**
-       * 商户经纬度
-       */
     locationOk(center) {
       this.form.latitude = center.lat
       this.form.longitude = center.lng

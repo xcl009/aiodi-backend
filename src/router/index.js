@@ -99,7 +99,7 @@ export const saasRoutes = [
     },
     children: [
       {
-        path: '/index',
+        path: 'index',
         name: 'agent',
         component: () => import('@/views/agent/index'),
         meta: {
@@ -108,7 +108,7 @@ export const saasRoutes = [
         }
       },
       {
-        path: '/subAgent',
+        path: 'subAgent',
         name: 'subAgent',
         component: () => import('@/views/agent/subAgent'),
         meta: {
@@ -117,12 +117,13 @@ export const saasRoutes = [
         }
       },
       {
-        path: '/create',
-        name: 'agentCreate',
+        path: 'edit',
+        name: 'agentEdit',
         component: () => import('@/views/agent/edit'),
         meta: {
           title: '添加品牌'
-        }
+        },
+        hidden: true
       },
     ]
   },

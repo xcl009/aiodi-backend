@@ -42,7 +42,7 @@
             <template slot-scope="scope">
               <div>{{ scope.row.name || '姓名' }}</div>
               <div>{{ scope.row.phone || '手机号码' }}</div>
-              <div>{{ scope.row.agent_name || '角色名' }}</div>
+              <div>{{ scope.row.agent_name || '1级代理' }}</div>
             </template>
           </el-table-column>
           <el-table-column label="运营城市" width="120">

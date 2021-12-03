@@ -2,30 +2,28 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-				<!-- <el-form-item label="代理类型:">
-				  <el-select v-model="form.search_agent_level" @change="toQuery()">
-				    <el-option v-for="itme in give_role" :label="itme.role_name" :value="''+itme.role_id" />
-				  </el-select>
-				</el-form-item> -->
-				<el-form-item label="排序类型:">
+				<!-- <el-form-item label="排序:">
 				  <el-select v-model="form.sort" @change="toQuery()">
 				    <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
 				  </el-select>
-				</el-form-item>
-				<el-form-item label="代理姓名:">
+				</el-form-item> -->
+				<el-form-item label="品牌名:">
 				  <el-input v-model="form.name" />
 				</el-form-item>
-				<el-form-item label="手机号码:">
+				<!-- <el-form-item label="手机号码:">
 				  <el-input v-model="form.mobile" />
-				</el-form-item>
-				<!-- <el-form-item label="代理状态:">
+				</el-form-item> -->
+				<el-form-item label="状态:">
 				  <el-select v-model="form.activated_status" @change="toQuery()">
 				    <el-option label="有效" :value="1" />
 				    <el-option label="无效" :value="2" />
 				    <el-option label="已删除" :value="0" />
 				  </el-select>
-				</el-form-item> -->
+				</el-form-item>
 		  </template>
+      <template v-slot:endButton>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/partner/edit`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
+      </template>
 		</condition>
 
     <div class="p-5">
@@ -73,10 +71,13 @@
               <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-button>
               <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
               <el-button type="primary" size="mini" round plain class="ml-0" @click="toLogin(scope.row)" v-if="checkRoles(['terminal'])">一键登录</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="">权限设置</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="">功能设置</el-button>
+              <!-- <el-button type="primary" size="mini" round plain class="ml-0" @click="">权限设置</el-button>
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="">功能设置</el-button> -->
               <el-button type="primary" size="mini" round plain class="ml-0" @click="copyloginUrl(scope.row)">登录地址</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="getMapIcon(scope.row)">地图图标</el-button>
+              <!-- <el-button type="primary" size="mini" round plain class="ml-0" @click="getMapIcon(scope.row)">地图图标</el-button> -->
+              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/partner/edit?son_id=${scope.row.id}`})">修改信息</el-button>
+              <el-button type="danger" size="mini" round plain class="ml-0" @click="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除品牌</el-button>
+              <el-button type="danger" size="mini" round plain class="ml-0" @click="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -177,7 +178,9 @@
             value: 4
           }
         ],
-        form: {},
+        form: {
+          activated_status: 1
+        },
         give_role: [],
         tableMaxH: '250',
         list: [
@@ -186,7 +189,6 @@
         deviceNum: {},
         listLoading: false,
         listQuery: {
-          activated_status: 1,
           search_agent_id: '0',
           sort_type: '0',
           search_agent_level: '0',
@@ -267,7 +269,9 @@
        * 重置查询
        */
       reset(){
-        this.form = {}
+        this.form = {
+          activated_status: 1
+        }
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
@@ -320,49 +324,19 @@
        * 编辑
        * @param {Object} row
        */
-      toEdit(row, rows) {
-        switch (row.type) {
+      setRow(type, row) {
+        switch (type) {
           case 1:
-            this.$router.push({
-              name: 'agentEdit',
-              params: {
-                id: row.id
-              }
-            })
-            break
-          case 2:
-            this.$prompt('请输入冻结金额', '设置冻结金额', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              inputValue: row.freez_money
-            }).then(({
-              value
-            }) => {
-              this.$post('agentapi/save_agent_freez_money', {
-                son_id: row.id,
-                freez_money: value
-              }).then(res => {
-                this.$message({
-                  message: '设置成功',
-                  type: 'success'
-                })
-                row.freez_money = value
-              })
-            })
-            break
-          case 3:
-            this.$get('agentapi/edit_agent', {
-              son_id: row.id
-            }).then(res => {
-              this.withdrawDialog = true
-              this.withdrawObj = res.agent_info
-            })
-            break
-          case 4:
-            this.$alert('确定删除此代理吗？', '删除代理', {
+            this.$alert('确定删除此品牌吗？', '删除品牌', {
               confirmButtonText: '确定',
               callback: action => {
                 if (action == 'confirm') {
+                  this.$message({
+                    message: '删除成功',
+                    type: 'success'
+                  })
+                  this.list.splice(row.index, 1)
+                  return
                   this.$post('agentapi/delete_agent', {
                     son_id: row.id
                   }).then(res => {
@@ -374,6 +348,38 @@
                   })
                 }
               }
+            })
+            break
+          case 2:
+            this.$alert('确定将账号恢复为正常吗？', '账号恢复', {
+              confirmButtonText: '确定',
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$message({
+                    message: '恢复成功',
+                    type: 'success'
+                  })
+                  this.list.splice(row.index, 1)
+                  return
+                  this.$post('agentapi/delete_agent', {
+                    son_id: row.id
+                  }).then(res => {
+                    this.$message({
+                      message: '删除成功',
+                      type: 'success'
+                    })
+                    this.list.splice(row.index, 1)
+                  })
+                }
+              }
+            })
+            break
+          case 3:
+            this.$get('agentapi/edit_agent', {
+              son_id: row.id
+            }).then(res => {
+              this.withdrawDialog = true
+              this.withdrawObj = res.agent_info
             })
             break
           case 5:
@@ -439,25 +445,6 @@
               }
             })
             break
-          case 8:
-              this.$alert('确定恢复此代理吗？', '恢复代理', {
-                confirmButtonText: '确定',
-                callback: action => {
-                  if (action == 'confirm') {
-                    this.$post('agentapi/sttuf/update_active_status', {
-                      son_id: row.id,
-                      active_status: 1
-                    }).then(res => {
-                      this.$message({
-                        message: '恢复成功',
-                        type: 'success'
-                      })
-                      this.list.splice(row.index, 1)
-                    })
-                  }
-                }
-              })
-              break
         }
       },
 

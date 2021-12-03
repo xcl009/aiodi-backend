@@ -1,8 +1,8 @@
 <template>
   <div class="rel filter-box">
     <slot name="tabs"></slot>
-    <div v-if="filterForm">
-      <el-form ref="filterFrom" class="pt-10 bg-white filter-froms" :inline="true" size="small" @submit.native.prevent="query()">
+    <div class="pt-10 flex align-start bg-white" v-if="filterForm">
+      <el-form ref="filterFrom" class="flex1 filter-froms" :inline="true" size="small" @submit.native.prevent="query()">
         <slot name="defult"></slot>
         <el-form-item>
           <el-button type="primary" native-type="submit" :disabled="clickSubmit">查询<i class="el-icon-search el-icon--right" /></el-button>
@@ -10,11 +10,13 @@
           <el-tooltip class="item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top">
             <el-button type="primary" plain @click="outTable()" v-if="exportStatus">导出<i class="el-icon-download el-icon--right" /></el-button>
           </el-tooltip>
+
           <span class="pl-10 fs-s4 text-six cursor" v-if="unfoldShow && (si == -1 || si > 0)" @click="unfoldStatus = !unfoldStatus; controlChildren(2)">
             {{ unfoldStatus ? '收起' : '展开' }}<i class="el-icon--right" v-bind:class="{'el-icon-arrow-down': !unfoldStatus, 'el-icon-arrow-up' : unfoldStatus}"></i>
           </span>
         </el-form-item>
       </el-form>
+      <slot name="endButton"></slot>
     </div>
   </div>
 </template>

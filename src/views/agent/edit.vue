@@ -11,15 +11,13 @@
           </el-form-item>
 
           <h4>基础信息：</h4>
-          <el-form-item label="开通类型：" prop="role_id">
-            <el-select v-model="form.role_id" placeholder="请选择开通类型" :disabled="$route.params.id ? true : false">
-              <el-option v-for="item in role" :label="item.role_name" :value="item.role_id"></el-option>
-            </el-select>
+          <el-form-item label="品牌logo：">
+            <upload v-model="form.avatar"/>
           </el-form-item>
-          <el-form-item label="姓名：" prop="name">
-            <el-input v-model="form.name" placeholder="输入下级代理姓名" />
+          <el-form-item label="品牌名称：" prop="name">
+            <el-input v-model="form.name" placeholder="输入品牌名称" />
           </el-form-item>
-          <el-form-item label="手机号码：" prop="mobile">
+          <el-form-item label="手机号码：" prop="phone">
             <el-input v-model="form.mobile" placeholder="输入手机号" />
             <div class="fs-s2 text-gray">此手机号码会作为登录账户</div>
           </el-form-item>
@@ -28,6 +26,9 @@
           </el-form-item>
           <el-form-item label="运营区域：">
             <v-distpicker :province="form.charge_province" :city="form.charge_city" :area="form.charge_county" @selected="selectCity"></v-distpicker>
+          </el-form-item>
+          <el-form-item label="公司名称：">
+            <el-input v-model="form.company" placeholder="公司名称" />
           </el-form-item>
           <el-form-item label="公司地址：">
             <el-input v-model="form.address" placeholder="输入公司地址" />
@@ -64,8 +65,10 @@
 
 <script>
   import VDistpicker from '@/components/Distpicker'
+  import upload from '@/components/upload'
   export default {
     components: {
+      upload,
       VDistpicker
     },
     data() {
@@ -99,7 +102,7 @@
         id: '',
 
         agentDevice: [{'depend_name': '密码线', 'depend_type': 1}],
-        selType: [],
+        selType: [1],
         id: this.$route.params.id
       }
     },
@@ -165,6 +168,17 @@
         })
       },
 
+      /**
+       * 上传文件成功通知
+       */
+      fileOk(arr) {
+        this.form.avatar = arr[0] || ''
+      },
+
+      /**
+       * 提交添加
+       * @param {Object} formName
+       */
       onSubmit(formName) {
         let params = {}, url = 'agentapi/save_add_agent', profit_key = this.config.profit_key
         params = JSON.parse(JSON.stringify(this.form))
