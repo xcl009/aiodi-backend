@@ -1,8 +1,8 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
     <div class="main-container">
+      <sidebar class="sidebar-container" />
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
       </div>
@@ -52,7 +52,7 @@ export default {
 <style lang="scss" scoped>
   @import "~@/styles/mixin.scss";
   @import "~@/styles/variables.scss";
-  
+
   .main-container{
     border-left: thin solid #f1f1f1;
   }
@@ -80,13 +80,10 @@ export default {
     position: fixed;
     top: 0;
     right: 0;
-    z-index: 9;
-    width: calc(100% - #{$sideBarWidth});
+    left: 0;
+    z-index: 1002;
+    //width: calc(100% - #{$sideBarWidth});
     transition: width 0.28s;
-  }
-
-  .hideSidebar .fixed-header {
-    width: calc(100% - 54px)
   }
 
   .mobile .fixed-header {

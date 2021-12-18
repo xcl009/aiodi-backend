@@ -1,269 +1,238 @@
 <template>
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery" @savexlsx="saveXlsx">
-      <!-- <template v-slot:tabs>
-        <el-tabs class="bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
+      <template v-slot:tabs>
+        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'-1'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in deviceNameObj" />
         </el-tabs>
-      </template> -->
+      </template>
+
       <template v-slot:defult>
-        <el-form-item label="订单单号:">
-          <el-input v-model="form.order_sn" />
-        </el-form-item>
-        <el-form-item label="手机号码:">
-          <el-input v-model="form.custom_mobile" />
-        </el-form-item>
-        <el-form-item label="用户ID:">
-          <el-input v-model="form.search_uid" />
-        </el-form-item>
-        <el-form-item label="商户名称:">
-          <el-input v-model="form.store_name" />
-        </el-form-item>
-        <el-form-item label="设备SN:">
-          <el-input v-model="form.goods_sn" />
-        </el-form-item>
-        <el-form-item label="交易单号:">
-          <el-input v-model="form.transaction_id" />
-        </el-form-item>
-        <el-form-item label="用户昵称:">
-          <el-input v-model="form.custom_nick_name" />
-        </el-form-item>
-        <el-form-item label="商户单号:">
-          <el-input v-model="form.out_order_no" />
-        </el-form-item>
-        <el-form-item label="订单来源:">
-          <el-select v-model="form.mini_type" @change="toQuery()">
-            <el-option label="全部" value="0" />
-            <el-option label="微信" value="1" />
-            <el-option label="支付宝" value="2" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="支付类型:">
-          <el-select v-model="form.pay_type" @change="toQuery()">
-            <el-option label="全部" value="0" />
-            <el-option label="押金" value="1" />
-            <el-option label="免押" value="2" />
-            <el-option label="余额" value="3" />
-            <el-option label="储值卡" value="4" />
-            <el-option label="会员卡" value="5" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="行业分类:">
-          <el-cascader v-model="cat_id" :options="categoryList" :show-all-levels="false"
-            :props="{ expandTrigger: 'hover' }" />
-        </el-form-item>
-        <el-form-item label="所在地区:">
-          <el-cascader v-model="search_regions_tag" :options="areaList" :show-all-levels="false"
-            :props="{ expandTrigger: 'hover', checkStrictly: true }" />
-        </el-form-item>
-        <el-form-item label="时间筛选:">
-          <div class="flex">
-            <el-date-picker v-model="form.begin" type="datetime" placeholder="开始" value-format="timestamp"
-              style="width: 100%;" :picker-options="beginOptions" />
-            <span class="ml-5 mr-5">-</span>
-            <el-date-picker v-model="form.end" type="datetime" placeholder="结束" value-format="timestamp"
-              style="width: 100%;" :picker-options="endOptions" />
-          </div>
-        </el-form-item>
+        <el-input v-model="form.order_sn" placeholder="订单号" />
+        <el-input v-model="form.custom_mobile" placeholder="手机号" />
+        <el-input v-model="form.custom_nick_name" placeholder="用户昵称" />
+        <el-input v-model="form.store_name" placeholder="商户名称" />
+        <el-input v-model="form.goods_sn" placeholder="设备SN" />
+        <el-input v-model="form.transaction_id" placeholder="交易单号" />
+        <el-input v-model="form.out_order_no" placeholder="商户单号" />
+        <el-select v-model="form.mini_type" placeholder="订单来源" @change="toQuery()">
+          <el-option label="全部" value="0" />
+          <el-option label="微信" value="1" />
+          <el-option label="支付宝" value="2" />
+        </el-select>
+        <el-select v-model="form.pay_type" placeholder="支付类型" @change="toQuery()">
+          <el-option label="全部" value="0" />
+          <el-option label="押金" value="1" />
+          <el-option label="免押" value="2" />
+          <el-option label="余额" value="3" />
+          <el-option label="储值卡" value="4" />
+          <el-option label="会员卡" value="5" />
+        </el-select>
+        <el-cascader v-model="cat_id" :options="categoryList" :show-all-levels="false"
+          :props="{ expandTrigger: 'hover' }" placeholder="行业分类" />
+        <el-cascader v-model="search_regions_tag" :options="areaList" :show-all-levels="false"
+          :props="{ expandTrigger: 'hover', checkStrictly: true }" placeholder="所在地区"/>
+        <el-date-picker
+          style="width: 300px; padding: 0 10px;"
+          class="range-day flex align-center"
+            v-model="form.day"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
       </template>
     </condition>
+
     <to-xlsx ref="toXlsx"></to-xlsx>
 
-    <div class="p-5">
-      <div class="flex pl-10 pr-10 bg-white">
-        <div class="flex1">
-          <el-tabs v-model="listQuery.order_type" @tab-click="toQuery()">
-            <el-tab-pane :label="`全部(${numInfo.total_order_num || 0})`" name="4" />
-            <el-tab-pane :label="`使用中(${numInfo.renting_order_num || 0})`" name="1" />
-            <el-tab-pane :label="`今日订单(${numInfo.today_order_num || 0})`" name="0" />
-            <el-tab-pane :label="`已完成(${numInfo.finish_order_num || 0})`" name="2" />
-            <!-- <el-tab-pane :label="`超时订单(${numInfo.overtime_order_num || 0})`" name="3" /> -->
-            <el-tab-pane :label="`租借失败(${numInfo.fail_order_num || 0})`" name="5" />
-            <el-tab-pane :label="`扣款失败(${numInfo.deduction_failed_num || 0})`" name="7" />
-          </el-tabs>
+    <div class="pl-15 pr-15 pb-5 bg-white">
+      <div class="flex mb-5">
+        <div class="flex1 white-space">
+          <el-scrollbar>
+            <el-button size="medium" :type="listQuery.order_type == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.order_type != item.value}" v-for="item in order_type" @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+          </el-scrollbar>
         </div>
       </div>
 
-      <div class="bg-white">
-        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-          :max-height="tableMaxH" stripe highlight-current-row element-loading-text="Loading"
-          @selection-change="selOrder">
-          <el-table-column type="selection" v-if="checkRoles(['partner']) && !xlsxStatus" :selectable="checkSel" width="50"/>
-          <el-table-column label="品牌商">
-            <template slot-scope="scope">
-              {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="小程序ID" v-if="xlsxStatus">
-            <template slot-scope="scope">
-              <div>{{ scope.row.appid }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="订单号" width="140">
-            <template slot-scope="scope">
-              {{ scope.row.order_sn || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="交易单号" width="142">
-            <template slot-scope="scope">
-              <div>{{ scope.row.transaction_id || '--' }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="商户单号" width="142">
-            <template slot-scope="scope">
-              {{ scope.row.out_order_no || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="类型" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.goods_name || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="来源" width="70">
-            <template slot-scope="scope">
-              {{ scope.row.mini_type == 1 ? "微信" : "支付宝" }}
-            </template>
-          </el-table-column>
-          <el-table-column label="支付类型" width="100">
-            <template slot-scope="scope">
-              <div class="fs-s3">{{ scope.row.deposit_status || '--' }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="用户" width="150">
-            <template slot-scope="scope">
-              <div class="flex align-center">
-                <el-avatar class="mr-5" :size="25" :src="scope.row.user_avatar" v-if="!xlsxStatus"/>
-                <div class="flex1">
-                  <div>{{ dealPhone(scope.row.user_mobile) }}</div>
-                  <div class="text-cut">{{ scope.row.user_nick_name || "--" }}</div>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="商户" min-width="180">
-            <template slot-scope="scope">
-              <div class="flex">
-                <div>租用：</div>
-                <div class="flex1">{{ scope.row.rent_store || '--' }}</div>
-              </div>
-              <div class="flex" v-if="scope.row.depend_type == 0">
-                <div>归还：</div>
-                <div class="flex1">{{ scope.row.back_store || '--' }}</div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="时间" width="200">
-            <template slot-scope="scope">
-              <div>开始：{{ scope.row.charge_start || "--" }}</div>
-              <div>结束：{{ scope.row.charge_end || "--" }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="设备SN码" width="220">
-            <template slot-scope="scope">
-              <div>二维码：{{ scope.row.zuo_sn || "--" }}</div>
-              <div>设备SN：{{ scope.row.device_id || "--" }}</div>
-              <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
-                @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="套餐" width="150">
-            <template slot-scope="scope">
-              {{ scope.row.rent_desc || "--" }}
-            </template>
-          </el-table-column>
-          <el-table-column label="收益(元)" width="75" style="padding: 0;">
-            <template slot-scope="scope">
-              <el-link type="success">{{ scope.row.money_paid || "--" }}</el-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="退款(元)" width="75">
-            <template slot-scope="scope">
-              <el-link type="success">{{ scope.row.refund_drawbacked }}</el-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="状态" width="70">
-            <template slot-scope="scope">
-              <el-link :type="scope.row.order_status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
-                {{ orderStatus[scope.row.order_status] || "--" }}
-              </el-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="备注" min-width="150">
-            <template slot-scope="scope">
-              <div class="remark-box">
-                <div class="fs-s4 text-danger" v-if="scope.row.steal_type_des">{{ scope.row.steal_type_des }}</div>
-                <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
-                <div v-if="scope.row.delivery_status == 2" class="fs-s4">快递单号：{{ scope.row.delivery_sn }}</div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="110" :fixed="device == 'desktop' ? 'right' : false" v-if="!xlsxStatus">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" plain round @click="getOrderDetail(scope.row)" class="ml-10">订单详情
-              </el-button>
-              <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
-                @click="upApply(scope.row, 1)">通过申请</el-button>
-              <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
-                @click="upApply(scope.row, 0)">驳回申请</el-button>
-              <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status > 0"
-                @click="refundInfo(scope.row)">退款详情</el-button>
-              <template v-if="scope.row.refund_apply_status != 1">
-                <el-button type="primary" size="mini" plain round
-                  v-if="agentInfo.drawback_order == 1 && scope.row.money_paid > 0 && (!scope.row.refund_drawbacked || scope.row.refund_drawbacked == 0) && listQuery.order_type != 7"
-                  @click="refundDialog = true; order = scope.row; refundObj.refund_money = ''; refundObj.refund_2_balance = siteInfo.drawbacke_2_balance;">订单退款</el-button>
-                <el-button type="primary" size="mini" plain round v-if="checkRoles(['terminal']) && listQuery.order_type == 7 && scope.row.mini_type == 1 && scope.row.free_pay_status == 3"
-                  @click="cancelZFF(scope.row)">取消服务</el-button>
-                <el-button type="primary" size="mini" plain round
-                  v-if="(scope.row.order_status == 1 || scope.row.order_status == 0) && agentInfo.finish_order == 1"
-                  @click="endOrder(1, scope.row)">结束订单</el-button>
-                <el-button type="danger" size="mini" plain round
-                  v-if="checkRoles(['partner']) && scope.row.delivery_status == 1" @click="deliver(scope.row)">立即发货
-                </el-button>
-              </template>
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+        :max-height="tableMaxH" element-loading-text="Loading"
+        @selection-change="selOrder">
+        <el-table-column type="selection" v-if="checkRoles(['partner']) && !xlsxStatus" :selectable="checkSel" width="50"/>
+        <el-table-column label="品牌商" align="center">
+          <template slot-scope="scope">
+            {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="小程序ID" v-if="xlsxStatus" align="center">
+          <template slot-scope="scope">
+            <div>{{ scope.row.appid }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="订单号" width="140" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.order_sn || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="交易单号" width="142" align="center">
+          <template slot-scope="scope">
+            <div>{{ scope.row.transaction_id || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="商户单号" width="142" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.out_order_no || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="类型" width="90" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.goods_name || '密码线' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="来源" width="50" align="center">
+          <template slot-scope="scope">
+            <i class="fs-a1 iconfont icon-weixin1 text-green" v-if="scope.row.mini_type == 1"></i>
+            <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
+          </template>
+        </el-table-column>
+        <el-table-column label="支付类型" width="100" align="center">
+          <template slot-scope="scope">
+            <div class="fs-s3">{{ scope.row.deposit_status || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="用户" width="150" align="center">
+          <template slot-scope="scope">
+            <div>{{ dealPhone(scope.row.user_mobile) }}</div>
+            <div class="text-cut">{{ scope.row.user_nick_name || "--" }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="商户" min-width="180" align="center">
+          <template slot-scope="scope">
+            <div>{{ scope.row.rent_store || '--' }}</div>
+            <div>{{ scope.row.back_store || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="时间" width="140" align="center">
+          <template slot-scope="scope">
+            <div class="text-green">{{ scope.row.charge_start || "1970-01-01 00:00:00" }}</div>
+            <div class="text-danger">{{ scope.row.charge_end || "1970-01-01 00:00:00" }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="设备SN码" width="220" align="center">
+          <template slot-scope="scope">
+            <div>二维码：{{ scope.row.zuo_sn || "--" }}</div>
+            <div>设备SN：{{ scope.row.device_id || "--" }}</div>
+            <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
+              @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="套餐" width="150" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.rent_desc || "--" }}
+          </template>
+        </el-table-column>
+        <el-table-column label="收益(元)" width="75" align="center">
+          <template slot-scope="scope">
+            <el-link type="success">{{ scope.row.money_paid || "--" }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="退款(元)" width="75" align="center">
+          <template slot-scope="scope">
+            <el-link type="success">{{ scope.row.refund_drawbacked }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="70" align="center">
+          <template slot-scope="scope">
+            <el-link :type="scope.row.order_status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
+              {{ orderStatus[scope.row.order_status] || "--" }}
+            </el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="备注" min-width="150" align="center">
+          <template slot-scope="scope">
+            <div class="remark-box">
+              <div class="fs-s4 text-danger" v-if="scope.row.steal_type_des">{{ scope.row.steal_type_des }}</div>
+              <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
+              <div v-if="scope.row.delivery_status == 2" class="fs-s4">快递单号：{{ scope.row.delivery_sn }}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="100" :fixed="device == 'desktop' ? 'right' : false" v-if="!xlsxStatus">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="detailDialog = true">订单详情</el-button>
+            <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
+              @click="upApply(scope.row, 1)">通过申请</el-button>
+            <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
+              @click="upApply(scope.row, 0)">驳回申请</el-button>
+            <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status > 0"
+              @click="refundInfo(scope.row)">退款详情</el-button>
+            <template v-if="scope.row.refund_apply_status != 1">
               <el-button type="primary" size="mini" plain round
-                v-if="checkRoles(['partner', 'terminal']) && listQuery.order_type == 7"
-                @click="deduct(scope.row)">立即扣款</el-button>
+                v-if="agentInfo.drawback_order == 1 && scope.row.money_paid > 0 && (!scope.row.refund_drawbacked || scope.row.refund_drawbacked == 0) && listQuery.order_type != 7"
+                @click="refundDialog = true; order = scope.row; refundObj.refund_money = ''; refundObj.refund_2_balance = siteInfo.drawbacke_2_balance;">订单退款</el-button>
+              <el-button type="primary" size="mini" plain round v-if="checkRoles(['terminal']) && listQuery.order_type == 7 && scope.row.mini_type == 1 && scope.row.free_pay_status == 3"
+                @click="cancelZFF(scope.row)">取消服务</el-button>
+              <el-button type="primary" size="mini" plain round
+                v-if="(scope.row.order_status == 1 || scope.row.order_status == 0) && agentInfo.finish_order == 1"
+                @click="endOrder(1, scope.row)">结束订单</el-button>
+              <el-button type="danger" size="mini" plain round
+                v-if="checkRoles(['partner']) && scope.row.delivery_status == 1" @click="deliver(scope.row)">立即发货
+              </el-button>
             </template>
-          </el-table-column>
-        </el-table>
-        <div class="flex justify-center" v-if="!xlsxStatus">
-          <pagination
-            v-show="listQuery.pageSize > 0"
-            :page.sync="listQuery.page"
-        		:limit.sync="listQuery.size"
-            @pagination="getList"
-          />
-        </div>
+            <el-button type="primary" size="mini" plain round
+              v-if="checkRoles(['partner', 'terminal']) && listQuery.order_type == 7"
+              @click="deduct(scope.row)">立即扣款</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="flex justify-center" v-if="!xlsxStatus">
+        <pagination
+          v-show="listQuery.pageSize > 0"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          @pagination="getList"
+        />
       </div>
 
       <el-dialog title="订单详情" :visible.sync="detailDialog">
-        <el-timeline>
-          <el-timeline-item v-for="(item, index) in order.operate_flow" :key="index" placement="top"
-            :timestamp="item.date">
-            <div>{{ item.event }} ---> {{ item.result }}</div>
-            <div v-if="item.reason" class="mt-5">
-              <el-link type="danger">{{ item.reason }}</el-link>
+        <el-row class="text-center">
+          <el-col :xs="12" :sm="12" :md="4" class="rel pb-50 mb-15 timeline-item el-icon-" v-for="(item, index) in 10">
+            <div class="abs" style="width: 100%;">
+              <div>{{ index == 5 ? '用户主动完结订单' : '用户创建订单' }}</div>
+              <div class="mt-10 fs-s2 text-gray">2021-08-08 08:08:08</div>
             </div>
-          </el-timeline-item>
-        </el-timeline>
+          </el-col>
+        </el-row>
 
         <template>
-          <div class="mt-10 mb-15 text-center">分成明细：{{ order.money_paid }}</div>
-          <div class="flex mb-10 text-center">
-            <div class="flex1">分成人</div>
-            <div class="flex1">分成比例</div>
-            <div class="flex1">分成金额</div>
-            <div class="flex1">退款金额</div>
-          </div>
-          <template v-for="item in order.agents_profit">
-            <div class="flex mb-10 text-center" v-if="item.agent_level >= agentInfo.agent_level">
-              <div class="flex1">{{ item.agent_name }}：{{ item.parent_name }}</div>
-              <div class="flex1">{{ item.profit_percent }}</div>
-              <div class="flex1">{{ item.get_profit }}元</div>
-              <div class="flex1">{{ item.drawback_profit }}元</div>
-            </div>
-          </template>
+          <el-table border stripe :data="[{name:'总后台', f: '50', m: '5'},{name:'代理商', f: '30', m: '3'},{name:'商户', f: '20', m: '2'}]" :span-method="fenRunSpanMethod" class="custom">
+            <el-table-column align="center" label="订单金额">
+              <template slot-scope="scope">
+                10元
+              </template>
+            </el-table-column>
+            <el-table-column align="center" width="190" label="分成人" >
+              <template slot-scope="scope">
+                {{ scope.row.name }}：美羊羊
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="分成比例" >
+              <template slot-scope="scope">
+                {{ scope.row.f }}%
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="分成金额(元)" >
+              <template slot-scope="scope">
+                {{ scope.row.m }}
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="退款金额(元)" >
+              <template slot-scope="scope">
+                0
+              </template>
+            </el-table-column>
+          </el-table>
         </template>
       </el-dialog>
 
@@ -417,8 +386,8 @@
       deviceKeyObj() {
         return this.$store.state.user.deviceKeyObj
       },
-      agentDevice() {
-        return this.$store.state.user.agentDevice
+      myDevice() {
+        return this.$store.state.user.myDevice
       },
       agentInfo() {
         return this.$store.getters.agentInfo
@@ -430,8 +399,46 @@
     data() {
       return {
         clickSubmit: false,
+        order_type: [
+          {
+            value: 0,
+            title: '全部',
+            nkey: ''
+          },
+          {
+            value: 1,
+            title: '使用中',
+            nkey: ''
+          },
+          {
+            value: 2,
+            title: '今日订单',
+            nkey: ''
+          },
+          {
+            value: 3,
+            title: '已完成',
+            nkey: ''
+          },
+          {
+            value: 4,
+            title: '超时订单',
+            nkey: ''
+          },
+          {
+            value: 5,
+            title: '租借失败',
+            nkey: ''
+          },
+          {
+            value: 6,
+            title: '扣款失败',
+            nkey: ''
+          }
+        ],
+
+
         dealPhone: dealPhone,
-        drawer: true,
         cat_id: [],
         search_regions_tag: [],
         categoryList: [],
@@ -448,13 +455,13 @@
         numInfo: {},
         tableMaxH: '250',
         oemInfo: {},
-        list: [{}],
+        list: [{},{},{},{},{},{},{},{},{},{},{},{},{},{}],
         listLoading: false,
         listQuery: {
           device_type: '-1',
           search_user_type: this.user_type,
           son_id: this.$route.query.son_id || '',
-          order_type: this.$route.query.order_type || '4',
+          order_type: this.$route.query.order_type || 0,
           start: 1,
           limit: 50
         },
@@ -532,6 +539,9 @@
       // this.getStatNum()
       // this.getCategory()
       // this.getArea()
+      this.$nextTick(()=>{
+        this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 20
+      })
     },
     methods: {
       /**
@@ -556,7 +566,7 @@
       /**
        * 搜索查询
        */
-      toQuery() {
+      toQuery(val = '') {
         if(this.clickSubmit) return
         this.clickSubmit = true
         if (this.cat_id && this.cat_id.length > 0) {
@@ -567,6 +577,7 @@
         }
         this.listQuery.start = 1
         this.listQuery.total = 50
+        if(val) this.listQuery.order_type = val
         if (this.xlsxStatus) this.xlsxStatus = false
         this.getStatNum()
         this.getList()
@@ -597,10 +608,6 @@
             return
           }
           params.page_switch = 1
-        } else if (params.order_type == 0) {
-          params.begin = new Date(new Date().setHours(0, 0, 0, 0)) / 1000
-          params.end = params.begin + 86400
-          params.order_type = 4
         }
         if (params.begin) params.begin = this.parseTime(params.begin, '{y}-{m}-{d}')
         if (params.end) params.end = this.parseTime(params.end, '{y}-{m}-{d}')
@@ -894,7 +901,7 @@
       /**
        * 查询订单详情
        */
-      getOrderDetail(row) {
+      getDetail(row) {
         this.$get('wxapi/order_detail', {
           order_id: row.order_id
         }).then(res => {
@@ -1028,6 +1035,25 @@
         }).catch(err => {
           this.loadObj.close()
         })
+      },
+
+      /**
+       * 订单详情分润合并单元格
+       */
+      fenRunSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          if (rowIndex % 4 === 0) {
+            return {
+              rowspan: 4,
+              colspan: 1
+            }
+          } else {
+            return {
+              rowspan: 0,
+              colspan: 0
+            }
+          }
+        }
       }
     }
   }
@@ -1045,5 +1071,54 @@
 
   .remark-box {
     max-height: 80px;
+  }
+
+  .timeline-item{
+    height: 100px;
+    &::after,&::before{
+      content: '';
+      position: absolute;
+    }
+    &::before{
+      width: 60px;
+      height: 14px;
+      top: 45px;
+      margin-left: -30px;
+      content: "";
+      background-color: var(--white);
+      color: var(--olive);
+      z-index: 99;
+    }
+    &::after{
+      top: 51px;
+      margin-left: 20px;
+      width: 100%;
+      height: 1px;
+      background: var(--olive);
+    }
+    &:nth-child(2n){
+      padding-top: 70px;
+    }
+
+    &.err{
+      &::before{
+        content: "";
+        color: "#FF5353";
+      }
+    }
+    @media only screen and (max-width: 991px) {
+      &:last-child, &:nth-child(2n){
+        &::after{
+          width: 0;
+        }
+      }
+    }
+    @media only screen and (min-width: 992px) {
+      &:last-child, &:nth-child(6n){
+        &::after{
+          width: 0;
+        }
+      }
+    }
   }
 </style>

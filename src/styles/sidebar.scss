@@ -2,19 +2,19 @@
 
   .main-container {
     min-height: 100%;
-    transition: margin-left .28s;
+    transition: margin-left .15s;
     margin-left: $sideBarWidth;
     position: relative;
   }
 
   .sidebar-container {
-    transition: width 0.28s;
+    transition: width 0.15s;
     width: $sideBarWidth !important;
     background-color: $menuBg;
     height: 100%;
     position: fixed;
     font-size: 0px;
-    top: 0;
+    top: 61px;
     bottom: 0;
     left: 0;
     z-index: 1001;
@@ -37,12 +37,6 @@
       height: 100%;
     }
 
-    &.has-logo {
-      .el-scrollbar {
-        height: calc(100% - 50px);
-      }
-    }
-
     .is-horizontal {
       display: none;
     }
@@ -58,14 +52,25 @@
     }
 
     .el-menu {
-      border: none;
-      height: 100%;
+      padding: 4px 8px;
       width: 100% !important;
+      height: 100%;
+      border: none;
+      > div{
+        margin-bottom: 4px;
+      }
+    }
+
+    .el-menu-item{
+      height: 40px;
+      line-height: 38px;
     }
 
     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {
+      height: 40px;
+      line-height: 40px;
       &:hover {
         background-color: $menuHover !important;
       }
@@ -77,22 +82,29 @@
 
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
-      min-width: $sideBarWidth !important;
+      min-width: initial !important;
+      border-radius: 2px;
       background-color: $subMenuBg !important;
-
       &:hover {
+        background-color: $subMenuHover !important;
+      }
+      &.is-active {
         background-color: $subMenuHover !important;
       }
     }
   }
 
   .hideSidebar {
+    .el-menu {
+      padding: 4px;
+    }
+
     .sidebar-container {
-      width: 54px !important;
+      width: 48px !important;
     }
 
     .main-container {
-      margin-left: 54px;
+      margin-left: 48px;
     }
 
     .submenu-title-noDropdown {
@@ -103,7 +115,7 @@
         padding: 0 !important;
 
         .svg-icon {
-          margin-left: 20px;
+          margin-left: 11px;
         }
       }
     }
@@ -115,7 +127,7 @@
         padding: 0 !important;
 
         .svg-icon {
-          margin-left: 20px;
+          margin-left: 10px;
         }
 
         .el-submenu__icon-arrow {

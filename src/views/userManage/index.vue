@@ -2,103 +2,83 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-form-item label="用户来源:">
-          <el-select v-model="listQuery.search_user_type" @change="toQuery()">
-            <el-option label="全部" value="2" />
-            <el-option label="微信" value="0" />
-            <el-option label="支付宝" value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="用户ID:">
-          <el-input v-model="form.search_uid" />
-        </el-form-item>
-        <el-form-item label="用户昵称:">
-          <el-input v-model="form.search_nick_name" />
-        </el-form-item>
-        <el-form-item label="手机号码:">
-          <el-input v-model="form.search_phone" />
-        </el-form-item>
+        <el-select placeholder="用户来源" v-model="listQuery.search_user_type" @change="toQuery()">
+          <el-option label="全部" value="2" />
+          <el-option label="微信" value="0" />
+          <el-option label="支付宝" value="1" />
+        </el-select>
+        <el-input placeholder="用户ID" v-model="form.search_uid" />
+        <el-input placeholder="用户昵称" v-model="form.search_nick_name" />
+        <el-input placeholder="手机号码" v-model="form.search_phone" />
       </template>
     </condition>
 
-    <div class="p-5">
-      <div class="bg-white">
-        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
-          element-loading-text="Loading" stripe highlight-current-row>
-          <el-table-column label="品牌商">
-            <template slot-scope="scope">
-              {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="头像" width="80">
-            <template slot-scope="scope">
-              <el-avatar :size="40" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
-            </template>
-          </el-table-column>
-          <el-table-column label="昵称" width="200">
-            <template slot-scope="scope">
-              <el-link class="cursor">【{{ scope.row.id }}】{{ scope.row.nick_name }}</el-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="手机号码">
-            <template slot-scope="scope">
-              <div v-if="checkRoles(config.system_other.have_role)">{{ scope.row.mobile }}</div>
-              <div v-else>{{ dealPhone(scope.row.mobile) }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="来源">
-            <template slot-scope="scope">
-              {{ scope.row.user_type == 0 ? '微信' : '支付宝' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="已交押金" v-if="checkRoles(['terminal', 'partner'])">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="租借次数">
-            <template slot-scope="scope">
-              {{ scope.row.used_num }}
-            </template>
-          </el-table-column>
-          <el-table-column label="消费总金额" v-if="agentInfo.business_type != 1">
-            <template slot-scope="scope">
-              ￥{{ scope.row.paid_amount }}
-            </template>
-          </el-table-column>
-          <el-table-column label="钱包余额" v-if="checkRoles(['terminal', 'partner'])">
-            <template slot-scope="scope">
-              ￥{{ scope.row.balance }}
-            </template>
-          </el-table-column>
-          <el-table-column label="储值卡余额" v-if="checkRoles(['terminal', 'partner'])">
-            <template slot-scope="scope">
-              ￥{{ scope.row.wash_balance }}
-            </template>
-          </el-table-column>
-          <el-table-column label="储值卡赠额" width="120" v-if="checkRoles(['terminal', 'partner'])">
-            <template slot-scope="scope">
-              ￥{{ scope.row.wash_gift_balance }}
-            </template>
-          </el-table-column>
-          <el-table-column label="注册日期" width="180">
-            <template slot-scope="scope">
-              {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') }}
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="200" v-if="checkRoles(['terminal', 'partner'])">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/userManage/user_order?search_uid=${scope.row.id}`})">订单记录</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="recharge(scope.row, 1)" v-if="checkRoles(['partner'])">余额充值</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="recharge(scope.row, 0)" v-if="checkRoles(['partner'])">储值卡充值</el-button>
-              <!-- <el-button type="primary" plain round size="small" @click="setBlack(scope.row)">黑名单</el-button> -->
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="flex justify-center">
-          <pagination v-show="listQuery.page_num > 0" :page.sync="listQuery.start" :limit.sync="listQuery.limit"
-            :page-count="listQuery.page_num" @pagination="getList" />
-        </div>
+    <div class="pl-15 pr-15 pb-5 bg-white">
+      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" border
+        element-loading-text="Loading" stripe highlight-current-row>
+        <el-table-column label="品牌商" align="center" width="120">
+          <template slot-scope="scope">
+            {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="头像" align="center" width="60">
+          <template slot-scope="scope">
+            <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
+          </template>
+        </el-table-column>
+        <el-table-column label="昵称" align="center" width="160">
+          <template slot-scope="scope">
+            <el-link class="cursor">{{ scope.row.nick_name || '无昵称' }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="手机号码" align="center">
+          <template slot-scope="scope">
+            <div v-if="checkRoles(config.system_other.have_role)">{{ scope.row.mobile || '--' }}</div>
+            <div v-else>{{ dealPhone(scope.row.mobile) }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="来源" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.user_type == 0 ? '微信' : '支付宝' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="已交押金" align="center" v-if="checkRoles(config.system_other.have_role)">
+          <template slot-scope="scope">
+            {{ scope.row.money || '0.00' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="租借次数" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.used_num || '0' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="消费总金额" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.paid_amount || '0.00' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="钱包余额" align="center" ><!-- v-if="checkRoles(config.system_other.have_role)" -->
+          <template slot-scope="scope">
+            {{ scope.row.balance || '0.00' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="注册日期" align="center" width="150">
+          <template slot-scope="scope">
+            {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="120">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/userManage/user_order?search_uid=${scope.row.id}`})">订单记录</el-button>
+            <!-- <el-button type="primary" size="mini" class="ml-0" @click="recharge(scope.row, 1)" v-if="checkRoles(['partner'])">余额充值</el-button>
+            <el-button type="primary" size="mini" class="ml-0" @click="recharge(scope.row, 0)" v-if="checkRoles(['partner'])">储值卡充值</el-button>
+            <el-button type="primary" plain round size="small" @click="setBlack(scope.row)">黑名单</el-button> -->
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="flex justify-center">
+        <pagination v-show="listQuery.page_num > 0" :page.sync="listQuery.start" :limit.sync="listQuery.limit"
+          :page-count="listQuery.page_num" @pagination="getList" />
       </div>
     </div>
 
@@ -155,7 +135,8 @@
         tableMaxH: '250',
         clickSubmit: false,
         form: {},
-        list: [],
+        oemInfo: {},
+        list: [{}],
         listLoading: false,
         listQuery: {
           search_agent_id: '0',

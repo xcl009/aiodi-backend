@@ -2,96 +2,86 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-				<el-form-item label="合同类型:">
-				  <el-select v-model="form.sort" @change="toQuery()">
-				    <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-				  </el-select>
-				</el-form-item>
-        <el-form-item label="时间类型:">
-          <el-select v-model="form.sort" @change="toQuery()">
-            <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-          </el-select>
-        </el-form-item>
-				<el-form-item label="品牌名称:">
-				  <el-input v-model="form.name" />
-				</el-form-item>
-				<el-form-item label="支付状态:">
-				  <el-select v-model="form.sort" @change="toQuery()">
-				    <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-				  </el-select>
-				</el-form-item>
+        <el-select placeholder="合同类型" v-model="form.sort" @change="toQuery()">
+          <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
+        </el-select>
+        <el-select placeholder="时间类型" v-model="form.sort" @change="toQuery()">
+          <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
+        </el-select>
+        <el-input placeholder="品牌名称" v-model="form.name" />
+        <el-select placeholder="支付状态" v-model="form.sort" @change="toQuery()">
+          <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
+        </el-select>
 		  </template>
 		</condition>
 
-    <div class="p-5">
-      <div class="bg-white">
-        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-          stripe highlight-current-row :max-height="tableMaxH">
-          <el-table-column label="品牌" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="支付用户" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="合同类型" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="具体类型" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="商户单号" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="交易单号" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="支付方式" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="时间类型" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="支付金额" width="200">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="当前月数">
-            <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="备注" width="190">
-            <template slot-scope="scope">
-              {{ scope.row.mark || '--' }}
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="flex justify-center">
-          <pagination
-            v-show="listQuery.count > 0"
-            :page.sync="listQuery.page"
-            :limit.sync="listQuery.size"
-            :total="listQuery.count"
-            @pagination="getList"
-          />
-        </div>
+    <div class="pl-15 pr-15 pb-5 bg-white">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
+        stripe highlight-current-row :max-height="tableMaxH">
+        <el-table-column label="品牌" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="支付用户" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="合同类型" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="具体类型" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="商户单号" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="交易单号" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="支付方式" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="时间类型" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="支付金额" width="200">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="当前月数">
+          <template slot-scope="scope">
+            {{ scope.row.money || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="备注" width="190">
+          <template slot-scope="scope">
+            {{ scope.row.mark || '--' }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="flex justify-center">
+        <pagination
+          v-show="listQuery.count > 0"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          :total="listQuery.count"
+          @pagination="getList"
+        />
       </div>
     </div>
   </div>

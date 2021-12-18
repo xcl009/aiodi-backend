@@ -1,44 +1,44 @@
 <template>
-  <div class="p-10">
-    <el-row class="pl-30 pr-30 bg-white">
-      <el-col>
-        <el-form ref="form" :rules="rules" :model="form" label-width="140px">
-          <h4>运营产品：</h4>
-          <el-form-item label="产品类型：">
-            <el-checkbox-group v-model="selType" :min="1">
-              <el-checkbox v-for="item in agentDevice" :label="item.depend_type">{{ item.depend_name }}</el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
+  <div>
+    <el-row class="pl-30 pr-30 custom-form bg-white">
+      <el-col :xs="24" :sm="18" :md="12" :lg="10">
+        <el-form ref="form" :rules="rules" :model="form" label-width="auto">
+          <div class="pt-20 pb-20 text-black text-bold">运营产品</div>
+          <el-checkbox-group v-model="selType" :min="1">
+            <el-checkbox v-for="item in myDevice" :label="item.depend_type">{{ item.depend_name }}</el-checkbox>
+          </el-checkbox-group>
 
-          <h4>基础信息：</h4>
-          <el-form-item label="品牌logo：">
-            <upload v-model="form.avatar"/>
+          <div class="pt-20 pb-20 text-black text-bold">基础信息</div>
+          <el-form-item label="品牌logo">
+            <upload v-model="form.logo" />
           </el-form-item>
-          <el-form-item label="品牌名称：" prop="name">
+          <el-form-item label="品牌名称" prop="name">
             <el-input v-model="form.name" placeholder="输入品牌名称" />
           </el-form-item>
-          <el-form-item label="手机号码：" prop="phone">
-            <el-input v-model="form.mobile" placeholder="输入手机号" />
-            <div class="fs-s2 text-gray">此手机号码会作为登录账户</div>
+          <el-form-item label="手机号码" prop="mobile">
+            <el-input v-model="form.mobile" placeholder="请输入手机号码（此号码会作为登录账户）" />
           </el-form-item>
-          <el-form-item label="登录密码：" v-if="!id">
+          <el-form-item label="登录密码" v-if="!id">
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
-          <el-form-item label="运营区域：">
-            <v-distpicker :province="form.charge_province" :city="form.charge_city" :area="form.charge_county" @selected="selectCity"></v-distpicker>
+          <el-form-item label="运营区域">
+            <el-cascader v-model="form.areaId" :options="areaList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <el-form-item label="公司名称：">
-            <el-input v-model="form.company" placeholder="公司名称" />
+          <el-form-item label="公司名称">
+            <el-input v-model="form.companyName" placeholder="公司名称" />
           </el-form-item>
-          <el-form-item label="公司地址：">
-            <el-input v-model="form.address" placeholder="输入公司地址" />
+          <el-form-item label="公司地址">
+            <el-input v-model="form.companyAddress" placeholder="输入公司地址" />
+          </el-form-item>
+          <el-form-item label="公司电话">
+            <el-input v-model="form.companyPhoneNum" placeholder="输入公司电话" />
           </el-form-item>
 
           <template>
-            <h4>分润比例：</h4>
-            <template v-for="(item, index) in agentDevice">
-              <el-form-item :label="`${item.depend_name}：`" v-if="selType.indexOf(item.depend_type) > -1">
-                <el-input v-model="form.percent" :placeholder="`最高不能超过100%`">
+            <div class="pt-20 pb-20 text-black text-bold">分润比例</div>
+            <template v-for="(item, index) in form.deviceTypDeviceProfitRatios">
+              <el-form-item :label="`${deviceNameObj[item.deviceTypeId]}：`" v-if="selType.indexOf(item.deviceTypeId) > -1">
+                <el-input v-model="item.profitRatio" :placeholder="`最高不能超过100%`">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -46,8 +46,8 @@
           </template>
 
           <template v-if="(form.take_my_product && !checkRoles(['terminal'])) || (form.condom_manager_fee > 0)">
-            <h4>售货机</h4>
-            <el-form-item label="商品管理费：">
+            <div class="pt-20 pb-20 text-black text-bold">售货机</div>
+            <el-form-item label="商品管理费">
               <el-input v-model="form.condom_manager_fee" placeholder="商品管理费">
                 <template slot="append">元</template>
               </el-input>
@@ -64,27 +64,16 @@
 </template>
 
 <script>
-  import VDistpicker from '@/components/Distpicker'
   import upload from '@/components/upload'
   export default {
     components: {
-      upload,
-      VDistpicker
+      upload
     },
     data() {
       return {
         clickSubmit: false,
         form: {
-          password: '123456',
-          role_id: '',
-          devide_percent: 0,
-          agent_withdraw_fee_type: 0,
-          withdraw_percent: 0,
-          withdraw_fee: 0,
-          check_order: 0,
-          withdraw_right: 0,
-          finish_order: 0,
-          drawback_order: 0
+          password: '123456'
         },
         rules: {
           role_id: [
@@ -93,17 +82,17 @@
           name: [
             { required: true, message: '请填写联系人姓名', trigger: 'blur' }
           ],
-          phone: [
+          mobile: [
             { required: true, message: '请填写手机号码作为登录账户', trigger: 'blur' }
-          ],
+          ]
         },
+        areaList: [],
         powerInfo: {},
         role: [],
-        id: '',
 
-        agentDevice: [{'depend_name': '密码线', 'depend_type': 1}],
         selType: [1],
-        id: this.$route.params.id
+        myDevice: [{'depend_name': '密码线', 'depend_type': 1}],
+        aid: this.$route.params.aid
       }
     },
     computed: {
@@ -115,6 +104,9 @@
       },
       agentInfo() {
         return this.$store.getters.agentInfo
+      },
+      myDevice() {
+        return this.$store.getters.myDevice
       }
     },
     mounted() {
@@ -145,7 +137,7 @@
             }
           }
           this.selType = JSON.parse(JSON.stringify(selType))
-          this.agentDevice = res
+          this.myDevice = res
           if(this.id > 0){
             this.getInfo()
           }
@@ -153,11 +145,11 @@
       },
 
       /**
-       * 获取商户信息
+       * 获取信息
        */
       getInfo() {
-        this.$get('agentapi/edit_agent', {
-          son_id: this.id
+        this.$get('iot-saas-user/admin/brand/updateStatusById', {
+          id: this.aid
         }).then(res => {
           let info = res.agent_info
           delete info.password
@@ -180,14 +172,14 @@
        * @param {Object} formName
        */
       onSubmit(formName) {
-        let params = {}, url = 'agentapi/save_add_agent', profit_key = this.config.profit_key
+        let params = {}, url = 'iot-saas-user/admin/brand', profit_key = this.config.profit_key
         params = JSON.parse(JSON.stringify(this.form))
         this.clickSubmit = true
         this.$refs[formName].validate((valid) => {
           if (valid) {
             if(this.id > 0){
-              params.son_id = this.id
-              url = 'agentapi/save_edit_agent'
+              params.id = this.id
+              url = 'admin/brand/updateById'
             }
             params.user_name = params.phone
             for(var i in this.selType){
@@ -226,13 +218,59 @@
       },
 
       /**
-       * 选择区域
+       * 获取区域
        */
-      selectCity(e){
-        this.form.province = e.province.value
-        this.form.city = e.city.value
-        this.form.county = e.area.value
-      }
+      getArea() {
+        this.getCity()
+      },
+
+      /**
+       * 获取城市
+       */
+      getCity(){
+        this.$get('commonapi/tool/get_address_list').then(res => {
+          for (var i in res) {
+            const firstLevel = res[i]
+            const obj = {
+              value: firstLevel.tag,
+              label: firstLevel.title,
+              children: []
+            }
+            if (firstLevel.son_list.length > 0) {
+              const secondLevel = firstLevel.son_list
+              for (var s in secondLevel) {
+                const secondItem = secondLevel[s]
+                if (this.region_tag == secondItem.tag) this.form.region_tag = [obj.value, secondItem.tag]
+                obj.children.push({
+                  value: secondItem.tag,
+                  label: secondItem.title,
+                  children: []
+                })
+                if (secondItem.son_list.length > 0) {
+                  const thirdLevel = secondItem.son_list
+                  for (var t in thirdLevel) {
+                    const thirdItem = thirdLevel[t]
+                    if (this.region_tag == thirdItem.tag) this.form.region_tag = [obj.value, secondItem.tag, thirdItem.tag]
+                    obj.children[s].children.push({
+                      value: thirdItem.tag,
+                      label: thirdItem.title
+                    })
+                  }
+                } else {
+                  obj.children = undefined
+                }
+              }
+            } else {
+              obj.children = undefined
+            }
+            this.areaList.push(obj)
+          }
+          if (!this.id) {
+            const first = this.areaList[0]
+            this.form.region_tag = [first.value, first.children[0].value, first.children[0].children[0].value]
+          }
+        })
+      },
     }
   }
 </script>

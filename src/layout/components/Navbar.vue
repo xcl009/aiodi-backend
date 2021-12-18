@@ -1,19 +1,16 @@
 <template>
-  <div class="navbar" style="overflow: initial;">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
-    <breadcrumb class="breadcrumb-container" />
+  <div class="flex align-center navbar" style="overflow: initial;">
+    <img src="https://oss.kuaihuoya.net/pwd/2021-01-13/170336089.jpg" height="50" alt="" class="ml-10" :class="{'ml-30': device != 'mobile'}" @click="toggleSideBar">
+    <div class="flex1"></div>
+    <!-- <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="right-menu flex align-center">
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+      <el-dropdown class="avatar-container hover-effect" trigger="click">
+        <div class="pr-20 avatar-wrapper flex align-center">
+          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar radius-15">
+          <span class="pl-10">{{ name }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <!-- <router-link to="/user/config">
-            <el-dropdown-item>我的设置</el-dropdown-item>
-          </router-link> -->
           <router-link to="/user/index">
             <el-dropdown-item>个人信息</el-dropdown-item>
           </router-link>
@@ -47,11 +44,15 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ]),
     agentInfo(){
       let agentInfo = this.$store.state.user.agentInfo
       return agentInfo
+    },
+    device(){
+      return this.$store.state.app.device
     },
     siteInfo(){
       return siteInfo
@@ -68,6 +69,10 @@ export default {
 
   },
   methods: {
+    toggleSideBar() {
+      this.$store.dispatch('app/toggleSideBar')
+    },
+
     /**
      * 获取列表
      */
@@ -116,10 +121,6 @@ export default {
       })
     },
 
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    },
-
     async logout() {
       let url = ''
       url = `/login`
@@ -145,29 +146,12 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 40px;
+  height: 60px;
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 1px #E5E6EB;
   z-index: 2;
-  .hamburger-container {
-    line-height: 36px;
-    height: 100%;
-    float: left;
-    cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
-
-    &:hover {
-      background: rgba(0, 0, 0, .025)
-    }
-  }
-
-  .breadcrumb-container {
-    float: left;
-  }
-
   .right-menu {
     float: right;
     height: 100%;
@@ -198,16 +182,13 @@ export default {
       margin-right: 10px;
 
       .avatar-wrapper {
-        height: 40px;
-        padding: 5px;
+        height: 60px;
         position: relative;
-
+        cursor: pointer;
         .user-avatar {
-          cursor: pointer;
-          width: 30px;
-          height: 30px;
-          border-radius: 5px;
-          border: thin solid #ccc;
+
+          width: 24px;
+          height: 24px;
         }
 
         .el-icon-caret-bottom {
@@ -219,5 +200,8 @@ export default {
       }
     }
   }
+}
+.el-dropdown-menu{
+  top: 35px !important;
 }
 </style>

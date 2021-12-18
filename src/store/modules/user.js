@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login, codeLogin, logout, getInfo, getPlatformConfig, getDeviceType, postSetRecode } from '@/api/user'
+import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, postSetRecode } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -28,13 +28,13 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_LEVEL: (state, level) => {
-    state.level = level
+  SET_USER_TYPE: (state, userType) => {
+    state.userType = userType
   },
   SET_AGENT_DEVICE: (state, res) => {
     state.deviceNameObj = res.deviceNameObj
     state.deviceKeyObj = res.deviceKeyObj
-    state.agentDevice = res.agentDevice
+    state.myDevice = res.myDevice
   },
   SET_SITEINFO: (state, res) => {
     state.siteInfo = res
@@ -49,16 +49,18 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      setToken('55555555555')
-      setToken('111', 'user_id')
-      resolve({})
-      return
-      login({ username: username.trim(), password: password, loginType: 'UP', 'appid': 'admin' }).then(data => {
+      // setToken('55555555555')
+      // setToken('111', 'user_id')
+      // resolve({})
+      // return
+      login({ username: username.trim(), password: password, loginType: 'UP', 'appid': 'pc' }).then(data => {
         commit('SET_TOKEN', data.loginToken.accessToken)
         commit('SET_NAME', data.username)
+        commit('SET_USER_TYPE', data.userType)
+        Vue.prototype.userType = data.userType
         setToken(data.loginToken.accessToken)
         setToken(data.loginToken.refreshToken, 'refreshToken')
-        setToken(data.appid, 'appid')
+        setToken('pc', 'appid')
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -115,25 +117,16 @@ const actions = {
     return new Promise((resolve, reject) => {
       getPlatformConfig(params).then(data => {
         commit('SET_SITEINFO', data)
-        if(getToken('user_id') == 97) {
-          commit('SET_AGENTINFO', {})
-          commit('SET_AGENT_DEVICE', {
-            deviceNameObj: {},
-            deviceKeyObj: {},
-            agentDevice: {}
-          })
-        }
         if(data.mini_name){
           var icon_link = document.createElement('link')
               icon_link.type = 'image/x-icon'
               icon_link.rel = 'shortcut icon'
               icon_link.href = data.mini_logo || data.mini_logo
           document.getElementsByTagName('head')[0].appendChild(icon_link)
-          document.title = `管理后台-${data.mini_name},共享充电宝,共享按摩枕,共享洗衣机,充电线,充电器-贴牌代理加盟的共享SaaS平台。`;
+          document.title = `${data.mini_name}-管理后台`;
         }
         data.time_unit = data.fund_fee_time_unit == 0 ? '分钟' : '小时'
         Vue.prototype.SITE_INFO = data
-        window.siteInfo = data
         resolve(data)
       })
     })
@@ -162,23 +155,22 @@ const actions = {
   },
 
   // 获取当前代理设备类型
-  getDeviceType({ commit, state }) {
+  getMyDevice({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getDeviceType().then(res => {
-        let deviceNameObj = {}, deviceKeyObj = {}, agentDevice = []
+      getMyDevice().then(res => {
+        let deviceNameObj = {}, deviceKeyObj = {}, myDevice = []
         for(var i in res){
           let d = res[i]
           if(d.taked > 0){
             deviceNameObj[d.depend_name] = d.depend_type
-            agentDevice.push(d)
+            myDevice.push(d)
           }
           deviceKeyObj[d.depend_type] = d.depend_name
         }
-        window.deviceNameObj = deviceNameObj
         commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({
           deviceNameObj: deviceNameObj,
           deviceKeyObj: deviceKeyObj,
-          agentDevice: agentDevice
+          myDevice: myDevice
         })))
         resolve(res)
       }).catch(error => {

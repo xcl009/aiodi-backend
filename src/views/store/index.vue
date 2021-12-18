@@ -2,53 +2,24 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-form-item label="排序方式:">
-          <el-select v-model="form.sort" @change="toQuery()">
-            <el-option :label="item" :value="key" v-for="(item, key) in sort_type" />
-          </el-select>
-          <el-date-picker
-            v-if="[7,8].indexOf(form.sort) > -1"
-            v-model="form.query_month"
-            type="month"
-            value-format="yyyy-M"
-            placeholder="选择月份"
-            @change="toQuery()">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="是否铺货:">
-          <el-select v-model="form.isPuhuo" @change="toQuery()">
-            <el-option label="全部" value="2" />
-            <el-option label="未铺货" value="0" />
-            <el-option label="已铺货" value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="商户名称:">
-          <el-input v-model="form.name" />
-        </el-form-item>
-        <el-form-item label="手机号码:">
-          <el-input v-model="form.mobile" />
-        </el-form-item>
-        <el-form-item label="创建时间:">
-          <div class="flex">
-            <el-date-picker
-              v-model="form.startTime"
-              type="datetime"
-              placeholder="开始"
-              value-format="timestamp"
-              style="width: 100%;"
-              :picker-options="beginOptions"
-            />
-            <span class="ml-5 mr-5">-</span>
-            <el-date-picker
-              v-model="form.endTime"
-              type="datetime"
-              placeholder="结束"
-              value-format="timestamp"
-              style="width: 100%;"
-              :picker-options="endOptions"
-            />
-          </div>
-        </el-form-item>
+        <!-- <el-select v-model="form.sort" @change="toQuery()" placeholder="排序">
+          <el-option :label="item" :value="key" v-for="(item, key) in sort_type" />
+        </el-select>
+        <el-date-picker
+          v-if="[7,8].indexOf(form.sort) > -1"
+          v-model="form.query_month"
+          type="month"
+          value-format="yyyy-M"
+          placeholder="选择月份"
+          @change="toQuery()">
+        </el-date-picker> -->
+        <el-select v-model="form.isPuhuo" @change="toQuery()" placeholder="是否铺货">
+          <el-option label="全部" value="2" />
+          <el-option label="未铺货" value="0" />
+          <el-option label="已铺货" value="1" />
+        </el-select>
+        <el-input v-model="form.name" placeholder="商户名称" />
+        <el-input v-model="form.mobile" placeholder="手机号码" />
         <!-- <el-form-item label="行业分类:">
           <el-cascader v-model="sel_cat" :options="categoryList" :props="{ expandTrigger: 'hover' }" @change="toQuery()"/>
         </el-form-item>
@@ -58,96 +29,100 @@
       </template>
     </condition>
 
-    <div class="p-5">
-      <div class="bg-white">
-        <el-table
-          class="ptd-5"
-          id="list_table"
-          ref="list_table"
-          stripe
-          highlight-current-row
-          element-loading-text="Loading"
-          v-loading="listLoading"
-          :max-height="tableMaxH"
-          :data="list"
-        >
-          <el-table-column label="品牌商">
-            <template slot-scope="scope">
-              {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '品牌名' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="门头照" width="80" v-if="checkThead.indexOf('门头照') > -1">
-            <template slot-scope="scope">
-              <el-avatar shape="square" :size="60" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
-              <div class="dnone">【用户ID：{{ scope.row.aid }}】</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="商户名称" width="200" v-if="checkThead.indexOf('商户名称') > -1">
-            <template slot-scope="scope">
-              <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})" class="cursor">{{ scope.row.store_name || '--' }}</el-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="商户地址" width="120" v-if="checkThead.indexOf('商户地址') > -1">
-            <template slot-scope="scope">
-              <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="城市区域" v-if="checkThead.indexOf('城市区域') > -1">
-            <template slot-scope="scope">
-              {{ scope.row.region_tag && areaObj[scope.row.region_tag] ? areaObj[scope.row.region_tag].title : '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="行业分类" v-if="checkThead.indexOf('行业分类') > -1">
-            <template slot-scope="scope">
-              {{ scope.row.cat_name || '--' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="金额" width="160" v-if="agentInfo.business_type != 1">
-            <template slot-scope="scope">
-              <div>交易额：￥{{ scope.row.order_amount || '0.00' }}</div>
-              <div>总收益：<span class="text-blue cursor" @click="$router.push({path: `/money/income?son_id=${scope.row.aid}`})">￥{{ scope.row.profit || '0.00' }}</span></div>
-              <div>可提现：<a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">￥{{ scope.row.available_withdraw_money || '0.00' }}</a><a v-else>￥{{ scope.row.available_withdraw_money || '0.00' }}</a></div>
-            </template>
-          </el-table-column>
-          <el-table-column label="订单量" width="140" v-if="checkThead.indexOf('订单量') > -1">
-            <template slot-scope="scope">
-              <el-tag
-                class="cursor"
-                :hit="true"
-                size="small"
-                effect="plain"
-                @click="$router.push({path: `/order?store_name=${scope.row.store_name}`})">
-                {{ scope.row.order_num || 0 }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="品类" v-if="checkThead.indexOf('品类') > -1">
-            <template slot-scope="scope">
-              <el-tag
-                class="radius-15 cursor"
-                :hit="true"
-                size="small"
-                effect="plain"
-                @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
-                {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="创建时间" width="100" v-if="checkThead.indexOf('创建时间') > -1">
-            <template slot-scope="scope">
-              {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') || '--' }}
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="flex justify-center">
-          <pagination
-            v-show="listQuery.count > 0"
-            :page.sync="listQuery.page"
-            :limit.sync="listQuery.size"
-            :page-count="listQuery.count"
-            @pagination="getList"
-          />
-        </div>
+    <div class="pl-15 pr-15 pb-5 bg-white">
+      <el-table
+        class="ptd-5"
+        id="list_table"
+        ref="list_table"
+        highlight-current-row
+        element-loading-text="Loading"
+        v-loading="listLoading"
+        :max-height="tableMaxH"
+        :data="list"
+      >
+        <el-table-column label="品牌商" align="center" width="120">
+          <template slot-scope="scope">
+            {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '品牌名' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="门头照" align="center" width="62" v-if="checkThead.indexOf('门头照') > -1">
+          <template slot-scope="scope">
+            <el-avatar shape="square" :size="52" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
+          </template>
+        </el-table-column>
+        <el-table-column label="商户名称" align="center" width="150" v-if="checkThead.indexOf('商户名称') > -1">
+          <template slot-scope="scope">
+            <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})" class="cursor">[1021]{{ scope.row.store_name || '美宜佳' }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="商户地址" align="center" width="200" v-if="checkThead.indexOf('商户地址') > -1">
+          <template slot-scope="scope">
+            <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="城市区域" align="center" width="120" v-if="checkThead.indexOf('城市区域') > -1">
+          <template slot-scope="scope">
+            {{ scope.row.region_tag && areaObj[scope.row.region_tag] ? areaObj[scope.row.region_tag].title : '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="行业分类" align="center" width="120" v-if="checkThead.indexOf('行业分类') > -1">
+          <template slot-scope="scope">
+            {{ scope.row.cat_name || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="交易额(元)" align="center" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.order_amount || '0.00' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="收益(元)" align="center" width="90">
+          <template slot-scope="scope">
+            <span class="text-blue cursor" @click="$router.push({path: `/money/income?son_id=${scope.row.aid}`})">{{ scope.row.profit || '0.00' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="可提现(元)" align="center" width="90">
+          <template slot-scope="scope">
+            <a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">{{ scope.row.available_withdraw_money || '0.00' }}</a><a v-else>{{ scope.row.available_withdraw_money || '0.00' }}</a>
+          </template>
+        </el-table-column>
+        <el-table-column label="订单量" align="center" width="90" v-if="checkThead.indexOf('订单量') > -1">
+          <template slot-scope="scope">
+            <el-tag
+              class="cursor"
+              :hit="true"
+              size="medium"
+              effect="plain"
+              @click="$router.push({path: `/order?store_name=${scope.row.store_name}`})">
+              {{ scope.row.order_num || 0 }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="品类" align="center" v-if="checkThead.indexOf('品类') > -1">
+          <template slot-scope="scope">
+            <el-tag
+              class="cursor"
+              :hit="true"
+              size="medium"
+              effect="plain"
+              @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
+              {{ scope.row.depend_type_name || '密码线' }}&nbsp;&nbsp;{{ scope.row.goods_sum || '0' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center" width="120" v-if="checkThead.indexOf('创建时间') > -1">
+          <template slot-scope="scope">
+            {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="flex justify-center">
+        <pagination
+          v-show="listQuery.count > 0"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          :page-count="listQuery.count"
+          @pagination="getList"
+        />
       </div>
     </div>
 

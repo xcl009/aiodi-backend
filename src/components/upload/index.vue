@@ -161,14 +161,15 @@
 <style scoped lang="scss">
   .avatar-uploader {
     /deep/ .el-upload{
-      border: 1px dashed #d9d9d9;
+      border: 1px dashed #E5E6EB;
       border-radius: 6px;
       cursor: pointer;
       position: relative;
       overflow: hidden;
       vertical-align: middle;
+      background: #F2F3F5;
       &:hover {
-        border-color: #409EFF;
+        border-color: var(--olive);
       }
     }
     .avatar-uploader-icon {

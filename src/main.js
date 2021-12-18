@@ -6,6 +6,7 @@ import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import '@/styles/index.scss' // global css
+import '@icon-park/vue/styles/index.css'
 
 import App from './App'
 import store from './store'
@@ -49,9 +50,8 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
-//setRem()
-
-// 改变窗口大小时重新设置 rem
+//改变窗口大小时重新设置 rem
+// setRem()
 // window.onresize = function () {
 //   setRem()
 // }

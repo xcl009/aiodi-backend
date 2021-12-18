@@ -335,22 +335,19 @@ export default {
 .distpicker-address-wrapper {
   color: #9caebf;
   select {
-    padding: 0 10px;
-    min-width: 200px;
-    height: 40px;
-    color: #464a4c;
-    background-color: #fff;
+    padding: 0 8px;
+    height: 32px;
+    background: #F2F3F5;
     background-image: none;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.15);
-    border-radius: 4px;
+    border: none;
+    border-radius: 2px;
     -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
     -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-
     option {
       font-weight: normal;
       display: block;

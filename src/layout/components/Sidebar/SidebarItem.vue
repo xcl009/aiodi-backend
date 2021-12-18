@@ -56,6 +56,9 @@ export default {
     this.onlyOneChild = null
     return {}
   },
+  mounted(){
+
+  },
   methods: {
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
@@ -95,16 +98,21 @@ export default {
 </script>
 <style lang="scss" scoped>
   /deep/ .el-menu-item:not(.submenu-title-noDropdown){
-    padding: 0 !important;
-    text-align: center;
+    padding: 0 0 0 30px !important;
   }
   /deep/ .el-submenu .el-submenu__title, .el-menu-item.submenu-title-noDropdown{
     padding: 0 0 0 15px !important;
+    &.is-active{
+      background-color: #F2F3F5 !important;
+    }
   }
   /deep/ .el-menu-item .svg-icon, /deep/ .el-submenu__title .svg-icon{
-    margin-right: 10px !important;
+    width: 16px;
+    height: 16px;
+    margin-right: 20px !important;
   }
   /deep/ .el-submenu__icon-arrow{
+		margin-top: -6px;
     right: 10px !important;
   }
 </style>

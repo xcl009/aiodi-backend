@@ -1,43 +1,41 @@
 <template>
-  <div class="p-5">
-    <el-row class="pt-30 pl-30 pr-30 bg-white">
-      <el-col>
-        <el-form ref="form" :rules="rules" :model="form" label-width="auto">
-          <el-form-item label="功能名称：">
-            <el-input v-model="form.name" placeholder="输入功能名称" />
-          </el-form-item>
-          <el-form-item label="功能介绍：">
-            <tinymce v-model="form.introduce" :height="300" />
-          </el-form-item>
-          <el-form-item label="服务亮点：">
-            <tinymce v-model="form.introduce" :height="300" />
-          </el-form-item>
-          <el-form-item label="教程链接：">
-            <el-input v-model="form.mobile" placeholder="输入教程链接" />
-          </el-form-item>
-          <el-form-item label="需求来源：">
-            <el-input v-model="form.mobile" placeholder="输入需求来源" />
-          </el-form-item>
-          <el-form-item label="价格设置：">
-            <div class="flex">
-              <el-input v-model="form.rent_fee_std" class="mr-10">
-                <template slot="append">元/月</template>
-              </el-input>
-              <el-input v-model="form.rent_unit_minute_std" class="ml-10">
-                <template slot="append">元/年</template>
-              </el-input>
-              <el-input v-model="form.rent_unit_minute_std" class="ml-10">
-                <template slot="append">元/永久</template>
-              </el-input>
-            </div>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-  </div>
+  <el-row class="pt-30 pl-30 pr-30 bg-white">
+    <el-col>
+      <el-form ref="form" :rules="rules" :model="form" label-width="auto">
+        <el-form-item label="功能名称：">
+          <el-input v-model="form.name" placeholder="输入功能名称" />
+        </el-form-item>
+        <el-form-item label="功能介绍：">
+          <tinymce v-model="form.introduce" :height="300" />
+        </el-form-item>
+        <el-form-item label="服务亮点：">
+          <tinymce v-model="form.introduce" :height="300" />
+        </el-form-item>
+        <el-form-item label="教程链接：">
+          <el-input v-model="form.mobile" placeholder="输入教程链接" />
+        </el-form-item>
+        <el-form-item label="需求来源：">
+          <el-input v-model="form.mobile" placeholder="输入需求来源" />
+        </el-form-item>
+        <el-form-item label="价格设置：">
+          <div class="flex">
+            <el-input v-model="form.rent_fee_std" class="mr-10">
+              <template slot="append">元/月</template>
+            </el-input>
+            <el-input v-model="form.rent_unit_minute_std" class="ml-10">
+              <template slot="append">元/年</template>
+            </el-input>
+            <el-input v-model="form.rent_unit_minute_std" class="ml-10">
+              <template slot="append">元/永久</template>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -67,7 +65,7 @@
         role: [],
         id: '',
 
-        agentDevice: [{'depend_name': '密码线', 'depend_type': 1}],
+        myDevice: [{'depend_name': '密码线', 'depend_type': 1}],
         selType: [],
         id: this.$route.params.id
       }
@@ -111,7 +109,7 @@
             }
           }
           this.selType = JSON.parse(JSON.stringify(selType))
-          this.agentDevice = res
+          this.myDevice = res
           if(this.id > 0){
             this.getInfo()
           }

@@ -6,7 +6,7 @@
           <h4>运营产品：</h4>
           <el-form-item label="产品类型：">
             <el-checkbox-group v-model="selType" :min="1">
-              <el-checkbox v-for="item in agentDevice" v-if="item.taked == 1" :label="item.depend_type">{{ item.depend_name }}</el-checkbox>
+              <el-checkbox v-for="item in myDevice" v-if="item.taked == 1" :label="item.depend_type">{{ item.depend_name }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
 
@@ -355,7 +355,7 @@ export default {
       divide_type_1: this.$route.query.divide_type || 0,
       user_type: this.$route.query.user_type || 0,
 
-      agentDevice: [],
+      myDevice: [],
       selType: []
     }
   },
@@ -472,7 +472,7 @@ export default {
           }
         }
         this.selType = JSON.parse(JSON.stringify(selType))
-        this.agentDevice = res
+        this.myDevice = res
       })
     },
 

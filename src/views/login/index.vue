@@ -1,34 +1,54 @@
 <template>
-  <el-row type="flex" align="middle" class="login-container flex-wrap">
-    <el-image class="abs p-all" src="https://rainywp.oss-cn-shenzhen.aliyuncs.com/pwd/2020-10-28/173917111.jpg" fit="cover"></el-image>
+  <el-row type="flex" align="middle" class="pb-30 login-container flex-wrap">
+    <el-image class="abs p-all" src="https://oss.kuaihuoya.net/pwd/2021-12-14/090498296.png" fit="cover"></el-image>
     <div class="login-form">
-      <div class="rel logo">
-        <div class="sem"></div>
-        <img class="rel" :src="platformConfig.mini_logo || '/logo.png'" alt="">
-      </div>
-      <div class="title-container text-center rel">
-        <img class="abs jiao" src="@/assets/jiao.png" v-for="item in 4" alt="">
-        <div class="mt-30 mb-30 title fs-b3 text-white">欢迎登录物享云联后台管理系统</div>
-        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
-          <el-form-item class="mt-20 mb-40" prop="username">
-            <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1" autocomplete="on" placeholder="请输入用户名">
-              <svg-icon class="svg-i" slot="prefix" icon-class="zhanghu" />
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <span slot="suffix" class="svg-container">
-              <svg-icon icon-class="password" />
-            </span>
-            <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" name="password" tabindex="2" autocomplete="on" placeholder="请输入密码" @keyup.enter.native="handleLogin">
-              <svg-icon class="svg-i" slot="prefix" icon-class="password" />
-            </el-input>
-            <span class="show-pwd" @click="showPwd">
-              <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-            </span>
-          </el-form-item>
-          <el-button class="mt-20 login-btn" type="primary" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
-        </el-form>
-      </div>
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="24" :md="12" class="hidden-sm-and-down">
+          <div class="p-50 flexv justify-between login-left text-white">
+            <div class="pt-30">
+              <div class="title text-bold">
+                物享云联<br>
+                SaaS后台管理系统
+              </div>
+              <div class="mt-15 flex align-center fs-c1">
+                <div>万物互联</div>
+                <div class="ml-10 mr-10 dot"></div>
+                <div>共享发展</div>
+                <div class="ml-10 mr-10 dot"></div>
+                <div>驱动未来</div>
+              </div>
+            </div>
+            <img class="rel" width="100" :src="platformConfig.mini_logo || '/logo.png'" alt="">
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="12">
+          <div class="flex align-center justify-center title-container bg-white" :class="{'mobile': device_mobile}">
+            <div class="pb-40">
+              <div class="hello">您好！</div>
+              <div class="mb-30 title fs-b2 text-gray">欢迎登录物享云联后台管理系统</div>
+              <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
+                <el-form-item prop="username">
+                  <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1" autocomplete="on" placeholder="请输入用户名/手机号">
+                    <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969"/>
+
+                    <!-- <svg-icon class="svg-i" slot="prefix" icon-class="zhanghu" /> -->
+                  </el-input>
+                </el-form-item>
+                <el-form-item prop="password">
+                  <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" name="password" tabindex="2" autocomplete="on" placeholder="请输入密码" @keyup.enter.native="handleLogin">
+                    <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969"/>
+                  </el-input>
+                  <span class="show-pwd" @click="showPwd">
+                    <preview-close-one theme="outline" size="16" fill="#4E5969" v-if="passwordType === 'password'"/>
+                    <preview-open theme="outline" size="16" fill="#4E5969" v-else/>
+                  </span>
+                </el-form-item>
+                <el-button class="mt-20 login-btn" type="primary" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
+              </el-form>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
   </el-row>
 </template>
@@ -36,10 +56,15 @@
 <script>
   import { getToken, setToken, removeToken } from '@/utils/auth'
   import AuthCode from '@/components/AuthCode/'
+  import { People, Lock, PreviewOpen, PreviewCloseOne } from '@icon-park/vue'
   export default {
     name: 'Login',
     components: {
-      AuthCode
+      AuthCode,
+      People,
+      Lock,
+      PreviewOpen,
+      PreviewCloseOne
     },
     data() {
       const validateUsername = (rule, value, callback) => {
@@ -106,7 +131,9 @@
         },
         loading: false,
         passwordType: 'password',
-        redirect: undefined
+        redirect: undefined,
+
+        device_mobile: false
       }
     },
     watch: {
@@ -118,9 +145,13 @@
       }
     },
     mounted() {
-
+      this.device_mobile = this.$_isMobile()
     },
     methods: {
+      $_isMobile() {
+        const rect = document.body.getBoundingClientRect()
+        return rect.width - 1 < 768
+      },
       /**
        * 获取平台信息
        */
@@ -222,163 +253,80 @@
   $light_gray: #eee;
 
   .login-container {
-    padding-bottom: 100px;
     min-height: 100%;
     width: 100%;
     overflow: hidden;
-
     .el-input {
       input {
         padding-left: 40px;
-        height: 50px;
+        height: 36px;
       }
     }
-
     .login-form {
       position: relative;
-      width: 520px;
       max-width: 96%;
+      max-height: 90vh;
       margin: 0 auto;
       overflow: hidden;
-
-      .logo {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto -55px;
-        z-index: 999;
-        img{
-          margin-top: 3px;
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-        }
-        .sem{
-          top: 0;
-          left: -4px;
-          position: absolute;
-          content: '';
-          width: 128px;
-          height: 65px;
-          border-radius: 65px 65px 0 0;
-          background: rgba(11, 161, 248, .5);
+      .login-left{
+        height: 692px;
+        width: 596px;
+        max-height: 90vh;
+        max-width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        .title{
+          font-size: 56px;
         }
       }
-    }
-
-    .slogan {
-      width: 600px;
-      height: 380px;
-      max-width: 96%;
-      margin: 0 auto;
-      font-size: 60px;
-      line-height: 100px;
-      text-shadow: 1px 1px 0 rgba(255, 255, 255, .8), 2px 2px 0 rgba(255, 255, 255, .8);
-      color: #444;
-      .cursor{
-        display: inline-block;
-        height: 60px;
-        width: 1px;
-        background: #303133;
-        vertical-align: middle;
-        margin: -4px 0 0 5px;
-        animation: caret-smooth 1s ease-in-out infinite
+      .dot{
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--white);
       }
     }
-
-    @keyframes caret-smooth {
-      0%,20% {
-        opacity: 1
-      }
-
-      60%,to {
-        opacity: 0
-      }
-    }
-
     .tips {
       font-size: 14px;
       color: #fff;
       margin-bottom: 10px;
-
       span {
         &:first-of-type {
           margin-right: 16px;
         }
       }
     }
-
     .svg-i {
-      margin: 17px 0 0 8px;
-      color: #00e1eb;
+      margin: 12px 0 0 8px;
+      color: #4E5969;
     }
-
     .title-container {
-      padding: 50px;
-      background: rgba(11, 161, 248, .1);
-      border: 3px solid rgba(11, 161, 248, .5);
-      .title{
-        letter-spacing: 3px;
+      width: 596px;
+      height: 692px;
+      max-height: 90vh;
+      max-width: 100%;
+      .hello{
+        font-size: 36px;
       }
       .el-input__inner{
-        background: rgba(11, 161, 248, .4);
+        width: 320px;
+        background: var(--bodyBg);
         border: none;
-        color: #fff;
       }
       .login-btn{
         width: 100%;
-        letter-spacing: 5px;
-        font-size: 16px;
-        &:hover{
-          color: #000;
-        }
       }
-
-      .jiao{
-        width: 50px;
-        &:nth-child(1){
-          left: -3px;
-          top: -3px;
-        }
-        &:nth-child(2){
-          right: -3px;
-          top: -3px;
-          transform: rotateY(180deg);
-        }
-        &:nth-child(3){
-          left: -3px;
-          bottom: -3px;
-          transform: rotateX(180deg);
-        }
-        &:nth-child(4){
-          right: -3px;
-          bottom: -3px;
-          transform: rotateY(180deg) rotateX(180deg);
-        }
+      &.mobile{
+        max-height: 60vh;
       }
     }
-
     .show-pwd {
       position: absolute;
       right: 10px;
-      top: 8px;
       font-size: 16px;
       color: $dark_gray;
       cursor: pointer;
       user-select: none;
     }
-
-    .el-tabs__item{
-      height: 60px;
-      line-height: 60px;
-      color: #fff;
-      &.is-active {
-        color: #00ffeb;
-      }
-    }
-    .el-tabs__active-bar{
-      background: #00ffeb;
-    }
-
     .auth-code_btn{
       background: rgba(11,161,248,0.4);
       color: #fff;

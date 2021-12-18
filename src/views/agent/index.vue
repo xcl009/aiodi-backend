@@ -2,94 +2,107 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-				<!-- <el-form-item label="排序:">
-				  <el-select v-model="form.sort" @change="toQuery()">
-				    <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-				  </el-select>
-				</el-form-item> -->
-				<el-form-item label="品牌名:">
-				  <el-input v-model="form.name" />
-				</el-form-item>
-				<!-- <el-form-item label="手机号码:">
-				  <el-input v-model="form.mobile" />
-				</el-form-item> -->
-				<el-form-item label="状态:">
-				  <el-select v-model="form.activated_status" @change="toQuery()">
-				    <el-option label="有效" :value="1" />
-				    <el-option label="无效" :value="2" />
-				    <el-option label="已删除" :value="0" />
-				  </el-select>
-				</el-form-item>
+        <!-- <el-select placeholder="排序" v-model="form.sort" @change="toQuery()">
+          <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
+        </el-select> -->
+        <el-input v-model="form.name" placeholder="品牌名"/>
+        <el-input v-model="form.mobile" placeholder="手机号码"/>
+        <!-- <el-select placeholder="状态" v-model="form.activated_status" @change="toQuery()">
+          <el-option label="有效" :value="1" />
+          <el-option label="无效" :value="2" />
+          <el-option label="已删除" :value="0" />
+        </el-select> -->
 		  </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/partner/edit`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
       </template>
 		</condition>
 
-    <div class="p-5">
-      <div class="bg-white">
-        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-          stripe highlight-current-row :max-height="tableMaxH">
-          <el-table-column label="品牌信息" width="130">
-            <template slot-scope="scope">
-              <div>{{ scope.row.name || '品牌名' }}</div>
-              <div>{{ scope.row.phone || '手机号码' }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="运营城市" width="120">
-            <template slot-scope="scope">
-              <div>{{ scope.row.charge_province || '广东'}}</div>
-              <div>{{ scope.row.charge_city || '深圳' }}</div>
-              <div>{{ scope.row.charge_county || '深圳' }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="公司名称">
-            <template slot-scope="scope">
-              {{ scope.row.child_agent_num || '--'}}
-            </template>
-          </el-table-column>
-          <el-table-column label="设备">
-            <template slot-scope="scope">
-              {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="下级总数" width="150">
-            <template slot-scope="scope">
-              <div>直属下级：{{ scope.row.child_agent_num || 0}}</div>
+    <div class="pl-15 pr-15 pb-5 bg-white">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+        :max-height="tableMaxH">
+        <el-table-column label="品牌信息" align="center" width="130">
+          <template slot-scope="scope">
+            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
+            <div>{{ scope.row.phone || '手机号码' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="运营城市" align="center" width="120">
+          <template slot-scope="scope">
+            <div>{{ scope.row.charge_county || '深圳' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="公司名称" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.child_agent_num || '--'}}
+          </template>
+        </el-table-column>
+        <el-table-column label="团长" align="center" width="130">
+          <template slot-scope="scope">
+            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
+            <div>{{ scope.row.phone || '手机号码' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="邀请人" align="center" width="130">
+          <template slot-scope="scope">
+            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
+            <div>{{ scope.row.phone || '手机号码' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="品类" align="center">
+          <template slot-scope="scope">
+            <div class="inline text-left">
+              <el-tag
+                class="cursor"
+                :hit="true"
+                size="medium"
+                effect="plain"
+                @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
+                {{ scope.row.depend_type_name || '密码线' }}&nbsp;&nbsp;{{ scope.row.goods_sum || '0' }}
+              </el-tag>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="下级总数" align="center" width="150">
+          <template slot-scope="scope">
+            <div class="inline text-left">
+              <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
               <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="收益" width="200">
-            <template slot-scope="scope">
-              <div class="cursor">
-                总收益：<span class="text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}元</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="190">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="toLogin(scope.row)" v-if="checkRoles(['terminal'])">一键登录</el-button>
-              <!-- <el-button type="primary" size="mini" round plain class="ml-0" @click="">权限设置</el-button>
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="">功能设置</el-button> -->
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="copyloginUrl(scope.row)">登录地址</el-button>
-              <!-- <el-button type="primary" size="mini" round plain class="ml-0" @click="getMapIcon(scope.row)">地图图标</el-button> -->
-              <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/partner/edit?son_id=${scope.row.id}`})">修改信息</el-button>
-              <el-button type="danger" size="mini" round plain class="ml-0" @click="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除品牌</el-button>
-              <el-button type="danger" size="mini" round plain class="ml-0" @click="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="flex justify-center">
-          <pagination
-            v-show="listQuery.count > 0"
-            :page.sync="listQuery.page"
-            :limit.sync="listQuery.size"
-            :total="listQuery.count"
-            @pagination="getList"
-          />
-        </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="收益(元)" align="center" width="150">
+          <template slot-scope="scope">
+            <span class="cursor text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="190">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
+            <el-button type="primary" size="mini" @click="">功能设置</el-button>
+            <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+            <el-dropdown trigger="click">
+              <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="$router.push({path: `/partner/edit?aid=${scope.row.id}`})">修改信息</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-dropdown-item>
+                <el-dropdown-item @click.native="getMapIcon(scope.row)">地图图标</el-dropdown-item>
+                <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除品牌</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="flex justify-center">
+        <pagination
+          v-show="listQuery.count > 0"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          :total="listQuery.count"
+          @pagination="getList"
+        />
       </div>
 
       <el-dialog title="地图图标设置" :visible.sync="iconDialog">
@@ -183,9 +196,7 @@
         },
         give_role: [],
         tableMaxH: '250',
-        list: [
-          {}
-        ],
+        list: [],
         deviceNum: {},
         listLoading: false,
         listQuery: {
@@ -195,7 +206,7 @@
           son_type: 0,
           page: 1,
           size: 20,
-          count: 10
+          count: 100
         },
         zuo_sn: '',
         selSnArr: [],
@@ -284,7 +295,7 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('brand/findPage', params).then(res => {
+        this.$get('iot-saas-user/brand/findPage', params).then(res => {
           this.listLoading = false
           this.list = res.list
           this.clickSubmit = false
@@ -303,7 +314,7 @@
        * 获取设备数量
        */
       getDeviceNum(agent_ids){
-        this.$get('SyStatistics/getAgentDeviceNum', {
+        this.$get('SyStatistics/getmyDeviceNum', {
           agent_ids: JSON.stringify(agent_ids)
         }).then(res => {
           this.clickSubmit = false
@@ -646,16 +657,5 @@
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-tabs__header {
-    margin-bottom: 0;
-  }
 
-  .el-dropdown-link {
-    cursor: pointer;
-    color: #90c328;
-  }
-
-  /deep/ #list_table .el-button+.el-button {
-    margin-left: 0;
-  }
 </style>

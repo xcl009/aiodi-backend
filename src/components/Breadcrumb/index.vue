@@ -31,10 +31,10 @@ export default {
       // only show routes with meta.title
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
-
-      if (!this.ishome(first)) {
-        matched = [{ path: '/home', meta: { title: '主页' }}].concat(matched)
-      }
+      
+      // if (!this.ishome(first)) {
+      //   matched = [{ path: '/home', meta: { title: '主页' }}].concat(matched)
+      // }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
     },
@@ -65,14 +65,17 @@ export default {
 
 <style lang="scss" scoped>
 .app-breadcrumb.el-breadcrumb {
-  display: inline-block;
   font-size: 14px;
-  line-height: 40px;
-  margin-left: 8px;
+  line-height: 55px;
+  // margin-left: 8px;
 
   .no-redirect {
-    color: #97a8be;
     cursor: text;
+  }
+  .el-breadcrumb__item{
+    .no-redirect{
+      font-weight: 600 !important;
+    }
   }
 }
 </style>

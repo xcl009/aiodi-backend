@@ -1,7 +1,7 @@
 import { $post, $get } from '@/utils/request'
 
 export function login(data) {
-  return $post('open/login', data)
+  return $post('iot-saas-user/open/admin/login', data)
 }
 
 export function codeLogin(data) {
@@ -18,8 +18,8 @@ export function getPlatformConfig(params = {}) {
   return $get('commonapi/get_platform_config', params)
 }
 
-export function getDeviceType() {
-  return $get('agentapi/ucenter/my_device_type')
+export function getMyDevice() {
+  return $get('iot-saas-basic/device/type/loadAll')
 }
 
 export function postSetRecode(data) {

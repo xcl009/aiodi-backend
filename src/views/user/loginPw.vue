@@ -1,25 +1,26 @@
 <template>
-  <div class="p-10">
-    <div class="p-30 bg-white flex justify-center">
-      <el-form ref="form" :model="loginForm" label-width="100px" style="width: 500px">
-        <el-form-item label="手机号码：">
-          <div>{{ agentInfo.phone }}</div>
+  <el-row type="flex" justify="center" class="p-30  custom-form bg-white">
+    <el-col :xs="24" :sm="12" :md="6" :lg="6">
+      <el-form ref="form" :model="form">
+        <el-form-item label="手机号码">
+          <el-input v-model="form.phone" disabled=""></el-input>
         </el-form-item>
-        <el-form-item label="旧密码：">
-          <el-input v-model="loginForm.old_pwd" type="password"></el-input>
+        <el-form-item label="旧密码">
+          <el-input v-model="form.old_pwd" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="新密码：">
-          <el-input v-model="loginForm.cur_pwd" type="password"></el-input>
+        <el-form-item label="新密码">
+          <el-input v-model="form.cur_pwd" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码：">
-          <el-input v-model="loginForm.re_pwd" type="password"></el-input>
+        <el-form-item label="确认密码">
+          <el-input v-model="form.re_pwd" type="password"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="postEdit(1)" :disabled="clickSubmit">确定</el-button>
+        <el-form-item class="text-center">
+          <el-button type="primary" size="medium" :disabled="clickSubmit" @click="postEdit()">保存信息</el-button>
+          <el-button size="medium" class="btn-body" @click="$router.push({path: `/home`})">取消</el-button>
         </el-form-item>
        </el-form>
-    </div>
-  </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -31,7 +32,7 @@
     data() {
       return {
         clickSubmit: false,
-        loginForm: {}
+        form: {}
       }
     },
     computed: {
@@ -56,8 +57,8 @@
       /**
        * 修改密码
        */
-      postEdit(type) {
-        let url = 'agentapi/edit_password_save', params = this.loginForm
+      postEdit() {
+        let url = 'agentapi/edit_password_save', params = this.form
         params.type = 0
         this.clickSubmit = true
         this.$post(url, params).then(res => {

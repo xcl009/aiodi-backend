@@ -2,11 +2,13 @@
 $--color-primary: #3CA0FD;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 @import "~element-ui/packages/theme-chalk/src/index";
+@import '~element-ui/lib/theme-chalk/display.css';
 @import './variables.scss';
 @import './mixin.scss';
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
+@import './font.scss';
 
 html {
   height: 100%;
@@ -14,14 +16,70 @@ html {
 }
 
 body {
+  --red: #e54d42;
+  --orange: #FF644F;
+  --yellow: #FFA32B;
+  --olive: #3CA1FE;
+  --green: #07C160;
+  /* --green: rgba(32, 172, 123, 1); */
+  --cyan: #00D9EB;
+  --blue: #0081ff;
+  --purple: #6739b6;
+  --mauve: #9c26b0;
+  --pink: #e03997;
+  --brown: #a5673f;
+  --grey: #8799a3;
+  --black: #222222;
+  --darkGray: #666666;
+  --gray: #C9CDD4;
+  --ghostWhite: #f1f1f1;
+  --white: rgba(255,255,255,1);
+  /* 浅色 */
+  --redLight: #fadbd9;
+  --orangeLight: #fde6d2;
+  --yellowLight: #fef2ce;
+  --oliveLight: rgba(60, 161, 254, 0.1);
+  --greenLight: #d7f0db;
+  --cyanLight: #d2f1f0;
+  --blueLight: #cce6ff;
+  --purpleLight: #e1d7f0;
+  --mauveLight: #ebd4ef;
+  --pinkLight: #f9d7ea;
+  --brownLight: #ede1d9;
+  --greyLight: #e7ebed;
+  --bodyBg: #F2F3F5;
+  /* 渐变色 */
+  --gradualRed: linear-gradient(45deg, #f43f3b, #ec008c);
+  --gradualOrange: linear-gradient(45deg, #ff9700, #ed1c24);
+  --gradualGreen: linear-gradient(45deg, #39b54a, #8dc63f);
+  --gradualPurple: linear-gradient(45deg, #9000ff, #5e00ff);
+  --gradualPink: linear-gradient(45deg, #ec008c, #6739b6);
+  --gradualBlue: linear-gradient(45deg, #0081ff, #1cbbb4);
+  /* 阴影透明色 */
+  --ShadowSize: 6rpx 6rpx 8rpx;
+  --redShadow: rgba(204, 69, 59, 0.2);
+  --orangeShadow: rgba(217, 109, 26, 0.2);
+  --yellowShadow: rgba(224, 170, 7, 0.2);
+  --oliveShadow: rgba(124, 173, 55, 0.2);
+  --greenShadow: rgba(48, 156, 63, 0.2);
+  --cyanShadow: rgba(28, 187, 180, 0.2);
+  --blueShadow: rgba(0, 102, 204, 0.2);
+  --purpleShadow: rgba(88, 48, 156, 0.2);
+  --mauveShadow: rgba(133, 33, 150, 0.2);
+  --pinkShadow: rgba(199, 50, 134, 0.2);
+  --brownShadow: rgba(140, 88, 53, 0.2);
+  --greyShadow: rgba(114, 130, 138, 0.2);
+  --grayShadow: rgba(114, 130, 138, 0.2);
+  --blackShadow: rgba(26, 26, 26, 0.2);
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family:  Microsoft YaHei,  Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,Arial, sans-serif;
-  background: #f1f1f1;
-  font-size: 16px;
+  font-family: D-DIN, Inter,-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,noto sans,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
+  background: var(--bodyBg);
+  font-size: 14px;
   line-height: 1.4;
+  color: #4E5969;
 }
 
 ul,li{ padding: 0; margin: 0; list-style: none; }
@@ -61,29 +119,26 @@ div:focus {
 // /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar
 {
-  width: 6px;  /*滚动条宽度*/
-  height: 12px;  /*滚动条高度*/
+  width: 10px;  /*滚动条宽度*/
+  height: 10px;  /*滚动条高度*/
 }
 ::-moz-scrollbar
 {
-  width: 6px;  /*滚动条宽度*/
-  height: 12px;  /*滚动条高度*/
+  width: 10px;  /*滚动条宽度*/
+  height: 10px;  /*滚动条高度*/
 }
 
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb
 {
-    border-radius: 6px;  /*滚动条的圆角*/
-    background-color: rgba(220,220,220,1);/*滚动条的背景颜色*/
-}
-::-moz-scrollbar-thumb
-{
-    border-radius: 6px;  /*滚动条的圆角*/
-    background-color: rgba(220,220,220,1);/*滚动条的背景颜色*/
+  //border-radius: 6px;  /*滚动条的圆角*/
+  background-color: var(--bodyBg);/*滚动条的背景颜色*/
 }
 
-.el-table__fixed-right{
-  bottom: 12px!important;
+::-moz-scrollbar-thumb
+{
+  //border-radius: 6px;  /*滚动条的圆角*/
+  background-color: var(--bodyBg);/*滚动条的背景颜色*/
 }
 
 .clearfix {
@@ -138,12 +193,24 @@ div:focus {
   background-color: #fff;
 }
 
+.bg-body{
+  background-color: var(--bodyBg);
+}
+
+.m-auto{
+  margin: 0 auto;
+}
+
 .block {
   display: block;
 }
 
 .dnone {
   display: none;
+}
+
+.inline {
+  display: inline-block;
 }
 
 /*flex布局类*/
@@ -284,7 +351,9 @@ div:focus {
 .pt-50 {
   padding-top: 50px;
 }
-
+.pb-5 {
+  padding-bottom: 5px;
+}
 .pb-10 {
   padding-bottom: 10px;
 }
@@ -436,6 +505,9 @@ div:focus {
 .ml-10 {
   margin-left: 10px;
 }
+.ml-15 {
+  margin-left: 15px;
+}
 
 .ml-20 {
   margin-left: 20px;
@@ -463,6 +535,7 @@ div:focus {
 .mr-15 {
   margin-right: 15px;
 }
+
 .mr-20 {
   margin-right: 20px;
 }
@@ -552,11 +625,11 @@ div:focus {
   font-size: 26px;
 }
 
-.f-w {
+.text-bold {
   font-weight: bold;
 }
 
-.f-500 {
+.text-initial {
   font-weight: 500;
 }
 
@@ -585,20 +658,30 @@ div:focus {
 }
 
 .text-primary{
-  color: #90c328;
+  color: var(--olive);
 }
 
 .text-white{
   color: white;
 }
 
+.text-black{
+  color: #1D2129;
+}
+
 .text-danger{
-  color: #F56C6C;
+  color: #FF5353;
+}
+
+.text-green{
+  color: var(--green);
 }
 
 .text-gray{
-  color: gray;
+  color: var(--gray);
 }
+
+
 
 .text-six{
   color: #666;
@@ -678,32 +761,14 @@ div:focus {
   border-color: #fff;
 }
 
+.btn-body{
+  background-color: var(--bodyBg);
+  border-color: var(--bodyBg);
+  color: #86909C;
+}
+
 .first-indent{
   text-indent: 2em;
-}
-
-
-.filter-froms{
-  .el-form-item{
-    margin-right: 0;
-  }
-  .el-input__inner, .el-input{
-    width: 130px;
-  }
-  .el-form-item__label{
-    padding-left: 12px;
-  }
-  .el-button{
-    margin-left: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-}
-
-.filter-from {
-  .el-input__inner{
-    width: 120px;
-  }
 }
 
 .el-image-viewer__close{
@@ -728,65 +793,97 @@ div:focus {
   border-bottom: 1px solid #E4E7ED;
 }
 
-@media only screen and (max-width: 768px) {
-    .hidden-xs-and-down {
-        display:none!important
+.ptd-5.el-table, .custom.el-table{
+  border: thin solid #EBEEF5;
+  border-bottom: none;
+  color: #4E5969;
+  .has-gutter th{
+    background-color: #F2F3F5;
+    font-weight: 500;
+    color: #1D2129;
+  }
+  .el-table__fixed-right{
+    right: 0px !important;
+    bottom: 9px !important;
+    box-shadow: none;
+    border-left: thin solid #EBEEF5;
+    &::before{
+      height: 0;
     }
+    th{
+      background-color: #F2F3F5;
+    }
+  }
+  .el-table__body-wrapper.is-scrolling-none ~ .el-table__fixed-right{
+    border-left: none;
+  }
+  .el-button--mini{
+    margin: 5px;
+    min-width: 70px;
+    height: 28px;
+    padding: 7px 10px;
+  }
+}
+.ptd-5.el-table{
+  td {
+    padding: 5px 0 !important;
+  }
+  .cell{
+    padding: 0 5px;
+  }
 }
 
-@media only screen and (min-width: 769px) {
-    .hidden-sm-and-up {
-        display:none!important
-    }
+/**
+ * 自定义form租借样式
+ */
+.custom-form{
+  .el-input__inner{
+    padding: 0 12px;
+    height: 32px;
+    border: none;
+    border-radius: 2px;
+    background: #F2F3F5;
+    line-height: 32px;
+  }
+  .el-form-item__label{
+    font-weight: 500;
+    color: #4E5969;
+  }
+  .el-cascader{
+    width: 100%;
+  }
 }
 
-@media only screen and (max-width: 989px) {
-    .hidden-sm-and-down {
-        display: none!important
+/**
+ * 筛选公共样式
+ */
+.box-grey{
+  height: 32px;
+  background: #F2F3F5;
+  border-radius: 2px;
+  .el-range-separator{
+    margin-right: 5px;
+    font-size: 16px;
+    line-height: 26px;
+    color: var(--gray);
+  }
+  .range-day{
+    width: inherit;
+    border: none;
+    background: none;
+    .el-input__icon{
+      line-height: 28px;
     }
-}
-
-@media only screen and (min-width: 990px) {
-    .hidden-md-and-up {
-        display:none!important
+    .el-range-input{
+      
+      height: 32px;
+      background: none !important;
+      text-align: left;
     }
-}
-
-@media only screen and (max-width: 1199px) {
-    .hidden-md-and-down {
-        display:none!important
+    @media (min-width: 769px) {
+      .el-range-input{
+        width: 102px;
+      }
     }
-}
-
-@media only screen and (min-width: 1200px) {
-    .hidden-lg-and-up {
-        display:none!important
-    }
-}
-
-@media only screen and (max-width: 1599px) {
-    .hidden-lg-and-down {
-        display:none!important
-    }
-}
-
-@media only screen and (min-width: 1600px) {
-    .hidden-xg-and-up {
-        display: none!important
-    }
-}
-@media only screen and (max-width: 1919px) {
-    .hidden-xg-and-down {
-      display: none!important
-    }
-}
-
-@media only screen and (min-width: 1920px) {
-    .hidden-xl-only {
-      display: none!important
-    }
-}
-
-.ptd-5.el-table td{
-  padding: 5px 0 !important;
+  }
 }
