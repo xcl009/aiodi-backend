@@ -1,0 +1,339 @@
+<template>
+  <div>
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+      <template v-slot:defult>
+        <el-input v-model="form.qrcodeSn" placeholder="二维码"/>
+        <el-input v-model="form.deviceSn" placeholder="设备SN"/>
+        <el-input v-model="form.storeName" placeholder="商户名称" />
+        <el-input v-model="form.agentName" placeholder="代理名称" />
+        <el-input v-model="form.brandName" placeholder="品牌名称" />
+        <el-input v-model="form.factoryName" placeholder="公司名称" />
+      </template>
+    </condition>
+
+    <div class="pl-15 pr-15 pb-5 bg-white">
+      <div class="mb-15 flex">
+        <div class="flex1">
+          <el-button size="medium" :type="listQuery.device_status == item.value ? 'primary' : ''" :class="{'btn-body': listQuery.device_status != item.value}" v-for="item in device_status" @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+        </div>
+      </div>
+
+      <div class="bg-white">
+        <el-table
+          class="ptd-5"
+          id="list_table"
+          ref="list_table"
+          v-loading="listLoading"
+          :data="list"
+          element-loading-text="Loading"
+          stripe
+          highlight-current-row
+          @selection-change="selList"
+          :max-height="tableMaxH"
+        >
+          <el-table-column type="selection" v-if="checkRoles(['terminal'])" width="50" />
+          <el-table-column type="selection" v-else :selectable="checkSel" width="50" />
+          <el-table-column label="品牌商" align="center">
+            <template slot-scope="scope">
+              {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '品牌名' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="设备名称" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.goods_name || '密码线' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="设备归属" align="center" width="180">
+            <template slot-scope="scope">
+              <div>{{ scope.row.manage_name || '用户名' }}</div>
+              <div>{{ scope.row.manage_phone || '手机号码' }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="设备SN码" align="center" width="230">
+            <template slot-scope="scope">
+              <div class="inline text-left">
+                <div>二维码：{{ scope.row.goods_sn || "--" }}</div>
+                <div class="text-cut">设备SN：{{ scope.row.device_id || "--" }}</div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="设备属性" align="center" width="110">
+            <template slot-scope="scope">
+              工厂：--
+            </template>
+          </el-table-column>
+          <el-table-column label="是否铺货" align="center" width="100">
+            <template slot-scope="scope">
+              <div>{{ scope.row.is_distributed == 1 ? "是" : "否" }}</div>
+              <div>{{ scope.row.operate_date }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="商户名称" align="center" width="150">
+            <template slot-scope="scope">
+              <div class="text-cut_two">{{ scope.row.store_name || "--" }}</div>
+              <div v-if="scope.row.attach_room_no">房间号：{{ scope.row.attach_room_no }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="订单数" align="center" width="120">
+            <template slot-scope="scope">
+              <div class="inline text-left">
+                <div>微信：<el-link type="primary" @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=1`})">{{ scope.row.wx_mini_num || 0 }}</el-link></div>
+                <div>支付宝：<el-link type="primary" @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=2`})">{{ scope.row.zfb_mini_num || 0 }}</el-link></div>
+              </div>
+
+            </template>
+          </el-table-column>
+          <el-table-column label="交易额(元)" align="center" width="90">
+            <template slot-scope="scope">
+              {{ scope.row.order_amount || '0.00' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" align="center" width="120" v-if="false">
+            <template slot-scope="scope">
+              <div class="text-danger">已绑定</div>
+              <div>2021-11-26 18:27</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="190" :fixed="device == 'desktop' ? 'right' : false">
+            <template slot-scope="scope">
+              <div class="inline text-left">
+                <el-button type="primary" size="mini" @click="deviceBelong(scope.row)" class="mb-5">设备归属</el-button>
+                <!-- <el-button type="primary" size="mini" @click="deviceBelong(scope.row)" class="ml-0" v-if="scope.$index == 0">去铺货</el-button>
+                <el-button type="primary" size="mini" @click="deviceBelong(scope.row)" class="ml-0" v-if="scope.$index == 1">去分配</el-button> -->
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <div class="flex justify-center">
+          <pagination
+            v-show="listQuery.pageSize > 0"
+            :page.sync="listQuery.page"
+						:limit.sync="listQuery.size"
+            @pagination="getList"
+          />
+        </div>
+      </div>
+
+      <el-dialog title="设备归属" :visible.sync="deviceBelongDialog">
+        <el-table :data="deviceBelong">
+          <el-table-column label="角色" property="role_name" />
+          <el-table-column label="联系信息">
+            <template slot-scope="scope">
+              <div v-if="checkRoles(['terminal','partner'])">姓名：{{ scope.row.name }}&nbsp;&nbsp;&nbsp;&nbsp;电话：{{ scope.row.phone }}</div>
+              <div v-if="scope.row.agent_level == 5">商户名：{{ eqiupStore.store_name }}</div>
+              <div v-if="scope.row.agent_level == 5">地址：{{ eqiupStore.address }}</div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
+
+      <el-dialog title="设备弹出" :visible.sync="baoDialog">
+        <el-table :data="baoList">
+          <el-table-column label="卡槽位置" property="cang_num" />
+          <el-table-column label="电池编号">
+            <template slot-scope="scope">{{ scope.row.bao_sn || '--' }}</template>
+          </el-table-column>
+          <el-table-column label="电池电量">
+            <template slot-scope="scope">{{ scope.row.electricity ? scope.row.electricity + '%' : '--' }}</template>
+          </el-table-column>
+          <el-table-column label="弹出次数">
+            <template slot-scope="scope">{{ scope.row.used_num || '--' }}</template>
+          </el-table-column>
+          <el-table-column label="在线状态">
+            <template slot-scope="scope">{{ statusArr[scope.row.bao_status] || '已弹出' }}</template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="primary" size="small" plain round :disabled="scope.row.bao_status != 0" @click="devicePopup(scope.row)">弹出</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
+    </div>
+  </div>
+</template>
+
+<script>
+  import Pagination from '@/components/Pagination'
+  import condition from '@/components/condition/'
+
+  export default {
+    name: 'device',
+    components: {
+      Pagination,
+      condition
+    },
+    props: {
+      user_type: {
+        type: Number,
+        default: 0
+      }
+    },
+    computed: {
+      device() {
+        return this.$store.state.app.device
+      },
+      myDeviceName() {
+        return this.$store.state.user.myDeviceName
+      },
+      myDeviceId() {
+        return this.$store.state.user.myDeviceId
+      },
+      myDevice() {
+        return this.$store.state.user.myDevice
+      },
+      agentInfo() {
+        return this.$store.getters.agentInfo
+      },
+      siteInfo() {
+        return this.$store.getters.siteInfo
+      }
+    },
+    data() {
+      return {
+        clickSubmit: false,
+        device_status: [
+          {
+            value: 0,
+            title: '全部',
+            nkey: ''
+          },
+          {
+            value: 1,
+            title: '已绑',
+            nkey: ''
+          },
+          {
+            value: 2,
+            title: '未绑',
+            nkey: ''
+          }
+        ],
+        form: {
+          //search_store_name: this.$route.query.store_name || ''
+        },
+        numInfo: {},
+        tableMaxH: '250',
+        oemInfo: {},
+        list: [{},{}],
+        listLoading: false,
+        listQuery: {
+          // device_status: this.$route.query.device_status || 0,
+          // search_user_type: this.user_type,
+          page: 1,
+          size: 20
+        },
+
+        selSnArr: [],
+        selID: [],
+
+        // 设备归属
+        deviceBelong: [],
+        eqiupStore: {},
+        deviceBelongDialog: false,
+
+        // 设备弹出
+        statusArr: ['在槽', '借出中', '已借出', '异常'],
+        baoList: [],
+        baoDialog: false
+      }
+    },
+    mounted(options) {
+      this.toQuery()
+    },
+    methods: {
+      /**
+       * 信号值注解
+       */
+      renderHeader(h, { column, $index }) {
+        return [column.label, h(
+          'el-tooltip',
+          {
+            props: {
+                content: '0~31，31为最好，大于18方可连接网络',
+                placement: 'top'
+            }
+          },
+          [h('span', { class: {'el-icon-question': true} })]
+        )]
+      },
+
+      /**
+       * 校验是否可选
+       */
+      checkSel(row) {
+        return row.is_distributed == 0
+      },
+
+      /**
+       * 选择设备
+       * @param {Object} res
+       */
+      selList(list) {
+        let selSnArr = [], selID = []
+        for (var i in list) {
+          selSnArr.push(list[i].goods_sn)
+          selID.push(list[i].id)
+        }
+        this.selSnArr = selSnArr
+        this.selID = selID
+      },
+
+      /**
+       * 搜索查询
+       */
+      toQuery() {
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        this.listQuery.page = 1
+        this.listQuery.size = 20
+        //this.getStatNum()
+        this.getList()
+      },
+
+      /**
+       * 重置查询
+       */
+      reset(){
+        this.form = {}
+        this.listQuery.page = 1
+        this.listQuery.size = 20
+        this.getStatNum()
+        this.getList()
+      },
+
+      /**
+       * 获取列表
+       */
+      getList() {
+        var params = Object.assign({}, this.form, this.listQuery, {
+          page: this.listQuery.page
+        })
+        this.$get('iot-saas-device/device/findPage', params).then(res => {
+          this.listLoading = false
+          this.list = res.list
+          this.clickSubmit = false
+          this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+        }).catch(() => {
+          this.clickSubmit = false
+          this.listLoading = false
+        })
+      },
+
+      /**
+       * 数量
+       */
+      getStatNum() {
+        const listQuery = Object.assign({}, this.listQuery, this.form)
+        this.$get('agentapi/device_data_stat_num', listQuery).then(res => {
+          this.numInfo = res
+        })
+      },
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+
+</style>
