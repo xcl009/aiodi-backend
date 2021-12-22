@@ -70,8 +70,8 @@
       }
     },
     computed: {
-      deviceNameObj(){
-        return Object.values(this.$store.state.user.deviceNameObj)
+      myDeviceName(){
+        return Object.values(this.$store.state.user.myDeviceName)
       }
     },
     mounted() {
@@ -91,7 +91,7 @@
        * 是否隐藏洗衣机分享设置
        */
       tableStyle(row){
-        if(row.row.mould_type < 20 && this.deviceNameObj.indexOf(row.row.mould_type) == -1){
+        if(row.row.mould_type < 20 && this.myDeviceName.indexOf(row.row.mould_type) == -1){
           return { 'display' : 'none' }
         }
       },

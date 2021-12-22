@@ -2,11 +2,11 @@
   <div class="mb-10 pl-10 pr-10 pt-10 flex align-center justify-between equip-head">
     <b class="mr-15">{{ title }}</b>
     <div class="flex flex-wrap flex1" v-if="showEquip">
-      <div class="mr-15 flex align-center fs-s2 cursor equip-label" :class="device_type == '-1' ? 'act' : ''" @click="switchType(-1)" v-if="deviceNameObj && Object.values(deviceNameObj).length > 1">
+      <div class="mr-15 flex align-center fs-s2 cursor equip-label" :class="device_type == '-1' ? 'act' : ''" @click="switchType(-1)" v-if="myDeviceName && Object.values(myDeviceName).length > 1">
         <span class="mr-5 label-bg" :style="{'background': colorPalette[7]}"></span>
         <span>全部</span>
       </div>
-      <div class="mr-15 flex align-center fs-s2 cursor equip-label" :class="device_type == item ? 'act' : ''" v-for="(item, index) in deviceNameObj" @click="switchType(item)">
+      <div class="mr-15 flex align-center fs-s2 cursor equip-label" :class="device_type == item ? 'act' : ''" v-for="(item, index) in myDeviceName" @click="switchType(item)">
         <span class="mr-5 label-bg" :style="{'background': colorPalette[item]}"></span>
         <span>{{ index }}</span>
       </div>
@@ -46,8 +46,8 @@ export default {
     }
   },
   computed: {
-    deviceNameObj(){
-      return this.$store.getters.deviceNameObj
+    myDeviceName(){
+      return this.$store.getters.myDeviceName
     }
   },
   data(){

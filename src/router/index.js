@@ -7,7 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /**
- * saas角色权限菜单
+ * admin角色权限菜单
  */
 export const saasRoutes = [
   {
@@ -18,7 +18,7 @@ export const saasRoutes = [
       {
         path: '/home',
         name: 'home',
-        component: () => import('@/views/home/home'),
+        component: () => import('@/saas/home/home'),
         meta: {
           title: '主页',
           icon: 'home'
@@ -33,7 +33,7 @@ export const saasRoutes = [
       {
         path: '/order',
         name: 'order',
-        component: () => import('@/views/order/index'),
+        component: () => import('@/saas/order/index'),
         meta: {
           title: '订单管理',
           icon: 'order'
@@ -51,7 +51,7 @@ export const saasRoutes = [
       {
         path: '/device',
         name: 'device',
-        component: () => import('@/views/device/index'),
+        component: () => import('@/saas/device/index'),
         meta: {
           title: '设备管理',
           icon: 'device'
@@ -66,7 +66,7 @@ export const saasRoutes = [
       {
         path: '/store',
         name: 'store',
-        component: () => import('@/views/store/index'),
+        component: () => import('@/saas/store/index'),
         meta: {
           title: '商户管理',
           icon: 'store'
@@ -79,9 +79,9 @@ export const saasRoutes = [
     component: Layout,
     children: [
       {
-        path: '/userManage',
-        name: 'userManage',
-        component: () => import('@/views/userManage/index'),
+        path: '/userList',
+        name: 'userList',
+        component: () => import('@/saas/userManage/index'),
         meta: {
           title: '用户管理',
           icon: 'userList'
@@ -101,7 +101,7 @@ export const saasRoutes = [
       {
         path: 'index',
         name: 'agent',
-        component: () => import('@/views/agent/index'),
+        component: () => import('@/saas/agent/index'),
         meta: {
           title: '我的品牌',
           keepAlive: true
@@ -110,7 +110,7 @@ export const saasRoutes = [
       {
         path: 'subAgent',
         name: 'subAgent',
-        component: () => import('@/views/agent/subAgent'),
+        component: () => import('@/saas/agent/subAgent'),
         meta: {
           title: '下级管理',
           keepAlive: true
@@ -119,7 +119,7 @@ export const saasRoutes = [
       {
         path: 'edit',
         name: 'agentEdit',
-        component: () => import('@/views/agent/edit'),
+        component: () => import('@/saas/agent/edit'),
         meta: {
           title: '添加品牌'
         },
@@ -139,7 +139,7 @@ export const saasRoutes = [
       {
         path: 'payRecord',
         name: 'payRecord',
-        component: () => import('@/views/app/payRecord'),
+        component: () => import('@/saas/app/payRecord'),
         meta: {
           title: '服务记录',
           keepAlive: true
@@ -148,7 +148,7 @@ export const saasRoutes = [
       {
         path: 'market',
         name: 'market',
-        component: () => import('@/views/app/market'),
+        component: () => import('@/saas/app/market'),
         meta: {
           title: '定价设置',
           keepAlive: true
@@ -157,7 +157,7 @@ export const saasRoutes = [
       {
         path: 'create',
         name: 'create',
-        component: () => import('@/views/app/edit'),
+        component: () => import('@/saas/app/edit'),
         meta: {
           title: '添加服务'
         }
@@ -177,7 +177,7 @@ export const saasRoutes = [
       {
         path: 'index',
         name: 'userInfo',
-        component: () => import('@/views/user/index'),
+        component: () => import('@/saas/user/index'),
         meta: {
           title: '个人信息'
         }
@@ -185,7 +185,7 @@ export const saasRoutes = [
       {
         path: 'lpw',
         name: 'loginPw',
-        component: () => import('@/views/user/loginPw'),
+        component: () => import('@/saas/user/loginPw'),
         meta: {
           title: '登陆密码'
         }
@@ -204,7 +204,7 @@ export const saasRoutes = [
       {
         path: 'income',
         name: 'income',
-        component: () => import('@/views/money/income'),
+        component: () => import('@/saas/money/income'),
         meta: {
           title: '收益明细'
         }
@@ -212,13 +212,299 @@ export const saasRoutes = [
       {
         path: 'dayMoney',
         name: 'dayMoney',
-        component: () => import('@/views/money/dayMoney'),
+        component: () => import('@/saas/money/dayMoney'),
         meta: {
           title: '日交易额'
         }
       }
     ]
+  }
+]
+
+/**
+ * brand,agent角色权限菜单
+ */
+export const brandRoutes = [
+  {
+    path: '/',
+    redirect: '/home',
+    component: Layout,
+    children: [
+      {
+        path: '/home',
+        name: 'home',
+        component: () => import('@/brand/home/home'),
+        meta: {
+          title: '主页',
+          icon: 'home'
+        }
+      },
+    ],
   },
+  {
+    path: '/order',
+    component: Layout,
+    redirect: '/order/meOrder',
+    meta: {
+      title: '订单管理',
+      icon: 'order'
+    },
+    children: [
+      {
+        path: 'meOrder',
+        name: 'meOrder',
+        component: () => import('@/brand/order/index'),
+        meta: {
+          title: '我的订单'
+        },
+        props:{
+          user_type: 0
+        }
+      },
+      {
+        path: 'subOrder',
+        name: 'subOrder',
+        component: () => import('@/brand/order/index'),
+        meta: {
+          title: '下级订单'
+        },
+        props: {
+          user_type: 1
+        }
+      }
+    ]
+  },
+  {
+    path: '/device',
+    component: Layout,
+    redirect: '/order/meDevice',
+    meta: {
+      title: '设备管理',
+      icon: 'device'
+    },
+    children: [
+      {
+        path: 'meDevice',
+        name: 'meDevice',
+        component: () => import('@/brand/device/index'),
+        meta: {
+          title: '我的设备'
+        },
+        props:{
+          user_type: 0
+        }
+      },
+      {
+        path: 'subDevice',
+        name: 'subDevice',
+        component: () => import('@/brand/device/index'),
+        meta: {
+          title: '下级设备'
+        },
+        props:{
+          user_type: 1
+        }
+      }
+    ]
+  },
+  {
+    path: '/store',
+    component: Layout,
+    redirect: '/store/meStore',
+    meta: {
+      title: '商户管理',
+      icon: 'store'
+    },
+    children: [
+      {
+        path: 'meStore',
+        name: 'meStore',
+        component: () => import('@/brand/store/index'),
+        meta: {
+          title: '我的商户'
+        },
+        props:{
+          user_type: 0
+        }
+      },
+      {
+        path: 'subStore',
+        name: 'subStore',
+        component: () => import('@/brand/store/index'),
+        meta: {
+          title: '下级商户'
+        },
+        props:{
+          user_type: 1
+        }
+      }
+    ]
+  },
+  {
+    path: '/userManage',
+    component: Layout,
+    redirect: '/userManage/userList',
+    meta: {
+      title: '用户管理',
+      icon: 'userList'
+    },
+    children: [
+      {
+        path: 'userList',
+        name: 'userList',
+        component: () => import('@/brand/userManage/index'),
+        meta: {
+          title: '用户列表'
+        }
+      },
+      {
+        path: 'payComplaints',
+        name: 'payComplaints',
+        component: () => import('@/brand/userManage/payComplaints'),
+        meta: {
+          title: '用户投诉'
+        }
+      },
+      {
+        path: 'feedback',
+        name: 'userFeedback',
+        component: () => import('@/brand/userManage/feedback'),
+        meta: {
+          title: '用户反馈'
+        }
+      }
+    ]
+  },
+  {
+    path: '/agent',
+    component: Layout,
+    redirect: '/agent/index',
+    meta: {
+      title: '代理管理',
+      icon: 'agent'
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'agent',
+        component: () => import('@/brand/agent/index'),
+        meta: {
+          title: '我的代理',
+          keepAlive: true
+        }
+      },
+      {
+        path: 'subAgent',
+        name: 'subAgent',
+        component: () => import('@/brand/agent/subAgent'),
+        meta: {
+          title: '下级管理',
+          keepAlive: true
+        }
+      },
+      {
+        path: 'edit',
+        name: 'agentEdit',
+        component: () => import('@/brand/agent/edit'),
+        meta: {
+          title: '添加代理'
+        },
+        hidden: true
+      },
+    ]
+  },
+  {
+    path: '/app',
+    component: Layout,
+    redirect: '/app/market',
+    meta: {
+      title: '服务管理',
+      icon: 'fuwu'
+    },
+    children: [
+      {
+        path: 'payRecord',
+        name: 'payRecord',
+        component: () => import('@/brand/app/payRecord'),
+        meta: {
+          title: '服务记录',
+          keepAlive: true
+        }
+      },
+      {
+        path: 'market',
+        name: 'market',
+        component: () => import('@/brand/app/market'),
+        meta: {
+          title: '定价设置',
+          keepAlive: true
+        }
+      },
+      {
+        path: 'create',
+        name: 'create',
+        component: () => import('@/brand/app/edit'),
+        meta: {
+          title: '添加服务'
+        }
+      }
+    ]
+  },
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/index',
+    meta: {
+      title: '个人信息',
+      icon: 'user'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        name: 'userInfo',
+        component: () => import('@/brand/user/index'),
+        meta: {
+          title: '个人信息'
+        }
+      },
+      {
+        path: 'lpw',
+        name: 'loginPw',
+        component: () => import('@/brand/user/loginPw'),
+        meta: {
+          title: '登陆密码'
+        }
+      }
+    ]
+  },
+  {
+    path: '/money',
+    component: Layout,
+    redirect: '/money/index',
+    meta: {
+      title: '收益明细'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'income',
+        name: 'income',
+        component: () => import('@/brand/money/income'),
+        meta: {
+          title: '收益明细'
+        }
+      },
+      {
+        path: 'dayMoney',
+        name: 'dayMoney',
+        component: () => import('@/brand/money/dayMoney'),
+        meta: {
+          title: '日交易额'
+        }
+      }
+    ]
+  }
 ]
 
 /**

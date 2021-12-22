@@ -89,7 +89,7 @@
         </el-form-item>
         <el-form-item label="设备类型：">
           <el-radio-group v-model="memberObj.depend_type">
-            <el-radio-button :label="key" :disabled="key != 3" v-for="(item, key) in deviceKeyObj">{{ item }}</el-radio-button>
+            <el-radio-button :label="key" :disabled="key != 3" v-for="(item, key) in myDeviceId">{{ item }}</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="会员类型：">
@@ -122,8 +122,8 @@
       condition
     },
     computed: {
-      deviceKeyObj(){
-        return this.$store.state.user.deviceKeyObj
+      myDeviceId(){
+        return this.$store.state.user.myDeviceId
       },
       agentInfo(){
         return this.$store.getters.agentInfo
@@ -186,7 +186,7 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('agentapi/search/query_orders_new', params).then(res => {
+        this.$get('open/user/findPage', params).then(res => {
           this.listLoading = false
           this.list = res.list
           this.clickSubmit = false

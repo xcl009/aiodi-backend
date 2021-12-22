@@ -6,7 +6,7 @@
       <el-table ref="list_table" :data="list" stripe highlight-current-row :max-height="tableMaxH">
         <el-table-column label="一级设备类型">
           <template slot-scope="scope">
-            {{ deviceKeyObj[scope.row.depend_type] ? deviceKeyObj[scope.row.depend_type] : '' }}
+            {{ myDeviceId[scope.row.depend_type] ? myDeviceId[scope.row.depend_type] : '' }}
           </template>
         </el-table-column>
         <el-table-column label="类型名称">
@@ -57,7 +57,7 @@
       <el-form label-width="auto">
         <el-form-item label="一级设备类型：">
           <el-select v-model="editForm.depend_type">
-            <el-option :label="index" :value="item" v-for="(item, index) in deviceNameObj"/>
+            <el-option :label="index" :value="item" v-for="(item, index) in myDeviceName"/>
           </el-select>
         </el-form-item>
         <el-form-item label="类型名称：">
@@ -121,11 +121,11 @@
       }
     },
     computed: {
-      deviceNameObj(){
-        return this.$store.state.user.deviceNameObj
+      myDeviceName(){
+        return this.$store.state.user.myDeviceName
       },
-      deviceKeyObj(){
-        return this.$store.state.user.deviceKeyObj
+      myDeviceId(){
+        return this.$store.state.user.myDeviceId
       }
     },
     mounted() {

@@ -5,7 +5,7 @@
         <el-form-item label="设备类别:">
           <el-select v-model="form.search_depend_type" @change="toQuery()">
             <el-option label="全部" :value="-1" />
-            <el-option :label="index" :value="item"  v-for="(item, index) in deviceNameObj" />
+            <el-option :label="index" :value="item"  v-for="(item, index) in myDeviceName" />
           </el-select>
         </el-form-item>
         <el-form-item label="商户名称:">
@@ -108,8 +108,8 @@
       condition
     },
     computed: {
-      deviceNameObj(){
-        return this.$store.state.user.deviceNameObj
+      myDeviceName(){
+        return this.$store.state.user.myDeviceName
       },
       agentInfo(){
         return this.$store.state.user.agentInfo

@@ -107,7 +107,7 @@
 
       <el-dialog title="地图图标设置" :visible.sync="iconDialog">
         <el-form label-width="auto">
-          <el-form-item :label="`${ index }(25*25)：`" v-for="(item, index) in deviceNameObj">
+          <el-form-item :label="`${ index }(25*25)：`" v-for="(item, index) in myDeviceName">
             <upload v-model="brand_icon[`device_url_${item}`]" />
           </el-form-item>
         </el-form>
@@ -248,14 +248,14 @@
       }
     },
     computed: {
-      deviceNameObj(){
-        return this.$store.state.user.deviceNameObj
+      myDeviceName(){
+        return this.$store.state.user.myDeviceName
       },
       siteInfo() {
         return this.$store.getters.siteInfo
       },
-      deviceKeyObj(){
-        return this.$store.state.user.deviceKeyObj
+      myDeviceId(){
+        return this.$store.state.user.myDeviceId
       },
       agentInfo(){
         return this.$store.getters.agentInfo
@@ -295,7 +295,7 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('iot-saas-user/brand/findPage', params).then(res => {
+        this.$get('iot-saas-basic/brand/findPage', params).then(res => {
           this.listLoading = false
           this.list = res.list
           this.clickSubmit = false
@@ -521,8 +521,8 @@
         this.$get('agentapi/system/brand_icon', {
           platform_id: this.freeObj.aid
         }).then(res => {
-          for(var i in this.deviceNameObj){
-            brand_icon[`device_url_${this.deviceNameObj[i]}`] = res[`device_url_${this.deviceNameObj[i]}`] || ''
+          for(var i in this.myDeviceName){
+            brand_icon[`device_url_${this.myDeviceName[i]}`] = res[`device_url_${this.myDeviceName[i]}`] || ''
           }
           this.brand_icon = brand_icon
           this.iconDialog = true

@@ -156,8 +156,8 @@
       selPlat
     },
     computed: {
-      deviceNameObj(){
-        return this.$store.state.user.deviceNameObj
+      myDeviceName(){
+        return this.$store.state.user.myDeviceName
       },
       agentInfo(){
         return this.$store.getters.agentInfo
@@ -238,9 +238,9 @@
           limit: 1000
         }).then(res => {
           let obj = {}
-          for(var i in this.deviceNameObj){
+          for(var i in this.myDeviceName){
             res.list.map( item => {
-              if(this.deviceNameObj[i] == item.depend_type){
+              if(this.myDeviceName[i] == item.depend_type){
                 obj[item.code_tag] = item
               }
             })

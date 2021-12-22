@@ -59,7 +59,7 @@
               </el-form-item>
             </div>
           </template>
-          <div v-for="(item, key) in deviceNameObj" v-if="selType.indexOf(item) > -1" v-show="(agentInfo.business_type != 1) || (agentInfo.business_type == 1 && !checkRoles(['salesman']))">
+          <div v-for="(item, key) in myDeviceName" v-if="selType.indexOf(item) > -1" v-show="(agentInfo.business_type != 1) || (agentInfo.business_type == 1 && !checkRoles(['salesman']))">
             <h4>{{ key }}设置</h4>
             <percent :form="form" :power-info="powerInfo" :name="config.goods_key[item]" @setDefaultPercent="setDefaultPercent"/>
 
@@ -368,8 +368,8 @@ export default {
       }
       return agentInfo
     },
-    deviceNameObj() {
-      return this.$store.getters.deviceNameObj
+    myDeviceName() {
+      return this.$store.getters.myDeviceName
     },
     siteInfo() {
       const siteInfo = this.$store.getters.siteInfo

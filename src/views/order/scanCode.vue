@@ -93,7 +93,7 @@
           </el-table-column>
           <el-table-column label="类型" width="70">
             <template slot-scope="scope">
-              {{ deviceKeyObj[scope.row.depend_type] }}
+              {{ myDeviceId[scope.row.depend_type] }}
             </template>
           </el-table-column>
           <el-table-column label="来源" width="70">
@@ -200,11 +200,11 @@ export default {
     }
   },
   computed: {
-    deviceNameObj(){
-      return this.$store.state.user.deviceNameObj
+    myDeviceName(){
+      return this.$store.state.user.myDeviceName
     },
-    deviceKeyObj(){
-      return this.$store.state.user.deviceKeyObj
+    myDeviceId(){
+      return this.$store.state.user.myDeviceId
     }
   },
   data() {

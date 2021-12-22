@@ -103,8 +103,8 @@
       drawer
     },
     computed: {
-      deviceKeyObj(){
-        return this.$store.state.user.deviceKeyObj
+      myDeviceId(){
+        return this.$store.state.user.myDeviceId
       },
       agentInfo(){
         return this.$store.getters.agentInfo

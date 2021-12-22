@@ -22,8 +22,8 @@
           <div class="mb-10">联系电话：{{ info.profit_info.phone }}</div>
           <div class="mb-10" v-if="info.store_info.divide_type_1 > 0">分成方式：{{ info.store_info.divide_type_1 == 1 ? '不分成' : '入场费' }}</div>
           <div v-for="(item, key) in selType" v-else>
-            <div class="mb-10">{{ deviceKeyObj[key] }}分润：{{ showPercent(info.profit_info, config.goods_key[key]) }}</div>
-            <div class="mb-10" v-if="info.profit_info[config.goods_key[key] + '_product_percent'] >= 0">{{ deviceKeyObj[key] }}商品分润：{{ showPercent(info.profit_info, config.goods_key[key] + '_product') }}</div>
+            <div class="mb-10">{{ myDeviceId[key] }}分润：{{ showPercent(info.profit_info, config.goods_key[key]) }}</div>
+            <div class="mb-10" v-if="info.profit_info[config.goods_key[key] + '_product_percent'] >= 0">{{ myDeviceId[key] }}商品分润：{{ showPercent(info.profit_info, config.goods_key[key] + '_product') }}</div>
           </div>
           <!-- <div class="mb-10" v-if="info.profit_info.withdraw_right == 1">提现费率：{{ info.profit_info.withdraw_percent }}%</div>
           <div class="mb-10" v-if="info.profit_info.withdraw_right == 1">提现单笔手续费：{{ info.profit_info.withdraw_fee }}元</div> -->
@@ -99,8 +99,8 @@
       }
     },
     computed: {
-      deviceKeyObj() {
-        return this.$store.state.user.deviceKeyObj
+      myDeviceId() {
+        return this.$store.state.user.myDeviceId
       },
       agentInfo() {
         return this.$store.state.user.agentInfo

@@ -363,11 +363,11 @@ export default {
     device() {
       return this.$store.state.app.device
     },
-    deviceNameObj() {
-      return this.$store.state.user.deviceNameObj
+    myDeviceName() {
+      return this.$store.state.user.myDeviceName
     },
-    deviceKeyObj() {
-      return this.$store.state.user.deviceKeyObj
+    myDeviceId() {
+      return this.$store.state.user.myDeviceId
     },
     siteInfo() {
       return this.$store.getters.siteInfo

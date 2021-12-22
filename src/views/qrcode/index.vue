@@ -166,8 +166,8 @@
       selPlat
     },
     computed: {
-      deviceNameObj(){
-        return this.$store.state.user.deviceNameObj
+      myDeviceName(){
+        return this.$store.state.user.myDeviceName
       }
     },
     data() {

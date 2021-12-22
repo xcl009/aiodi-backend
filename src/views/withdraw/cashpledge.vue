@@ -30,7 +30,7 @@
         </el-table-column>
         <el-table-column label="设备类型" width="80">
           <template slot-scope="scope">
-            {{ deviceKeyObj[scope.row.depend_type] || '--'}}
+            {{ myDeviceId[scope.row.depend_type] || '--'}}
           </template>
         </el-table-column>
         <el-table-column label="押金金额" width="80">
@@ -105,8 +105,8 @@
       }
     },
     computed: {
-      deviceKeyObj(){
-        return this.$store.state.user.deviceKeyObj
+      myDeviceId(){
+        return this.$store.state.user.myDeviceId
       }
     },
     mounted(options) {

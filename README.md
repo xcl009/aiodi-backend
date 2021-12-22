@@ -7,10 +7,13 @@ English | [简体中文](./README-zh.md)
 
 ```bash
 # clone the project
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+git clone https://gitee.com/power-duck/saas-brand-vue.git
 
 # enter the project directory
-cd vue-admin-template
+cd saas-brand-vue 
+
+# branch 
+git checkout baoyun
 
 # install dependency
 npm install

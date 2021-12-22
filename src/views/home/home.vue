@@ -277,8 +277,8 @@
       device() {
         return this.$store.state.app.device
       },
-      deviceNameObj() {
-        return this.$store.getters.deviceNameObj
+      myDeviceName() {
+        return this.$store.getters.myDeviceName
       },
       agentInfo() {
         return this.$store.getters.agentInfo

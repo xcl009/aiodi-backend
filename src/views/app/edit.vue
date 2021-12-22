@@ -71,8 +71,8 @@
       }
     },
     computed: {
-      deviceNameObj() {
-        return this.$store.getters.deviceNameObj
+      myDeviceName() {
+        return this.$store.getters.myDeviceName
       },
       siteInfo() {
         return this.$store.getters.siteInfo

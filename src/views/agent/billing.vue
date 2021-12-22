@@ -176,9 +176,9 @@
       }
     },
     computed: {
-      deviceNameObj() {
-        const deviceNameObj = JSON.parse(JSON.stringify(this.$store.state.user.deviceNameObj))
-        return deviceNameObj
+      myDeviceName() {
+        const myDeviceName = JSON.parse(JSON.stringify(this.$store.state.user.myDeviceName))
+        return myDeviceName
       }
     },
     mounted() {

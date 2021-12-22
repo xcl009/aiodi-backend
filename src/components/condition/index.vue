@@ -152,6 +152,10 @@ export default {
     /deep/ .el-icon-arrow-down{
       line-height: 32px;
     }
+    /deep/ .el-input__inner.range-day{
+      width: 300px;
+      padding: 0 10px;
+    }
   }
   .filter-box{
     // /deep/ .el-tabs--top .el-tabs__item.is-top:nth-child(2){

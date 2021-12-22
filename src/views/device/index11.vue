@@ -289,7 +289,7 @@
         <el-form label-width="100px">
           <el-form-item label="升级设备：" v-if="!upgradeObj.goods_sn">
             <el-checkbox-group v-model="upgradeObj.updating_depend">
-              <el-checkbox-button :label="item" v-for="(item, key) in deviceNameObj">{{ key }}</el-checkbox-button>
+              <el-checkbox-button :label="item" v-for="(item, key) in myDeviceName">{{ key }}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="升级状态：">
@@ -383,11 +383,11 @@ export default {
     device() {
       return this.$store.state.app.device
     },
-    deviceNameObj(){
-      return this.$store.state.user.deviceNameObj
+    myDeviceName(){
+      return this.$store.state.user.myDeviceName
     },
-    deviceKeyObj(){
-      return this.$store.state.user.deviceKeyObj
+    myDeviceId(){
+      return this.$store.state.user.myDeviceId
     }
   },
   mounted() {
@@ -422,9 +422,9 @@ export default {
         limit: 1000
       }).then(res => {
         let tabDevice = {}, tabDeviceID = {}, arr = [], allDevice = {}
-        for(var i in this.deviceNameObj){
+        for(var i in this.myDeviceName){
           res.list.map( item => {
-            if(this.deviceNameObj[i] == item.depend_type){
+            if(this.myDeviceName[i] == item.depend_type){
               if(!tabDevice[`t_${item.goods_type}`]){
                 tabDeviceID[item.id] = item.depend_type
                 allDevice[item.depend_type] = []

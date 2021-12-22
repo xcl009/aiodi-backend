@@ -83,8 +83,8 @@
       }
     },
     computed: {
-      deviceNameObj() {
-        return this.$store.getters.deviceNameObj
+      myDeviceName() {
+        return this.$store.getters.myDeviceName
       },
       agentInfo(){
         return this.$store.getters.agentInfo
@@ -130,11 +130,11 @@
           if(res.open_scan == 1){
             url = `${this.DEVICDE_CODE_URL}scan/${res.jump_tag}${this.agentInfo.id}/`
           }
-          for(var i in this.deviceNameObj){
+          for(var i in this.myDeviceName){
             this.list.push({
-              deviceType: this.deviceNameObj[i],
+              deviceType: this.myDeviceName[i],
               name: `${i}二维码、小程序地址`,
-              link: `${url}${jump_tag_obj[this.deviceNameObj[i]]}/`
+              link: `${url}${jump_tag_obj[this.myDeviceName[i]]}/`
             })
           }
         })

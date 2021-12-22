@@ -8,17 +8,14 @@
 </template>
 
 <script>
-/**
- * docs:
- * https://panjiachen.github.io/vue-element-admin-site/feature/component/rich-editor.html#tinymce
- */
 import editorImage from './components/EditorImage'
 import plugins from './plugins'
 import toolbar from './toolbar'
 import load from './dynamicLoadScript'
 
 // why use this cdn, detail see
-const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
+//const tinymceCDN = 'https://cdn.bootcdn.net/ajax/libs/tinymce/4.9.4/tinymce.min.js'
+const tinymceCDN = '/tinymce/tinymce.min.js'
 
 export default {
   name: 'Tinymce',
@@ -114,7 +111,7 @@ export default {
     },
     initTinymce() {
       const _this = this
-      window.tinymce.init({
+      tinymce.init({
         selector: `#${this.tinymceId}`,
         language: this.languageTypeList['zh'],
         height: this.height,
@@ -130,7 +127,6 @@ export default {
         code_dialog_width: 1000,
         advlist_bullet_styles: 'square',
         advlist_number_styles: 'default',
-        imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
         default_link_target: '_blank',
         link_title: false,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
@@ -149,39 +145,6 @@ export default {
             _this.fullscreen = e.state
           })
         }
-        // 整合七牛上传
-        // images_dataimg_filter(img) {
-        //   setTimeout(() => {
-        //     const $image = $(img);
-        //     $image.removeAttr('width');
-        //     $image.removeAttr('height');
-        //     if ($image[0].height && $image[0].width) {
-        //       $image.attr('data-wscntype', 'image');
-        //       $image.attr('data-wscnh', $image[0].height);
-        //       $image.attr('data-wscnw', $image[0].width);
-        //       $image.addClass('wscnph');
-        //     }
-        //   }, 0);
-        //   return img
-        // },
-        // images_upload_handler(blobInfo, success, failure, progress) {
-        //   progress(0);
-        //   const token = _this.$store.getters.token;
-        //   getToken(token).then(response => {
-        //     const url = response.data.qiniu_url;
-        //     const formData = new FormData();
-        //     formData.append('token', response.data.qiniu_token);
-        //     formData.append('key', response.data.qiniu_key);
-        //     formData.append('file', blobInfo.blob(), url);
-        //     upload(formData).then(() => {
-        //       success(url);
-        //       progress(100);
-        //     })
-        //   }).catch(err => {
-        //     failure('出现未知问题，刷新页面，或者联系程序员')
-        //     console.log(err);
-        //   });
-        // },
       })
     },
     destroyTinymce() {
@@ -225,9 +188,9 @@ export default {
 }
 .editor-custom-btn-container {
   position: absolute;
-  right: 4px;
-  top: 4px;
-  /*z-index: 2005;*/
+  right: 5px;
+  top: 5px;
+  z-index: 2005;
 }
 .fullscreen .editor-custom-btn-container {
   z-index: 10000;

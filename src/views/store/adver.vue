@@ -39,7 +39,7 @@
           <el-table-column label="展示设备" width="200">
             <template slot-scope="scope">
               <el-checkbox-group v-model="scope.row.depend_type">
-                <el-checkbox :label="item" v-for="(item, key) in deviceNameObj">{{ key }}</el-checkbox>
+                <el-checkbox :label="item" v-for="(item, key) in myDeviceName">{{ key }}</el-checkbox>
               </el-checkbox-group>
             </template>
           </el-table-column>
@@ -76,8 +76,8 @@
       }
     },
     computed: {
-      deviceNameObj() {
-        return this.$store.getters.deviceNameObj
+      myDeviceName() {
+        return this.$store.getters.myDeviceName
       }
     },
     mounted() {

@@ -19,7 +19,7 @@ export function getPlatformConfig(params = {}) {
 }
 
 export function getMyDevice() {
-  return $get('iot-saas-basic/device/type/loadAll')
+  return $get('iot-saas-device/device/type/loadAll')
 }
 
 export function postSetRecode(data) {

@@ -4,7 +4,7 @@
       <template v-slot:tabs>
         <el-tabs class="bg-white" v-model="listQuery.search_depend_type" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'-1'" />
-          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in deviceNameObj" />
+          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
       </template>
       <template v-slot:defult>
@@ -126,8 +126,8 @@ export default {
     }
   },
   computed:{
-    deviceNameObj() {
-      return this.$store.state.user.deviceNameObj
+    myDeviceName() {
+      return this.$store.state.user.myDeviceName
     },
   },
   mounted() {

@@ -23,7 +23,7 @@
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="成本价售价" name="2" class="pl-30 pr-30" v-if="checkRoles(['partner'])">
-          <template v-for="(device, index) in deviceNameObj">
+          <template v-for="(device, index) in myDeviceName">
             <template v-if="fee_plan[`${config.goods_key[device]}_buy_goods_fee`]">
               <div class="flex" v-for="item in fee_plan[`${config.goods_key[device]}_buy_goods_fee`]">
                 <el-form-item class="mr-20" :label="`${item.type_name}成本价：`">
@@ -62,9 +62,9 @@ export default {
     }
   },
   computed: {
-    deviceNameObj(){
-      let deviceNameObj = this.$store.state.user.deviceNameObj
-      return deviceNameObj
+    myDeviceName(){
+      let myDeviceName = this.$store.state.user.myDeviceName
+      return myDeviceName
     }
   },
   mounted() {

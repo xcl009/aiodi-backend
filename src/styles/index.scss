@@ -845,12 +845,20 @@ div:focus {
     background: #F2F3F5;
     line-height: 32px;
   }
+  .el-form-item__content{
+    .el-input-group{
+      vertical-align: inherit;
+    }
+  }
   .el-form-item__label{
     font-weight: 500;
     color: #4E5969;
   }
   .el-cascader{
     width: 100%;
+  }
+  .el-input-group__append{
+    border: none;
   }
 }
 
@@ -875,7 +883,7 @@ div:focus {
       line-height: 28px;
     }
     .el-range-input{
-      
+
       height: 32px;
       background: none !important;
       text-align: left;

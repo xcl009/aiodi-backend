@@ -1,4 +1,4 @@
-import { saasRoutes, constantRoutes } from '@/router'
+import { saasRoutes, brandRoutes, constantRoutes } from '@/router'
 
 /**
  * Use meta.role to determine if the current user has permission

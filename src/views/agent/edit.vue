@@ -4,8 +4,8 @@
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-form ref="form" :rules="rules" :model="form" label-width="auto">
           <div class="pt-20 pb-20 text-black text-bold">运营产品</div>
-          <el-checkbox-group v-model="selType" :min="1">
-            <el-checkbox v-for="item in myDevice" :label="item.depend_type">{{ item.depend_name }}</el-checkbox>
+          <el-checkbox-group v-model="selDevice" :min="1">
+            <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
           </el-checkbox-group>
 
           <div class="pt-20 pb-20 text-black text-bold">基础信息</div>
@@ -18,7 +18,7 @@
           <el-form-item label="手机号码" prop="mobile">
             <el-input v-model="form.mobile" placeholder="请输入手机号码（此号码会作为登录账户）" />
           </el-form-item>
-          <el-form-item label="登录密码" v-if="!id">
+          <el-form-item label="登录密码" v-if="!aid">
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
           <el-form-item label="运营区域">
@@ -37,7 +37,7 @@
           <template>
             <div class="pt-20 pb-20 text-black text-bold">分润比例</div>
             <template v-for="(item, index) in form.deviceTypDeviceProfitRatios">
-              <el-form-item :label="`${deviceNameObj[item.deviceTypeId]}：`" v-if="selType.indexOf(item.deviceTypeId) > -1">
+              <el-form-item :label="`${item.name}：`" v-if="selDevice.indexOf(item.id) > -1">
                 <el-input v-model="item.profitRatio" :placeholder="`最高不能超过100%`">
                   <template slot="append">%</template>
                 </el-input>
@@ -45,14 +45,14 @@
             </template>
           </template>
 
-          <template v-if="(form.take_my_product && !checkRoles(['terminal'])) || (form.condom_manager_fee > 0)">
+          <!-- <template v-if="(form.take_my_product && !checkRoles(['terminal'])) || (form.condom_manager_fee > 0)">
             <div class="pt-20 pb-20 text-black text-bold">售货机</div>
             <el-form-item label="商品管理费">
               <el-input v-model="form.condom_manager_fee" placeholder="商品管理费">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
-          </template>
+          </template> -->
 
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
@@ -73,7 +73,8 @@
       return {
         clickSubmit: false,
         form: {
-          password: '123456'
+          password: '123456',
+          deviceTypDeviceProfitRatios: []
         },
         rules: {
           role_id: [
@@ -90,14 +91,13 @@
         powerInfo: {},
         role: [],
 
-        selType: [1],
-        myDevice: [{'depend_name': '密码线', 'depend_type': 1}],
-        aid: this.$route.params.aid
+        selDevice: [],
+        aid: this.$route.params.aid || ''
       }
     },
     computed: {
-      deviceNameObj() {
-        return this.$store.getters.deviceNameObj
+      myDeviceName() {
+        return this.$store.getters.myDeviceName
       },
       siteInfo() {
         return this.$store.getters.siteInfo
@@ -105,11 +105,18 @@
       agentInfo() {
         return this.$store.getters.agentInfo
       },
+      myDeviceId() {
+        return this.$store.getters.myDeviceId
+      },
       myDevice() {
-        return this.$store.getters.myDevice
+        let myDevice = this.$store.getters.myDevice
+        this.selDevice.push(myDevice[0].id)
+        //this.form.deviceTypDeviceProfitRatios = myDevice
+        return myDevice
       }
     },
     mounted() {
+      this.form.deviceTypDeviceProfitRatios = this.myDevice
       //this.getPower()
     },
     methods: {
@@ -169,25 +176,18 @@
 
       /**
        * 提交添加
-       * @param {Object} formName
        */
-      onSubmit(formName) {
-        let params = {}, url = 'iot-saas-user/admin/brand', profit_key = this.config.profit_key
+      onSubmit() {
+        let params = {}, url = 'iot-saas-basic/brand', profit_key = this.config.profit_key
         params = JSON.parse(JSON.stringify(this.form))
         this.clickSubmit = true
-        this.$refs[formName].validate((valid) => {
+        this.$refs['form'].validate((valid) => {
           if (valid) {
             if(this.id > 0){
               params.id = this.id
-              url = 'admin/brand/updateById'
+              url = 'iot-saas-basic/brand/updateById'
             }
-            params.user_name = params.phone
-            for(var i in this.selType){
-              params['depend_type_' + this.selType[i]] = 1
-              if(!params[`${profit_key[this.selType[i]]}percent`]){
-                params[`${profit_key[this.selType[i]]}percent`] = 0
-              }
-            }
+            this.clickSubmit = true
             this.$post(url, params).then(res => {
               this.$message({
                 message: '提交成功',
@@ -215,13 +215,6 @@
             this.clickSubmit = false
           }
         })
-      },
-
-      /**
-       * 获取区域
-       */
-      getArea() {
-        this.getCity()
       },
 
       /**

@@ -16,7 +16,7 @@
         </el-form-item>
         <el-form-item label="设备类型:" class="hidden-sm-and-down">
           <el-select v-model="form.depend_type" @change="toQuery()">
-            <el-option :label="item" :value="key" v-for="(item, key) in deviceKeyObj"/>
+            <el-option :label="item" :value="key" v-for="(item, key) in myDeviceId"/>
           </el-select>
         </el-form-item>
         <el-form-item label="用户ID:" class="hidden-md-and-down">
@@ -33,7 +33,7 @@
       <template v-slot:more>
         <el-form-item label="设备类型:" class="hidden-md-and-up">
           <el-select v-model="form.depend_type" @change="toQuery()">
-            <el-option :label="item" :value="key" v-for="(item, key) in deviceKeyObj"/>
+            <el-option :label="item" :value="key" v-for="(item, key) in myDeviceId"/>
           </el-select>
         </el-form-item>
         <el-form-item label="用户ID:" class="hidden-xg-and-up">
@@ -68,7 +68,7 @@
           </el-table-column>
           <el-table-column label="设备类型" width="80">
             <template slot-scope="scope">
-              {{ deviceKeyObj[scope.row.depend_type] || '--'}}
+              {{ myDeviceId[scope.row.depend_type] || '--'}}
             </template>
           </el-table-column>
           <el-table-column label="商户">
@@ -137,8 +137,8 @@
       }
     },
     computed: {
-      deviceKeyObj(){
-        return this.$store.state.user.deviceKeyObj
+      myDeviceId(){
+        return this.$store.state.user.myDeviceId
       }
     },
     mounted(options) {

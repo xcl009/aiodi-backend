@@ -75,8 +75,8 @@
       }
     },
     computed: {
-      deviceNameObj(){
-        return this.$store.state.user.deviceNameObj
+      myDeviceName(){
+        return this.$store.state.user.myDeviceName
       }
     },
     mounted() {
@@ -92,9 +92,9 @@
           limit: 1000
         }).then(res => {
           let list = []
-          for(var i in this.deviceNameObj){
+          for(var i in this.myDeviceName){
             res.list.map( item => {
-              if(this.deviceNameObj[i] == item.depend_type){
+              if(this.myDeviceName[i] == item.depend_type){
                 list.push(item)
               }
             })

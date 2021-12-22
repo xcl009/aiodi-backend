@@ -2,9 +2,12 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-input v-model="form.search_store_name" placeholder="商户名称" />
-        <el-input v-model="form.snCode" placeholder="二维码"/>
-        <el-input v-model="form.snSerialNumber" placeholder="设备SN"/>
+        <el-input v-model="form.qrcodeSn" placeholder="二维码"/>
+        <el-input v-model="form.deviceSn" placeholder="设备SN"/>
+        <el-input v-model="form.storeName" placeholder="商户名称" />
+        <el-input v-model="form.agentName" placeholder="代理名称" />
+        <el-input v-model="form.brandName" placeholder="品牌名称" />
+        <el-input v-model="form.factoryName" placeholder="公司名称" />
       </template>
     </condition>
 
@@ -171,11 +174,11 @@
       device() {
         return this.$store.state.app.device
       },
-      deviceNameObj() {
-        return this.$store.state.user.deviceNameObj
+      myDeviceName() {
+        return this.$store.state.user.myDeviceName
       },
-      deviceKeyObj() {
-        return this.$store.state.user.deviceKeyObj
+      myDeviceId() {
+        return this.$store.state.user.myDeviceId
       },
       myDevice() {
         return this.$store.state.user.myDevice
@@ -208,7 +211,7 @@
           }
         ],
         form: {
-          search_store_name: this.$route.query.store_name || ''
+          //search_store_name: this.$route.query.store_name || ''
         },
         numInfo: {},
         tableMaxH: '250',
@@ -216,8 +219,8 @@
         list: [{},{}],
         listLoading: false,
         listQuery: {
-          device_status: this.$route.query.device_status || 0,
-          search_user_type: this.user_type,
+          // device_status: this.$route.query.device_status || 0,
+          // search_user_type: this.user_type,
           page: 1,
           size: 20
         },
@@ -305,9 +308,9 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
+          page: this.listQuery.page
         })
-        this.$get('iot-saas-basic/open/device/findPage', params).then(res => {
+        this.$get('iot-saas-device/device/findPage', params).then(res => {
           this.listLoading = false
           this.list = res.list
           this.clickSubmit = false

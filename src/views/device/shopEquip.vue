@@ -32,7 +32,7 @@
         <el-table-column label="设备类型">
           <template slot-scope="scope">
             <span v-if="scope.row.support_buletooth == 1">蓝牙线</span>
-            <span v-else>{{ deviceKeyObj[scope.row.depend_type]}}</span>
+            <span v-else>{{ myDeviceId[scope.row.depend_type]}}</span>
           </template>
         </el-table-column>
         <el-table-column label="铺货时间">
@@ -78,8 +78,8 @@ export default {
     }
   },
   computed: {
-    deviceKeyObj(){
-      return this.$store.state.user.deviceKeyObj
+    myDeviceId(){
+      return this.$store.state.user.myDeviceId
     }
   },
   mounted() {

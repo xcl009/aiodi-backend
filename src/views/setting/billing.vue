@@ -2,7 +2,7 @@
   <div class="p-10">
     <el-form ref="form" label-width="140px">
       <el-tabs class="bg-white" type="border-card">
-        <template v-for="(device, index) in deviceNameObj">
+        <template v-for="(device, index) in myDeviceName">
           <el-tab-pane :label="index + '计费'" class="pl-30 pr-30" v-if="(cutDevice > 0 && cutDevice == device) || (cutDevice == -1)">
             <template v-if="device == 1">
               <h4 class="pt-10">金额限制</h4>
@@ -376,7 +376,7 @@
           </el-tab-pane>
         </template>
 
-        <el-tab-pane label="充电桩包月会员" class="pl-30 pr-30" v-if="deviceNameObj['充电桩'] && cutDevice == -1">
+        <el-tab-pane label="充电桩包月会员" class="pl-30 pr-30" v-if="myDeviceName['充电桩'] && cutDevice == -1">
           <el-form-item label="是否开启：">
             <el-switch :active-value="1" :inactive-value="0" v-model="card.member_card_switch"/>
           </el-form-item>
@@ -441,9 +441,9 @@
       }
     },
     computed: {
-      deviceNameObj(){
-        let deviceNameObj = this.$store.state.user.deviceNameObj
-        return deviceNameObj
+      myDeviceName(){
+        let myDeviceName = this.$store.state.user.myDeviceName
+        return myDeviceName
       }
     },
     mounted() {

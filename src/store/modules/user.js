@@ -32,8 +32,8 @@ const mutations = {
     state.userType = userType
   },
   SET_AGENT_DEVICE: (state, res) => {
-    state.deviceNameObj = res.deviceNameObj
-    state.deviceKeyObj = res.deviceKeyObj
+    state.myDeviceName = res.myDeviceName
+    state.myDeviceId = res.myDeviceId
     state.myDevice = res.myDevice
   },
   SET_SITEINFO: (state, res) => {
@@ -54,6 +54,7 @@ const actions = {
       // resolve({})
       // return
       login({ username: username.trim(), password: password, loginType: 'UP', 'appid': 'pc' }).then(data => {
+        console.log(data)
         commit('SET_TOKEN', data.loginToken.accessToken)
         commit('SET_NAME', data.username)
         commit('SET_USER_TYPE', data.userType)
@@ -158,18 +159,16 @@ const actions = {
   getMyDevice({ commit, state }) {
     return new Promise((resolve, reject) => {
       getMyDevice().then(res => {
-        let deviceNameObj = {}, deviceKeyObj = {}, myDevice = []
+        let myDeviceName = {}, myDeviceId = {}, myDevice = []
         for(var i in res){
           let d = res[i]
-          if(d.taked > 0){
-            deviceNameObj[d.depend_name] = d.depend_type
-            myDevice.push(d)
-          }
-          deviceKeyObj[d.depend_type] = d.depend_name
+          myDeviceName[d.name] = d.id
+          myDeviceId[d.id] = d.name
+          myDevice.push(d)
         }
         commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({
-          deviceNameObj: deviceNameObj,
-          deviceKeyObj: deviceKeyObj,
+          myDeviceName: myDeviceName,
+          myDeviceId: myDeviceId,
           myDevice: myDevice
         })))
         resolve(res)
