@@ -9,11 +9,8 @@ export function codeLogin(data) {
 }
 
 export function getInfo(token) {
-  return $get('agentapi/my_user_info', {
-    token: token
-  })
+  return $get('iot-saas-user/getLoginUser')
 }
-
 export function getPlatformConfig(params = {}) {
   return $get('commonapi/get_platform_config', params)
 }

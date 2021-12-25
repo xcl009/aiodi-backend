@@ -50,8 +50,10 @@ const actions = {
     // TODO 设置角色权限菜单
     return new Promise(resolve => {
       let accessedRoutes, asyncRoutes = []
-      if (roles.includes('saas')) {
+      if (roles.includes('admin')) {
         asyncRoutes = saasRoutes
+      } else {
+        asyncRoutes = brandRoutes
       }
       accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       commit('SET_ROUTES', accessedRoutes)

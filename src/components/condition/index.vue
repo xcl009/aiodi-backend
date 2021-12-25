@@ -188,4 +188,7 @@ export default {
     background: #E5E6EB;
     border-radius: 0 2px 2px 0;
   }
+  /deep/ .el-tabs__header {
+    margin-bottom: 0;
+  }
 </style>

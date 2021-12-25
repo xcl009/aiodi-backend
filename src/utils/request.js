@@ -35,7 +35,7 @@ const service = axios.create({
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 60000, // request timeout
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/json'
   }
 })
 //service.defaults.withCredentials = true // 跨域
@@ -92,37 +92,47 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    if(error.message && error.message.indexOf('timeout of') > -1){
-      location.reload()
-    } else {
-      Message.closeAll()
-      if (!error.response) {
-        Message({
-          message: '网络卡住了，请刷新',
-          type: 'error'
-        });
-      }
-      if (error.code == 'ECONNABORTED' && error.message.indexOf('timeout') != -1) {
-        Message({
-          message: '网络卡住了，请刷新',
-          type: 'error'
-        });
-      }
+    if(error.response && error.response.data && error.response.data.message){
+      Message({
+        message: error.response.data.message,
+        type: 'error'
+      })
     }
-    return Promise.reject(error)
+    if(error.response){
+      return Promise.reject(error.response.data)
+    }else{
+      return Promise.reject(error)
+    }
   }
 )
 
+let toType = (obj) => {
+  return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+}
+let filterNull = (o) => {
+  for (var key in o) {
+    if (o[key] === null || o[key] === '' || o[key] === undefined) {
+      delete o[key]
+    }
+    if (toType(o[key]) === 'string') {
+      o[key] = o[key].trim()
+    } else if (toType(o[key]) === 'object') {
+      o[key] = filterNull(o[key])
+    } else if (toType(o[key]) === 'array') {
+      o[key] = filterNull(o[key])
+    }
+  }
+  return o
+}
+
 export function $get(url, params = {}) {
-  //params.agent_id = params.agent_id || getToken('agent_id')
+  params = filterNull(params)
   return service.get(url, {
     params
   })
 }
 export function $post(url, data = {}) {
-  data.token = getToken()
-  //data.agent_id = data.tagent_id || getToken('agent_id')
-  return service.post(url, qs.stringify(data))
+  return service.post(url, data)
 }
 
 export default service

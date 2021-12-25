@@ -259,12 +259,11 @@ export function colorPalette(){
 /**
  * 提取二维数组指定key
  */
-export function arrayKeys(array = [], key = '', nkey = ''){
-  if(!key) return nkey ? {} : []
-  let arr = nkey ? {} : []
+export function arrayKeys(array = [], key = ''){
+  if(!key) []
+  let arr = []
   array.map(item => {
-    if(nkey) arr[nkey] = item[key]
-    if(!nkey) arr.push(item[key])
+    arr.push(item[key])
   })
   return arr
 }

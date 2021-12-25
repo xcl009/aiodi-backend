@@ -1060,10 +1060,6 @@
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-tabs__header {
-    margin-bottom: 0;
-  }
-
   .scan-code_btn {
     padding: 4px 4px 0 0;
     border-bottom: 1px solid #E4E7ED;

@@ -3,11 +3,6 @@
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-form ref="form" :rules="rules" :model="form" label-width="auto">
-          <div class="pt-20 pb-20 text-black text-bold">运营产品</div>
-          <el-checkbox-group v-model="selDevice" :min="1">
-            <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
-          </el-checkbox-group>
-
           <div class="pt-20 pb-20 text-black text-bold">基础信息</div>
           <el-form-item label="品牌logo">
             <upload v-model="form.logo" />
@@ -34,15 +29,28 @@
             <el-input v-model="form.companyPhoneNum" placeholder="输入公司电话" />
           </el-form-item>
 
+          <div class="pt-20 pb-20 text-black text-bold">运营产品</div>
+          <el-checkbox-group v-model="selDevice" :min="1">
+            <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
+          </el-checkbox-group>
+
           <template>
-            <div class="pt-20 pb-20 text-black text-bold">分润比例</div>
-            <template v-for="(item, index) in form.deviceTypDeviceProfitRatios">
+            <div class="mt-20 pt-20 pb-20 text-black text-bold">分润比例</div>
+            <template v-for="(id, index) in selDevice">
+              <el-form-item :label="`${myDeviceId[id]}：`">
+                <el-input v-model="form.deviceTypDeviceProfitRatios[id]" :placeholder="`最高不能超过100%`">
+                  <template slot="append">%</template>
+                </el-input>
+              </el-form-item>
+            </template>
+
+            <!-- <template v-for="(item, index) in form.deviceTypDeviceProfitRatios">
               <el-form-item :label="`${item.name}：`" v-if="selDevice.indexOf(item.id) > -1">
                 <el-input v-model="item.profitRatio" :placeholder="`最高不能超过100%`">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
-            </template>
+            </template> -->
           </template>
 
           <el-form-item>
@@ -64,8 +72,9 @@
       return {
         clickSubmit: false,
         form: {
+          userType: 'brand',
           password: '123456',
-          deviceTypDeviceProfitRatios: []
+          deviceTypDeviceProfitRatios: {}
         },
         rules: {
           role_id: [
@@ -83,7 +92,7 @@
         role: [],
 
         selDevice: [],
-        aid: this.$route.params.aid || ''
+        aid: this.$route.query.aid || ''
       }
     },
     computed: {
@@ -100,28 +109,46 @@
         return this.$store.getters.myDeviceId
       },
       myDevice() {
-        let myDevice = [{name: '密码线', id: '11'}]
-        if(myDevice && myDevice.length > 0) this.selDevice.push(myDevice[0].id)
+        let myDevice = this.$store.getters.myDevice
         return myDevice
       }
     },
     mounted() {
-      this.form.deviceTypDeviceProfitRatios = this.myDevice
+      if(this.aid){
+        this.getInfo()
+      } else {
+        this.selDevice.push(this.myDevice[0].id)
+      }
     },
     methods: {
       /**
        * 获取信息
        */
       getInfo() {
-        this.$get('iot-saas-user/admin/brand/findById', {
+        this.$get('iot-saas-basic/admin/brand/findById', {
           id: this.aid
         }).then(res => {
-          let info = res.agent_info
-          delete info.password
-          if(this.siteInfo.agent_withdraw_fee_type != 2) info.agent_withdraw_fee_type = this.siteInfo.agent_withdraw_fee_type
-          info.old_steal_order_right = info.steal_order_right
-          if(this.powerInfo.steal_order_right == 0) info.steal_order_right = 0
-          this.form = info
+          res.deviceTypDeviceProfitRatios = {}
+          if(res.brandDeviceTypeVO.length > 0){
+            res.brandDeviceTypeVO.map(item => {
+              res.deviceTypDeviceProfitRatios[item.id] = item.profitRatio
+              if(this.selDevice.indexOf(item.id) == -1) {
+                this.selDevice.push(item.id)
+              }
+            })
+          } else {
+            this.selDevice.push(this.myDevice[0].id)
+          }
+          this.form = {
+            deviceTypDeviceProfitRatios: res.deviceTypDeviceProfitRatios,
+            logo: res.logo,
+            name: res.name,
+            mobile: res.mobile,
+            areaId: res.areaId,
+            companyName: res.companyName,
+            companyAddress: res.companyAddress,
+            companyPhoneNum: res.companyPhoneNum
+          }
         })
       },
 
@@ -136,14 +163,22 @@
        * 提交添加
        */
       onSubmit() {
-        let params = {}, url = 'iot-saas-basic/admin/brand', profit_key = this.config.profit_key
+        let params = {}, url = 'iot-saas-basic/admin/brand'
         params = JSON.parse(JSON.stringify(this.form))
+        let profitRatios = []
+        for(var i in params.deviceTypDeviceProfitRatios){
+          profitRatios.push({
+            deviceTypeId: i,
+            profitRatio: params.deviceTypDeviceProfitRatios[i] || 0
+          })
+        }
+        params.deviceTypDeviceProfitRatios = profitRatios
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            if(this.id > 0){
-              params.id = this.id
-              url = 'iot-saas-basic/brand/updateById'
+            if(this.aid){
+              params.id = this.aid
+              url = 'iot-saas-basic/admin/brand/updateById'
             }
             this.clickSubmit = true
             this.$post(url, params).then(res => {
@@ -151,19 +186,9 @@
                 message: '提交成功',
                 type: 'success'
               })
-              if(this.checkRoles(['terminal'])){
-                this.$router.push({
-                  path: '/partner/index'
-                })
-              }else if(params.admin_pid != this.agentInfo.id){
-                this.$router.push({
-                  path: '/agent/subAgent'
-                })
-              } else {
-                this.$router.push({
-                  path: '/agent/index'
-                })
-              }
+              this.$router.push({
+                path: '/partner/index'
+              })
             }).catch( err => {
               setTimeout(() => {
                 this.clickSubmit = false

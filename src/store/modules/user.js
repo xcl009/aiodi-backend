@@ -88,28 +88,20 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-        window.agentInfo = {}
-        commit('SET_NAME', 'saas')
-        commit('SET_AVATAR', '/logo.png')
+      getInfo(state.token).then(data => {
+        window.agentInfo = data
+        commit('SET_NAME', data.nickname)
+        commit('SET_AVATAR', data.avastar)
         commit('SET_AGENTINFO', {
-          avatar: '/logo.png',
-          name: 'saas'
+          avatar: data.avastar,
+          name: data.nickname
         })
         resolve({
-          roles: ['saas']
+          roles: [data.userType]
         })
-      // getInfo(state.token).then(data => {
-      //   if (data.code > 0) {
-      //     reject('验证失败，请重新登录。')
-      //   }
-      //   const { user_name, avatar, agent_level } = data
-      //   commit('SET_NAME', 'saas')
-      //   commit('SET_AVATAR', avatar)
-      //   commit('SET_AGENTINFO', data)
-      //   resolve(data)
-      // }).catch(error => {
-      //   reject(error)
-      // })
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 

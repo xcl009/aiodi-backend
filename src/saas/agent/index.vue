@@ -39,26 +39,26 @@
         </el-table-column>
         <el-table-column label="团长" align="center" width="130">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
+            <div class="mb-5">{{ scope.row.tname || '--' }}</div>
+            <div>{{ scope.row.tphone || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="邀请人" align="center" width="130">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
+            <div class="mb-5">{{ scope.row.tname || '--' }}</div>
+            <div>{{ scope.row.tphone || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="品类" align="center">
           <template slot-scope="scope">
             <div class="inline text-left">
               <el-tag
-                class="cursor"
+                class="block mtb-3 cursor"
                 :hit="true"
                 size="medium"
                 effect="plain"
-                @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
-                {{ scope.row.depend_type_name || '密码线' }}&nbsp;&nbsp;{{ scope.row.goods_sum || '0' }}
+                @click="$router.push({path: `/device?agent_id=${scope.row.id}`})" v-for="item in scope.row.brandDeviceTypeVO">
+                {{ item.name }}<!-- &nbsp;&nbsp;{{ scope.row.goods_sum || '0' }} -->
               </el-tag>
             </div>
           </template>
@@ -97,10 +97,10 @@
       </el-table>
       <div class="flex justify-center">
         <pagination
-          v-show="listQuery.count > 0"
+          v-show="listTotal > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
-          :total="listQuery.count"
+          :total="parseInt(listTotal)"
           @pagination="getList"
         />
       </div>
@@ -158,17 +158,14 @@
             value: 4
           }
         ],
-        form: {
-          activated_status: 1
-        },
+        form: {},
         tableMaxH: '250',
         list: [],
         listLoading: false,
+        listTotal: 0,
         listQuery: {
-          sort_type: '0',
           page: 1,
-          size: 20,
-          count: 10
+          size: 20
         },
         deviceNum: {},
 
@@ -241,10 +238,10 @@
         })
         this.$get('iot-saas-basic/admin/brand/findPage', params).then(res => {
           this.listLoading = false
-          this.list = res.list
+          this.list = res.rows
           this.clickSubmit = false
-          if(params.page == 1){
-            this.count = res.count
+          if(params.page == 0){
+            this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
         }).catch(() => {

@@ -1,13 +1,19 @@
 <template>
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+      <template v-slot:tabs>
+        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.deviceTypeId" @tab-click="toQuery()">
+          <el-tab-pane label="全部设备" :name="'0'" />
+          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+        </el-tabs>
+      </template>
+
       <template v-slot:defult>
         <el-input v-model="form.qrcodeSn" placeholder="二维码"/>
         <el-input v-model="form.deviceSn" placeholder="设备SN"/>
         <el-input v-model="form.storeName" placeholder="商户名称" />
         <el-input v-model="form.agentName" placeholder="代理名称" />
         <el-input v-model="form.brandName" placeholder="品牌名称" />
-        <el-input v-model="form.factoryName" placeholder="公司名称" />
       </template>
     </condition>
 
@@ -35,36 +41,37 @@
           <el-table-column type="selection" v-else :selectable="checkSel" width="50" />
           <el-table-column label="品牌商" align="center">
             <template slot-scope="scope">
-              {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '品牌名' }}
+              {{ scope.row.brandVO ? scope.row.brandVO.name : '品牌名' }}
             </template>
           </el-table-column>
           <el-table-column label="设备名称" align="center">
             <template slot-scope="scope">
-              {{ scope.row.goods_name || '密码线' }}
+              {{ scope.row.deviceTypeVO ? scope.row.deviceTypeVO.name : '密码线' }}
             </template>
           </el-table-column>
-          <el-table-column label="设备归属" align="center" width="180">
+          <!-- <el-table-column label="设备归属" align="center" width="180">
             <template slot-scope="scope">
               <div>{{ scope.row.manage_name || '用户名' }}</div>
               <div>{{ scope.row.manage_phone || '手机号码' }}</div>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="设备SN码" align="center" width="230">
             <template slot-scope="scope">
               <div class="inline text-left">
-                <div>二维码：{{ scope.row.goods_sn || "--" }}</div>
-                <div class="text-cut">设备SN：{{ scope.row.device_id || "--" }}</div>
+                <div>二维码：{{ scope.row.qrcodeSn || "--" }}</div>
+                <div class="text-cut">设备SN：{{ scope.row.deviceSn || "--" }}</div>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="设备属性" align="center" width="110">
             <template slot-scope="scope">
-              工厂：--
+              <span v-if="scope.row.deviceFactoryVO">工厂：{{ scope.row.deviceFactoryVO.name }}</span>
+
             </template>
           </el-table-column>
           <el-table-column label="是否铺货" align="center" width="100">
             <template slot-scope="scope">
-              <div>{{ scope.row.is_distributed == 1 ? "是" : "否" }}</div>
+              <div>{{ scope.row.distribute == 1 ? "是" : "否" }}</div>
               <div>{{ scope.row.operate_date }}</div>
             </template>
           </el-table-column>
@@ -80,7 +87,6 @@
                 <div>微信：<el-link type="primary" @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=1`})">{{ scope.row.wx_mini_num || 0 }}</el-link></div>
                 <div>支付宝：<el-link type="primary" @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=2`})">{{ scope.row.zfb_mini_num || 0 }}</el-link></div>
               </div>
-
             </template>
           </el-table-column>
           <el-table-column label="交易额(元)" align="center" width="90">
@@ -107,9 +113,10 @@
 
         <div class="flex justify-center">
           <pagination
-            v-show="listQuery.pageSize > 0"
+            v-show="listTotal > 0"
             :page.sync="listQuery.page"
-						:limit.sync="listQuery.size"
+            :limit.sync="listQuery.size"
+            :total="parseInt(listTotal)"
             @pagination="getList"
           />
         </div>
@@ -211,16 +218,17 @@
           }
         ],
         form: {
-          //search_store_name: this.$route.query.store_name || ''
+          storeName: this.$route.query.store_name || ''
         },
         numInfo: {},
         tableMaxH: '250',
         oemInfo: {},
-        list: [{},{}],
-        listLoading: false,
+        list: [],
+        listLoading: true,
+        listTotal: 0,
         listQuery: {
-          // device_status: this.$route.query.device_status || 0,
-          // search_user_type: this.user_type,
+          deviceTypeId: '0',
+          //device_status: this.$route.query.device_status || 0,
           page: 1,
           size: 20
         },
@@ -308,13 +316,16 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page
+          page: this.listQuery.page - 1
         })
         this.$get('iot-saas-device/device/findPage', params).then(res => {
           this.listLoading = false
-          this.list = res.list
+          this.list = res.rows
           this.clickSubmit = false
-          this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          if(params.page == 0){
+            this.listTotal = res.total
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
