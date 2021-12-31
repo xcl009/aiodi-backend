@@ -122,7 +122,8 @@ export const saasRoutes = [
         name: 'partnerCreate',
         component: () => import('@/saas/agent/edit'),
         meta: {
-          title: '添加品牌'
+          title: '添加品牌',
+          activeMenu: '/partner/index'
         },
         hidden: true
       },
@@ -131,7 +132,8 @@ export const saasRoutes = [
         name: 'partnerCreate',
         component: () => import('@/saas/agent/edit'),
         meta: {
-          title: '修改品牌信息'
+          title: '修改品牌信息',
+          activeMenu: '/partner/index'
         },
         hidden: true
       },
@@ -382,7 +384,8 @@ export const brandRoutes = [
         name: 'shopCreate',
         component: () => import('@/brand/store/edit'),
         meta: {
-          title: '添加商户'
+          title: '添加商户',
+          activeMenu: '/store/meStore'
         },
         hidden: true
       },
@@ -391,7 +394,8 @@ export const brandRoutes = [
         name: 'shopCreate',
         component: () => import('@/brand/store/edit'),
         meta: {
-          title: '修改商户信息'
+          title: '修改商户信息',
+          activeMenu: '/store/meStore'
         },
         hidden: true
       }
@@ -464,7 +468,8 @@ export const brandRoutes = [
         name: 'agentCreate',
         component: () => import('@/brand/agent/edit'),
         meta: {
-          title: '添加代理'
+          title: '添加代理',
+          activeMenu: '/agent/index'
         },
         hidden: true
       },
@@ -473,9 +478,54 @@ export const brandRoutes = [
         name: 'agentCreate',
         component: () => import('@/brand/agent/edit'),
         meta: {
-          title: '修改代理信息'
+          title: '修改代理信息',
+          activeMenu: '/agent/index'
         },
         hidden: true
+      }
+    ]
+  },
+  {
+    path: '/capital',
+    component: Layout,
+    redirect: '/capital/agentWithdraw',
+    meta: {
+      title: '资金管理',
+      icon: 'zijing'
+    },
+    children: [
+      {
+        path: 'agentWithdraw',
+        name: 'agentWithdraw',
+        component: () => import('@/brand/capital/agentWithdraw'),
+        meta: {
+          keepAlive: true,
+          title: '代理提现'
+        },
+        props: {
+          user_type: 1
+        }
+      },
+      {
+        path: 'storeWithdraw',
+        name: 'storeWithdraw',
+        component: () => import('@/brand/capital/agentWithdraw'),
+        meta: {
+          keepAlive: true,
+          title: '商户提现'
+        },
+        props: {
+          user_type: 2
+        }
+      },
+      {
+        path: 'userWithdraw',
+        name: 'userWithdraw',
+        component: () => import('@/brand/capital/userWithdraw'),
+        meta: {
+          keepAlive: true,
+          title: '用户提现'
+        },
       }
     ]
   },

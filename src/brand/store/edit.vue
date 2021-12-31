@@ -43,8 +43,8 @@
               </el-radio-group>
             </el-form-item>
             <div v-if="form.divisionMode != 2">
-              <el-form-item ref="name" label="联系人：" prop="name">
-                <el-input v-model="form.userBindMoblie" placeholder="请填写联系人姓名" />
+              <el-form-item ref="bindUserName" label="联系人：" prop="bindUserName">
+                <el-input v-model="form.bindUserName" placeholder="请填写联系人姓名" />
               </el-form-item>
               <el-form-item ref="userBindMoblie" label="手机号码：" prop="userBindMoblie">
                 <el-input v-model="form.userBindMoblie" placeholder="此手机号码会作为登录账户" />
@@ -326,7 +326,7 @@ export default {
      */
     getCategory() {
       this.$get('iot-saas-basic/admin/store/category').then(res => {
-        let list = {}
+        let list = {}, catId = ''
         res.map(item => {
           if(item.level == 1){
             list[item.catId] = {
@@ -335,6 +335,7 @@ export default {
               children: []
             }
           }else if(item.level == 2){
+            catId = catId || item.catId
             list[item.parentId].children.push({
               value: item.catId,
               label: item.catName
@@ -342,6 +343,9 @@ export default {
           }
         })
         this.catList = Object.values(list)
+        if(!this.store_id){
+          this.$set(this.form, 'catId', catId)
+        }
       })
     },
 
@@ -350,7 +354,7 @@ export default {
      */
     getCity(){
       this.$get('iot-saas-basic/admin/regions').then(res => {
-        let list = {}
+        let list = {}, regionTag = ''
         res.map(item => {
           if(item.level == 1){
             list[item.tag] = {
@@ -366,6 +370,7 @@ export default {
               children: []
             }
           }else if(item.level == 3){
+            regionTag = regionTag || item.tag
             let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
             list[tag1].children[tag2].children.push({
               value: item.tag,
@@ -383,6 +388,9 @@ export default {
           return item
         })
         this.cityList = list
+        if(!this.store_id){
+          this.$set(this.form, 'regionTag', regionTag)
+        }
       })
     },
 
@@ -393,37 +401,31 @@ export default {
       this.$get('iot-saas-basic/admin/store/findById', {
         id: this.store_id
       }).then(res => {
-        let info = res, deviceDataArr = [], storePayConfig = {}
+        let info = res, deviceDataArr = [], storePayConfig = {}, payConfigId = {}
         res.storePayConfig.map(item => {
           let payArr = []
           for(var i in this.config.pay_way){
             if(item[i] == 1) payArr.push(i)
           }
           storePayConfig[item.deviceTypeId] = payArr
+          payConfigId[item.deviceTypeId] = item.id
         })
         res.storeDivisionFun.map(item => {
           item.alipayPayMode = item.alipayPayMode
           item.weixinPayMode = item.weixinPayMode
           item.storePayConfig = storePayConfig[item.deviceTypeId]
           item.status = 1
+          item.payConfigId = payConfigId[item.deviceTypeId]
           deviceDataArr.push(item)
         })
         this.selDevice.push(deviceDataArr[0].deviceTypeId)
         this.deviceDataArr = deviceDataArr
-        this.form = res
-        this.getUser(res.userId)
-      })
-    },
-
-    /**
-     * 获取用户
-     */
-    getUser(uid){
-      this.$post('iot-saas-user/admin/user/findByIds', {
-        userIds: uid
-      }).then(res => {
-        this.$set(this.form, 'mobile', res[uid].mobile)
-        this.$set(this.form, 'mobile', res[uid].mobile)
+        info.bindUserName = res.user.bindUserName
+        info.userBindMoblie = res.user.mobile
+        delete info.storeDivisionFun
+        delete info.storePayConfig
+        delete info.user
+        this.form = info
       })
     },
 
@@ -445,8 +447,14 @@ export default {
             params.lng = lng_lat.lng
             params.lat = lng_lat.lat
           }
-          if(params.catId && params.catId.length > 0) params.catId = params.catId[params.catId.length - 1]
-          if(params.regionTag && params.regionTag.length > 0) params.regionTag = params.regionTag[params.regionTag.length - 1]
+          console.log(typeof params.catId)
+          console.log(typeof params.regionTag)
+          if(params.catId && typeof params.catId == 'array'){
+            params.catId = params.catId[params.catId.length - 1]
+          }
+          if(params.regionTag && typeof params.regionTag == 'array'){
+            params.regionTag = params.regionTag[params.regionTag.length - 1]
+          }
           params.storePayConfig = []
           params.storeDivisionFun = []
           deviceDataArr.map(item => {
@@ -456,6 +464,7 @@ export default {
             item.storePayConfig.map(item => {
               payConfig[item] = 1
             })
+            if(item.payConfigId) payConfig.id = item.payConfigId
             params.storePayConfig.push(payConfig)
             let division = {
               closeType: item.closeType,
@@ -463,6 +472,7 @@ export default {
               alipayPayMode: item.alipayPayMode,
               weixinPayMode: item.weixinPayMode
             }
+            if(item.id) division.id = item.id
             if(item.live >= 0) division.live = item.live
             if(item.relative >= 0) division.relative = item.relative
             if(item.live >= 0) division.promised = item.promised

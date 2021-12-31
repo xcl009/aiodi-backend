@@ -4,8 +4,11 @@
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-form ref="form" :rules="rules" :model="form" label-width="auto">
           <h4>基础信息</h4>
+          <el-form-item label="代理头像" class="up-img">
+            <upload v-model="form.logo" />
+          </el-form-item>
           <el-form-item label="代理名称" prop="name">
-            <el-input v-model="form.name" placeholder="输入品牌名称" />
+            <el-input v-model="form.name" placeholder="输入代理名称" />
           </el-form-item>
           <el-form-item label="手机号码" prop="mobile">
             <el-input v-model="form.mobile" placeholder="请输入手机号码（此号码会作为登录账户）" />
@@ -14,7 +17,7 @@
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
           <el-form-item label="运营区域">
-            <el-cascader v-model="form.areaId" :options="areaList" :props="{ expandTrigger: 'hover' }" />
+            <el-cascader v-model="form.areaId" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
           <el-form-item label="公司名称">
             <el-input v-model="form.companyName" placeholder="公司名称" />
@@ -61,7 +64,7 @@
       return {
         clickSubmit: false,
         form: {
-          userType: 'brand',
+          userType: 'agent',
           password: '123456',
           deviceTypDeviceProfitRatios: {}
         },
@@ -76,7 +79,7 @@
             { required: true, message: '请填写手机号码作为登录账户', trigger: 'blur' }
           ]
         },
-        areaList: [],
+        cityList: [],
         powerInfo: {},
         role: [],
 
@@ -103,6 +106,7 @@
       }
     },
     mounted() {
+      this.getCity()
       if(this.aid){
         this.getInfo()
       } else {
@@ -187,47 +191,40 @@
        * 获取城市
        */
       getCity(){
-        this.$get('commonapi/tool/get_address_list').then(res => {
-          for (var i in res) {
-            const firstLevel = res[i]
-            const obj = {
-              value: firstLevel.tag,
-              label: firstLevel.title,
-              children: []
-            }
-            if (firstLevel.son_list.length > 0) {
-              const secondLevel = firstLevel.son_list
-              for (var s in secondLevel) {
-                const secondItem = secondLevel[s]
-                if (this.region_tag == secondItem.tag) this.form.region_tag = [obj.value, secondItem.tag]
-                obj.children.push({
-                  value: secondItem.tag,
-                  label: secondItem.title,
-                  children: []
-                })
-                if (secondItem.son_list.length > 0) {
-                  const thirdLevel = secondItem.son_list
-                  for (var t in thirdLevel) {
-                    const thirdItem = thirdLevel[t]
-                    if (this.region_tag == thirdItem.tag) this.form.region_tag = [obj.value, secondItem.tag, thirdItem.tag]
-                    obj.children[s].children.push({
-                      value: thirdItem.tag,
-                      label: thirdItem.title
-                    })
-                  }
-                } else {
-                  obj.children = undefined
-                }
+        this.$get('iot-saas-basic/admin/regions').then(res => {
+          let list = {}
+          res.map(item => {
+            if(item.level == 1){
+              list[item.tag] = {
+                value: item.tag,
+                label: item.title,
+                children: {}
               }
-            } else {
-              obj.children = undefined
+            }else if(item.level == 2){
+              let tag = item.tag.substring(0, 3)
+              list[tag].children[item.tag] = {
+                value: item.tag,
+                label: item.title,
+                children: []
+              }
+            }else if(item.level == 3){
+              let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
+              list[tag1].children[tag2].children.push({
+                value: item.tag,
+                label: item.title
+              })
             }
-            this.areaList.push(obj)
-          }
-          if (!this.id) {
-            const first = this.areaList[0]
-            this.form.region_tag = [first.value, first.children[0].value, first.children[0].children[0].value]
-          }
+          })
+          list = Object.values(list)
+          list.map(item => {
+            if(JSON.stringify(item.children) == '{}'){
+              item.children = []
+            } else {
+              item.children = Object.values(item.children)
+            }
+            return item
+          })
+          this.cityList = list
         })
       },
     }

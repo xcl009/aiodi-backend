@@ -401,6 +401,7 @@
             this.dialogType = dialogType
             this.curRow = row
             this.curIdx = idx
+            this.dialogStatus = true
             break
         }
       },
