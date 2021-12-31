@@ -68,6 +68,7 @@ export const saasRoutes = [
         name: 'store',
         component: () => import('@/saas/store/index'),
         meta: {
+          keepAlive: true,
           title: '商户管理',
           icon: 'store'
         }
@@ -103,8 +104,8 @@ export const saasRoutes = [
         name: 'agent',
         component: () => import('@/saas/agent/index'),
         meta: {
-          title: '我的品牌',
-          keepAlive: true
+          keepAlive: true,
+          title: '我的品牌'
         }
       },
       {
@@ -112,16 +113,25 @@ export const saasRoutes = [
         name: 'subAgent',
         component: () => import('@/saas/agent/subAgent'),
         meta: {
-          title: '下级管理',
-          keepAlive: true
+          keepAlive: true,
+          title: '下级管理'
         }
       },
       {
-        path: 'edit',
-        name: 'agentEdit',
+        path: 'create',
+        name: 'partnerCreate',
         component: () => import('@/saas/agent/edit'),
         meta: {
           title: '添加品牌'
+        },
+        hidden: true
+      },
+      {
+        path: 'edit/:aid(\\d+)',
+        name: 'partnerCreate',
+        component: () => import('@/saas/agent/edit'),
+        meta: {
+          title: '修改品牌信息'
         },
         hidden: true
       },
@@ -277,7 +287,7 @@ export const brandRoutes = [
   {
     path: '/device',
     component: Layout,
-    redirect: '/order/meDevice',
+    redirect: '/device/meDevice',
     meta: {
       title: '设备管理',
       icon: 'device'
@@ -304,6 +314,33 @@ export const brandRoutes = [
         props:{
           user_type: 1
         }
+      },
+      {
+        path: 'qrcode',
+        name: 'qrcode',
+        component: () => import('@/brand/qrcode/index'),
+        meta: {
+          keepAlive: true,
+          title: '设备二维码'
+        }
+      },
+      {
+        path: 'create',
+        name: 'qrcodeCreate',
+        component: () => import('@/brand/qrcode/create'),
+        meta: {
+          title: '生成二维码'
+        },
+        hidden: true
+      },
+      {
+        path: 'createRecord',
+        name: 'createRecord',
+        component: () => import('@/brand/qrcode/createRecord'),
+        meta: {
+          title: '二维码生成记录'
+        },
+        hidden: true
       }
     ]
   },
@@ -321,6 +358,7 @@ export const brandRoutes = [
         name: 'meStore',
         component: () => import('@/brand/store/index'),
         meta: {
+          keepAlive: true,
           title: '我的商户'
         },
         props:{
@@ -332,11 +370,30 @@ export const brandRoutes = [
         name: 'subStore',
         component: () => import('@/brand/store/index'),
         meta: {
+          keepAlive: true,
           title: '下级商户'
         },
         props:{
           user_type: 1
         }
+      },
+      {
+        path: 'create',
+        name: 'shopCreate',
+        component: () => import('@/brand/store/edit'),
+        meta: {
+          title: '添加商户'
+        },
+        hidden: true
+      },
+      {
+        path: 'edit/:store_id(\\d+)',
+        name: 'shopCreate',
+        component: () => import('@/brand/store/edit'),
+        meta: {
+          title: '修改商户信息'
+        },
+        hidden: true
       }
     ]
   },
@@ -389,8 +446,8 @@ export const brandRoutes = [
         name: 'agent',
         component: () => import('@/brand/agent/index'),
         meta: {
-          title: '我的代理',
-          keepAlive: true
+          keepAlive: true,
+          title: '我的代理'
         }
       },
       {
@@ -398,55 +455,27 @@ export const brandRoutes = [
         name: 'subAgent',
         component: () => import('@/brand/agent/subAgent'),
         meta: {
-          title: '下级管理',
-          keepAlive: true
+          keepAlive: true,
+          title: '下级管理'
         }
       },
       {
-        path: 'edit',
-        name: 'agentEdit',
+        path: 'create',
+        name: 'agentCreate',
         component: () => import('@/brand/agent/edit'),
         meta: {
           title: '添加代理'
         },
         hidden: true
       },
-    ]
-  },
-  {
-    path: '/app',
-    component: Layout,
-    redirect: '/app/market',
-    meta: {
-      title: '服务管理',
-      icon: 'fuwu'
-    },
-    children: [
       {
-        path: 'payRecord',
-        name: 'payRecord',
-        component: () => import('@/brand/app/payRecord'),
+        path: 'edit/:aid(\\d+)',
+        name: 'agentCreate',
+        component: () => import('@/brand/agent/edit'),
         meta: {
-          title: '服务记录',
-          keepAlive: true
-        }
-      },
-      {
-        path: 'market',
-        name: 'market',
-        component: () => import('@/brand/app/market'),
-        meta: {
-          title: '定价设置',
-          keepAlive: true
-        }
-      },
-      {
-        path: 'create',
-        name: 'create',
-        component: () => import('@/brand/app/edit'),
-        meta: {
-          title: '添加服务'
-        }
+          title: '修改代理信息'
+        },
+        hidden: true
       }
     ]
   },
@@ -519,7 +548,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/404',
+    path: '*',
     component: () => import('@/views/404'),
     hidden: true
   }

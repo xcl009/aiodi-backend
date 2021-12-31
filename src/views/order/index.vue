@@ -575,7 +575,7 @@
         if (this.search_regions_tag && this.search_regions_tag.length > 0) {
           this.form.search_regions_tag = this.search_regions_tag[this.search_regions_tag.length - 1]
         }
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.listQuery.total = 50
         if(val) this.listQuery.order_type = val
         if (this.xlsxStatus) this.xlsxStatus = false
@@ -588,8 +588,8 @@
        */
       reset(){
         this.form = {}
-        this.listQuery.start = 1
-        this.listQuery.limit = 10
+        this.listQuery.page = 1
+        this.listQuery.size = 10
         this.getStatNum()
         this.getList()
       },
@@ -599,7 +599,7 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         })
         if (params.end && params.begin) {
           if (params.end - params.begin > 180 * 24 * 60 * 60 * 1000) {
@@ -620,7 +620,7 @@
               this.end = true
               this.listLoading = false
             } else {
-              this.listQuery.start++
+              this.listQuery.page++
               this.percentage = this.percentage < 96 ? this.percentage + 2 : 96
             }
             this.$nextTick(() => {
@@ -647,7 +647,7 @@
       saveXlsx() {
         this.xlsxStatus = true
         this.listLoading = true
-        this.listQuery.limit = 200
+        this.listQuery.size = 200
         this.list = []
         this.getList()
       },

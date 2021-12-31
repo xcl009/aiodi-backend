@@ -14,7 +14,7 @@
         </el-select> -->
 		  </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/partner/edit`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/partner/create`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
       </template>
 		</condition>
 
@@ -24,7 +24,7 @@
         <el-table-column label="品牌信息" align="center" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
+            <div v-if="scope.row.brandUser">{{ scope.row.brandUser.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="运营城市" align="center" width="120">
@@ -57,7 +57,7 @@
                 :hit="true"
                 size="medium"
                 effect="plain"
-                @click="$router.push({path: `/device?agent_id=${scope.row.id}`})" v-for="item in scope.row.brandDeviceTypeVO">
+                @click="$router.push({path: `/device?agent_id=${scope.row.id}`})" v-for="item in scope.row.brandDeviceType">
                 {{ item.name }}<!-- &nbsp;&nbsp;{{ scope.row.goods_sum || '0' }} -->
               </el-tag>
             </div>
@@ -84,7 +84,7 @@
             <el-dropdown trigger="click">
               <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="$router.push({path: `/partner/edit?aid=${scope.row.id}`})">修改信息</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push({path: `/partner/edit/${scope.row.id}`})">修改信息</el-dropdown-item>
                 <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-dropdown-item>
                 <el-dropdown-item @click.native="getMapIcon(scope.row)">地图图标</el-dropdown-item>
                 <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
@@ -174,7 +174,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == "agentEdit") {
+      if (from.name == 'partnerCreate') {
         to.meta.reload = true
       } else {
         to.meta.reload = false

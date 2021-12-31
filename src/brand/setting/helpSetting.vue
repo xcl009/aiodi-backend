@@ -140,7 +140,7 @@
        */
       typeClick(tab, event) {
         this.listQuery.order_type = tab.name
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.getList()
       },
 
@@ -151,13 +151,13 @@
         this.$refs.filterDrawer.hide()
         if (type == 1) {
           this.form = {}
-          this.listQuery.start = 1
-          this.listQuery.limit = 10
+          this.listQuery.page = 1
+          this.listQuery.size = 10
         } else {
           if (this.cat_id && this.cat_id.length > 0) {
             this.form.cat_id = this.cat_id[this.cat_id.length - 1]
           }
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         }
         this.getList()
       },
@@ -167,7 +167,7 @@
        */
       getList() {
         var params = Object.assign({}, this.listQuery, {
-          start: this.listQuery.start - 1,
+          start: this.listQuery.page - 1,
           page: 1
         })
         this.$get('agentapi/article/helping_thread_list', params).then(res => {

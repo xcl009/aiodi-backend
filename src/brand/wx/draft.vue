@@ -79,7 +79,7 @@
       getList() {
         let url = 'WxOpen/getDraftCodeList'
         let listQuery = Object.assign({}, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         })
         this.$get(url, listQuery).then(res => {
           this.listLoading = false

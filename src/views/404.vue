@@ -8,9 +8,8 @@
         <img class="pic-404__child right" src="@/assets/404_images/404_cloud.png" alt="404">
       </div>
       <div class="bullshit">
-        <div class="bullshit__oops">很遗憾!</div>
+        <div class="bullshit__oops">404!</div>
         <div class="bullshit__headline">{{ message }}</div>
-        <div class="bullshit__info">联系客服或返回首页</div>
         <router-link to="/home"><span class="bullshit__return-home">返回首页</span></router-link>
       </div>
     </div>
@@ -18,12 +17,11 @@
 </template>
 
 <script>
-
 export default {
   name: 'Page404',
   computed: {
     message() {
-      return '您暂无权限访问该页面噢!'
+      return '网页走丢了！'
     }
   }
 }
@@ -33,7 +31,7 @@ export default {
 .wscn-http404-container{
   transform: translate(-50%,-50%);
   position: absolute;
-  top: 40%;
+  top: 45%;
   left: 50%;
 }
 .wscn-http404 {
@@ -193,12 +191,13 @@ export default {
       animation-fill-mode: forwards;
     }
     &__return-home {
+      margin-top: 20px;
       display: block;
       float: left;
       width: 110px;
       height: 36px;
       background: #1482f0;
-      border-radius: 100px;
+      border-radius: 6px;
       text-align: center;
       color: #ffffff;
       opacity: 0;

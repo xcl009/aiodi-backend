@@ -227,7 +227,7 @@
         listLoading: true,
         listTotal: 0,
         listQuery: {
-          deviceTypeId: '0',
+          //deviceTypeId: '0',
           //device_status: this.$route.query.device_status || 0,
           page: 1,
           size: 20
@@ -318,7 +318,8 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('iot-saas-device/device/findPage', params).then(res => {
+        if(params.deviceTypeId == 0) delete params.deviceTypeId
+        this.$get('iot-saas-device/admin/device/findPage', params).then(res => {
           this.listLoading = false
           this.list = res.rows
           this.clickSubmit = false

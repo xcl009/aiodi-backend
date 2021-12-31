@@ -1,5 +1,5 @@
 <template>
-  <el-row type="flex" justify="center" class="p-30  custom-form bg-white">
+  <el-row type="flex" justify="center" class="p-30 custom-form bg-white">
     <el-col :xs="24" :sm="12" :md="6" :lg="6">
       <el-form ref="form" :model="form">
         <el-form-item label="手机号码">

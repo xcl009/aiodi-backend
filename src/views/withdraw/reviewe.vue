@@ -301,9 +301,9 @@
 		this.$refs.filterDrawer.hide()
         if (type == 1) {
           this.form = {}
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         } else {
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         }
         this.getNum()
         this.getList()
@@ -315,7 +315,7 @@
        * @param {Object} event
        */
       typeClick(tab) {
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.getList()
       },
 
@@ -324,7 +324,7 @@
        */
       getList() {
         let listQuery = Object.assign({}, this.form, this.listQuery, {
-          start: this.listQuery.start - 1,
+          start: this.listQuery.page - 1,
           user_type: this.user_type
         }), url = 'agentapi/my_reviewe_apply'
         if (listQuery.begin) listQuery.begin = this.parseTime(listQuery.begin, '{y}-{m}-{d}')

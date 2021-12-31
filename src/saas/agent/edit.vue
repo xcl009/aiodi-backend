@@ -3,8 +3,8 @@
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-form ref="form" :rules="rules" :model="form" label-width="auto">
-          <div class="pt-20 pb-20 text-black text-bold">基础信息</div>
-          <el-form-item label="品牌logo">
+          <h4>基础信息</h4>
+          <el-form-item label="品牌logo" class="up-img">
             <upload v-model="form.logo" />
           </el-form-item>
           <el-form-item label="品牌名称" prop="name">
@@ -29,13 +29,13 @@
             <el-input v-model="form.companyPhoneNum" placeholder="输入公司电话" />
           </el-form-item>
 
-          <div class="pt-20 pb-20 text-black text-bold">运营产品</div>
-          <el-checkbox-group v-model="selDevice" :min="1">
+          <h4 class="pt-20">运营产品</h4>
+          <el-checkbox-group v-model="selDevice" class="pl-10">
             <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
           </el-checkbox-group>
 
           <template>
-            <div class="mt-20 pt-20 pb-20 text-black text-bold">分润比例</div>
+            <h4 class="pt-20">分润比例</h4>
             <template v-for="(id, index) in selDevice">
               <el-form-item :label="`${myDeviceId[id]}：`">
                 <el-input v-model="form.deviceTypDeviceProfitRatios[id]" :placeholder="`最高不能超过100%`">
@@ -43,14 +43,6 @@
                 </el-input>
               </el-form-item>
             </template>
-
-            <!-- <template v-for="(item, index) in form.deviceTypDeviceProfitRatios">
-              <el-form-item :label="`${item.name}：`" v-if="selDevice.indexOf(item.id) > -1">
-                <el-input v-model="item.profitRatio" :placeholder="`最高不能超过100%`">
-                  <template slot="append">%</template>
-                </el-input>
-              </el-form-item>
-            </template> -->
           </template>
 
           <el-form-item>
@@ -129,8 +121,8 @@
           id: this.aid
         }).then(res => {
           res.deviceTypDeviceProfitRatios = {}
-          if(res.brandDeviceTypeVO.length > 0){
-            res.brandDeviceTypeVO.map(item => {
+          if(res.brandDeviceType.length > 0){
+            res.brandDeviceType.map(item => {
               res.deviceTypDeviceProfitRatios[item.id] = item.profitRatio
               if(this.selDevice.indexOf(item.id) == -1) {
                 this.selDevice.push(item.id)
@@ -140,23 +132,17 @@
             this.selDevice.push(this.myDevice[0].id)
           }
           this.form = {
+            id: res.id,
             deviceTypDeviceProfitRatios: res.deviceTypDeviceProfitRatios,
             logo: res.logo,
             name: res.name,
-            mobile: res.mobile,
+            mobile: res.brandUser.mobile,
             areaId: res.areaId,
             companyName: res.companyName,
             companyAddress: res.companyAddress,
             companyPhoneNum: res.companyPhoneNum
           }
         })
-      },
-
-      /**
-       * 上传文件成功通知
-       */
-      fileOk(arr) {
-        this.form.avatar = arr[0] || ''
       },
 
       /**

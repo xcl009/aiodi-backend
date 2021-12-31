@@ -273,9 +273,9 @@
         this.$refs.filterDrawer.hide()
         if (type == 1) {
           this.form = {}
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         } else {
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         }
         this.getNum()
         this.getList()
@@ -288,7 +288,7 @@
        */
       typeClick(tab, event) {
         this.listQuery.deal_status = tab.name
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.getList()
       },
 
@@ -297,7 +297,7 @@
        */
       getList() {
         let listQuery = Object.assign({}, this.form, this.listQuery, {
-            start: this.listQuery.start - 1
+            start: this.listQuery.page - 1
           }),
           url = 'agentapi/feedback/index'
         this.$get(url, listQuery).then(res => {

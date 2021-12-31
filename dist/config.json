@@ -6,5 +6,30 @@
   "ICP": "",
   "system_other": {
     "have_role": "['terminal', 'partner']"
-  }
+  },
+  "pay_way": {
+    "weixin": "微信",
+    "alipay": "支付宝",
+    "money": "钱包",
+    "card": "充值卡"
+  },
+  "mode_way": {
+    "default": {
+      "套餐": "PACKAGE",
+      "预存+先充后付": 2,
+      "预存": 3
+    }
+  },
+  "xcx_pay": {
+    "default": {
+      "weixin": "微信",
+      "alipay": "支付宝"
+    }
+  },
+  "closeType": {
+    "real": "真实分成",
+    "f2f": "相对分成",
+    "disaccord": "分成不一致"
+  },
+  "plan_time": [0.5,1,2,3,4,5,6,7,8,9,10,11,12,24]
 }

@@ -184,7 +184,7 @@
        */
       getList() {
         let params = Object.assign({}, this.form, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         }), url = 'agentapi/search/query_profit'
         if (params.son_id > 0) {
           params.search_user_type = 1

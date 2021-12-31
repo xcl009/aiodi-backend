@@ -2,31 +2,17 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-        <!-- <el-select placeholder="排序" v-model="form.sort" @change="toQuery()">
-          <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-        </el-select> -->
         <el-input v-model="form.name" placeholder="品牌名"/>
         <el-input v-model="form.mobile" placeholder="手机号码"/>
-        <!-- <el-select placeholder="状态" v-model="form.activated_status" @change="toQuery()">
-          <el-option label="有效" :value="1" />
-          <el-option label="无效" :value="2" />
-          <el-option label="已删除" :value="0" />
-        </el-select> -->
 		  </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/partner/edit`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/agent/create`})"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
       </template>
 		</condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         :max-height="tableMaxH">
-        <el-table-column label="品牌信息" align="center" width="130">
-          <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
-          </template>
-        </el-table-column>
         <el-table-column label="运营城市" align="center" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.charge_county || '深圳' }}</div>
@@ -95,69 +81,27 @@
           </template>
         </el-table-column>
       </el-table>
+
       <div class="flex justify-center">
         <pagination
-          v-show="listQuery.count > 0"
+          v-show="listTotal > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
-          :total="listQuery.count"
+          :total="parseInt(listTotal)"
           @pagination="getList"
         />
       </div>
-
-      <el-dialog title="地图图标设置" :visible.sync="iconDialog">
-        <el-form label-width="auto">
-          <el-form-item :label="`${ index }(25*25)：`" v-for="(item, index) in myDeviceName">
-            <upload v-model="brand_icon[`device_url_${item}`]" />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="iconDialog = false">取 消</el-button>
-          <el-button type="primary" @click="editDtIcon()">确 定</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog title="设备绑定" :visible.sync="deviceBindDialog" width="600px">
-        <el-input
-          type="textarea"
-          :rows="6"
-          placeholder="设备编号与编号之间用英文逗号隔开" v-model="deviceBindStr">
-        </el-input>
-        <div class="pt-5">注：设备编号与编号之间用 , 隔开(英文逗号)。</div>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="deviceBindDialog = false">取 消</el-button>
-          <el-button type="primary" @click="distribu()">确 定</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog title="设备绑定结果" :visible.sync="deviceBindEndDialog" width="600px">
-        <div class="mb-10 flex" v-for="item in bind_success">
-          <div>{{ item.sn }}</div>
-          <div class="flex1 pl-20">{{ item.msg }}</div>
-        </div>
-        <div class="mb-10 flex text-danger" v-for="item in bind_err">
-          <div>{{ item.sn }}</div>
-          <div class="flex1 pl-20">{{ item.msg }}</div>
-        </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="deviceBindEndDialog = false">确 定</el-button>
-        </div>
-      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-  import upload from '@/components/upload/two'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
-  import { copyText } from '@/utils/index'
-  import { getToken, setToken, removeToken } from '@/utils/auth'
 
   export default {
     name: 'agent',
     components: {
-      upload,
       Pagination,
       condition
     },
@@ -191,43 +135,15 @@
             value: 4
           }
         ],
-        form: {
-          activated_status: 1
-        },
-        give_role: [],
+        form: {},
         tableMaxH: '250',
         list: [],
-        deviceNum: {},
         listLoading: false,
+        listTotal: 0,
         listQuery: {
-          search_agent_id: '0',
-          sort_type: '0',
-          search_agent_level: '0',
-          son_type: 0,
           page: 1,
-          size: 20,
-          count: 100
-        },
-        zuo_sn: '',
-        selSnArr: [],
-
-        // 提现费率
-        withdrawObj: {},
-        withdrawDialog: false,
-
-        // 免费店员
-        freeObj: {},
-        freeDialog: false,
-
-        iconDialog: false,
-        brand_icon: {},
-
-        select_aid: '',
-        deviceBindStr: '',
-        deviceBindDialog: false,
-        deviceBindEndDialog: false,
-        bind_success: [],
-        bind_err: [],
+          size: 20
+        }
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -243,7 +159,7 @@
       if(this.$route.meta.reload){
         this.getList()
       }else if(!this.list || this.list.length == 0) {
-        this.listQuery.son_type = this.user_type
+        //this.listQuery.son_type = this.user_type
         this.toQuery(1)
       }
     },
@@ -295,40 +211,18 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('iot-saas-basic/brand/findPage', params).then(res => {
-          this.listLoading = false
+        this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
           this.list = res.list
+          this.listLoading = false
           this.clickSubmit = false
-          if(params.page == 1){
-            this.count = res.count
+          if(params.page == 0){
+            this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
         }).catch(() => {
-          this.clickSubmit = false
           this.listLoading = false
-        })
-      },
-
-
-      /**
-       * 获取设备数量
-       */
-      getDeviceNum(agent_ids){
-        this.$get('SyStatistics/getmyDeviceNum', {
-          agent_ids: JSON.stringify(agent_ids)
-        }).then(res => {
-          this.clickSubmit = false
-          this.deviceNum = res
-        }).catch(() => {
           this.clickSubmit = false
         })
-      },
-
-      /**
-       * 编辑
-       */
-      set(row) {
-
       },
 
       /**
@@ -338,7 +232,7 @@
       setRow(type, row) {
         switch (type) {
           case 1:
-            this.$alert('确定删除此品牌吗？', '删除品牌', {
+            this.$alert('确定删除此代理吗？', '删除代理', {
               confirmButtonText: '确定',
               callback: action => {
                 if (action == 'confirm') {
@@ -493,167 +387,9 @@
         }).catch(()=>{
           this.loadObj.close()
         })
-      },
-
-      /**
-       * 设置提现费率
-       */
-      setWithdraw() {
-        this.$post('agentapi/save_agent_withdraw_percent', {
-          son_id: this.withdrawObj.id,
-          withdraw_percent: this.withdrawObj.withdraw_percent,
-          withdraw_fee: this.withdrawObj.withdraw_fee
-        }).then(res => {
-          this.$message({
-            message: '设置成功',
-            type: 'success'
-          })
-          this.withdrawDialog = false
-        })
-      },
-
-      /**
-       * 获取地图图标
-       */
-      getMapIcon(row){
-        let brand_icon = {}
-        this.freeObj = row
-        this.$get('agentapi/system/brand_icon', {
-          platform_id: this.freeObj.aid
-        }).then(res => {
-          for(var i in this.myDeviceName){
-            brand_icon[`device_url_${this.myDeviceName[i]}`] = res[`device_url_${this.myDeviceName[i]}`] || ''
-          }
-          this.brand_icon = brand_icon
-          this.iconDialog = true
-        })
-      },
-
-      /**
-       * 修改地图图标
-       */
-      editDtIcon() {
-        let params = this.brand_icon
-        params.platform_id = this.freeObj.aid
-        this.$post('agentapi/system/brand_icon', params).then(res => {
-          this.iconDialog = false
-          this.$message({
-            message: '设置成功',
-            type: 'success'
-          })
-        })
-      },
-
-      /**
-       * 登录代理后台
-       * @param {Object} row
-       */
-      toLogin(row){
-        this.loadObj = this.$loading({
-          lock: true,
-          text: '正在登录',
-          spinner: 'el-icon-loading'
-        })
-        this.$post('agentapi/pretend_son_login', {
-          son_id: row.id
-        }).then(res => {
-          setToken(getToken(), 'token1')
-          setToken(res.token)
-          setToken(res.belong_partner_aid, 'agent_id')
-          setToken(row.id, 'user_id')
-          setTimeout(()=>{
-            location.href = '/home'
-            this.loadObj.close()
-          }, 500)
-        })
-      },
-
-      /**
-       * 复制贴牌登录地址
-       * @param {Object} row
-       */
-      copyloginUrl(row){
-        copyText(`${location.origin}/login/${row.id}`)
-        this.$message({
-          message: '复制成功',
-          type: 'success'
-        })
-      },
-
-	      /**
-	       * 铺货
-	       */
-	      distribu(row) {
-	        let aid, zuo_sn
-	        this.bind_err = []
-	        this.bind_success = []
-	        if(row){
-	          aid = row.aid
-	          zuo_sn = this.zuo_sn
-	        }else{
-	          aid = this.select_aid
-	          zuo_sn = this.deviceBindStr
-	        }
-	        zuo_sn = zuo_sn.replace(/[ ]/g,"")
-	        zuo_sn = zuo_sn.replace(/[\r\n]/g,"")
-	        zuo_sn = zuo_sn.replace(/\ +/g,"")
-	        if(!zuo_sn){
-	          this.$message({
-	            message: '错误的设备码',
-	            type: 'error'
-	          })
-	          return
-	        }
-	        this.$alert('确定将设备绑定到该代理吗？', '设备铺货', {
-	          confirmButtonText: '确定',
-	          callback: action => {
-	            if (action == 'confirm') {
-	              zuo_sn = zuo_sn.split(',')
-	              this.load = this.$message({
-	                duration: 0,
-	                iconClass: 'el-icon-loading',
-	                message: '绑定中'
-	              })
-	              for (var i in zuo_sn) {
-	                this.postBind(zuo_sn[i], aid, zuo_sn.length, i)
-	              }
-	            }
-	          }
-	        })
-	      },
-
-	      async postBind(sn, aid, len, i){
-	        this.$post('agentapi/device/save_pickup_devices', {
-	          goods_sn: sn,
-	          son_id: aid
-	        }).then((res) => {
-	          this.bind_success.push({
-	            sn: sn,
-	            msg: '绑定成功'
-	          })
-	          if(i == len - 1){
-	            this.bindEnd()
-	          }
-	        }).catch(err=>{
-	          this.bind_err.push({
-	            sn: sn,
-	            msg: err.msg
-	          })
-	          if(i == len - 1){
-	            this.bindEnd()
-	          }
-	        })
-	      },
-
-	      bindEnd(){
-	        this.load.close()
-	        this.deviceBindEndDialog = true
-	        if(this.bind_err.length == 0){
-	          this.deviceBindDialog = false
-	        }
-	      },
-	    }
+      }
 	  }
+  }
 </script>
 
 <style lang="scss" scoped>

@@ -444,26 +444,22 @@
         categoryList: [],
         areaList: [],
         form: {
-          cat_id: '',
-          search_regions_tag: '',
-          order_sn: this.$route.query.order_sn || '',
-          search_uid: this.$route.query.search_uid || '',
-          goods_sn: this.$route.query.goods_sn || '',
-          store_name: this.$route.query.store_name || '',
-          transaction_id: this.$route.query.transaction_id || ''
+          // cat_id: '',
+          // search_regions_tag: '',
+          // order_sn: this.$route.query.order_sn || '',
+          // search_uid: this.$route.query.search_uid || '',
+          // goods_sn: this.$route.query.goods_sn || '',
+          // store_name: this.$route.query.store_name || '',
+          // transaction_id: this.$route.query.transaction_id || ''
         },
         numInfo: {},
         tableMaxH: '250',
-        oemInfo: {},
-        list: [{},{},{},{},{},{},{},{},{},{},{},{},{},{}],
+        list: [{}],
         listLoading: false,
         listQuery: {
           device_type: '-1',
-          search_user_type: this.user_type,
-          son_id: this.$route.query.son_id || '',
-          order_type: this.$route.query.order_type || 0,
-          start: 1,
-          limit: 50
+          page: 1,
+          size: 20
         },
         orderStatus: {
           '-1': '待支付',
@@ -535,7 +531,7 @@
       }
     },
     mounted(options) {
-      // this.getList()
+      this.getList()
       // this.getStatNum()
       // this.getCategory()
       // this.getArea()
@@ -569,16 +565,8 @@
       toQuery(val = '') {
         if(this.clickSubmit) return
         this.clickSubmit = true
-        if (this.cat_id && this.cat_id.length > 0) {
-          this.form.cat_id = this.cat_id[this.cat_id.length - 1]
-        }
-        if (this.search_regions_tag && this.search_regions_tag.length > 0) {
-          this.form.search_regions_tag = this.search_regions_tag[this.search_regions_tag.length - 1]
-        }
-        this.listQuery.start = 1
-        this.listQuery.total = 50
-        if(val) this.listQuery.order_type = val
-        if (this.xlsxStatus) this.xlsxStatus = false
+        this.listQuery.page = 1
+        this.listQuery.size = 20
         this.getStatNum()
         this.getList()
       },
@@ -588,8 +576,8 @@
        */
       reset(){
         this.form = {}
-        this.listQuery.start = 1
-        this.listQuery.limit = 10
+        this.listQuery.page = 1
+        this.listQuery.size = 20
         this.getStatNum()
         this.getList()
       },
@@ -599,7 +587,7 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          start: this.listQuery.start - 1
+          page: this.listQuery.page - 1
         })
         if (params.end && params.begin) {
           if (params.end - params.begin > 180 * 24 * 60 * 60 * 1000) {
@@ -607,59 +595,19 @@
             this.clickSubmit = false
             return
           }
-          params.page_switch = 1
         }
         if (params.begin) params.begin = this.parseTime(params.begin, '{y}-{m}-{d}')
         if (params.end) params.end = this.parseTime(params.end, '{y}-{m}-{d}')
-        if (params.device_type == -1) delete params.device_type
-        this.$get('order/findPage', params).then(res => {
-          if (this.xlsxStatus) {
-            this.toXlsxEnd = false
-            this.list = res.list
-            if (params.limit > res.list.length) {
-              this.end = true
-              this.listLoading = false
-            } else {
-              this.listQuery.start++
-              this.percentage = this.percentage < 96 ? this.percentage + 2 : 96
-            }
-            this.$nextTick(() => {
-              this.$refs.toXlsx.saveTableXlsx(this.toXlsxEnd, function(){
-                this.getList()
-              })
-            })
-          } else {
-            this.listLoading = false
-            this.list = res.list
-          }
-          this.clickSubmit = false
-          this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
-          if(this.checkRoles(['terminal'])) this.getOEMInfo(this.arrayKeys(res.list, 'agent_id'))
-        }).catch(() => {
-          this.clickSubmit = false
+        this.$get('iot-saas-order/admin/order/list', params).then(res => {
+          this.list = res.rows
           this.listLoading = false
-        })
-      },
-
-      /**
-       * 导出
-       */
-      saveXlsx() {
-        this.xlsxStatus = true
-        this.listLoading = true
-        this.listQuery.limit = 200
-        this.list = []
-        this.getList()
-      },
-
-      /**
-       * 品牌信息
-       */
-      getOEMInfo(aids = []) {
-        this.$get('commonapi/configer/these_platform_info', {
-          son_aids: JSON.stringify(aids)
-        }).then(res => {
-          this.oemInfo = res.list
+          this.clickSubmit = false
+          if(params.page == 0){
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          }
+        }).catch(() => {
+          this.listLoading = false
+          this.clickSubmit = false
         })
       },
 

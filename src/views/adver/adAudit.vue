@@ -101,7 +101,7 @@
        * @param {Object} event
        */
       typeClick(tab, event) {
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.getList()
       },
 
@@ -110,7 +110,7 @@
        */
       getList() {
         let listQuery = Object.assign({}, this.listQuery, {
-            start: this.listQuery.start - 1
+            start: this.listQuery.page - 1
           }),
           url = 'agentapi/my_reviewe_ads'
         this.$get(url, listQuery).then(res => {

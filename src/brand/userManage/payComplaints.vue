@@ -143,9 +143,9 @@
         this.clickSubmit = true
         if (type == 1) {
           this.form = {}
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         } else {
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         }
         this.getList()
       },
@@ -155,8 +155,8 @@
        */
       reset(){
         this.form = {}
-        this.listQuery.start = 1
-        this.listQuery.limit = 10
+        this.listQuery.page = 1
+        this.listQuery.size = 10
         this.getList()
       },
 
@@ -165,7 +165,7 @@
        */
       getList() {
         let params = Object.assign({}, this.form, this.listQuery, {
-            start: this.listQuery.start - 1
+            start: this.listQuery.page - 1
           }),
           url = 'agentapi/analysis/wx_user_complaints'
         if(params.begin) params.begin_date = this.parseTime(params.begin / 1000, '{y}-{m}-{d}')

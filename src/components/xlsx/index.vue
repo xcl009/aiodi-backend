@@ -77,7 +77,7 @@ export default {
             if (n != 1 && n != 'ref') {
               let k = s.substring(0, 1)
               n = s.substring(1)
-              no = ((parseInt(i) * this.listQuery.limit) + parseInt(n))
+              no = ((parseInt(i) * this.listQuery.size) + parseInt(n))
               sheet1[k + no] = sheet1[s]
             }
             delete sheet1[s]

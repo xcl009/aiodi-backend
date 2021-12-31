@@ -158,9 +158,6 @@
           <el-button type="primary" @click="deviceBindEndDialog = false">确 定</el-button>
         </div>
       </el-dialog>
-
-      <editwith ref="editwith" :type="1"></editwith>
-      <editwith ref="editwiths" :type="1" :moneyType="2"></editwith>
     </div>
   </div>
 </template>
@@ -172,7 +169,6 @@
   import selPlat from '@/components/selPlat'
   import { copyText } from '@/utils/index'
   import { getToken, setToken, removeToken } from '@/utils/auth'
-  import editwith from './_editwith'
 
   export default {
     name: 'agent',
@@ -180,8 +176,7 @@
       upload,
       Pagination,
       condition,
-      selPlat,
-      editwith
+      selPlat
     },
     props: {
       user_type: {

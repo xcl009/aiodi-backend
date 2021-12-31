@@ -137,7 +137,7 @@
        */
       getList() {
         let params = Object.assign({}, this.form, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         })
         this.$get('agentapi/goods/goods_detail_types', params).then(res => {
           this.list = res.list

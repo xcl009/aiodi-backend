@@ -87,7 +87,7 @@
        */
       getList() {
         let listQuery = Object.assign({}, this.listQuery, {
-            start: this.listQuery.start - 1,
+            start: this.listQuery.page - 1,
             article_type: this.type
           }),
           url = 'agentapi/article/index'

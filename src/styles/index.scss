@@ -1,5 +1,7 @@
 /* 改变主题色变量 */
 $--color-primary: #3CA0FD;
+$--background-color-base: #F2F3F5;
+$--border-color-extra-light: #F2F3F5;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 @import "~element-ui/packages/theme-chalk/src/index";
 @import '~element-ui/lib/theme-chalk/display.css';
@@ -85,7 +87,7 @@ body {
 ul,li{ padding: 0; margin: 0; list-style: none; }
 
 label {
-  font-weight: 700;
+  font-weight: 400;
 }
 
 
@@ -195,6 +197,9 @@ div:focus {
 
 .bg-body{
   background-color: var(--bodyBg);
+  &.el-button{
+    border: none;
+  }
 }
 
 .m-auto{
@@ -675,7 +680,7 @@ div:focus {
 }
 
 .text-danger{
-  color: #FF5353;
+  color: #FF5454;
 }
 
 .text-green{
@@ -828,6 +833,9 @@ div:focus {
     height: 28px;
     padding: 7px 10px;
   }
+  .w-160{
+    width: 160px;
+  }
 }
 .ptd-5.el-table{
   td {
@@ -837,18 +845,34 @@ div:focus {
     padding: 0 5px;
   }
 }
+.pagination-left{
+  top: 8px;
+  left: 0;
+}
 
 /**
  * 自定义form租借样式
  */
 .custom-form{
-  .el-input__inner{
+  h4{
+    color: #1D2129;
+  }
+  .el-input__inner, .el-textarea__inner{
     padding: 0 12px;
     height: 32px;
     border: none;
     border-radius: 2px;
     background: #F2F3F5;
     line-height: 32px;
+    color: #1D2129;
+  }
+  .up-img{
+    .el-form-item__label{
+      margin-top: 30px;
+    }
+  }
+  .el-textarea__inner{
+    height: initial;
   }
   .el-form-item__content{
     .el-input-group{
@@ -856,14 +880,32 @@ div:focus {
     }
   }
   .el-form-item__label{
-    font-weight: 500;
+    position: relative;
+    padding-left: 10px;
+    font-weight: 400;
     color: #4E5969;
+    &::before{
+      position: absolute;
+      left: 0;
+    }
   }
   .el-cascader{
     width: 100%;
   }
   .el-input-group__append{
     border: none;
+    border-left: thin solid #e5e6eb;
+    color: #1D2129;
+  }
+  .el-input-group__prepend{
+    border: none;
+    border-right: thin solid #e5e6eb;
+  }
+  .el-button--small{
+    height: 32px;
+  }
+  .el-input__suffix, .el-select__caret{
+    color: #4E5969 !important;
   }
 }
 
@@ -888,7 +930,6 @@ div:focus {
       line-height: 28px;
     }
     .el-range-input{
-
       height: 32px;
       background: none !important;
       text-align: left;

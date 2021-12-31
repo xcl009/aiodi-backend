@@ -177,7 +177,7 @@
       toQuery(type = 0) {
         this.$refs.filterDrawer.hide()
         if (type == 1) this.form = {}
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.getList()
       },
 
@@ -187,7 +187,7 @@
       getGoods() {
         let url = 'agentapi/product/sample_list'
         let listQuery = Object.assign(this.form, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         })
         this.$get(url, listQuery).then(res => {
           this.listLoading = false

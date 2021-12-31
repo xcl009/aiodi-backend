@@ -179,9 +179,9 @@
         this.$refs.filterDrawer.hide()
         if (type == 1) {
           this.form = {}
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         } else {
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         }
         this.getList()
       },
@@ -191,7 +191,7 @@
        */
       getList() {
         let listQuery = Object.assign({}, this.form, this.listQuery, {
-            start: this.listQuery.start - 1
+            start: this.listQuery.page - 1
           }),
           url = 'agentapi/analysis/wx_user_complaints'
         if(listQuery.begin) listQuery.begin_date = this.parseTime(listQuery.begin / 1000, '{y}-{m}-{d}')

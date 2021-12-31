@@ -164,9 +164,9 @@
         this.$refs.filterDrawer.hide()
         if (type == 1) {
           this.form = {}
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         } else {
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         }
         this.getList()
       },
@@ -176,7 +176,7 @@
        */
       getList() {
         let listQuery = Object.assign({}, this.form, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         }), url = 'agentapi/pay/contract_pay_log'
         this.$get(url, listQuery).then(res => {
           this.listLoading = false

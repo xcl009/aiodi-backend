@@ -90,10 +90,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(data => {
         window.agentInfo = data
-        commit('SET_NAME', data.nickname)
-        commit('SET_AVATAR', data.avastar)
+        commit('SET_NAME', data.nickname || data.username)
+        commit('SET_AVATAR', data.avastar || '')
         commit('SET_AGENTINFO', {
-          avatar: data.avastar,
+          avatar: data.avastar || '',
           name: data.nickname
         })
         resolve({

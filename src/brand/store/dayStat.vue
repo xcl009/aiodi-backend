@@ -207,7 +207,7 @@
        */
       toQuery(type = 0) {
         if (type == 1) this.form = {}
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.getList()
       },
 

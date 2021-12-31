@@ -416,7 +416,7 @@
       outTable(){
         this.outStatus = true
         this.listLoading = true
-        this.listQuery.limit = 100
+        this.listQuery.size = 100
         this.list = []
         this.excel = true
         this.getList()

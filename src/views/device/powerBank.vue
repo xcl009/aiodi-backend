@@ -183,7 +183,7 @@ export default {
      */
     typeClick(tab, event) {
       this.listQuery.device_status = tab.name
-      this.listQuery.start = 1
+      this.listQuery.page = 1
       this.getList()
     },
 
@@ -194,9 +194,9 @@ export default {
 	  this.$refs.filterDrawer.hide()
       if (type == 1) {
         this.form = {}
-        this.listQuery.start = 1
+        this.listQuery.page = 1
       } else {
-        this.listQuery.start = 1
+        this.listQuery.page = 1
       }
       this.getStatNum()
       this.getList()
@@ -204,7 +204,7 @@ export default {
 
     getList() {
       const listQuery = Object.assign({}, this.listQuery, this.form, {
-        start: this.listQuery.start - 1
+        start: this.listQuery.page - 1
       })
       if(this.sort_id_key && window.sort_id_key) listQuery.sort_id_key= window.sort_id_key
       this.$get('agentapi/search/query_batterys', listQuery).then(res => {

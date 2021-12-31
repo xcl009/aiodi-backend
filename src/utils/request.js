@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
-import qs from 'qs';
+import qs from 'qs'
 import {
   MessageBox,
   Message
@@ -55,13 +55,15 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
     return Promise.reject(error)
   }
 )
 
 service.interceptors.response.use(
   res => {
+    if (res.headers['content-type'] === 'application/vnd.ms-excel;charset=UTF-8') {
+      return Promise.resolve(res.data)
+    }
     if (res.headers['content-type'] === 'image/jpeg') {
       return Promise.resolve(res.data)
     }
@@ -131,8 +133,19 @@ export function $get(url, params = {}) {
     params
   })
 }
+
 export function $post(url, data = {}) {
+  data = filterNull(data)
   return service.post(url, data)
 }
 
+export function $export(url, data = {}) {
+  data = filterNull(data)
+  return service({
+    method: 'post',
+    url: url,
+    data: data,
+    responseType: 'blob'
+  })
+}
 export default service

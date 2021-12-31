@@ -84,7 +84,7 @@
       getList() {
         const url = 'agentapi/store/switch_store_list'
         const listQuery = Object.assign({}, this.listQuery, this.form, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         })
         this.$get(url, listQuery).then(res => {
           this.listLoading = false

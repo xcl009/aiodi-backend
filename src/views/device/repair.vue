@@ -90,13 +90,13 @@
        */
       typeClick(tab, event) {
         this.getType = tab.name
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.getList()
       },
 
       getList(){
         let listQuery = Object.assign({}, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         });
         this.$get(this.typeUrl[this.getType], listQuery).then(res => {
           this.listLoading = false

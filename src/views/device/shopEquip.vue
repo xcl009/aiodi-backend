@@ -93,9 +93,9 @@ export default {
       this.$refs.filterDrawer.hide()
       if (type == 1) {
         this.form = {}
-        this.listQuery.start = 1
+        this.listQuery.page = 1
       } else {
-        this.listQuery.start = 1
+        this.listQuery.page = 1
       }
       this.getList()
     },
@@ -112,7 +112,7 @@ export default {
      */
     getList() {
       const listQuery = Object.assign({}, this.listQuery, this.form, {
-        start: this.listQuery.start - 1
+        start: this.listQuery.page - 1
       })
       listQuery.store_id = this.shopInfo.store_id
       this.$get('agentapi/device/get_store_devices', listQuery).then(res => {

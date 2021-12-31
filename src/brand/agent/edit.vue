@@ -3,16 +3,8 @@
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-form ref="form" :rules="rules" :model="form" label-width="auto">
-          <div class="pt-20 pb-20 text-black text-bold">运营产品</div>
-          <el-checkbox-group v-model="selDevice" :min="1">
-            <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
-          </el-checkbox-group>
-
-          <div class="pt-20 pb-20 text-black text-bold">基础信息</div>
-          <el-form-item label="品牌logo">
-            <upload v-model="form.logo" />
-          </el-form-item>
-          <el-form-item label="品牌名称" prop="name">
+          <h4>基础信息</h4>
+          <el-form-item label="代理名称" prop="name">
             <el-input v-model="form.name" placeholder="输入品牌名称" />
           </el-form-item>
           <el-form-item label="手机号码" prop="mobile">
@@ -34,25 +26,21 @@
             <el-input v-model="form.companyPhoneNum" placeholder="输入公司电话" />
           </el-form-item>
 
+          <h4 class="pt-20">运营产品</h4>
+          <el-checkbox-group v-model="selDevice" class="pl-10">
+            <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
+          </el-checkbox-group>
+
           <template>
-            <div class="pt-20 pb-20 text-black text-bold">分润比例</div>
-            <template v-for="(item, index) in form.deviceTypDeviceProfitRatios">
-              <el-form-item :label="`${item.name}：`" v-if="selDevice.indexOf(item.id) > -1">
-                <el-input v-model="item.profitRatio" :placeholder="`最高不能超过100%`">
+            <h4 class="pt-20">分润比例</h4>
+            <template v-for="(id, index) in selDevice">
+              <el-form-item :label="`${myDeviceId[id]}：`">
+                <el-input v-model="form.deviceTypDeviceProfitRatios[id]" :placeholder="`最高不能超过100%`">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
             </template>
           </template>
-
-          <!-- <template v-if="(form.take_my_product && !checkRoles(['terminal'])) || (form.condom_manager_fee > 0)">
-            <div class="pt-20 pb-20 text-black text-bold">售货机</div>
-            <el-form-item label="商品管理费">
-              <el-input v-model="form.condom_manager_fee" placeholder="商品管理费">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </template> -->
 
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
@@ -73,8 +61,9 @@
       return {
         clickSubmit: false,
         form: {
+          userType: 'brand',
           password: '123456',
-          deviceTypDeviceProfitRatios: []
+          deviceTypDeviceProfitRatios: {}
         },
         rules: {
           role_id: [
@@ -92,7 +81,7 @@
         role: [],
 
         selDevice: [],
-        aid: this.$route.params.aid || ''
+        aid: this.$route.query.aid || ''
       }
     },
     computed: {
@@ -110,82 +99,69 @@
       },
       myDevice() {
         let myDevice = this.$store.getters.myDevice
-        this.selDevice.push(myDevice[0].id)
-        //this.form.deviceTypDeviceProfitRatios = myDevice
         return myDevice
       }
     },
     mounted() {
-      this.form.deviceTypDeviceProfitRatios = this.myDevice
-      //this.getPower()
+      if(this.aid){
+        this.getInfo()
+      } else {
+        this.selDevice.push(this.myDevice[0].id)
+      }
     },
     methods: {
-      /**
-       * 获取权限
-       */
-      getPower() {
-        this.$get('agentapi/add_agent', { all_roles: 0 }).then(res => {
-          this.powerInfo = res
-          this.role = res.give_role_right
-          this.form.role_id = res.give_role_right[0].role_id
-        })
-        this.$get('agentapi/sttuf/son_device_type', {
-          son_id: this.id
-        }).then(res => {
-          let selType = []
-          for(var i in res){
-            if(this.id){
-              if(res[i].son_taked > 0){
-                selType.push(res[i].depend_type)
-              }
-            }else if(res[i].taked > 0){
-              selType.push(res[i].depend_type)
-              break
-            }
-          }
-          this.selType = JSON.parse(JSON.stringify(selType))
-          this.myDevice = res
-          if(this.id > 0){
-            this.getInfo()
-          }
-        })
-      },
-
       /**
        * 获取信息
        */
       getInfo() {
-        this.$get('iot-saas-user/admin/brand/updateStatusById', {
+        this.$get('iot-saas-basic/admin/brand/findById', {
           id: this.aid
         }).then(res => {
-          let info = res.agent_info
-          delete info.password
-          if(this.siteInfo.agent_withdraw_fee_type != 2) info.agent_withdraw_fee_type = this.siteInfo.agent_withdraw_fee_type
-          info.old_steal_order_right = info.steal_order_right
-          if(this.powerInfo.steal_order_right == 0) info.steal_order_right = 0
-          this.form = info
+          res.deviceTypDeviceProfitRatios = {}
+          if(res.brandDeviceType.length > 0){
+            res.brandDeviceType.map(item => {
+              res.deviceTypDeviceProfitRatios[item.id] = item.profitRatio
+              if(this.selDevice.indexOf(item.id) == -1) {
+                this.selDevice.push(item.id)
+              }
+            })
+          } else {
+            this.selDevice.push(this.myDevice[0].id)
+          }
+          this.form = {
+            id: res.id,
+            deviceTypDeviceProfitRatios: res.deviceTypDeviceProfitRatios,
+            logo: res.logo,
+            name: res.name,
+            mobile: res.brandUser.mobile,
+            areaId: res.areaId,
+            companyName: res.companyName,
+            companyAddress: res.companyAddress,
+            companyPhoneNum: res.companyPhoneNum
+          }
         })
-      },
-
-      /**
-       * 上传文件成功通知
-       */
-      fileOk(arr) {
-        this.form.avatar = arr[0] || ''
       },
 
       /**
        * 提交添加
        */
       onSubmit() {
-        let params = {}, url = 'iot-saas-basic/brand', profit_key = this.config.profit_key
+        let params = {}, url = 'iot-saas-basic/admin/brand'
         params = JSON.parse(JSON.stringify(this.form))
+        let profitRatios = []
+        for(var i in params.deviceTypDeviceProfitRatios){
+          profitRatios.push({
+            deviceTypeId: i,
+            profitRatio: params.deviceTypDeviceProfitRatios[i] || 0
+          })
+        }
+        params.deviceTypDeviceProfitRatios = profitRatios
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            if(this.id > 0){
-              params.id = this.id
-              url = 'iot-saas-basic/brand/updateById'
+            if(this.aid){
+              params.id = this.aid
+              url = 'iot-saas-basic/admin/brand/updateById'
             }
             this.clickSubmit = true
             this.$post(url, params).then(res => {
@@ -193,19 +169,9 @@
                 message: '提交成功',
                 type: 'success'
               })
-              if(this.checkRoles(['terminal'])){
-                this.$router.push({
-                  path: '/partner/index'
-                })
-              }else if(params.admin_pid != this.agentInfo.id){
-                this.$router.push({
-                  path: '/agent/subAgent'
-                })
-              } else {
-                this.$router.push({
-                  path: '/agent/index'
-                })
-              }
+              this.$router.push({
+                path: '/partner/index'
+              })
             }).catch( err => {
               setTimeout(() => {
                 this.clickSubmit = false

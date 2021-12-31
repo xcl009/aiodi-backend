@@ -262,9 +262,9 @@ export default {
       this.$refs.filterDrawer.hide()
       if (type == 1) {
         this.form = {}
-        this.listQuery.start = 1
+        this.listQuery.page = 1
       } else {
-        this.listQuery.start = 1
+        this.listQuery.page = 1
       }
       this.getList()
     },
@@ -274,7 +274,7 @@ export default {
      */
     getList() {
       var params = Object.assign({}, this.form, this.listQuery, {
-        start: this.listQuery.start - 1
+        start: this.listQuery.page - 1
       })
       if (params.begin) params.begin = this.parseTime(params.begin, '{y}-{m}-{d}')
       if (params.end) params.end = this.parseTime(params.end, '{y}-{m}-{d}')

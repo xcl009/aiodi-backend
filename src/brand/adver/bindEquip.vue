@@ -120,7 +120,7 @@
        * @param {Object} event
        */
       typeClick(tab, event) {
-        this.listQuery.start = 1
+        this.listQuery.page = 1
         this.getList()
       },
 
@@ -142,16 +142,16 @@
       toQuery(type = 0) {
         if (type == 1) {
           this.form = {}
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         } else {
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         }
         this.getList()
       },
 
       getList() {
         let listQuery = Object.assign({}, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         })
         this.$get('agentapi/search/query_devices', listQuery).then(res => {
           this.listLoading = false

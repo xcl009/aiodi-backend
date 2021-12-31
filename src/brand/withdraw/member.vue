@@ -152,9 +152,9 @@
         this.$refs.filterDrawer.hide()
         if (type == 1) {
           this.form = {}
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         } else {
-          this.listQuery.start = 1
+          this.listQuery.page = 1
         }
         this.getList()
       },
@@ -164,7 +164,7 @@
        */
       getList() {
         let listQuery = Object.assign({}, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         })
         this.$get('agentapi/card/query_umcards', listQuery).then(res => {
           this.listLoading = false

@@ -115,7 +115,7 @@
     methods: {
       getList() {
         let listQuery = Object.assign({}, this.listQuery, {
-          start: this.listQuery.start - 1
+          start: this.listQuery.page - 1
         })
         this.$get('agentapi/withdaw_deposit_orders', listQuery).then(res => {
           this.listLoading = false

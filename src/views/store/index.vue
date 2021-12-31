@@ -437,7 +437,7 @@ export default {
      */
     getList() {
       var params = Object.assign({}, this.form, this.listQuery, {
-        page: this.listQuery.start - 1
+        page: this.listQuery.page - 1
       })
       this.$get('merchant/findPage', params).then(res => {
         this.listLoading = false

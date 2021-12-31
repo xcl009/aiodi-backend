@@ -95,13 +95,13 @@ export default {
      */
     toQuery(type = 0) {
       if (type == 1) this.form = {}
-      this.listQuery.start = 1
+      this.listQuery.page = 1
       this.getList()
     },
 
     getList() {
       const listQuery = Object.assign({}, this.listQuery, {
-        start: this.listQuery.start - 1
+        start: this.listQuery.page - 1
       })
       this.$get('agentapi/agent_distribute_log', listQuery).then(res => {
         this.listLoading = false
