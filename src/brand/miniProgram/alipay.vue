@@ -1,6 +1,6 @@
 <template>
   <div>
-		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+		<!-- <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
         <el-date-picker
           class="range-day flex align-center"
@@ -16,106 +16,62 @@
         <el-input v-model="form.name" placeholder="代理姓名"/>
         <el-input v-model="form.mobile" placeholder="手机号码"/>
 		  </template>
-		</condition>
+		</condition> -->
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="mb-15 flex">
-        <div class="flex1">
-          <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
-            :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
-            @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
-          <el-button size="medium" class="btn-body">总提现<span class="ml-15 mr-30 text-black">52877.52元</span>平台手续费<span class="ml-15 text-black">52877.52元</span></el-button>
-        </div>
-      </div>
+    <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         :max-height="tableMaxH">
-        <el-table-column label="提现单号" align="center" width="120">
+        <el-table-column label="品牌方" align="center" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.charge_county || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="代理商" align="center" width="130">
+        <el-table-column label="账号/手机号" align="center" width="120">
+          <template slot-scope="scope">
+            <div>{{ scope.row.charge_county || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="小程序" align="center" width="130">
+          <template slot-scope="scope">
+            <div class="mb-5">{{ scope.row.name || '小程序名称' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="APPID" align="center" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '--' }}</div>
-            <div>{{ scope.row.phone || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="提现时间" align="center" width="130">
-          <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '--' }}</div>
-            <div>{{ scope.row.phone || '--' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="提现金额(元)" align="center">
+        <el-table-column label="最新版本" align="center">
           <template slot-scope="scope">
             {{ scope.row.charge_county || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="手续费(元)" align="center">
+        <el-table-column label="当前版本" align="center">
           <template slot-scope="scope">
             {{ scope.row.charge_county || '0.00' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="到账金额(元)" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="到账账户" align="center" width="220">
-          <template slot-scope="scope">
-            <div v-if="scope.row.withdraw_type == 0">
-              <div>{{ scope.row.withdraw_bank_uname }}</div>
-              <div>{{ scope.row.withdraw_bank_info }}</div>
-              <div>{{ scope.row.withdraw_bank_id }}</div>
-            </div>
-            <div class="flex align-center" v-else-if="scope.row.withdraw_type == 3">
-              <div class="mr-5 flex1">{{ scope.row.wx_account_name }}</div>
-              <el-image
-                class="pay-code"
-                :src="scope.row.wx_account_qrcode"
-                fit="scale-down"
-                :preview-src-list="[scope.row.wx_account_qrcode]"
-                style="height: 80px">
-              </el-image>
-            </div>
-            <div class="flex align-center" v-else-if="scope.row.withdraw_type == 4">
-              <div class="mr-5 flex1">{{ scope.row.zfb_account_name }}</div>
-              <el-image
-                class="pay-code"
-                style="height: 80px"
-                fit="scale-down"
-                :src="scope.row.zfb_account_qrcode"
-                :preview-src-list="[scope.row.zfb_account_qrcode]">
-              </el-image>
-            </div>
-            <div class="flex align-center" v-else>
-              <el-avatar size="small" :src="scope.row.wx_avatar"></el-avatar>
-              <div class="flex1 pl-10">{{ scope.row.wx_nick_name || "--" }}</div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="提现方式" align="center" width="100">
-          <template slot-scope="scope">
-            {{ config.withdraw_way[scope.row.withdraw_type] }}
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center">
           <template slot-scope="scope">
-            <div class="el-link el-link--success">{{ statusObj[scope.row.withdraw_status] }}</div>
+            {{ scope.row.charge_county || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="备注" align="center" width="170">
-          <template slot-scope="scope">{{ scope.row.withdraw_reason }}</template>
+        <el-table-column label="更新时间" align="center" width="100">
+          <template slot-scope="scope">
+            2021/12/27
+          </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <div class="flex justify-center">
-              <div class="p-10 cursor text-primary" @click="setRows(1, scope.row, 1)">通过</div>
-              <div class="p-10 cursor text-danger" @click="setRows(1, scope.row, 2)">拒绝</div>
-            </div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">小程序绑定</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div>
           </template>
         </el-table-column>
       </el-table>
+
+      <div class="p-20 text-center cursor" @click="$router.push({path: `/systemSet/alipayEdit`})">绑定小程序</div>
 
       <div class="flex justify-center">
         <pagination
@@ -174,40 +130,13 @@
           2: '提现已到账',
           3: '审核不通过'
         },
-        statusArr: [{
-            value: 0,
-            title: '全部',
-            nkey: ''
-          },
-          {
-            value: 1,
-            title: '审核中',
-            nkey: ''
-          },
-          {
-            value: 2,
-            title: '已拒绝',
-            nkey: ''
-          },
-          {
-            value: 3,
-            title: '到账中',
-            nkey: ''
-          },
-          {
-            value: 4,
-            title: '已通过',
-            nkey: ''
-          }
-        ],
-        numInfo: {},
+
         form: {},
         tableMaxH: '250',
         list: [{}],
         listLoading: false,
         listTotal: 0,
         listQuery: {
-          status: this.$route.query.status || 0,
           page: 1,
           size: 20
         },

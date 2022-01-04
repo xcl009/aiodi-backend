@@ -152,10 +152,10 @@
                     <el-input v-model="plan.money" class="flex1 ml-10 mr-10">
                       <template slot="append">元</template>
                     </el-input>
-                    <el-button type="primary" icon="el-icon-plus" size="small" :disabled="item[`${xcx}PayMode`].list.length == 4" v-if="index == 0"
-                      @click="item[`${xcx}PayMode`].list.push({time: 1, money: 2, tag: index + 1})"></el-button>
-                    <el-button type="danger" icon="el-icon-minus" size="small" v-else
-                      @click="item[`${xcx}PayMode`].list.splice(index, 1)"></el-button>
+                    <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].list.length == 4" v-if="index == 0"
+                      @click="item[`${xcx}PayMode`].list.push({time: 1, money: 2, tag: index + 1})">添加</el-button>
+                    <el-button type="text" size="small" v-else
+                      @click="item[`${xcx}PayMode`].list.splice(index, 1)" class="text-danger">删除</el-button>
                   </div>
                 </el-form-item>
               </template>

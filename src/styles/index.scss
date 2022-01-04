@@ -134,13 +134,13 @@ div:focus {
 ::-webkit-scrollbar-thumb
 {
   //border-radius: 6px;  /*滚动条的圆角*/
-  background-color: var(--bodyBg);/*滚动条的背景颜色*/
+  background-color: #e9e9ea;/*滚动条的背景颜色*/
 }
 
 ::-moz-scrollbar-thumb
 {
   //border-radius: 6px;  /*滚动条的圆角*/
-  background-color: var(--bodyBg);/*滚动条的背景颜色*/
+  background-color: #e9e9ea;/*滚动条的背景颜色*/
 }
 
 .clearfix {
@@ -151,6 +151,7 @@ div:focus {
     content: " ";
     clear: both;
     height: 0;
+    color: #dadbdc;
   }
 }
 
@@ -681,6 +682,9 @@ div:focus {
 
 .text-danger{
   color: #FF5454;
+  &:hover{
+    color: #e14a4a;
+  }
 }
 
 .text-green{
@@ -751,6 +755,10 @@ div:focus {
 
 .radius-15,.radius-15::after,.radius-15[class*="line"]::after {
   border-radius: 15px!important;
+}
+
+.el-button{
+  border-radius: 2px;
 }
 
 .el-button--orange.is-plain {

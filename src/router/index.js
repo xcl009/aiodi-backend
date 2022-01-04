@@ -452,15 +452,21 @@ export const brandRoutes = [
         meta: {
           keepAlive: true,
           title: '我的代理'
+        },
+        props: {
+          user_type: 1
         }
       },
       {
         path: 'subAgent',
         name: 'subAgent',
-        component: () => import('@/brand/agent/subAgent'),
+        component: () => import('@/brand/agent/index'),
         meta: {
           keepAlive: true,
           title: '下级管理'
+        },
+        props: {
+          user_type: 2
         }
       },
       {
@@ -526,6 +532,113 @@ export const brandRoutes = [
           keepAlive: true,
           title: '用户提现'
         },
+      }
+    ]
+  },
+  {
+    path: '/market',
+    component: Layout,
+    redirect: '/market/index',
+    meta: {
+      title: '服务市场',
+      icon: 'market'
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'market',
+        component: () => import('@/brand/market/index'),
+        meta: {
+          keepAlive: true,
+          title: '服务列表'
+        }
+      },
+      {
+        path: 'buyRecord',
+        name: 'buyRecord',
+        component: () => import('@/brand/market/buyRecord'),
+        meta: {
+          keepAlive: true,
+          title: '服务记录'
+        }
+      },
+      {
+        path: 'buy',
+        name: 'buyService',
+        component: () => import('@/brand/market/buy'),
+        meta: {
+          title: '购买服务'
+        }
+      }
+    ]
+  },
+  {
+    path: '/systemSet',
+    component: Layout,
+    redirect: '/systemSet/wechat',
+    meta: {
+      title: '系统设置',
+      icon: 'setting'
+    },
+    children: [
+      {
+        path: 'wechat',
+        name: 'wechat',
+        component: () => import('@/brand/miniProgram/wechat'),
+        meta: {
+          keepAlive: true,
+          title: '微信小程序'
+        }
+      },
+      {
+        path: 'wechatEdit',
+        name: 'wechatEdit',
+        component: () => import('@/brand/miniProgram/wechatEdit'),
+        meta: {
+          title: '微信小程序'
+        },
+        hidden: true
+      },
+      {
+        path: 'alipay',
+        name: 'alipay',
+        component: () => import('@/brand/miniProgram/alipay'),
+        meta: {
+          title: '支付宝小程序'
+        }
+      },
+      {
+        path: 'alipayEdit',
+        name: 'alipayEdit',
+        component: () => import('@/brand/miniProgram/alipayEdit'),
+        meta: {
+          title: '支付宝小程序'
+        },
+        hidden: true
+      },
+      {
+        path: 'platform',
+        name: 'platform',
+        component: () => import('@/brand/system/platform'),
+        meta: {
+          title: '平台信息'
+        }
+      },
+      {
+        path: 'billing',
+        name: 'billing',
+        component: () => import('@/brand/system/billing'),
+        meta: {
+          title: '默认设置'
+        }
+      },
+      {
+        path: 'link',
+        name: 'link',
+        component: () => import('@/brand/system/link'),
+        meta: {
+          title: '相关链接'
+        }
       }
     ]
   },

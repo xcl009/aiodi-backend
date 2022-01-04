@@ -188,7 +188,7 @@
         listLoading: true,
         listTotal: 0,
         listQuery: {
-          // device_status: this.$route.query.device_status || 0,
+          device_status: this.$route.query.device_status || 0,
           // search_user_type: this.user_type,
           page: 1,
           size: 20

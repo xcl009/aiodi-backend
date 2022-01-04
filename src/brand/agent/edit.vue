@@ -37,7 +37,7 @@
           <template>
             <h4 class="pt-20">分润比例</h4>
             <template v-for="(id, index) in selDevice">
-              <el-form-item :label="`${myDeviceId[id]}：`">
+              <el-form-item :label="`${myDeviceId[id]}`">
                 <el-input v-model="form.deviceTypDeviceProfitRatios[id]" :placeholder="`最高不能超过100%`">
                   <template slot="append">%</template>
                 </el-input>
@@ -46,7 +46,7 @@
           </template>
 
           <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
+            <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">立即提交</el-button>
           </el-form-item>
         </el-form>
       </el-col>

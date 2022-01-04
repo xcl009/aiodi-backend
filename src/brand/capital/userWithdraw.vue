@@ -19,6 +19,15 @@
 		</condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
+      <div class="mb-15 flex">
+        <div class="flex1">
+          <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
+            :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
+            @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+      
+          <el-button size="medium" class="btn-body">总提现<span class="ml-15 mr-30 text-black">52877.52元</span>平台手续费<span class="ml-15 text-black">52877.52元</span></el-button>
+        </div>
+      </div>
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         :max-height="tableMaxH">
         <el-table-column label="提现单号" align="center" width="120">
@@ -166,13 +175,40 @@
           2: '提现已到账',
           3: '审核不通过'
         },
-
+        statusArr: [{
+            value: 0,
+            title: '全部',
+            nkey: ''
+          },
+          {
+            value: 1,
+            title: '审核中',
+            nkey: ''
+          },
+          {
+            value: 2,
+            title: '已拒绝',
+            nkey: ''
+          },
+          {
+            value: 3,
+            title: '到账中',
+            nkey: ''
+          },
+          {
+            value: 4,
+            title: '已通过',
+            nkey: ''
+          }
+        ],
+        numInfo: {},
         form: {},
         tableMaxH: '250',
         list: [{}],
         listLoading: false,
         listTotal: 0,
         listQuery: {
+          status: this.$route.query.status || 0,
           page: 1,
           size: 20
         },
@@ -301,134 +337,6 @@
                 type: 'success'
               })
               row.withdraw_status = 3
-            })
-            break
-        }
-      },
-
-      /**
-       * 编辑
-       * @param {Object} row
-       */
-      setRow(type, row) {
-        switch (type) {
-          case 1:
-            this.$alert('确定删除此代理吗？', '删除代理', {
-              confirmButtonText: '确定',
-              callback: action => {
-                if (action == 'confirm') {
-                  this.$message({
-                    message: '删除成功',
-                    type: 'success'
-                  })
-                  this.list.splice(row.index, 1)
-                  return
-                  this.$post('agentapi/delete_agent', {
-                    son_id: row.id
-                  }).then(res => {
-                    this.$message({
-                      message: '删除成功',
-                      type: 'success'
-                    })
-                    this.list.splice(row.index, 1)
-                  })
-                }
-              }
-            })
-            break
-          case 2:
-            this.$alert('确定将账号恢复为正常吗？', '账号恢复', {
-              confirmButtonText: '确定',
-              callback: action => {
-                if (action == 'confirm') {
-                  this.$message({
-                    message: '恢复成功',
-                    type: 'success'
-                  })
-                  this.list.splice(row.index, 1)
-                  return
-                  this.$post('agentapi/delete_agent', {
-                    son_id: row.id
-                  }).then(res => {
-                    this.$message({
-                      message: '删除成功',
-                      type: 'success'
-                    })
-                    this.list.splice(row.index, 1)
-                  })
-                }
-              }
-            })
-            break
-          case 3:
-            this.$get('agentapi/edit_agent', {
-              son_id: row.id
-            }).then(res => {
-              this.withdrawDialog = true
-              this.withdrawObj = res.agent_info
-            })
-            break
-          case 5:
-            this.$prompt('请输入新登录密码', '重置登录密码', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              inputType: 'password',
-              beforeClose: (action, instance, done) => {
-                if (action == 'confirm') {
-                  const value = instance.inputValue
-                  this.$post('agentapi/edit_agent_password', {
-                    son_id: row.id,
-                    password: value
-                  }).then(res => {
-                    this.$message({
-                      message: '设置成功',
-                      type: 'success'
-                    })
-                    done()
-                  })
-                } else {
-                  done()
-                }
-              }
-            })
-            break
-          case 6:
-            this.$post('agentapi/sttuf/save_member_setting', {
-              son_id: rows.id,
-              member_num: rows.member_num,
-              member_day_count: rows.member_day_count,
-              member_free_due_hours: rows.member_free_due_hours
-            }).then(res => {
-              this.$message({
-                message: '设置成功',
-                type: 'success'
-              })
-              this.freeDialog = false
-            })
-            break
-          case 7:
-            this.$prompt('请输入新提现密码', '重置提现密码', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              inputType: 'password',
-              beforeClose: (action, instance, done) => {
-                if (action == 'confirm') {
-                  const value = instance.inputValue
-                  this.$post('agentapi/edit_agent_password', {
-                    son_id: row.id,
-                    password: value,
-                    type: 1
-                  }).then(res => {
-                    this.$message({
-                      message: '设置成功',
-                      type: 'success'
-                    })
-                    done()
-                  })
-                } else {
-                  done()
-                }
-              }
             })
             break
         }
