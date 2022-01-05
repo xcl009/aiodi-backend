@@ -72,7 +72,7 @@
       </el-table>
 
       <div class="p-20 text-center cursor" @click="$router.push({path: `/systemSet/alipayEdit`})">绑定小程序</div>
-
+ 
       <div class="flex justify-center">
         <pagination
           v-show="listTotal > 0"

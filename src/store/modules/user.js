@@ -53,7 +53,7 @@ const actions = {
       // setToken('111', 'user_id')
       // resolve({})
       // return
-      login({ username: username.trim(), password: password, loginType: 'UP', 'appid': 'pc' }).then(data => {
+      login({ username: username.trim(), password: password.trim(), loginType: 'UP', 'appid': 'pc' }).then(data => {
         console.log(data)
         commit('SET_TOKEN', data.loginToken.accessToken)
         commit('SET_NAME', data.username)
