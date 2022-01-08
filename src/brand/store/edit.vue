@@ -171,7 +171,7 @@
 </template>
 
 <script>
-import { bMapTransQQMap, qqMapTransBMap } from '@/utils/index'
+import { bMapTransQQMap, qqMapTransBMap, arrayToObj } from '@/utils/index'
 import upload from '@/components/upload'
 import maps from '@/components/map'
 export default {
@@ -292,21 +292,26 @@ export default {
      * 类型选择
      */
     changeDevice(selID){
-      selID.map(id => {
-        let idx = -1
-        this.deviceDataArr.map((item, idx) => {
-          if(item.id == id){
-            idx = idx
-            item.status = 1
-          } else {
-            item.status = 0
-          }
-        })
-        if(idx == -1){
-          this.defaultDevice.deviceTypeId = id
-          this.deviceDataArr.push(this.defaultDevice)
+      let deviceDataArr = JSON.parse(JSON.stringify(this.deviceDataArr)), idArr = [], deviceObj = {}
+      deviceDataArr.map(item => {
+        if(selID.indexOf(item.deviceTypeId) == -1){
+          return item.status = 0
         }
       })
+      selID.map(id => {
+        let idxs = -1
+        deviceDataArr.map((item, idx) => {
+          if(item.deviceTypeId == id){
+            idxs = idx
+            item.status = 1
+          }
+        })
+        if(idxs == -1){
+          this.defaultDevice.deviceTypeId = id
+          deviceDataArr.push(this.defaultDevice)
+        }
+      })
+      this.deviceDataArr = deviceDataArr
     },
 
     /**

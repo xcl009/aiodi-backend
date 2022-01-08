@@ -84,7 +84,7 @@
         role: [],
 
         selDevice: [],
-        aid: this.$route.query.aid || ''
+        aid: this.$route.params.aid || ''
       }
     },
     computed: {
@@ -159,6 +159,7 @@
             profitRatio: params.deviceTypDeviceProfitRatios[i] || 0
           })
         }
+        if(Array.isArray(params.areaId) && params.areaId.length > 0) params.areaId = params.areaId[params.areaId.length - 1]
         params.deviceTypDeviceProfitRatios = profitRatios
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
@@ -192,7 +193,7 @@
        */
       getCity(){
         this.$get('iot-saas-basic/admin/regions').then(res => {
-          let list = {}
+          let list = {}, regionTag = ''
           res.map(item => {
             if(item.level == 1){
               list[item.tag] = {
@@ -208,6 +209,7 @@
                 children: []
               }
             }else if(item.level == 3){
+              regionTag = regionTag || item.tag
               let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
               list[tag1].children[tag2].children.push({
                 value: item.tag,
@@ -225,6 +227,9 @@
             return item
           })
           this.cityList = list
+          if(!this.aid){
+            this.$set(this.form, 'areaId', regionTag)
+          }
         })
       },
     }

@@ -54,13 +54,11 @@ const actions = {
       // resolve({})
       // return
       login({ username: username.trim(), password: password.trim(), loginType: 'UP', 'appid': 'pc' }).then(data => {
-        console.log(data)
         commit('SET_TOKEN', data.loginToken.accessToken)
         commit('SET_NAME', data.username)
         commit('SET_USER_TYPE', data.userType)
         Vue.prototype.userType = data.userType
         setToken(data.loginToken.accessToken)
-        setToken(data.loginToken.refreshToken, 'refreshToken')
         setToken('pc', 'appid')
         resolve(data)
       }).catch(error => {

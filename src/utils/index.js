@@ -397,3 +397,17 @@ export function division(a, b) {
   } catch (g) {}
   return c = Number(a.toString().replace(".", "")), d = Number(b.toString().replace(".", "")), mul(c / d, Math.pow(10, f - e));
 }
+
+/**
+	 * 数组指定key转对象
+	 */
+export function arrayToObj(array = [], key = '') {
+  if(!key) return {}
+  let obj = []
+  array.map(item => {
+    if(item[key] != 'undefined' && item[key] != null){
+      obj[item[key]] = item
+    }
+  })
+  return obj
+}

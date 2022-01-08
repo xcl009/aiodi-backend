@@ -1,6 +1,6 @@
 {
   "project_names": "物享云联",
-  "BASE_URL": "http://120.24.81.141:9700/",
+  "BASE_URL": "http://iot-saas.andyan.cn/",
   "baidu_map_ak": "S6AzfAvWgf3o64xueWzebqTd2Eyr3Fot",
   "baidu_statistics": "var _hmt = _hmt || []; (function() { var hm = document.createElement('script'); hm.src = 'https://hm.baidu.com/hm.js?a0e7eb33d7402b459976e556af7b143c';var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(hm, s)})()",
   "ICP": "",
