@@ -7,11 +7,11 @@
           <el-form-item label="门头照：" class="up-img">
             <upload v-model="form.avatar"/>
           </el-form-item>
-          <el-form-item ref="shopName" label="商户名称：" prop="shopName">
-            <el-input v-model="form.shopName" placeholder="请填写商户名称" />
+          <el-form-item ref="name" label="商户名称：" prop="name">
+            <el-input v-model="form.name" placeholder="请填写商户名称" />
           </el-form-item>
-          <el-form-item ref="shopMobile" label="商家电话：" prop="shopMobile">
-            <el-input v-model="form.shopMobile" placeholder="请填写商家电话" />
+          <el-form-item ref="mobile" label="商家电话：" prop="mobile">
+            <el-input v-model="form.mobile" placeholder="请填写商家电话" />
           </el-form-item>
           <el-form-item ref="catId" label="行业分类：" prop="catId">
             <el-cascader v-model="form.catId" :options="catList" :props="{ expandTrigger: 'hover' }" />
@@ -200,7 +200,7 @@ export default {
   data() {
     return {
       rules: {
-        shopName: [{
+        name: [{
           required: true,
           message: '请填写商户名称',
           trigger: 'blur'
