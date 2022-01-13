@@ -5,7 +5,7 @@
         <el-form ref="form" :rules="rules" :model="form" label-width="auto">
           <h4>基础信息</h4>
           <el-form-item label="代理头像" class="up-img">
-            <upload v-model="form.logo" />
+            <upload v-model="form.avastar" />
           </el-form-item>
           <el-form-item label="代理名称" prop="name">
             <el-input v-model="form.name" placeholder="输入代理名称" />
@@ -17,7 +17,7 @@
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
           <el-form-item label="运营区域">
-            <el-cascader v-model="form.areaId" :options="cityList" :props="{ expandTrigger: 'hover' }" />
+            <el-cascader v-model="form.regionTag" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
           <el-form-item label="公司名称">
             <el-input v-model="form.companyName" placeholder="公司名称" />
@@ -64,7 +64,6 @@
       return {
         clickSubmit: false,
         form: {
-          userType: 'agent',
           password: '123456',
           deviceTypDeviceProfitRatios: {}
         },
@@ -135,10 +134,10 @@
           this.form = {
             id: res.id,
             deviceTypDeviceProfitRatios: res.deviceTypDeviceProfitRatios,
-            logo: res.logo,
+            avastar: res.avastar,
             name: res.name,
             mobile: res.brandUser.mobile,
-            areaId: res.areaId,
+            regionTag: res.regionTag,
             companyName: res.companyName,
             companyAddress: res.companyAddress,
             companyPhoneNum: res.companyPhoneNum
@@ -150,7 +149,7 @@
        * 提交添加
        */
       onSubmit() {
-        let params = {}, url = 'iot-saas-basic/admin/brand'
+        let params = {}, url = 'iot-saas-basic/admin/agent'
         params = JSON.parse(JSON.stringify(this.form))
         let profitRatios = []
         for(var i in params.deviceTypDeviceProfitRatios){
@@ -165,7 +164,7 @@
           if (valid) {
             if(this.aid){
               params.id = this.aid
-              url = 'iot-saas-basic/admin/brand/updateById'
+              url = 'iot-saas-basic/admin/agent/updateById'
             }
             this.clickSubmit = true
             this.$post(url, params).then(res => {
@@ -174,7 +173,7 @@
                 type: 'success'
               })
               this.$router.push({
-                path: '/partner/index'
+                path: '/agent/index'
               })
             }).catch( err => {
               setTimeout(() => {
@@ -192,7 +191,7 @@
        */
       getCity(){
         this.$get('iot-saas-basic/admin/regions').then(res => {
-          let list = {}
+          let list = {}, regionTag = ''
           res.map(item => {
             if(item.level == 1){
               list[item.tag] = {
@@ -208,6 +207,7 @@
                 children: []
               }
             }else if(item.level == 3){
+              regionTag = regionTag || item.tag
               let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
               list[tag1].children[tag2].children.push({
                 value: item.tag,
@@ -225,6 +225,9 @@
             return item
           })
           this.cityList = list
+          if(!this.store_id){
+            this.$set(this.form, 'regionTag', regionTag)
+          }
         })
       },
     }

@@ -2,7 +2,7 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-        <el-input v-model="form.name" placeholder="品牌名"/>
+        <el-input v-model="form.name" placeholder="代理名"/>
         <el-input v-model="form.mobile" placeholder="手机号码"/>
 		  </template>
       <template v-slot:endButton>
