@@ -72,20 +72,23 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="190">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
-            <el-button type="primary" size="mini" @click="">功能设置</el-button>
-            <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
-            <el-dropdown trigger="click">
-              <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="$router.push({path: `/partner/edit?aid=${scope.row.id}`})">修改信息</el-dropdown-item>
-                <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-dropdown-item>
-                <el-dropdown-item @click.native="getMapIcon(scope.row)">地图图标</el-dropdown-item>
-                <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除品牌</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <template v-if="deviceId">
+              <el-button type="primary" size="mini" @click="singleAssign(scope.row)">分配给Ta</el-button>
+            </template>
+            <template v-else>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
+              <el-button type="primary" size="mini" @click="">功能设置</el-button>
+              <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+              <el-dropdown trigger="click">
+                <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除代理</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -151,7 +154,9 @@
         listQuery: {
           page: 1,
           size: 20
-        }
+        },
+
+        deviceId: ''
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -163,11 +168,11 @@
       next()
     },
     activated() {
-      this.zuo_sn = this.$route.query.zuo_sn || ''
+      this.deviceId = this.$route.query.deviceId || ''
       if(this.$route.meta.reload){
-        this.getList()
+        this.toQuery()
       }else if(!this.list || this.list.length == 0) {
-        //this.listQuery.son_type = this.user_type
+        this.listQuery.son_type = this.user_type
         this.toQuery(1)
       }
     },
@@ -220,7 +225,7 @@
           page: this.listQuery.page - 1
         })
         this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
-          this.list = res.list
+          this.list = res.rows
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
@@ -364,35 +369,23 @@
       /**
        * 分配设备
        */
-      setEquip(row) {
+      singleAssign(row) {
         this.loadObj = this.$loading({
           lock: true,
           text: '正在分配',
           spinner: 'el-icon-loading'
         })
-        this.$post('agentapi/save_distribute_agent_devices', {
-          son_id: row.id,
-          goods_sn: this.zuo_sn.split(',')
+        this.$post('iot-saas-device/admin/device/singleAssign', {
+          agentId: row.id,
+          deviceId: this.deviceId
         }).then(res => {
-          res.bind_fail = res.bind_fail || []
-          if(res.bind_fail.length == 0){
-            this.loadObj.close()
-            this.$message({
-              message: '分配成功',
-              type: 'success'
-            })
-            history.back()
-          } else {
-            this.loadObj.close()
-            let str = res.bind_fail.toString()
-            this.$alert('【' + str + '】等设备未分配成功，', '分配失败', {
-            confirmButtonText: '确定',
-              callback: action => {
-                history.back()
-              }
-            })
-          }
-        }).catch(()=>{
+          this.loadObj.close()
+          this.$message({
+            message: '分配成功',
+            type: 'success'
+          })
+          history.back()
+        }).catch(err => {
           this.loadObj.close()
         })
       }

@@ -75,7 +75,7 @@ const actions = {
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         setToken(data.user_id, 'user_id')
-        setToken(data.belong_partner_aid || data.user_id, 'agent_id')
+        //setToken(data.belong_partner_aid || data.user_id, 'agent_id')
         resolve(data)
       }).catch(error => {
         reject(error)

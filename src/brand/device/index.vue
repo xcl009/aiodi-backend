@@ -90,7 +90,7 @@
               <div class="flex flex-wrap w-160">
                 <el-button type="primary" size="mini" @click="deviceBelong(scope.row)">设备归属</el-button>
                 <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
-                <el-button type="primary" size="mini" @click="deviceBelong(scope.row)" v-if="!scope.row.distribute">去分配</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({path: `/agent/index?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">去分配</el-button>
                 <el-button type="primary" size="mini" @click="$router.push({path: `/store/meStore?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">去铺货</el-button>
               </div>
             </div>

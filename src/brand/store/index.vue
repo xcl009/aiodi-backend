@@ -27,7 +27,7 @@
             <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})">
               <el-avatar shape="square" :size="52" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"
                 class="m-auto block"></el-avatar>
-              <div class="mt-5">{{ scope.row.shopName || '--' }}</div>
+              <div class="mt-5">{{ scope.row.name || '--' }}</div>
             </el-link>
           </template>
         </el-table-column>
@@ -55,24 +55,28 @@
         </el-table-column>
         <el-table-column label="上级代理" align="center" width="120">
           <template slot-scope="scope">
-            <div>{{ scope.row.order_num || '--' }}</div>
-            <div>{{ scope.row.order_num || '--'}}</div>
+            <div>{{ scope.row.order_num || '昵称' }}</div>
+            <div>{{ scope.row.order_num || '手机号码'}}</div>
           </template>
         </el-table-column>
         <el-table-column label="分润人" align="center" width="120">
           <template slot-scope="scope">
-            <div>{{ userObj[scope.row.userId] ? userObj[scope.row.userId].username : '--' }}</div>
-            <div>{{ userObj[scope.row.userId] ? userObj[scope.row.userId].mobile : '--' }}</div>
+            <div>{{ userObj[scope.row.userId] ? userObj[scope.row.userId].nickname : '昵称' }}</div>
+            <div>{{ userObj[scope.row.userId] ? userObj[scope.row.userId].mobile : '手机号码' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="分成比例" align="center">
           <template slot-scope="scope">
-            <template v-for="(item, index) in scope.row.storeDivisionFun">
-              <el-tag class="cursor" :hit="true" size="medium" effect="plain"
-                @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
-                {{ myDeviceId[item.deviceTypeId] }}：{{ scope.row.live || '0' }}%({{ config.closeType[item.closeType] }})
-              </el-tag>
-            </template>
+            <div class="mt-5">
+              <template v-for="(item, index) in scope.row.storeDivisionFun">
+                <div class="mb-5">
+                  <el-tag class="cursor" :hit="true" size="medium" effect="plain"
+                    @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
+                    {{ myDeviceId[item.deviceTypeId] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
+                  </el-tag>
+                </div>
+              </template>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="城市区域" align="center" width="90">

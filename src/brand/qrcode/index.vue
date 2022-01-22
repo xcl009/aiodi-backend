@@ -39,14 +39,9 @@
             {{ scope.row.deviceId || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="类型">
+        <el-table-column label="设备类型">
           <template slot-scope="scope">
-            {{ scope.row.jumpTag }}
-          </template>
-        </el-table-column>
-        <el-table-column label="类型">
-          <template slot-scope="scope">
-            {{ scope.row.factoryId }}
+            {{ scope.row.deviceType.name }}
           </template>
         </el-table-column>
         <el-table-column label="二维码内容">

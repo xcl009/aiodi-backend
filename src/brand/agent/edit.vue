@@ -83,7 +83,7 @@
         role: [],
 
         selDevice: [],
-        aid: this.$route.query.aid || ''
+        aid: this.$route.params.aid || ''
       }
     },
     computed: {
@@ -117,11 +117,11 @@
        * 获取信息
        */
       getInfo() {
-        this.$get('iot-saas-basic/admin/brand/findById', {
+        this.$get('iot-saas-basic/admin/agent/findById', {
           id: this.aid
         }).then(res => {
           res.deviceTypDeviceProfitRatios = {}
-          if(res.brandDeviceType.length > 0){
+          if(res.brandDeviceType && res.brandDeviceType.length > 0){
             res.brandDeviceType.map(item => {
               res.deviceTypDeviceProfitRatios[item.id] = item.profitRatio
               if(this.selDevice.indexOf(item.id) == -1) {
@@ -136,7 +136,7 @@
             deviceTypDeviceProfitRatios: res.deviceTypDeviceProfitRatios,
             avastar: res.avastar,
             name: res.name,
-            mobile: res.brandUser.mobile,
+            mobile: res.mobile,
             regionTag: res.regionTag,
             companyName: res.companyName,
             companyAddress: res.companyAddress,
