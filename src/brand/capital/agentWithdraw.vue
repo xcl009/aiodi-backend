@@ -1,19 +1,23 @@
 <template>
   <div>
-		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+		<condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery" @saveXlsx="saveXlsx">
 		  <template v-slot:defult>
         <el-date-picker
           class="range-day flex align-center"
           v-model="form.day"
           type="daterange"
+          value-format="timestamp"
           range-separator="-"
           start-placeholder="开始日期"
-          end-placeholder="结束日期">
+          end-placeholder="结束日期"
+          @change="toQuery()">
         </el-date-picker>
-        <el-select v-model="form.withdraw_type" placeholder="提现方式" @change="toQuery()">
+        <el-select v-model="form.withdrawType" placeholder="提现方式" @change="toQuery()">
           <el-option :label="item" :value="index" v-for="(item, index) in config.withdraw_way"/>
         </el-select>
-        <el-input v-model="form.name" placeholder="代理姓名"/>
+        <el-input v-model="form.name" placeholder="代理姓名" v-if="userType == 1"/>
+        <el-input v-model="form.storeName" placeholder="商户名称" v-if="userType == 2"/>
+        <el-input v-model="form.nickName" placeholder="用户昵称" v-if="userType == 3"/>
         <el-input v-model="form.mobile" placeholder="手机号码"/>
 		  </template>
 		</condition>
@@ -24,7 +28,7 @@
           <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
             :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
             @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
-          <el-button size="medium" class="btn-body">总提现<span class="ml-15 mr-30 text-black">52877.52元</span>平台手续费<span class="ml-15 text-black">52877.52元</span></el-button>
+          <!-- <el-button size="medium" class="btn-body">总提现<span class="ml-15 mr-30 text-black">52877.52元</span>平台手续费<span class="ml-15 text-black">52877.52元</span></el-button> -->
         </div>
       </div>
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
@@ -34,7 +38,19 @@
             <div>{{ scope.row.charge_county || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="代理商" align="center" width="130">
+        <el-table-column label="代理商" align="center" width="130" v-if="userType == 1">
+          <template slot-scope="scope">
+            <div class="mb-5">{{ scope.row.name || '--' }}</div>
+            <div>{{ scope.row.phone || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="商户" align="center" width="130" v-if="userType == 2">
+          <template slot-scope="scope">
+            <div class="mb-5">{{ scope.row.name || '--' }}</div>
+            <div>{{ scope.row.phone || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="用户" align="center" width="130" v-if="userType == 3">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.phone || '--' }}</div>
@@ -133,12 +149,15 @@
       <template v-if="dialogType == 1">
         <div class="text-center">
           <div class="text-black">确定该笔提现申请通过审核吗？</div>
+          <el-form class="custom-form">
+            <el-input v-model="dform.remark" placeholder="请输入备注内容" type="textarea" :rows="5" />
+          </el-form>
         </div>
       </template>
       <template v-if="dialogType == 2">
         <div class="text-black">确定该笔提现申请拒绝通过吗？</div>
         <el-form class="custom-form">
-          <el-input v-model="dform.note" placeholder="请输入备注内容" type="textarea" :rows="5" />
+          <el-input v-model="dform.remark" placeholder="请输入备注内容" type="textarea" :rows="5" />
         </el-form>
       </template>
       <div class="mt-30 text-center">
@@ -160,7 +179,7 @@
       condition
     },
     props: {
-      user_type: {
+      userType: {
         type: Number,
         default: 0
       }
@@ -174,36 +193,37 @@
           2: '提现已到账',
           3: '审核不通过'
         },
-        statusArr: [{
+        statusArr: [
+          {
             value: 0,
             title: '全部',
-            nkey: ''
+            nkey: 'all'
           },
           {
             value: 1,
             title: '审核中',
-            nkey: ''
+            nkey: 'applying'
           },
           {
             value: 2,
             title: '已拒绝',
-            nkey: ''
+            nkey: 'approved'
           },
           {
             value: 3,
             title: '到账中',
-            nkey: ''
+            nkey: 'done'
           },
           {
             value: 4,
             title: '已通过',
-            nkey: ''
+            nkey: 'reject'
           }
         ],
         numInfo: {},
         form: {},
         tableMaxH: '250',
-        list: [{}],
+        list: [],
         listLoading: false,
         listTotal: 0,
         listQuery: {
@@ -252,18 +272,22 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
+        this.getStat()
       },
 
       /**
        * 重置查询
        */
       reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.form = {
           activated_status: 1
         }
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
+        this.getStat()
       },
 
       /**
@@ -273,8 +297,14 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
-          this.list = res.rows || [{}]
+        params.userType = this.userType
+        if(params.selDay && params.selDay.length > 0){
+          params.startTime = params.selDay[0] / 1000
+          params.endTime = params.selDay[1] / 1000
+          delete params.selDay
+        }
+        this.$get('iot-saas-pay/admin/pay/withdraw/list', params).then(res => {
+          this.list = res.rows || []
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
@@ -284,6 +314,22 @@
         }).catch(() => {
           this.listLoading = false
           this.clickSubmit = false
+        })
+      },
+
+      /**
+       * 统计数据
+       */
+      getStat(){
+        var params = Object.assign({}, this.form, this.listQuery)
+        params.userType = this.userType
+        if(params.selDay && params.selDay.length > 0){
+          params.startTime = params.selDay[0] / 1000
+          params.endTime = params.selDay[1] / 1000
+          delete params.selDay
+        }
+        this.$get('iot-saas-pay//admin/pay/withdraw/summary', params).then(res => {
+          this.numInfo = res
         })
       },
 
@@ -314,32 +360,28 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            this.$post('agentapi/upper_review_apply', {
+            this.$post('iot-saas-pay/admin/pay/withdraw/approve', {
               apply_id: curRow.id,
-              agree: 1
+              status: this.dialogType,
+              remark: params.remark
             }).then(res => {
               this.$message({
                 message: '提交成功',
                 type: 'success'
               })
-              row.withdraw_status = 2
-            })
-            break
-          case 2:
-            this.$post('agentapi/upper_review_apply', {
-              apply_id: curRow.id,
-              note: params.note,
-              agree: 2
-            }).then(res => {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              row.withdraw_status = 3
+              row.withdraw_status = this.dialogType
+              row.remark = this.remark
             })
             break
         }
-      }
+      },
+      
+      /**
+       * 导出
+       */
+      saveXlsx() {
+        
+      },
     }
   }
 </script>

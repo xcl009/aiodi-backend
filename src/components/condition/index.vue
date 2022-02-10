@@ -8,9 +8,9 @@
         </div>
         <div id="setBox" class="flex align-center set-box">
           <el-button native-type="submit" :disabled="clickSubmit" class="icon-search"><i class="el-icon-search fs-c1"/></el-button>
-          <span class="mr-10 pl-15 pr-15 text-primary cursor" v-if="resetStatus" @click="reset()">重置</span>
+          <span class="mr-10 pl-15 pr-15 text-primary cursor line-1" v-if="resetStatus" @click="reset()">重置</span>
           <el-tooltip class="item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top" v-if="device != 'mobile'">
-            <el-button type="primary" @click="outTable()" v-if="exportStatus" class="icon-download"><i class="el-icon-download el-icon--left"/>导出</el-button>
+            <el-button type="primary" @click="saveXlsx()" v-if="exportStatus" class="icon-download"><i class="el-icon-download el-icon--left"/>导出</el-button>
           </el-tooltip>
           <span class="pl-10 fs-s4 text-six cursor" v-if="unfoldShow && (child_i == -1 || child_i > 0)" @click="unfoldStatus = !unfoldStatus; controlChildren(2)">
             {{ unfoldStatus ? '收起' : '更多' }}<i class="el-icon--right" v-bind:class="{'el-icon-arrow-down': !unfoldStatus, 'el-icon-arrow-up' : unfoldStatus}"></i>
@@ -119,7 +119,14 @@ export default {
      */
     hide(){
       this.unfoldStatus = false
-    }
+    },
+    
+    /**
+     * 确认查询
+     */
+    saveXlsx(){
+      this.$emit('saveXlsx')
+    },
   }
 }
 </script>

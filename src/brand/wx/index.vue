@@ -180,7 +180,7 @@
        * 获取列表
        */
       getList() {
-        let url = 'WxOpen/getWxList'
+        let url = '/admin/pay/config/wechat/list'
         let listQuery = Object.assign({}, this.listQuery, {
           page: this.listQuery.page - 1
         })

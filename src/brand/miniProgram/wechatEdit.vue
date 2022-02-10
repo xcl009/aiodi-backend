@@ -13,37 +13,34 @@
         </div> -->
         <el-form ref="form" :model="form" label-position="left" label-width="210px">
           <el-form-item label="小程序名称">
-            <el-input v-model="form.app_name"></el-input>
+            <el-input v-model="form.appName"></el-input>
           </el-form-item>
           <el-form-item label="小程序标识(APPID)">
-            <el-input v-model="form.app_id"></el-input>
+            <el-input v-model="form.appId"></el-input>
           </el-form-item>
           <el-form-item label="小程序APPSECRET">
-            <el-input v-model="form.app_secret"></el-input>
+            <el-input v-model="form.appSecret"></el-input>
           </el-form-item>
           <el-form-item label="小程序原始ID">
-            <el-input v-model="form.origin_id"></el-input>
+            <el-input v-model="form.originId"></el-input>
           </el-form-item>
           <el-form-item label="微信支付商户号(MCHID)">
-            <el-input v-model="form.pay_mchid"></el-input>
+            <el-input v-model="form.appMchid"></el-input>
           </el-form-item>
           <el-form-item label="微信支付API秘钥(key)">
-            <el-input v-model="form.pay_key"></el-input>
+            <el-input v-model="form.apiv2Key"></el-input>
           </el-form-item>
           <el-form-item label="微信支付APIV3秘钥">
-            <el-input v-model="form.apiv3_key"></el-input>
+            <el-input v-model="form.apiv3Key"></el-input>
           </el-form-item>
           <el-form-item label="支付证书(apiclient_cert)">
-            <el-input v-model="form.payssl_cert" type="textarea" :rows="6"></el-input>
+            <el-input v-model="form.apiclientCert" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="支付证书密钥(apiclient_key)">
-            <el-input v-model="form.payssl_key" type="textarea" :rows="6"></el-input>
+            <el-input v-model="form.apiclientKey" type="textarea" :rows="6"></el-input>
           </el-form-item>
-          <el-form-item label="支付API证书序列号">
-            <el-input v-model="form.serial_no"></el-input>
-          </el-form-item>
-          <el-form-item label="微信支付分id(service_id)">
-            <el-input v-model="form.service_id"></el-input>
+          <el-form-item label="微信支付分ID">
+            <el-input v-model="form.serviceId"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit" :disabled="clickSubmit">提交</el-button>
@@ -72,54 +69,53 @@
       }
     },
     mounted() {
-      console.log(this.config)
-      if(this.$route.params.id > 0) this.getInfo()
+      if(this.$route.query.app_id) this.getInfo()
     },
     methods: {
       /**
-       * 获取商户信息
+       * 获取信息
        */
       getInfo() {
-        this.$get('WxOpen/getWxInfo', {
-          config_id: this.$route.params.id
+        this.$get('iot-saas-pay/admin/pay/config/wechat/detail', {
+          appId: this.$route.query.app_id
         }).then(res => {
-          res.mine_agent_id = res.agent_id
           this.form = this.pick(res, [
-            'mine_agent_id',
-            'app_name',
-            'app_id',
-            'app_secret',
-            'origin_id',
-            'pay_mchid',
-            'pay_key',
-            'payssl_cert',
-            'payssl_key',
-            'apiv3_key',
-            'serial_no',
-            'service_id'
+            'appName',
+            'appId',
+            'appSecret',
+            'originId',
+            'appMchid',
+            'apiv2Key',
+            'apiv3Key',
+            'apiclientCert',
+            'apiclientKey',
+            'serviceId'
           ])
         })
       },
 
+      /**
+       * 提交信息
+       */
       onSubmit() {
-        let url = 'WxOpen/editWxInfo',
+        let url = 'iot-saas-pay/admin/pay/config/wechat/save',
           params = JSON.parse(JSON.stringify(this.form))
-          if(this.$route.params.id > 0) params.id = this.$route.params.id
-          this.clickSubmit = true
+        this.clickSubmit = true
         this.$post(url, params).then(res => {
           this.$message({
             message: '提交成功',
             type: 'success'
           })
-          if(this.checkRoles(['terminal'])){
-            this.$router.push({
-              path: '/wx/index'
-            })
-            return
-          }
+          // if(this.checkRoles(['terminal'])){
+          //   this.$router.push({
+          //     path: '/wx/index'
+          //   })
+          //   return
+          // }
           this.$router.push({
-            path: '/setting/index'
+            path: '/systemSet/wechat'
           })
+          this.clickSubmit = false
         }).catch(err => {
           this.clickSubmit = false
         })

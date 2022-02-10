@@ -411,3 +411,10 @@ export function arrayToObj(array = [], key = '') {
   })
   return obj
 }
+
+/**
+ * 获取当前时间
+ */
+export function	currentTime() {
+  return Date.parse(new Date()) / 1000;
+}

@@ -841,6 +841,18 @@ div:focus {
     height: 28px;
     padding: 7px 10px;
   }
+  .el-button--danger.is-plain{
+    background: rgba(255, 84, 84, 0.1);
+    border-color: rgba(255, 84, 84, 0.1);
+    border: none;
+    color: #FF5454;
+  }
+  .el-button--info.is-plain{
+    background: #F2F3F5;
+    border-color: #F2F3F5;
+    border: none;
+    color: #86909C;
+  }
   .w-160{
     width: 160px;
   }
@@ -866,7 +878,6 @@ div:focus {
     color: #1D2129;
   }
   .el-input__inner, .el-textarea__inner{
-    padding: 0 12px;
     height: 32px;
     border: none;
     border-radius: 2px;
@@ -914,6 +925,9 @@ div:focus {
   }
   .el-input__suffix, .el-select__caret{
     color: #4E5969 !important;
+  }
+  .el-input__icon{
+    line-height: 34px;
   }
 }
 

@@ -1,19 +1,10 @@
 <template>
   <div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <div v-if="sidebar.opened && showLogo" class="pt-15 pl-10 pr-5" @click="renewal">
-        <div class="flex align-center" v-if="showLogo">
-          <el-avatar :size="40" :src="agentInfo.avatar">
-            <img src="" width="40" height="50">
-          </el-avatar>
-          <div class="text-cut flex1 pl-5">
-            <div class="text-cut fs-c">{{ agentInfo.name }}</div>
-            <span class="fs-s1 text-gray">{{ agentInfo.agent_name }}</span>
-          </div>
-        </div>
-        <div v-if="contractInfo.date_type > 0" class="mt-5 fs-s1 cursor text-center">
-          <el-tag type="danger" size="mini" class="radius-15">{{ parseTime(contractInfo.end_date, '{y}-{m}-{d}') }}到期</el-tag>
-        </div>
+      <div v-if="sidebar.opened" class="pt-15 mb-10 text-center cursor"><!-- @click="toRenewal" -->
+        <el-avatar :size="40" :src="agentInfo.avatar"></el-avatar>
+        <div class="fs-c1 text-cut">{{ agentInfo.name }}</div>
+        <div class="mt-5 fs-s4">快活币: <span class="text-black">{{ agentInfo.khcoin || '0.00' }}</span></div>
       </div>
       <el-menu
         :default-active="activeMenu"

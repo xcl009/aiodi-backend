@@ -1,14 +1,17 @@
 <template>
   <div class="flex align-center navbar" style="overflow: initial;">
-    <img src="https://oss.kuaihuoya.net/pwd/2021-01-13/170336089.jpg" height="50" alt="" class="ml-10" :class="{'ml-30': device != 'mobile'}" @click="toggleSideBar">
+    <!-- <img src="https://oss.kuaihuoya.net/pwd/2021-01-13/170336089.jpg" height="50" alt="" class="ml-10" :class="{'ml-30': device != 'mobile'}" @click="toggleSideBar"> -->
     <div class="flex1"></div>
+
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="right-menu flex align-center">
-      <el-dropdown class="avatar-container hover-effect" trigger="click">
-        <div class="pr-20 avatar-wrapper flex align-center">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar radius-15">
-          <span class="pl-10">{{ name }}</span>
+      <!-- <div class="pl-15 pr-15 menu-item flex align-center">
+        <svg-icon icon-class="head_new" class="head_new"></svg-icon>
+      </div> -->
+      <el-dropdown class="mr-10 hover-effect" trigger="click">
+        <div class="pl-15 pr-15 menu-item flex align-center">
+          <svg-icon icon-class="head_user" class="head_user"></svg-icon>
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/index">
@@ -156,47 +159,26 @@ export default {
     float: right;
     height: 100%;
     line-height: 36px;
-
     &:focus {
       outline: none;
     }
-
-    .right-menu-item {
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
+    .menu-item{
+      height: 60px;
+      position: relative;
+      cursor: pointer;
+      .el-icon-caret-bottom {
         cursor: pointer;
-        transition: background .3s;
-
-        &:hover {
-          background: rgba(0, 0, 0, .025)
-        }
+        position: absolute;
+        top: 22px;
+        font-size: 12px;
       }
-    }
-
-    .avatar-container {
-      margin-right: 10px;
-
-      .avatar-wrapper {
-        height: 60px;
-        position: relative;
-        cursor: pointer;
-        .user-avatar {
-
-          width: 24px;
-          height: 24px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          top: 22px;
-          font-size: 12px;
-        }
+      svg.head_new {
+        width: 17px;
+        height: 17px;
+      }
+      svg.head_user {
+        width: 20px;
+        height: 20px;
       }
     }
   }

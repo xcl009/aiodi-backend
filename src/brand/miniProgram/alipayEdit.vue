@@ -11,30 +11,30 @@
               <el-link class="fs-c1" target="_blank" type="danger">查看资料获取教程</el-link>
             </router-link>
           </div> -->
-        <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="150px">
+        <el-form ref="form" :model="form" label-position="left" label-width="210px">
           <el-form-item label="支付宝账号ID">
             <el-input v-model="form.pid"></el-input>
           </el-form-item>
           <el-form-item label="小程序名称">
-            <el-input v-model="form.app_name"></el-input>
+            <el-input v-model="form.appName"></el-input>
           </el-form-item>
           <el-form-item label="小程序标识(APPID)">
-            <el-input v-model="form.app_id"></el-input>
+            <el-input v-model="form.appId"></el-input>
           </el-form-item>
           <el-form-item label="接口内容加密方式">
-            <el-input v-model="form.aes_key"></el-input>
+            <el-input v-model="form.signType"></el-input>
           </el-form-item>
           <el-form-item label="应用私钥">
-            <el-input v-model="form.private_key" type="textarea" :rows="6"></el-input>
+            <el-input v-model="form.appPrivateKey" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="应用公钥证书">
-            <el-input v-model="form.app_cert" type="textarea" :rows="6"></el-input>
+            <el-input v-model="form.appCert" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="支付宝公钥证书">
-            <el-input v-model="form.alipay_cert" type="textarea" :rows="6"></el-input>
+            <el-input v-model="form.alipayCert" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="支付宝根证书">
-            <el-input v-model="form.root_cert" type="textarea" :rows="6"></el-input>
+            <el-input v-model="form.alipayRootCert" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="信用服务id">
             <el-input v-model="form.service_id"></el-input>
@@ -68,7 +68,7 @@
       }
     },
     mounted() {
-      if(this.$route.params.id > 0) this.getInfo()
+      if(this.$route.params.app_id > 0) this.getInfo()
     },
     methods: {
       /**
@@ -76,44 +76,41 @@
        */
       getInfo() {
         this.$get('AlipayMini/getConfig', {
-          app_id: this.$route.params.id
+          appId: this.$route.params.app_id
         }).then(res => {
-          this.form = {
-            mine_agent_id: res.agent_id,
-            app_name: res.app_name,
-            app_id: res.appId,
-            pid: res.pid,
-            aes_key: res.aes_key,
-            service_id: res.service_id,
-            public_key: res.alipayrsaPublicKey,
-            app_cert: res.app_cert,
-            alipay_cert: res.alipay_cert,
-            root_cert: res.root_cert,
-            private_key: res.rsaPrivateKey,
-            status: 1
-          }
+          this.form = this.pick(res, [
+            'pid',
+            'appName',
+            'appId',
+            'signType',
+            'appPrivateKey',
+            'appCert',
+            'alipayCert',
+            'alipayRootCert'
+          ])
         })
       },
 
       onSubmit() {
-        let url = 'AlipayMini/saveConfig',
+        let url = 'iot-saas-pay/admin/pay/config/alipay/save',
           params = JSON.parse(JSON.stringify(this.form))
-          if(this.$route.params.id > 0) params.id = this.$route.params.id
-          this.clickSubmit = true
+        if(this.$route.params.id > 0) params.id = this.$route.params.id
+        this.clickSubmit = true
         this.$post(url, params).then(res => {
           this.$message({
             message: '提交成功',
             type: 'success'
           })
-          if(this.checkRoles(['terminal'])){
-            this.$router.push({
-              path: '/ali/index'
-            })
-            return
-          }
+          // if(this.checkRoles(['terminal'])){
+          //   this.$router.push({
+          //     path: '/ali/index'
+          //   })
+          //   return
+          // }
           this.$router.push({
-            path: '/setting/aliIndex'
+            path: '/systemSet/wechat'
           })
+          this.clickSubmit = false
         }).catch(err => {
           this.clickSubmit = false
         })

@@ -509,7 +509,7 @@ export const brandRoutes = [
           title: '代理提现'
         },
         props: {
-          user_type: 1
+          userType: 1
         }
       },
       {
@@ -521,17 +521,20 @@ export const brandRoutes = [
           title: '商户提现'
         },
         props: {
-          user_type: 2
+          userType: 2
         }
       },
       {
         path: 'userWithdraw',
         name: 'userWithdraw',
-        component: () => import('@/brand/capital/userWithdraw'),
+        component: () => import('@/brand/capital/agentWithdraw'),
         meta: {
           keepAlive: true,
           title: '用户提现'
         },
+        props: {
+          userType: 3
+        }
       }
     ]
   },
@@ -595,6 +598,7 @@ export const brandRoutes = [
         name: 'wechatEdit',
         component: () => import('@/brand/miniProgram/wechatEdit'),
         meta: {
+          activeMenu: '/systemSet/wechat',
           title: '微信小程序'
         },
         hidden: true
@@ -604,6 +608,7 @@ export const brandRoutes = [
         name: 'alipay',
         component: () => import('@/brand/miniProgram/alipay'),
         meta: {
+          keepAlive: true,
           title: '支付宝小程序'
         }
       },
@@ -612,6 +617,7 @@ export const brandRoutes = [
         name: 'alipayEdit',
         component: () => import('@/brand/miniProgram/alipayEdit'),
         meta: {
+          activeMenu: '/systemSet/alipay',
           title: '支付宝小程序'
         },
         hidden: true
@@ -691,6 +697,159 @@ export const brandRoutes = [
         path: 'dayMoney',
         name: 'dayMoney',
         component: () => import('@/brand/money/dayMoney'),
+        meta: {
+          title: '日交易额'
+        }
+      }
+    ]
+  }
+]
+
+/**
+ * store角色权限菜单
+ */
+export const storeRoutes = [
+  {
+    path: '/',
+    redirect: '/home',
+    component: Layout,
+    children: [
+      {
+        path: '/home',
+        name: 'home',
+        component: () => import('@/stores/home/home'),
+        meta: {
+          title: '主页',
+          icon: 'home'
+        }
+      },
+    ],
+  },
+  {
+    path: '/withdraw',
+    component: Layout,
+    redirect: '/withdraw/withdraw',
+    meta: {
+      title: '资金管理',
+      icon: 'zijing'
+    },
+    children: [
+      {
+        path: 'withdraw',
+        name: 'withdraw',
+        component: () => import('@/stores/withdraw/withdraw'),
+        meta: {
+          title: '申请提现'
+        }
+      },
+      {
+        path: 'record',
+        name: 'withdrawRecord',
+        component: () => import('@/stores/withdraw/record'),
+        meta: {
+          title: '我的提现记录'
+        }
+      },
+    ],
+  },
+  // {
+  //   path: '/order',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: '/order',
+  //       name: 'order',
+  //       component: () => import('@/store/order/index'),
+  //       meta: {
+  //         title: '订单管理',
+  //         icon: 'order'
+  //       },
+  //       props:{
+  //         user_type: 1
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/device',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: '/device',
+  //       name: 'device',
+  //       component: () => import('@/store/device/index'),
+  //       meta: {
+  //         title: '设备管理',
+  //         icon: 'device'
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/store',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: '/store',
+  //       name: 'store',
+  //       component: () => import('@/store/store/index'),
+  //       meta: {
+  //         keepAlive: true,
+  //         title: '商户管理',
+  //         icon: 'store'
+  //       }
+  //     }
+  //   ]
+  // },
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/index',
+    meta: {
+      title: '个人信息',
+      icon: 'user'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        name: 'userInfo',
+        component: () => import('@/saas/user/index'),
+        meta: {
+          title: '个人信息'
+        }
+      },
+      {
+        path: 'lpw',
+        name: 'loginPw',
+        component: () => import('@/saas/user/loginPw'),
+        meta: {
+          title: '登陆密码'
+        }
+      }
+    ]
+  },
+  {
+    path: '/money',
+    component: Layout,
+    redirect: '/money/index',
+    meta: {
+      title: '收益明细'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'income',
+        name: 'income',
+        component: () => import('@/saas/money/income'),
+        meta: {
+          title: '收益明细'
+        }
+      },
+      {
+        path: 'dayMoney',
+        name: 'dayMoney',
+        component: () => import('@/saas/money/dayMoney'),
         meta: {
           title: '日交易额'
         }

@@ -1,4 +1,4 @@
-import { saasRoutes, brandRoutes, constantRoutes } from '@/router'
+import { saasRoutes, brandRoutes, storeRoutes, constantRoutes } from '@/router'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -52,6 +52,8 @@ const actions = {
       let accessedRoutes, asyncRoutes = []
       if (roles.includes('admin')) {
         asyncRoutes = saasRoutes
+      }else if (roles.includes('store')) {
+        asyncRoutes = storeRoutes
       } else {
         asyncRoutes = brandRoutes
       }

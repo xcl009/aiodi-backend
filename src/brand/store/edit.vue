@@ -39,15 +39,14 @@
               <el-radio-group v-model="form.divisionMode">
                 <el-radio-button :label="1">比例分成</el-radio-button>
                 <el-radio-button :label="2">不给分成</el-radio-button>
-                <!-- <el-radio-button :label="3">入场费</el-radio-button> -->
               </el-radio-group>
             </el-form-item>
             <div v-if="form.divisionMode != 2">
-              <el-form-item ref="bindUserName" label="联系人：" prop="bindUserName">
-                <el-input v-model="form.bindUserName" placeholder="请填写联系人姓名" />
+              <el-form-item ref="userNickName" label="联系人：" prop="userNickName">
+                <el-input v-model="form.userNickName" placeholder="请填写联系人姓名" />
               </el-form-item>
-              <el-form-item ref="userBindMoblie" label="手机号码：" prop="userBindMoblie">
-                <el-input v-model="form.userBindMoblie" placeholder="此手机号码会作为登录账户" />
+              <el-form-item ref="userMobile" label="手机号码：" prop="userMobile">
+                <el-input v-model="form.userMobile" placeholder="此手机号码会作为登录账户" />
               </el-form-item>
               <el-form-item v-if="!store_id" label="登录密码：">
                 <el-input v-model="form.loginPassword" placeholder="请填写登录密码" />
@@ -64,60 +63,62 @@
             <template v-for="(item, index) in deviceDataArr" v-if="item.status == 1">
               <h4 class="pt-20">{{ myDeviceId[item.deviceTypeId] }}设置</h4>
 
-              <el-form-item label="分成模式：">
-                <el-radio-group v-model="item.closeType">
-                  <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType">{{ ct }}</el-radio-button>
-                </el-radio-group>
-                <el-popover
-                  placement="right"
-                  title=""
-                  width="400"
-                  trigger="hover">
-                  <div>
-                    <div class="mb-15 text-bold text-black">分成注释</div>
-
-                    <div class="mb-5 text-black">真实分成</div>
-                    真实分成：若真实分成设置为50%，则10元订单商户可分润10×50%=5元<br><br>
-
-                    <div class="mb-5 text-black">相对分成</div>
-                    相对分成：若相对分成设置为50%，您的分成为50%，则10元订单商户可分润10×50%×50%=2.5元<br><br>
-
+              <template v-if="form.divisionMode != 2">
+                <el-form-item label="分成模式：">
+                  <el-radio-group v-model="item.closeType">
+                    <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType" :disabled="cti != 1">{{ ct }}</el-radio-button>
+                  </el-radio-group>
+                  <el-popover
+                    placement="right"
+                    title=""
+                    width="400"
+                    trigger="hover">
                     <div>
-                      <div class="mb-5 text-black">分成不一致</div>
-                      承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。注：每天只有第1笔订单按照承诺分成比例分润。</span><br>
-                      实际分成：若自身的分成为50%，设置实际分成为50%，则10元订单商户可分润10×50%×50%=2.5元。注：每天从第2笔订单开始就按照实际分成比例分润。<br>
-                    </div>
+                      <div class="mb-15 text-bold text-black">分成注释</div>
 
-                    <div class="mt-20">需设置分成不一致？<el-link type="primary" :underline="false">点此去购买</el-link></div>
-                  </div>
-                  <el-link type="danger" slot="reference" :underline="false" class="ml-10 el-icon-question fs-c1"></el-link>
-                </el-popover>
-              </el-form-item>
-              <template v-if="item.closeType == 'disaccord'">
-                <el-form-item label="承诺分成：">
-                  <el-input v-model="item.promised" placeholder="最高不能超过100%">
-                    <template slot="append">%</template>
-                  </el-input>
+                      <div class="mb-5 text-black">真实分成</div>
+                      真实分成：若真实分成设置为50%，则10元订单商户可分润10×50%=5元<br><br>
+
+                      <div class="mb-5 text-black">相对分成</div>
+                      相对分成：若相对分成设置为50%，您的分成为50%，则10元订单商户可分润10×50%×50%=2.5元<br><br>
+
+                      <div>
+                        <div class="mb-5 text-black">分成不一致</div>
+                        承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。注：每天只有第1笔订单按照承诺分成比例分润。</span><br>
+                        实际分成：若自身的分成为50%，设置实际分成为50%，则10元订单商户可分润10×50%×50%=2.5元。注：每天从第2笔订单开始就按照实际分成比例分润。<br>
+                      </div>
+
+                      <div class="mt-20">需设置分成不一致？<el-link type="primary" :underline="false">点此去购买</el-link></div>
+                    </div>
+                    <el-link type="danger" slot="reference" :underline="false" class="ml-10 el-icon-question fs-c1"></el-link>
+                  </el-popover>
                 </el-form-item>
-                <el-form-item label="相对分成：">
-                  <el-input v-model="item.relative" placeholder="最高不能超过100%">
-                    <template slot="append">%</template>
-                  </el-input>
-                </el-form-item>
-              </template>
-              <template v-else-if="item.closeType == 'f2f'">
-                <el-form-item label="相对分成：">
-                  <el-input v-model="item.relative" placeholder="最高不能超过100%">
-                    <template slot="append">%</template>
-                  </el-input>
-                </el-form-item>
-              </template>
-              <template v-else>
-                <el-form-item label="分成比例：">
-                  <el-input class="input-with" v-model="item.live" :placeholder="`最高不能超过100%`">
-                    <template slot="append">%</template>
-                  </el-input>
-                </el-form-item>
+                <template v-if="item.closeType == 3">
+                  <el-form-item label="承诺分成：">
+                    <el-input v-model="item.promised" placeholder="最高不能超过100%">
+                      <template slot="append">%</template>
+                    </el-input>
+                  </el-form-item>
+                  <el-form-item label="相对分成：">
+                    <el-input v-model="item.relative" placeholder="最高不能超过100%">
+                      <template slot="append">%</template>
+                    </el-input>
+                  </el-form-item>
+                </template>
+                <template v-else-if="item.closeType == 2">
+                  <el-form-item label="相对分成：">
+                    <el-input v-model="item.relative" placeholder="最高不能超过100%">
+                      <template slot="append">%</template>
+                    </el-input>
+                  </el-form-item>
+                </template>
+                <template v-else>
+                  <el-form-item label="分成比例：">
+                    <el-input class="input-with" v-model="item.live" :placeholder="`最高不能超过100%`">
+                      <template slot="append">%</template>
+                    </el-input>
+                  </el-form-item>
+                </template>
               </template>
 
               <el-form-item label="支付方式：">
@@ -210,7 +211,7 @@ export default {
           message: '请填写商家地址',
           trigger: 'blur'
         }],
-        userBindMoblie: [{
+        userMobile: [{
           required: true,
           message: '请填写手机号码作为登录账户',
           trigger: 'blur'
@@ -250,15 +251,14 @@ export default {
       deviceDataArr: [],
       defaultDevice: {
         status: 1,
-        closeType: 'real',
+        closeType: '1',
         storePayConfig: ['weixin', 'alipay'],
         weixinPayMode: {
           modeType: 'PACKAGE',
           list: [
             {
               time: 1,
-              money: 2,
-              tag: 1
+              money: 2
             }
           ]
         },
@@ -267,8 +267,7 @@ export default {
           list: [
             {
               time: 1,
-              money: 2,
-              tag: 1
+              money: 2
             }
           ]
         }
@@ -415,19 +414,22 @@ export default {
           storePayConfig[item.deviceTypeId] = payArr
           payConfigId[item.deviceTypeId] = item.id
         })
-        res.storeDivisionFun.map(item => {
-          item.alipayPayMode = item.alipayPayMode
-          item.weixinPayMode = item.weixinPayMode
+        res.storeDivisionConfig.map(item => {
+          item.alipayPayMode = (item.alipayPayMode ? item.alipayPayMode : item.weixinPayMode ? item.weixinPayMode : this.defaultDevice.alipayPayMode)
+          item.weixinPayMode = (item.weixinPayMode ? item.weixinPayMode : item.alipayPayMode ? item.alipayPayMode : this.defaultDevice.weixinPayMode)
+          item.alipayPayMode = JSON.parse(JSON.stringify(item.alipayPayMode))
+          item.weixinPayMode = JSON.parse(JSON.stringify(item.weixinPayMode))
           item.storePayConfig = storePayConfig[item.deviceTypeId]
           item.status = 1
           item.payConfigId = payConfigId[item.deviceTypeId]
+          this.selDevice.push(item.deviceTypeId)
           deviceDataArr.push(item)
         })
-        this.selDevice.push(deviceDataArr[0].deviceTypeId)
+        console.log(deviceDataArr)
         this.deviceDataArr = deviceDataArr
-        info.bindUserName = res.user.bindUserName
-        info.userBindMoblie = res.user.mobile
-        delete info.storeDivisionFun
+        info.userNickName = res.user.userNickName
+        info.userMobile = res.user.mobile
+        delete info.storeDivisionConfig
         delete info.storePayConfig
         delete info.user
         this.form = info
@@ -442,6 +444,13 @@ export default {
       let url = 'iot-saas-basic/admin/store/save', deviceDataArr = this.deviceDataArr
       if (this.store_id > 0) {
         url = 'iot-saas-basic/admin/store/updateById'
+      }
+      if(this.selDevice.length == 0){
+      	uni.showToast({
+      		title: '最少选择一个运营产品',
+      		icon: 'none'
+      	})
+        return
       }
       this.clickSubmit = true
       this.$refs[formName].validate((valid, object) => {
@@ -461,27 +470,39 @@ export default {
             params.regionTag = params.regionTag[params.regionTag.length - 1]
           }
           params.storePayConfig = []
-          params.storeDivisionFun = []
+          params.storeDivisionConfig = []
           deviceDataArr.map(item => {
-            let payConfig = {
-              deviceTypeId: item.deviceTypeId
+            if(item.status == 1){
+              let payConfig = {
+                deviceTypeId: item.deviceTypeId
+              }
+              item.storePayConfig.map(item => {
+                payConfig[item] = 1
+              })
+              if(item.payConfigId) payConfig.id = item.payConfigId
+              params.storePayConfig.push(payConfig)
+              if(item.alipayPayMode.list){
+                item.alipayPayMode.list.map((packItem, packI) => {
+                  return packItem.tag = packI + 1
+                })
+              }
+              if(item.weixinPayMode.list){
+                item.weixinPayMode.list.map((packItem, packI) => {
+                  return packItem.tag = packI + 1
+                })
+              }
+              let division = {
+                closeType: item.closeType,
+                deviceTypeId: item.deviceTypeId,
+                alipayPayMode: item.alipayPayMode,
+                weixinPayMode: item.weixinPayMode
+              }
+              if(item.id) division.id = item.id
+              if(item.live >= 0) division.live = item.live
+              if(item.relative >= 0) division.relative = item.relative
+              if(item.live >= 0) division.promised = item.promised
+              params.storeDivisionConfig.push(division)
             }
-            item.storePayConfig.map(item => {
-              payConfig[item] = 1
-            })
-            if(item.payConfigId) payConfig.id = item.payConfigId
-            params.storePayConfig.push(payConfig)
-            let division = {
-              closeType: item.closeType,
-              deviceTypeId: item.deviceTypeId,
-              alipayPayMode: item.alipayPayMode,
-              weixinPayMode: item.weixinPayMode
-            }
-            if(item.id) division.id = item.id
-            if(item.live >= 0) division.live = item.live
-            if(item.relative >= 0) division.relative = item.relative
-            if(item.live >= 0) division.promised = item.promised
-            params.storeDivisionFun.push(division)
           })
           this.$post(url, params).then(res => {
             this.$message({

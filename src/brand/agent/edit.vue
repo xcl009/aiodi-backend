@@ -150,15 +150,23 @@
        */
       onSubmit() {
         let params = {}, url = 'iot-saas-basic/admin/agent'
+        if(this.selDevice.length == 0){
+          this.$message({
+            message: '最少选择一个运营产品',
+            type: 'error'
+          })
+          return
+        }
         params = JSON.parse(JSON.stringify(this.form))
         let profitRatios = []
-        for(var i in params.deviceTypDeviceProfitRatios){
+        for(var i in this.selDevice){
           profitRatios.push({
-            deviceTypeId: i,
-            profitRatio: params.deviceTypDeviceProfitRatios[i] || 0
+            deviceTypeId: this.selDevice[i],
+            profitRatio: params.deviceTypDeviceProfitRatios[this.selDevice[i]] || 0
           })
         }
         params.deviceTypDeviceProfitRatios = profitRatios
+        if(Array.isArray(params.regionTag) && params.regionTag.length > 0) params.regionTag = params.regionTag[params.regionTag.length - 1]
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
           if (valid) {

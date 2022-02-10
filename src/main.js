@@ -33,8 +33,9 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
-import { setRem, parseTime, pick, checkRoles, outTab, formErrow, arrayKeys, pickKeys, mul, division } from './utils/index'
+import { setRem, parseTime, currentTime, pick, checkRoles, outTab, formErrow, arrayKeys, pickKeys, mul, division } from './utils/index'
 Vue.prototype.parseTime = parseTime
+Vue.prototype.currentTime = currentTime
 Vue.prototype.pick = pick
 Vue.prototype.checkRoles = checkRoles
 Vue.prototype.outTab = outTab

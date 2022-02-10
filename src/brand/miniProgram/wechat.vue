@@ -18,84 +18,58 @@
 		  </template>
 		</condition> -->
 
-    <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
+    <div class="pt-15 pl-15 pr-15 pb-15 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         :max-height="tableMaxH">
-        <el-table-column label="品牌方" align="center" width="120">
+        <el-table-column label="小程序" align="center">
           <template slot-scope="scope">
-            <div>{{ scope.row.charge_county || '--' }}</div>
+            <div class="mb-5">{{ scope.row.appName || '小程序名称' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="账号/手机号" align="center" width="120">
+        <el-table-column label="APPID" align="center">
           <template slot-scope="scope">
-            <div>{{ scope.row.charge_county || '--' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="小程序" align="center" width="130">
-          <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '小程序名称' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="APPID" align="center" width="130">
-          <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '--' }}</div>
+            <div class="mb-5">{{ scope.row.appId || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="最新版本" align="center">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
+            {{ scope.row.charge_county || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="当前版本" align="center">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
+            {{ scope.row.charge_county || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
+            {{ scope.row.charge_county || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="更新时间" align="center" width="100">
+        <el-table-column label="更新时间" align="center">
           <template slot-scope="scope">
-            2021/12/27
+            {{ parseTime(scope.row.updateTime) }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">小程序绑定</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/systemSet/wechatEdit?app_id=${scope.row.appId}`})">修改信息</div>
+            <!-- <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div> -->
           </template>
         </el-table-column>
       </el-table>
 
-      <div class="p-20 text-center cursor" @click="$router.push({path: `/systemSet/wechatEdit`})">绑定小程序</div>
-
-      <div class="flex justify-center">
-        <pagination
-          v-show="listTotal > 0"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          :total="parseInt(listTotal)"
-          @pagination="getList"
-        />
-      </div>
+      <div class="pt-20 text-center text-primary cursor" @click="$router.push({path: `/systemSet/wechatEdit`})" v-if="list.length == 0">绑定小程序</div>
     </div>
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <div class="text-center">
-          <div class="text-black">确定该笔提现申请通过审核吗？</div>
+          <div class="text-black">确定上传代码到此小程序吗？</div>
         </div>
-      </template>
-      <template v-if="dialogType == 2">
-        <div class="text-black">确定该笔提现申请拒绝通过吗？</div>
-        <el-form class="custom-form">
-          <el-input v-model="dform.note" placeholder="请输入备注内容" type="textarea" :rows="5" />
-        </el-form>
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
@@ -106,15 +80,9 @@
 </template>
 
 <script>
-  import Pagination from '@/components/Pagination'
-  import condition from '@/components/condition/'
-
   export default {
-    name: 'agentWithdraw',
-    components: {
-      Pagination,
-      condition
-    },
+    name: 'wechat',
+    components: {},
     props: {
       user_type: {
         type: Number,
@@ -124,38 +92,33 @@
     data() {
       return {
         clickSubmit: false,
-        statusObj: {
-          0: '审核中',
-          1: '到账中',
-          2: '提现已到账',
-          3: '审核不通过'
-        },
-
         form: {},
         tableMaxH: '250',
-        list: [{}],
+        list: [],
         listLoading: false,
-        listTotal: 0,
-        listQuery: {
-          page: 1,
-          size: 20
-        },
 
         // 弹出相关
         dialogType: 1,
         dialogStatus: false,
         dialogTitle: {
-          1: '通过提现',
-          2: '拒绝提现'
+          1: '上传代码'
         },
         curRow: {},
         curIdx: 0,
         dform: {}
       }
     },
+    beforeRouteEnter(to, from, next) {
+      if (from.name == "wechatEdit") {
+        to.meta.reload = true
+      } else {
+        to.meta.reload = false
+      }
+      next()
+    },
     activated() {
       if(this.$route.meta.reload){
-        this.getList()
+        this.toQuery()
       }else if(!this.list || this.list.length == 0) {
         this.toQuery()
       }
@@ -178,8 +141,6 @@
       toQuery() {
         if(this.clickSubmit) return
         this.clickSubmit = true
-        this.listQuery.page = 1
-        this.listQuery.size = 20
         this.getList()
       },
 
@@ -187,11 +148,11 @@
        * 重置查询
        */
       reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.form = {
           activated_status: 1
         }
-        this.listQuery.page = 1
-        this.listQuery.size = 20
         this.getList()
       },
 
@@ -199,18 +160,12 @@
        * 获取列表
        */
       getList() {
-        var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
-        })
-        this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
-          this.list = res.rows || [{}]
+        var params = Object.assign({}, this.form)
+        this.$get('iot-saas-pay/admin/pay/config/wechat/list', params).then(res => {
+          this.list = res
           this.listLoading = false
           this.clickSubmit = false
-          if(params.page == 0){
-            this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
-          }
-        }).catch(() => {
+        }).catch(err => {
           this.listLoading = false
           this.clickSubmit = false
         })
@@ -220,11 +175,11 @@
        * 操作商户
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '提现通过', 2: '提现拒绝'
+       * @param {Object} dialogType dialog内容显示类型 1: '上传代码'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
-        switch (row.type) {
+        switch (type) {
           case 1:
             this.dialogType = dialogType
             this.curRow = row
@@ -252,19 +207,6 @@
                 type: 'success'
               })
               row.withdraw_status = 2
-            })
-            break
-          case 2:
-            this.$post('agentapi/upper_review_apply', {
-              apply_id: curRow.id,
-              note: params.note,
-              agree: 2
-            }).then(res => {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              row.withdraw_status = 3
             })
             break
         }

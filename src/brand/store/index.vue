@@ -374,7 +374,7 @@
        */
       bindShop(row) {
         let url = 'iot-saas-device/admin/device/singleDistribution', params = {
-          receiveId: row.id
+          storeId: row.id
         }
         let deviceIdArr = this.deviceId.split(',')
         if(deviceIdArr.length == 1){
@@ -400,7 +400,7 @@
        * @param {Object} idx 当前商户所在位置
        */
       setRows(type, row, dialogType, idx) {
-        switch (row.type) {
+        switch (type) {
           case 1:
             this.dialogType = dialogType
             this.curRow = row

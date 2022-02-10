@@ -16,7 +16,7 @@
         <el-table-column label="代理信息" align="center" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
+            <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="运营城市" align="center" width="120">

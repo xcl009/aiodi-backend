@@ -55,8 +55,9 @@
         </el-table-column>
         <el-table-column label="商户名称" align="center" width="150">
           <template slot-scope="scope">
-            <div class="text-cut_two">{{ scope.row.store_name || "--" }}</div>
-            <div v-if="scope.row.attach_room_no">房间号：{{ scope.row.attach_room_no }}</div>
+            <div v-if="scope.row.store">
+              <div class="text-cut_two">{{ scope.row.store.name }}</div>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="订单数" align="center" width="120">
