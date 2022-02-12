@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, postSetRecode } from '@/api/user'
+import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getConstant, postSetRecode } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -9,7 +9,8 @@ const getDefaultState = () => {
     name: '',
     avatar: '',
     siteInfo: {},
-    agentInfo: {}
+    agentInfo: {},
+    Constant: {}
   }
 }
 
@@ -41,6 +42,9 @@ const mutations = {
   },
   SET_AGENTINFO: (state, res) => {
     state.agentInfo = res
+  },
+  SET_CONSTANT: (state, res) => {
+    state.Constant = res
   }
 }
 
@@ -49,10 +53,6 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      // setToken('55555555555')
-      // setToken('111', 'user_id')
-      // resolve({})
-      // return
       login({ username: username.trim(), password: password.trim(), loginType: 'UP', 'appid': 'pc' }).then(data => {
         commit('SET_TOKEN', data.loginToken.accessToken)
         commit('SET_NAME', data.username)
@@ -75,7 +75,6 @@ const actions = {
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         setToken(data.user_id, 'user_id')
-        //setToken(data.belong_partner_aid || data.user_id, 'agent_id')
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -161,6 +160,19 @@ const actions = {
           myDeviceId: myDeviceId,
           myDevice: myDevice
         })))
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // 获取常数
+  getConstant({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      getConstant().then(res => {
+        console.log(res)
+        commit('SET_CONSTANT', res)
         resolve(res)
       }).catch(error => {
         reject(error)

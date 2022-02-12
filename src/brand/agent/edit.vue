@@ -2,7 +2,7 @@
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
-        <el-form ref="form" :rules="rules" :model="form" label-width="auto">
+        <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="100px">
           <h4>基础信息</h4>
           <el-form-item label="代理头像" class="up-img">
             <upload v-model="form.avastar" />
@@ -19,7 +19,7 @@
           <el-form-item label="运营区域">
             <el-cascader v-model="form.regionTag" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <el-form-item label="公司名称">
+          <!-- <el-form-item label="公司名称">
             <el-input v-model="form.companyName" placeholder="公司名称" />
           </el-form-item>
           <el-form-item label="公司地址">
@@ -27,7 +27,7 @@
           </el-form-item>
           <el-form-item label="公司电话">
             <el-input v-model="form.companyPhoneNum" placeholder="输入公司电话" />
-          </el-form-item>
+          </el-form-item> -->
 
           <h4 class="pt-20">运营产品</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">
@@ -38,7 +38,7 @@
             <h4 class="pt-20">分润比例</h4>
             <template v-for="(id, index) in selDevice">
               <el-form-item :label="`${myDeviceId[id]}`">
-                <el-input v-model="form.deviceTypDeviceProfitRatios[id]" :placeholder="`最高不能超过100%`">
+                <el-input v-model="form.deviceTypeProfitRatios[id]" :placeholder="`最高不能超过100%`">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -65,7 +65,7 @@
         clickSubmit: false,
         form: {
           password: '123456',
-          deviceTypDeviceProfitRatios: {}
+          deviceTypeProfitRatios: {}
         },
         rules: {
           role_id: [
@@ -120,10 +120,10 @@
         this.$get('iot-saas-basic/admin/agent/findById', {
           id: this.aid
         }).then(res => {
-          res.deviceTypDeviceProfitRatios = {}
+          res.deviceTypeProfitRatios = {}
           if(res.brandDeviceType && res.brandDeviceType.length > 0){
             res.brandDeviceType.map(item => {
-              res.deviceTypDeviceProfitRatios[item.id] = item.profitRatio
+              res.deviceTypeProfitRatios[item.id] = item.profitRatio
               if(this.selDevice.indexOf(item.id) == -1) {
                 this.selDevice.push(item.id)
               }
@@ -133,7 +133,7 @@
           }
           this.form = {
             id: res.id,
-            deviceTypDeviceProfitRatios: res.deviceTypDeviceProfitRatios,
+            deviceTypeProfitRatios: res.deviceTypeProfitRatios,
             avastar: res.avastar,
             name: res.name,
             mobile: res.mobile,
@@ -149,7 +149,7 @@
        * 提交添加
        */
       onSubmit() {
-        let params = {}, url = 'iot-saas-basic/admin/agent'
+        let params = {}, url = 'iot-saas-basic/admin/agent/save'
         if(this.selDevice.length == 0){
           this.$message({
             message: '最少选择一个运营产品',
@@ -162,10 +162,10 @@
         for(var i in this.selDevice){
           profitRatios.push({
             deviceTypeId: this.selDevice[i],
-            profitRatio: params.deviceTypDeviceProfitRatios[this.selDevice[i]] || 0
+            profitRatio: params.deviceTypeProfitRatios[this.selDevice[i]] || 0
           })
         }
-        params.deviceTypDeviceProfitRatios = profitRatios
+        params.deviceTypeProfitRatios = profitRatios
         if(Array.isArray(params.regionTag) && params.regionTag.length > 0) params.regionTag = params.regionTag[params.regionTag.length - 1]
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {

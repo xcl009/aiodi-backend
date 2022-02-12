@@ -148,7 +148,7 @@
 </template>
 
 <script>
-  import upload from '@/components/upload/two'
+  import upload from '@/components/upload/'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import { copyText } from '@/utils/index'

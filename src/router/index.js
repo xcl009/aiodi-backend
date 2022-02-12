@@ -331,7 +331,8 @@ export const brandRoutes = [
         name: 'qrcodeCreate',
         component: () => import('@/brand/qrcode/create'),
         meta: {
-          title: '生成二维码'
+          title: '生成二维码',
+          activeMenu: '/device/qrcode'
         },
         hidden: true
       },
@@ -340,7 +341,8 @@ export const brandRoutes = [
         name: 'createRecord',
         component: () => import('@/brand/qrcode/createRecord'),
         meta: {
-          title: '二维码生成记录'
+          title: '二维码生成记录',
+          activeMenu: '/device/qrcode'
         },
         hidden: true
       }
@@ -645,6 +647,278 @@ export const brandRoutes = [
         meta: {
           title: '相关链接'
         }
+      }
+    ]
+  },
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/index',
+    meta: {
+      title: '个人信息',
+      icon: 'user'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        name: 'userInfo',
+        component: () => import('@/brand/user/index'),
+        meta: {
+          title: '个人信息'
+        }
+      },
+      {
+        path: 'lpw',
+        name: 'loginPw',
+        component: () => import('@/brand/user/loginPw'),
+        meta: {
+          title: '登陆密码'
+        }
+      }
+    ]
+  },
+  {
+    path: '/money',
+    component: Layout,
+    redirect: '/money/index',
+    meta: {
+      title: '收益明细'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'income',
+        name: 'income',
+        component: () => import('@/brand/money/income'),
+        meta: {
+          title: '收益明细'
+        }
+      },
+      {
+        path: 'dayMoney',
+        name: 'dayMoney',
+        component: () => import('@/brand/money/dayMoney'),
+        meta: {
+          title: '日交易额'
+        }
+      }
+    ]
+  }
+]
+
+/**
+ * agent角色权限菜单
+ */
+export const agentRoutes = [
+  {
+    path: '/',
+    redirect: '/home',
+    component: Layout,
+    children: [
+      {
+        path: '/home',
+        name: 'home',
+        component: () => import('@/brand/home/home'),
+        meta: {
+          title: '主页',
+          icon: 'home'
+        }
+      },
+    ],
+  },
+  {
+    path: '/order',
+    component: Layout,
+    redirect: '/order/meOrder',
+    meta: {
+      title: '订单管理',
+      icon: 'order'
+    },
+    children: [
+      {
+        path: 'meOrder',
+        name: 'meOrder',
+        component: () => import('@/brand/order/index'),
+        meta: {
+          title: '我的订单'
+        },
+        props:{
+          user_type: 0
+        }
+      },
+      {
+        path: 'subOrder',
+        name: 'subOrder',
+        component: () => import('@/brand/order/index'),
+        meta: {
+          title: '下级订单'
+        },
+        props: {
+          user_type: 1
+        }
+      }
+    ]
+  },
+  {
+    path: '/device',
+    component: Layout,
+    redirect: '/device/meDevice',
+    meta: {
+      title: '设备管理',
+      icon: 'device'
+    },
+    children: [
+      {
+        path: 'meDevice',
+        name: 'meDevice',
+        component: () => import('@/brand/device/index'),
+        meta: {
+          title: '我的设备'
+        },
+        props:{
+          user_type: 0
+        }
+      },
+      {
+        path: 'subDevice',
+        name: 'subDevice',
+        component: () => import('@/brand/device/index'),
+        meta: {
+          title: '下级设备'
+        },
+        props:{
+          user_type: 1
+        }
+      }
+    ]
+  },
+  {
+    path: '/store',
+    component: Layout,
+    redirect: '/store/meStore',
+    meta: {
+      title: '商户管理',
+      icon: 'store'
+    },
+    children: [
+      {
+        path: 'meStore',
+        name: 'meStore',
+        component: () => import('@/brand/store/index'),
+        meta: {
+          keepAlive: true,
+          title: '我的商户'
+        },
+        props:{
+          user_type: 0
+        }
+      },
+      {
+        path: 'subStore',
+        name: 'subStore',
+        component: () => import('@/brand/store/index'),
+        meta: {
+          keepAlive: true,
+          title: '下级商户'
+        },
+        props:{
+          user_type: 1
+        }
+      },
+      {
+        path: 'create',
+        name: 'shopCreate',
+        component: () => import('@/brand/store/edit'),
+        meta: {
+          title: '添加商户',
+          activeMenu: '/store/meStore'
+        },
+        hidden: true
+      },
+      {
+        path: 'edit/:store_id(\\d+)',
+        name: 'shopCreate',
+        component: () => import('@/brand/store/edit'),
+        meta: {
+          title: '修改商户信息',
+          activeMenu: '/store/meStore'
+        },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/userManage',
+    component: Layout,
+    redirect: '/userManage/userList',
+    meta: {
+      title: '用户管理',
+      icon: 'userList'
+    },
+    children: [
+      {
+        path: 'userList',
+        name: 'userList',
+        component: () => import('@/brand/userManage/index'),
+        meta: {
+          title: '用户列表'
+        }
+      }
+    ]
+  },
+  {
+    path: '/agent',
+    component: Layout,
+    redirect: '/agent/index',
+    meta: {
+      title: '代理管理',
+      icon: 'agent'
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'agent',
+        component: () => import('@/brand/agent/index'),
+        meta: {
+          keepAlive: true,
+          title: '我的代理'
+        },
+        props: {
+          user_type: 1
+        }
+      },
+      {
+        path: 'subAgent',
+        name: 'subAgent',
+        component: () => import('@/brand/agent/index'),
+        meta: {
+          keepAlive: true,
+          title: '下级管理'
+        },
+        props: {
+          user_type: 2
+        }
+      },
+      {
+        path: 'create',
+        name: 'agentCreate',
+        component: () => import('@/brand/agent/edit'),
+        meta: {
+          title: '添加代理',
+          activeMenu: '/agent/index'
+        },
+        hidden: true
+      },
+      {
+        path: 'edit/:aid(\\d+)',
+        name: 'agentCreate',
+        component: () => import('@/brand/agent/edit'),
+        meta: {
+          title: '修改代理信息',
+          activeMenu: '/agent/index'
+        },
+        hidden: true
       }
     ]
   },

@@ -18,16 +18,11 @@
         <el-input v-model="form.out_order_no" placeholder="商户单号" />
         <el-select v-model="form.mini_type" placeholder="订单来源" @change="toQuery()">
           <el-option label="全部" value="0" />
-          <el-option label="微信" value="1" />
-          <el-option label="支付宝" value="2" />
+           <el-option :label="item" :value="key" v-for="(item, key) in Constant.SourceType" />
         </el-select>
         <el-select v-model="form.pay_type" placeholder="支付类型" @change="toQuery()">
           <el-option label="全部" value="0" />
-          <el-option label="押金" value="1" />
-          <el-option label="免押" value="2" />
-          <el-option label="余额" value="3" />
-          <el-option label="储值卡" value="4" />
-          <el-option label="会员卡" value="5" />
+          <el-option :label="item" :value="key" v-for="(item, key) in Constant.PayType" />
         </el-select>
         <el-cascader v-model="cat_id" :options="categoryList" :show-all-levels="false"
           :props="{ expandTrigger: 'hover' }" placeholder="行业分类" />
@@ -145,7 +140,7 @@
         <el-table-column label="状态" width="70" align="center">
           <template slot-scope="scope">
             <el-link :type="scope.row.order_status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
-              {{ orderStatus[scope.row.order_status] || "--" }}
+              {{ Constant.OrderStatus[scope.row.order_status] || "--" }}
             </el-link>
           </template>
         </el-table-column>
@@ -394,6 +389,9 @@
       },
       siteInfo() {
         return this.$store.getters.siteInfo
+      },
+      Constant() {
+        return this.$store.getters.Constant
       }
     },
     data() {

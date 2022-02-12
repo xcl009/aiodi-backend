@@ -94,7 +94,7 @@
 </template>
 
 <script>
-  import upload from '@/components/upload/two.vue'
+  import upload from '@/components/upload/'
   import Pagination from '@/components/Pagination'
   export default {
     name: 'deviceTypes',

@@ -77,13 +77,12 @@
             </template>
             <template v-else>
               <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
-              <el-button type="primary" size="mini" @click="">功能设置</el-button>
-              <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+              <!-- <el-button type="primary" size="mini" @click="">功能设置</el-button> -->
               <el-dropdown trigger="click">
                 <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store?agentId=${scope.row.id}`})">商户列表</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除代理</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-dropdown-item>
                 </el-dropdown-menu>

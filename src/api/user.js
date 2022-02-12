@@ -19,6 +19,10 @@ export function getMyDevice() {
   return $get('iot-saas-device/admin/device/type/loadAll')
 }
 
+export function getConstant() {
+  return $get('iot-saas-order/api/order/getInitMap')
+}
+
 export function postSetRecode(data) {
   return $post('agentapi/log/add_record', data)
 }

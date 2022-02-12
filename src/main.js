@@ -33,17 +33,20 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
-import { setRem, parseTime, currentTime, pick, checkRoles, outTab, formErrow, arrayKeys, pickKeys, mul, division } from './utils/index'
+import { setRem, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent } from './utils/index'
 Vue.prototype.parseTime = parseTime
 Vue.prototype.currentTime = currentTime
 Vue.prototype.pick = pick
 Vue.prototype.checkRoles = checkRoles
-Vue.prototype.outTab = outTab
 Vue.prototype.formErrow = formErrow
 Vue.prototype.arrayKeys = arrayKeys
 Vue.prototype.pickKeys = pickKeys
 Vue.prototype.mul = mul
 Vue.prototype.division = division
+Vue.prototype.isSaas = isSaas
+Vue.prototype.isBrand = isBrand
+Vue.prototype.isStore = isStore
+Vue.prototype.isAgent = isAgent
 
 // set ElementUI lang to EN
 Vue.use(ElementUI)

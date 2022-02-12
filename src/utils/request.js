@@ -51,6 +51,11 @@ service.interceptors.request.use(
       config.headers['Authorization'] = store.getters.token
     }
     config.baseURL = Vue.prototype.BASE_URL
+    if(config.method == 'get'){
+      config.paramsSerializer = function(params){
+        return qs.stringify(params, { arrayFormat: 'repeat' })
+      }
+    }
     return config
   },
   error => {
@@ -76,7 +81,7 @@ service.interceptors.response.use(
         }
       default:
         Message.closeAll()
-        if([10601, 10603, 10604, 10605].indexOf(res.data.code) > -1){
+        if(['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1){
           Message({
             message: res.data.message || '网络卡住了，请刷新',
             type: 'error'

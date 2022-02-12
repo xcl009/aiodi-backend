@@ -57,17 +57,11 @@
         <el-table-column label="下载" width="80">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content='全选后点击查询后的"下载"按钮可下载本页所有设备二维码图片' placement="top" v-if="scope.row.accessUrl">
-              <el-link :href="scope.row.code_url" target="_blank" type="primary">下载</el-link>
+              <el-link type="primary" @click="downloadImgs(scope.row)">下载</el-link>
             </el-tooltip>
             <a class="text-blue" @click="createImg(scope.row)" v-else-if="scope.row.content && !scope.row.accessUrl">生成图片</a>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="操作" width="200">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" round plain @click="editCode(scope.row)">编辑</el-button>
-            <el-button type="primary" size="mini" round plain @click="setEquip(scope.row)">分配设备</el-button>
-          </template>
-        </el-table-column> -->
       </el-table>
 
       <div class="flex justify-center">
@@ -130,7 +124,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == 'edit') {
+      if (from.name == 'qrcodeCreate') {
         to.meta.isBack = true
       } else {
         to.meta.isBack = false
@@ -161,6 +155,8 @@
        * 重置查询
        */
       reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.form = {}
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -177,23 +173,9 @@
         if(params.startTime) params.startTime = params.startTime / 1000
         if(params.endTime) params.endTime = params.endTime / 1000
         this.$get('iot-saas-device/admin/qrcode/findPage', params).then(res => {
-          if(this.outStatus){
-            this.list = res.list
-            if(this.listQuery.page >= res.total){
-              this.listLoading = false
-              this.percentage = 100
-            } else {
-              this.listQuery.page++
-              this.percentage = this.percentage < 95 ? this.percentage + 5 : 95
-            }
-            this.$nextTick(() => {
-              this.outTabdd('table_box', this.xlsxName)
-            })
-          } else {
-            this.listLoading = false
-            this.clickSubmit = false
-            this.list = res.rows
-          }
+          this.listLoading = false
+          this.clickSubmit = false
+          this.list = res.rows
           if(params.page == 0){
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.table_box.$el.offsetTop - 85
@@ -226,32 +208,6 @@
       },
 
       /**
-       * 操作
-       */
-      setEquip(row){
-        const selSn = this.selSnArr.join(',')
-        if(this.son_id){
-          this.$post('agentapi/save_distribute_agent_devices', {
-            son_id: this.son_id,
-            goods_sn: row ? [row.code_sn] : this.selSnArr
-          }).then(res => {
-            this.$message({
-              message: '分配成功',
-              type: 'success'
-            })
-            history.back()
-          })
-        } else {
-          this.$router.push({
-            path: '/partner/index',
-            query: {
-              zuo_sn: row ? row.code_sn : selSn
-            }
-          })
-        }
-      },
-
-      /**
        * 生成二维码图片
        */
       createImg(row){
@@ -262,13 +218,14 @@
         })
       },
 
-      /**
-       * 修改二维码
-       */
-      editCode(row){
-        window.codeInfo = row
-        this.$router.push({path: `/qrcode/edit?code_sn=${row.code_sn}`})
+      downloadImgs(row){
+        this.$get('iot-saas-device/admin/aliyun/download', {
+          refId: row.accessUrl
+        }).then(res => {
+          console.log(res)
+        })
       },
+
 
       /**
        * 下载二维码
@@ -314,122 +271,6 @@
           }
           image.src = arr[i]
         }
-      },
-
-      /**
-       * 导出
-       */
-      outTable(){
-        this.outStatus = true
-        this.listLoading = true
-        this.listQuery.size = 100
-        this.list = []
-        this.excel = true
-        this.getList()
-      },
-
-      /**
-       * 导出表格
-       */
-      outTabdd(tabId, fileName = 'data') {
-        let fix = document.querySelector('.el-table__fixed-right')
-        let xlsxParam = { raw: true }
-        let wb
-        if (fix) {
-          this.wbout[this.wi] = XLSX.utils.table_to_book(document.querySelector(`#${tabId}`).removeChild(fix), xlsxParam)
-          document.querySelector(`#${tabId}`).appendChild(fix)
-        } else {
-          this.wbout[this.wi] = XLSX.utils.table_to_book(document.querySelector(`#${tabId}`), xlsxParam)
-        }
-        this.wi++
-        console.log(0)
-        if(this.listLoading){
-          this.getList()
-          return
-        }
-        let wboutes = this.wbout[0]
-        var no = ''
-        for(var i in this.wbout){
-          delete this.wbout[i].Sheets.Sheet1['!merges']
-          if(i > 0){
-            let sheet1 = this.wbout[i].Sheets.Sheet1
-            for(var s in sheet1){
-              let k = s.substring(0, 1)
-              let n = s.substring(1)
-              if(n != 1 && n != 'ref'){
-                let k = s.substring(0, 1)
-                n = s.substring(1)
-                no = ((parseInt(i) * 100) + parseInt(n))
-                sheet1[k + no] = sheet1[s]
-              }
-              delete sheet1[s]
-            }
-            wboutes.Sheets.Sheet1 = Object.assign(wboutes.Sheets.Sheet1, sheet1)
-          }
-        }
-        if(this.wbout[1]) wboutes.Sheets.Sheet1['!ref'] = `A1:Q${no}`
-        let wbout = XLSX.write(wboutes, {
-          bookType: 'xlsx',
-          bookSST: true,
-          type: 'array'
-        })
-        this.percentage = 100
-        if(!this.listLoading){
-          try {
-            FileSaver.saveAs(new Blob([wbout], {
-              type: 'application/octet-stream'
-            }), `${fileName}.xlsx`)
-            this.excel = false
-            this.$message({
-              message: '导出成功',
-              type: 'success'
-            })
-            setTimeout(()=>{
-              location.reload()
-            }, 1000)
-          } catch (e) {
-            if (typeof console !== 'undefined') console.log(e, this.wbout)
-          }
-          return this.wbout
-        }
-      },
-
-      showCodeType(tag, sn){
-        let typeText = ''
-        switch(tag){
-          case 'CDX:': case 'LINE:':
-            typeText = "密码线"
-            break
-          case 'B-LINE:':
-            typeText = "蓝牙线"
-            break
-          case 'NB-LINE:':
-            typeText = "密码蓝牙线"
-            break
-          case 'XYJ:': case 'TAG_4_1':
-            typeText = "洗衣机"
-            break
-          case 'AMZ:': case 'TAG_2_1':
-            typeText = "按摩枕"
-            break
-          case 'CFJ:': case 'TAG_6_1':
-            typeText = "电吹风"
-            break
-          case 'TAG_7_1': case 'TAG_7_6':
-            typeText = "套套机"
-            break
-          case 'TAG_3_1':
-            typeText = "充电桩"
-            break
-          default:
-            if(sn.indexOf('F') > -1){
-              typeText = "充电桩"
-            }else{
-              typeText = "充电宝"
-            }
-            break
-        }
-        return typeText
       }
     }
   }

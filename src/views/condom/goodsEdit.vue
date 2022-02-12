@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import upload from '@/components/upload/two'
+import upload from '@/components/upload/'
 import Tinymce from '@/components/Tinymce'
 export default {
   name: 'ShopCreate',

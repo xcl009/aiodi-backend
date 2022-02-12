@@ -133,7 +133,7 @@
        */
       getList() {
         var params = Object.assign({}, this.form)
-        this.$get('iot-saas-pay/admin/pay/config/alipay/detail', params).then(res => {
+        this.$get('iot-saas-pay/admin/pay/config/alipay/list', params).then(res => {
           this.list = res
           this.listLoading = false
           this.clickSubmit = false

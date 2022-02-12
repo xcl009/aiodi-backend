@@ -114,7 +114,7 @@
 </template>
 
 <script>
-  import upload from '@/components/upload/two'
+  import upload from '@/components/upload/'
   export default {
     components: {
       upload

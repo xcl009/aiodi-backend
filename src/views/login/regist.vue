@@ -59,7 +59,7 @@
 </template>
 
 <script>
-  import upload from '@/components/upload/two'
+  import upload from '@/components/upload/'
   import VDistpicker from '@/components/Distpicker'
   export default {
     name: 'regist',

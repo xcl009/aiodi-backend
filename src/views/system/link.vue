@@ -33,7 +33,7 @@
 <script>
   import { copyText } from '@/utils/index'
   import { getToken } from '@/utils/auth'
-  import upload from '@/components/upload/two.vue'
+  import upload from '@/components/upload/'
   export default {
     name: 'alink',
     components: {

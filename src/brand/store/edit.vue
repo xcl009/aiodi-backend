@@ -2,53 +2,53 @@
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="10">
-        <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="135px">
+        <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="130px">
           <h4>基础信息</h4>
-          <el-form-item label="门头照：" class="up-img">
+          <el-form-item label="门头照" class="up-img">
             <upload v-model="form.avatar"/>
           </el-form-item>
-          <el-form-item ref="name" label="商户名称：" prop="name">
+          <el-form-item ref="name" label="商户名称" prop="name">
             <el-input v-model="form.name" placeholder="请填写商户名称" />
           </el-form-item>
-          <el-form-item ref="mobile" label="商家电话：" prop="mobile">
+          <el-form-item ref="mobile" label="商家电话" prop="mobile">
             <el-input v-model="form.mobile" placeholder="请填写商家电话" />
           </el-form-item>
-          <el-form-item ref="catId" label="行业分类：" prop="catId">
+          <el-form-item ref="catId" label="行业分类" prop="catId">
             <el-cascader v-model="form.catId" :options="catList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <el-form-item ref="lng" label="定位地址：" prop="lng">
+          <el-form-item ref="lng" label="定位地址" prop="lng">
             <maps v-if="form.lng" :center="{ lng: form.lng, lat: form.lat }" @locationOk="locationOk" :zooms="18" />
             <maps v-else @locationOk="locationOk" :zooms="18"/>
           </el-form-item>
-          <el-form-item ref="regionTag" label="所在地区：" prop="regionTag">
+          <el-form-item ref="regionTag" label="所在地区" prop="regionTag">
             <el-cascader v-model="form.regionTag" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <el-form-item ref="address" label="商户地址：" prop="address">
+          <el-form-item ref="address" label="商户地址" prop="address">
             <el-input v-model="form.address" placeholder="请填写商户地址" />
           </el-form-item>
-          <el-form-item label="营业时间：">
+          <el-form-item label="营业时间">
             <el-input v-model="form.businessTimeDes" placeholder="如:09:00-21:00" />
           </el-form-item>
-          <el-form-item label="商户介绍：">
+          <el-form-item label="商户介绍">
             <el-input v-model="form.introduce" placeholder="商户介绍" type="textarea" :rows="3"/>
           </el-form-item>
 
           <template>
             <h4>分润信息</h4>
-            <el-form-item label="分成方式：">
+            <el-form-item label="分成方式">
               <el-radio-group v-model="form.divisionMode">
                 <el-radio-button :label="1">比例分成</el-radio-button>
                 <el-radio-button :label="2">不给分成</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <div v-if="form.divisionMode != 2">
-              <el-form-item ref="userNickName" label="联系人：" prop="userNickName">
+              <el-form-item ref="userNickName" label="联系人" prop="userNickName">
                 <el-input v-model="form.userNickName" placeholder="请填写联系人姓名" />
               </el-form-item>
-              <el-form-item ref="userMobile" label="手机号码：" prop="userMobile">
+              <el-form-item ref="userMobile" label="手机号码" prop="userMobile">
                 <el-input v-model="form.userMobile" placeholder="此手机号码会作为登录账户" />
               </el-form-item>
-              <el-form-item v-if="!store_id" label="登录密码：">
+              <el-form-item v-if="!store_id" label="登录密码">
                 <el-input v-model="form.loginPassword" placeholder="请填写登录密码" />
               </el-form-item>
             </div>
@@ -64,7 +64,7 @@
               <h4 class="pt-20">{{ myDeviceId[item.deviceTypeId] }}设置</h4>
 
               <template v-if="form.divisionMode != 2">
-                <el-form-item label="分成模式：">
+                <el-form-item label="分成模式">
                   <el-radio-group v-model="item.closeType">
                     <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType" :disabled="cti != 1">{{ ct }}</el-radio-button>
                   </el-radio-group>
@@ -94,26 +94,26 @@
                   </el-popover>
                 </el-form-item>
                 <template v-if="item.closeType == 3">
-                  <el-form-item label="承诺分成：">
+                  <el-form-item label="承诺分成">
                     <el-input v-model="item.promised" placeholder="最高不能超过100%">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
-                  <el-form-item label="相对分成：">
+                  <el-form-item label="相对分成">
                     <el-input v-model="item.relative" placeholder="最高不能超过100%">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </template>
                 <template v-else-if="item.closeType == 2">
-                  <el-form-item label="相对分成：">
+                  <el-form-item label="相对分成">
                     <el-input v-model="item.relative" placeholder="最高不能超过100%">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </template>
                 <template v-else>
-                  <el-form-item label="分成比例：">
+                  <el-form-item label="分成比例">
                     <el-input class="input-with" v-model="item.live" :placeholder="`最高不能超过100%`">
                       <template slot="append">%</template>
                     </el-input>
@@ -121,7 +121,7 @@
                 </template>
               </template>
 
-              <el-form-item label="支付方式：">
+              <el-form-item label="支付方式">
                 <el-checkbox-group v-model="item.storePayConfig">
                   <el-checkbox :label="key" v-for="(item, key) in config.pay_way">{{ item }}</el-checkbox>
                 </el-checkbox-group>
@@ -129,7 +129,7 @@
 
               <template v-for="(name, xcx) in config.xcx_pay.default">
                 <view class="margin-top-lg margin-bottom-xs text-dfs">{{ name }}付费设置</view>
-                <el-form-item :label="`${name}付费模式：`">
+                <el-form-item :label="`${name}付费模式`">
                   <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
                     <el-radio-button :label="item" v-for="(item, key) in config.mode_way.default" :disabled="key != 1">{{ key }}</el-radio-button>
                   </el-radio-group>
@@ -145,7 +145,7 @@
                   </el-popover>
                 </el-form-item>
 
-                <el-form-item :label="`套餐设置：`" v-if="item[`${xcx}PayMode`]">
+                <el-form-item :label="`套餐设置`" v-if="item[`${xcx}PayMode`]">
                   <div class="flex align-center flex-wrap" v-for="(plan, index) in item[`${xcx}PayMode`].list">
                     <el-select v-model="plan.time">
                       <el-option :label="`${time}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>

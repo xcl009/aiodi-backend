@@ -1,10 +1,9 @@
 <template>
   <div class="flex align-center navbar" style="overflow: initial;">
-    <!-- <img src="https://oss.kuaihuoya.net/pwd/2021-01-13/170336089.jpg" height="50" alt="" class="ml-10" :class="{'ml-30': device != 'mobile'}" @click="toggleSideBar"> -->
+    <div class="pl-30 pr-20 cursor line-1" @click="toggleSideBar" style="color: #86909C;">
+      <svg-icon slot="prefix" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
+    </div>
     <div class="flex1"></div>
-
-    <!-- <breadcrumb class="breadcrumb-container" /> -->
-
     <div class="right-menu flex align-center">
       <!-- <div class="pl-15 pr-15 menu-item flex align-center">
         <svg-icon icon-class="head_new" class="head_new"></svg-icon>

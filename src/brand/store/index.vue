@@ -68,14 +68,9 @@
         <el-table-column label="分成比例" align="center">
           <template slot-scope="scope">
             <div class="mt-5">
-              <template v-for="(item, index) in scope.row.storeDivisionFun">
-                <div class="mb-5">
-                  <el-tag class="cursor" :hit="true" size="medium" effect="plain"
-                    @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
-                    {{ myDeviceId[item.deviceTypeId] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
-                  </el-tag>
-                </div>
-              </template>
+              <div class="mb-5" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
+                {{ myDeviceId[item.deviceTypeId] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -230,7 +225,7 @@
       next()
     },
     activated() {
-      let queryKey = ['deviceId'],
+      let queryKey = ['deviceId', 'agentId'],
         query = this.$route.query
       for (var i in queryKey) {
         this[queryKey[i]] = query[queryKey[i]]
@@ -274,6 +269,7 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
+        if(this.agentId > 0) params.agentId = this.agentId
         this.$get('iot-saas-basic/admin/store/findPage', params).then(res => {
           this.list = res.rows
           this.listLoading = false

@@ -189,7 +189,6 @@
     }
   }
   .el-upload__tip{
-    margin: 0 0 10px;
     line-height: initial;
   }
 </style>

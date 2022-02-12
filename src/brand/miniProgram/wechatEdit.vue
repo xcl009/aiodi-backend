@@ -76,7 +76,7 @@
        * 获取信息
        */
       getInfo() {
-        this.$get('iot-saas-pay/admin/pay/config/wechat/detail', {
+        this.$post('iot-saas-pay/admin/pay/config/wechat/detail', {
           appId: this.$route.query.app_id
         }).then(res => {
           this.form = this.pick(res, [

@@ -1,11 +1,4 @@
 /**
- * Created by PanJiaChen on 16/11/18.
- */
-
-import FileSaver from 'file-saver'
-import XLSX from 'xlsx'
-
-/**
  * Parse the time to string
  * @param {(Object|string|number)} time
  * @param {string} cFormat
@@ -41,7 +34,9 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -101,12 +96,12 @@ export function param2Obj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+    .replace(/"/g, '\\"')
+    .replace(/&/g, '","')
+    .replace(/=/g, '":"')
+    .replace(/\+/g, ' ') +
+    '"}'
   )
 }
 
@@ -116,7 +111,7 @@ export function param2Obj(url) {
  * @returns {Object}
  */
 export function pick(obj, arr) {
-   return arr.reduce((iter, val) => (val in obj && (iter[val] = obj[val]), iter), {});
+  return arr.reduce((iter, val) => (val in obj && (iter[val] = obj[val]), iter), {});
 }
 
 /**
@@ -124,7 +119,7 @@ export function pick(obj, arr) {
  * @returns {Boole}
  */
 export function checkRoles(roles = [], type = 1) {
-   return roles.indexOf(agentInfo.level_key) > -1;
+  return roles.indexOf(agentInfo.level_key) > -1;
 }
 
 /**
@@ -158,34 +153,6 @@ export function copyText(text) {
   document.body.removeChild(aux);
 }
 
-export function outTab(tabId, fileName = 'data') {
-  let fix = document.querySelector('.el-table__fixed-right') ? document.querySelector('.el-table__fixed-right') : document.querySelector('.el-table__fixed');
-  let xlsxParam = { raw: true };
-  let wb;
-  if (fix) {
-    wb = XLSX.utils.table_to_book(document.querySelector(`#${tabId}`).removeChild(fix), xlsxParam)
-    document.querySelector(`#${tabId}`).appendChild(fix)
-  } else {
-    wb = XLSX.utils.table_to_book(document.querySelector(`#${tabId}`), xlsxParam)
-  }
-
-  /* get binary string as output */
-  let wbout = XLSX.write(wb, {
-    bookType: 'xlsx',
-    bookSST: true,
-    type: 'array'
-  })
-
-  try {
-    FileSaver.saveAs(new Blob([wbout], {
-      type: 'application/octet-stream'
-    }), `${fileName}.xlsx`);
-  } catch (e) {
-    if (typeof console !== 'undefined') console.log(e, wbout)
-  }
-  return wbout;
-}
-
 /**
  * @param {Objct} object 表达检验滚动到错误位置
  */
@@ -206,15 +173,15 @@ export function formErrow(object) {
  * 千分位逗号去除
  */
 export function delComma(num) {
-  if(!num) return 0
+  if (!num) return 0
   return parseFloat(num.toString().replace(/,/g, ''));
 }
 
 /**
  * 计算百分比
  */
-export function countPer(num, total){
-  if(!num || !total) return 0
+export function countPer(num, total) {
+  if (!num || !total) return 0
   num = parseFloat(num.toString().replace(/[^\d\.-]/g, ''))
   if (typeof total === 'string') {
     total = (total.trim()).toString()
@@ -231,7 +198,7 @@ export function countPer(num, total){
 /**
  * 图表设备颜色值
  */
-export function colorPalette(){
+export function colorPalette() {
   return {
     0: '#2ec7c9',
     1: '#b6a2de',
@@ -259,8 +226,8 @@ export function colorPalette(){
 /**
  * 提取二维数组指定key
  */
-export function arrayKeys(array = [], key = ''){
-  if(!key) []
+export function arrayKeys(array = [], key = '') {
+  if (!key)[]
   let arr = []
   array.map(item => {
     arr.push(item[key])
@@ -273,8 +240,8 @@ export function arrayKeys(array = [], key = ''){
  */
 export function pickKeys(obj = {}, arr = []) {
   let iter = {}
-  for(var i in arr){
-    if(obj[arr[i]] != undefined) iter[arr[i]] = obj[arr[i]]
+  for (var i in arr) {
+    if (obj[arr[i]] != undefined) iter[arr[i]] = obj[arr[i]]
   }
   return iter
 }
@@ -282,9 +249,11 @@ export function pickKeys(obj = {}, arr = []) {
 /**
  * 分成是否一致
  */
-export function showPercent (profit_info, key) {
-  if(profit_info[key + '_relative_divide'] != 0 && !profit_info[key + '_relative_divide']) return '0%'
-  return (profit_info[key + '_relative_divide'] == 1 ? profit_info[key + '_relative_percent'] : profit_info[key + '_percent']) + '%(' + (profit_info[key + '_virtual_divide'] == 1 ? '不一致' : '一致') + ',' + (profit_info[key + '_relative_divide'] == 1 ? '相对分成' : '真实分成') + ')'
+export function showPercent(profit_info, key) {
+  if (profit_info[key + '_relative_divide'] != 0 && !profit_info[key + '_relative_divide']) return '0%'
+  return (profit_info[key + '_relative_divide'] == 1 ? profit_info[key + '_relative_percent'] : profit_info[key +
+    '_percent']) + '%(' + (profit_info[key + '_virtual_divide'] == 1 ? '不一致' : '一致') + ',' + (profit_info[key +
+    '_relative_divide'] == 1 ? '相对分成' : '真实分成') + ')'
 }
 
 /**
@@ -293,7 +262,7 @@ export function showPercent (profit_info, key) {
  * @param lat
  * @returns {{lng: number, lat: number}}
  */
-export function bMapTransQQMap (lng,lat) {
+export function bMapTransQQMap(lng, lat) {
   let x_pi = Math.PI * 3000.0 / 180.0;
   let x = lng - 0.0065;
   let y = lat - 0.006;
@@ -302,8 +271,8 @@ export function bMapTransQQMap (lng,lat) {
   let lngs = z * Math.cos(theta);
   let lats = z * Math.sin(theta);
   return {
-    lng:lngs,
-    lat:lats
+    lng: lngs,
+    lat: lats
   }
 };
 
@@ -313,8 +282,8 @@ export function bMapTransQQMap (lng,lat) {
  * @param lat
  * @returns {{lng: number, lat: number}}
  */
-export function qqMapTransBMap (lng,lat) {
-  let x_pi = Math.PI * 3000.0 / 180.0;//Math.PI ~ 3.14159265358979324
+export function qqMapTransBMap(lng, lat) {
+  let x_pi = Math.PI * 3000.0 / 180.0; //Math.PI ~ 3.14159265358979324
   let x = lng;
   let y = lat;
   let z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
@@ -322,8 +291,8 @@ export function qqMapTransBMap (lng,lat) {
   let lngs = z * Math.cos(theta) + 0.0065;
   let lats = z * Math.sin(theta) + 0.006;
   return {
-      lng: lngs,
-      lat: lats
+    lng: lngs,
+    lat: lats
   }
 };
 
@@ -333,7 +302,7 @@ export function qqMapTransBMap (lng,lat) {
  * @param {Object} index1
  * @param {Object} index2
  */
-export function swapItems (arr, index1, index2) {
+export function swapItems(arr, index1, index2) {
   arr[index1] = arr.splice(index2, 1, arr[index1])[0]
   return arr
 }
@@ -341,8 +310,11 @@ export function swapItems (arr, index1, index2) {
 /**
  * 浮点数加法
  */
-export function accAdd(){
-  var args = arguments, lens = args.length, d = 0, sum = 0;
+export function accAdd() {
+  var args = arguments,
+    lens = args.length,
+    d = 0,
+    sum = 0;
 
   for (var key in args) {
     var str = "" + args[key];
@@ -366,8 +338,8 @@ export function accAdd(){
 /**
  * 手机号隐藏中间4位
  */
-export function dealPhone(tel, start = 3, end = 7, symbol = '****'){
-  if(!tel) return tel
+export function dealPhone(tel, start = 3, end = 7, symbol = '****') {
+  if (!tel) return tel
   tel = '' + tel
   return tel.replace(tel.substring(start, end), symbol)
 }
@@ -375,37 +347,38 @@ export function dealPhone(tel, start = 3, end = 7, symbol = '****'){
 
 export function mul(a, b) {
   var c = 0,
-      d = a.toString(),
-      e = b.toString();
+    d = a.toString(),
+    e = b.toString();
   try {
-      c += d.split(".")[1].length;
+    c += d.split(".")[1].length;
   } catch (f) {}
   try {
-      c += e.split(".")[1].length;
+    c += e.split(".")[1].length;
   } catch (f) {}
   return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
 }
 
 export function division(a, b) {
   var c, d, e = 0,
-      f = 0;
+    f = 0;
   try {
-      e = a.toString().split(".")[1].length;
+    e = a.toString().split(".")[1].length;
   } catch (g) {}
   try {
-      f = b.toString().split(".")[1].length;
+    f = b.toString().split(".")[1].length;
   } catch (g) {}
-  return c = Number(a.toString().replace(".", "")), d = Number(b.toString().replace(".", "")), mul(c / d, Math.pow(10, f - e));
+  return c = Number(a.toString().replace(".", "")), d = Number(b.toString().replace(".", "")), mul(c / d, Math.pow(10,
+    f - e));
 }
 
 /**
-	 * 数组指定key转对象
-	 */
+ * 数组指定key转对象
+ */
 export function arrayToObj(array = [], key = '') {
-  if(!key) return {}
+  if (!key) return {}
   let obj = []
   array.map(item => {
-    if(item[key] != 'undefined' && item[key] != null){
+    if (item[key] != 'undefined' && item[key] != null) {
       obj[item[key]] = item
     }
   })
@@ -415,6 +388,34 @@ export function arrayToObj(array = [], key = '') {
 /**
  * 获取当前时间
  */
-export function	currentTime() {
+export function currentTime() {
   return Date.parse(new Date()) / 1000;
+}
+
+/**
+ * 校验当前用户是否为品牌商
+ */
+export function isSaas() {
+  return agentInfo.userType == 'saas'
+}
+
+/**
+ * 校验当前用户是否为品牌商
+ */
+export function isBrand() {
+  return agentInfo.userType == 'brand'
+}
+
+/**
+ * 校验当前用户是否为商户
+ */
+export function isStore() {
+  return agentInfo.userType == 'store'
+}
+
+/**
+ * 校验当前用户是否为代理商
+ */
+export function isAgent() {
+  return agentInfo.userType == 'agent'
 }

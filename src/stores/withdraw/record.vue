@@ -7,37 +7,29 @@
             {{ scope.row.id}}
           </template>
         </el-table-column>
-        <el-table-column label="用户" width="150">
-          <template slot-scope="scope">
-            <div class="flex align-center">
-              <el-avatar size="small" :src="scope.row.avatar"></el-avatar>
-              <div class="flex1 ml-5">{{ scope.row.nick_name }}</div>
-            </div>
-          </template>
-        </el-table-column>
         <el-table-column label="提现时间">
           <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') }}</span>
+            <span>{{ scope.row.createTime }}</span>
           </template>
         </el-table-column>
         <el-table-column label="提现金额">
           <template slot-scope="scope">
-            <div class="el-link">+{{ scope.row.withdraw_money }}</div>
+            <div class="el-link">{{ scope.row.amount }}</div>
           </template>
         </el-table-column>
         <el-table-column label="手续费">
           <template slot-scope="scope">
-            <div class="el-link">+{{ scope.row.withdraw_service_fee }}</div>
+            <div class="el-link">{{ scope.row.fee }}</div>
           </template>
         </el-table-column>
         <el-table-column label="到账金额">
           <template slot-scope="scope">
-            <div class="el-link el-link--success">+{{ scope.row.withdraw_money_get}}</div>
+            <div class="el-link el-link--primary">{{ scope.row.amountReceived}}</div>
           </template>
         </el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
-            <div class="el-link el-link--success">{{ statusObj[scope.row.withdraw_status] }}</div>
+            <div class="el-link">{{ statusObj[scope.row.status] }}</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="备注">
@@ -45,8 +37,13 @@
         </el-table-column> -->
       </el-table>
       <div class="flex justify-center">
-        <pagination v-show="listQuery.page_num > 0" :page.sync="listQuery.start" :limit.sync="listQuery.limit" :page-count="listQuery.page_num"
-@pagination="getList"/>
+        <pagination
+          v-show="listTotal > 0"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          :total="parseInt(listTotal)"
+          @pagination="getList"
+        />
       </div>
     </div>
   </div>
@@ -55,29 +52,31 @@
 <script>
   import Pagination from '@/components/Pagination'
   export default {
-    name: 'income',
+    name: 'withdrawRecord',
     components: {
       Pagination
+    },
+    computed: {
+      Constant() {
+        return this.$store.getters.Constant
+      },
     },
     data() {
       return {
         son_id: this.$route.query.son_id || '',
         list: [],
         listLoading: true,
+        listTotal: 0,
         listQuery: {
-          start: 1,
-          total: 10,
-          page_num: 1
+          page: 0,
+          size: 20
         },
         statusObj: {
-              0: '发起提现申请',
-              1: '等待上级审核',
-              2: '上级审核不通过',
-              3: '等待最终审核',
-              4: '最终审核不通过',
-              5: '审核完毕, 返现中',
-              6: '返现已到账并确认'
-            }
+          0: '审核中',
+          1: '审核不通过 ',
+          2: '审核通过,到账中 ',
+          3: '审核通过,已到账'
+        }
       }
     },
     mounted(options) {
@@ -85,13 +84,14 @@
     },
     methods: {
       getList() {
-        let listQuery = Object.assign({}, this.listQuery, {
-          start: this.listQuery.start - 1
-        }), url = 'agentapi/apply/my_withdraw_apply'
-        this.$get(url, listQuery).then(res => {
+        let params = Object.assign({}, this.listQuery, {
+            page: this.listQuery.page - 1
+          }),
+          url = 'iot-saas-pay/api/pay/withdraw/list'
+        this.$get(url, params).then(res => {
           this.listLoading = false
-          this.list = res.list
-          this.listQuery.page_num = res.page_num
+          this.list = res.rows
+          this.listTotal = res.total
         }).catch(() => {
           this.listLoading = false
         })

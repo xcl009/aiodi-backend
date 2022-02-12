@@ -108,18 +108,44 @@
       </div>
     </div>
 
-    <el-dialog title="设备归属" :visible.sync="deviceBelongDialog">
-      <el-table :data="deviceBelong">
-        <el-table-column label="角色" property="role_name" />
-        <el-table-column label="联系信息">
-          <template slot-scope="scope">
-            <div v-if="checkRoles(['terminal','partner'])">
-              姓名：{{ scope.row.name }}&nbsp;&nbsp;&nbsp;&nbsp;电话：{{ scope.row.phone }}</div>
-            <div v-if="scope.row.agent_level == 5">商户名：{{ eqiupStore.store_name }}</div>
-            <div v-if="scope.row.agent_level == 5">地址：{{ eqiupStore.address }}</div>
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
+      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+      <template v-if="dialogType == 1">
+        <el-table :data="deviceBelong" border>
+          <el-table-column label="角色" property="role_name" align="center"/>
+          <el-table-column label="联系信息" align="center">
+            <template slot-scope="scope">
+              <div v-if="checkRoles(['terminal','partner'])">
+                姓名：{{ scope.row.name }}&nbsp;&nbsp;&nbsp;&nbsp;电话：{{ scope.row.phone }}</div>
+              <div v-if="scope.row.agent_level == 5">商户名：{{ eqiupStore.store_name }}</div>
+              <div v-if="scope.row.agent_level == 5">地址：{{ eqiupStore.address }}</div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+      <template v-if="dialogType == 2">
+        <div class="text-center">
+          <el-image
+            style="width: 150px; height: 150px"
+            :src="dform.code"
+            fit="cover"></el-image>
+          <div class="mt-20 text-grey">SN码：WYB18199708050</div>
+        </div>
+      </template>
+      <template v-if="dialogType == 3">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto">
+          <el-form-item>
+            <el-input v-model="dform.mobile" placeholder="请输入备注(如房间号)"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+      <div class="mt-30 text-center" v-if="dialogType > 2">
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+      </div>
+      <div class="mt-30 text-center" v-else>
+        <el-button size="medium" type="primary" @click="dialogStatus = false">确定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -198,10 +224,20 @@
         selSnArr: [],
         selID: [],
 
+        // 弹出相关
+        dialogType: 1,
+        dialogStatus: false,
+        dialogTitle: {
+          1: '设备归属',
+          2: '设备二维码',
+          3: '备注'
+        },
+        curRow: {},
+        curIdx: 0,
+        dform: {},
+
         // 设备归属
         deviceBelong: [],
-        eqiupStore: {},
-        deviceBelongDialog: false
       }
     },
     mounted(options) {

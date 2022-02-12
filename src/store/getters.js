@@ -11,6 +11,7 @@ const getters = {
   myDevice: state => state.user.myDevice,
   siteInfo: state => state.user.siteInfo,
   agentInfo: state => state.user.agentInfo,
+  Constant: state => state.user.Constant,
   rests: state => state.rests
 }
 export default getters

@@ -37,8 +37,8 @@
           <template>
             <h4 class="pt-20">分润比例</h4>
             <template v-for="(id, index) in selDevice">
-              <el-form-item :label="`${myDeviceId[id]}：`">
-                <el-input v-model="form.deviceTypDeviceProfitRatios[id]" :placeholder="`最高不能超过100%`">
+              <el-form-item :label="`${myDeviceId[id]}`">
+                <el-input v-model="form.deviceTypeProfitRatios[id]" :placeholder="`最高不能超过100%`">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -66,7 +66,7 @@
         form: {
           userType: 'brand',
           password: '123456',
-          deviceTypDeviceProfitRatios: {}
+          deviceTypeProfitRatios: {}
         },
         rules: {
           role_id: [
@@ -121,10 +121,10 @@
         this.$get('iot-saas-basic/admin/brand/findInfoById', {
           id: this.aid
         }).then(res => {
-          res.deviceTypDeviceProfitRatios = {}
+          res.deviceTypeProfitRatios = {}
           if(res.brandDeviceType.length > 0){
             res.brandDeviceType.map(item => {
-              res.deviceTypDeviceProfitRatios[item.id] = item.profitRatio
+              res.deviceTypeProfitRatios[item.id] = item.profitRatio
               if(this.selDevice.indexOf(item.id) == -1) {
                 this.selDevice.push(item.id)
               }
@@ -134,7 +134,7 @@
           }
           this.form = {
             id: res.id,
-            deviceTypDeviceProfitRatios: res.deviceTypDeviceProfitRatios,
+            deviceTypeProfitRatios: res.deviceTypeProfitRatios,
             logo: res.logo,
             name: res.name,
             mobile: res.brandUser.mobile,
@@ -150,7 +150,7 @@
        * 提交添加
        */
       onSubmit() {
-        let params = {}, url = 'iot-saas-basic/admin/brand'
+        let params = {}, url = 'iot-saas-basic/admin/brand/save'
         if(this.selDevice.length == 0){
           this.$message({
             message: '最少选择一个运营产品',
@@ -163,10 +163,10 @@
         for(var i in this.selDevice){
           profitRatios.push({
             deviceTypeId: this.selDevice[i],
-            profitRatio: params.deviceTypDeviceProfitRatios[this.selDevice[i]] || 0
+            profitRatio: params.deviceTypeProfitRatios[this.selDevice[i]] || 0
           })
         }
-        params.deviceTypDeviceProfitRatios = profitRatios
+        params.deviceTypeProfitRatios = profitRatios
         if(Array.isArray(params.areaId) && params.areaId.length > 0) params.areaId = params.areaId[params.areaId.length - 1]
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {

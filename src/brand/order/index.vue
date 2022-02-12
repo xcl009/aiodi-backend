@@ -32,18 +32,12 @@
         <el-input v-model="form.deviceIds" placeholder="设备SN" />
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
-          <el-option label="全部" value="" />
-          <el-option label="微信" value="1" />
-          <el-option label="支付宝" value="2" />
+          <el-option label="全部" value="0" />
+           <el-option :label="item" :value="key" v-for="(item, key) in Constant.SourceType" />
         </el-select>
         <el-select v-model="form.payType" placeholder="支付类型" @change="toQuery()">
-          <el-option label="全部" value="" />
-          <el-option label="微信" value="1" />
-          <el-option label="支付宝" value="2" />
-          <el-option label="微信免押" value="3" />
-          <el-option label="支付宝免押" value="4" />
-          <el-option label="余额" value="5" />
-          <!-- <el-option label="充值卡" value="6" /> -->
+          <el-option label="全部" value="0" />
+          <el-option :label="item" :value="key" v-for="(item, key) in Constant.PayType" />
         </el-select>
         <!-- <el-cascader v-model="cat_id" :options="categoryList" :show-all-levels="false"
           :props="{ expandTrigger: 'hover' }" placeholder="行业分类" />
@@ -69,7 +63,7 @@
       <div class="flex mb-5">
         <div class="flex1 white-space">
           <el-scrollbar>
-            <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.status != item.value}" v-for="item in orderTab" @click="listQuery.status = item.value; toQuery()">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
+            <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.status != item.value}" v-for="item in orderTab" @click="listQuery.status = item.value; toQuery(2)">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
           </el-scrollbar>
         </div>
       </div>
@@ -106,7 +100,7 @@
         </el-table-column>
         <el-table-column label="支付类型" width="100" align="center">
           <template slot-scope="scope">
-            <div class="fs-s3">{{ payType[scope.row.payType] || '--' }}</div>
+            <div class="fs-s3">{{ Constant.PayType[scope.row.payType] || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="用户" width="150" align="center">
@@ -123,8 +117,8 @@
         </el-table-column>
         <el-table-column label="时间" width="140" align="center">
           <template slot-scope="scope">
-            <div class="text-green">{{ scope.row.chargeEndTime || "--" }}</div>
-            <div class="text-danger">{{ scope.row.chargeStartTime || "--" }}</div>
+            <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
+            <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
           </template>
         </el-table-column>
         <el-table-column label="设备SN码" width="240" align="center">
@@ -153,7 +147,7 @@
         <el-table-column label="状态" width="70" align="center">
           <template slot-scope="scope">
             <el-link :type="scope.row.status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
-              {{ orderStatus[scope.row.status] || "--" }}
+              {{ Constant.OrderStatus[scope.row.status] || "--" }}
             </el-link>
           </template>
         </el-table-column>
@@ -177,8 +171,6 @@
               @click="upApply(scope.row, 1)">通过申请</el-button>
             <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
               @click="upApply(scope.row, 0)">驳回申请</el-button>
-            <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status > 0"
-              @click="refundInfo(scope.row)">退款详情</el-button>
             <template v-if="scope.row.refund_apply_status != 1">
               <el-button type="primary" size="mini" plain round
                 v-if="agentInfo.drawback_order == 1 && scope.row.money_paid > 0 && (!scope.row.refund_drawbacked || scope.row.refund_drawbacked == 0) && listQuery.status != 6"
@@ -288,69 +280,6 @@
           <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
         </div>
       </el-dialog>
-
-
-      <el-dialog title="结束订单" :visible.sync="endOrderDialog">
-        <el-form label-width="140px">
-          <el-form-item :label="order.depend_type == 0 ? '归还时间：' : '结束时间：'" prop="name">
-            <el-date-picker v-model="endOrderObj.return_time" type="datetime" value-format="timestamp"
-              style="width: 100%;" :placeholder="order.depend_type == 0 ? '归还时间：' : '结束时间：'"
-              :picker-options="endOptions" />
-          </el-form-item>
-          <el-form-item label="检测设备是否归还：" v-if="order.depend_type == 0">
-            <el-switch v-model="endOrderObj.check_bao_backed" />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="endOrderDialog = false">取 消</el-button>
-          <el-button type="primary" @click="endOrder(2, order)" :disabled="clickSubmit">确 定</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog title="订单退款" :visible.sync="refundDialog">
-        <el-form label-width="130px">
-          <el-form-item label="退款方式：">
-            <el-radio-group v-model="refundObj.refund_2_balance">
-              <el-radio :label="1">退回小程序钱包</el-radio>
-              <el-radio :label="0">原路退回</el-radio>
-              <el-radio :label="2" v-if="order.pay_type == 1 && order.pay_deposite_yuan == order.fund_deposite_yuan">全部押金原路退回</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="退款金额：" v-if="refundObj.refund_2_balance != 2">
-            <el-input v-model="refundObj.refund_money">
-              <template slot="append">元<span class="el-link el-link--danger">（最多{{ order.money_paid }}元）</span></template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="退款原因：">
-            <el-input v-model="refundObj.refund_reason" type="textarea" />
-            <div class="fs-s2 text-gray">注：非必填信息，若填写将展示在下发给用户的退款消息中。</div>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="refundDialog = false">取 消</el-button>
-          <el-button type="primary" @click="refundOrder(order)" :disabled="clickSubmit">确 定</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog title="退款详情" :visible.sync="washRefundDialog">
-        <div class="mt-10 mb-15"><span class="text-gray">退款状态：</span>{{ refundStatus[washRefund.refund_status] }}</div>
-        <div class="mt-10 mb-15" v-if="washRefund.refuse_reason"><span
-            class="text-gray">拒绝原因：</span>{{ washRefund.refuse_reason }}</div>
-        <div class="mt-10 mb-15"><span class="text-gray">手机号码：</span>{{ washRefund.mobile }}</div>
-        <div class="mt-10 mb-15"><span class="text-gray">退款金额：</span>{{ washRefund.refund_money }}元</div>
-        <div class="flex mt-10 mb-15">
-          <div class="text-gray">问题描述：</div>
-          <div class="flex1">{{ washRefund.refund_reason || '未填写' }}</div>
-        </div>
-        <div class="flex mt-10 mb-15">
-          <div class="text-gray">错误截图：</div>
-          <div class="flex1">
-            <el-image class="mr-5" v-for="item in washRefund.refund_img_url" style="width: 50px; height: 50px"
-              :src="item" :preview-src-list="washRefund.refund_img_url">
-            </el-image>
-          </div>
-        </div>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -380,22 +309,8 @@
       }
     },
     computed: {
-      xlsxName: function() {
-        let xlsxName = '订单记录';
-        let b = '';
-        let e = ''
-        if (this.form.begin) {
-          b = this.parseTime(this.form.begin / 1000, '{y}.{m}{d}')
-        }
-        if (this.form.end) {
-          e = this.parseTime(this.form.end / 1000, '{y}.{m}{d}')
-        }
-        if (b && e) {
-          xlsxName = b + '-' + e
-        } else if (b || e) {
-          xlsxName = b || e
-        }
-        return xlsxName
+      Constant() {
+        return this.$store.getters.Constant
       },
       device() {
         return this.$store.state.app.device
@@ -465,7 +380,7 @@
             nkey: 'today'
           },
           {
-            value: 2,
+            value: [2,3],
             title: '已完成',
             nkey: 'done'
           },
@@ -502,71 +417,14 @@
           size: 20
         },
         form: {},
-        orderStatus: {
-          0: '待支付',
-          1: '使用中',
-          2: '已完成',
-          3: '手动完结',
-          4: '超时完成',
-          5: '租借失败',
-          6: '扣款失败',
-          7: '申请退款',
-          8: '拒绝退款',
-          9: '已退款',
-          10: '支付已关闭'
-        },
-        payType: {
-          1: '微信',
-          2: '支付宝',
-          3: '微信免押',
-          4: '支付宝免押',
-          5: '余额',
-          6: '充值卡'
-        },
-
         order: {},
         selID: [],
-
-        // 结束订单
-        endOrderDialog: false,
-        endOrderObj: {
-          return_time: '',
-          check_bao_backed: true
-        },
-        endOptions: {
-          disabledDate: (time) => {
-            if (this.form.begin) {
-              return time.getTime() < this.form.begin || time.getTime() > new Date(new Date().toLocaleDateString())
-                .getTime()
-            } else {
-              return time.getTime() > new Date(new Date().toLocaleDateString()).getTime() + 86400
-            }
-          }
-        },
 
         // 订单详情
         detailDialog: false,
         orderFlow: [],
         orderDivide: [],
         amountPaid: '',
-
-        // 订单退款
-        refundDialog: false,
-        refundObj: {
-          refund_2_balance: 1,
-          refund_money: ''
-        },
-
-        // 退款详情
-        washRefundDialog: false,
-        washRefund: {},
-        refundStatus: {
-          1: '申请中',
-          2: '已拒绝',
-          3: '已通过',
-          4: '已退款'
-        },
-
 
         // 弹出相关
         dialogType: 1,
@@ -592,13 +450,19 @@
        * 订单数量
        */
       getStatNum() {
-        const params = Object.assign({}, this.listQuery, this.form)
+        let url = 'iot-saas-order/admin/order/summary/my/brand', params = Object.assign({}, this.listQuery, this.form)
         if(params.selDay && params.selDay.length > 0){
           params.chargeStartTime = params.selDay[0]
           params.chargeEndTime = params.selDay[1]
           delete params.selDay
         }
-        this.$get('iot-saas-order/admin/order/summary', params).then(res => {
+        delete params.status
+        if(this.user_type == 1) url = 'iot-saas-order/admin/order/summary/sub/brand'
+        if(this.isAgent()){
+          url = 'iot-saas-order/admin/order/summary/my/agent'
+          if(this.user_type == 1) url = 'iot-saas-order/admin/order/summary/sub/agent'
+        }
+        this.$get(url, params).then(res => {
           this.statInfo = res
         })
       },
@@ -613,12 +477,12 @@
       /**
        * 搜索查询
        */
-      toQuery() {
+      toQuery(type = 1) {
         if(this.clickSubmit) return
         this.clickSubmit = true
         this.listQuery.page = 1
         this.listQuery.size = 20
-        this.getStatNum()
+        if(type == 1) this.getStatNum()
         this.getList()
       },
 
@@ -639,7 +503,7 @@
        * 获取列表
        */
       getList() {
-        var params = Object.assign({}, this.form, this.listQuery, {
+        var url = 'iot-saas-order/admin/order/list/my/brand', params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
         if(params.selDay && params.selDay.length > 0){
@@ -651,13 +515,18 @@
           params.today = true
           delete params.status
         }
-        this.$get('iot-saas-order/admin/order/list', params).then(res => {
+        if(this.user_type == 1) url = 'iot-saas-order/admin/order/list/sub/brand'
+        if(this.isAgent()){
+          url = 'iot-saas-order/admin/order/list/my/agent'
+          if(this.user_type == 1) url = 'iot-saas-order/admin/order/list/sub/agent'
+        }
+        this.$get(url, params).then(res => {
           this.list = res.rows
           this.listLoading = false
           this.clickSubmit = false
           this.listTotal = res.total
           if(params.page == 0){
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
           }
         }).catch(() => {
           this.listLoading = false
@@ -750,43 +619,6 @@
             this.areaList.push(obj)
           }
         })
-      },
-
-      /**
-       * 手动结束订单
-       */
-      endOrder(type, row) {
-        if (type == 1) {
-          this.order = row
-          this.endOrderObj.return_time = Date.parse(new Date())
-          this.endOrderDialog = true
-        } else {
-          this.$alert('确定结束此订单吗？', '结束订单', {
-            confirmButtonText: '确定',
-            callback: action => {
-              if (action == 'confirm') {
-                this.clickSubmit = true
-                this.$get('agentapi/business/manual_finish_order', {
-                  order_id: row.order_id,
-                  bao_sn: row.goods_sn,
-                  return_time: (this.endOrderObj.return_time / 1000),
-                  check_bao_backed: (this.endOrderObj.check_bao_backed ? 1 : 0)
-                }).then(res => {
-                  this.endOrderDialog = false
-                  this.order = {}
-                  this.clickSubmit = false
-                  this.$message({
-                    message: '结束成功',
-                    type: 'success'
-                  })
-                  row.order_status = 3
-                }).catch(err => {
-                  this.clickSubmit = false
-                })
-              }
-            }
-          })
-        }
       },
 
       /**
@@ -923,7 +755,7 @@
             this.$get('iot-saas-order/admin/order/detail/divide', {
               orderId: row.id
             }).then(res => {
-              this.orderDivide = res.divideVOList
+              this.orderDivide = res.divideList
               this.amountPaid = res.amountPaid
             })
           }
@@ -939,73 +771,6 @@
         }).then(res => {
           this.baoDialog = true
           this.baoList = [res]
-        })
-      },
-
-      /**
-       * 退款详情
-       */
-      refundInfo(row) {
-        this.$get('wxapi/order/order_refund_appy_detail', {
-          order_id: row.order_id
-        }).then(res => {
-          this.washRefundDialog = true
-          this.washRefund = res[0]
-        })
-      },
-
-      /**
-       * 审核提现
-       * @param {Object} row
-       */
-      upApply(row, agree) {
-        if (agree == 1) {
-          this.$alert('确定通过吗？', '通过退款申请', {
-            confirmButtonText: '确定',
-            callback: action => {
-              if (action == 'confirm') {
-                if (this.clickSubmit) return
-                this.clickSubmit = true
-                this.postApply(row, agree)
-              }
-            }
-          })
-        } else if (agree == 0) {
-          this.$prompt('', '驳回退款申请', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            inputValue: '',
-            inputPlaceholder: '驳回原因'
-          }).then(({
-            value
-          }) => {
-            if (this.clickSubmit) return
-            this.clickSubmit = true
-            this.postApply(row, agree, value)
-          })
-        }
-      },
-
-      /**
-       * 提交选择结果
-       * @param {Object} id
-       * @param {Object} agree
-       */
-      postApply(row, agree, refund_reason) {
-        this.$post('agentapi/order/audit_refund_appy', {
-          order_id: row.order_id,
-          agree: agree,
-          refuse_reason: refund_reason
-        }).then(res => {
-          this.$message({
-            message: '提交成功',
-            type: 'success'
-          })
-          if(row.depend_type == 4) row.order_status = (agree == 0 ? 1 : 3)
-          row.refund_apply_status = (agree == 0 ? 2 : 3)
-          this.clickSubmit = false
-        }).catch(err => {
-          this.clickSubmit = false
         })
       },
 

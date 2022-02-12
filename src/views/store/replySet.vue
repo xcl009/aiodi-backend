@@ -47,7 +47,7 @@
 <script>
   import { copyText } from '@/utils/index'
   import { getToken } from '@/utils/auth'
-  import upload from '@/components/upload/two'
+  import upload from '@/components/upload/'
   export default {
     name: 'replySet',
     components: {

@@ -163,7 +163,7 @@
 </template>
 
 <script>
-  import upload from '@/components/upload/two'
+  import upload from '@/components/upload/'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import selPlat from '@/components/selPlat'

@@ -199,7 +199,7 @@ div:focus {
 .bg-body{
   background-color: var(--bodyBg);
   &.el-button{
-    border: none;
+		border-color: var(--bodyBg);
   }
 }
 
