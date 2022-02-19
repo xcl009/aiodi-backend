@@ -1,17 +1,23 @@
 <template>
   <div>
-		<condition ref="condition" :filterForm="false">
+		<condition ref="condition">
       <template v-slot:tabs>
-        <el-tabs class="pl-10 pr-10 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
+        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
           <el-tab-pane label="全部" :name="'0'" />
           <el-tab-pane label="品类" :name="'1'" />
           <el-tab-pane label="系统服务" :name="'2'" />
           <el-tab-pane label="密码线定制" :name="'3'" />
         </el-tabs>
       </template>
+      <template v-slot:defult>
+        <el-input v-model="form.name" placeholder="服务名称"/>
+      </template>
+      <template v-slot:endButton>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/app/create`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加服务</el-button>
+      </template>
 		</condition>
 
-    <div class="pt-15 pl-15 pr-15 pb-5 mt-15 bg-white">
+    <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
         stripe highlight-current-row :max-height="tableMaxH">
         <el-table-column label="服务类型">

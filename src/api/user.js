@@ -23,6 +23,10 @@ export function getConstant() {
   return $get('iot-saas-order/api/order/getInitMap')
 }
 
+export function getWdConstant() {
+  return $get('iot-saas-pay/api/pay/withdraw/getInitMap')
+}
+
 export function postSetRecode(data) {
   return $post('agentapi/log/add_record', data)
 }

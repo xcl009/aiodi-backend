@@ -106,7 +106,7 @@
         <el-table-column label="用户" width="150" align="center">
           <template slot-scope="scope">
             <div>{{ dealPhone(scope.row.userMobile) }}</div>
-            <div class="text-cut">{{ scope.row.user_nick_name || "--" }}</div>
+            <div class="text-cut">{{ scope.row.userNickName || "--" }}</div>
           </template>
         </el-table-column>
         <el-table-column label="商户" min-width="180" align="center">
@@ -136,12 +136,12 @@
         </el-table-column>
         <el-table-column label="收益(元)" width="75" align="center">
           <template slot-scope="scope">
-            <el-link type="success">{{ scope.row.amount }}</el-link>
+            <el-link type="success">{{ scope.row.amount || '0.00' }}</el-link>
           </template>
         </el-table-column>
         <el-table-column label="退款(元)" width="75" align="center">
           <template slot-scope="scope">
-            <el-link type="success">{{ scope.row.amountRefund }}</el-link>
+            <el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="70" align="center">
@@ -253,19 +253,17 @@
         <template v-if="dialogType == 2">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
             <el-form-item label="退回方式">
-              <el-radio-group v-model="dform.refund_type">
-                <el-radio :label="1">退回小程序钱包</el-radio>
-                <el-radio :label="0">原路退回</el-radio>
-                <el-radio :label="2" v-if="curRow.pay_type == 1 && curRow.pay_deposite_yuan == order.fund_deposite_yuan">押金一起退回</el-radio>
+              <el-radio-group v-model="dform.refundType">
+                <el-radio :label="key" v-for="(item, key) in Constant.RefundType" v-if="(key == 2 && curRow.feeType == 2) || (key != 2)">{{ item }}</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="退款金额">
-              <el-input v-model="dform.mobile" placeholder="最多6元">
+              <el-input v-model="dform.amount" :placeholder="`最多${curRow.amountPaid}元`">
                  <span slot="append">元</span>
               </el-input>
             </el-form-item>
             <el-form-item label="退款原因">
-              <el-input v-model="dform.mobile" placeholder="非必填，若填写将展示在用户退款信息中"></el-input>
+              <el-input v-model="dform.reason" placeholder="非必填，若填写将展示在用户退款信息中"></el-input>
             </el-form-item>
           </el-form>
         </template>
@@ -857,7 +855,7 @@
             if(dialogType == 1){
               this.$set(this.dform, 'chargeEndTime', this.parseTime(this.currentTime()))
             }else if(dialogType == 2){
-              this.$set(this.dform, 'refund_type', 1)
+              this.$set(this.dform, 'refundType', '0')
             }
             break
         }
@@ -870,6 +868,8 @@
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         switch (this.dialogType) {
           case 1:
             if(!params.chargeEndTime){
@@ -879,7 +879,6 @@
               })
               return
             }
-            console.log(params)
             this.$post('iot-saas-order/admin/order/complete', {
               orderId: this.curRow.id,
               chargeEndTime: params.chargeEndTime
@@ -890,6 +889,31 @@
               })
               curRow.status = 2
               this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 2:
+            if(!params.amount){
+              this.$message({
+                message: '请输入退款金额',
+                type: 'error'
+              })
+              return
+            }
+            params.orderId = this.curRow.id
+            this.$post('iot-saas-order/admin/order/refund', params).then(res => {
+              this.$message({
+                message: '订单退款成功',
+                type: 'success'
+              })
+              curRow.status = 9
+              curRow.amountRefund = params.amount
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
             break
         }

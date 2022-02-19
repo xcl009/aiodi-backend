@@ -1,6 +1,7 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery" @savexlsx="saveXlsx">
+    <condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery"
+      @savexlsx="saveXlsx">
       <template v-slot:tabs>
         <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'-1'" />
@@ -32,16 +33,10 @@
         <el-cascader v-model="cat_id" :options="categoryList" :show-all-levels="false"
           :props="{ expandTrigger: 'hover' }" placeholder="行业分类" />
         <el-cascader v-model="search_regions_tag" :options="areaList" :show-all-levels="false"
-          :props="{ expandTrigger: 'hover', checkStrictly: true }" placeholder="所在地区"/>
-        <el-date-picker
-          style="width: 300px; padding: 0 10px;"
-          class="range-day flex align-center"
-            v-model="form.day"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期">
-          </el-date-picker>
+          :props="{ expandTrigger: 'hover', checkStrictly: true }" placeholder="所在地区" />
+        <el-date-picker style="width: 300px; padding: 0 10px;" class="range-day flex align-center" v-model="form.day"
+          type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
       </template>
     </condition>
 
@@ -51,15 +46,18 @@
       <div class="flex mb-5">
         <div class="flex1 white-space">
           <el-scrollbar>
-            <el-button size="medium" :type="listQuery.order_type == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.order_type != item.value}" v-for="item in order_type" @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+            <el-button size="medium" :type="listQuery.order_type == item.value ? 'primary' : ''"
+              class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.order_type != item.value}"
+              v-for="item in order_type" @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})
+            </el-button>
           </el-scrollbar>
         </div>
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        :max-height="tableMaxH" element-loading-text="Loading"
-        @selection-change="selOrder">
-        <el-table-column type="selection" v-if="checkRoles(['partner']) && !xlsxStatus" :selectable="checkSel" width="50"/>
+        :max-height="tableMaxH" element-loading-text="Loading" @selection-change="selOrder">
+        <el-table-column type="selection" v-if="checkRoles(['partner']) && !xlsxStatus" :selectable="checkSel"
+          width="50" />
         <el-table-column label="品牌商" align="center">
           <template slot-scope="scope">
             {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
@@ -158,7 +156,8 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="100" :fixed="device == 'desktop' ? 'right' : false" v-if="!xlsxStatus">
+        <el-table-column label="操作" align="center" width="100" :fixed="device == 'desktop' ? 'right' : false"
+          v-if="!xlsxStatus">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="detailDialog = true">订单详情</el-button>
             <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
@@ -170,8 +169,10 @@
             <template v-if="scope.row.refund_apply_status != 1">
               <el-button type="primary" size="mini" plain round
                 v-if="agentInfo.drawback_order == 1 && scope.row.money_paid > 0 && (!scope.row.refund_drawbacked || scope.row.refund_drawbacked == 0) && listQuery.order_type != 7"
-                @click="refundDialog = true; order = scope.row; refundObj.refund_money = ''; refundObj.refund_2_balance = siteInfo.drawbacke_2_balance;">订单退款</el-button>
-              <el-button type="primary" size="mini" plain round v-if="checkRoles(['terminal']) && listQuery.order_type == 7 && scope.row.mini_type == 1 && scope.row.free_pay_status == 3"
+                @click="refundDialog = true; order = scope.row; refundObj.refund_money = ''; refundObj.refund_2_balance = siteInfo.drawbacke_2_balance;">
+                订单退款</el-button>
+              <el-button type="primary" size="mini" plain round
+                v-if="checkRoles(['terminal']) && listQuery.order_type == 7 && scope.row.mini_type == 1 && scope.row.free_pay_status == 3"
                 @click="cancelZFF(scope.row)">取消服务</el-button>
               <el-button type="primary" size="mini" plain round
                 v-if="(scope.row.order_status == 1 || scope.row.order_status == 0) && agentInfo.finish_order == 1"
@@ -181,18 +182,14 @@
               </el-button>
             </template>
             <el-button type="primary" size="mini" plain round
-              v-if="checkRoles(['partner', 'terminal']) && listQuery.order_type == 7"
-              @click="deduct(scope.row)">立即扣款</el-button>
+              v-if="checkRoles(['partner', 'terminal']) && listQuery.order_type == 7" @click="deduct(scope.row)">立即扣款
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="flex justify-center" v-if="!xlsxStatus">
-        <pagination
-          v-show="listQuery.pageSize > 0"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          @pagination="getList"
-        />
+        <pagination v-show="listQuery.pageSize > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
+          @pagination="getList" />
       </div>
 
       <el-dialog title="订单详情" :visible.sync="detailDialog">
@@ -206,28 +203,30 @@
         </el-row>
 
         <template>
-          <el-table border stripe :data="[{name:'总后台', f: '50', m: '5'},{name:'代理商', f: '30', m: '3'},{name:'商户', f: '20', m: '2'}]" :span-method="fenRunSpanMethod" class="custom">
+          <el-table border stripe
+            :data="[{name:'总后台', f: '50', m: '5'},{name:'代理商', f: '30', m: '3'},{name:'商户', f: '20', m: '2'}]"
+            :span-method="fenRunSpanMethod" class="custom">
             <el-table-column align="center" label="订单金额">
               <template slot-scope="scope">
                 10元
               </template>
             </el-table-column>
-            <el-table-column align="center" width="190" label="分成人" >
+            <el-table-column align="center" width="190" label="分成人">
               <template slot-scope="scope">
                 {{ scope.row.name }}：美羊羊
               </template>
             </el-table-column>
-            <el-table-column align="center" label="分成比例" >
+            <el-table-column align="center" label="分成比例">
               <template slot-scope="scope">
                 {{ scope.row.f }}%
               </template>
             </el-table-column>
-            <el-table-column align="center" label="分成金额(元)" >
+            <el-table-column align="center" label="分成金额(元)">
               <template slot-scope="scope">
                 {{ scope.row.m }}
               </template>
             </el-table-column>
-            <el-table-column align="center" label="退款金额(元)" >
+            <el-table-column align="center" label="退款金额(元)">
               <template slot-scope="scope">
                 0
               </template>
@@ -259,12 +258,14 @@
             <el-radio-group v-model="refundObj.refund_2_balance">
               <el-radio :label="1">退回小程序钱包</el-radio>
               <el-radio :label="0">原路退回</el-radio>
-              <el-radio :label="2" v-if="order.pay_type == 1 && order.pay_deposite_yuan == order.fund_deposite_yuan">全部押金原路退回</el-radio>
+              <el-radio :label="2" v-if="order.pay_type == 1 && order.pay_deposite_yuan == order.fund_deposite_yuan">
+                全部押金原路退回</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="退款金额：" v-if="refundObj.refund_2_balance != 2">
             <el-input v-model="refundObj.refund_money">
-              <template slot="append">元<span class="el-link el-link--danger">（最多{{ order.money_paid }}元）</span></template>
+              <template slot="append">元<span
+                  class="el-link el-link--danger">（最多{{ order.money_paid }}元）</span></template>
             </el-input>
           </el-form-item>
           <el-form-item label="退款原因：">
@@ -399,8 +400,7 @@
     data() {
       return {
         clickSubmit: false,
-        order_type: [
-          {
+        order_type: [{
             value: 0,
             title: '全部',
             nkey: ''
@@ -436,7 +436,7 @@
             nkey: ''
           }
         ],
-        
+
         dealPhone: dealPhone,
         cat_id: [],
         search_regions_tag: [],
@@ -454,7 +454,7 @@
         numInfo: {},
         tableMaxH: '250',
         oemInfo: {},
-        list: [{},{},{},{},{},{},{},{},{},{},{},{},{},{}],
+        list: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
         listLoading: false,
         listQuery: {
           device_type: '-1',
@@ -538,7 +538,7 @@
       // this.getStatNum()
       // this.getCategory()
       // this.getArea()
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 20
       })
     },
@@ -566,7 +566,7 @@
        * 搜索查询
        */
       toQuery(val = '') {
-        if(this.clickSubmit) return
+        if (this.clickSubmit) return
         this.clickSubmit = true
         if (this.cat_id && this.cat_id.length > 0) {
           this.form.cat_id = this.cat_id[this.cat_id.length - 1]
@@ -576,7 +576,7 @@
         }
         this.listQuery.page = 1
         this.listQuery.total = 50
-        if(val) this.listQuery.order_type = val
+        if (val) this.listQuery.order_type = val
         if (this.xlsxStatus) this.xlsxStatus = false
         this.getStatNum()
         this.getList()
@@ -585,7 +585,7 @@
       /**
        * 重置查询
        */
-      reset(){
+      reset() {
         this.form = {}
         this.listQuery.page = 1
         this.listQuery.size = 10
@@ -623,7 +623,7 @@
               this.percentage = this.percentage < 96 ? this.percentage + 2 : 96
             }
             this.$nextTick(() => {
-              this.$refs.toXlsx.saveTableXlsx(this.toXlsxEnd, function(){
+              this.$refs.toXlsx.saveTableXlsx(this.toXlsxEnd, function() {
                 this.getList()
               })
             })
@@ -633,7 +633,7 @@
           }
           this.clickSubmit = false
           this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
-          if(this.checkRoles(['terminal'])) this.getOEMInfo(this.arrayKeys(res.list, 'agent_id'))
+          if (this.checkRoles(['terminal'])) this.getOEMInfo(this.arrayKeys(res.list, 'agent_id'))
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
@@ -982,7 +982,7 @@
             message: '提交成功',
             type: 'success'
           })
-          if(row.depend_type == 4) row.order_status = (agree == 0 ? 1 : 3)
+          if (row.depend_type == 4) row.order_status = (agree == 0 ? 1 : 3)
           row.refund_apply_status = (agree == 0 ? 2 : 3)
           this.clickSubmit = false
         }).catch(err => {
@@ -993,7 +993,7 @@
       /**
        * 微信支付分取消
        */
-      cancelZFF(row){
+      cancelZFF(row) {
         this.$alert('确定取消用户的支付分订单吗？', '取消服务订单', {
           confirmButtonText: '确定',
           callback: action => {
@@ -1039,7 +1039,12 @@
       /**
        * 订单详情分润合并单元格
        */
-      fenRunSpanMethod({ row, column, rowIndex, columnIndex }) {
+      fenRunSpanMethod({
+        row,
+        column,
+        rowIndex,
+        columnIndex
+      }) {
         if (columnIndex === 0) {
           if (rowIndex % 4 === 0) {
             return {
@@ -1068,13 +1073,16 @@
     max-height: 80px;
   }
 
-  .timeline-item{
+  .timeline-item {
     height: 100px;
-    &::after,&::before{
+
+    &::after,
+    &::before {
       content: '';
       position: absolute;
     }
-    &::before{
+
+    &::before {
       width: 60px;
       height: 14px;
       top: 45px;
@@ -1084,33 +1092,41 @@
       color: var(--olive);
       z-index: 99;
     }
-    &::after{
+
+    &::after {
       top: 51px;
       margin-left: 20px;
       width: 100%;
       height: 1px;
       background: var(--olive);
     }
-    &:nth-child(2n){
+
+    &:nth-child(2n) {
       padding-top: 70px;
     }
 
-    &.err{
-      &::before{
+    &.err {
+      &::before {
         content: "";
         color: "#FF5353";
       }
     }
+
     @media only screen and (max-width: 991px) {
-      &:last-child, &:nth-child(2n){
-        &::after{
+
+      &:last-child,
+      &:nth-child(2n) {
+        &::after {
           width: 0;
         }
       }
     }
+
     @media only screen and (min-width: 992px) {
-      &:last-child, &:nth-child(6n){
-        &::after{
+
+      &:last-child,
+      &:nth-child(6n) {
+        &::after {
           width: 0;
         }
       }

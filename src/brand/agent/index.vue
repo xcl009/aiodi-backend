@@ -19,11 +19,11 @@
             <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="运营城市" align="center" width="120">
+        <!-- <el-table-column label="运营城市" align="center" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.charge_county || '深圳' }}</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="品类" align="center">
           <template slot-scope="scope">
             <div class="inline text-left">

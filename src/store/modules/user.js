@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getConstant, postSetRecode } from '@/api/user'
+import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getConstant, getWdConstant, postSetRecode } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -171,9 +171,11 @@ const actions = {
   getConstant({ commit, state }) {
     return new Promise((resolve, reject) => {
       getConstant().then(res => {
-        console.log(res)
-        commit('SET_CONSTANT', res)
-        resolve(res)
+        getWdConstant().then(wdres => {
+          let allObj = Object.assign(res, wdres)
+          commit('SET_CONSTANT', allObj)
+          resolve(allObj)
+        })
       }).catch(error => {
         reject(error)
       })

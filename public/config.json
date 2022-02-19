@@ -10,7 +10,7 @@
   "pay_way": {
     "weixin": "微信",
     "alipay": "支付宝",
-    "money": "钱包"
+    "wallet": "钱包"
   },
   "mode_way": {
     "default": {

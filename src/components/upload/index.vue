@@ -10,8 +10,8 @@
         <i class="rel el-icon-plus avatar-uploader-icon"></i>
       </template>
     </el-upload>
-    <el-upload :action="`${baseURL}${action}`" list-type="picture-card" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :file-list="value" name="file" :limit="limit" :multiple="multiple" :on-exceed="exceed" v-else>
-      <i class="el-icon-plus"></i>
+    <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :file-list="value" name="file" :limit="limit" :multiple="multiple" :on-exceed="exceed" v-else>
+      <i class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="">

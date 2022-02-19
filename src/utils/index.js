@@ -345,7 +345,7 @@ export function dealPhone(tel, start = 3, end = 7, symbol = '****') {
 }
 
 
-export function mul(a, b) {
+export function accMul(a, b) {
   var c = 0,
     d = a.toString(),
     e = b.toString();
@@ -367,7 +367,7 @@ export function division(a, b) {
   try {
     f = b.toString().split(".")[1].length;
   } catch (g) {}
-  return c = Number(a.toString().replace(".", "")), d = Number(b.toString().replace(".", "")), mul(c / d, Math.pow(10,
+  return c = Number(a.toString().replace(".", "")), d = Number(b.toString().replace(".", "")), accMul(c / d, Math.pow(10,
     f - e));
 }
 

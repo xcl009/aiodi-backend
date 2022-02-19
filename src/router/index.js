@@ -153,7 +153,7 @@ export const saasRoutes = [
         name: 'payRecord',
         component: () => import('@/saas/app/payRecord'),
         meta: {
-          title: '服务记录',
+          title: '续费记录',
           keepAlive: true
         }
       },
@@ -162,17 +162,79 @@ export const saasRoutes = [
         name: 'market',
         component: () => import('@/saas/app/market'),
         meta: {
-          title: '定价设置',
+          title: '服务列表',
           keepAlive: true
         }
       },
       {
         path: 'create',
-        name: 'create',
+        name: 'appCreate',
         component: () => import('@/saas/app/edit'),
         meta: {
-          title: '添加服务'
+          title: '添加服务',
+          activeMenu: '/app/market'
+        },
+        hidden: true
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        name: 'appEdit',
+        component: () => import('@/saas/app/edit'),
+        meta: {
+          title: '修改服务信息',
+          activeMenu: '/app/market'
+        },
+        hidden: true
+      },
+    ]
+  },
+  {
+    path: '/role',
+    component: Layout,
+    redirect: '/role/index',
+    meta: {
+      title: '角色管理',
+      icon: 'fuwu'
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'roleManage',
+        component: () => import('@/saas/role/index'),
+        meta: {
+          title: '角色',
+          keepAlive: true
         }
+      },
+      {
+        path: 'account/:rid(\\d+)',
+        name: 'roleAccount',
+        component: () => import('@/saas/role/account'),
+        meta: {
+          title: '账号',
+          activeMenu: '/role/index'
+        },
+        hidden: true
+      },
+      {
+        path: 'addRole',
+        name: 'addRole',
+        component: () => import('@/saas/role/edit'),
+        meta: {
+          title: '添加角色账号',
+          activeMenu: '/role/index'
+        },
+        hidden: true
+      },
+      {
+        path: 'oplog',
+        name: 'oplog',
+        component: () => import('@/saas/role/oplog'),
+        meta: {
+          title: '操作日志',
+          activeMenu: '/role/index'
+        },
+        hidden: true
       }
     ]
   },
