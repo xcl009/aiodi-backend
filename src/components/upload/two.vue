@@ -39,7 +39,7 @@
 
       action: {
         type: String,
-        default: 'Image/uploadImage'
+        default: 'iot-saas-basic/open/aliyun/upload'
       },
 
       ratio: {

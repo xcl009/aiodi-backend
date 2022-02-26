@@ -81,23 +81,6 @@
     </el-row>
 
     <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15">
-      <el-col :xs="24" :sm="16" :lg="18">
-          <el-scrollbar class="bg-white">
-            <div class="flex align-center brand-box white-space" @click="">
-              <div class="pl-10 pr-10">全部品牌</div>
-              <div class="pl-10 pr-10" v-for="item in 20">充电鸭</div>
-            </div>
-          </el-scrollbar>
-      </el-col>
-      <el-col :xs="24" :sm="8" :lg="6">
-        <div class="flex align-center brand-box bg-white">
-          <el-input placeholder="请输入品牌名进行搜索" v-model="form.brand_name" class="input-with-select"></el-input>
-          <el-button icon="el-icon-search" type="primary"></el-button>
-        </div>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15">
       <el-col :xs="24" :sm="10" :lg="8">
         <div class="pl-15 pr-15 pt-10 pb-15 data-contrast bg-white">
           <div class="flex align-center">
@@ -291,6 +274,11 @@
 
     },
     mounted() {
+      
+      this.$get('iot-saas-basic/admin/agent/agentAuth').then(res => {
+        console.log(res)
+      })
+      
       this.deviceChart()
 
       this.dayChart({

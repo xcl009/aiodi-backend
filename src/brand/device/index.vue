@@ -1,6 +1,13 @@
 <template>
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+      <!-- <template v-slot:tabs>
+        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.deviceTypeId" @tab-click="toQuery()">
+          <el-tab-pane label="全部设备" :name="'0'" />
+          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+        </el-tabs>
+      </template> -->
+
       <template v-slot:defult>
         <el-input v-model="form.qrcodeSn" placeholder="二维码" />
         <el-input v-model="form.deviceSn" placeholder="设备SN" />
@@ -14,9 +21,9 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <div class="mb-15 flex">
         <div class="flex1">
-          <el-button size="medium" :type="listQuery.device_status == item.value ? 'primary' : ''"
-            :class="{'btn-body': listQuery.device_status != item.value}" v-for="item in device_status"
-            @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+          <el-button size="medium" :type="listQuery.haveBind === item.value ? 'primary' : ''"
+            :class="{'btn-body': listQuery.haveBind !== item.value}" v-for="item in haveBind"
+            @click="listQuery.haveBind = item.value;toQuery()">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
         </div>
       </div>
 
@@ -65,11 +72,13 @@
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
                   @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=1`})">
-                  {{ scope.row.wx_mini_num || 0 }}</el-link>
+                  {{ scope.row.wx_mini_num || 0 }}
+                </el-link>
               </div>
               <div>支付宝：<el-link type="primary"
                   @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=2`})">
-                  {{ scope.row.zfb_mini_num || 0 }}</el-link>
+                  {{ scope.row.zfb_mini_num || 0 }}
+                </el-link>
               </div>
             </div>
           </template>
@@ -90,9 +99,14 @@
             <div class="flex justify-center">
               <div class="flex flex-wrap w-160">
                 <el-button type="primary" size="mini" @click="deviceBelong(scope.row)">设备归属</el-button>
-                <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/agent/index?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">去分配</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/store/meStore?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">去铺货</el-button>
+                <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑
+                </el-button>
+                <el-button type="primary" size="mini"
+                  @click="$router.push({path: `/agent/index?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
+                  去分配</el-button>
+                <el-button type="primary" size="mini"
+                  @click="$router.push({path: `/store/meStore?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
+                  去铺货</el-button>
               </div>
             </div>
           </template>
@@ -100,11 +114,13 @@
       </el-table>
       <div class="rel flex justify-center">
         <div class="abs flex pagination-left">
-          <el-button type="primary" size="medium" :disabled="selID.length == 0" @click="$router.push({path: `/store/meStore?deviceId=${selID}`})">去铺货</el-button>
-          <el-button type="primary" size="medium" :disabled="selID.length == 0" @click="toQuery(item.value)">去分配</el-button>
+          <el-button type="primary" size="medium" :disabled="selID.length == 0"
+            @click="$router.push({path: `/store/meStore?deviceId=${selID}`})">去铺货</el-button>
+          <el-button type="primary" size="medium" :disabled="selID.length == 0" @click="toQuery(item.value)">去分配
+          </el-button>
         </div>
-        <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size"
-          :total="parseInt(listTotal)" @pagination="getList" />
+        <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
+          @pagination="getList" />
       </div>
     </div>
 
@@ -112,7 +128,7 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <el-table :data="deviceBelong" border>
-          <el-table-column label="角色" property="role_name" align="center"/>
+          <el-table-column label="角色" property="role_name" align="center" />
           <el-table-column label="联系信息" align="center">
             <template slot-scope="scope">
               <div v-if="checkRoles(['terminal','partner'])">
@@ -125,10 +141,7 @@
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">
-          <el-image
-            style="width: 150px; height: 150px"
-            :src="dform.code"
-            fit="cover"></el-image>
+          <el-image style="width: 150px; height: 150px" :src="dform.code" fit="cover"></el-image>
           <div class="mt-20 text-grey">SN码：WYB18199708050</div>
         </div>
       </template>
@@ -161,9 +174,9 @@
       condition
     },
     props: {
-      user_type: {
-        type: Number,
-        default: 0
+      lowerDevice: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -189,18 +202,18 @@
     data() {
       return {
         clickSubmit: false,
-        device_status: [{
-            value: 0,
+        haveBind: [{
+            value: '',
             title: '全部',
             nkey: ''
           },
           {
-            value: 1,
+            value: true,
             title: '已绑',
             nkey: ''
           },
           {
-            value: 2,
+            value: false,
             title: '未绑',
             nkey: ''
           }
@@ -210,13 +223,11 @@
         },
         numInfo: {},
         tableMaxH: '250',
-        oemInfo: {},
         list: [],
         listLoading: true,
         listTotal: 0,
         listQuery: {
-          device_status: this.$route.query.device_status || 0,
-          // search_user_type: this.user_type,
+          haveBind: this.$route.query.haveBind || '',
           page: 1,
           size: 20
         },
@@ -241,6 +252,7 @@
       }
     },
     mounted(options) {
+      console.log(this.listQuery)
       this.toQuery()
     },
     methods: {
@@ -316,7 +328,8 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
+          page: this.listQuery.page - 1,
+          lowerDevice: this.lowerDevice
         })
         this.$get('iot-saas-device/admin/device/findPage', params).then(res => {
           this.listLoading = false
@@ -345,7 +358,7 @@
       /**
        * 设备解绑
        */
-      unboundStore(row){
+      unboundStore(row) {
         this.$alert('确定解绑设备？', '解绑设备', {
           confirmButtonText: '确定',
           callback: action => {

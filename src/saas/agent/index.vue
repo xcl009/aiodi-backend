@@ -27,17 +27,12 @@
             <div v-if="scope.row.brandUser">{{ scope.row.brandUser.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="运营城市" align="center" width="120">
-          <template slot-scope="scope">
-            <div>{{ scope.row.areaId || '深圳' }}</div>
-          </template>
-        </el-table-column>
         <el-table-column label="公司名称" align="center">
           <template slot-scope="scope">
             {{ scope.row.companyName || '--'}}
           </template>
         </el-table-column>
-        <el-table-column label="团长" align="center" width="130">
+        <!-- <el-table-column label="团长" align="center" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.tname || '--' }}</div>
             <div>{{ scope.row.tphone || '--' }}</div>
@@ -48,7 +43,7 @@
             <div class="mb-5">{{ scope.row.tname || '--' }}</div>
             <div>{{ scope.row.tphone || '--' }}</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="品类" align="center">
           <template slot-scope="scope">
             <div class="inline text-left">
@@ -161,7 +156,7 @@
         form: {},
         tableMaxH: '250',
         list: [],
-        listLoading: false,
+        listLoading: true,
         listTotal: 0,
         listQuery: {
           page: 1,
@@ -394,9 +389,12 @@
           text: '正在登录',
           spinner: 'el-icon-loading'
         })
-        this.$post('agentapi/pretend_son_login', {
-          son_id: row.id
+        this.$post('iot-saas-user/admin/login', {
+          userType: 'brand',
+          id: row.id
         }).then(res => {
+          console.log(res)
+          return
           setToken(getToken(), 'token1')
           setToken(res.token)
           setToken(res.belong_partner_aid, 'agent_id')
@@ -405,6 +403,8 @@
             location.href = '/home'
             this.loadObj.close()
           }, 500)
+        }).catch(err=>{
+          this.loadObj.close()
         })
       },
 

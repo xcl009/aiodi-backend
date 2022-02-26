@@ -121,8 +121,8 @@
           id: this.aid
         }).then(res => {
           res.deviceTypeProfitRatios = {}
-          if(res.brandDeviceType && res.brandDeviceType.length > 0){
-            res.brandDeviceType.map(item => {
+          if(res.agentDeviceType && res.agentDeviceType.length > 0){
+            res.agentDeviceType.map(item => {
               res.deviceTypeProfitRatios[item.id] = item.profitRatio
               if(this.selDevice.indexOf(item.id) == -1) {
                 this.selDevice.push(item.id)

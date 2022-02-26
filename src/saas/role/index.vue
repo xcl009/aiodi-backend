@@ -18,7 +18,7 @@
               <div class="flex-sub pl-20">
                 <div class="flex align-center">
                   <div class="flex-sub fs-c1">财务</div>
-                  <div class="text-primary">编辑</div>
+                  <div class="text-primary" @click="$router.push({path: `/role/editRole/${index}`})">编辑</div>
                 </div>
                 <div class="mt-10 text-grey">财务能够查看协作费，以及下载查看协作费账单</div>
               </div>

@@ -2,9 +2,6 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-        <!-- <el-select placeholder="排序" v-model="form.sort" @change="toQuery()">
-          <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-        </el-select> -->
         <el-input v-model="form.name" placeholder="代理姓名"/>
         <el-input v-model="form.mobile" placeholder="手机号码"/>
         <!-- <el-select placeholder="状态" v-model="form.activated_status" @change="toQuery()">
@@ -20,60 +17,78 @@
         highlight-current-row :max-height="tableMaxH">
         <el-table-column label="品牌信息" align="center" width="130">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
+            <div class="mb-5">{{ scope.row.brandName || '--' }}</div>
+            <div>{{ scope.row.brandMobile || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="代理信息" align="center" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
+            <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="运营城市" align="center" width="120">
+        <!-- <el-table-column label="运营城市" align="center" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.charge_county || '深圳' }}</div>
           </template>
-        </el-table-column>
-        <el-table-column label="设备" align="center">
+        </el-table-column> -->
+        <el-table-column label="品类" align="center">
           <template slot-scope="scope">
-            {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
+            <div class="inline text-left">
+              <el-tag
+                class="block mtb-3 cursor"
+                :hit="true"
+                size="medium"
+                effect="plain"
+                @click="$router.push({path: `/device?agent_id=${scope.row.id}`})" v-for="item in scope.row.agentDeviceType">
+                {{ item.name }}<!-- &nbsp;&nbsp;{{ scope.row.goods_sum || '0' }} -->
+              </el-tag>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="下级总数" align="center" width="150">
           <template slot-scope="scope">
-            <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
-            <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
+            <div class="inline text-left">
+              <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
+              <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="收益(元)" align="center" width="200">
+        <el-table-column label="收益(元)" align="center" width="150">
           <template slot-scope="scope">
-            <div class="cursor">
-              <span class="text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
-            </div>
+            <span class="cursor text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="可提现金额(元)" align="center" width="150">
+          <template slot-scope="scope">
+            <span class="cursor text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
           </template>
         </el-table-column>
         <el-table-column label="分润比例" align="center">
           <template slot-scope="scope">
-            {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '50%' }}
+            <div class="inline text-left">
+              <div v-for="item in scope.row.agentDeviceType">
+                {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
+              </div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="175">
+        <el-table-column label="操作" align="center" width="240">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
-              <el-button type="primary" size="mini" @click="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-button>
-              <el-button type="primary" size="mini" @click="">一键登录</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentId=${scope.row.id}`})">订单列表</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentId=${scope.row.id}`})">商户列表</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentId=${scope.row.id}`})">一键登录</el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
       <div class="flex justify-center">
         <pagination
-          v-show="listQuery.count > 0"
+          v-show="listTotal > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
-          :total="listQuery.count"
+          :total="parseInt(listTotal)"
           @pagination="getList"
         />
       </div>
@@ -96,48 +111,19 @@
     data() {
       return {
         clickSubmit: false,
-        sort_type: [{
-            name: '综合排序',
-            value: 0
-          },
-          {
-            name: '收益从高到低',
-            value: 1
-          },
-          {
-            name: '收益从低到高',
-            value: 2
-          },
-          {
-            name: '创建时间由近到远',
-            value: 3
-          },
-          {
-            name: '创建时间由远到近',
-            value: 4
-          }
-        ],
-        form: {},
         tableMaxH: '250',
-        list: [
-          {}
-        ],
-        deviceNum: {},
+        list: [],
         listLoading: false,
+        listTotal: 0,
         listQuery: {
-          activated_status: 1,
-          search_agent_id: '0',
-          sort_type: '0',
-          search_agent_level: '0',
-          son_type: 0,
           page: 1,
-          size: 20,
-          count: 10
-        }
+          size: 20
+        },
+        form: {},
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == "agentEdit") {
+      if (from.name == '') {
         to.meta.reload = true
       } else {
         to.meta.reload = false
@@ -153,17 +139,8 @@
       }
     },
     computed: {
-      myDeviceName(){
-        return this.$store.state.user.myDeviceName
-      },
       siteInfo() {
         return this.$store.getters.siteInfo
-      },
-      myDeviceId(){
-        return this.$store.state.user.myDeviceId
-      },
-      agentInfo(){
-        return this.$store.getters.agentInfo
       }
     },
     mounted() {
@@ -185,6 +162,8 @@
        * 重置查询
        */
       reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.form = {}
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -198,67 +177,17 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('/brand/findPage', params).then(res => {
+        this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
+          this.list = res.rows
           this.listLoading = false
-          this.list = res.list
           this.clickSubmit = false
-          if(params.page == 1){
-            this.count = res.count
+          if(params.page == 0){
+            this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
-        })
-      },
-
-      /**
-       * 获取设备数量
-       */
-      getDeviceNum(agent_ids){
-        this.$get('SyStatistics/getmyDeviceNum', {
-          agent_ids: JSON.stringify(agent_ids)
-        }).then(res => {
-          this.clickSubmit = false
-          this.deviceNum = res
-        }).catch(() => {
-          this.clickSubmit = false
-        })
-      },
-
-      /**
-       * 登录代理后台
-       * @param {Object} row
-       */
-      toLogin(row){
-        this.loadObj = this.$loading({
-          lock: true,
-          text: '正在登录',
-          spinner: 'el-icon-loading'
-        })
-        this.$post('agentapi/pretend_son_login', {
-          son_id: row.id
-        }).then(res => {
-          setToken(getToken(), 'token1')
-          setToken(res.token)
-          setToken(res.belong_partner_aid, 'agent_id')
-          setToken(row.id, 'user_id')
-          setTimeout(()=>{
-            location.href = '/home'
-            this.loadObj.close()
-          }, 500)
-        })
-      },
-
-      /**
-       * 复制贴牌登录地址
-       * @param {Object} row
-       */
-      copyloginUrl(row){
-        copyText(`${location.origin}/login/${row.id}`)
-        this.$message({
-          message: '复制成功',
-          type: 'success'
         })
       }
 	  }

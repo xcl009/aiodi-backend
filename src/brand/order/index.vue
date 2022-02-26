@@ -69,14 +69,7 @@
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        :max-height="tableMaxH" element-loading-text="Loading"
-        @selection-change="selOrder">
-        <el-table-column type="selection" v-if="checkRoles(['partner'])" :selectable="checkSel" width="50"/>
-        <!-- <el-table-column label="品牌商" align="center">
-          <template slot-scope="scope">
-            {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
-          </template>
-        </el-table-column> -->
+        :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="订单号" width="140" align="center">
           <template slot-scope="scope">
             {{ scope.row.orderNo || '--' }}
@@ -84,7 +77,7 @@
         </el-table-column>
         <el-table-column label="交易单号" width="142" align="center">
           <template slot-scope="scope">
-            <div>{{ scope.row.transaction_id || '--' }}</div>
+            <div>{{ scope.row.transactionNo || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="类型" width="90" align="center">
@@ -165,25 +158,6 @@
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
             <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 1)">结束订单</el-button>
             <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status >= 2 && scope.row.status <= 4)">订单退款</el-button>
-
-
-            <!-- <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
-              @click="upApply(scope.row, 1)">通过申请</el-button>
-            <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
-              @click="upApply(scope.row, 0)">驳回申请</el-button>
-            <template v-if="scope.row.refund_apply_status != 1">
-              <el-button type="primary" size="mini" plain round
-                v-if="agentInfo.drawback_order == 1 && scope.row.money_paid > 0 && (!scope.row.refund_drawbacked || scope.row.refund_drawbacked == 0) && listQuery.status != 6"
-                @click="refundDialog = true; order = scope.row; refundObj.refund_money = ''; refundObj.refund_2_balance = siteInfo.drawbacke_2_balance;">订单退款</el-button>
-              <el-button type="primary" size="mini" plain round v-if="checkRoles(['terminal']) && listQuery.status == 6 && scope.row.mini_type == 1 && scope.row.free_pay_status == 3"
-                @click="cancelZFF(scope.row)">取消服务</el-button>
-              <el-button type="danger" size="mini" plain round
-                v-if="checkRoles(['partner']) && scope.row.delivery_status == 1" @click="deliver(scope.row)">立即发货
-              </el-button>
-            </template>
-            <el-button type="primary" size="mini" plain round
-              v-if="checkRoles(['partner', 'terminal']) && listQuery.status == 6"
-              @click="deduct(scope.row)">立即扣款</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -267,12 +241,6 @@
             </el-form-item>
           </el-form>
         </template>
-        <template v-if="dialogType == 3">
-          <div class="text-center">
-            <div class="text-black">确定删除此商户吗？</div>
-            <div class="mt-10 pl-40 pr-40 text-danger text-left">注：若该商户下存在设备，则无法删除。需由该设备的归属商户去回收，无法跨级回收。</div>
-          </div>
-        </template>
         <div class="mt-30 text-center">
           <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
           <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
@@ -286,9 +254,7 @@
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import toXlsx from '@/components/xlsx/'
-  import selPlat from '@/components/selPlat'
   import {
-    swapItems,
     dealPhone
   } from '@/utils/index'
 
@@ -297,8 +263,7 @@
     components: {
       Pagination,
       condition,
-      toXlsx,
-      selPlat
+      toXlsx
     },
     props: {
       user_type: {
@@ -466,13 +431,6 @@
       },
 
       /**
-       * 校验是否可选
-       */
-      checkSel(row) {
-        return row.delivery_status == 1
-      },
-
-      /**
        * 搜索查询
        */
       toQuery(type = 1) {
@@ -620,127 +578,6 @@
       },
 
       /**
-       * 选择订单
-       */
-      selOrder(list) {
-        let selID = []
-        list.map(item => {
-          selID.push(item.order_id)
-        })
-        this.selID = selID
-      },
-
-      /**
-       * 发货
-       */
-      deliver(row) {
-        let order_id = row ? [row.order_id] : this.selID
-        if (order_id.length == 0) {
-          this.$message({
-            message: '请选择需要发货的订单',
-            type: 'error'
-          })
-          return
-        }
-        this.$prompt('请输入快递单号', '设备发货', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputType: 'text',
-          beforeClose: (action, instance, done) => {
-            if (action == 'confirm') {
-              this.loadObj = this.$loading({
-                lock: true,
-                text: '正在提交',
-                spinner: 'el-icon-loading'
-              })
-              const value = instance.inputValue
-              this.$post('agentapi/business/delivery_bao', {
-                order_id: order_id,
-                agree: 1,
-                delivery_sn: value
-              }).then(res => {
-                this.loadObj.close()
-                this.$message({
-                  message: '发货成功',
-                  type: 'success'
-                })
-                this.toQuery()
-              }).catch(err => {
-                this.loadObj.close()
-              })
-            } else {
-              done()
-            }
-          }
-        })
-      },
-
-      /**
-       * 缩水恢复
-       */
-      stealDel() {
-        this.$prompt('请输入订单单号', '缩水恢复', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputType: 'text',
-          beforeClose: (action, instance, done) => {
-            if (action == 'confirm') {
-              this.loadObj = this.$loading({
-                lock: true,
-                text: '正在提交',
-                spinner: 'el-icon-loading'
-              })
-              const value = instance.inputValue
-              this.$post('agentapi/business/show_hidding_order', {
-                order_sn: value
-              }).then(res => {
-                this.loadObj.close()
-                this.$message({
-                  message: '恢复成功',
-                  type: 'success'
-                })
-                done()
-              }).catch(err => {
-                this.loadObj.close()
-              })
-            } else {
-              done()
-            }
-          }
-        })
-      },
-
-      /**
-       * 订单退款
-       */
-      refundOrder(row) {
-        this.$alert('确认给该笔订单退款吗？', '订单退款', {
-          confirmButtonText: '确定',
-          callback: action => {
-            if (action == 'confirm') {
-              this.clickSubmit = true
-              this.$post('agentapi/business/drawback_paid_order', {
-                order_id: row.order_id,
-                refund_money: this.refundObj.refund_money,
-                refund_2_balance: this.refundObj.refund_2_balance,
-                refund_reason: this.refundObj.refund_reason
-              }).then(res => {
-                this.refundDialog = false
-                this.clickSubmit = false
-                this.$message({
-                  message: '退款成功',
-                  type: 'success'
-                })
-                row.refund_drawbacked = this.refundObj.refund_money
-              }).catch(err => {
-                this.clickSubmit = false
-              })
-            }
-          }
-        })
-      },
-
-      /**
        * 查询订单详情
        */
       getDetail(row) {
@@ -757,64 +594,6 @@
               this.amountPaid = res.amountPaid
             })
           }
-        })
-      },
-
-      /**
-       * 查询宝的最新信息
-       */
-      checkBao(bao_sn) {
-        this.$get('commonapi/check/bao_status', {
-          bao_sn: bao_sn
-        }).then(res => {
-          this.baoDialog = true
-          this.baoList = [res]
-        })
-      },
-
-      /**
-       * 微信支付分取消
-       */
-      cancelZFF(row){
-        this.$alert('确定取消用户的支付分订单吗？', '取消服务订单', {
-          confirmButtonText: '确定',
-          callback: action => {
-            if (action == 'confirm') {
-              this.clickSubmit = true
-              this.$get('wxapi/cancelZff', {
-                out_order_no: row.out_order_no,
-                appid: row.appid,
-                agent_id: row.agent_id
-              }).then(res => {
-                this.$message({
-                  message: res.msg,
-                  type: 'success'
-                })
-              })
-            }
-          }
-        })
-      },
-
-      /**
-       * 订单扣款
-       */
-      deduct(row) {
-        this.loadObj = this.$loading({
-          lock: true,
-          text: '',
-          spinner: 'el-icon-loading'
-        })
-        this.$post('agentapi/order/press_paying_fund_order', {
-          order_id: row.order_id
-        }).then(res => {
-          this.loadObj.close()
-          this.$message({
-            message: res.msg,
-            type: 'success'
-          })
-        }).catch(err => {
-          this.loadObj.close()
         })
       },
 
@@ -842,7 +621,7 @@
        * 操作商户
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '结束订单'
+       * @param {Object} dialogType dialog内容显示类型 1: '结束订单' 2: '订单退款'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -917,35 +696,6 @@
             })
             break
         }
-      },
-
-      searchUser(query) {
-        console.log(query)
-        if (query !== '') {
-          this.loading = true
-          this.$post('iot-saas-order/admin/order/list', {
-            page: 0,
-            size: 10,
-            orderId: this.curRow.id,
-            chargeEndTime: params.chargeEndTime
-          }).then(res => {
-            this.$message({
-              message: '结束订单成功',
-              type: 'success'
-            })
-            curRow.status = 2
-          })
-
-          setTimeout(() => {
-            this.loading = false
-            // this.options = this.list.filter(item => {
-            //   return item.label.toLowerCase()
-            //     .indexOf(query.toLowerCase()) > -1;
-            // })
-          }, 200)
-        } else {
-          this.options = []
-        }
       }
     }
   }
@@ -954,11 +704,6 @@
 <style lang="scss" scoped>
   /deep/ .el-tabs__header {
     margin-bottom: 0;
-  }
-
-  .scan-code_btn {
-    padding: 4px 4px 0 0;
-    border-bottom: 1px solid #E4E7ED;
   }
 
   .remark-box {

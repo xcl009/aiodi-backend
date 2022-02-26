@@ -39,7 +39,7 @@
 
       action: {
         type: String,
-        default: 'Image/uploadImage'
+        default: 'iot-saas-admin/open/aliyun/upload'
       },
 
       ratio: {
@@ -66,8 +66,6 @@
         type: Object,
         default (){
           return {
-            user_id: getToken('user_id'),
-            agent_id: getToken('agent_id'),
             token: getToken()
           }
         }

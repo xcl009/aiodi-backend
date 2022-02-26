@@ -85,7 +85,7 @@
           <el-scrollbar class="bg-white">
             <div class="flex align-center brand-box white-space" @click="">
               <div class="pl-10 pr-10">全部品牌</div>
-              <div class="pl-10 pr-10" v-for="item in 20">充电鸭</div>
+              <div class="pl-10 pr-10" v-for="item in 1">充电鸭</div>
             </div>
           </el-scrollbar>
       </el-col>

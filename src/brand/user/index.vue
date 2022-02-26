@@ -3,10 +3,10 @@
     <el-col :xs="24" :sm="12" :md="6" :lg="6">
       <el-form ref="form" :model="form">
         <el-form-item class="text-center">
-          <upload v-model="form.logo" />
+          <upload v-model="form.avatar" />
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.nickname"></el-input>
         </el-form-item>
        <!-- <el-form-item label="手机号">
           <el-input v-model="form.phone" disabled></el-input>
@@ -51,7 +51,7 @@
       editUser() {
         this.form.user_name = this.form.phone
         this.clickSubmit = true
-        this.$post('agentapi/save_my_info', this.form).then(res => {
+        this.$post('iot-saas-user/user/info/update', this.form).then(res => {
           this.$message({
             message: '修改成功',
             type: 'success'

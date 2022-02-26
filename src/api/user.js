@@ -9,7 +9,7 @@ export function codeLogin(data) {
 }
 
 export function getInfo(token) {
-  return $get('iot-saas-user/getLoginUser')
+  return $get('iot-saas-user/admin/user/getLoginAuthUser')
 }
 export function getPlatformConfig(params = {}) {
   return $get('commonapi/get_platform_config', params)
@@ -20,11 +20,11 @@ export function getMyDevice() {
 }
 
 export function getConstant() {
-  return $get('iot-saas-order/api/order/getInitMap')
+  return $get('iot-saas-order/open/order/init/getInitMap')
 }
 
 export function getWdConstant() {
-  return $get('iot-saas-pay/api/pay/withdraw/getInitMap')
+  return $get('iot-saas-pay/open/pay/init/getInitMap')
 }
 
 export function postSetRecode(data) {

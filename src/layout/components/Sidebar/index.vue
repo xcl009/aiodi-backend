@@ -3,7 +3,7 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <div v-if="sidebar.opened" class="pt-15 mb-10 text-center cursor"><!-- @click="toRenewal" -->
         <el-avatar :size="40" :src="agentInfo.avatar"></el-avatar>
-        <div class="fs-c1 text-cut">{{ agentInfo.name }}</div>
+        <div class="mt-5 fs-c1 text-cut">{{ agentInfo.nickname }}</div>
         <div class="mt-5 fs-s4">快活币: <span class="text-black">{{ agentInfo.khcoin || '0.00' }}</span></div>
       </div>
       <el-menu

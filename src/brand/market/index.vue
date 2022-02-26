@@ -15,7 +15,7 @@
       </div>
 
       <el-row :gutter="24">
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="8" v-for="item in 10">
+        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="8" v-for="item in 4">
           <div class="flex align-center list-item cursor" @click="$router.push({path: `/market/buy`})">
             <el-image
               class="list-img"
@@ -79,12 +79,6 @@
     components: {
       Pagination,
       condition
-    },
-    props: {
-      user_type: {
-        type: Number,
-        default: 0
-      }
     },
     data() {
       return {

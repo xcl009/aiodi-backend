@@ -89,10 +89,7 @@ const actions = {
         window.agentInfo = data
         commit('SET_NAME', data.nickname || data.username)
         commit('SET_AVATAR', data.avastar || '')
-        commit('SET_AGENTINFO', {
-          avatar: data.avastar || '',
-          name: data.nickname
-        })
+        commit('SET_AGENTINFO', data)
         resolve({
           roles: [data.userType]
         })

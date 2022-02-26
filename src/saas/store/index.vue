@@ -15,12 +15,83 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
-        <!-- <el-table-column label="品牌商" align="center" width="120">
+        <el-table-column label="品牌商" align="center" width="120">
           <template slot-scope="scope">
-            {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '--' }}
+            {{ oemInfo && oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="门头照" align="center" width="150">
+          <template slot-scope="scope">
+            <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})">
+              <el-avatar shape="square" :size="52" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"
+                class="m-auto block"></el-avatar>
+              <div class="mt-5">{{ scope.row.name || '--' }}</div>
+            </el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="商户地址" align="center" width="180">
+          <template slot-scope="scope">
+            <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="金额(元)" align="center" width="150">
+          <template slot-scope="scope">
+            <div class="inline">
+              <div>交易额：{{ scope.row.order_amount || '0.00' }}</div>
+              <div>总收益：{{ scope.row.order_amount || '0.00' }}</div>
+              <div>可提现：{{ scope.row.order_amount || '0.00' }}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="订单量" align="center" width="150">
+          <template slot-scope="scope">
+            <div class="inline">
+              <div>订单量：{{ scope.row.order_num || 0 }}</div>
+              <div>设备数：{{ scope.row.order_num || 0 }}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="上级代理" align="center" width="120">
+          <template slot-scope="scope">
+            <div>{{ scope.row.order_num || '昵称' }}</div>
+            <div>{{ scope.row.order_num || '手机号码'}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="分润人" align="center" width="120">
+          <template slot-scope="scope">
+            <div>{{ scope.row.nickname || '' }}</div>
+            <div>{{ scope.row.mobile }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="分成比例" align="center">
+          <template slot-scope="scope">
+            <div class="mt-5">
+              <div class="mb-5" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
+                {{ myDeviceId[item.deviceTypeId] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="城市区域" align="center" width="90">
+          <template slot-scope="scope">
+            {{ regionsObj[scope.row.regionTag] ? regionsObj[scope.row.regionTag].title : '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="行业分类" align="center" width="90">
+          <template slot-scope="scope">
+             {{ cateObj[scope.row.catId] ? cateObj[scope.row.catId].title : '--' }}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="品类" align="center">
+          <template slot-scope="scope">
+            <el-tag class="cursor" :hit="true" size="medium" effect="plain"
+              @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
+              {{ scope.row.depend_type_name || '密码线' }}&nbsp;&nbsp;{{ scope.row.goods_sum || '0' }}
+            </el-tag>
           </template>
         </el-table-column> -->
-        <el-table-column label="门头照" align="center" width="62">
+
+        <!-- <el-table-column label="门头照" align="center" width="62">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="52" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"
               class="m-auto block"></el-avatar>
@@ -80,7 +151,7 @@
               </el-tag>
             </template>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
 
       <div class="flex justify-center">
@@ -115,7 +186,11 @@
         listQuery: {
           page: 1,
           size: 20
-        }
+        },
+
+        oemInfo: {},
+        regionsObj: {},
+        cateObj: {}
       }
     },
     computed: {
@@ -199,9 +274,41 @@
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
+          this.getStoreRegions(this.arrayKeys(res.rows, 'regionTag'))
+          this.getStoreCate(this.arrayKeys(res.rows, 'catId'))
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
+        })
+      },
+
+      /**
+       * 根据区域标识数组获取区域名称
+       */
+      getStoreRegions(tags){
+        if(tags.length == 0){
+          this.regionsObj = {}
+          return
+        }
+        this.$get('iot-saas-basic/admin/regions/findNameByTags', {
+          tags: tags
+        }).then(res => {
+          this.regionsObj = res
+        })
+      },
+
+      /**
+       * 根据区域标识数组获取区域名称
+       */
+      getStoreCate(tags){
+        if(tags.length == 0){
+          this.cateObj = {}
+          return
+        }
+        this.$get('iot-saas-basic/admin/category/findNameByTags', {
+          tags: tags
+        }).then(res => {
+          this.cateObj = res
         })
       },
 

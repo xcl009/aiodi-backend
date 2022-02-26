@@ -36,10 +36,8 @@ export const saasRoutes = [
         component: () => import('@/saas/order/index'),
         meta: {
           title: '订单管理',
-          icon: 'order'
-        },
-        props:{
-          user_type: 1
+          icon: 'order',
+          keepAlive: true
         }
       }
     ]
@@ -54,7 +52,8 @@ export const saasRoutes = [
         component: () => import('@/saas/device/index'),
         meta: {
           title: '设备管理',
-          icon: 'device'
+          icon: 'device',
+          keepAlive: true
         }
       }
     ]
@@ -84,6 +83,7 @@ export const saasRoutes = [
         name: 'userList',
         component: () => import('@/saas/userManage/index'),
         meta: {
+          keepAlive: true,
           title: '用户管理',
           icon: 'userList'
         }
@@ -227,6 +227,16 @@ export const saasRoutes = [
         hidden: true
       },
       {
+        path: 'editRole/:id(\\d+)',
+        name: 'editRole',
+        component: () => import('@/saas/role/edit'),
+        meta: {
+          title: '修改角色账号',
+          activeMenu: '/role/index'
+        },
+        hidden: true
+      },
+      {
         path: 'oplog',
         name: 'oplog',
         component: () => import('@/saas/role/oplog'),
@@ -365,7 +375,7 @@ export const brandRoutes = [
           title: '我的设备'
         },
         props:{
-          user_type: 0
+          lowerDevice: false
         }
       },
       {
@@ -376,7 +386,7 @@ export const brandRoutes = [
           title: '下级设备'
         },
         props:{
-          user_type: 1
+          lowerDevice: true
         }
       },
       {
@@ -428,7 +438,7 @@ export const brandRoutes = [
           title: '我的商户'
         },
         props:{
-          user_type: 0
+          lowerStore: false
         }
       },
       {
@@ -440,7 +450,7 @@ export const brandRoutes = [
           title: '下级商户'
         },
         props:{
-          user_type: 1
+          lowerStore: true
         }
       },
       {
@@ -477,8 +487,9 @@ export const brandRoutes = [
       {
         path: 'userList',
         name: 'userList',
-        component: () => import('@/brand/userManage/index'),
+        component: () => import('@/saas/userManage/index'),
         meta: {
+          keepAlive: true,
           title: '用户列表'
         }
       },
@@ -495,6 +506,7 @@ export const brandRoutes = [
         name: 'userFeedback',
         component: () => import('@/brand/userManage/feedback'),
         meta: {
+          keepAlive: true,
           title: '用户反馈'
         }
       }
@@ -634,8 +646,10 @@ export const brandRoutes = [
         name: 'buyService',
         component: () => import('@/brand/market/buy'),
         meta: {
-          title: '购买服务'
-        }
+          title: '购买服务',
+          activeMenu: '/market/index'
+        },
+        hidden: true
       }
     ]
   },
@@ -725,7 +739,7 @@ export const brandRoutes = [
       {
         path: 'index',
         name: 'userInfo',
-        component: () => import('@/brand/user/index'),
+        component: () => import('@/saas/user/index'),
         meta: {
           title: '个人信息'
         }
@@ -733,7 +747,7 @@ export const brandRoutes = [
       {
         path: 'lpw',
         name: 'loginPw',
-        component: () => import('@/brand/user/loginPw'),
+        component: () => import('@/saas/user/loginPw'),
         meta: {
           title: '登陆密码'
         }
@@ -922,8 +936,9 @@ export const agentRoutes = [
       {
         path: 'userList',
         name: 'userList',
-        component: () => import('@/brand/userManage/index'),
+        component: () => import('@/saas/userManage/index'),
         meta: {
+          keepAlive: true,
           title: '用户列表'
         }
       }
@@ -997,7 +1012,7 @@ export const agentRoutes = [
       {
         path: 'index',
         name: 'userInfo',
-        component: () => import('@/brand/user/index'),
+        component: () => import('@/saas/user/index'),
         meta: {
           title: '个人信息'
         }
@@ -1005,7 +1020,7 @@ export const agentRoutes = [
       {
         path: 'lpw',
         name: 'loginPw',
-        component: () => import('@/brand/user/loginPw'),
+        component: () => import('@/saas/user/loginPw'),
         meta: {
           title: '登陆密码'
         }

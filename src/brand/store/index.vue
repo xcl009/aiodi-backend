@@ -61,8 +61,8 @@
         </el-table-column>
         <el-table-column label="分润人" align="center" width="120">
           <template slot-scope="scope">
-            <div>{{ userObj[scope.row.userId] ? userObj[scope.row.userId].nickname : '昵称' }}</div>
-            <div>{{ userObj[scope.row.userId] ? userObj[scope.row.userId].mobile : '手机号码' }}</div>
+            <div>{{ scope.row.nickname || '' }}</div>
+            <div>{{ scope.row.mobile }}</div>
           </template>
         </el-table-column>
         <el-table-column label="分成比例" align="center">
@@ -139,7 +139,7 @@
       <template v-if="dialogType == 3">
         <div class="text-center">
           <div class="text-black">确定删除此商户吗？</div>
-          <div class="mt-10 pl-40 pr-40 text-danger text-left">注：若该商户下存在设备，则无法删除。需由该设备的归属商户去回收，无法跨级回收。</div>
+          <div class="mt-10 pl-40 pr-40 text-danger text-left">注：若该商户下存在设备，则无法删除。需由该设备的归属代理去回收，无法跨级回收。</div>
         </div>
       </template>
       <div class="mt-30 text-center">
@@ -161,9 +161,9 @@
       condition
     },
     props: {
-      user_type: {
-        type: Number,
-        default: 0
+      lowerStore: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -180,7 +180,6 @@
           page: 1,
           size: 20
         },
-        userObj: {},
 
         // 操作相关
         deviceId: '',
@@ -267,7 +266,8 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
+          page: this.listQuery.page - 1,
+          lowerStore: this.lowerStore
         })
         if(this.agentId > 0) params.agentId = this.agentId
         this.$get('iot-saas-basic/admin/store/findPage', params).then(res => {
@@ -278,25 +278,9 @@
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
-          this.getUserInfo(this.arrayKeys(res.rows, 'userId'))
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
-        })
-      },
-
-      /**
-       * 获取用户信息
-       */
-      getUserInfo(uids = []){
-        if(uids.length == 0){
-          this.userObj = {}
-          return
-        }
-        this.$post('iot-saas-user/admin/user/findByIds', {
-          userIds: uids.join(',')
-        }).then(res => {
-          this.userObj = res
         })
       },
 
@@ -421,8 +405,14 @@
 
             break
           case 3:
-            this.$post('agentapi/store/type_switch', params).then(res => {
-
+            this.$post('iot-saas-user/admin/store/delete', {
+              storeId: curRow.id
+            }).then(res => {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.list.splice(curIdx, 1)
             })
             break
         }

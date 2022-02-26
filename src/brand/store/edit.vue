@@ -128,7 +128,7 @@
               </el-form-item>
 
               <template v-for="(name, xcx) in config.xcx_pay.default">
-                <view class="margin-top-lg margin-bottom-xs text-dfs">{{ name }}付费设置</view>
+                <div class="margin-top-lg margin-bottom-xs text-dfs">{{ name }}付费设置</div>
                 <el-form-item :label="`${name}付费模式`">
                   <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
                     <el-radio-button :label="item" v-for="(item, key) in config.mode_way.default" :disabled="key != 1">{{ key }}</el-radio-button>
@@ -246,7 +246,7 @@ export default {
         address: ''
       },
       powerInfo: {},
-      fileList: [],
+
       selDevice: [],
       deviceDataArr: [],
       defaultDevice: {

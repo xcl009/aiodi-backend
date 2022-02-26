@@ -2,19 +2,22 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-select placeholder="设备类型" v-model="form.search_depend_type" @change="toQuery()">
-          <el-option :label="index" :value="item" v-for="(item, index) in deviceNameObj"/>
+        <el-select placeholder="设备类型" v-model="form.deviceTypeId" @change="toQuery()">
+          <el-option :label="index" :value="item" v-for="(item, index) in myDeviceName"/>
         </el-select>
-        <el-input placeholder="手机号码" v-model="form.search_mobile" />
-        <el-input placeholder="商户名称" v-model="form.search_store_name" />
-        <el-input placeholder="设备SN" v-model="form.search_goods_sn" />
+        <el-input placeholder="手机号码" v-model="form.mobile" />
+        <el-input placeholder="商户名称" v-model="form.storeName" />
+        <el-input placeholder="设备SN" v-model="form.snCode" />
         <el-date-picker
           class="range-day flex align-center"
-            v-model="form.day"
+            v-model="form.date"
             type="daterange"
             range-separator="-"
+            value-format="timestamp"
             start-placeholder="开始日期"
-            end-placeholder="结束日期">
+            end-placeholder="结束日期"
+            :picker-options="pickerOptionsEnd"
+            @change="toQuery()">
           </el-date-picker>
       </template>
     </condition>
@@ -23,7 +26,7 @@
       <div class="flex mb-5">
         <div class="flex1 white-space">
           <el-scrollbar>
-            <el-button size="medium" :type="listQuery.deal_status == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.deal_status != item.value}" v-for="item in dealStatus" @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+            <el-button size="medium" :type="listQuery.sort == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.sort != item.value}" v-for="item in dealStatus" @click="listQuery.sort = item.value; toQuery()">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
           </el-scrollbar>
         </div>
       </div>
@@ -33,7 +36,6 @@
         <el-table-column label="身份" align="center" width="80">
           <template slot-scope="scope">
             <div>{{ scope.row.from_type == 0 ? '代理商' : '用户' }}</div>
-            <div>ID:{{ scope.row.from_id }}</div>
           </template>
         </el-table-column>
         <el-table-column label="用户昵称" align="center" width="120">
@@ -69,15 +71,10 @@
         <el-table-column label="设备类型" align="center" width="80">
           <template slot-scope="scope">
             <div v-if="scope.row.depend_type == 1">{{ scope.row.support_buletooth == 1 ? '蓝牙线' : '密码线' }}</div>
-            <div v-else>{{ deviceKeyObj[scope.row.depend_type] }}</div>
+            <div v-else>{{ myDeviceId[scope.row.deviceTypeId] }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="反馈内容" align="center" width="220">
-          <template slot-scope="scope">
-            {{ scope.row.content || '--' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="错误截图" align="center" width="190">
+        <!-- <el-table-column label="错误截图" align="center" width="190">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
               <el-image class="mr-5" v-for="item in scope.row.img_url" style="width: 50px; height: 50px" :src="item"
@@ -85,10 +82,15 @@
               </el-image>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="反馈时间" align="center" width="100">
           <template slot-scope="scope">
             {{ parseTime(scope.row.add_date, '{m}-{d} {h}:{i}') }}
+          </template>
+        </el-table-column>
+        <el-table-column label="反馈内容" align="center" width="220">
+          <template slot-scope="scope">
+            {{ scope.row.content || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="身份" align="center" width="60">
@@ -110,44 +112,44 @@
             {{ scope.row.remark }}
           </template>
         </el-table-column>
+        <el-table-column label="状态" align="center" width="100">
+          <template slot-scope="scope">
+            <el-button :type="scope.row.deal_status == 2 ? 'success' : 'danger'" size="mini" plain>{{ statusObj[scope.row.deal_status] || '未处理' }}</el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" width="160">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="replyDialog = true; issue = scope.row">回复</el-button>
-            <el-button type="primary" size="mini" @click="deal_status = scope.row.deal_status; remark = scope.row.remark; dealDialog = true; issue = scope.row;">{{ statusObj[scope.row.deal_status] }}</el-button>
+            <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">查看详情</el-button>
+
+            <!-- <el-button type="primary" size="mini" @click="replyDialog = true; issue = scope.row">回复</el-button>
+            <el-button type="primary" size="mini" @click="deal_status = scope.row.deal_status; remark = scope.row.remark; dealDialog = true; issue = scope.row;">{{ statusObj[scope.row.deal_status] }}</el-button> -->
           </template>
         </el-table-column>
       </el-table>
       <div class="flex justify-center">
-        <pagination
-          v-show="listQuery.count > 0"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          :total="listQuery.count"
-          @pagination="getList"
-        />
+        <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
+          @pagination="getList" />
       </div>
     </div>
 
-    <el-dialog title="问题处理" :visible.sync="dealDialog">
-      <el-form label-width="auto">
-        <el-form-item label="状态：">
-          <el-radio-group v-model="deal_status">
-            <el-radio v-for="(item, index) in statusObj" :label="Number(index)">{{ item }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注：">
-          <el-input v-model="remark" type="textarea" :rows="4"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="deal()" :disabled="clickSubmit">确 定</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog title="问题回复" :visible.sync="replyDialog">
-      <el-input type="textarea" v-model="replyObj.content" rows="4"></el-input>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="reply()" :disabled="clickSubmit">确 定</el-button>
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="700px">
+      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+      <template v-if="dialogType == 1">
+        <el-form label-width="auto" class="custom-form">
+          <el-form-item label="反馈内容">
+            <el-input v-model="curRow.content" type="textarea" :rows="4" disabled=""></el-input>
+          </el-form-item>
+          <el-form-item label="错误截图" v-if="curRow.errorImages && curRow.errorImages.length > 0">
+            <el-image class="mr-5" v-for="item in curRow.errorImages" style="width: 50px; height: 50px" :src="item" :preview-src-list="curRow.errorImages"></el-image>
+          </el-form-item>
+          <el-form-item label="后台回复">
+            <el-input v-model="dform.reply" type="textarea" :rows="4" placeholder="请输入回复内容"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+      <div class="mt-30 text-center">
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -199,18 +201,47 @@
           1: '处理中',
           2: '已处理'
         },
-        form: {},
+
+        pickerOptionsEnd: {
+          disabledDate: (time) => {
+            let timeOptionRange = this.timeOptionRange
+            let secondNum = 60 * 60 * 24 * 31 * 1000
+            if (timeOptionRange) {
+              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange.getTime() - secondNum) || time.getTime() > Date.now()
+            }
+            return time.getTime() > Date.now()
+          }, onPick: (time) => {
+            //当第一时间选中才设置禁用
+            if (time.minDate && !time.maxDate) {
+              this.timeOptionRange = time.minDate
+            }
+            if (time.maxDate) {
+              this.timeOptionRange = null
+            }
+          }
+        },
         tableMaxH: '250',
-        numInfo: {},
         list: [],
         listLoading: false,
+        listTotal: 0,
         listQuery: {
-          deal_status: this.$route.query.deal_status || '3',
-          start: 1,
-          total: 10,
-          page_num: 1,
-          limit: 20
+          sort: 0,
+          page: 1,
+          size: 20
         },
+        form: {},
+        statInfo: {},
+
+        // 弹出相关
+        dialogType: 1,
+        dialogStatus: false,
+        dialogTitle: {
+          1: '反馈详情'
+        },
+        curRow: {},
+        curIdx: 0,
+        dform: {},
+
         issue: {},
         replyDialog: false,
         replyObj: {},
@@ -221,16 +252,37 @@
       }
     },
     computed: {
-      deviceNameObj() {
-        return this.$store.state.user.deviceNameObj
+      myDeviceName() {
+        return this.$store.state.user.myDeviceName
       },
-      deviceKeyObj() {
-        return this.$store.state.user.deviceKeyObj
-      },
+      myDeviceId() {
+        return this.$store.state.user.myDeviceId
+      }
+    },
+    beforeRouteEnter(to, from, next) {
+      to.meta.urlQuery = JSON.stringify(to.query)
+      if (from.name == '') {
+        to.meta.reload = true
+      } else {
+        to.meta.reload = false
+      }
+      next()
+    },
+    activated() {
+      let queryKey = [],
+        query = this.$route.query
+      for (var i in queryKey) {
+        this[queryKey[i]] = query[queryKey[i]]
+      }
+      if (this.$route.meta.reload) {
+        this.getList()
+      } else if (this.urlQuery != this.$route.meta.urlQuery) {
+        this.toQuery(1)
+      }
+      this.urlQuery = this.$route.meta.urlQuery
     },
     mounted(options) {
-      //this.getNum()
-      //this.getList()
+
     },
     methods: {
       /**
@@ -241,6 +293,7 @@
         this.clickSubmit = true
         this.listQuery.page = 1
         this.listQuery.size = 20
+        this.getStat()
         this.getList()
       },
 
@@ -248,66 +301,92 @@
        * 重置查询
        */
       reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.form = {}
         this.listQuery.page = 1
         this.listQuery.size = 20
+        this.getStat()
         this.getList()
       },
 
       /**
-       * 数量
+       * 获取数量
        */
-      getNum() {
-        const listQuery = Object.assign({}, this.listQuery, this.form, {
-          user_type: this.user_type
+      getStat() {
+        var params = Object.assign({}, this.form)
+        this.$get('iot-saas-basic/admin/feedback/findAgentCount', params).then(res => {
+          this.statInfo = res
         })
-        this.$get('agentapi/feedback/list_num', listQuery).then(res => {
-          this.numInfo = res
-        })
-      },
-
-      /**
-       * 搜索查询
-       */
-      toQuery(type = 0) {
-        this.$refs.filterDrawer.hide()
-        if (type == 1) {
-          this.form = {}
-          this.listQuery.page = 1
-        } else {
-          this.listQuery.page = 1
-        }
-        this.getNum()
-        this.getList()
-      },
-
-      /**
-       * 请求类型筛选
-       * @param {Object} tab
-       * @param {Object} event
-       */
-      typeClick(tab, event) {
-        this.listQuery.deal_status = tab.name
-        this.listQuery.page = 1
-        this.getList()
       },
 
       /**
        * 获取列表
        */
       getList() {
-        let listQuery = Object.assign({}, this.form, this.listQuery, {
-            start: this.listQuery.page - 1
-          }),
-          url = 'agentapi/feedback/index'
-        this.$get(url, listQuery).then(res => {
+        var params = Object.assign({}, this.form, this.listQuery, {
+          page: this.listQuery.page - 1
+        })
+        if(params.date){
+          params.startDate = params.date[0] / 1000
+          params.endDate = params.date[1] / 1000
+          delete params.date
+        }
+        this.$get('iot-saas-basic/admin/feedback/findAgentPage', params).then(res => {
+          this.list = [{}]
           this.listLoading = false
-          this.list = res.list
-          this.listQuery.page_num = res.page_num
-          if (listQuery.start == 0) this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 82
+          this.clickSubmit = false
+          if (params.page == 0) {
+            this.listTotal = res.total
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          }
         }).catch(() => {
           this.listLoading = false
+          this.clickSubmit = false
         })
+      },
+
+      /**
+       * 操作行
+       * @param {Object} type 1 dialog类型
+       * @param {Object} row 选择当前行
+       * @param {Object} dialogType dialog内容显示类型 1: '查看反馈详情'
+       * @param {Object} idx 当前行所在位置
+       */
+      setRows(type, row, dialogType, idx) {
+        switch (type) {
+          case 1:
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.dialogStatus = true
+            if(dialogType == 1){
+              this.dform.id = row.id
+              this.dform.state = 2
+            }
+            break
+        }
+      },
+
+      /**
+       * 弹窗确认
+       */
+      dialogConfim() {
+        let curRow = this.curRow,
+          curIdx = this.curIdx,
+          params = JSON.parse(JSON.stringify(this.dform))
+        switch (this.dialogType) {
+          case 1:
+          console.log(params)
+            this.$post('iot-saas-basic/admin/feedback/updateById', params).then(res => {
+              this.$message({
+                type: 'success',
+                message: '设置成功'
+              })
+              this.rowObj = Object.assign(this.rowObj, params)
+            })
+            break
+        }
       },
 
       /**

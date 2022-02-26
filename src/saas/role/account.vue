@@ -74,11 +74,7 @@
         clickSubmit: false,
         tableMaxH: '250',
         listTotal: 0,
-        list: [
-          {},
-          {},
-          {},
-        ],
+        list: [{}],
         listLoading: false,
         listQuery: {
           page: 1,

@@ -1,73 +1,65 @@
 <template>
   <div>
-    <el-row class="pt-10 pl-30 pr-30 custom-form bg-white">
-      <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="10">
-        <el-form ref="form" :model="form" label-position="left" label-width="135px">
+    <el-row class="pt-20 pb-10 pl-30 pr-30 custom-form bg-white">
+      <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="8">
+        <el-form ref="form" :model="form" label-position="left" label-width="120px">
           <el-form-item label="可提现金额：">
-            <div class="text-primary fs-b1">{{ money.available_withdraw_money || 0.00 }}</div>
+            <div class="text-primary fs-b1">{{ money }}</div>
           </el-form-item>
           <el-form-item label="提现金额：">
             <el-input v-model="form.amount" placeholder="请输入提现金额" />
           </el-form-item>
-          <el-form-item label="冻结金额：">
-            <span class="mr-20">{{ money.freez_money || 0.00 }}</span>
+          <!-- <el-form-item label="冻结金额：">
+            <span class="mr-20">{{ money }}</span>
             <el-link type="primary" @click="freezVisible = true">什么是冻结金额？</el-link>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="提现方式：">
             <el-radio-group v-model="form.withdrawType">
               <el-radio-button :label="index" v-for="(item, index) in siteInfo.withdrawType">{{ item }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="到账账户：" v-show="tabsType[form.withdrawType] == 2">
-            <div class="flex align-center" v-if="agentInfo.zfb_open_id">
-              <el-avatar size="medium" :src="agentInfo.zfb_avatar"></el-avatar>
-              <div class="ml-10">{{ agentInfo.zfb_nick_name }}</div>
+            <div class="flex align-center" v-if="bindAlipayInfo.alipayOpenid">
+              <el-avatar size="medium" :src="bindAlipayInfo.avatar"></el-avatar>
+              <div class="ml-10">{{ bindAlipayInfo.nickname }}</div>
             </div>
             <div class="flex align-center" v-else>您暂未绑定支付宝，请先进入小程序提现页面绑定支付宝</div>
           </el-form-item>
           <el-form-item label="到账账户：" v-show="tabsType[form.withdrawType] == 1">
-            <div class="flex align-center" v-if="agentInfo.wx_open_id">
-              <el-avatar size="medium" :src="agentInfo.wx_avatar"></el-avatar>
-              <div class="ml-10">{{ agentInfo.wx_nick_name }}</div>
+            <div class="flex align-center" v-if="bindWechatInfo.wechatOpenid">
+              <el-avatar size="medium" :src="bindWechatInfo.avatar"></el-avatar>
+              <div class="ml-10">{{ bindWechatInfo.nickname }}</div>
             </div>
             <div class="flex align-center" v-else>您暂未绑定微信，请先进入小程序提现页面绑定微信</div>
           </el-form-item>
           <div v-show="tabsType[form.withdrawType] == 5">
             <el-form-item label="姓名：">
-              <el-input v-model="form.cardName" placeholder="您的姓名" />
+              <el-input v-model="bindCardInfo.cardName" placeholder="您的姓名" />
             </el-form-item>
             <el-form-item label="银行卡号：">
-              <el-input v-model="form.cardNo" placeholder="银行卡号" />
+              <el-input v-model="bindCardInfo.cardNo" placeholder="银行卡号" />
             </el-form-item>
             <el-form-item label="开户行：">
-              <el-input v-model="form.bankName" placeholder="开户行" />
+              <el-input v-model="bindCardInfo.bankName" placeholder="开户行" />
             </el-form-item>
             <el-form-item label="所属支行：">
-              <el-input v-model="form.branchName" placeholder="所属支行" />
+              <el-input v-model="bindCardInfo.branchName" placeholder="所属支行" />
             </el-form-item>
           </div>
-          <!-- <el-form-item label="到账账户：" v-show="form.withdrawType == 4">
-            <div class="flex align-center" v-if="agentInfo.cardNo">
-              <span class="mr-10">{{ agentInfo.cardName }}</span>
-              <span>{{ agentInfo.bankName }}({{ agentInfo.cardNo.substring(agentInfo.cardNo.length - 4) }})</span>
-            </div>
-            <router-link class="flex align-center text-primary" v-else :to="`/user/index`">未设置银行卡信息，去设置<i class="el-icon-arrow-right
-"></i></router-link>
-          </el-form-item> -->
           <div v-show="tabsType[form.withdrawType] == 3">
             <el-form-item label="姓名：">
-              <el-input v-model="form.userName" placeholder="您的姓名" />
+              <el-input v-model="wxQrcodeInfo.userName" placeholder="您的姓名" />
             </el-form-item>
             <el-form-item label="收款码：">
-              <upload v-model="form.qrcode"></upload>
+              <upload v-model="wxQrcodeInfo.qrcode"></upload>
             </el-form-item>
           </div>
           <div v-show="tabsType[form.withdrawType] == 4">
             <el-form-item label="姓名：">
-              <el-input v-model="form.userName" placeholder="您的姓名" />
+              <el-input v-model="aliQrcodeInfo.userName" placeholder="您的姓名" />
             </el-form-item>
             <el-form-item label="收款码：">
-              <upload v-model="form.qrcode"></upload>
+              <upload v-model="aliQrcodeInfo.qrcode"></upload>
             </el-form-item>
           </div>
           <el-form-item>
@@ -141,7 +133,14 @@
           withdrawType: 0
         },
         tabsType: [1, 2, 3, 4, 5],
-        money: {},
+        money: '',
+        bindWechatInfo: {},
+        bindAlipayInfo: {},
+        bindCardInfo: {},
+        aliQrcodeInfo: {},
+        wxQrcodeInfo: {},
+
+
         freezVisible: false,
         noWithdraw: false,
 
@@ -152,14 +151,6 @@
       }
     },
     computed: {
-      agentInfo() {
-        let agentInfo = this.$store.getters.agentInfo
-        this.form.wx_account_name = agentInfo.wx_account_name
-        this.form.wx_account_qrcode = agentInfo.wx_account_qrcode
-        this.form.zfb_account_name = agentInfo.zfb_account_name
-        this.form.zfb_account_qrcode = agentInfo.zfb_account_qrcode
-        return agentInfo
-      },
       siteInfo() {
         let siteInfo = this.$store.getters.siteInfo
         siteInfo.withdrawType = ['微信', '支付宝', '微信收款码', '支付宝收款码', '银行卡']
@@ -167,9 +158,73 @@
       }
     },
     mounted() {
-      this.getMyStore()
+      if(this.isStore()){
+        this.getMyStore()
+      }else{
+        this.getBalance()
+      }
+      this.wechatInfo()
+      this.alipayInfo()
+      this.cardInfo()
+      this.qrcodeInfo()
     },
     methods: {
+      /**
+       * 获取可提现金额
+       */
+      getBalance(){
+        let params = {}
+        if(this.cutStoreId) params.storeId = this.cutStoreId
+        this.$get('iot-saas-pay/api/pay/withdraw/balance', params).then(res => {
+          this.money = res || '0.00'
+        })
+      },
+
+      /**
+       * 绑定的微信信息
+       */
+      wechatInfo(){
+        this.$get('iot-saas-pay/api/pay/withdraw/wechatAppInfo').then(res => {
+          this.bindWechatInfo = res || {}
+        })
+      },
+
+      /**
+       * 绑定的支付宝信息
+       */
+      alipayInfo(){
+        this.$get('iot-saas-pay/api/pay/withdraw/alipayAppInfo').then(res => {
+          this.bindAlipayInfo = res || {}
+        })
+      },
+
+      /**
+       * 绑定的银行卡
+       */
+      cardInfo(){
+        this.$get('iot-saas-pay/api/pay/withdraw/bankcard').then(res => {
+          if(res) res.cardName = res.userName
+          this.bindCardInfo = res || {}
+        })
+      },
+
+      /**
+       * 绑定的收款码
+       */
+      qrcodeInfo(){
+        this.$get('iot-saas-pay/api/pay/withdraw/qrcode', {
+          qrcodeType: 2
+        }).then(res => {
+          this.aliQrcodeInfo = res || {}
+        })
+
+        this.$get('iot-saas-pay/api/pay/withdraw/qrcode', {
+          qrcodeType: 1
+        }).then(res => {
+          this.wxQrcodeInfo = res || {}
+        })
+      },
+
       /**
        * 获取我的商户
        */
@@ -177,9 +232,13 @@
       	let url = 'iot-saas-basic/admin/store/findMyStore'
       	this.$get(url).then(res => {
       		this.cutStoreId = Object.values(res)[0].id
+          this.getBalance()
       	})
       },
 
+      /**
+       * 提交数据
+       */
       onSubmit() {
         let params = JSON.parse(JSON.stringify(this.form))
         if(!params.amount){
@@ -191,7 +250,7 @@
         //   return
         // }
         params.withdrawType = this.tabsType[params.withdrawType]
-        params.storeId = this.cutStoreId
+        if(this.cutStoreId) params.storeId = this.cutStoreId
         this.clickSubmit = true
         this.$post('iot-saas-pay/api/pay/withdraw/apply', params).then(res => {
           this.$message({

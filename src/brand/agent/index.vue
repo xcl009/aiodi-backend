@@ -28,12 +28,12 @@
           <template slot-scope="scope">
             <div class="inline text-left">
               <el-tag
-                class="cursor"
+                class="block mtb-3 cursor"
                 :hit="true"
                 size="medium"
                 effect="plain"
-                @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
-                {{ scope.row.depend_type_name || '密码线' }}&nbsp;&nbsp;{{ scope.row.goods_sum || '0' }}
+                @click="$router.push({path: `/device?agent_id=${scope.row.id}`})" v-for="item in scope.row.agentDeviceType">
+                {{ item.name }}<!-- &nbsp;&nbsp;{{ scope.row.goods_sum || '0' }} -->
               </el-tag>
             </div>
           </template>
@@ -59,34 +59,25 @@
         <el-table-column label="分润比例" align="center">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <el-tag
-                class="cursor"
-                :hit="true"
-                size="medium"
-                effect="plain"
-                @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
-                {{ scope.row.depend_type_name || '密码线' }}&nbsp;&nbsp;{{ scope.row.goods_sum || '10%' }}
-              </el-tag>
+              <div v-for="item in scope.row.agentDeviceType">
+                {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
+              </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="190">
+        <el-table-column label="操作" align="center" width="240">
           <template slot-scope="scope">
             <template v-if="deviceId">
               <el-button type="primary" size="mini" @click="singleAssign(scope.row)">分配给Ta</el-button>
             </template>
             <template v-else>
-              <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
-              <!-- <el-button type="primary" size="mini" @click="">功能设置</el-button> -->
-              <el-dropdown trigger="click">
-                <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/store?agentId=${scope.row.id}`})">商户列表</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除代理</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              <div class="pl-10 inline text-left">
+                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentId=${scope.row.id}`})">订单列表</el-button>
+                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentId=${scope.row.id}`})">商户列表</el-button>
+                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
+                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-button>
+                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)">删除代理</el-button>
+              </div>
             </template>
           </template>
         </el-table-column>
@@ -102,6 +93,28 @@
         />
       </div>
     </div>
+
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
+      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+      <template v-if="dialogType == 1">
+        <div class="text-center" v-if="dform.abilitys">
+          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys.checkOrder">查看订单</el-checkbox>
+          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys.checkEndOrder">结束订单</el-checkbox>
+          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys.checkRefundOrder">结束退款</el-checkbox>
+          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys.checkWithdrawRight">提现</el-checkbox>
+        </div>
+      </template>
+      <template v-if="dialogType == 2">
+        <div class="text-center">
+          <div class="text-black">确定删除此代理吗？</div>
+          <div class="mt-10 pl-40 pr-40 text-danger text-left">注：若该代理下存在设备，则无法删除。需解绑回收设备。</div>
+        </div>
+      </template>
+      <div class="mt-30 text-center">
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -155,7 +168,18 @@
           size: 20
         },
 
-        deviceId: ''
+        deviceId: '',
+
+        // 弹出相关
+        dialogType: 1,
+        dialogStatus: false,
+        dialogTitle: {
+          1: '代理权限设置',
+          2: '删除代理'
+        },
+        curRow: {},
+        curIdx: 0,
+        dform: {}
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -238,128 +262,53 @@
       },
 
       /**
-       * 编辑
-       * @param {Object} row
+       * 操作行
+       * @param {Object} type 1 dialog类型
+       * @param {Object} row 选择当前行
+       * @param {Object} dialogType dialog内容显示类型 1: '代理权限设置', 2: '删除代理'
+       * @param {Object} idx 当前行所在位置
        */
-      setRow(type, row) {
+      setRows(type, row, dialogType, idx) {
         switch (type) {
           case 1:
-            this.$alert('确定删除此代理吗？', '删除代理', {
-              confirmButtonText: '确定',
-              callback: action => {
-                if (action == 'confirm') {
-                  this.$message({
-                    message: '删除成功',
-                    type: 'success'
-                  })
-                  this.list.splice(row.index, 1)
-                  return
-                  this.$post('agentapi/delete_agent', {
-                    son_id: row.id
-                  }).then(res => {
-                    this.$message({
-                      message: '删除成功',
-                      type: 'success'
-                    })
-                    this.list.splice(row.index, 1)
-                  })
-                }
-              }
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.dialogStatus = true
+            if(dialogType == 1){
+              this.$set(this.dform, 'abilitys', {})
+              this.$set(this.dform, 'agentId', row.id)
+            }
+            break
+        }
+      },
+
+      /**
+       * 弹窗确认
+       */
+      dialogConfim() {
+        let curRow = this.curRow,
+          curIdx = this.curIdx,
+          params = JSON.parse(JSON.stringify(this.dform))
+        switch (this.dialogType) {
+          case 1:
+            this.$post('iot-saas-basic/admin/agent/updateAgentAuth', params).then(res => {
+              this.$message({
+                type: 'success',
+                message: '设置成功'
+              })
+              this.rowObj = Object.assign(this.rowObj, params)
             })
             break
           case 2:
-            this.$alert('确定将账号恢复为正常吗？', '账号恢复', {
-              confirmButtonText: '确定',
-              callback: action => {
-                if (action == 'confirm') {
-                  this.$message({
-                    message: '恢复成功',
-                    type: 'success'
-                  })
-                  this.list.splice(row.index, 1)
-                  return
-                  this.$post('agentapi/delete_agent', {
-                    son_id: row.id
-                  }).then(res => {
-                    this.$message({
-                      message: '删除成功',
-                      type: 'success'
-                    })
-                    this.list.splice(row.index, 1)
-                  })
-                }
-              }
-            })
-            break
-          case 3:
-            this.$get('agentapi/edit_agent', {
+            this.$post('agentapi/delete_agent', {
               son_id: row.id
             }).then(res => {
-              this.withdrawDialog = true
-              this.withdrawObj = res.agent_info
-            })
-            break
-          case 5:
-            this.$prompt('请输入新登录密码', '重置登录密码', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              inputType: 'password',
-              beforeClose: (action, instance, done) => {
-                if (action == 'confirm') {
-                  const value = instance.inputValue
-                  this.$post('agentapi/edit_agent_password', {
-                    son_id: row.id,
-                    password: value
-                  }).then(res => {
-                    this.$message({
-                      message: '设置成功',
-                      type: 'success'
-                    })
-                    done()
-                  })
-                } else {
-                  done()
-                }
-              }
-            })
-            break
-          case 6:
-            this.$post('agentapi/sttuf/save_member_setting', {
-              son_id: rows.id,
-              member_num: rows.member_num,
-              member_day_count: rows.member_day_count,
-              member_free_due_hours: rows.member_free_due_hours
-            }).then(res => {
               this.$message({
-                message: '设置成功',
+                message: '删除成功',
                 type: 'success'
               })
-              this.freeDialog = false
-            })
-            break
-          case 7:
-            this.$prompt('请输入新提现密码', '重置提现密码', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              inputType: 'password',
-              beforeClose: (action, instance, done) => {
-                if (action == 'confirm') {
-                  const value = instance.inputValue
-                  this.$post('agentapi/edit_agent_password', {
-                    son_id: row.id,
-                    password: value,
-                    type: 1
-                  }).then(res => {
-                    this.$message({
-                      message: '设置成功',
-                      type: 'success'
-                    })
-                    done()
-                  })
-                } else {
-                  done()
-                }
-              }
+              this.list.splice(row.index, 1)
             })
             break
         }
