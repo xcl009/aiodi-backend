@@ -3,13 +3,13 @@
     <el-col :xs="24" :sm="18" :md="12" :lg="10">
       <el-form ref="form" :model="form" label-position="left" label-width="130px">
         <el-form-item label="小程序Logo">
-          <upload v-model="form.appLogo" ratio="1:1"/>
+          <upload v-model="form.appLogo" ratio="1:1" :upObj="{fileType: 'appLogo'}"/>
         </el-form-item>
         <el-form-item label="小程序名称">
           <el-input v-model="form.appName" placeholder="请填写小程序名称" />
         </el-form-item>
         <el-form-item label="公众号二维码">
-          <upload v-model="form.officialAccountQrcode" ratio="1:1"/>
+          <upload v-model="form.officialAccountQrcode" ratio="1:1" :upObj="{fileType: 'wxQrCode'}"/>
         </el-form-item>
         <el-form-item label="公众号名称">
           <el-input v-model="form.officialAccountName" placeholder="请填写公众号名称" />
@@ -26,9 +26,9 @@
         <el-form-item label="公司地址">
           <el-input v-model="form.companyAddress" placeholder="请填写公司地址" />
         </el-form-item>
-        <el-form-item label="小程序介绍">
+        <!-- <el-form-item label="小程序介绍">
           <tinymce v-model="form.appIntroduce" :height="300" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
         </el-form-item>
@@ -70,7 +70,11 @@
        */
       getInfo() {
         this.$get('iot-saas-basic/admin/platform/find').then(res => {
-          this.form = res
+          if(res.appName){
+            this.form = res
+          } else {
+            this.form = {}
+          }
         })
       },
 

@@ -66,6 +66,7 @@
         type: Object,
         default (){
           return {
+            fileType: 'userAvatar',
             token: getToken()
           }
         }
@@ -111,8 +112,8 @@
           file.status = 'error'
           this.$message.error(`图片上传失败:${res.data.message}, 请删除失败的图片重新上传`)
         } else {
-          if(res.data.file_url) fileList[fileList.length - 1].url = res.data.file_url
-          if(res.data.media_id) fileList[fileList.length - 1].media_id = res.data.media_id
+          if(res.data.url) fileList[fileList.length - 1].url = res.data.url
+          if(res.data.ossFileKey) fileList[fileList.length - 1].ossFileKey = res.data.ossFileKey
           this.update(fileList)
         }
       },

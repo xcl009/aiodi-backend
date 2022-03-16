@@ -2,13 +2,10 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <!-- <el-select v-model="form.sort" @change="toQuery()" placeholder="综合排序">
-          <el-option :label="item" :value="key" v-for="(item, key) in sort_type" />
-        </el-select> -->
-        <el-select v-model="form.isPuhuo" @change="toQuery()" placeholder="是否铺货">
-          <el-option label="全部" value="2" />
-          <el-option label="未铺货" value="0" />
-          <el-option label="已铺货" value="1" />
+        <el-select v-model="form.haveDevice" @change="toQuery()" placeholder="是否铺货">
+          <el-option label="全部" :value="null" />
+          <el-option label="未铺货" value="1" />
+          <el-option label="已铺货" value="2" />
         </el-select>
         <el-input v-model="form.name" placeholder="商户名称" />
         <el-input v-model="form.mobile" placeholder="手机号码" />
@@ -22,7 +19,7 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
-        <el-table-column label="门头照" align="center" width="150">
+        <el-table-column label="门头照" align="center" width="140">
           <template slot-scope="scope">
             <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})">
               <el-avatar shape="square" :size="52" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"
@@ -31,38 +28,38 @@
             </el-link>
           </template>
         </el-table-column>
-        <el-table-column label="商户地址" align="center" width="180">
+        <el-table-column label="商户地址" align="center" width="160">
           <template slot-scope="scope">
             <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="金额(元)" align="center" width="150">
+        <el-table-column label="金额(元)" align="center" width="140">
           <template slot-scope="scope">
             <div class="inline">
-              <div>交易额：{{ scope.row.order_amount || '0.00' }}</div>
-              <div>总收益：{{ scope.row.order_amount || '0.00' }}</div>
-              <div>可提现：{{ scope.row.order_amount || '0.00' }}</div>
+              <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
+              <div>总收益：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}</div>
+              <div>可提现：{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="订单量" align="center" width="150">
+        <el-table-column label="订单量" align="center" width="140">
           <template slot-scope="scope">
             <div class="inline">
-              <div>订单量：{{ scope.row.order_num || 0 }}</div>
-              <div>设备数：{{ scope.row.order_num || 0 }}</div>
+              <div>订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx +  orderCount[scope.row.id].ali : 0 }}</div>
+              <div>设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="上级代理" align="center" width="120">
+        <el-table-column label="上级代理" align="center" width="120" v-if="lowerStore">
           <template slot-scope="scope">
-            <div>{{ scope.row.order_num || '昵称' }}</div>
-            <div>{{ scope.row.order_num || '手机号码'}}</div>
+            <div>{{ supUser[scope.row.userId] ? supUser[scope.row.userId].name : '' }}</div>
+            <div>{{ supUser[scope.row.userId] ? dealPhone(supUser[scope.row.userId].mobile) : '' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="分润人" align="center" width="120">
           <template slot-scope="scope">
-            <div>{{ scope.row.nickname || '' }}</div>
-            <div>{{ scope.row.mobile }}</div>
+            <div>{{ scope.row.user.username || '' }}</div>
+            <div>{{ scope.row.user.mobile || '' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="分成比例" align="center">
@@ -76,22 +73,14 @@
         </el-table-column>
         <el-table-column label="城市区域" align="center" width="90">
           <template slot-scope="scope">
-            {{ scope.row.regionTag }}
+            {{ regionsObj[scope.row.regionTag] ? regionsObj[scope.row.regionTag].title : '--' }}
           </template>
         </el-table-column>
         <el-table-column label="行业分类" align="center" width="90">
           <template slot-scope="scope">
-            {{ scope.row.catId || '--' }}
+            {{ cateObj[scope.row.catId] ? cateObj[scope.row.catId].catName : '--' }}
           </template>
         </el-table-column>
-        <!-- <el-table-column label="品类" align="center">
-          <template slot-scope="scope">
-            <el-tag class="cursor" :hit="true" size="medium" effect="plain"
-              @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
-              {{ scope.row.depend_type_name || '密码线' }}&nbsp;&nbsp;{{ scope.row.goods_sum || '0' }}
-            </el-tag>
-          </template>
-        </el-table-column> -->
         <el-table-column label="操作" align="center" width="190" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <template v-if="deviceId">
@@ -99,16 +88,14 @@
             </template>
             <template v-else>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
-              <el-button type="primary" size="mini" @click="">添加分店</el-button>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2, scope.$index)">权限设置</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/store/edit/${scope.row.id}`})">编辑商户</el-button>
               <el-dropdown trigger="click">
                 <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="$router.push({path: `/store/edit/${scope.row.id}`})">编辑商户
-                  </el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">更多应用
+                  <el-dropdown-item @click.native="$router.push({path: `/market/index`})">更多应用
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -181,6 +168,13 @@
           size: 20
         },
 
+        orderCount: {},
+        cashStat: {},
+        deviceCount: {},
+        supUser: {},
+        regionsObj: {},
+        cateObj: {},
+
         // 操作相关
         deviceId: '',
 
@@ -224,10 +218,10 @@
       next()
     },
     activated() {
-      let queryKey = ['deviceId', 'agentId'],
-        query = this.$route.query
-      for (var i in queryKey) {
-        this[queryKey[i]] = query[queryKey[i]]
+      let query = this.$route.query
+      this.queryKey = ['deviceId', 'agentId']
+      for (var i in this.queryKey) {
+        if(query[this.queryKey[i]]) this[queryKey[i]] = query[this.queryKey[i]]
       }
       if (this.$route.meta.reload) {
         this.getList()
@@ -278,9 +272,108 @@
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
+          this.queryCash(this.arrayKeys(res.rows, 'id'))
+          this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
+          this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))
+          if(this.lowerStore) this.getSupUser(this.arrayKeys(res.rows, 'userId'))
+          this.getStoreRegions(this.arrayKeys(res.rows, 'regionTag'))
+          this.getStoreCate(this.arrayKeys(res.rows, 'catId'))
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
+        })
+      },
+
+      /**
+       * 获取可提现金额
+       */
+      queryCash(ids){
+        if(ids.length == 0){
+          this.cashStat = {}
+          return
+        }
+        this.$get('iot-saas-pay/api/pay/acount/list', {
+          accountType: 2,
+          ownerIds: ids.join(',')
+        }).then(res => {
+          this.cashStat = res
+        })
+      },
+
+      /**
+       * 订单数量统计查询
+       */
+      queryOrderCount(ids){
+        if(ids.length == 0){
+          this.orderCount = {}
+          return
+        }
+        this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+          countType: 'STORE',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.orderCount = res
+        })
+      },
+
+      /**
+       * 设备数量统计查询
+       */
+      queryDeviceCount(ids){
+        if(ids.length == 0){
+          this.deviceCount = {}
+          return
+        }
+        this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+          countType: 'STORE',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.deviceCount = res
+        })
+      },
+
+      /**
+       * 获取上级代理
+       */
+      getSupUser(uids){
+        if(uids == 0){
+          this.supUser = {}
+          return
+        }
+        this.$get('iot-saas-basic/admin/agent/queryByStoreUserId', {
+          storeUserIds: uids.join(',')
+        }).then(res => {
+          this.supUser = res
+        })
+      },
+
+      /**
+       * 根据区域标识数组获取区域名称
+       */
+      getStoreRegions(tags){
+        if(tags.length == 0){
+          this.regionsObj = {}
+          return
+        }
+        this.$get('iot-saas-basic/admin/regions/findNameByTags', {
+          tags: tags.join(',')
+        }).then(res => {
+          this.regionsObj = res
+        })
+      },
+
+      /**
+       * 根据区域标识数组获取区域名称
+       */
+      getStoreCate(catId){
+        if(catId.length == 0){
+          this.cateObj = {}
+          return
+        }
+        this.$get('iot-saas-basic/admin/store/findNameByCatIds', {
+          catId: catId.join(',')
+        }).then(res => {
+          this.cateObj = res
         })
       },
 

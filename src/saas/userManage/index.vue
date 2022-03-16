@@ -2,10 +2,10 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-select placeholder="用户来源" v-model="listQuery.belongUserType" @change="toQuery()">
-          <el-option label="全部" value="0" />
-          <el-option label="微信" value="1" />
-          <el-option label="支付宝" value="2" />
+        <el-select placeholder="用户来源" v-model="form.userType" @change="toQuery()">
+          <el-option label="全部" value="" />
+          <el-option label="微信" value="wechat" />
+          <el-option label="支付宝" value="alipay" />
         </el-select>
         <el-input placeholder="用户昵称" v-model="form.nickname" />
         <el-input placeholder="手机号码" v-model="form.mobile" />
@@ -27,7 +27,7 @@
         </el-table-column>
         <el-table-column label="昵称" align="center" width="160">
           <template slot-scope="scope">
-            <el-link class="cursor">{{ scope.row.nick_name || '无昵称' }}</el-link>
+            <el-link class="cursor">{{ scope.row.nickname || '无昵称' }}</el-link>
           </template>
         </el-table-column>
         <el-table-column label="手机号码" align="center">
@@ -37,22 +37,17 @@
         </el-table-column>
         <el-table-column label="来源" align="center">
           <template slot-scope="scope">
-            {{ scope.row.user_type == 0 ? '微信' : '支付宝' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="已交押金" align="center" v-if="isSaas() || isBrand()">
-          <template slot-scope="scope">
-            {{ scope.row.money || '0.00' }}
+            {{ scope.row.userType == 'wechat' ? '微信' : '支付宝' }}
           </template>
         </el-table-column>
         <el-table-column label="租借次数" align="center">
           <template slot-scope="scope">
-            {{ scope.row.used_num || '0' }}
+            {{ scope.row.loanNumber || '0' }}
           </template>
         </el-table-column>
         <el-table-column label="消费总金额" align="center">
           <template slot-scope="scope">
-            {{ scope.row.paid_amount || '0.00' }}
+            {{ scope.row.totalConsumption || '0.00' }}
           </template>
         </el-table-column>
         <el-table-column label="钱包余额" align="center" v-if="isSaas() || isBrand()">
@@ -62,7 +57,7 @@
         </el-table-column>
         <el-table-column label="注册日期" align="center" width="150">
           <template slot-scope="scope">
-            {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
+            {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="120">

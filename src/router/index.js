@@ -249,6 +249,26 @@ export const saasRoutes = [
     ]
   },
   {
+    path: '/systemSet',
+    component: Layout,
+    redirect: '/systemSet/wechat',
+    meta: {
+      title: '系统设置',
+      icon: 'setting'
+    },
+    children: [
+      {
+        path: 'wechat',
+        name: 'wechat',
+        component: () => import('@/saas/miniProgram/template'),
+        meta: {
+          keepAlive: true,
+          title: '模板配置'
+        }
+      },
+    ],
+  },
+  {
     path: '/user',
     component: Layout,
     redirect: '/user/index',
@@ -342,7 +362,7 @@ export const brandRoutes = [
           title: '我的订单'
         },
         props:{
-          user_type: 0
+          lowerOrder: false
         }
       },
       {
@@ -353,7 +373,7 @@ export const brandRoutes = [
           title: '下级订单'
         },
         props: {
-          user_type: 1
+          lowerOrder: true
         }
       }
     ]
@@ -530,7 +550,7 @@ export const brandRoutes = [
           title: '我的代理'
         },
         props: {
-          user_type: 1
+          lowerAgent: false
         }
       },
       {
@@ -542,7 +562,7 @@ export const brandRoutes = [
           title: '下级管理'
         },
         props: {
-          user_type: 2
+          lowerAgent: true
         }
       },
       {
@@ -921,26 +941,6 @@ export const agentRoutes = [
           activeMenu: '/store/meStore'
         },
         hidden: true
-      }
-    ]
-  },
-  {
-    path: '/userManage',
-    component: Layout,
-    redirect: '/userManage/userList',
-    meta: {
-      title: '用户管理',
-      icon: 'userList'
-    },
-    children: [
-      {
-        path: 'userList',
-        name: 'userList',
-        component: () => import('@/saas/userManage/index'),
-        meta: {
-          keepAlive: true,
-          title: '用户列表'
-        }
       }
     ]
   },

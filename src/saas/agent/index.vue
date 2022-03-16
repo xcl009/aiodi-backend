@@ -7,11 +7,11 @@
         </el-select> -->
         <el-input v-model="form.name" placeholder="品牌名"/>
         <el-input v-model="form.mobile" placeholder="手机号码"/>
-        <!-- <el-select placeholder="状态" v-model="form.activated_status" @change="toQuery()">
+        <el-select placeholder="状态" v-model="form.status" @change="toQuery()">
           <el-option label="有效" :value="1" />
           <el-option label="无效" :value="2" />
           <el-option label="已删除" :value="0" />
-        </el-select> -->
+        </el-select>
 		  </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/partner/create`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
@@ -44,47 +44,64 @@
             <div>{{ scope.row.tphone || '--' }}</div>
           </template>
         </el-table-column> -->
-        <el-table-column label="品类" align="center">
+        <el-table-column label="品类" align="center" width="100">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <el-tag
-                class="block mtb-3 cursor"
-                :hit="true"
-                size="medium"
-                effect="plain"
-                @click="$router.push({path: `/device?agent_id=${scope.row.id}`})" v-for="item in scope.row.brandDeviceType">
-                {{ item.name }}<!-- &nbsp;&nbsp;{{ scope.row.goods_sum || '0' }} -->
-              </el-tag>
+            <div class="text-primary cursor" @click="$router.push({path: `/device?brandId=${scope.row.id}`})" v-for="item in scope.row.brandDeviceType">
+              {{ item.name }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="下级总数" align="center" width="150">
+        <el-table-column label="设备数" align="center">
+          <template slot-scope="scope">
+            <div class="inline text-left">
+              <div>全部：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
+              <div>已铺货：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber : '0' }}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="订单数" align="center" width="120">
+          <template slot-scope="scope">
+            <div class="inline text-left">
+              <div>微信：<el-link type="primary"
+                  @click="$router.push({path: `/order?brandIds=${scope.row.id}&sourceType=1`})">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
+                </el-link>
+              </div>
+              <div>支付宝：<el-link type="primary"
+                  @click="$router.push({path: `/order?brandIds=${scope.row.id}&sourceType=2`})">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
+                </el-link>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="下级总数" align="center" width="150">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
               <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column label="收益(元)" align="center" width="150">
+        </el-table-column> -->
+        <el-table-column label="交易额(元)" align="center" width="150">
           <template slot-scope="scope">
-            <span class="cursor text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
+            {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="190">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
-            <el-button type="primary" size="mini" @click="">功能设置</el-button>
+            <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandIds=${scope.row.id}`})">订单列表</el-button>
+            <!-- <el-button type="primary" size="mini" @click="">功能设置</el-button> -->
             <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+            <el-button type="primary" size="mini" @click="$router.push({path: `/partner/edit/${scope.row.id}`})">修改信息</el-button>
             <el-dropdown trigger="click">
               <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="$router.push({path: `/partner/edit/${scope.row.id}`})">修改信息</el-dropdown-item>
-                <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-dropdown-item>
-                <el-dropdown-item @click.native="getMapIcon(scope.row)">地图图标</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push({path: `/store?brandId=${scope.row.id}`})">商户列表</el-dropdown-item>
+                <!-- <el-dropdown-item @click.native="getMapIcon(scope.row)">地图图标</el-dropdown-item> -->
                 <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除品牌</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.status == 1">删除品牌</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.status != 1">账号恢复</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -162,7 +179,8 @@
           page: 1,
           size: 20
         },
-        deviceNum: {},
+        orderCount: {},
+        deviceCount: {},
 
         iconDialog: false,
         brand_icon: {},
@@ -217,7 +235,7 @@
        */
       reset(){
         this.form = {
-          activated_status: 1
+          status: 1
         }
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -239,6 +257,8 @@
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
+          this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
+          this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
@@ -246,16 +266,34 @@
       },
 
       /**
-       * 获取设备数量
+       * 订单数量统计查询
        */
-      getDeviceNum(agent_ids){
-        this.$get('SyStatistics/getmyDeviceNum', {
-          agent_ids: JSON.stringify(agent_ids)
+      queryOrderCount(ids){
+        if(ids.length == 0){
+          this.orderCount = {}
+          return
+        }
+        this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+          countType: 'BRAND',
+          groupIds: ids.join(',')
         }).then(res => {
-          this.clickSubmit = false
-          this.deviceNum = res
-        }).catch(() => {
-          this.clickSubmit = false
+          this.orderCount = res
+        })
+      },
+
+      /**
+       * 设备数量统计查询
+       */
+      queryDeviceCount(ids){
+        if(ids.length == 0){
+          this.deviceCount = {}
+          return
+        }
+        this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+          countType: 'BRAND',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.deviceCount = res
         })
       },
 
@@ -270,27 +308,22 @@
        * 编辑
        * @param {Object} row
        */
-      setRow(type, row) {
+      setRow(type, row, index) {
         switch (type) {
           case 1:
             this.$alert('确定删除此品牌吗？', '删除品牌', {
               confirmButtonText: '确定',
               callback: action => {
                 if (action == 'confirm') {
-                  this.$message({
-                    message: '删除成功',
-                    type: 'success'
-                  })
-                  this.list.splice(row.index, 1)
-                  return
-                  this.$post('agentapi/delete_agent', {
-                    son_id: row.id
+                  this.$post('iot-saas-basic/admin/brand/updateStatusById', {
+                    id: row.id,
+                    status: 0
                   }).then(res => {
                     this.$message({
                       message: '删除成功',
                       type: 'success'
                     })
-                    this.list.splice(row.index, 1)
+                    this.list.splice(index, 1)
                   })
                 }
               }
@@ -301,82 +334,21 @@
               confirmButtonText: '确定',
               callback: action => {
                 if (action == 'confirm') {
-                  this.$message({
-                    message: '恢复成功',
-                    type: 'success'
-                  })
-                  this.list.splice(row.index, 1)
-                  return
-                  this.$post('agentapi/delete_agent', {
-                    son_id: row.id
+                  this.$post('iot-saas-basic/admin/brand/updateStatusById', {
+                    id: row.id,
+                    status: 0
                   }).then(res => {
                     this.$message({
-                      message: '删除成功',
+                      message: '恢复成功',
                       type: 'success'
                     })
-                    this.list.splice(row.index, 1)
+                    this.list.splice(index, 1)
                   })
-                }
-              }
-            })
-            break
-          case 5:
-            this.$prompt('请输入新登录密码', '重置登录密码', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              inputType: 'password',
-              beforeClose: (action, instance, done) => {
-                if (action == 'confirm') {
-                  const value = instance.inputValue
-                  this.$post('agentapi/edit_agent_password', {
-                    son_id: row.id,
-                    password: value
-                  }).then(res => {
-                    this.$message({
-                      message: '设置成功',
-                      type: 'success'
-                    })
-                    done()
-                  })
-                } else {
-                  done()
                 }
               }
             })
             break
         }
-      },
-
-      /**
-       * 获取地图图标
-       */
-      getMapIcon(row){
-        let brand_icon = {}
-        this.freeObj = row
-        this.$get('agentapi/system/brand_icon', {
-          platform_id: this.freeObj.aid
-        }).then(res => {
-          for(var i in this.myDeviceName){
-            brand_icon[`device_url_${this.myDeviceName[i]}`] = res[`device_url_${this.myDeviceName[i]}`] || ''
-          }
-          this.brand_icon = brand_icon
-          this.iconDialog = true
-        })
-      },
-
-      /**
-       * 修改地图图标
-       */
-      editDtIcon() {
-        let params = this.brand_icon
-        params.platform_id = this.freeObj.aid
-        this.$post('agentapi/system/brand_icon', params).then(res => {
-          this.iconDialog = false
-          this.$message({
-            message: '设置成功',
-            type: 'success'
-          })
-        })
       },
 
       /**
@@ -393,12 +365,8 @@
           userType: 'brand',
           id: row.id
         }).then(res => {
-          console.log(res)
-          return
           setToken(getToken(), 'token1')
-          setToken(res.token)
-          setToken(res.belong_partner_aid, 'agent_id')
-          setToken(row.id, 'user_id')
+          setToken(res.loginToken.accessToken)
           setTimeout(()=>{
             location.href = '/home'
             this.loadObj.close()

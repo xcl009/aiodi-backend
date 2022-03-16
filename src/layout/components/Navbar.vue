@@ -135,8 +135,6 @@ export default {
      */
     toAdmin(){
       setToken(this.token1)
-      setToken(this.config.admin_id, 'user_id')
-      setToken(this.config.admin_id, 'agent_id')
       removeToken('token1')
       setTimeout(()=>{
         location.href = '/home'

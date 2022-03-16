@@ -10,6 +10,8 @@ import {
   getToken
 } from '@/utils/auth'
 
+const windowScreen = `${window.screen.width} * ${window.screen.height}` 
+
 let pending = []; //声明一个数组用于存储每个ajax请求的取消函数和ajax标识
 let cancelToken = axios.CancelToken; //初始化取消请求的构造函数
 let removePending = (flagUrl, f) => {
@@ -38,6 +40,7 @@ const service = axios.create({
     'Content-Type': 'application/json'
   }
 })
+
 //service.defaults.withCredentials = true // 跨域
 // request interceptor
 service.interceptors.request.use(
@@ -49,6 +52,16 @@ service.interceptors.request.use(
 
       // config.headers['user_id'] = getToken('user_id')
       config.headers['Authorization'] = store.getters.token
+      config.headers['apiVersion'] = ''
+      config.headers['appVersion'] = '0.0.1'
+      config.headers['osType'] = Vue.prototype.OsInfo.name
+      config.headers['osVersion'] = Vue.prototype.OsInfo.version
+      config.headers['appid'] = 'PC'
+      config.headers['path'] = location.hash
+      config.headers['network'] = ''
+      config.headers['ssid'] = ''
+      config.headers['model'] = ''
+      config.headers['screen'] = windowScreen
     }
     config.baseURL = Vue.prototype.BASE_URL
     if(config.method == 'get'){
@@ -116,6 +129,7 @@ service.interceptors.response.use(
 let toType = (obj) => {
   return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 }
+
 let filterNull = (o) => {
   for (var key in o) {
     if (o[key] === null || o[key] === '' || o[key] === undefined) {
@@ -153,4 +167,5 @@ export function $export(url, data = {}) {
     responseType: 'blob'
   })
 }
+
 export default service

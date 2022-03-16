@@ -15,10 +15,10 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         highlight-current-row :max-height="tableMaxH">
-        <el-table-column label="品牌信息" align="center" width="130">
+        <el-table-column label="品牌商" align="center" width="120">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.brandName || '--' }}</div>
-            <div>{{ scope.row.brandMobile || '--' }}</div>
+            <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].name : '--' }}</div>
+            <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].mobile : '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="代理信息" align="center" width="130">
@@ -27,44 +27,51 @@
             <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="运营城市" align="center" width="120">
-          <template slot-scope="scope">
-            <div>{{ scope.row.charge_county || '深圳' }}</div>
-          </template>
-        </el-table-column> -->
         <el-table-column label="品类" align="center">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <el-tag
-                class="block mtb-3 cursor"
-                :hit="true"
-                size="medium"
-                effect="plain"
-                @click="$router.push({path: `/device?agent_id=${scope.row.id}`})" v-for="item in scope.row.agentDeviceType">
-                {{ item.name }}<!-- &nbsp;&nbsp;{{ scope.row.goods_sum || '0' }} -->
-              </el-tag>
+            <div class="text-primary cursor" @click="$router.push({path: `/device?agentIds=${scope.row.id}`})" v-for="item in scope.row.agentDeviceType">
+              {{ item.name }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="下级总数" align="center" width="150">
+        <el-table-column label="设备数" align="center">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
-              <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
+              <div>全部：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
+              <div>已铺货：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber : '0' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="收益(元)" align="center" width="150">
+        <el-table-column label="订单数" align="center" width="120">
           <template slot-scope="scope">
-            <span class="cursor text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
+            <div class="inline text-left">
+              <div>微信：<el-link type="primary"
+                  @click="$router.push({path: `/order?agentIds=${scope.row.id}&sourceType=1`})">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
+                </el-link>
+              </div>
+              <div>支付宝：<el-link type="primary"
+                  @click="$router.push({path: `/order?agentIds=${scope.row.id}&sourceType=2`})">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
+                </el-link>
+              </div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="可提现金额(元)" align="center" width="150">
+        <el-table-column label="金额(元)" align="center" width="140">
           <template slot-scope="scope">
-            <span class="cursor text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
+            <div class="inline">
+              <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
+              <div>总收益：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}</div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="分润比例" align="center">
+        <el-table-column label="可提现金额(元)" align="center" width="120">
+          <template slot-scope="scope">
+            <span class="cursor text-blue">{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="分润比例" align="center" width="140">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div v-for="item in scope.row.agentDeviceType">
@@ -76,9 +83,9 @@
         <el-table-column label="操作" align="center" width="240">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentId=${scope.row.id}`})">订单列表</el-button>
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentId=${scope.row.id}`})">商户列表</el-button>
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentId=${scope.row.id}`})">一键登录</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentIds=${scope.row.id}`})">订单列表</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store?agentIds=${scope.row.id}`})">商户列表</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="toLogin(scope.row)">一键登录</el-button>
             </div>
           </template>
         </el-table-column>
@@ -111,6 +118,7 @@
     data() {
       return {
         clickSubmit: false,
+        form: {},
         tableMaxH: '250',
         list: [],
         listLoading: false,
@@ -119,7 +127,11 @@
           page: 1,
           size: 20
         },
-        form: {},
+
+        orderCount: {},
+        deviceCount: {},
+        cashStat: {},
+        brandUser: {}
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -185,11 +197,103 @@
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
+          this.queryCash(this.arrayKeys(res.rows, 'id'))
+          this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
+          this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))
+          this.getSubBrand(this.arrayKeys(res.rows, 'brandId'))
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
         })
-      }
+      },
+
+      /**
+       * 获取可提现金额
+       */
+      queryCash(ids){
+        if(ids.length == 0){
+          this.cashStat = {}
+          return
+        }
+        this.$get('iot-saas-pay/api/pay/acount/list', {
+          accountType: 1,
+          ownerIds: ids.join(',')
+        }).then(res => {
+          this.cashStat = res
+        })
+      },
+
+      /**
+       * 订单数量统计查询
+       */
+      queryOrderCount(ids){
+        if(ids.length == 0){
+          this.orderCount = {}
+          return
+        }
+        this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+          countType: 'AGENT',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.orderCount = res
+        })
+      },
+
+      /**
+       * 设备数量统计查询
+       */
+      queryDeviceCount(ids){
+        if(ids.length == 0){
+          this.deviceCount = {}
+          return
+        }
+        this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+          countType: 'AGENT',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.deviceCount = res
+        })
+      },
+
+      /**
+       * 获取所属品牌
+       */
+      getSubBrand(uids){
+        if(uids == 0){
+          this.brandUser = {}
+          return
+        }
+        this.$get('iot-saas-basic/admin/brand/findInfoByIds', {
+          brandIds: uids.join(',')
+        }).then(res => {
+          this.brandUser = res
+        })
+      },
+
+      /**
+       * 登录代理后台
+       * @param {Object} row
+       */
+      toLogin(row){
+        this.loadObj = this.$loading({
+          lock: true,
+          text: '正在登录',
+          spinner: 'el-icon-loading'
+        })
+        this.$post('iot-saas-user/admin/login', {
+          userType: 'agent',
+          id: row.id
+        }).then(res => {
+          setToken(getToken(), 'token1')
+          setToken(res.loginToken.accessToken)
+          setTimeout(()=>{
+            location.href = '/home'
+            this.loadObj.close()
+          }, 500)
+        }).catch(err=>{
+          this.loadObj.close()
+        })
+      },
 	  }
   }
 </script>

@@ -17,7 +17,7 @@
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
           <el-form-item label="运营区域">
-            <el-cascader v-model="form.regionTag" :options="cityList" :props="{ expandTrigger: 'hover' }" />
+            <el-cascader v-model="form.areaId" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
           <!-- <el-form-item label="公司名称">
             <el-input v-model="form.companyName" placeholder="公司名称" />
@@ -137,7 +137,7 @@
             avastar: res.avastar,
             name: res.name,
             mobile: res.mobile,
-            regionTag: res.regionTag,
+            areaId: res.areaId,
             companyName: res.companyName,
             companyAddress: res.companyAddress,
             companyPhoneNum: res.companyPhoneNum
@@ -166,7 +166,7 @@
           })
         }
         params.deviceTypeProfitRatios = profitRatios
-        if(Array.isArray(params.regionTag) && params.regionTag.length > 0) params.regionTag = params.regionTag[params.regionTag.length - 1]
+        if(Array.isArray(params.areaId) && params.areaId.length > 0) params.areaId = params.areaId[params.areaId.length - 1]
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
           if (valid) {
@@ -199,7 +199,7 @@
        */
       getCity(){
         this.$get('iot-saas-basic/admin/regions').then(res => {
-          let list = {}, regionTag = ''
+          let list = {}, areaId = ''
           res.map(item => {
             if(item.level == 1){
               list[item.tag] = {
@@ -215,7 +215,7 @@
                 children: []
               }
             }else if(item.level == 3){
-              regionTag = regionTag || item.tag
+              areaId = areaId || item.tag
               let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
               list[tag1].children[tag2].children.push({
                 value: item.tag,
@@ -233,8 +233,8 @@
             return item
           })
           this.cityList = list
-          if(!this.store_id){
-            this.$set(this.form, 'regionTag', regionTag)
+          if(!this.id){
+            this.$set(this.form, 'areaId', areaId)
           }
         })
       },

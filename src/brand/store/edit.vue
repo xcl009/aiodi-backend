@@ -128,8 +128,8 @@
               </el-form-item>
 
               <template v-for="(name, xcx) in config.xcx_pay.default">
-                <div class="margin-top-lg margin-bottom-xs text-dfs">{{ name }}付费设置</div>
-                <el-form-item :label="`${name}付费模式`">
+                <div class="mt-30 mb-10 text-dfs">{{ name }}付费设置</div>
+                <el-form-item :label="`付费模式`">
                   <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
                     <el-radio-button :label="item" v-for="(item, key) in config.mode_way.default" :disabled="key != 1">{{ key }}</el-radio-button>
                   </el-radio-group>
@@ -461,12 +461,10 @@ export default {
             params.lng = lng_lat.lng
             params.lat = lng_lat.lat
           }
-          console.log(typeof params.catId)
-          console.log(typeof params.regionTag)
-          if(params.catId && typeof params.catId == 'array'){
+          if(params.catId && typeof params.catId == 'object'){
             params.catId = params.catId[params.catId.length - 1]
           }
-          if(params.regionTag && typeof params.regionTag == 'array'){
+          if(params.regionTag && typeof params.regionTag == 'object'){
             params.regionTag = params.regionTag[params.regionTag.length - 1]
           }
           params.storePayConfig = []

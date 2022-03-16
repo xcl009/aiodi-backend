@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
-      <el-col :xs="24" :sm="18" :md="12" :lg="10">
+      <el-col :xs="24" :sm="24" :md="18" :lg="16" :xl="12">
         <h4>绑定小程序</h4>
           <!-- <div class="pt-20 mb-20 flex fs-c1">
             <span>请先将小程序授权给我们，才能给您发布代码，</span>
@@ -26,6 +26,12 @@
           </el-form-item>
           <el-form-item label="应用私钥">
             <el-input v-model="form.appPrivateKey" type="textarea" :rows="6"></el-input>
+          </el-form-item>
+          <el-form-item label="应用公钥">
+            <el-input v-model="form.appPublicKey" type="textarea" :rows="6"></el-input>
+          </el-form-item>
+          <el-form-item label="支付宝公钥">
+            <el-input v-model="form.alipayPublicKey" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="应用公钥证书">
             <el-input v-model="form.appCert" type="textarea" :rows="6"></el-input>
@@ -68,15 +74,15 @@
       }
     },
     mounted() {
-      if(this.$route.params.app_id > 0) this.getInfo()
+      if(this.$route.query.app_id > 0) this.getInfo()
     },
     methods: {
       /**
        * 获取信息
        */
       getInfo() {
-        this.$get('AlipayMini/getConfig', {
-          appId: this.$route.params.app_id
+        this.$post('iot-saas-pay/admin/pay/config/alipay/detail', {
+          appId: this.$route.query.app_id
         }).then(res => {
           this.form = this.pick(res, [
             'pid',
@@ -84,31 +90,33 @@
             'appId',
             'signType',
             'appPrivateKey',
+            'appPublicKey',
+            'alipayPublicKey',
             'appCert',
             'alipayCert',
-            'alipayRootCert'
+            'alipayRootCert',
+            'service_id'
           ])
         })
       },
 
+      /**
+       * 提交保存
+       */
       onSubmit() {
         let url = 'iot-saas-pay/admin/pay/config/alipay/save',
           params = JSON.parse(JSON.stringify(this.form))
         if(this.$route.params.id > 0) params.id = this.$route.params.id
         this.clickSubmit = true
+        params.signType = 'RSA2'
+        params.gatewayUrl = 'dsdf'
         this.$post(url, params).then(res => {
           this.$message({
             message: '提交成功',
             type: 'success'
           })
-          // if(this.checkRoles(['terminal'])){
-          //   this.$router.push({
-          //     path: '/ali/index'
-          //   })
-          //   return
-          // }
           this.$router.push({
-            path: '/systemSet/wechat'
+            path: '/systemSet/alipay'
           })
           this.clickSubmit = false
         }).catch(err => {

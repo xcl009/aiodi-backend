@@ -10,26 +10,10 @@
 
       <template v-slot:defult>
         <el-input v-model="form.orderNo" placeholder="订单号" />
-        <!-- <el-select
-          v-model="form.userIds"
-          multiple
-          filterable
-          remote
-          reserve-keyword
-          placeholder="手机号"
-          :remote-method="searchUser"
-          :loading="searchLoading">
-          <el-option
-            v-for="item in searchList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select> -->
-        <el-input v-model="form.custom_mobile" placeholder="手机号" />
-        <el-input v-model="form.custom_nick_name" placeholder="用户昵称" />
-        <el-input v-model="form.store_name" placeholder="商户名称" />
-        <el-input v-model="form.deviceIds" placeholder="设备SN" />
+        <selectSearch v-model="form.userIds" :key="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.userIds" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.storeIds" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.deviceIds" :type="4" name="deviceSn" placeholder="设备SN" @change="toQuery()"></selectSearch>
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
           <el-option label="全部" value="0" />
@@ -253,6 +237,7 @@
 <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
+  import selectSearch from '@/components/condition/selectSearch'
   import toXlsx from '@/components/xlsx/'
   import {
     dealPhone
@@ -263,12 +248,13 @@
     components: {
       Pagination,
       condition,
+      selectSearch,
       toXlsx
     },
     props: {
-      user_type: {
-        type: Number,
-        default: 0
+      lowerOrder: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -399,16 +385,19 @@
         },
         curRow: {},
         curIdx: 0,
-        dform: {},
-
-        searchLoading: false,
-        searchList: [],
+        dform: {}
       }
     },
-    mounted(options) {
+    mounted() {
+      let query = this.$route.query
+      this.queryKey = ['brandIds', 'storeIds', 'agentIds', 'deviceIds', 'sourceType']
+      for (var i in this.queryKey) {
+        if(query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
+      }
       this.toQuery()
     },
     methods: {
+
       /**
        * 订单数量
        */
@@ -419,11 +408,16 @@
           params.chargeEndTime = params.selDay[1]
           delete params.selDay
         }
+        for(var i in this.queryKey){
+          if(this[this.queryKey[i]]){
+            params[this.queryKey[i]] = this[this.queryKey[i]]
+          }
+        }
         delete params.status
-        if(this.user_type == 1) url = 'iot-saas-order/admin/order/summary/sub/brand'
+        if(this.lowerOrder) url = 'iot-saas-order/admin/order/summary/sub/brand'
         if(this.isAgent()){
           url = 'iot-saas-order/admin/order/summary/my/agent'
-          if(this.user_type == 1) url = 'iot-saas-order/admin/order/summary/sub/agent'
+          if(this.lowerOrder) url = 'iot-saas-order/admin/order/summary/sub/agent'
         }
         this.$get(url, params).then(res => {
           this.statInfo = res
@@ -471,10 +465,15 @@
           params.today = true
           delete params.status
         }
-        if(this.user_type == 1) url = 'iot-saas-order/admin/order/list/sub/brand'
+        for(var i in this.queryKey){
+          if(this[this.queryKey[i]]){
+            params[this.queryKey[i]] = this[this.queryKey[i]]
+          }
+        }
+        if(this.lowerOrder) url = 'iot-saas-order/admin/order/list/sub/brand'
         if(this.isAgent()){
           url = 'iot-saas-order/admin/order/list/my/agent'
-          if(this.user_type == 1) url = 'iot-saas-order/admin/order/list/sub/agent'
+          if(this.lowerOrder) url = 'iot-saas-order/admin/order/list/sub/agent'
         }
         this.$get(url, params).then(res => {
           this.list = res.rows

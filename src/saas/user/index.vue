@@ -3,7 +3,7 @@
     <el-col :xs="24" :sm="12" :md="6" :lg="6">
       <el-form ref="form" :model="form">
         <el-form-item class="text-center">
-          <upload v-model="form.avatar" />
+          <upload v-model="form.avatar" :upObj="{fileType: 'userAvatar'}"/>
         </el-form-item>
         <el-form-item label="姓名">
           <el-input v-model="form.nickname"></el-input>

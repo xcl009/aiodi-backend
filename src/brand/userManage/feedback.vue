@@ -13,7 +13,7 @@
             v-model="form.date"
             type="daterange"
             range-separator="-"
-            value-format="timestamp"
+            value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptionsEnd"
@@ -26,7 +26,7 @@
       <div class="flex mb-5">
         <div class="flex1 white-space">
           <el-scrollbar>
-            <el-button size="medium" :type="listQuery.sort == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.sort != item.value}" v-for="item in dealStatus" @click="listQuery.sort = item.value; toQuery()">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
+            <el-button size="medium" :type="listQuery.state == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.state != item.value}" v-for="item in dealStatus" @click="listQuery.state = item.value; toQuery()">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
           </el-scrollbar>
         </div>
       </div>
@@ -35,45 +35,42 @@
         element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="身份" align="center" width="80">
           <template slot-scope="scope">
-            <div>{{ scope.row.from_type == 0 ? '代理商' : '用户' }}</div>
+            <div>{{ scope.row.issueSource }}</div>
           </template>
         </el-table-column>
         <el-table-column label="用户昵称" align="center" width="120">
           <template slot-scope="scope">
             <div class="flex align-center">
-              <el-avatar size="small" :src="scope.row.from_avatar"></el-avatar>
-              <div class="flex1 ml-5">{{ scope.row.from_name }}</div>
+              <div class="flex1 ml-5">{{ scope.row.nickname }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="联系电话" align="center" width="80">
+        <el-table-column label="联系电话" align="center" width="120">
           <template slot-scope="scope">
             {{ scope.row.mobile || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="问题类型" align="center" width="110">
           <template slot-scope="scope">
-            <div>{{ issueArr[scope.row.type] }}</div>
-            <div>{{ scope.row.user_type }}</div>
+            <div>{{ issueArr[scope.row.issueType] }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户" align="center" width="160">
+        <!-- <el-table-column label="商户" align="center" width="160">
           <template slot-scope="scope">
             {{ scope.row.store_name }} <span v-if="scope.row.door">(房间号：{{ scope.row.door }})</span>
           </template>
-        </el-table-column>
-        <el-table-column label="二维码" align="center" width="100">
+        </el-table-column> -->
+        <el-table-column label="设备二维码" align="center" width="100">
           <template slot-scope="scope">
-            <div>{{ scope.row.sao_device_sn }}</div>
-            <a class="text-blue" v-if="scope.row.order_sn" :href="`/order/order?order_sn=${scope.row.order_sn}`" target="_blank">查看订单</a>
+            <div>{{ scope.row.snCode }}</div>
+            <a class="text-blue" v-if="scope.row.orderNo" :href="`/order/order?orderNo=${scope.row.orderNo}`" target="_blank">查看订单</a>
           </template>
         </el-table-column>
-        <el-table-column label="设备类型" align="center" width="80">
+        <!-- <el-table-column label="设备类型" align="center" width="100">
           <template slot-scope="scope">
-            <div v-if="scope.row.depend_type == 1">{{ scope.row.support_buletooth == 1 ? '蓝牙线' : '密码线' }}</div>
-            <div v-else>{{ myDeviceId[scope.row.deviceTypeId] }}</div>
+            {{ myDeviceId[scope.row.deviceTypeId] }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!-- <el-table-column label="错误截图" align="center" width="190">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
@@ -85,17 +82,12 @@
         </el-table-column> -->
         <el-table-column label="反馈时间" align="center" width="100">
           <template slot-scope="scope">
-            {{ parseTime(scope.row.add_date, '{m}-{d} {h}:{i}') }}
+            {{ parseTime(scope.row.feedbackTime, '{m}-{d} {h}:{i}:{s}') }}
           </template>
         </el-table-column>
         <el-table-column label="反馈内容" align="center" width="220">
           <template slot-scope="scope">
             {{ scope.row.content || '--' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="身份" align="center" width="60">
-          <template slot-scope="scope">
-            {{ scope.row.from_type == 0 ? '代理商' : '用户' }}
           </template>
         </el-table-column>
         <el-table-column label="回复" align="center" min-width="250">
@@ -169,24 +161,19 @@
         clickSubmit: false,
         dealStatus: [
           {
-            value: 0,
+            value: '-1',
             title: '全部',
-            nkey: 'all_num'
+            nkey: 'totalCount'
+          },
+          {
+            value: 0,
+            title: '未处理',
+            nkey: 'processCount'
           },
           {
             value: 1,
-            title: '未处理',
-            nkey: 'sended_num'
-          },
-          {
-            value: 2,
-            title: '处理中',
-            nkey: 'dealing_num'
-          },
-          {
-            value: 3,
             title: '已处理',
-            nkey: 'dealed_num'
+            nkey: 'finishedCount'
           }
         ],
 
@@ -225,7 +212,7 @@
         listLoading: false,
         listTotal: 0,
         listQuery: {
-          sort: 0,
+          state: '-1',
           page: 1,
           size: 20
         },
@@ -315,7 +302,7 @@
        */
       getStat() {
         var params = Object.assign({}, this.form)
-        this.$get('iot-saas-basic/admin/feedback/findAgentCount', params).then(res => {
+        this.$get('iot-saas-basic/admin/feedback/findBrandCount', params).then(res => {
           this.statInfo = res
         })
       },
@@ -328,12 +315,12 @@
           page: this.listQuery.page - 1
         })
         if(params.date){
-          params.startDate = params.date[0] / 1000
-          params.endDate = params.date[1] / 1000
+          params.startDate = params.date[0]
+          params.endDate = params.date[1]
           delete params.date
         }
-        this.$get('iot-saas-basic/admin/feedback/findAgentPage', params).then(res => {
-          this.list = [{}]
+        this.$get('iot-saas-basic/admin/feedback/findBrandPage', params).then(res => {
+          this.list = res.rows
           this.listLoading = false
           this.clickSubmit = false
           if (params.page == 0) {
@@ -362,7 +349,6 @@
             this.dialogStatus = true
             if(dialogType == 1){
               this.dform.id = row.id
-              this.dform.state = 2
             }
             break
         }
@@ -377,64 +363,17 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-          console.log(params)
-            this.$post('iot-saas-basic/admin/feedback/updateById', params).then(res => {
-              this.$message({
-                type: 'success',
-                message: '设置成功'
+            this.$post('iot-saas-basic/admin/feedback/replById', params).then(res => {
+              this.$post('iot-saas-basic/admin/feedback/updateById', params).then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '设置成功'
+                })
+                this.curRow = Object.assign(this.curRow, params)
               })
-              this.rowObj = Object.assign(this.rowObj, params)
             })
             break
         }
-      },
-
-      /**
-       * 回复
-       */
-      reply() {
-        this.clickSubmit = true
-        this.$post('commonapi/feedback/reply', {
-          id: this.issue.id,
-          type: 0,
-          content: this.replyObj.content
-        }).then(res => {
-          this.replyDialog = false
-          this.issue.reply_list.push({
-            add_date: Date.parse(new Date()) / 1000,
-            content: this.replyObj.content
-          })
-          this.$message({
-            message: '回复成功',
-            type: 'success'
-          })
-          this.clickSubmit = false
-        }).catch(err=>{
-          this.clickSubmit = false
-        })
-      },
-
-      /**
-       * 处理
-       */
-      deal() {
-        this.clickSubmit = true
-        this.$post('agentapi/feedback/dealed_switch', {
-          id: this.issue.id,
-          deal_status: this.deal_status,
-          remark: this.remark
-        }).then(res => {
-          this.dealDialog = false
-          this.issue.deal_status = this.deal_status
-          this.issue.remark = this.remark
-          this.$message({
-            message: '设置成功',
-            type: 'success'
-          })
-          this.clickSubmit = false
-        }).catch(err=>{
-          this.clickSubmit = false
-        })
       }
     }
   }

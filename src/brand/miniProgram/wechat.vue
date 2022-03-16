@@ -1,23 +1,5 @@
 <template>
   <div>
-		<!-- <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
-		  <template v-slot:defult>
-        <el-date-picker
-          class="range-day flex align-center"
-          v-model="form.day"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
-        </el-date-picker>
-        <el-select v-model="form.withdraw_type" placeholder="提现方式" @change="toQuery()">
-          <el-option :label="item" :value="index" v-for="(item, index) in config.withdraw_way"/>
-        </el-select>
-        <el-input v-model="form.name" placeholder="代理姓名"/>
-        <el-input v-model="form.mobile" placeholder="手机号码"/>
-		  </template>
-		</condition> -->
-
     <div class="pt-15 pl-15 pr-15 pb-15 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         :max-height="tableMaxH">
@@ -31,19 +13,24 @@
             <div class="mb-5">{{ scope.row.appId || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="最新版本" align="center">
+        <el-table-column label="最新模板" align="center">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '--' }}
+            {{ scope.row.latestTemplateId || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="当前版本" align="center">
+        <el-table-column label="当前模板" align="center">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '--' }}
+            {{ scope.row.appTemplate || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '--' }}
+            {{ appAuditStatus[scope.row.appAuditStatus] || '--' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="备注" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.appAuditResut || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="更新时间" align="center">
@@ -54,6 +41,11 @@
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">提交审核</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(3, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">审核状态</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 4">审核失败</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(5, scope.row)">隐私设置</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/systemSet/wechatEdit?app_id=${scope.row.appId}`})">修改信息</div>
             <!-- <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div> -->
@@ -97,6 +89,14 @@
         list: [],
         listLoading: false,
 
+        appAuditStatus: {
+          0: '待上传',
+          1: '待审核',
+          2: '审核中',
+          3: '待发布',
+          4: '审核失败',
+          5: '已发布'
+        },
         // 弹出相关
         dialogType: 1,
         dialogStatus: false,
@@ -150,9 +150,7 @@
       reset(){
         if(this.clickSubmit) return
         this.clickSubmit = true
-        this.form = {
-          activated_status: 1
-        }
+        this.form = {}
         this.getList()
       },
 
@@ -172,10 +170,10 @@
       },
 
       /**
-       * 操作商户
+       * 操作
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '上传代码'
+       * @param {Object} dialogType dialog内容显示类型 1: '上传代码' 2: '提交审核' 3: '查询审核状态' 4: '发布代码' 5: '隐私设置'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -185,6 +183,41 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
+            break
+          case 2:
+            
+            this.$post(`iot-saas-pay/wechat/${row.appId}/submit/audit`).then(res => {
+              this.$message({
+                message: '提交审核成功',
+                type: 'success'
+              })
+              row.appAuditStatus = 2
+            })
+            break
+          case 3:
+            this.$get(`iot-saas-pay/wechat/${row.appId}/latest/audit/status`).then(res => {
+              this.$message({
+                message: '查询成功',
+                type: 'success'
+              })
+              row.appAuditStatus = (res.status == 0 ? 3 : res.status == 1 ? 4 : res.appAuditStatus)
+            })
+            break
+          case 4:
+            this.$post(`iot-saas-pay/wechat/${row.appId}/push/release`).then(res => {
+              this.$message({
+                message: '发布成功',
+                type: 'success'
+              })
+              row.appAuditStatus = 5
+            })
+            break
+          case 5:
+            this.$post(`iot-saas-pay/wechat/${row.appId}/set/privacy`, {
+
+            }).then(res => {
+
+            })
             break
         }
       },
@@ -198,15 +231,21 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            this.$post('agentapi/upper_review_apply', {
-              apply_id: curRow.id,
-              agree: 1
+            this.$post('iot-saas-pay/wechat/upload/code', {
+              appId: curRow.appId,
+              ext: {
+                appId: curRow.appId,
+              },
+              directCommit: false,
+              extEnable: true,
+              extAppid: curRow.appId
             }).then(res => {
               this.$message({
-                message: '提交成功',
+                message: '上传成功',
                 type: 'success'
               })
-              row.withdraw_status = 2
+              this.dialogStatus = false
+              curRow.appAuditStatus = 1
             })
             break
         }

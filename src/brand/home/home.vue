@@ -7,7 +7,7 @@
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
               <div class="fs-b5 text-black">￥</div>
-              <div class="mr-10 fs-b5 text-black"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+              <div class="mr-10 fs-b5 text-black"><count-to :start-val="0" :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2"/></div>
               <i class="iconfont icon-right fs-s1"></i>
             </div>
             <div class="stat-icon flex align-center justify-center">
@@ -16,7 +16,7 @@
           </div>
           <div class="flex align-center">
             <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(orderStat.todayAmount)" :duration="2600" :decimals="2"/></div>
             <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
           </div>
         </div>
@@ -26,7 +26,7 @@
           <div>总订单数</div>
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)" :duration="2600"/></div>
               <i class="iconfont icon-right fs-s1"></i>
             </div>
             <div class="stat-icon flex align-center justify-center" style="background: rgba(255, 163, 43, 0.1)">
@@ -35,7 +35,7 @@
           </div>
           <div class="flex align-center">
             <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(orderStat.todayNumber)" :duration="2600" :decimals="2"/></div>
             <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
           </div>
         </div>
@@ -45,7 +45,7 @@
           <div>总设备数</div>
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)" :duration="2600"/></div>
               <i class="iconfont icon-right fs-s1"></i>
             </div>
             <div class="stat-icon flex align-center justify-center" style="background: rgba(7, 193, 96, 0.1)">
@@ -54,7 +54,7 @@
           </div>
           <div class="flex align-center">
             <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(totalStat.todayDeviceNumber)" :duration="2600"/></div>
             <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
           </div>
         </div>
@@ -64,7 +64,7 @@
           <div>总用户数</div>
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600"/></div>
               <i class="iconfont icon-right fs-s1"></i>
             </div>
             <div class="stat-icon flex align-center justify-center" style="background: rgba(255, 83, 83, 0.1)">
@@ -94,39 +94,39 @@
               </el-dropdown-menu>
             </el-dropdown>
           </div>
-          <div class="mt-20 flex justify-around text-center">
+          <div class="mt-20 flex justify-around text-center" v-if="querHistogram.today">
             <div class="flex align-end">
               <div class="mr-5">
-                <div class="fs-s2">{{ contrast_type == 0 ? '￥3,145' : contrast_type == 1 ? 1200 : '￥8'}}</div>
+                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.today.amount : contrast_type == 1 ? querHistogram.today.orderNumber : querHistogram.today.unitPrice}}</div>
                 <div class="bar"></div>
                 <div>今日</div>
               </div>
               <div>
-                <div class="fs-s2">{{ contrast_type == 0 ? '￥3,145' : contrast_type == 1 ? 1200 : '￥8'}}</div>
+                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.yesterday.amount : contrast_type == 1 ? querHistogram.yesterday.orderNumber : querHistogram.yesterday.unitPrice}}</div>
                 <div class="bar high cyan"></div>
                 <div>昨日</div>
               </div>
             </div>
             <div class="flex align-end">
               <div class="mr-5">
-                <div class="fs-s2">{{ contrast_type == 0 ? '￥3,145' : contrast_type == 1 ? 1200 : '￥8'}}</div>
+                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.week.amount : contrast_type == 1 ? querHistogram.week.orderNumber : querHistogram.week.unitPrice}}</div>
                 <div class="bar"></div>
                 <div>本周</div>
               </div>
               <div>
-                <div class="fs-s2">{{ contrast_type == 0 ? '￥3,145' : contrast_type == 1 ? 1200 : '￥8'}}</div>
+                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.lastWeek.amount : contrast_type == 1 ? querHistogram.lastWeek.orderNumber : querHistogram.lastWeek.unitPrice}}</div>
                 <div class="bar high cyan"></div>
                 <div>上周</div>
               </div>
             </div>
             <div class="flex align-end">
               <div class="mr-5">
-                <div class="fs-s2">{{ contrast_type == 0 ? '￥3,145' : contrast_type == 1 ? 1200 : '￥8'}}</div>
+                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.month.amount : contrast_type == 1 ? querHistogram.month.orderNumber : querHistogram.month.unitPrice}}</div>
                 <div class="bar"></div>
                 <div>本月</div>
               </div>
               <div>
-                <div class="fs-s2">{{ contrast_type == 0 ? '￥3,145' : contrast_type == 1 ? 1200 : '￥8'}}</div>
+                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.lastMonth.amount : contrast_type == 1 ? querHistogram.lastMonth.orderNumber : querHistogram.lastMonth.unitPrice}}</div>
                 <div class="bar high cyan"></div>
                 <div>上月</div>
               </div>
@@ -147,22 +147,25 @@
                 {{ day_type_arr[day_type] }}<i class="el-icon-arrow-down el-icon--right fs-s1"></i>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="(item, index) in day_type_arr" @click.native="day_type = index">{{ item }}</el-dropdown-item>
+                <el-dropdown-item v-for="(item, index) in day_type_arr" @click.native="day_type = index; getLineChart()">{{ item }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <div class="ml-15 box-grey">
               <el-date-picker
                 class="range-day"
-                  v-model="form.day"
+                  v-model="form.date"
                   type="daterange"
                   size="small"
                   range-separator="-"
+                  value-format="timestamp"
                   start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+                  end-placeholder="结束日期"
+                  :picker-options="pickerOptionsEnd"
+                  @change="getLineChart()">
                 </el-date-picker>
             </div>
           </div>
-          <div class="chart-daystat" ref="chart_daystat" style="height: 508px;"></div>
+          <div class="chart-daystat" ref="chartDay" style="height: 508px;"></div>
         </div>
       </el-col>
     </el-row>
@@ -170,7 +173,8 @@
 </template>
 
 <script>
-  import { delComma } from '@/utils/index'
+  import { delComma, parseTime, currentTime } from '@/utils/index'
+  import DateUtil from '@/utils/date'
   import CountTo from 'vue-count-to'
 
   import { Finance, TransactionOrder, Server, Peoples } from '@icon-park/vue'
@@ -180,7 +184,6 @@
   import { PieChart, LineChart } from 'echarts/charts'
   import { LabelLayout } from 'echarts/features'
   import { CanvasRenderer } from 'echarts/renderers'
-
   echarts.use([
     TooltipComponent,
     LegendComponent,
@@ -206,7 +209,30 @@
         delComma: delComma,
         totalStat: {},
         form: {},
+        orderStat: {},
+        deviceStat: {},
+        querHistogram: {},
+        brandTop: [],
+        brandId: '',
 
+        pickerOptionsEnd: {
+          disabledDate: (time) => {
+            let timeOptionRange = this.timeOptionRange
+            let secondNum = 60 * 60 * 24 * 31 * 1000
+            if (timeOptionRange) {
+              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange.getTime() - secondNum) || time.getTime() > Date.now()
+            }
+            return time.getTime() > Date.now()
+          }, onPick: (time) => {
+            //当第一时间选中才设置禁用
+            if (time.minDate && !time.maxDate) {
+              this.timeOptionRange = time.minDate
+            }
+            if (time.maxDate) {
+              this.timeOptionRange = null
+            }
+          }
+        },
         // 设备统计数据
         deviceChartColor: [
           "#3CA1FE",
@@ -219,35 +245,9 @@
         ],
         deviceChartData: [
           {
-            "device_type": 1,
-            "value": 6000,
-            "name": "密码线"
-          },
-          {
-            "device_type": 0,
             "value": 0,
-            "name": "充电宝"
-          },
-          {
-            "device_type": 7,
-            "value": 0,
-            "name": "套套机"
-          },
-          // {
-          //   "device_type": 3,
-          //   "value": 24,
-          //   "name": "充电桩"
-          // },
-          {
-            "device_type": 8,
-            "value": 0,
-            "name": "加湿器"
-          },
-          // {
-          //   "device_type": 4,
-          //   "value": 75,
-          //   "name": "洗衣机"
-          // }
+            "name": "充电线"
+          }
         ],
 
         day_type_arr: ['近7天', '本周', '上周', '本月', '上月'],
@@ -274,74 +274,227 @@
 
     },
     mounted() {
-      
-      this.$get('iot-saas-basic/admin/agent/agentAuth').then(res => {
-        console.log(res)
-      })
-      
-      this.deviceChart()
-
-      this.dayChart({
-        "dayArr": [
-          "11-19",
-          "11-20",
-          "11-21",
-          "11-22",
-          "11-23",
-          "11-24",
-          "11-25"
-        ],
-        "day_order_amount": [
-          10515.23,
-          14484.7,
-          13969.25,
-          10455.24,
-          11234.67,
-          11622.14,
-          9078.13
-        ],
-        "day_order_num": [
-          3074,
-          3655,
-          3430,
-          2995,
-          2989,
-          3496,
-          2276
-        ],
-        "day_average_order_num": [
-          "3,130.71",
-          "3,130.71",
-          "3,130.71",
-          "3,130.71",
-          "3,130.71",
-          "3,130.71",
-          "3,130.71"
-        ],
-        "day_average_order_amount": [
-          11622.75,
-          11622.75,
-          11622.75,
-          11622.75,
-          11622.75,
-          11622.75,
-          11622.75
-        ]
-      })
+      this.getOrderStat()
+      this.getQuerHistogram()
+      this.getLineChart()
+      this.getDeviceStat()
+      this.getBrandTop10()
     },
     methods: {
       /**
-       * 获取饼状图数据
+       * 总统计
        */
-      getEquipData() {
-        return
-        this.$get('agentapi/my_type_device_data', {
-          device_type: this.device_type,
-          search_agent_id: this.search_agent_id
-        }).then(res => {
-          this.equipData = res
+      getOrderStat() {
+        this.$get('iot-saas-order/admin/order/count/queryByUser').then(res => {
+          this.orderStat = res
         })
       },
+
+      /**
+       * 交易数据对比
+       */
+      getQuerHistogram() {
+        this.$get('iot-saas-order/admin/order/count/querHistogram', {
+          brandId: this.brandId
+        }).then(res => {
+          this.querHistogram = res
+        })
+      },
+
+      /**
+       * 设备统计
+       */
+      getDeviceStat() {
+        this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
+          this.deviceStat = res
+          let deviceChartData = []
+          if(res.deviceTypeDetail){
+            for(var i in res.deviceTypeDetail){
+              deviceChartData.push({
+                "value": res.deviceTypeDetail[i].deviceNumber,
+                "name": i
+              })
+            }
+            if(deviceChartData.length > 0){
+              this.deviceChartData = deviceChartData
+            }
+          }
+          this.deviceChart()
+        })
+      },
+
+      /**
+       * 查询订单量前10的品牌
+       */
+      getBrandTop10(){
+        this.$get('iot-saas-order/admin/order/count//queryHighOrderBrand').then(res => {
+          this.brandTop = res
+        })
+      },
+
+      /**
+       * 品牌筛选
+       */
+      loadStat(){
+        this.getQuerHistogram()
+        this.getLineChart()
+      },
+
+      /**
+       * 近期数据对比
+       */
+      getLineChart(){
+        let eTime = currentTime(),
+          sTime = eTime - (6 * 86400),
+          groupDate = [],
+          amount = [],
+          orderNumber = [],
+          doneOrderNumber = [],
+          unitPrice = [],
+          params = {}
+
+        if(this.day_type == 1){
+          sTime = DateUtil.getWeekStartDate()
+          eTime = DateUtil.getWeekEndDate()
+        }else if(this.day_type == 2){
+          sTime = DateUtil.getLastWeekStartDate()
+          eTime = DateUtil.getLastWeekEndDate()
+        }else if(this.day_type == 3){
+          sTime = DateUtil.getMonthStartDate()
+          eTime = DateUtil.getMonthEndDate()
+        }else if(this.day_type == 4){
+          sTime = DateUtil.getLastMonthStartDate()
+          eTime = DateUtil.getLastMonthEndDate()
+        }else if(this.form.date){
+          sTime = this.form.date[0] / 1000
+          eTime = this.form.date[1] / 1000
+        }
+        params = {
+          brandID: this.brandId,
+          startDateStr: parseTime(sTime, '{y}-{m}-{d}'),
+          endDateStr: parseTime(eTime, '{y}-{m}-{d}')
+        }
+        this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
+          let ki = 0
+          for(var i = sTime; i < (eTime + 86400); i = i + 86400){
+            groupDate.push(parseTime(i, '{m}-{d}'))
+            if(res[ki] && res[ki].countGroupDate == parseTime(i, '{y}-{m}-{d}')){
+              amount.push(res[ki].amount)
+              orderNumber.push(res[ki].orderNumber)
+              doneOrderNumber.push(res[ki].doneOrderNumber)
+              unitPrice.push(res[ki].unitPrice)
+            } else {
+              amount.push(0)
+              orderNumber.push(0)
+              doneOrderNumber.push(0)
+              unitPrice.push(0)
+            }
+            ki++
+          }
+          if(this.dayChartInit){
+            this.dayChartOptions({
+              groupDate,
+              amount,
+              orderNumber,
+              doneOrderNumber,
+              unitPrice,
+            })
+          }else{
+            this.setLineChart({
+              groupDate,
+              amount,
+              orderNumber,
+              doneOrderNumber,
+              unitPrice,
+            })
+          }
+        })
+      },
+
+      /**
+       * 图表初始化
+       */
+      setLineChart(chartData) {
+        this.dayChartInit = echarts.init(this.$refs.chartDay)
+        this.dayChartOptions(chartData)
+      },
+
+      /**
+       * 图表设置数据
+       */
+      dayChartOptions({
+        groupDate,
+        amount,
+        orderNumber,
+        doneOrderNumber,
+        unitPrice
+      } = {}) {
+        if (!groupDate) return
+        let legend = ['交易额', '订单量', '平均单量', '平均交易额'],
+          series = [
+            {
+              name: '交易额',
+              type: 'line',
+              data: amount,
+              animationDuration: 2800,
+              animationEasing: 'cubicInOut',
+            },
+            {
+              name: '订单量',
+              type: 'line',
+              data: orderNumber,
+              animationDuration: 2800,
+              animationEasing: 'quadraticOut'
+            },
+            {
+              name: '平均单量',
+              type: 'line',
+              data: doneOrderNumber,
+              animationDuration: 2800,
+              animationEasing: 'quadraticOut'
+            },
+            {
+              name: '平均交易额',
+              type: 'line',
+              data: unitPrice,
+              animationDuration: 2800,
+              animationEasing: 'quadraticOut'
+            }
+          ]
+        this.dayChartInit.setOption({
+          color: ['#3CA1FE', '#FFA32B', '#07C160', '#FF5353'],
+          xAxis: {
+            data: groupDate,
+            boundaryGap: false,
+            axisTick: {
+              show: false
+            }
+          },
+          grid: {
+            left: 20,
+            right: 20,
+            bottom: 70,
+            top: 40,
+            containLabel: true
+          },
+          tooltip: {
+            trigger: 'axis',
+            padding: [10, 10]
+          },
+          yAxis: {
+            type: 'value'
+          },
+          legend: {
+            bottom: 20,
+            data: legend,
+            lineStyle: {
+              width: 0
+            }
+          },
+          series: series
+        })
+      },
+
 
       /**
        * 设备图表初始化
@@ -388,90 +541,6 @@
             },
             data: that.deviceChartData
           }]
-        })
-      },
-
-      /**
-       * 图表初始化
-       */
-      dayChart(chartData) {
-        this.dayChartInit = echarts.init(this.$refs.chart_daystat)
-        this.dayChartOptions(chartData)
-      },
-
-      /**
-       * 图表设置数据
-       */
-      dayChartOptions({
-        dayArr,
-        day_order_amount,
-        day_order_num,
-        day_average_order_num,
-        day_average_order_amount
-      } = {}) {
-        if (!dayArr) return
-        let legend = ['交易额', '订单量', '平均单量', '平均交易额'],
-          series = [
-            {
-              name: '交易额',
-              type: 'line',
-              data: day_order_amount,
-              animationDuration: 2800,
-              animationEasing: 'cubicInOut',
-            },
-            {
-              name: '订单量',
-              type: 'line',
-              data: day_order_num,
-              animationDuration: 2800,
-              animationEasing: 'quadraticOut'
-            },
-            {
-              name: '平均单量',
-              type: 'line',
-              data: day_average_order_num,
-              animationDuration: 2800,
-              animationEasing: 'quadraticOut'
-            },
-            {
-              name: '平均交易额',
-              type: 'line',
-              data: day_average_order_amount,
-              animationDuration: 2800,
-              animationEasing: 'quadraticOut'
-            }
-          ]
-        this.dayChartInit.setOption({
-          color: ['#3CA1FE', '#FFA32B', '#07C160', '#FF5353'],
-          xAxis: {
-            data: dayArr,
-            boundaryGap: false,
-            axisTick: {
-              show: false
-            }
-          },
-          grid: {
-            left: 20,
-            right: 20,
-            bottom: 70,
-            top: 40,
-            containLabel: true
-          },
-          tooltip: {
-            trigger: 'axis',
-            padding: [10, 10]
-          },
-          yAxis: {
-            type: 'value'
-          },
-          legend: {
-            bottom: 20,
-            data: legend,
-            lineStyle: {
-              width: 0
-            }
-          },
-          series: series
         })
       },
     }

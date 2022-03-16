@@ -51,7 +51,7 @@
               <el-input v-model="wxQrcodeInfo.userName" placeholder="您的姓名" />
             </el-form-item>
             <el-form-item label="收款码：">
-              <upload v-model="wxQrcodeInfo.qrcode"></upload>
+              <upload v-model="wxQrcodeInfo.qrcode" :upObj="{fileType: 'paymentCode'}"></upload>
             </el-form-item>
           </div>
           <div v-show="tabsType[form.withdrawType] == 4">
@@ -59,7 +59,7 @@
               <el-input v-model="aliQrcodeInfo.userName" placeholder="您的姓名" />
             </el-form-item>
             <el-form-item label="收款码：">
-              <upload v-model="aliQrcodeInfo.qrcode"></upload>
+              <upload v-model="aliQrcodeInfo.qrcode" :upObj="{fileType: 'paymentCode'}"></upload>
             </el-form-item>
           </div>
           <el-form-item>

@@ -189,7 +189,7 @@
 <script>
   import { delComma } from '@/utils/index'
   import CountTo from 'vue-count-to'
-
+  
   import { Finance, TransactionOrder, Server, Peoples } from '@icon-park/vue'
 
   import * as echarts from 'echarts/lib/echarts'

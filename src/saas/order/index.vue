@@ -10,10 +10,10 @@
 
       <template v-slot:defult>
         <el-input v-model="form.orderNo" placeholder="订单号" />
-        <el-input v-model="form.custom_mobile" placeholder="手机号" />
-        <el-input v-model="form.custom_nick_name" placeholder="用户昵称" />
-        <el-input v-model="form.store_name" placeholder="商户名称" />
-        <el-input v-model="form.deviceIds" placeholder="设备SN" />
+        <selectSearch v-model="form.userIds" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.userIds" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.storeIds" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.deviceIds" :type="4" name="deviceSn" placeholder="设备SN" @change="toQuery()"></selectSearch>
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
           <el-option label="全部" value="0" />
@@ -25,7 +25,7 @@
         </el-select>
         <el-date-picker
           class="range-day flex align-center"
-            v-model="form.selDay"
+            v-model="form.date"
             type="daterange"
             range-separator="-"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -199,6 +199,7 @@
 <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
+  import selectSearch from '@/components/condition/selectSearch'
   import toXlsx from '@/components/xlsx/'
   import selPlat from '@/components/selPlat'
   import {
@@ -210,6 +211,7 @@
     components: {
       Pagination,
       condition,
+      selectSearch,
       toXlsx,
       selPlat
     },
@@ -272,7 +274,7 @@
           {
             value: '',
             title: '全部',
-            nkey: 'all'
+            nkey: 'orderNumber'
           },
           {
             value: 1,
@@ -282,27 +284,27 @@
           {
             value: 'today',
             title: '今日订单',
-            nkey: 'today'
+            nkey: 'todayNumber'
           },
           {
             value: [2,3],
             title: '已完成',
-            nkey: 'done'
+            nkey: 'doneNumber'
           },
           {
             value: 4,
             title: '超时订单',
-            nkey: 'expired'
+            nkey: 'expiredNumber'
           },
           {
             value: 5,
             title: '租借失败',
-            nkey: 'rentFail'
+            nkey: 'rentFailedNumber'
           },
           {
             value: 6,
             title: '扣款失败',
-            nkey: 'payFail'
+            nkey: 'payFailedNumber'
           }
         ],
 
@@ -345,10 +347,10 @@
       next()
     },
     activated() {
-      let queryKey = [],
-        query = this.$route.query
-      for (var i in queryKey) {
-        this[queryKey[i]] = query[queryKey[i]]
+      let query = this.$route.query
+      this.queryKey = ['brandIds', 'storeIds', 'agentIds', 'deviceIds', 'sourceType']
+      for (var i in this.queryKey) {
+        this[this.queryKey[i]] = query[this.queryKey[i]]
       }
       if (this.$route.meta.reload) {
         this.getList()
@@ -358,18 +360,28 @@
       this.urlQuery = this.$route.meta.urlQuery
     },
     mounted(options) {
-      
+
     },
     methods: {
       /**
        * 订单数量
        */
       getStatNum() {
-        let url = 'iot-saas-order/admin/order/summary/admin', params = Object.assign({}, this.listQuery, this.form)
-        if(params.selDay && params.selDay.length > 0){
-          params.chargeStartTime = params.selDay[0]
-          params.chargeEndTime = params.selDay[1]
-          delete params.selDay
+        let url = 'iot-saas-order/admin/order/count/queryByUser', params = Object.assign({}, this.form)
+        if(params.date && params.date.length > 0){
+          params.chargeStartTime = params.date[0]
+          params.chargeEndTime = params.date[1]
+          delete params.date
+        }
+        if(this.brandIds) params.brandId = this.brandIds
+        for(var i in this.queryKey){
+          if(this[this.queryKey[i]]){
+            params[this.queryKey[i]] = this[this.queryKey[i]]
+          }
+        }
+        if(params.brandIds){
+          params.brandId = params.brandIds
+          delete params.brandIds
         }
         delete params.status
         this.$get(url, params).then(res => {
@@ -409,14 +421,19 @@
         var url = 'iot-saas-order/admin/order/list/admin', params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        if(params.selDay && params.selDay.length > 0){
-          params.chargeStartTime = params.selDay[0]
-          params.chargeEndTime = params.selDay[1]
-          delete params.selDay
+        if(params.date && params.date.length > 0){
+          params.chargeStartTime = params.date[0]
+          params.chargeEndTime = params.date[1]
+          delete params.date
         }
         if(params.status == 'today'){
           params.today = true
           delete params.status
+        }
+        for(var i in this.queryKey){
+          if(this[this.queryKey[i]]){
+            params[this.queryKey[i]] = this[this.queryKey[i]]
+          }
         }
         this.$get(url, params).then(res => {
           this.list = res.rows

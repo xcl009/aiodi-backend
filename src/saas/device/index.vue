@@ -11,10 +11,9 @@
       <template v-slot:defult>
         <el-input v-model="form.qrcodeSn" placeholder="二维码" />
         <el-input v-model="form.deviceSn" placeholder="设备SN" />
-        <el-input v-model="form.storeName" placeholder="商户名称" />
-        <el-input v-model="form.agentName" placeholder="代理名称" />
-        <el-input v-model="form.brandName" placeholder="品牌名称" />
-        <el-input v-model="form.factoryName" placeholder="公司名称" />
+        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.brandId" :type="6" name="name" placeholder="品牌名称" @change="toQuery()"></selectSearch>
       </template>
     </condition>
 
@@ -23,16 +22,15 @@
         <div class="flex1">
           <el-button size="medium" :type="listQuery.haveBind === item.value ? 'primary' : ''"
             :class="{'btn-body': listQuery.haveBind !== item.value}" v-for="item in haveBind"
-            @click="listQuery.haveBind = item.value;toQuery()">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+            @click="listQuery.haveBind = item.value;toQuery()">{{ item.title }}({{deviceCount[item.nkey] || 0}})</el-button>
         </div>
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        element-loading-text="Loading" stripe highlight-current-row @selection-change="selList" :max-height="tableMaxH">
-        <el-table-column type="selection" :selectable="checkSel" width="50" />
+        element-loading-text="Loading" stripe highlight-current-row :max-height="tableMaxH">
         <el-table-column label="品牌商" align="center" width="120">
           <template slot-scope="scope">
-            {{ oemInfo && oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '--' }}
+            <div>{{ scope.row.brand.name }}</div>
           </template>
         </el-table-column>
         <el-table-column label="设备名称" align="center">
@@ -42,8 +40,13 @@
         </el-table-column>
         <el-table-column label="设备归属" align="center" width="180">
           <template slot-scope="scope">
-            <div>{{ scope.row.manage_name || '用户名' }}</div>
-            <div>{{ scope.row.manage_phone || '手机号码' }}</div>
+            <template v-if="scope.row.agent">
+              <div>{{ scope.row.agent.name }}</div>
+              <div>{{ dealPhone(scope.row.agent.mobile) }}</div>
+            </template>
+            <template v-else>
+              <div>{{ scope.row.brand.name }}</div>
+            </template>
           </template>
         </el-table-column>
         <el-table-column label="设备SN码" align="center" width="230">
@@ -76,13 +79,13 @@
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
-                  @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=1`})">
-                  {{ scope.row.wx_mini_num || 0 }}
+                  @click="$router.push({path: `/order?deviceIds=${scope.row.id}&sourceType=1`})">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
                 </el-link>
               </div>
               <div>支付宝：<el-link type="primary"
-                  @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=2`})">
-                  {{ scope.row.zfb_mini_num || 0 }}
+                  @click="$router.push({path: `/order?deviceIds=${scope.row.id}&sourceType=2`})">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
                 </el-link>
               </div>
             </div>
@@ -90,13 +93,7 @@
         </el-table-column>
         <el-table-column label="交易额(元)" align="center" width="90">
           <template slot-scope="scope">
-            {{ scope.row.order_amount || '0.00' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="状态" align="center" width="120" v-if="false">
-          <template slot-scope="scope">
-            <div class="text-danger">已绑定</div>
-            <div>2021-11-26 18:27</div>
+            {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="190" :fixed="device == 'desktop' ? 'right' : false">
@@ -151,12 +148,13 @@
 <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
-
+  import selectSearch from '@/components/condition/selectSearch'
   export default {
     name: 'device',
     components: {
       Pagination,
-      condition
+      condition,
+      selectSearch
     },
     props: {
       lowerDevice: {
@@ -187,28 +185,25 @@
     data() {
       return {
         clickSubmit: false,
-        haveBind: [{
+        haveBind: [
+          {
             value: '',
             title: '全部',
-            nkey: ''
+            nkey: 'deviceNumber'
           },
           {
             value: true,
             title: '已绑',
-            nkey: ''
+            nkey: 'bindStoreNumber'
           },
           {
             value: false,
             title: '未绑',
-            nkey: ''
+            nkey: 'noBindStoreNumber'
           }
         ],
-        form: {
-          //search_store_name: this.$route.query.store_name || ''
-        },
-        numInfo: {},
+        form: {},
         tableMaxH: '250',
-        oemInfo: {},
         list: [],
         listLoading: true,
         listTotal: 0,
@@ -218,8 +213,8 @@
           size: 20
         },
 
-        selSnArr: [],
-        selID: [],
+        orderCount: {},
+        deviceCount: {},
 
         // 弹出相关
         dialogType: 1,
@@ -246,44 +241,23 @@
       next()
     },
     activated() {
-      let queryKey = [],
-        query = this.$route.query
-      for (var i in queryKey) {
-        this[queryKey[i]] = query[queryKey[i]]
+      let query = this.$route.query
+      this.queryKey = ['brandId', 'agentIds']
+      for (var i in this.queryKey) {
+        this[this.queryKey[i]] = query[this.queryKey[i]]
       }
       if (this.$route.meta.reload) {
         this.getList()
       } else if (this.urlQuery != this.$route.meta.urlQuery) {
         this.toQuery(1)
+        this.queryDeviceCount()
       }
       this.urlQuery = this.$route.meta.urlQuery
     },
     mounted(options) {
-      
+
     },
     methods: {
-      /**
-       * 校验是否可选
-       */
-      checkSel(row) {
-        return !row.distribute
-      },
-
-      /**
-       * 选择设备
-       * @param {Object} res
-       */
-      selList(list) {
-        let selSnArr = [],
-          selID = []
-        for (var i in list) {
-          selSnArr.push(list[i].goods_sn)
-          selID.push(list[i].id)
-        }
-        this.selSnArr = selSnArr
-        this.selID = selID
-      },
-
       /**
        * 搜索查询
        */
@@ -306,6 +280,43 @@
       },
 
       /**
+       * 设备数量统计查询
+       */
+      queryDeviceCount(){
+        let params = {}
+        if(this.agentIds){
+          params.countType = 'AGENT'
+          params.groupIds = this.agentIds
+        }else if(this.brandId){
+          params.countType = 'BRAND'
+          params.groupIds = this.brandId
+        } else {
+          this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
+            res.noBindStoreNumber = parseInt( res.deviceNumber ) - parseInt( res.bindStoreNumber )
+            this.deviceCount = res
+          })
+          return
+        }
+        this.$get('iot-saas-device/admin/device/count/queryGroupCount', params).then(res => {
+          if(res[params.groupIds]){
+            res = res[params.groupIds]
+          } else {
+            this.deviceCount = {
+              deviceNumber: 0,
+              bindStoreNumber: 0,
+              noBindStoreNumber: 0
+            }
+            return
+          }
+          this.deviceCount = {
+            deviceNumber: res.deviceNumber,
+            bindStoreNumber: res.bindStoreNumber,
+            noBindStoreNumber: parseInt(res.deviceNumber) -  parseInt(res.bindStoreNumber)
+          }
+        })
+      },
+
+      /**
        * 获取列表
        */
       getList() {
@@ -313,6 +324,11 @@
           page: this.listQuery.page - 1,
           lowerDevice: this.lowerDevice
         })
+        for(var i in this.queryKey){
+          if(this[this.queryKey[i]]){
+            params[this.queryKey[i]] = this[this.queryKey[i]]
+          }
+        }
         this.$get('iot-saas-device/admin/device/findPage', params).then(res => {
           this.list = res.rows
           this.listLoading = false
@@ -321,12 +337,29 @@
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
+          this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
         })
       },
-      
+
+      /**
+       * 订单统计数量查询
+       */
+      queryOrderCount(ids){
+        if(ids.length == 0){
+          this.orderCount = {}
+          return
+        }
+        this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+          countType: 'DEVICE',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.orderCount = res
+        })
+      },
+
       /**
        * 操作行
        * @param {Object} type 1 dialog类型
@@ -347,8 +380,6 @@
               }).then(res => {
                 console.log(res)
               })
-            }else if(dialogType == 2){
-              this.$set(this.dform, 'refundType', '0')
             }
             break
         }
@@ -365,49 +396,7 @@
         this.clickSubmit = true
         switch (this.dialogType) {
           case 1:
-            if(!params.chargeEndTime){
-              this.$message({
-                message: '请选择订单结束时间',
-                type: 'error'
-              })
-              return
-            }
-            this.$post('iot-saas-order/admin/order/complete', {
-              orderId: this.curRow.id,
-              chargeEndTime: params.chargeEndTime
-            }).then(res => {
-              this.$message({
-                message: '结束订单成功',
-                type: 'success'
-              })
-              curRow.status = 2
-              this.dialogStatus = false
-              this.clickSubmit = false
-            }).catch(err => {
-              this.clickSubmit = false
-            })
-            break
-          case 2:
-            if(!params.amount){
-              this.$message({
-                message: '请输入退款金额',
-                type: 'error'
-              })
-              return
-            }
-            params.orderId = this.curRow.id
-            this.$post('iot-saas-order/admin/order/refund', params).then(res => {
-              this.$message({
-                message: '订单退款成功',
-                type: 'success'
-              })
-              curRow.status = 9
-              curRow.amountRefund = params.amount
-              this.dialogStatus = false
-              this.clickSubmit = false
-            }).catch(err => {
-              this.clickSubmit = false
-            })
+
             break
         }
       }
