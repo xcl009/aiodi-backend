@@ -84,7 +84,7 @@
         <el-table-column label="操作" align="center" width="190" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <template v-if="deviceId">
-              <el-button type="primary" size="mini" @click="bindShop(scope.row)">铺货</el-button>
+              <el-button type="primary" size="mini" @click="bindStore(scope.row)">铺货</el-button>
             </template>
             <template v-else>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
@@ -114,7 +114,7 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <el-form class="custom-form">
-          <el-input v-model="dform.introduce" placeholder="设备编号与编号之间用英文逗号隔开" type="textarea" :rows="5" />
+          <el-input v-model="dform.deviceIds" placeholder="设备编号与编号之间用英文逗号隔开" type="textarea" :rows="5" />
         </el-form>
       </template>
       <template v-if="dialogType == 2">
@@ -221,7 +221,7 @@
       let query = this.$route.query
       this.queryKey = ['deviceId', 'agentId']
       for (var i in this.queryKey) {
-        if(query[this.queryKey[i]]) this[queryKey[i]] = query[this.queryKey[i]]
+        if(query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
       }
       if (this.$route.meta.reload) {
         this.getList()
@@ -405,7 +405,7 @@
        * 获取区域
        */
       getCity() {
-        this.$get('iot-saas-basic/admin/regions').then(res => {
+        this.$store.dispatch('api/getRegions').then(res => {
           let list = {}
           res.map(item => {
             if(item.level == 1){
@@ -445,23 +445,22 @@
       /**
        * 铺货
        */
-      bindShop(row) {
-        let url = 'iot-saas-device/admin/device/singleDistribution', params = {
+      bindStore(row) {
+        let url = 'iot-saas-device/admin/device/bindStore', params = {
           storeId: row.id
         }
-        let deviceIdArr = this.deviceId.split(',')
-        if(deviceIdArr.length == 1){
-          params.deviceId = this.deviceId
-        } else {
-          url = 'iot-saas-device/admin/device/bulkDistribution'
-          params.ids = deviceIdArr
+        params.deviceIds = row.deviceIds
+        if(this.deviceId){
+          params.deviceIds = this.deviceId.split(',')
         }
         this.$post(url, params).then((res) => {
           this.$message({
             type: 'success',
             message: '铺货成功'
           })
-          history.back()
+          if(this.deviceIds){
+            history.back()
+          }
         })
       },
 
@@ -492,7 +491,7 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-
+            this.bindStore({ id: curRow.id, deviceIds: params.deviceIds })
             break
           case 2:
 
@@ -509,20 +508,6 @@
             })
             break
         }
-      },
-
-
-      /**
-       * 修改商户的部分
-       */
-      editShopPart(params) {
-        this.$post('agentapi/store/type_switch', params).then(res => {
-          this.$message({
-            type: 'success',
-            message: '设置成功'
-          })
-          this.rowObj = Object.assign(this.rowObj, params)
-        })
       }
     }
   }

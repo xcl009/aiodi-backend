@@ -199,7 +199,7 @@
        * 获取城市
        */
       getCity(){
-        this.$get('iot-saas-basic/admin/regions').then(res => {
+        this.$store.dispatch('api/getRegions').then(res => {
           let list = {}, regionTag = ''
           res.map(item => {
             if(item.level == 1){

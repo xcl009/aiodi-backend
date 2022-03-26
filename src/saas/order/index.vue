@@ -279,7 +279,7 @@
           {
             value: 1,
             title: '使用中',
-            nkey: 'renting'
+            nkey: 'rentingNumber'
           },
           {
             value: 'today',
@@ -348,7 +348,7 @@
     },
     activated() {
       let query = this.$route.query
-      this.queryKey = ['brandIds', 'storeIds', 'agentIds', 'deviceIds', 'sourceType']
+      this.queryKey = ['brandId', 'storeId', 'agentId', 'deviceId', 'sourceType']
       for (var i in this.queryKey) {
         this[this.queryKey[i]] = query[this.queryKey[i]]
       }
@@ -418,7 +418,7 @@
        * 获取列表
        */
       getList() {
-        var url = 'iot-saas-order/admin/order/list/admin', params = Object.assign({}, this.form, this.listQuery, {
+        var url = 'iot-saas-order/admin/order/list', params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
         if(params.date && params.date.length > 0){

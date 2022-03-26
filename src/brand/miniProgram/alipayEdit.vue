@@ -3,14 +3,11 @@
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="24" :md="18" :lg="16" :xl="12">
         <h4>绑定小程序</h4>
-          <!-- <div class="pt-20 mb-20 flex fs-c1">
-            <span>请先将小程序授权给我们，才能给您发布代码，</span>
-            <el-link class="fs-c1" :href="`${baseURL}AlipayMini/appToAppBatchAuth`" target="_blank" type="primary">点我进行授权</el-link>
-            <span>，请勾选全部权限，否则授权无效噢！</span>
-            <router-link :to="`/tutorial/detail/${config.zfb_tutorial_id}`">
-              <el-link class="fs-c1" target="_blank" type="danger">查看资料获取教程</el-link>
-            </router-link>
-          </div> -->
+        <div class="pt-20 mb-20 flex fs-c1">
+          <span>请先将小程序授权给我们，才能给您发布代码，</span>
+          <el-link class="fs-c1" :href="config.ali_auth_url" target="_blank" type="primary">点我进行授权</el-link>
+          <span>，请勾选全部权限，否则授权无效噢！</span>
+        </div>
         <el-form ref="form" :model="form" label-position="left" label-width="210px">
           <el-form-item label="支付宝账号ID">
             <el-input v-model="form.pid"></el-input>

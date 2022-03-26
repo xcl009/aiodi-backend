@@ -1,6 +1,6 @@
 <template>
   <el-row type="flex" justify="center" align="middle" class="p-30 custom-form bg-white">
-    <el-col :xs="24" :sm="12" :md="6" :lg="6">
+    <el-col :xs="24" :sm="18" :md="14" :lg="10" :xl="8">
       <el-form ref="form" :model="form" :rules="rules" :hide-required-asterisk="true" label-width="auto">
         <el-form-item label="设备类型" ref="deviceTypeId" prop="deviceTypeId">
           <el-select v-model="form.deviceTypeId" placeholder="请选择设备类型">

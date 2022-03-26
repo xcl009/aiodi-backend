@@ -99,9 +99,18 @@
 
     },
     mounted() {
-
+      this.getServiceType()
     },
     methods: {
+      /**
+       * 获取类型
+       */
+      getServiceType(){
+        this.$store.dispatch('api/getServiceType').then(res => {
+          console.log(res)
+        })
+      },
+
       /**
        * 搜索查询
        */

@@ -212,8 +212,6 @@
         orderStat: {},
         deviceStat: {},
         querHistogram: {},
-        brandTop: [],
-        brandId: '',
 
         pickerOptionsEnd: {
           disabledDate: (time) => {
@@ -278,7 +276,11 @@
       this.getQuerHistogram()
       this.getLineChart()
       this.getDeviceStat()
-      this.getBrandTop10()
+      // this.$get('iot-saas-basic/admin/agent/agentAuth', {
+      //   agentId: this.agentInfo.agentId
+      // }).then(res => {
+        
+      // })
     },
     methods: {
       /**
@@ -321,23 +323,6 @@
           }
           this.deviceChart()
         })
-      },
-
-      /**
-       * 查询订单量前10的品牌
-       */
-      getBrandTop10(){
-        this.$get('iot-saas-order/admin/order/count//queryHighOrderBrand').then(res => {
-          this.brandTop = res
-        })
-      },
-
-      /**
-       * 品牌筛选
-       */
-      loadStat(){
-        this.getQuerHistogram()
-        this.getLineChart()
       },
 
       /**

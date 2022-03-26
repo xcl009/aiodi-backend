@@ -31,5 +31,6 @@
     "3": "分成不一致"
   },
   "withdraw_way": ["", "微信提现", "支付宝提现", "微信收款码", "支付宝收款码", "银行卡"],
-  "plan_time": [0.5,1,2,3,4,5,6,7,8,9,10,11,12,24]
+  "plan_time": [0.5,1,2,3,4,5,6,7,8,9,10,11,12,24],
+  "ali_auth_url": "https://openauth.alipay.com/oauth2/appToAppBatchAuth.htm?app_id=2021003116672111&application_type=TINYAPP&redirect_uri=https%3A%2F%2Fapi.saas.wuxiangyunlian.cn%2Fiot-saas-pay%2Fopen%2Falipay%2Fauth%2Fcallback"
 }

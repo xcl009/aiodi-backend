@@ -97,14 +97,20 @@
             <div class="flex justify-center">
               <div class="flex flex-wrap w-160">
                 <el-button type="primary" size="mini" @click="deviceBelong(scope.row)">设备归属</el-button>
-                <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑
-                </el-button>
-                <el-button type="primary" size="mini"
-                  @click="$router.push({path: `/agent/index?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
-                  去分配</el-button>
-                <el-button type="primary" size="mini"
-                  @click="$router.push({path: `/store/meStore?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
+                <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
+                <template v-if="lowerDevice">
+                  <el-button type="primary" size="mini"
+                    @click="unbindAgent(scope.row, scope.$index)" v-if="!scope.row.distribute">
+                  回收设备</el-button>
+                </template>
+                <template v-else>
+                  <el-button type="primary" size="mini"
+                    @click="$router.push({path: `/agent/index?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
+                    去分配</el-button>
+                  <el-button type="primary" size="mini"
+                    @click="$router.push({path: `/store/meStore?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
                   去铺货</el-button>
+                </template>
               </div>
             </div>
           </template>
@@ -112,10 +118,18 @@
       </el-table>
       <div class="rel flex justify-center">
         <div class="abs flex pagination-left">
-          <el-button type="primary" size="medium" :disabled="selID.length == 0"
-            @click="$router.push({path: `/store/meStore?deviceId=${selID}`})">去铺货</el-button>
-          <el-button type="primary" size="medium" :disabled="selID.length == 0" @click="toQuery(item.value)">去分配
-          </el-button>
+          <template v-if="lowerDevice">
+            <el-button type="primary" size="medium" :disabled="selID.length == 0"
+              @click="unbindAgent()">批量回收
+            </el-button>
+          </template>
+          <template v-else>
+            <el-button type="primary" size="medium" :disabled="selID.length == 0"
+              @click="$router.push({path: `/store/meStore?deviceId=${selID}`})">批量铺货</el-button>
+            <el-button type="primary" size="medium" :disabled="selID.length == 0"
+              @click="$router.push({path: `/agent/index?deviceId=${selID}`})">批量分配
+            </el-button>
+          </template>
         </div>
         <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
           @pagination="getList" />
@@ -272,13 +286,12 @@
           params.groupIds = this.agentId
         } else if(this.isAgent()){
           params.countType = 'AGENT'
-          params.groupIds = '941727309790801920'
+          params.groupIds = this.agentInfo.agentId
         } else if(this.isBrand()){
           params.countType = 'BRAND'
           params.groupIds = this.agentInfo.brandId
         }
         this.$get('iot-saas-device/admin/device/count/queryGroupCount', params).then(res => {
-          console.log(res[params.groupIds])
           if(res[params.groupIds]){
             res = res[params.groupIds]
           } else {
@@ -419,18 +432,45 @@
        * 设备解绑
        */
       unboundStore(row) {
-        this.$alert('确定解绑设备？', '解绑设备', {
+        this.$alert('确定解绑该设备？', '解绑设备', {
           confirmButtonText: '确定',
           callback: action => {
             if (action == 'confirm') {
-              this.$post('iot-saas-device/admin/device/singleUnboundStore', {
-                deviceId: row.id
+              this.$post('iot-saas-device/admin/device/unbindStore', {
+                deviceIds: [row.id]
               }).then(res => {
                 this.$message({
                   message: '解绑成功',
                   type: 'success'
                 })
                 row.distribute = false
+                row.store = ''
+              })
+            }
+          }
+        })
+      },
+
+      /**
+       * 设备回收
+       */
+      unbindAgent(row, idx) {
+        this.$alert('确定回收该设备？', '回收设备', {
+          confirmButtonText: '确定',
+          callback: action => {
+            if (action == 'confirm') {
+              this.$post('iot-saas-device/admin/device/unbindAgent', {
+                deviceIds: row ? [row.id] : this.selID
+              }).then(res => {
+                this.$message({
+                  message: '回收成功',
+                  type: 'success'
+                })
+                if(idx){
+                  this.list.splice(idx, 1)
+                } else {
+                  this.getList()
+                }
               })
             }
           }

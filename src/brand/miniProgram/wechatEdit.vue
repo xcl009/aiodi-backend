@@ -7,9 +7,6 @@
           <span>请先将小程序授权给我们，才能给您发布代码，</span>
           <el-link class="fs-c1" :href="`${baseURL}openAuth/index.html`" target="_blank" type="primary">点我进行授权</el-link>
           <span>，请勾选全部权限，否则授权无效噢！</span>
-          <router-link :to="`/tutorial/detail/${config.wx_tutorial_id}`" target="_blank">
-            <el-link class="fs-c1" target="_blank" type="danger">查看资料获取教程</el-link>
-          </router-link>
         </div>
         <el-form ref="form" :model="form" label-position="left" label-width="210px">
           <el-form-item label="小程序名称">

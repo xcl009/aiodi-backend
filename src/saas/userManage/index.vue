@@ -164,7 +164,8 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
+          page: this.listQuery.page - 1,
+          needCount: true
         })
         this.$get('iot-saas-user/user/relation/findUserByAdmin', params).then(res => {
           this.list = res.rows

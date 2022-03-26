@@ -362,7 +362,7 @@ export const brandRoutes = [
           title: '我的订单'
         },
         props:{
-          lowerOrder: false
+          lowerAgent: false
         }
       },
       {
@@ -373,7 +373,7 @@ export const brandRoutes = [
           title: '下级订单'
         },
         props: {
-          lowerOrder: true
+          lowerAgent: true
         }
       }
     ]
@@ -840,7 +840,7 @@ export const agentRoutes = [
           title: '我的订单'
         },
         props:{
-          user_type: 0
+          lowerDevice: false
         }
       },
       {
@@ -851,7 +851,7 @@ export const agentRoutes = [
           title: '下级订单'
         },
         props: {
-          user_type: 1
+          lowerDevice: true
         }
       }
     ]
@@ -873,7 +873,7 @@ export const agentRoutes = [
           title: '我的设备'
         },
         props:{
-          user_type: 0
+          lowerDevice: false
         }
       },
       {
@@ -884,7 +884,7 @@ export const agentRoutes = [
           title: '下级设备'
         },
         props:{
-          user_type: 1
+          lowerDevice: true
         }
       }
     ]
@@ -907,7 +907,7 @@ export const agentRoutes = [
           title: '我的商户'
         },
         props:{
-          user_type: 0
+          lowerStore: false
         }
       },
       {
@@ -919,7 +919,7 @@ export const agentRoutes = [
           title: '下级商户'
         },
         props:{
-          user_type: 1
+          lowerStore: true
         }
       },
       {
@@ -962,7 +962,7 @@ export const agentRoutes = [
           title: '我的代理'
         },
         props: {
-          user_type: 1
+          lowerAgent: false
         }
       },
       {
@@ -974,7 +974,7 @@ export const agentRoutes = [
           title: '下级管理'
         },
         props: {
-          user_type: 2
+          lowerAgent: true
         }
       },
       {

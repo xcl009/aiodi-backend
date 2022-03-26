@@ -11,8 +11,7 @@
 		</condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
->
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border :max-height="tableMaxH">
         <el-table-column label="代理信息" align="center" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
@@ -75,7 +74,7 @@
         <el-table-column label="操作" align="center" width="240">
           <template slot-scope="scope">
             <template v-if="deviceId">
-              <el-button type="primary" size="mini" @click="singleAssign(scope.row)">分配给Ta</el-button>
+              <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
             </template>
             <template v-else>
               <div class="pl-10 inline text-left">
@@ -211,7 +210,7 @@
       }
     },
     mounted() {
-
+      console.log(this.lowerAgent)
     },
     methods: {
       /**
@@ -385,15 +384,15 @@
       /**
        * 分配设备
        */
-      singleAssign(row) {
+      bindAgent(row) {
         this.loadObj = this.$loading({
           lock: true,
           text: '正在分配',
           spinner: 'el-icon-loading'
         })
-        this.$post('iot-saas-device/admin/device/singleAssign', {
+        this.$post('iot-saas-device/admin/device/bindAgent', {
           agentId: row.id,
-          deviceId: this.deviceId
+          deviceIds: this.deviceId.split(',')
         }).then(res => {
           this.loadObj.close()
           this.$message({

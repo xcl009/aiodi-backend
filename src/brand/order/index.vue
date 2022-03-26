@@ -252,7 +252,7 @@
       toXlsx
     },
     props: {
-      lowerOrder: {
+      lowerAgent: {
         type: Boolean,
         default: false
       }
@@ -316,37 +316,37 @@
           {
             value: '',
             title: '全部',
-            nkey: 'all'
+            nkey: 'orderNumber'
           },
           {
             value: 1,
             title: '使用中',
-            nkey: 'renting'
+            nkey: 'rentingNumber'
           },
           {
             value: 'today',
             title: '今日订单',
-            nkey: 'today'
+            nkey: 'todayNumber'
           },
           {
             value: [2,3],
             title: '已完成',
-            nkey: 'done'
+            nkey: 'doneNumber'
           },
           {
             value: 4,
             title: '超时订单',
-            nkey: 'expired'
+            nkey: 'expiredNumber'
           },
           {
             value: 5,
             title: '租借失败',
-            nkey: 'rentFail'
+            nkey: 'rentFailedNumber'
           },
           {
             value: 6,
             title: '扣款失败',
-            nkey: 'payFail'
+            nkey: 'payFailedNumber'
           }
         ],
 
@@ -402,7 +402,7 @@
        * 订单数量
        */
       getStatNum() {
-        let url = 'iot-saas-order/admin/order/summary/my/brand', params = Object.assign({}, this.listQuery, this.form)
+        let url = 'iot-saas-order/admin/order/count/queryByUser', params = Object.assign({}, this.listQuery, this.form)
         if(params.selDay && params.selDay.length > 0){
           params.chargeStartTime = params.selDay[0]
           params.chargeEndTime = params.selDay[1]
@@ -413,12 +413,8 @@
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
         }
+        if(this.lowerAgent) params.lowerAgent = true
         delete params.status
-        if(this.lowerOrder) url = 'iot-saas-order/admin/order/summary/sub/brand'
-        if(this.isAgent()){
-          url = 'iot-saas-order/admin/order/summary/my/agent'
-          if(this.lowerOrder) url = 'iot-saas-order/admin/order/summary/sub/agent'
-        }
         this.$get(url, params).then(res => {
           this.statInfo = res
         })
@@ -453,7 +449,7 @@
        * 获取列表
        */
       getList() {
-        var url = 'iot-saas-order/admin/order/list/my/brand', params = Object.assign({}, this.form, this.listQuery, {
+        var url = 'iot-saas-order/admin/order/list', params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
         if(params.selDay && params.selDay.length > 0){
@@ -470,11 +466,7 @@
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
         }
-        if(this.lowerOrder) url = 'iot-saas-order/admin/order/list/sub/brand'
-        if(this.isAgent()){
-          url = 'iot-saas-order/admin/order/list/my/agent'
-          if(this.lowerOrder) url = 'iot-saas-order/admin/order/list/sub/agent'
-        }
+        if(this.lowerAgent) params.lowerAgent = true
         this.$get(url, params).then(res => {
           this.list = res.rows
           this.listLoading = false
