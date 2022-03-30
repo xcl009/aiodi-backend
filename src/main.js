@@ -48,8 +48,8 @@ Vue.prototype.isBrand = isBrand
 Vue.prototype.isStore = isStore
 Vue.prototype.isAgent = isAgent
 Vue.prototype.dealPhone = dealPhone
-Vue.prototype.OsInfo = getOsInfo()
-Vue.prototype.Browser = getBrowser()
+Vue.prototype.OsInfo = getOsInfo
+Vue.prototype.Browser = getBrowser
 
 // set ElementUI lang to EN
 Vue.use(ElementUI)

@@ -27,6 +27,6 @@ export function getWdConstant() {
   return $get('iot-saas-pay/open/pay/init/getInitMap')
 }
 
-export function postSetRecode(data) {
-  return $post('agentapi/log/add_record', data)
+export function getAuth(data) {
+  return $get('iot-saas-basic/admin/agent/agentAuth', data)
 }

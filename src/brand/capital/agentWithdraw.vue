@@ -252,7 +252,7 @@
       }
     },
     mounted() {
-      console.log(this.siteInfo)
+      
     },
     methods: {
       /**

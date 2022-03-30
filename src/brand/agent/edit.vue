@@ -17,17 +17,8 @@
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
           <el-form-item label="运营区域">
-            <el-cascader v-model="form.areaId" :options="cityList" :props="{ expandTrigger: 'hover' }" />
+            <el-cascader v-model="form.regionTag" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <!-- <el-form-item label="公司名称">
-            <el-input v-model="form.companyName" placeholder="公司名称" />
-          </el-form-item>
-          <el-form-item label="公司地址">
-            <el-input v-model="form.companyAddress" placeholder="输入公司地址" />
-          </el-form-item>
-          <el-form-item label="公司电话">
-            <el-input v-model="form.companyPhoneNum" placeholder="输入公司电话" />
-          </el-form-item> -->
 
           <h4 class="pt-20">运营产品</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">
@@ -137,10 +128,7 @@
             avastar: res.avastar,
             name: res.name,
             mobile: res.mobile,
-            areaId: res.areaId,
-            companyName: res.companyName,
-            companyAddress: res.companyAddress,
-            companyPhoneNum: res.companyPhoneNum
+            regionTag: res.regionTag
           }
         })
       },

@@ -104,7 +104,7 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <div class="text-center" v-if="dform.abilitys">
-          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys[key]" v-for="(item, key) in abilitys">{{ item }}</el-checkbox>
+          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys[key]" v-for="(item, key) in agentInfo.agentAbilitys" v-if="agentInfo[key]">{{ item }}</el-checkbox>
         </div>
       </template>
       <template v-if="dialogType == 2">
@@ -327,9 +327,15 @@
                 agentId: row.id
               }).then(res => {
                 let abilitys = {}
-                res.map(item => {
-                  if(item.have == 1) abilitys[item.code] = true
-                })
+                if(res.length > 0){
+                	res.map(item => {
+                	  if(item.have == 1) abilitys[item.code] = true
+                	})
+                } else {
+                  for(var i in this.agentInfo.storeAbilitys){
+                    abilitys[i] = true
+                  }
+                }
                 this.$set(this.dform, 'abilitys', abilitys)
               })
               this.$set(this.dform, 'agentId', row.id)

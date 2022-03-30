@@ -119,7 +119,7 @@
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center" v-if="dform.abilitys">
-          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys[key]" v-for="(item, key) in abilitys">{{ item }}</el-checkbox>
+          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys[key]" v-for="(item, key) in agentInfo.storeAbilitys">{{ item }}</el-checkbox>
         </div>
       </template>
       <template v-if="dialogType == 3">
@@ -176,11 +176,6 @@
 
         // 操作相关
         deviceId: '',
-
-        abilitys: {
-          checkOrder: '查看订单',
-          checkWithdrawRight: '提现'
-        },
 
         // 弹出相关
         dialogType: 1,
@@ -488,9 +483,15 @@
                 agentId: row.id
               }).then(res => {
                 let abilitys = {}
-                res.map(item => {
-                  if(item.have == 1) abilitys[item.code] = true
-                })
+                if(res.length > 0){
+                	res.map(item => {
+                	  if(item.have == 1) abilitys[item.code] = true
+                	})
+                } else {
+                  for(var i in this.agentInfo.storeAbilitys){
+                    abilitys[i] = true
+                  }
+                }
                 this.$set(this.dform, 'abilitys', abilitys)
               })
               this.$set(this.dform, 'agentId', row.id)

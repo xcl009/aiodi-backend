@@ -458,11 +458,13 @@ const util = {
 	/**
 	 * 数组指定key转对象
 	 */
-	arrayToObj: (array = [], key = '') => {
+	arrayToObj: (array = [], key = '', nkey = '') => {
 		if (!key) return {}
-		let obj = []
+		let obj = {}
 		array.map(item => {
-			if (item[key] != 'undefined' && item[key] != null) {
+			if(nkey){
+				obj[item[key]] = item[nkey]
+			} else if (item[key] != 'undefined' && item[key] != null) {
 				obj[item[key]] = item
 			}
 		})
@@ -549,5 +551,35 @@ const util = {
 	}
 }
 
-
-module.exports = util
+export const param2Obj = util.param2Obj
+export const checkRoles = util.checkRoles
+export const setRem = util.setRem
+export const copyText = util.copyText
+export const formErrow = util.formErrow
+export const colorPalette = util.colorPalette
+export const bMapTransQQMap = util.bMapTransQQMap
+export const qqMapTransBMap = util.qqMapTransBMap
+export const swapItems = util.swapItems
+export const dealPhone = util.dealPhone
+export const getOsInfo = util.getOsInfo
+export const getBrowser = util.getBrowser
+export const isSaas = util.isSaas
+export const isBrand = util.isBrand
+export const isStore = util.isStore
+export const isAgent = util.isAgent
+export const getRoleName = util.getRoleName
+export const showFeeMode = util.showFeeMode
+export const divideType = util.divideType
+export const parseTime = util.parseTime
+export const unixTime = util.unixTime
+export const delComma = util.delComma
+export const countPer = util.countPer
+export const currentTime = util.currentTime
+export const formatSeconds = util.formatSeconds
+export const arrayKeys = util.arrayKeys
+export const arrayToObj = util.arrayToObj
+export const pickKeys = util.pickKeys
+export const pick = util.pick
+export const isBe = util.isBe
+export const accAdd = util.accAdd
+export const accMul = util.accMul

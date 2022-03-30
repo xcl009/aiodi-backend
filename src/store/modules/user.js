@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getConstant, getWdConstant, postSetRecode } from '@/api/user'
+import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getConstant, getWdConstant, getAuth } from '@/api/user'
+import { arrayToObj } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -86,13 +87,44 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(data => {
-        window.agentInfo = data
-        commit('SET_NAME', data.nickname || data.username)
-        commit('SET_AVATAR', data.avastar || '')
-        commit('SET_AGENTINFO', data)
-        resolve({
-          roles: [data.userType]
-        })
+        if(data.userType){
+          let params = {
+          		agentId: data.id
+          	},
+          	agentAbilitys = {
+          		checkOrder: '查看订单',
+          		checkEndOrder: '结束订单',
+          		checkRefundOrder: '订单退款',
+          		checkWithdrawRight: '提现'
+          	},
+          	storeAbilitys = {
+          		checkOrder: '查看订单',
+          		checkWithdrawRight: '提现'
+          	},
+          	abilitys = agentAbilitys
+          data.agentAbilitys = agentAbilitys
+          data.storeAbilitys = storeAbilitys
+          if(data.userType == 'store'){
+          	params.agentId = data.storeIds[0]
+          	abilitys = storeAbilitys
+          }
+          getAuth(params).then(res => {
+            let auth = arrayToObj(res, 'code', 'have')
+            if(data.userType == 'agent' && res.length == 0){
+            	data.agentAbilitys = storeAbilitys
+            }
+            for(var i in abilitys){
+            	data[i] = auth[i] >= 0 ? auth[i] : 1
+            }
+            window.agentInfo = data
+            commit('SET_NAME', data.nickname || data.username)
+            commit('SET_AVATAR', data.avastar || '')
+            commit('SET_AGENTINFO', data)
+            resolve({
+              roles: [data.userType]
+            })
+          })
+        }
       }).catch(error => {
         reject(error)
       })
@@ -186,11 +218,6 @@ const actions = {
         reject(error)
       })
     })
-  },
-
-  // 提交操作记录
-  postSetRecode({}, tag_id) {
-    postSetRecode({tag_id: tag_id})
   }
 }
 
