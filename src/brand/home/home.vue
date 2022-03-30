@@ -64,7 +64,7 @@
           <div>总用户数</div>
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600"/></div>
+              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
               <i class="iconfont icon-right fs-s1"></i>
             </div>
             <div class="stat-icon flex align-center justify-center" style="background: rgba(255, 83, 83, 0.1)">
@@ -73,7 +73,7 @@
           </div>
           <div class="flex align-center">
             <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(userStat.todayNumber)" :duration="2600" :decimals="2"/></div>
             <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
           </div>
         </div>
@@ -211,6 +211,7 @@
         form: {},
         orderStat: {},
         deviceStat: {},
+        userStat: {},
         querHistogram: {},
 
         pickerOptionsEnd: {
@@ -276,6 +277,7 @@
       this.getQuerHistogram()
       this.getLineChart()
       this.getDeviceStat()
+      this.getUserStat()
       // this.$get('iot-saas-basic/admin/agent/agentAuth', {
       //   agentId: this.agentInfo.agentId
       // }).then(res => {
@@ -302,7 +304,17 @@
           this.querHistogram = res
         })
       },
-
+      
+      /**
+       * 用户统计
+       */
+      getUserStat() {
+        this.$get('iot-saas-user/admin/user/queryCountInfo').then(res => {
+          this.userStat = res
+        })
+      },
+      
+      
       /**
        * 设备统计
        */

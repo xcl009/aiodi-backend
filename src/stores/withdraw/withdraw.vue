@@ -18,21 +18,21 @@
               <el-radio-button :label="index" v-for="(item, index) in siteInfo.withdrawType">{{ item }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="到账账户：" v-show="tabsType[form.withdrawType] == 2">
+          <el-form-item label="到账账户：" v-show="form.withdrawType == 3">
             <div class="flex align-center" v-if="bindAlipayInfo.alipayOpenid">
               <el-avatar size="medium" :src="bindAlipayInfo.avatar"></el-avatar>
               <div class="ml-10">{{ bindAlipayInfo.nickname }}</div>
             </div>
             <div class="flex align-center" v-else>您暂未绑定支付宝，请先进入小程序提现页面绑定支付宝</div>
           </el-form-item>
-          <el-form-item label="到账账户：" v-show="tabsType[form.withdrawType] == 1">
+          <el-form-item label="到账账户：" v-show="form.withdrawType == 1">
             <div class="flex align-center" v-if="bindWechatInfo.wechatOpenid">
               <el-avatar size="medium" :src="bindWechatInfo.avatar"></el-avatar>
               <div class="ml-10">{{ bindWechatInfo.nickname }}</div>
             </div>
             <div class="flex align-center" v-else>您暂未绑定微信，请先进入小程序提现页面绑定微信</div>
           </el-form-item>
-          <div v-show="tabsType[form.withdrawType] == 5">
+          <div v-show="form.withdrawType == 5">
             <el-form-item label="姓名：">
               <el-input v-model="bindCardInfo.cardName" placeholder="您的姓名" />
             </el-form-item>
@@ -46,7 +46,7 @@
               <el-input v-model="bindCardInfo.branchName" placeholder="所属支行" />
             </el-form-item>
           </div>
-          <div v-show="tabsType[form.withdrawType] == 3">
+          <div v-show="form.withdrawType == 2">
             <el-form-item label="姓名：">
               <el-input v-model="wxQrcodeInfo.userName" placeholder="您的姓名" />
             </el-form-item>
@@ -54,7 +54,7 @@
               <upload v-model="wxQrcodeInfo.qrcode" :upObj="{fileType: 'paymentCode'}"></upload>
             </el-form-item>
           </div>
-          <div v-show="tabsType[form.withdrawType] == 4">
+          <div v-show="form.withdrawType == 4">
             <el-form-item label="姓名：">
               <el-input v-model="aliQrcodeInfo.userName" placeholder="您的姓名" />
             </el-form-item>
@@ -132,7 +132,6 @@
           sourceType: 3,
           withdrawType: 0
         },
-        tabsType: [1, 2, 3, 4, 5],
         money: '',
         bindWechatInfo: {},
         bindAlipayInfo: {},
@@ -153,7 +152,6 @@
     computed: {
       siteInfo() {
         let siteInfo = this.$store.getters.siteInfo
-        siteInfo.withdrawType = ['微信', '支付宝', '微信收款码', '支付宝收款码', '银行卡']
         return siteInfo
       }
     },
@@ -249,7 +247,6 @@
         //   this.$message.error('余额不足')
         //   return
         // }
-        params.withdrawType = this.tabsType[params.withdrawType]
         if(this.cutStoreId) params.storeId = this.cutStoreId
         this.clickSubmit = true
         this.$post('iot-saas-pay/api/pay/withdraw/apply', params).then(res => {

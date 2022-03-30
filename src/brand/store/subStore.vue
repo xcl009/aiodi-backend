@@ -360,8 +360,7 @@ import selPlat from '@/components/selPlat'
 import area from '@/components/area.json'
 import editwith from '../agent/_editwith'
 import {
-  copyText,
-  showPercent
+  copyText
 } from '@/utils/index'
 import {
   getToken,
@@ -406,7 +405,6 @@ export default {
         }
       },
       clickSubmit: false,
-      showPercent: showPercent,
       form: {
         query_rate_date_type: 0,
         query_rate_number_type: 0

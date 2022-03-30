@@ -1,12 +1,12 @@
 <template>
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
-      <!-- <template v-slot:tabs>
+      <template v-slot:tabs>
         <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.deviceTypeId" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'0'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
-      </template> -->
+      </template>
 
       <template v-slot:defult>
         <el-input v-model="form.qrcodeSn" placeholder="二维码" />
@@ -117,13 +117,14 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <el-table :data="deviceBelong" border>
-          <el-table-column label="角色" property="role_name" align="center" />
+          <el-table-column label="角色" align="center">
+            <template slot-scope="scope">
+              {{ config.system_role[scope.row.userType] }}
+            </template>
+          </el-table-column>
           <el-table-column label="联系信息" align="center">
             <template slot-scope="scope">
-              <div v-if="checkRoles(['terminal','partner'])">
-                姓名：{{ scope.row.name }}&nbsp;&nbsp;&nbsp;&nbsp;电话：{{ scope.row.phone }}</div>
-              <div v-if="scope.row.agent_level == 5">商户名：{{ eqiupStore.store_name }}</div>
-              <div v-if="scope.row.agent_level == 5">地址：{{ eqiupStore.address }}</div>
+              <div>{{ scope.row.name }}</div>
             </template>
           </el-table-column>
         </el-table>
@@ -375,10 +376,10 @@
             this.curIdx = idx
             this.dialogStatus = true
             if(dialogType == 1){
-              this.$get('iot-saas-device/admin/device/findById', {
+              this.$get('iot-saas-device/admin/device/findBelongById', {
                 id: row.id
               }).then(res => {
-                console.log(res)
+                this.deviceBelong = res.deviceOwnerUserList
               })
             }
             break

@@ -102,7 +102,9 @@ const actions = {
   // get platform config
   getPlatformConfig({ commit, state }, params = {}) {
     return new Promise((resolve, reject) => {
-      getPlatformConfig(params).then(data => {
+      getPlatformConfig({
+        brand: getToken('brand_id') || '941630140970790912'
+      }).then(data => {
         commit('SET_SITEINFO', data)
         if(data.mini_name){
           var icon_link = document.createElement('link')
@@ -113,6 +115,13 @@ const actions = {
           document.title = `${data.mini_name}-管理后台`;
         }
         data.time_unit = data.fund_fee_time_unit == 0 ? '分钟' : '小时'
+        data.withdrawType = {
+          1: "微信提现",
+          2: "微信收款码",
+          3: "支付宝提现",
+          4: "支付宝收款码",
+          5: "银行卡"
+        }
         Vue.prototype.SITE_INFO = data
         resolve(data)
       })

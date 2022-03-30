@@ -12,7 +12,7 @@ export function getInfo(token) {
   return $get('iot-saas-user/admin/user/getLoginAuthUser')
 }
 export function getPlatformConfig(params = {}) {
-  return $get('commonapi/get_platform_config', params)
+  return $get(`iot-saas-basic/open/platform/brand/${params.brand}`)
 }
 
 export function getMyDevice() {

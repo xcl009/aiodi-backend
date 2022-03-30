@@ -30,6 +30,7 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
+          await store.dispatch('user/getPlatformConfig')
           const { roles } = await store.dispatch('user/getInfo')
           await store.dispatch('user/getMyDevice')
           await store.dispatch('user/getConstant')

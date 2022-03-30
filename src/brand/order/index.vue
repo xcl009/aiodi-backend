@@ -1,12 +1,12 @@
 <template>
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
-      <!-- <template v-slot:tabs>
+      <template v-slot:tabs>
         <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'-1'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
-      </template> -->
+      </template>
 
       <template v-slot:defult>
         <el-input v-model="form.orderNo" placeholder="订单号" />
@@ -240,7 +240,10 @@
   import selectSearch from '@/components/condition/selectSearch'
   import toXlsx from '@/components/xlsx/'
   import {
-    dealPhone
+    dealPhone,
+    parseTime,
+    currentTime,
+    unixTime,
   } from '@/utils/index'
 
   export default {
@@ -458,7 +461,9 @@
           delete params.selDay
         }
         if(params.status == 'today'){
-          params.today = true
+          let todayTime = new Date(new Date().toLocaleDateString()).getTime()
+          params.chargeStartTime = parseTime(todayTime)
+          params.chargeEndTime = parseTime(todayTime + 86400)
           delete params.status
         }
         for(var i in this.queryKey){

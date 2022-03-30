@@ -114,7 +114,7 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <el-form class="custom-form">
-          <el-input v-model="dform.deviceIds" placeholder="设备编号与编号之间用英文逗号隔开" type="textarea" :rows="5" />
+          <el-input v-model="dform.deviceSns" placeholder="设备编号与编号之间用英文逗号隔开" type="textarea" :rows="5" />
         </el-form>
       </template>
       <template v-if="dialogType == 2">
@@ -449,8 +449,9 @@
         let url = 'iot-saas-device/admin/device/bindStore', params = {
           storeId: row.id
         }
-        params.deviceIds = row.deviceIds
-        if(this.deviceId){
+        if(row.deviceSns){
+          params.deviceSns = row.deviceSns.split(',')
+        }else if(this.deviceId){
           params.deviceIds = this.deviceId.split(',')
         }
         this.$post(url, params).then((res) => {
@@ -491,7 +492,7 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            this.bindStore({ id: curRow.id, deviceIds: params.deviceIds })
+            this.bindStore({ id: curRow.id, deviceSns: params.deviceSns })
             break
           case 2:
 

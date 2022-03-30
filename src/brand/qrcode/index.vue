@@ -5,8 +5,8 @@
         <el-select v-model="form.deviceTypeId" @change="toQuery()" placeholder="设备类型">
           <el-option :label="index" :value="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-select>
-        <!-- <el-input v-model="form.qrcodeSn" placeholder="二维码"/> -->
-        <el-input v-model="form.deviceId" placeholder="设备SN"/>
+        <!-- <el-input v-model="form.batchNumber" placeholder="二维码"/> -->
+        <!-- <el-input v-model="form.deviceId" placeholder="设备SN"/> -->
         <el-date-picker
           class="range-day flex align-center"
             v-model="form.day"

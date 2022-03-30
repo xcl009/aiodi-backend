@@ -1,12 +1,11 @@
 <template>
   <div>
-    <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :show-file-list="false" name="file" :multiple="multiple" v-if="emitUrl">
+    <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :show-file-list="false" name="file" :multiple="multiple" v-if="limit == 1">
       <template v-if="uploadText">
         <el-button type="primary">{{ uploadText }}<i class="el-icon-upload el-icon--right"></i></el-button>
       </template>
       <template v-else>
-        <el-avatar class="abs el-avatar_up" shape="square" v-if="raw" fit="cover" :src="rawUrl"></el-avatar>
-        <el-avatar class="abs el-avatar_up" shape="square" v-else fit="cover" :src="value"></el-avatar>
+        <el-image class="abs el-avatar_up" shape="square" fit="cover" :src="value" v-if="value"></el-image>
         <i class="rel el-icon-plus avatar-uploader-icon"></i>
       </template>
     </el-upload>
@@ -55,11 +54,6 @@
       uploadText: {
         type: String,
         default: ''
-      },
-
-      emitUrl: {
-        type: Boolean,
-        default: true
       },
 
       upObj: {
@@ -146,7 +140,7 @@
       },
 
       update(fileList){
-        if(this.limit == 1 && this.emitUrl){
+        if(this.limit == 1){
           let l = fileList.length
           this.$emit('input', fileList[l] ? fileList[l].url : fileList[0].url)
         } else {

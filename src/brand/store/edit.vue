@@ -5,7 +5,7 @@
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="130px">
           <h4>基础信息</h4>
           <el-form-item label="门头照" class="up-img">
-            <upload v-model="form.avatar"/>
+            <upload v-model="form.avatar" :upObj="{fileType: 'storePhoto'}"/>
           </el-form-item>
           <el-form-item ref="name" label="商户名称" prop="name">
             <el-input v-model="form.name" placeholder="请填写商户名称" />
@@ -427,7 +427,7 @@ export default {
         })
         console.log(deviceDataArr)
         this.deviceDataArr = deviceDataArr
-        info.userNickName = res.user.userNickName
+        info.userNickName = res.user.bindUserName
         info.userMobile = res.user.mobile
         delete info.storeDivisionConfig
         delete info.storePayConfig

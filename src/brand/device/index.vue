@@ -1,12 +1,12 @@
 <template>
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
-      <!-- <template v-slot:tabs>
+      <template v-slot:tabs>
         <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.deviceTypeId" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'0'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
-      </template> -->
+      </template>
 
       <template v-slot:defult>
         <el-input v-model="form.qrcodeSn" placeholder="二维码" />
@@ -96,7 +96,7 @@
           <template slot-scope="scope">
             <div class="flex justify-center">
               <div class="flex flex-wrap w-160">
-                <el-button type="primary" size="mini" @click="deviceBelong(scope.row)">设备归属</el-button>
+                <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">设备归属</el-button>
                 <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
                 <template v-if="lowerDevice">
                   <el-button type="primary" size="mini"
@@ -140,13 +140,14 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <el-table :data="deviceBelong" border>
-          <el-table-column label="角色" property="role_name" align="center" />
+          <el-table-column label="角色" align="center">
+            <template slot-scope="scope">
+              {{ config.system_role[scope.row.userType] }}
+            </template>
+          </el-table-column>
           <el-table-column label="联系信息" align="center">
             <template slot-scope="scope">
-              <div v-if="checkRoles(['terminal','partner'])">
-                姓名：{{ scope.row.name }}&nbsp;&nbsp;&nbsp;&nbsp;电话：{{ scope.row.phone }}</div>
-              <div v-if="scope.row.agent_level == 5">商户名：{{ eqiupStore.store_name }}</div>
-              <div v-if="scope.row.agent_level == 5">地址：{{ eqiupStore.address }}</div>
+              <div>{{ scope.row.name }}</div>
             </template>
           </el-table-column>
         </el-table>
@@ -154,7 +155,7 @@
       <template v-if="dialogType == 2">
         <div class="text-center">
           <el-image style="width: 150px; height: 150px" :src="dform.code" fit="cover"></el-image>
-          <div class="mt-20 text-grey">SN码：WYB18199708050</div>
+          <div class="mt-20 text-grey">SN码：{{ curRow.qrcodeSn }}</div>
         </div>
       </template>
       <template v-if="dialogType == 3">
@@ -315,7 +316,6 @@
               noBindStoreNumber: (parseInt(res.deviceNumber) -  parseInt(res.lowerDeviceNumber)) - (parseInt(res.bindStoreNumber) -  parseInt(res.lowerBindStoreNumber))
             }
           }
-          console.log(this.deviceCount)
         })
       },
 
@@ -475,7 +475,32 @@
             }
           }
         })
-      }
+      },
+
+      /**
+       * 操作行
+       * @param {Object} type 1 dialog类型
+       * @param {Object} row 选择当前数据
+       * @param {Object} dialogType dialog内容显示类型 1: '设备归属'  2: '二维码'
+       * @param {Object} idx 当前数据所在位置
+       */
+      setRows(type, row, dialogType, idx) {
+        switch (type) {
+          case 1:
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.dialogStatus = true
+            if(dialogType == 1){
+              this.$get('iot-saas-device/admin/device/findBelongById', {
+                id: row.id
+              }).then(res => {
+                this.deviceBelong = res.deviceOwnerUserList
+              })
+            }
+            break
+        }
+      },
     }
   }
 </script>

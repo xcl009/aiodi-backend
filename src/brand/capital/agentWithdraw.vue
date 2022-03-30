@@ -1,19 +1,20 @@
 <template>
   <div>
-		<condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery" @saveXlsx="saveXlsx">
+		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
         <el-date-picker
           class="range-day flex align-center"
-          v-model="form.day"
-          type="daterange"
-          value-format="timestamp"
+          v-model="form.date"
+          type="datetimerange"
+          value-format="yyyy-MM-dd HH:mm:ss"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           @change="toQuery()">
         </el-date-picker>
         <el-select v-model="form.withdrawType" placeholder="提现方式" @change="toQuery()">
-          <el-option :label="item" :value="index" v-for="(item, index) in config.withdraw_way"/>
+          <el-option label="全部" value="" />
+          <el-option :label="item" :value="index" v-for="(item, index) in siteInfo.withdrawType"/>
         </el-select>
         <el-input v-model="form.name" placeholder="代理姓名" v-if="userType == 1"/>
         <el-input v-model="form.storeName" placeholder="商户名称" v-if="userType == 2"/>
@@ -27,7 +28,7 @@
         <div class="flex1">
           <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
             :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
-            @click="toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+            @click="listQuery.status = item.value; toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
           <!-- <el-button size="medium" class="btn-body">总提现<span class="ml-15 mr-30 text-black">52877.52元</span>平台手续费<span class="ml-15 text-black">52877.52元</span></el-button> -->
         </div>
       </div>
@@ -40,23 +41,28 @@
         </el-table-column>
         <el-table-column label="代理商" align="center" width="130" v-if="userType == 1">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '--' }}</div>
+            <div>{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.phone || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="商户" align="center" width="130" v-if="userType == 2">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '--' }}</div>
+            <div>{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.phone || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="头像" align="center" width="60" v-if="userType == 3">
+          <template slot-scope="scope">
+            <el-avatar :src="scope.row.userAvatar"></el-avatar>
           </template>
         </el-table-column>
         <el-table-column label="用户" align="center" width="130" v-if="userType == 3">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '--' }}</div>
-            <div>{{ scope.row.phone || '--' }}</div>
+            <div>{{ scope.row.userNickName || '--' }}</div>
+            <div>{{ scope.row.userMobile || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="提现时间" align="center" width="130">
+        <el-table-column label="提现时间" align="center" width="90">
           <template slot-scope="scope">
             {{ scope.row.createTime || '--' }}
           </template>
@@ -68,7 +74,7 @@
         </el-table-column>
         <el-table-column label="手续费(元)" align="center">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
+            {{ scope.row.feeDeal || '0.00' }}
           </template>
         </el-table-column>
         <el-table-column label="到账金额(元)" align="center">
@@ -80,38 +86,27 @@
           <template slot-scope="scope">
             <div v-if="scope.row.withdrawType == 5">
               <div>{{ scope.row.cardName }}</div>
-              <div>{{ scope.row.bankName }}{{ scope.row.branchName }}</div>
+              <div>{{ scope.row.bankName }}<span class="ml-10">{{ scope.row.branchName }}</span></div>
               <div>{{ scope.row.cardNo }}</div>
             </div>
-            <div class="flex align-center" v-else-if="scope.row.withdrawType == 3">
-              <div class="mr-5 flex1">{{ scope.row.wx_account_name }}</div>
+            <div v-else-if="scope.row.withdrawType == 2 || scope.row.withdrawType == 4">
+              <div>{{ scope.row.userName }}</div>
               <el-image
                 class="pay-code"
-                :src="scope.row.wx_account_qrcode"
+                :src="scope.row.qrcode"
                 fit="scale-down"
-                :preview-src-list="[scope.row.wx_account_qrcode]"
-                style="height: 80px">
+                :preview-src-list="[scope.row.qrcode]">
               </el-image>
             </div>
-            <div class="flex align-center" v-else-if="scope.row.withdrawType == 4">
-              <div class="mr-5 flex1">{{ scope.row.zfb_account_name }}</div>
-              <el-image
-                class="pay-code"
-                style="height: 80px"
-                fit="scale-down"
-                :src="scope.row.zfb_account_qrcode"
-                :preview-src-list="[scope.row.zfb_account_qrcode]">
-              </el-image>
-            </div>
-            <div class="flex align-center" v-else>
-              <el-avatar size="small" :src="scope.row.wx_avatar"></el-avatar>
-              <div class="flex1 pl-10">{{ scope.row.wx_nick_name || "--" }}</div>
+            <div class="flex align-center justify-center" v-else>
+              <el-avatar size="small" :src="scope.row.userAvatar"></el-avatar>
+              <div class="pl-10">{{ scope.row.userNickName || "--" }}</div>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="提现方式" align="center" width="100">
           <template slot-scope="scope">
-            {{ config.withdraw_way[scope.row.withdrawType] }}
+            {{ siteInfo.withdrawType[scope.row.withdrawType] }}
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center">
@@ -192,27 +187,27 @@
         },
         statusArr: [
           {
-            value: 0,
+            value: '',
             title: '全部',
             nkey: 'all'
           },
           {
-            value: 1,
+            value: '0',
             title: '审核中',
             nkey: 'applying'
           },
           {
-            value: 2,
+            value: 1,
             title: '已拒绝',
             nkey: 'reject'
           },
           {
-            value: 3,
+            value: 2,
             title: '到账中',
             nkey: 'approved'
           },
           {
-            value: 4,
+            value: 3,
             title: '已通过',
             nkey: 'done'
           }
@@ -257,7 +252,7 @@
       }
     },
     mounted() {
-
+      console.log(this.siteInfo)
     },
     methods: {
       /**
@@ -295,10 +290,10 @@
           page: this.listQuery.page - 1
         })
         params.userType = this.userType
-        if(params.selDay && params.selDay.length > 0){
-          params.startTime = params.selDay[0] / 1000
-          params.endTime = params.selDay[1] / 1000
-          delete params.selDay
+        if(params.date && params.date.length > 0){
+          params.startTime = params.date[0]
+          params.endTime = params.date[1]
+          delete params.date
         }
         this.$get('iot-saas-pay/admin/pay/withdraw/list', params).then(res => {
           this.list = res.rows || []
@@ -320,10 +315,10 @@
       getStat(){
         var params = Object.assign({}, this.form, this.listQuery)
         params.userType = this.userType
-        if(params.selDay && params.selDay.length > 0){
-          params.startTime = params.selDay[0] / 1000
-          params.endTime = params.selDay[1] / 1000
-          delete params.selDay
+        if(params.date && params.date.length > 0){
+          params.startTime = params.date[0]
+          params.endTime = params.date[1]
+          delete params.date
         }
         this.$get('iot-saas-pay//admin/pay/withdraw/summary', params).then(res => {
           this.numInfo = res
@@ -357,7 +352,6 @@
           params = JSON.parse(JSON.stringify(this.dform))
         if(this.clickSubmit) return
         this.clickSubmit = true
-        console.log(this.dialogType)
         switch (this.dialogType) {
           case 1: case 2:
             this.$post('iot-saas-pay/admin/pay/withdraw/approve', {
@@ -370,7 +364,7 @@
                 type: 'success'
               })
               curRow.status = this.dialogType
-              curRow.remark = this.remark
+              curRow.remark = params.remark
               this.dialogStatus = false
               this.clickSubmit = false
             }).catch(err => {
@@ -378,18 +372,14 @@
             })
             break
         }
-      },
-
-      /**
-       * 导出
-       */
-      saveXlsx() {
-
-      },
+      }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-
+  .pay-code{
+    width: 40px;
+    height: 40px;
+  }
 </style>

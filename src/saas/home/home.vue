@@ -64,7 +64,7 @@
           <div>总用户数</div>
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600"/></div>
+              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
               <i class="iconfont icon-right fs-s1"></i>
             </div>
             <div class="stat-icon flex align-center justify-center" style="background: rgba(255, 83, 83, 0.1)">
@@ -73,7 +73,7 @@
           </div>
           <div class="flex align-center">
             <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(totalStat.total_order_amount)" :duration="2600" :decimals="2"/></div>
+            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(userStat.todayNumber)" :duration="2600" :decimals="2"/></div>
             <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
           </div>
         </div>
@@ -91,8 +91,7 @@
       </el-col>
       <el-col :xs="24" :sm="8" :lg="6">
         <div class="flex align-center brand-box bg-white">
-          <selectSearch v-model="brandId" name="name" :type="6" placeholder="请输入品牌名进行搜索" @change="loadStat()"></selectSearch>
-          <!-- <el-input placeholder="请输入品牌名进行搜索" v-model="form.brand_name" class="input-with-select"></el-input> -->
+          <selectSearch class="flex-sub" v-model="brandId" name="name" :type="6" placeholder="请输入品牌名进行搜索" @change="loadStat()"></selectSearch>
           <el-button icon="el-icon-search" type="primary"></el-button>
         </div>
       </el-col>
@@ -232,6 +231,7 @@
         form: {},
         orderStat: {},
         deviceStat: {},
+        userStat: {},
         querHistogram: {},
         brandTop: [],
         brandId: '',
@@ -299,6 +299,7 @@
       this.getQuerHistogram()
       this.getLineChart()
       this.getDeviceStat()
+      this.getUserStat()
       this.getBrandTop10()
     },
     methods: {
@@ -341,6 +342,15 @@
             }
           }
           this.deviceChart()
+        })
+      },
+
+      /**
+       * 用户统计
+       */
+      getUserStat() {
+        this.$get('iot-saas-user/admin/user/queryCountInfo').then(res => {
+          this.userStat = res
         })
       },
 
