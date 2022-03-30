@@ -118,9 +118,8 @@
         </el-form>
       </template>
       <template v-if="dialogType == 2">
-        <div class="text-center">
-          <el-checkbox v-model="dform.check_order">查看订单</el-checkbox>
-          <el-checkbox v-model="dform.withdraw_right">提现</el-checkbox>
+        <div class="text-center" v-if="dform.abilitys">
+          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys[key]" v-for="(item, key) in abilitys">{{ item }}</el-checkbox>
         </div>
       </template>
       <template v-if="dialogType == 3">
@@ -177,6 +176,11 @@
 
         // 操作相关
         deviceId: '',
+
+        abilitys: {
+          checkOrder: '查看订单',
+          checkWithdrawRight: '提现'
+        },
 
         // 弹出相关
         dialogType: 1,
@@ -479,6 +483,18 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
+            if(dialogType == 2){
+              this.$get('iot-saas-basic/admin/agent/agentAuth', {
+                agentId: row.id
+              }).then(res => {
+                let abilitys = {}
+                res.map(item => {
+                  if(item.have == 1) abilitys[item.code] = true
+                })
+                this.$set(this.dform, 'abilitys', abilitys)
+              })
+              this.$set(this.dform, 'agentId', row.id)
+            }
             break
         }
       },
@@ -495,7 +511,22 @@
             this.bindStore({ id: curRow.id, deviceSns: params.deviceSns })
             break
           case 2:
-
+            let abilitys = []
+            for(var i in params.abilitys){
+              abilitys.push({
+                name: this.abilitys[i],
+                code: i,
+                have: params.abilitys[i] ? 1 : 0
+              })
+            }
+            params.abilitys = abilitys
+            this.$post('iot-saas-basic/admin/agent/updateAgentAuth', params).then(res => {
+              this.$message({
+                type: 'success',
+                message: '设置成功'
+              })
+              this.dialogStatus = false
+            })
             break
           case 3:
             this.$post('iot-saas-user/admin/store/delete', {

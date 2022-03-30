@@ -331,9 +331,7 @@
                   if(item.have == 1) abilitys[item.code] = true
                 })
                 this.$set(this.dform, 'abilitys', abilitys)
-                console.log(this.dform)
               })
-              //this.$set(this.dform, 'abilitys', {})
               this.$set(this.dform, 'agentId', row.id)
             }
             break
@@ -363,7 +361,6 @@
                 type: 'success',
                 message: '设置成功'
               })
-              this.curRow = Object.assign(this.curRow, params)
               this.dialogStatus = false
             })
             break
