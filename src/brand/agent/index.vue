@@ -11,45 +11,45 @@
 		</condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border :max-height="tableMaxH">
-        <el-table-column label="代理信息" align="center" width="130">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH">
+        <el-table-column label="代理信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
             <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="品类" align="center">
+        <el-table-column label="品类">
           <template slot-scope="scope">
-            <div class="text-primary cursor" @click="$router.push({path: `/device/subDevice?agentIds=${scope.row.id}`})" v-for="item in scope.row.agentDeviceType">
+            <div class="cursor" v-for="item in scope.row.agentDeviceType">
               {{ item.name }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="设备数" align="center">
+        <el-table-column label="设备数">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <div>全部：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
-              <div>已铺货：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber : '0' }}</div>
+            <div class="cursor inline text-left" @click="$router.push({path: `/device/subDevice?agentId=${scope.row.id}`})">
+              <div>全部：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) - parseFloat(deviceCount[scope.row.id].lowerDeviceNumber) : '0' }}</div>
+              <div>已铺货：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) - parseFloat(deviceCount[scope.row.id].lowerBindStoreNumber) : '0' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="订单数" align="center" width="120">
+        <el-table-column label="订单数" width="120">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
-                  @click="$router.push({path: `/order/sub0rder?agentIds=${scope.row.id}&sourceType=1`})">
+                  @click="$router.push({path: `/order/subOrder?agentIds=${scope.row.id}&sourceType=1`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
                 </el-link>
               </div>
               <div>支付宝：<el-link type="primary"
-                  @click="$router.push({path: `/order/sub0rder?agentIds=${scope.row.id}&sourceType=2`})">
+                  @click="$router.push({path: `/order/subOrder?agentIds=${scope.row.id}&sourceType=2`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
                 </el-link>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="金额(元)" align="center" width="150">
+        <el-table-column label="金额(元)" width="150">
           <template slot-scope="scope">
             <div class="inline">
               <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
@@ -57,12 +57,12 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="可提现金额(元)" align="center" width="120">
+        <el-table-column label="可提现金额(元)" width="120">
           <template slot-scope="scope">
             <span class="cursor text-blue">{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="分润比例" align="center">
+        <el-table-column label="分润比例">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div v-for="item in scope.row.agentDeviceType">
@@ -71,15 +71,15 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="240">
+        <el-table-column label="操作" width="240">
           <template slot-scope="scope">
             <template v-if="deviceId">
               <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
             </template>
             <template v-else>
               <div class="pl-10 inline text-left">
-                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order/subOrder?agentIds=${scope.row.id}`})">订单列表</el-button>
-                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store/subStore?agentIds=${scope.row.id}`})">商户列表</el-button>
+                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order/subOrder?agentId=${scope.row.id}`})">订单列表</el-button>
+                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store/subStore?agentId=${scope.row.id}`})">商户列表</el-button>
                 <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
                 <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-button>
                 <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)">删除代理</el-button>
@@ -371,14 +371,14 @@
             })
             break
           case 2:
-            this.$post('agentapi/delete_agent', {
-              son_id: row.id
+            this.$post('iot-saas-basic/admin/agent/delete', {
+              agentId: curRow.id
             }).then(res => {
               this.$message({
                 message: '删除成功',
                 type: 'success'
               })
-              this.list.splice(row.index, 1)
+              this.list.splice(curIdx, 1)
             })
             break
         }

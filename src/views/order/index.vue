@@ -55,66 +55,66 @@
         :max-height="tableMaxH" element-loading-text="Loading"
         @selection-change="selOrder">
         <el-table-column type="selection" v-if="checkRoles(['partner']) && !xlsxStatus" :selectable="checkSel" width="50"/>
-        <el-table-column label="品牌商" align="center">
+        <el-table-column label="品牌商">
           <template slot-scope="scope">
             {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
           </template>
         </el-table-column>
-        <el-table-column label="小程序ID" v-if="xlsxStatus" align="center">
+        <el-table-column label="小程序ID" v-if="xlsxStatus">
           <template slot-scope="scope">
             <div>{{ scope.row.appid }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="订单号" width="140" align="center">
+        <el-table-column label="订单号" width="140">
           <template slot-scope="scope">
             {{ scope.row.order_sn || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="交易单号" width="142" align="center">
+        <el-table-column label="交易单号" width="142">
           <template slot-scope="scope">
             <div>{{ scope.row.transaction_id || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户单号" width="142" align="center">
+        <el-table-column label="商户单号" width="142">
           <template slot-scope="scope">
             {{ scope.row.out_order_no || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="类型" width="90" align="center">
+        <el-table-column label="类型" width="90">
           <template slot-scope="scope">
             {{ scope.row.goods_name || '密码线' }}
           </template>
         </el-table-column>
-        <el-table-column label="来源" width="50" align="center">
+        <el-table-column label="来源" width="50">
           <template slot-scope="scope">
             <i class="fs-a1 iconfont icon-weixin1 text-green" v-if="scope.row.mini_type == 1"></i>
             <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
           </template>
         </el-table-column>
-        <el-table-column label="支付类型" width="100" align="center">
+        <el-table-column label="支付类型" width="100">
           <template slot-scope="scope">
             <div class="fs-s3">{{ scope.row.deposit_status || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="用户" width="150" align="center">
+        <el-table-column label="用户" width="150">
           <template slot-scope="scope">
             <div>{{ dealPhone(scope.row.user_mobile) }}</div>
             <div class="text-cut">{{ scope.row.user_nick_name || "--" }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户" min-width="180" align="center">
+        <el-table-column label="商户" min-width="180">
           <template slot-scope="scope">
             <div>{{ scope.row.rent_store || '--' }}</div>
             <div>{{ scope.row.back_store || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="时间" width="140" align="center">
+        <el-table-column label="时间" width="140">
           <template slot-scope="scope">
             <div class="text-green">{{ scope.row.charge_start || "1970-01-01 00:00:00" }}</div>
             <div class="text-danger">{{ scope.row.charge_end || "1970-01-01 00:00:00" }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="设备SN码" width="220" align="center">
+        <el-table-column label="设备SN码" width="220">
           <template slot-scope="scope">
             <div>二维码：{{ scope.row.zuo_sn || "--" }}</div>
             <div>设备SN：{{ scope.row.device_id || "--" }}</div>
@@ -122,29 +122,29 @@
               @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="套餐" width="150" align="center">
+        <el-table-column label="套餐" width="150">
           <template slot-scope="scope">
             {{ scope.row.rent_desc || "--" }}
           </template>
         </el-table-column>
-        <el-table-column label="收益(元)" width="75" align="center">
+        <el-table-column label="收益(元)" width="75">
           <template slot-scope="scope">
             <el-link type="success">{{ scope.row.money_paid || "--" }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="退款(元)" width="75" align="center">
+        <el-table-column label="退款(元)" width="75">
           <template slot-scope="scope">
             <el-link type="success">{{ scope.row.refund_drawbacked }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="70" align="center">
+        <el-table-column label="状态" width="70">
           <template slot-scope="scope">
             <el-link :type="scope.row.order_status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
               {{ Constant.OrderStatus[scope.row.order_status] || "--" }}
             </el-link>
           </template>
         </el-table-column>
-        <el-table-column label="备注" min-width="150" align="center">
+        <el-table-column label="备注" min-width="150">
           <template slot-scope="scope">
             <div class="remark-box">
               <div class="fs-s4 text-danger" v-if="scope.row.steal_type_des">{{ scope.row.steal_type_des }}</div>
@@ -153,7 +153,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="100" :fixed="device == 'desktop' ? 'right' : false" v-if="!xlsxStatus">
+        <el-table-column label="操作" width="100" :fixed="device == 'desktop' ? 'right' : false" v-if="!xlsxStatus">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="detailDialog = true">订单详情</el-button>
             <el-button type="primary" size="mini" plain round v-if="scope.row.refund_apply_status == 1"
@@ -202,27 +202,27 @@
 
         <template>
           <el-table border stripe :data="[{name:'总后台', f: '50', m: '5'},{name:'代理商', f: '30', m: '3'},{name:'商户', f: '20', m: '2'}]" :span-method="fenRunSpanMethod" class="custom">
-            <el-table-column align="center" label="订单金额">
+            <el-table-column label="订单金额">
               <template slot-scope="scope">
                 10元
               </template>
             </el-table-column>
-            <el-table-column align="center" width="190" label="分成人" >
+            <el-table-column width="190" label="分成人" >
               <template slot-scope="scope">
                 {{ scope.row.name }}：美羊羊
               </template>
             </el-table-column>
-            <el-table-column align="center" label="分成比例" >
+            <el-table-column label="分成比例" >
               <template slot-scope="scope">
                 {{ scope.row.f }}%
               </template>
             </el-table-column>
-            <el-table-column align="center" label="分成金额(元)" >
+            <el-table-column label="分成金额(元)" >
               <template slot-scope="scope">
                 {{ scope.row.m }}
               </template>
             </el-table-column>
-            <el-table-column align="center" label="退款金额(元)" >
+            <el-table-column label="退款金额(元)" >
               <template slot-scope="scope">
                 0
               </template>

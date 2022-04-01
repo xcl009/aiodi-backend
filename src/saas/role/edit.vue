@@ -17,7 +17,7 @@
         <h4 class="pl-10">功能权限</h4>
         <el-table class="ml-10" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
           :show-header="false" stripe highlight-current-row border>
-          <el-table-column align="center" width="200">
+          <el-table-column width="200">
             <template slot-scope="scope">
               <el-checkbox v-model="power.first">主页</el-checkbox>
             </template>

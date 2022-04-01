@@ -3,22 +3,22 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading"
         stripe highlight-current-row :max-height="tableMaxH">
-        <el-table-column align="center" label="批次编号">
+        <el-table-column label="批次编号">
           <template slot-scope="scope">
             {{ scope.row.batchNumber }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="生成数量">
+        <el-table-column label="生成数量">
           <template slot-scope="scope">
             {{ scope.row.amount || 0 }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="生成时间">
+        <el-table-column label="生成时间">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="200">
+        <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="exportAll(scope.row)">导出</el-button>
           </template>

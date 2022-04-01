@@ -53,7 +53,7 @@
         </el-col>
         <el-col class="pr-20" :xs="{span: 24}" :sm="{span: 12}">
           <h4>设备信息 <el-link class="pl-15" type="primary" v-if="selSnArr.length > 0" @click='deleteEquip()'>解绑设备</el-link></h4>
-          <el-table :data="info.device_info" stripe highlight-current-row border @selection-change="selSb">
+          <el-table :data="info.device_info" stripe highlight-current-row @selection-change="selSb">
             <el-table-column type="selection" width="50" />
             <el-table-column label="设备SN码">
               <template slot-scope="scope">

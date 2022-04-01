@@ -5,22 +5,22 @@
       <div class="pt-15">
         <el-table id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
           stripe highlight-current-row :max-height="tableMaxH">
-          <el-table-column label="角色名称" align="center">
+          <el-table-column label="角色名称">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="登录账号" align="center">
+          <el-table-column label="登录账号">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="登录密码" align="center">
+          <el-table-column label="登录密码">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <span class="pl-20 pr-20 cursor text-primary" @click="setRows(1, scope.row, 2)">修改</span>
               <span class="pl-20 pr-20 cursor text-danger" @click="setRows(1, scope.row, 1, scope.$index)">删除</span>

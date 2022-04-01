@@ -3,42 +3,42 @@
     <div class="pt-15 pl-15 pr-15 pb-15 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         :max-height="tableMaxH">
-        <el-table-column label="小程序" align="center">
+        <el-table-column label="小程序">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.appName || '小程序名称' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="APPID" align="center">
+        <el-table-column label="APPID">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.appId || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="最新模板" align="center">
+        <el-table-column label="最新模板">
           <template slot-scope="scope">
             {{ scope.row.latestTemplateId || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="当前模板" align="center">
+        <el-table-column label="当前模板">
           <template slot-scope="scope">
             {{ scope.row.appTemplate || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="状态" align="center">
+        <el-table-column label="状态">
           <template slot-scope="scope">
             {{ appAuditStatus[scope.row.appAuditStatus] || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="备注" align="center">
+        <el-table-column label="备注">
           <template slot-scope="scope">
             {{ scope.row.appAuditResut || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="更新时间" align="center">
+        <el-table-column label="更新时间">
           <template slot-scope="scope">
             {{ parseTime(scope.row.updateTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">提交审核</div>

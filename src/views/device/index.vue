@@ -33,23 +33,23 @@
         >
           <el-table-column type="selection" v-if="checkRoles(['terminal'])" width="50" />
           <el-table-column type="selection" v-else :selectable="checkSel" width="50" />
-          <el-table-column label="品牌商" align="center">
+          <el-table-column label="品牌商">
             <template slot-scope="scope">
               {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '品牌名' }}
             </template>
           </el-table-column>
-          <el-table-column label="设备名称" align="center">
+          <el-table-column label="设备名称">
             <template slot-scope="scope">
               {{ scope.row.goods_name || '密码线' }}
             </template>
           </el-table-column>
-          <el-table-column label="设备归属" align="center" width="180">
+          <el-table-column label="设备归属" width="180">
             <template slot-scope="scope">
               <div>{{ scope.row.manage_name || '用户名' }}</div>
               <div>{{ scope.row.manage_phone || '手机号码' }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="设备SN码" align="center" width="230">
+          <el-table-column label="设备SN码" width="230">
             <template slot-scope="scope">
               <div class="inline text-left">
                 <div>二维码：{{ scope.row.goods_sn || "--" }}</div>
@@ -57,24 +57,24 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="设备属性" align="center" width="110">
+          <el-table-column label="设备属性" width="110">
             <template slot-scope="scope">
               工厂：--
             </template>
           </el-table-column>
-          <el-table-column label="是否铺货" align="center" width="100">
+          <el-table-column label="是否铺货" width="100">
             <template slot-scope="scope">
               <div>{{ scope.row.is_distributed == 1 ? "是" : "否" }}</div>
               <div>{{ scope.row.operate_date }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="商户名称" align="center" width="150">
+          <el-table-column label="商户名称" width="150">
             <template slot-scope="scope">
               <div class="text-cut_two">{{ scope.row.store_name || "--" }}</div>
               <div v-if="scope.row.attach_room_no">房间号：{{ scope.row.attach_room_no }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="订单数" align="center" width="120">
+          <el-table-column label="订单数" width="120">
             <template slot-scope="scope">
               <div class="inline text-left">
                 <div>微信：<el-link type="primary" @click="$router.push({path: `/order?goods_sn=${scope.row.goods_sn}&mini_type=1`})">{{ scope.row.wx_mini_num || 0 }}</el-link></div>
@@ -83,18 +83,18 @@
 
             </template>
           </el-table-column>
-          <el-table-column label="交易额(元)" align="center" width="90">
+          <el-table-column label="交易额(元)" width="90">
             <template slot-scope="scope">
               {{ scope.row.order_amount || '0.00' }}
             </template>
           </el-table-column>
-          <el-table-column label="状态" align="center" width="120" v-if="false">
+          <el-table-column label="状态" width="120" v-if="false">
             <template slot-scope="scope">
               <div class="text-danger">已绑定</div>
               <div>2021-11-26 18:27</div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="190" :fixed="device == 'desktop' ? 'right' : false">
+          <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <div class="inline text-left">
                 <el-button type="primary" size="mini" @click="deviceBelong(scope.row)" class="mb-5">设备归属</el-button>

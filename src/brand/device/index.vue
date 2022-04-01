@@ -12,7 +12,7 @@
         <el-input v-model="form.qrcodeSn" placeholder="二维码" />
         <el-input v-model="form.deviceSn" placeholder="设备SN" />
         <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
-        <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()" v-if="lowerDevice"></selectSearch>
       </template>
     </condition>
 
@@ -28,12 +28,12 @@
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" stripe highlight-current-row @selection-change="selList" :max-height="tableMaxH">
         <el-table-column type="selection" :selectable="checkSel" width="50" />
-        <el-table-column label="设备名称" align="center">
+        <el-table-column label="设备名称">
           <template slot-scope="scope">
             {{ scope.row.deviceType.name || '密码线' }}
           </template>
         </el-table-column>
-        <el-table-column label="设备归属" align="center" width="180" v-if="lowerDevice">
+        <el-table-column label="设备归属" width="180" v-if="lowerDevice">
           <template slot-scope="scope">
             <template v-if="scope.row.agent">
               <div>{{ scope.row.agent.name }}</div>
@@ -44,7 +44,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="设备SN码" align="center" width="230">
+        <el-table-column label="设备SN码" width="230">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>二维码：{{ scope.row.qrcodeSn || "--" }}</div>
@@ -52,18 +52,18 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="设备属性" align="center" width="110">
+        <el-table-column label="设备属性" width="110">
           <template slot-scope="scope">
             工厂：{{ scope.row.deviceFactory.name }}
           </template>
         </el-table-column>
-        <el-table-column label="是否铺货" align="center" width="100">
+        <el-table-column label="是否铺货" width="100">
           <template slot-scope="scope">
             <div>{{ scope.row.distribute ? "是" : "否" }}</div>
             <div>{{ scope.row.operate_date }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户名称" align="center" width="150">
+        <el-table-column label="商户名称" width="150">
           <template slot-scope="scope">
             <div v-if="scope.row.store">
               <div class="text-cut_two">{{ scope.row.store.name }}</div>
@@ -71,7 +71,7 @@
             <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="订单数" align="center" width="120">
+        <el-table-column label="订单数" width="120">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
@@ -87,12 +87,12 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="交易额(元)" align="center" width="90">
+        <el-table-column label="交易额(元)" width="90">
           <template slot-scope="scope">
             {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="190" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex justify-center">
               <div class="flex flex-wrap w-160">
@@ -140,12 +140,12 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <el-table :data="deviceBelong" border>
-          <el-table-column label="角色" align="center">
+          <el-table-column label="角色">
             <template slot-scope="scope">
               {{ config.system_role[scope.row.userType] }}
             </template>
           </el-table-column>
-          <el-table-column label="联系信息" align="center">
+          <el-table-column label="联系信息">
             <template slot-scope="scope">
               <div>{{ scope.row.name }}</div>
             </template>
@@ -269,7 +269,7 @@
     },
     mounted(options) {
       let query = this.$route.query
-      this.queryKey = ['brandIds', 'storeIds', 'agentId', 'deviceIds', 'sourceType']
+      this.queryKey = ['brandId', 'storeId', 'agentId', 'deviceIds', 'sourceType']
       for (var i in this.queryKey) {
         if(query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
       }
@@ -397,6 +397,7 @@
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
         }
+        if(params.deviceTypeId == 0) delete params.deviceTypeId
         this.$get('iot-saas-device/admin/device/findPage', params).then(res => {
           this.list = res.rows
           this.listLoading = false

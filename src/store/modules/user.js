@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getConstant, getWdConstant, getAuth } from '@/api/user'
+import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getSaasDevice, getConstant, getWdConstant, getAuth } from '@/api/user'
 import { arrayToObj } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -37,6 +37,7 @@ const mutations = {
     state.myDeviceName = res.myDeviceName
     state.myDeviceId = res.myDeviceId
     state.myDevice = res.myDevice
+    state.myProfitRatio = res.myProfitRatio
   },
   SET_SITEINFO: (state, res) => {
     state.siteInfo = res
@@ -75,7 +76,6 @@ const actions = {
       codeLogin({ phone_num: phone_num.trim(), captche_num: captche_num }).then(data => {
         commit('SET_TOKEN', data.token)
         setToken(data.token)
-        setToken(data.user_id, 'user_id')
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -108,22 +108,35 @@ const actions = {
           	params.agentId = data.storeIds[0]
           	abilitys = storeAbilitys
           }
-          getAuth(params).then(res => {
-            let auth = arrayToObj(res, 'code', 'have')
-            if(data.userType == 'agent' && res.length == 0){
-            	data.agentAbilitys = storeAbilitys
-            }
-            for(var i in abilitys){
-            	data[i] = auth[i] >= 0 ? auth[i] : 1
-            }
-            window.agentInfo = data
-            commit('SET_NAME', data.nickname || data.username)
-            commit('SET_AVATAR', data.avastar || '')
-            commit('SET_AGENTINFO', data)
-            resolve({
-              roles: [data.userType]
-            })
+          if(data.userType == 'agent' && res.length == 0){
+          	data.agentAbilitys = storeAbilitys
+          }
+          for(var i in abilitys){
+          	data[i] = 1
+          }
+          window.agentInfo = data
+          commit('SET_NAME', data.nickname || data.username)
+          commit('SET_AVATAR', data.avastar || '')
+          commit('SET_AGENTINFO', data)
+          resolve({
+            roles: [data.userType]
           })
+          // getAuth(params).then(res => {
+          //   let auth = arrayToObj(res, 'code', 'have')
+          //   if(data.userType == 'agent' && res.length == 0){
+          //   	data.agentAbilitys = storeAbilitys
+          //   }
+          //   for(var i in abilitys){
+          //   	data[i] = auth[i] >= 0 ? auth[i] : 1
+          //   }
+          //   window.agentInfo = data
+          //   commit('SET_NAME', data.nickname || data.username)
+          //   commit('SET_AVATAR', data.avastar || '')
+          //   commit('SET_AGENTINFO', data)
+          //   resolve({
+          //     roles: [data.userType]
+          //   })
+          // })
         }
       }).catch(error => {
         reject(error)
@@ -164,8 +177,6 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       removeToken() // must remove  token  first
-      removeToken('user_id')
-      if(getToken('agent_id') == 1) removeToken('agent_id')
       resetRouter()
       commit('RESET_STATE')
       resolve()
@@ -185,23 +196,47 @@ const actions = {
   // 获取当前代理设备类型
   getMyDevice({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getMyDevice().then(res => {
-        let myDeviceName = {}, myDeviceId = {}, myDevice = []
-        for(var i in res){
-          let d = res[i]
-          myDeviceName[d.name] = d.id
-          myDeviceId[d.id] = d.name
-          myDevice.push(d)
-        }
-        commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({
-          myDeviceName: myDeviceName,
-          myDeviceId: myDeviceId,
-          myDevice: myDevice
-        })))
-        resolve(res)
-      }).catch(error => {
-        reject(error)
-      })
+      if(Vue.prototype.isSaas()){
+        getSaasDevice().then(res => {
+          let myDeviceName = {}, myDeviceId = {}, myDevice = [], myProfitRatio = {}
+          for(var i in res){
+            let d = res[i]
+            myDeviceName[d.name] = d.id
+            myDeviceId[d.id] = d.name
+            myProfitRatio[d.id] = 100
+            myDevice.push(d)
+          }
+          commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({
+            myDeviceName: myDeviceName,
+            myDeviceId: myDeviceId,
+            myDevice: myDevice,
+            myProfitRatio: myProfitRatio
+          })))
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      } else {
+        getMyDevice().then(res => {
+          let myDeviceName = {}, myDeviceId = {}, myDevice = [], myProfitRatio = {}
+          for(var i in res){
+            let d = res[i]
+            myDeviceName[d.name] = d.id
+            myDeviceId[d.id] = d.name
+            myProfitRatio[d.id] = d.profitRatio
+            myDevice.push(d)
+          }
+          commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({
+            myDeviceName: myDeviceName,
+            myDeviceId: myDeviceId,
+            myDevice: myDevice,
+            myProfitRatio: myProfitRatio
+          })))
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      }
     })
   },
 

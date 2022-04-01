@@ -40,52 +40,52 @@
         :max-height="tableMaxH"
         :data="list"
       >
-        <el-table-column label="品牌商" align="center" width="120">
+        <el-table-column label="品牌商" width="120">
           <template slot-scope="scope">
             {{ oemInfo[scope.row.belong_aid] ? oemInfo[scope.row.belong_aid].mini_name : '品牌名' }}
           </template>
         </el-table-column>
-        <el-table-column label="门头照" align="center" width="62" v-if="checkThead.indexOf('门头照') > -1">
+        <el-table-column label="门头照" width="62" v-if="checkThead.indexOf('门头照') > -1">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="52" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column label="商户名称" align="center" width="150" v-if="checkThead.indexOf('商户名称') > -1">
+        <el-table-column label="商户名称" width="150" v-if="checkThead.indexOf('商户名称') > -1">
           <template slot-scope="scope">
             <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})" class="cursor">[1021]{{ scope.row.store_name || '美宜佳' }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="商户地址" align="center" width="200" v-if="checkThead.indexOf('商户地址') > -1">
+        <el-table-column label="商户地址" width="200" v-if="checkThead.indexOf('商户地址') > -1">
           <template slot-scope="scope">
             <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="城市区域" align="center" width="120" v-if="checkThead.indexOf('城市区域') > -1">
+        <el-table-column label="城市区域" width="120" v-if="checkThead.indexOf('城市区域') > -1">
           <template slot-scope="scope">
             {{ scope.row.region_tag && areaObj[scope.row.region_tag] ? areaObj[scope.row.region_tag].title : '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="行业分类" align="center" width="120" v-if="checkThead.indexOf('行业分类') > -1">
+        <el-table-column label="行业分类" width="120" v-if="checkThead.indexOf('行业分类') > -1">
           <template slot-scope="scope">
             {{ scope.row.cat_name || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="交易额(元)" align="center" width="90">
+        <el-table-column label="交易额(元)" width="90">
           <template slot-scope="scope">
             {{ scope.row.order_amount || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="收益(元)" align="center" width="90">
+        <el-table-column label="收益(元)" width="90">
           <template slot-scope="scope">
             <span class="text-blue cursor" @click="$router.push({path: `/money/income?son_id=${scope.row.aid}`})">{{ scope.row.profit || '0.00' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="可提现(元)" align="center" width="90">
+        <el-table-column label="可提现(元)" width="90">
           <template slot-scope="scope">
             <a v-if="checkRoles(['partner'])" class="text-blue cursor" @click="$refs.editwith.showDialog(scope.row)">{{ scope.row.available_withdraw_money || '0.00' }}</a><a v-else>{{ scope.row.available_withdraw_money || '0.00' }}</a>
           </template>
         </el-table-column>
-        <el-table-column label="订单量" align="center" width="90" v-if="checkThead.indexOf('订单量') > -1">
+        <el-table-column label="订单量" width="90" v-if="checkThead.indexOf('订单量') > -1">
           <template slot-scope="scope">
             <el-tag
               class="cursor"
@@ -97,7 +97,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="品类" align="center" v-if="checkThead.indexOf('品类') > -1">
+        <el-table-column label="品类" v-if="checkThead.indexOf('品类') > -1">
           <template slot-scope="scope">
             <el-tag
               class="cursor"
@@ -109,7 +109,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" width="120" v-if="checkThead.indexOf('创建时间') > -1">
+        <el-table-column label="创建时间" width="120" v-if="checkThead.indexOf('创建时间') > -1">
           <template slot-scope="scope">
             {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>

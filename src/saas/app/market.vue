@@ -1,8 +1,8 @@
 <template>
   <div>
-		<condition ref="condition">
+		<condition ref="condition" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
+        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.iotServiceTypeId" @tab-click="toQuery()">
           <el-tab-pane label="全部" :name="'0'" />
           <el-tab-pane label="品类" :name="'1'" />
           <el-tab-pane label="系统服务" :name="'2'" />
@@ -43,7 +43,6 @@
       </el-table>
       <div class="flex justify-center">
         <pagination
-          v-show="listQuery.count > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
           :total="listQuery.count"
@@ -68,19 +67,16 @@
         clickSubmit: false,
         form: {},
         tableMaxH: '250',
-        list: [
-          {}
-        ],
+        list: [],
         listLoading: false,
         listQuery: {
           page: 1,
-          size: 20,
-          count: 10
+          size: 20
         }
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == "agentEdit") {
+      if (from.name == 'appEdit') {
         to.meta.reload = true
       } else {
         to.meta.reload = false
@@ -88,18 +84,18 @@
       next()
     },
     activated() {
-      this.zuo_sn = this.$route.query.zuo_sn || ''
       if(this.$route.meta.reload){
         this.getList()
       }else if(!this.list || this.list.length == 0) {
-        this.toQuery(1)
+        this.toQuery()
+        this.getServiceType()
       }
     },
     computed: {
 
     },
     mounted() {
-      this.getServiceType()
+
     },
     methods: {
       /**
@@ -126,6 +122,8 @@
        * 重置查询
        */
       reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.form = {}
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -139,10 +137,10 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('/brand/findPage', params).then(res => {
+        this.$get('iot-saas-basic/admin/iotservice/findPage', params).then(res => {
           this.listLoading = false
-          this.list = res.list
           this.clickSubmit = false
+          this.list = res.list
           if(params.page == 1){
             this.count = res.count
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80

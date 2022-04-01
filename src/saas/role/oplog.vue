@@ -23,27 +23,27 @@
       <div class="pl-15 pr-15">
         <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
           stripe highlight-current-row :max-height="tableMaxH">
-          <el-table-column label="操作人" align="center" width="150">
+          <el-table-column label="操作人" width="150">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作内容" align="center">
+          <el-table-column label="操作内容">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作IP" align="center" width="150">
+          <el-table-column label="操作IP" width="150">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作设备" align="center" width="150">
+          <el-table-column label="操作设备" width="150">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作时间" align="center" width="150">
+          <el-table-column label="操作时间" width="150">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}
             </template>

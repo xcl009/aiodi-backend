@@ -9,6 +9,7 @@ const getters = {
   myDeviceName: state => state.user.myDeviceName,
   myDeviceId: state => state.user.myDeviceId,
   myDevice: state => state.user.myDevice,
+  myProfitRatio: state => state.user.myProfitRatio,
   siteInfo: state => state.user.siteInfo,
   agentInfo: state => state.user.agentInfo,
   Constant: state => state.user.Constant,

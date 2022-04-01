@@ -34,55 +34,55 @@
       </div>
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         :max-height="tableMaxH">
-        <el-table-column label="提现单号" align="center" width="120">
+        <el-table-column label="提现单号" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.id || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="代理商" align="center" width="130" v-if="userType == 1">
+        <el-table-column label="代理商" width="130" v-if="userType == 1">
           <template slot-scope="scope">
             <div>{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.phone || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户" align="center" width="130" v-if="userType == 2">
+        <el-table-column label="商户" width="130" v-if="userType == 2">
           <template slot-scope="scope">
             <div>{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.phone || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="头像" align="center" width="60" v-if="userType == 3">
+        <el-table-column label="头像" width="60" v-if="userType == 3">
           <template slot-scope="scope">
             <el-avatar :src="scope.row.userAvatar"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column label="用户" align="center" width="130" v-if="userType == 3">
+        <el-table-column label="用户" width="130" v-if="userType == 3">
           <template slot-scope="scope">
             <div>{{ scope.row.userNickName || '--' }}</div>
             <div>{{ scope.row.userMobile || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="提现时间" align="center" width="90">
+        <el-table-column label="提现时间" width="90">
           <template slot-scope="scope">
             {{ scope.row.createTime || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="提现金额(元)" align="center">
+        <el-table-column label="提现金额(元)">
           <template slot-scope="scope">
             {{ scope.row.amount || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="手续费(元)" align="center">
+        <el-table-column label="手续费(元)">
           <template slot-scope="scope">
             {{ scope.row.feeDeal || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="到账金额(元)" align="center">
+        <el-table-column label="到账金额(元)">
           <template slot-scope="scope">
             {{ scope.row.amountReceived || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="到账账户" align="center" width="220">
+        <el-table-column label="到账账户" width="220">
           <template slot-scope="scope">
             <div v-if="scope.row.withdrawType == 5">
               <div>{{ scope.row.cardName }}</div>
@@ -104,20 +104,20 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="提现方式" align="center" width="100">
+        <el-table-column label="提现方式" width="100">
           <template slot-scope="scope">
             {{ siteInfo.withdrawType[scope.row.withdrawType] }}
           </template>
         </el-table-column>
-        <el-table-column label="状态" align="center">
+        <el-table-column label="状态">
           <template slot-scope="scope">
             <div class="el-link el-link--success">{{ statusObj[scope.row.status] }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="备注" align="center" width="170">
+        <el-table-column label="备注" width="170">
           <template slot-scope="scope">{{ scope.row.remark }}</template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="flex justify-center" v-if="scope.row.status == 0">
               <div class="p-10 cursor text-primary" @click="setRows(1, scope.row, 2)">通过</div>

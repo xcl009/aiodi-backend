@@ -19,47 +19,51 @@
 		</condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
         :max-height="tableMaxH">
-        <el-table-column label="品牌信息" align="center" width="130">
+        <el-table-column label="品牌信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
             <div v-if="scope.row.brandUser">{{ scope.row.brandUser.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="公司名称" align="center">
+        <el-table-column label="公司名称">
           <template slot-scope="scope">
-            {{ scope.row.companyName || '--'}}
+            <div class="flex align-center">
+              <el-avatar shape="square" :size="40" :fit="fit" :src="scope.row.logo"></el-avatar>
+              <div class="pl-10">{{ scope.row.companyName || '--'}}</div>
+            </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="团长" align="center" width="130">
+        <el-table-column label="团长" width="130">
+          <template slot-scope="scope">
+            <div class="mb-5">{{ scope.row.tname || '--' }}</div>
+            <div>{{ scope.row.tphone || '--' }}</div>
+            <div class="text-primary cursor" @click="setRow(3, scope.row)">设为团长</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="邀请人" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.tname || '--' }}</div>
             <div>{{ scope.row.tphone || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="邀请人" align="center" width="130">
+        <el-table-column label="品类" width="100">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.tname || '--' }}</div>
-            <div>{{ scope.row.tphone || '--' }}</div>
-          </template>
-        </el-table-column> -->
-        <el-table-column label="品类" align="center" width="100">
-          <template slot-scope="scope">
-            <div class="text-primary cursor" @click="$router.push({path: `/device?brandId=${scope.row.id}`})" v-for="item in scope.row.brandDeviceType">
+            <div class="text-primary cursor" v-for="item in scope.row.brandDeviceType">
               {{ item.name }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="设备数" align="center">
+        <el-table-column label="设备数">
           <template slot-scope="scope">
-            <div class="inline text-left">
+            <div class="inline text-left" @click="$router.push({path: `/device?brandId=${scope.row.id}`})">
               <div>全部：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
               <div>已铺货：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber : '0' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="订单数" align="center" width="120">
+        <el-table-column label="订单数" width="120">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
@@ -75,7 +79,7 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="下级总数" align="center" width="150">
+        <!-- <el-table-column label="下级总数" width="150">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
@@ -83,25 +87,23 @@
             </div>
           </template>
         </el-table-column> -->
-        <el-table-column label="交易额(元)" align="center" width="150">
+        <el-table-column label="交易额(元)" width="150">
           <template slot-scope="scope">
             {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="190">
+        <el-table-column label="操作" width="190">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandIds=${scope.row.id}`})">订单列表</el-button>
-            <!-- <el-button type="primary" size="mini" @click="">功能设置</el-button> -->
+            <el-button type="primary" size="mini" @click="$router.push({path: `/order?=${scope.row.id}`})">订单列表</el-button>
             <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
             <el-button type="primary" size="mini" @click="$router.push({path: `/partner/edit/${scope.row.id}`})">修改信息</el-button>
             <el-dropdown trigger="click">
               <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="$router.push({path: `/store?brandId=${scope.row.id}`})">商户列表</el-dropdown-item>
-                <!-- <el-dropdown-item @click.native="getMapIcon(scope.row)">地图图标</el-dropdown-item> -->
                 <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.status == 1">删除品牌</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.status != 1">账号恢复</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -298,21 +300,17 @@
       },
 
       /**
-       * 编辑
-       */
-      set(row) {
-
-      },
-
-      /**
-       * 编辑
+       * 操作行
+       * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长
        * @param {Object} row
+       * @param {Object} index
        */
       setRow(type, row, index) {
         switch (type) {
           case 1:
             this.$alert('确定删除此品牌吗？', '删除品牌', {
               confirmButtonText: '确定',
+              center: true,
               callback: action => {
                 if (action == 'confirm') {
                   this.$post('iot-saas-basic/admin/brand/updateStatusById', {
@@ -332,6 +330,7 @@
           case 2:
             this.$alert('确定将账号恢复为正常吗？', '账号恢复', {
               confirmButtonText: '确定',
+              center: true,
               callback: action => {
                 if (action == 'confirm') {
                   this.$post('iot-saas-basic/admin/brand/updateStatusById', {
@@ -343,6 +342,24 @@
                       type: 'success'
                     })
                     this.list.splice(index, 1)
+                  })
+                }
+              }
+            })
+            break
+          case 3:
+            this.$alert('确定将该品牌设置为团长吗？', '团长', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-basic/admin/brand/setLeader', {
+                    brandId: row.id
+                  }).then(res => {
+                    this.$message({
+                      message: '设置成功',
+                      type: 'success'
+                    })
                   })
                 }
               }

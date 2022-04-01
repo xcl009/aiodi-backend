@@ -16,12 +16,12 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
         element-loading-text="Loading">
-        <el-table-column label="投诉单号" align="center" width="140">
+        <el-table-column label="投诉单号" width="140">
           <template slot-scope="scope">
             {{ scope.row.complaint_id }}
           </template>
         </el-table-column>
-        <el-table-column label="关联订单信息" align="center" width="350">
+        <el-table-column label="关联订单信息" width="350">
           <template slot-scope="scope">
             <template v-if="scope.row.complaint_order_info && scope.row.complaint_order_info.length > 0">
               <div v-for="item in scope.row.complaint_order_info">
@@ -31,34 +31,34 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="投诉内容" align="center">
+        <el-table-column label="投诉内容">
           <template slot-scope="scope">
             <div class="text-cut_two">{{ scope.row.complaint_detail }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="投诉时间" align="center" width="110">
+        <el-table-column label="投诉时间" width="110">
           <template slot-scope="scope">
             {{ RFCToDate(scope.row.complaint_time) }}
           </template>
         </el-table-column>
-        <el-table-column label="投诉次数" align="center" width="100">
+        <el-table-column label="投诉次数" width="100">
           <template slot-scope="scope">
             <div>{{ scope.row.user_complaint_times }}次</div>
           </template>
         </el-table-column>
-        <el-table-column label="状态" align="center" width="150">
+        <el-table-column label="状态" width="150">
           <template slot-scope="scope">
             <div>{{ statu[scope.row.complaint_state] }}</div>
             <div class="mt-5 text-primary" v-if="scope.row.complaint_full_refunded">已全额退款</div>
             <div class="mt-5 text-danger" v-if="scope.row.incoming_user_response && scope.row.complaint_state != 'PROCESSED'">待回复用户</div>
           </template>
         </el-table-column>
-        <el-table-column label="退款备注" align="center" width="200">
+        <el-table-column label="退款备注" width="200">
           <template slot-scope="scope">
             <div class="text-danger">{{ scope.row.withdraw_reason || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="80">
+        <el-table-column label="操作" width="80">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/userManage/PCDetail?id=${scope.row.complaint_id}`})">详情</el-button>
           </template>

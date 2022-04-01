@@ -9,7 +9,7 @@
         <i class="rel el-icon-plus avatar-uploader-icon"></i>
       </template>
     </el-upload>
-    <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :file-list="value" name="file" :limit="limit" :multiple="multiple" :on-exceed="exceed" v-else>
+    <el-upload class="avatar-uploader" list-type="picture-card" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :file-list="value" name="file" :limit="limit" :multiple="multiple" :on-exceed="exceed" v-else>
       <i class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
@@ -179,6 +179,14 @@
     }
     .el-avatar{
       background: none;
+    }
+    /deep/ .el-upload--picture-card{
+      width: 100px;
+      height: 100px;
+      line-height: inherit;}
+    /deep/ .el-upload-list__item{
+      width: 100px;
+      height: 100px;
     }
   }
   .el-upload__tip{

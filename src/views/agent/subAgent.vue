@@ -18,47 +18,47 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         highlight-current-row :max-height="tableMaxH">
-        <el-table-column label="品牌信息" align="center" width="130">
+        <el-table-column label="品牌信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
             <div>{{ scope.row.phone || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="代理信息" align="center" width="130">
+        <el-table-column label="代理信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
             <div>{{ scope.row.phone || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="运营城市" align="center" width="120">
+        <el-table-column label="运营城市" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.charge_county || '深圳' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="设备" align="center">
+        <el-table-column label="设备">
           <template slot-scope="scope">
             {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '0' }}
           </template>
         </el-table-column>
-        <el-table-column label="下级总数" align="center" width="150">
+        <el-table-column label="下级总数" width="150">
           <template slot-scope="scope">
             <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
             <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="收益(元)" align="center" width="200">
+        <el-table-column label="收益(元)" width="200">
           <template slot-scope="scope">
             <div class="cursor">
               <span class="text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="分润比例" align="center">
+        <el-table-column label="分润比例">
           <template slot-scope="scope">
             {{ scope.row.depend_type_name || '密码线' }}：{{ scope.row.goods_sum || '50%' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="175">
+        <el-table-column label="操作" width="175">
           <template slot-scope="scope">
             <div class="inline text-left">
               <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>

@@ -260,7 +260,7 @@ const util = {
    * 校验当前用户是否为SAAS
    */
   isSaas: () => {
-  	return agentInfo.userType == 'saas'
+  	return agentInfo.userType == 'admin'
   },
 
 	/**

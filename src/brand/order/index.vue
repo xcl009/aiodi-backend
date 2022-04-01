@@ -2,8 +2,8 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
-          <el-tab-pane label="全部设备" :name="'-1'" />
+        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.deviceTypeId" @tab-click="toQuery()">
+          <el-tab-pane label="全部设备" :name="'0'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
       </template>
@@ -54,51 +54,51 @@
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
-        <el-table-column label="订单号" width="140" align="center">
+        <el-table-column label="订单号" width="140">
           <template slot-scope="scope">
             {{ scope.row.orderNo || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="交易单号" width="142" align="center">
+        <el-table-column label="交易单号" width="142">
           <template slot-scope="scope">
             <div>{{ scope.row.transactionNo || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="类型" width="90" align="center">
+        <el-table-column label="类型" width="90">
           <template slot-scope="scope">
             {{ scope.row.deviceType || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="来源" width="50" align="center">
+        <el-table-column label="来源" width="50">
           <template slot-scope="scope">
             <i class="fs-a1 iconfont icon-weixin1 text-green" v-if="scope.row.sourceType == 1"></i>
             <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
           </template>
         </el-table-column>
-        <el-table-column label="支付类型" width="100" align="center">
+        <el-table-column label="支付类型" width="100">
           <template slot-scope="scope">
             <div class="fs-s3">{{ Constant.PayType[scope.row.payType] || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="用户" width="150" align="center">
+        <el-table-column label="用户" width="150">
           <template slot-scope="scope">
             <div>{{ dealPhone(scope.row.userMobile) }}</div>
             <div class="text-cut">{{ scope.row.userNickName || "--" }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户" min-width="180" align="center">
+        <el-table-column label="商户" min-width="180">
           <template slot-scope="scope">
             <div>{{ scope.row.storeName || '--' }}</div>
             <!-- <div>{{ scope.row.back_store || '--' }}</div> -->
           </template>
         </el-table-column>
-        <el-table-column label="时间" width="140" align="center">
+        <el-table-column label="时间" width="140">
           <template slot-scope="scope">
             <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
             <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="设备SN码" width="240" align="center">
+        <el-table-column label="设备SN码" width="240">
           <template slot-scope="scope">
             <div>二维码：{{ scope.row.deviceQrcode || "--" }}</div>
             <div>设备SN：{{ scope.row.deviceSn || "--" }}</div>
@@ -106,29 +106,29 @@
               @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="套餐" width="150" align="center">
+        <el-table-column label="套餐" width="150">
           <template slot-scope="scope">
             {{ showFeeMode(scope.row.feeType, scope.row.feeMode)}}
           </template>
         </el-table-column>
-        <el-table-column label="收益(元)" width="75" align="center">
+        <el-table-column label="收益(元)" width="75">
           <template slot-scope="scope">
             <el-link type="success">{{ scope.row.amount || '0.00' }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="退款(元)" width="75" align="center">
+        <el-table-column label="退款(元)" width="75">
           <template slot-scope="scope">
             <el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="70" align="center">
+        <el-table-column label="状态" width="70">
           <template slot-scope="scope">
             <el-link :type="scope.row.status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
               {{ Constant.OrderStatus[scope.row.status] || "--" }}
             </el-link>
           </template>
         </el-table-column>
-        <el-table-column label="备注" min-width="150" align="center">
+        <el-table-column label="备注" min-width="150">
           <template slot-scope="scope">
             <div class="remark-box">
               <div class="fs-s4 text-danger" v-if="scope.row.steal_type_des">{{ scope.row.steal_type_des }}</div>
@@ -137,7 +137,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="180" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column label="操作" width="180" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
             <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 1)">结束订单</el-button>
@@ -147,7 +147,6 @@
       </el-table>
       <div class="flex justify-center">
         <pagination
-          v-show="listTotal > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
           :total="parseInt(listTotal)"
@@ -167,27 +166,27 @@
 
         <template>
           <el-table border stripe :data="orderDivide" :span-method="fenRunSpanMethod" class="custom">
-            <el-table-column align="center" label="订单金额">
+            <el-table-column label="订单金额" align="center">
               <template slot-scope="scope">
                 {{ amountPaid }}元
               </template>
             </el-table-column>
-            <el-table-column align="center" width="190" label="分成人" >
+            <el-table-column width="190" label="分成人" align="center">
               <template slot-scope="scope">
                 {{ scope.row.dividerName }}
               </template>
             </el-table-column>
-            <el-table-column align="center" label="分成比例" >
+            <el-table-column label="分成比例" align="center">
               <template slot-scope="scope">
                 {{ scope.row.percent }}%
               </template>
             </el-table-column>
-            <el-table-column align="center" label="分成金额(元)" >
+            <el-table-column label="分成金额(元)" align="center">
               <template slot-scope="scope">
                 {{ scope.row.amount }}
               </template>
             </el-table-column>
-            <el-table-column align="center" label="退款金额(元)" >
+            <el-table-column label="退款金额(元)" align="center">
               <template slot-scope="scope">
                 {{ scope.row.refund }}
               </template>
@@ -407,8 +406,8 @@
       getStatNum() {
         let url = 'iot-saas-order/admin/order/count/queryByUser', params = Object.assign({}, this.listQuery, this.form)
         if(params.selDay && params.selDay.length > 0){
-          params.chargeStartTime = params.selDay[0]
-          params.chargeEndTime = params.selDay[1]
+          params.startTime = params.selDay[0]
+          params.endTime = params.selDay[1]
           delete params.selDay
         }
         for(var i in this.queryKey){
@@ -456,14 +455,14 @@
           page: this.listQuery.page - 1
         })
         if(params.selDay && params.selDay.length > 0){
-          params.chargeStartTime = params.selDay[0]
-          params.chargeEndTime = params.selDay[1]
+          params.startTime = params.selDay[0]
+          params.endTime = params.selDay[1]
           delete params.selDay
         }
         if(params.status == 'today'){
           let todayTime = new Date(new Date().toLocaleDateString()).getTime()
-          params.chargeStartTime = parseTime(todayTime)
-          params.chargeEndTime = parseTime(todayTime + 86400)
+          params.startTime = parseTime(todayTime)
+          params.endTime = parseTime(todayTime + 86400)
           delete params.status
         }
         for(var i in this.queryKey){
@@ -471,6 +470,7 @@
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
         }
+        if(params.deviceTypeId == 0) delete params.deviceTypeId
         if(this.lowerAgent) params.lowerAgent = true
         this.$get(url, params).then(res => {
           this.list = res.rows

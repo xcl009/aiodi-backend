@@ -10,49 +10,49 @@
       </div>
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         :max-height="tableMaxH">
-        <el-table-column label="服务名称" align="center" width="120">
+        <el-table-column label="服务名称" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.charge_county || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="模式" align="center" width="130">
+        <el-table-column label="模式" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.phone || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="周期" align="center" width="130">
+        <el-table-column label="周期" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.phone || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="价格(元)" align="center">
+        <el-table-column label="价格(元)">
           <template slot-scope="scope">
             {{ scope.row.charge_county || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="实付金额(元)" align="center">
+        <el-table-column label="实付金额(元)">
           <template slot-scope="scope">
             {{ scope.row.charge_county || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="购买时间" align="center">
+        <el-table-column label="购买时间">
           <template slot-scope="scope">
             {{ scope.row.charge_county || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="到期时间" align="center">
+        <el-table-column label="到期时间">
           <template slot-scope="scope">
             {{ scope.row.charge_county || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="订单状态" align="center">
+        <el-table-column label="订单状态">
           <template slot-scope="scope">
             <el-tag class="normal fs-s4">正常</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="flex justify-center">
               <div class="p-10 cursor text-primary" @click="setRows(1, scope.row, 1)">续费</div>

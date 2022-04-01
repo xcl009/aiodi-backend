@@ -15,34 +15,34 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         highlight-current-row :max-height="tableMaxH">
-        <el-table-column label="品牌商" align="center" width="120">
+        <el-table-column label="品牌商" width="120">
           <template slot-scope="scope">
             <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].name : '--' }}</div>
             <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].mobile : '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="代理信息" align="center" width="130">
+        <el-table-column label="代理信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
             <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="品类" align="center">
+        <el-table-column label="品类">
           <template slot-scope="scope">
-            <div class="text-primary cursor" @click="$router.push({path: `/device?agentIds=${scope.row.id}`})" v-for="item in scope.row.agentDeviceType">
+            <div class="cursor" @click="$router.push({path: `/device?agentId=${scope.row.id}`})" v-for="item in scope.row.agentDeviceType">
               {{ item.name }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="设备数" align="center">
+        <el-table-column label="设备数">
           <template slot-scope="scope">
-            <div class="inline text-left">
+            <div class="cursor inline text-left" @click="$router.push({path: `/device?agentId=${scope.row.id}`})">
               <div>全部：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
               <div>已铺货：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber : '0' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="订单数" align="center" width="120">
+        <el-table-column label="订单数" width="120">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
@@ -58,7 +58,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="金额(元)" align="center" width="140">
+        <el-table-column label="金额(元)" width="140">
           <template slot-scope="scope">
             <div class="inline">
               <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
@@ -66,12 +66,12 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="可提现金额(元)" align="center" width="120">
+        <el-table-column label="可提现金额(元)" width="120">
           <template slot-scope="scope">
             <span class="cursor text-blue">{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="分润比例" align="center" width="140">
+        <el-table-column label="分润比例" width="140">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div v-for="item in scope.row.agentDeviceType">
@@ -80,11 +80,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="240">
+        <el-table-column label="操作" width="240">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?agentIds=${scope.row.id}`})">订单列表</el-button>
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store?agentIds=${scope.row.id}`})">商户列表</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">订单列表</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">商户列表</el-button>
               <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="toLogin(scope.row)">一键登录</el-button>
             </div>
           </template>

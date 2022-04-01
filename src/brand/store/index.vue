@@ -19,7 +19,7 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
-        <el-table-column label="门头照" align="center" width="140">
+        <el-table-column label="门头照" width="140">
           <template slot-scope="scope">
             <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})">
               <el-avatar shape="square" :size="52" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"
@@ -28,12 +28,12 @@
             </el-link>
           </template>
         </el-table-column>
-        <el-table-column label="商户地址" align="center" width="160">
+        <el-table-column label="商户地址" width="160">
           <template slot-scope="scope">
             <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="金额(元)" align="center" width="140">
+        <el-table-column label="金额(元)" width="140">
           <template slot-scope="scope">
             <div class="inline">
               <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
@@ -42,7 +42,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="订单量" align="center" width="140">
+        <el-table-column label="订单量" width="140">
           <template slot-scope="scope">
             <div class="inline">
               <div>订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx +  orderCount[scope.row.id].ali : 0 }}</div>
@@ -50,38 +50,38 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="上级代理" align="center" width="120" v-if="lowerStore">
+        <el-table-column label="上级代理" width="120" v-if="lowerStore">
           <template slot-scope="scope">
             <div>{{ supUser[scope.row.userId] ? supUser[scope.row.userId].name : '' }}</div>
             <div>{{ supUser[scope.row.userId] ? dealPhone(supUser[scope.row.userId].mobile) : '' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="分润人" align="center" width="120">
+        <el-table-column label="分润人" width="120">
           <template slot-scope="scope">
-            <div>{{ scope.row.user.username || '' }}</div>
+            <div>{{ scope.row.user.nickname || '' }}</div>
             <div>{{ scope.row.user.mobile || '' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="分成比例" align="center">
+        <el-table-column label="分成比例">
           <template slot-scope="scope">
             <div class="mt-5">
-              <div class="mb-5" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
+              <div class="mb-5" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: `/device?storeId=${scope.row.id}`})">
                 {{ myDeviceId[item.deviceTypeId] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="城市区域" align="center" width="90">
+        <el-table-column label="城市区域" width="90">
           <template slot-scope="scope">
             {{ regionsObj[scope.row.regionTag] ? regionsObj[scope.row.regionTag].title : '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="行业分类" align="center" width="90">
+        <el-table-column label="行业分类" width="90">
           <template slot-scope="scope">
             {{ cateObj[scope.row.catId] ? cateObj[scope.row.catId].catName : '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="190" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <template v-if="deviceId">
               <el-button type="primary" size="mini" @click="bindStore(scope.row)">铺货</el-button>

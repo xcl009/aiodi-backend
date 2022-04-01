@@ -16,6 +16,10 @@ export function getPlatformConfig(params = {}) {
 }
 
 export function getMyDevice() {
+  return $get('iot-saas-basic/admin/queryDeviceType')
+}
+
+export function getSaasDevice() {
   return $get('iot-saas-device/admin/device/type/loadAll')
 }
 

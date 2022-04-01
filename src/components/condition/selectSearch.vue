@@ -50,6 +50,7 @@ export default {
         2: 'iot-saas-user/api/user/query',
         3: 'iot-saas-basic/admin/store/simpleQuery',
         4: 'iot-saas-device/admin/device/simpleQuery',
+        5: 'iot-saas-basic/admin/agent/simpleQuery',
         6: 'iot-saas-basic/admin/brand/findPage'
       }
     }

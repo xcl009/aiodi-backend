@@ -29,7 +29,7 @@
             <h4 class="pt-20">分润比例</h4>
             <template v-for="(id, index) in selDevice">
               <el-form-item :label="`${myDeviceId[id]}`">
-                <el-input v-model="form.deviceTypeProfitRatios[id]" :placeholder="`最高不能超过100%`">
+                <el-input v-model="form.deviceTypeProfitRatios[id]" :placeholder="`最高不能超过${myProfitRatio[id]}%`">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -78,9 +78,6 @@
       }
     },
     computed: {
-      myDeviceName() {
-        return this.$store.getters.myDeviceName
-      },
       siteInfo() {
         return this.$store.getters.siteInfo
       },
@@ -91,8 +88,10 @@
         return this.$store.getters.myDeviceId
       },
       myDevice() {
-        let myDevice = this.$store.getters.myDevice
-        return myDevice
+        return this.$store.getters.myDevice
+      },
+      myProfitRatio() {
+        return this.$store.getters.myProfitRatio
       }
     },
     mounted() {

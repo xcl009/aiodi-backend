@@ -17,13 +17,13 @@
 
     <div class="pl-15 pr-15 pb-5 bg-white">
       <div class="chart-daystat" ref="chart_daystat"></div>
-      <el-table class="custom" stripe border id="list_table" :data="tableList">
-        <el-table-column label="日期" align="center">
+      <el-table class="custom" stripe id="list_table" :data="tableList">
+        <el-table-column label="日期">
           <template slot-scope="scope">
             {{ scope.row.date}}
           </template>
         </el-table-column>
-        <el-table-column label="来源" align="center">
+        <el-table-column label="来源">
           <template slot-scope="scope">
             <div class="td-info">
               <div class="pl-10 pr-10 l-b">微信</div>
@@ -32,7 +32,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="交易额(元)" align="center">
+        <el-table-column label="交易额(元)">
           <template slot-scope="scope">
             <div class="td-info">
               <div class="pl-10 pr-10 l-b">1000.00</div>
@@ -41,7 +41,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="订单量(单)" align="center">
+        <el-table-column label="订单量(单)">
           <template slot-scope="scope">
             <div class="td-info">
               <div class="pl-10 pr-10 l-b">100</div>
@@ -50,7 +50,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="收益额(元)" align="center">
+        <el-table-column label="收益额(元)">
           <template slot-scope="scope">
             <div class="td-info">
               <div class="pl-10 pr-10 l-b">500.00</div>

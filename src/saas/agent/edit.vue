@@ -38,7 +38,7 @@
             <h4 class="pt-20">分润比例</h4>
             <template v-for="(id, index) in selDevice">
               <el-form-item :label="`${myDeviceId[id]}`">
-                <el-input v-model="form.deviceTypeProfitRatios[id]" :placeholder="`最高不能超过100%`">
+                <el-input v-model="form.deviceTypeProfitRatios[id]">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>

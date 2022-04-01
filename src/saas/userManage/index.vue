@@ -13,56 +13,50 @@
     </condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" border
-        element-loading-text="Loading" stripe highlight-current-row>
-        <el-table-column label="品牌商" align="center" width="120" v-if="isSaas()">
-          <template slot-scope="scope">
-            {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="头像" align="center" width="60">
+      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
+        <el-table-column label="头像" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column label="昵称" align="center" width="160">
+        <el-table-column label="昵称" width="160">
           <template slot-scope="scope">
             <el-link class="cursor">{{ scope.row.nickname || '无昵称' }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="手机号码" align="center">
+        <el-table-column label="手机号码">
           <template slot-scope="scope">
             <div>{{ dealPhone(scope.row.mobile) }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="来源" align="center">
+        <el-table-column label="来源">
           <template slot-scope="scope">
             {{ scope.row.userType == 'wechat' ? '微信' : '支付宝' }}
           </template>
         </el-table-column>
-        <el-table-column label="租借次数" align="center">
+        <el-table-column label="租借次数">
           <template slot-scope="scope">
             {{ scope.row.loanNumber || '0' }}
           </template>
         </el-table-column>
-        <el-table-column label="消费总金额" align="center">
+        <el-table-column label="消费总金额">
           <template slot-scope="scope">
             {{ scope.row.totalConsumption || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="钱包余额" align="center" v-if="isSaas() || isBrand()">
+        <el-table-column label="钱包余额" v-if="isSaas() || isBrand()">
           <template slot-scope="scope">
-            {{ scope.row.balance || '0.00' }}
+            {{ scope.row.accountBalance || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="注册日期" align="center" width="150">
+        <el-table-column label="注册日期" width="150">
           <template slot-scope="scope">
             {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="120">
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/userManage/user_order?search_uid=${scope.row.id}`})">订单记录</el-button>
+            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/order?userIds=${scope.row.id}`})">订单记录</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -33,45 +33,45 @@
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
         element-loading-text="Loading" stripe highlight-current-row>
-        <el-table-column label="身份" align="center" width="80">
+        <el-table-column label="身份" width="80">
           <template slot-scope="scope">
             <div>{{ scope.row.issueSource }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="用户昵称" align="center" width="120">
+        <el-table-column label="用户昵称" width="120">
           <template slot-scope="scope">
             <div class="flex align-center">
               <div class="flex1 ml-5">{{ scope.row.nickname }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="联系电话" align="center" width="120">
+        <el-table-column label="联系电话" width="120">
           <template slot-scope="scope">
             {{ scope.row.mobile || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="问题类型" align="center" width="110">
+        <el-table-column label="问题类型" width="110">
           <template slot-scope="scope">
             <div>{{ issueArr[scope.row.issueType] }}</div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="商户" align="center" width="160">
+        <!-- <el-table-column label="商户" width="160">
           <template slot-scope="scope">
             {{ scope.row.store_name }} <span v-if="scope.row.door">(房间号：{{ scope.row.door }})</span>
           </template>
         </el-table-column> -->
-        <el-table-column label="设备二维码" align="center" width="100">
+        <el-table-column label="设备二维码" width="100">
           <template slot-scope="scope">
             <div>{{ scope.row.snCode }}</div>
             <a class="text-blue" v-if="scope.row.orderNo" :href="`/order/order?orderNo=${scope.row.orderNo}`" target="_blank">查看订单</a>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="设备类型" align="center" width="100">
+        <!-- <el-table-column label="设备类型" width="100">
           <template slot-scope="scope">
             {{ myDeviceId[scope.row.deviceTypeId] }}
           </template>
         </el-table-column> -->
-        <!-- <el-table-column label="错误截图" align="center" width="190">
+        <!-- <el-table-column label="错误截图" width="190">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
               <el-image class="mr-5" v-for="item in scope.row.img_url" style="width: 50px; height: 50px" :src="item"
@@ -80,41 +80,34 @@
             </div>
           </template>
         </el-table-column> -->
-        <el-table-column label="反馈时间" align="center" width="100">
+        <el-table-column label="反馈时间" width="100">
           <template slot-scope="scope">
             {{ parseTime(scope.row.feedbackTime, '{m}-{d} {h}:{i}:{s}') }}
           </template>
         </el-table-column>
-        <el-table-column label="反馈内容" align="center" width="220">
+        <el-table-column label="反馈内容" width="220">
           <template slot-scope="scope">
             {{ scope.row.content || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="回复" align="center" min-width="250">
+        <el-table-column label="回复" min-width="250">
           <template slot-scope="scope">
-            <div class="fs-s1 text-gray">
-              <div v-for="item in scope.row.reply_list">
-                {{ parseTime(item.add_date, '{m}-{d} {h}:{i}') }}回复：{{ item.content }}
-              </div>
-            </div>
+            {{ scope.row.reply }}
           </template>
         </el-table-column>
-        <el-table-column label="备注" align="center" width="100">
+        <el-table-column label="备注" width="100">
           <template slot-scope="scope">
             {{ scope.row.remark }}
           </template>
         </el-table-column>
-        <el-table-column label="状态" align="center" width="100">
+        <el-table-column label="状态" width="100">
           <template slot-scope="scope">
-            <el-button :type="scope.row.deal_status == 2 ? 'success' : 'danger'" size="mini" plain>{{ statusObj[scope.row.deal_status] || '未处理' }}</el-button>
+            <el-button :type="scope.row.state == 1 ? 'success' : 'danger'" size="mini" plain>{{ statusObj[scope.row.state] || '未处理' }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="160">
+        <el-table-column label="操作" width="160">
           <template slot-scope="scope">
             <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">查看详情</el-button>
-
-            <!-- <el-button type="primary" size="mini" @click="replyDialog = true; issue = scope.row">回复</el-button>
-            <el-button type="primary" size="mini" @click="deal_status = scope.row.deal_status; remark = scope.row.remark; dealDialog = true; issue = scope.row;">{{ statusObj[scope.row.deal_status] }}</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -129,7 +122,7 @@
       <template v-if="dialogType == 1">
         <el-form label-width="auto" class="custom-form">
           <el-form-item label="反馈内容">
-            <el-input v-model="curRow.content" type="textarea" :rows="4" disabled=""></el-input>
+            <div>{{ curRow.content }}</div>
           </el-form-item>
           <el-form-item label="错误截图" v-if="curRow.errorImages && curRow.errorImages.length > 0">
             <el-image class="mr-5" v-for="item in curRow.errorImages" style="width: 50px; height: 50px" :src="item" :preview-src-list="curRow.errorImages"></el-image>
@@ -139,7 +132,7 @@
           </el-form-item>
         </el-form>
       </template>
-      <div class="mt-30 text-center">
+      <div class="mt-30 text-center" v-if="curRow.state == 0">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
       </div>
@@ -185,8 +178,7 @@
         },
         statusObj: {
           0: '未处理',
-          1: '处理中',
-          2: '已处理'
+          1: '已处理'
         },
 
         pickerOptionsEnd: {
@@ -363,6 +355,7 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
+            params.state = 1
             this.$post('iot-saas-basic/admin/feedback/replById', params).then(res => {
               this.$post('iot-saas-basic/admin/feedback/updateById', params).then(res => {
                 this.$message({
@@ -370,6 +363,7 @@
                   message: '设置成功'
                 })
                 this.curRow = Object.assign(this.curRow, params)
+                this.dialogStatus = false
               })
             })
             break
