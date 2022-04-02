@@ -33,7 +33,7 @@
             <div>{{ scope.row.brand.name }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="设备名称">
+        <el-table-column label="设备名称" width="120">
           <template slot-scope="scope">
             {{ scope.row.deviceType.name || '密码线' }}
           </template>
@@ -49,7 +49,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="设备SN码" width="230">
+        <el-table-column label="设备SN码">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>二维码：{{ scope.row.qrcodeSn || "--" }}</div>
@@ -62,13 +62,13 @@
             工厂：{{ scope.row.deviceFactory.name }}
           </template>
         </el-table-column>
-        <el-table-column label="是否铺货" width="100">
+        <el-table-column label="是否铺货" width="150">
           <template slot-scope="scope">
             <div>{{ scope.row.distribute ? "是" : "否" }}</div>
-            <div>{{ scope.row.operate_date }}</div>
+            <div v-if="scope.row.distribute">{{ scope.row.bindStoreTime }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户名称" width="150">
+        <el-table-column label="商户名称" width="180">
           <template slot-scope="scope">
             <div v-if="scope.row.store">
               <div class="text-cut_two">{{ scope.row.store.name }}</div>
@@ -116,7 +116,7 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <el-table :data="deviceBelong" border>
+        <el-table :data="deviceInfo[curRow.id].deviceOwnerUserList" border v-if="deviceInfo[curRow.id]">
           <el-table-column label="角色">
             <template slot-scope="scope">
               {{ config.system_role[scope.row.userType] }}
@@ -131,7 +131,8 @@
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">
-          <el-image style="width: 150px; height: 150px" :src="dform.code" fit="cover"></el-image>
+          <el-image class="access-url" :src="deviceInfo[curRow.id].accessUrl" fit="cover" v-if="deviceInfo[curRow.id] && deviceInfo[curRow.id].accessUrl"></el-image>
+          <div class="access-url" id="accessUrl" v-else></div>
           <div class="mt-20 text-grey">SN码：{{ curRow.qrcodeSn }}</div>
         </div>
       </template>
@@ -150,6 +151,7 @@
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import selectSearch from '@/components/condition/selectSearch'
+  import QRCode from 'qrcodejs2'
   export default {
     name: 'device',
     components: {
@@ -229,7 +231,7 @@
         dform: {},
 
         // 设备归属
-        deviceBelong: [],
+        deviceInfo: {},
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -337,7 +339,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
           }
           this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
         }).catch(() => {
@@ -376,11 +378,22 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
-            if(dialogType == 1){
+            if(dialogType == 1 || dialogType == 2){
+              if(this.deviceInfo[row.id]){
+                this.$nextTick(()=>{
+                  if(!this.deviceInfo[row.id].accessUrl && dialogType == 2){
+                    this.deviceCode(this.deviceInfo[row.id].content)
+                  }
+                })
+                return
+              }
               this.$get('iot-saas-device/admin/device/findBelongById', {
                 id: row.id
               }).then(res => {
-                this.deviceBelong = res.deviceOwnerUserList
+                this.$set(this.deviceInfo, row.id, res)
+                if(!res.accessUrl && dialogType == 2){
+                  this.deviceCode(res.content)
+                }
               })
             }
             break
@@ -401,11 +414,27 @@
 
             break
         }
-      }
+      },
+
+      /**
+       * 设置二维码
+       */
+      deviceCode(url){
+        document.getElementById('accessUrl').innerHTML = ''
+        new QRCode('accessUrl', {
+          width: 150,
+          height: 150,
+          text: url
+        })
+      },
     }
   }
 </script>
 
 <style lang="scss" scoped>
-
+  .access-url{
+    margin: 0 auto;
+    width: 150px;
+    height: 150px
+  }
 </style>

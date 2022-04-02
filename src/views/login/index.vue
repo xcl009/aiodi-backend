@@ -7,7 +7,7 @@
           <div class="p-50 flexv justify-between login-left text-white">
             <div class="pt-30">
               <div class="title text-bold">
-                物享云联<br>
+                {{ siteInfo.appName }}<br>
                 SaaS后台管理系统
               </div>
               <div class="mt-15 flex align-center fs-c1">
@@ -18,14 +18,14 @@
                 <div>驱动未来</div>
               </div>
             </div>
-            <img class="rel" width="100" :src="platformConfig.mini_logo || '/logo.png'" alt="">
+            <img class="rel" width="100" :src="siteInfo.appLogo || '/logo.png'" alt="">
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="12">
           <div class="flex align-center justify-center title-container bg-white" :class="{'mobile': device_mobile}">
             <div class="pb-40">
               <div class="hello">您好！</div>
-              <div class="mb-30 title fs-b2 text-gray">欢迎登录物享云联后台管理系统</div>
+              <div class="mb-30 title fs-b2 text-gray">欢迎登录{{ siteInfo.appName }}后台管理系统</div>
               <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
                 <el-form-item prop="username">
                   <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1" autocomplete="on" placeholder="请输入用户名/手机号">
@@ -98,7 +98,7 @@
         }
       }
       return {
-        platformConfig: {},
+        siteInfo: {},
         loginType: '1',
         loginForm: {
           username: 'admin',
@@ -133,7 +133,9 @@
         passwordType: 'password',
         redirect: undefined,
 
-        device_mobile: false
+        device_mobile: false,
+
+        gid: this.$route.params.gid || ''
       }
     },
     watch: {
@@ -146,20 +148,22 @@
     },
     mounted() {
       this.device_mobile = this.$_isMobile()
+      this.getPlatformConfig()
     },
     methods: {
       $_isMobile() {
         const rect = document.body.getBoundingClientRect()
         return rect.width - 1 < 768
       },
+
       /**
        * 获取平台信息
        */
       getPlatformConfig(){
         this.$store.dispatch('user/getPlatformConfig', {
-          agent_id: this.gid
+          brand_id: this.gid
         }).then(res => {
-          this.platformConfig = res
+          this.siteInfo = res
         })
       },
 

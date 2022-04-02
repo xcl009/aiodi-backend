@@ -77,13 +77,11 @@
               <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
             </template>
             <template v-else>
-              <div class="pl-10 inline text-left">
-                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order/subOrder?agentId=${scope.row.id}`})">订单列表</el-button>
-                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store/subStore?agentId=${scope.row.id}`})">商户列表</el-button>
-                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
-                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-button>
-                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)">删除代理</el-button>
-              </div>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order/subOrder?agentId=${scope.row.id}`})">订单列表</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store/subStore?agentId=${scope.row.id}`})">商户列表</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)">删除代理</el-button>
             </template>
           </template>
         </el-table-column>

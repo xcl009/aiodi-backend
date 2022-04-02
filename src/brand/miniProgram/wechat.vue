@@ -1,8 +1,7 @@
 <template>
   <div>
     <div class="pt-15 pl-15 pr-15 pb-15 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
-        :max-height="tableMaxH">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading">
         <el-table-column label="小程序">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.appName || '小程序名称' }}</div>
@@ -185,7 +184,7 @@
             this.dialogStatus = true
             break
           case 2:
-            
+
             this.$post(`iot-saas-pay/wechat/${row.appId}/submit/audit`).then(res => {
               this.$message({
                 message: '提交审核成功',

@@ -190,7 +190,7 @@
 </template>
 
 <script>
-  import { delComma, parseTime, currentTime } from '@/utils/index'
+  import { arrayToObj, delComma, parseTime, currentTime } from '@/utils/index'
   import DateUtil from '@/utils/date'
   import CountTo from 'vue-count-to'
 
@@ -406,21 +406,21 @@
           endDateStr: parseTime(eTime, '{y}-{m}-{d}')
         }
         this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
-          let ki = 0
+          let obj = arrayToObj(res, 'countGroupDate')
           for(var i = sTime; i < (eTime + 86400); i = i + 86400){
             groupDate.push(parseTime(i, '{m}-{d}'))
-            if(res[ki] && res[ki].countGroupDate == parseTime(i, '{y}-{m}-{d}')){
-              amount.push(res[ki].amount)
-              orderNumber.push(res[ki].orderNumber)
-              doneOrderNumber.push(res[ki].doneOrderNumber)
-              unitPrice.push(res[ki].unitPrice)
+            let ymd = parseTime(i, '{y}-{m}-{d}')
+            if(obj[ymd] && obj[ymd].countGroupDate == ymd){
+              amount.push(obj[ymd].amount)
+              orderNumber.push(obj[ymd].orderNumber)
+              doneOrderNumber.push(obj[ymd].doneOrderNumber)
+              unitPrice.push(obj[ymd].unitPrice)
             } else {
               amount.push(0)
               orderNumber.push(0)
               doneOrderNumber.push(0)
               unitPrice.push(0)
             }
-            ki++
           }
           if(this.dayChartInit){
             this.dayChartOptions({
@@ -525,7 +525,6 @@
           series: series
         })
       },
-
 
       /**
        * 设备图表初始化

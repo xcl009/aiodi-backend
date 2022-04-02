@@ -121,7 +121,7 @@
             <el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="70">
+        <el-table-column label="状态" width="80">
           <template slot-scope="scope">
             <el-link :type="scope.row.status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
               {{ Constant.OrderStatus[scope.row.status] || "--" }}

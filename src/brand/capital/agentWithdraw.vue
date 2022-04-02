@@ -32,7 +32,7 @@
           <!-- <el-button size="medium" class="btn-body">总提现<span class="ml-15 mr-30 text-black">52877.52元</span>平台手续费<span class="ml-15 text-black">52877.52元</span></el-button> -->
         </div>
       </div>
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
         :max-height="tableMaxH">
         <el-table-column label="提现单号" width="120">
           <template slot-scope="scope">
@@ -53,7 +53,7 @@
         </el-table-column>
         <el-table-column label="头像" width="60" v-if="userType == 3">
           <template slot-scope="scope">
-            <el-avatar :src="scope.row.userAvatar"></el-avatar>
+            <el-avatar class="block" :src="scope.row.userAvatar"></el-avatar>
           </template>
         </el-table-column>
         <el-table-column label="用户" width="130" v-if="userType == 3">
@@ -62,7 +62,7 @@
             <div>{{ scope.row.userMobile || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="提现时间" width="90">
+        <el-table-column label="提现时间" width="94">
           <template slot-scope="scope">
             {{ scope.row.createTime || '--' }}
           </template>
@@ -98,7 +98,7 @@
                 :preview-src-list="[scope.row.qrcode]">
               </el-image>
             </div>
-            <div class="flex align-center justify-center" v-else>
+            <div class="flex align-center" v-else>
               <el-avatar size="small" :src="scope.row.userAvatar"></el-avatar>
               <div class="pl-10">{{ scope.row.userNickName || "--" }}</div>
             </div>
@@ -252,7 +252,7 @@
       }
     },
     mounted() {
-      
+
     },
     methods: {
       /**

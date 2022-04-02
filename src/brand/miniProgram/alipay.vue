@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="pt-15 pl-15 pr-15 pb-15 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border>
-        <el-table-column label="小程序" width="130">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading">
+        <el-table-column label="小程序">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.appName || '小程序名称' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="APPID" width="130">
+        <el-table-column label="APPID">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.appId || '--' }}</div>
           </template>
@@ -32,7 +32,7 @@
             {{ scope.row.appAuditResut || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="更新时间" width="100">
+        <el-table-column label="更新时间" width="150">
           <template slot-scope="scope">
             {{ parseTime(scope.row.updateTime) }}
           </template>

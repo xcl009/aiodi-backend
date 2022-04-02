@@ -786,7 +786,7 @@ export const brandRoutes = [
       {
         path: 'income',
         name: 'income',
-        component: () => import('@/brand/money/income'),
+        component: () => import('@/saas/money/income'),
         meta: {
           title: '收益明细'
         }
@@ -794,7 +794,7 @@ export const brandRoutes = [
       {
         path: 'dayMoney',
         name: 'dayMoney',
-        component: () => import('@/brand/money/dayMoney'),
+        component: () => import('@/saas/money/dayMoney'),
         meta: {
           title: '日交易额'
         }
@@ -1216,7 +1216,7 @@ export const storeRoutes = [
  */
 export const constantRoutes = [
   {
-    path: '/login',
+    path: '/login/:gid?',
     component: () => import('@/views/login/index'),
     hidden: true
   },

@@ -16,9 +16,6 @@
           <el-form-item label="登录密码" v-if="!aid">
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
-          <el-form-item label="运营区域">
-            <el-cascader v-model="form.areaId" :options="cityList" :props="{ expandTrigger: 'hover' }" />
-          </el-form-item>
           <el-form-item label="公司名称">
             <el-input v-model="form.companyName" placeholder="公司名称" />
           </el-form-item>
@@ -138,7 +135,6 @@
             logo: res.logo,
             name: res.name,
             mobile: res.brandUser.mobile,
-            areaId: res.areaId,
             companyName: res.companyName,
             companyAddress: res.companyAddress,
             companyPhoneNum: res.companyPhoneNum
@@ -167,7 +163,6 @@
           })
         }
         params.deviceTypeProfitRatios = profitRatios
-        if(Array.isArray(params.areaId) && params.areaId.length > 0) params.areaId = params.areaId[params.areaId.length - 1]
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
           if (valid) {
@@ -193,52 +188,7 @@
             this.clickSubmit = false
           }
         })
-      },
-
-      /**
-       * 获取城市
-       */
-      getCity(){
-        this.$store.dispatch('api/getRegions').then(res => {
-          let list = {}, regionTag = ''
-          res.map(item => {
-            if(item.level == 1){
-              list[item.tag] = {
-                value: item.tag,
-                label: item.title,
-                children: {}
-              }
-            }else if(item.level == 2){
-              let tag = item.tag.substring(0, 3)
-              list[tag].children[item.tag] = {
-                value: item.tag,
-                label: item.title,
-                children: []
-              }
-            }else if(item.level == 3){
-              regionTag = regionTag || item.tag
-              let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
-              list[tag1].children[tag2].children.push({
-                value: item.tag,
-                label: item.title
-              })
-            }
-          })
-          list = Object.values(list)
-          list.map(item => {
-            if(JSON.stringify(item.children) == '{}'){
-              item.children = []
-            } else {
-              item.children = Object.values(item.children)
-            }
-            return item
-          })
-          this.cityList = list
-          if(!this.aid){
-            this.$set(this.form, 'areaId', regionTag)
-          }
-        })
-      },
+      }
     }
   }
 </script>

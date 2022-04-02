@@ -21,18 +21,17 @@
             <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].mobile : '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="门头照" width="150">
+        <el-table-column label="门头照" width="70">
           <template slot-scope="scope">
             <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})">
-              <el-avatar shape="square" :size="52" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"
-                class="m-auto block"></el-avatar>
-              <div class="mt-5">{{ scope.row.name || '--' }}</div>
+              <el-avatar class="block" shape="square" :size="50" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
             </el-link>
           </template>
         </el-table-column>
-        <el-table-column label="商户地址" width="180">
+        <el-table-column label="商户" width="180">
           <template slot-scope="scope">
-            <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
+            <div>{{ scope.row.name || '--' }}</div>
+            <div class="mt-5">{{ scope.row.address || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="金额(元)" width="150">

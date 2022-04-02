@@ -13,8 +13,7 @@
 		</condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
-        highlight-current-row :max-height="tableMaxH">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
         <el-table-column label="品牌商" width="120">
           <template slot-scope="scope">
             <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].name : '--' }}</div>
