@@ -22,6 +22,9 @@
           <el-form-item label="业务域名">
             <el-input v-model="form.business" placeholder="输入业务域名" type="textarea" rows="4" />
           </el-form-item>
+          <el-form-item label="隐私保护">
+            <el-input v-model="form.wechatPrivacySettingList" placeholder="输入隐私保护" type="textarea" rows="4" />
+          </el-form-item>
           <el-form-item label="支付宝模板版本">
             <el-input v-model="form.alipayLatestTemplateVersion" placeholder="支付宝模板版本号" />
           </el-form-item>

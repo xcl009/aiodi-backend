@@ -29,7 +29,7 @@
         </el-table-column>
         <el-table-column label="备注">
           <template slot-scope="scope">
-            {{ scope.row.appAuditResut || '--' }}
+            {{ scope.row.appAuditResult || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="更新时间">
@@ -40,10 +40,9 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">提交审核</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1 || scope.row.appAuditStatus == 4">提交审核</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(3, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">审核状态</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 4">审核失败</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(5, scope.row)">隐私设置</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/systemSet/wechatEdit?app_id=${scope.row.appId}`})">修改信息</div>
             <!-- <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
@@ -184,7 +183,6 @@
             this.dialogStatus = true
             break
           case 2:
-
             this.$post(`iot-saas-pay/wechat/${row.appId}/submit/audit`).then(res => {
               this.$message({
                 message: '提交审核成功',
@@ -199,7 +197,7 @@
                 message: '查询成功',
                 type: 'success'
               })
-              row.appAuditStatus = (res.status == 0 ? 3 : res.status == 1 ? 4 : res.appAuditStatus)
+              row.appAuditStatus = (res.status == 0 ? 3 : res.status == 1 ? 4 : res.status)
             })
             break
           case 4:
