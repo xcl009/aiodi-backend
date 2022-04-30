@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getSaasDevice, getConstant, getWdConstant, getAuth } from '@/api/user'
+import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getSaasDevice, getConstant, getWdConstant, getAuthMenu } from '@/api/user'
 import { arrayToObj } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -88,55 +88,50 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(data => {
         if(data.userType){
-          let params = {
-          		agentId: data.id
-          	},
-          	agentAbilitys = {
-          		checkOrder: '查看订单',
-          		checkEndOrder: '结束订单',
-          		checkRefundOrder: '订单退款',
-          		checkWithdrawRight: '提现'
-          	},
-          	storeAbilitys = {
-          		checkOrder: '查看订单',
-          		checkWithdrawRight: '提现'
-          	},
-          	abilitys = agentAbilitys
-          data.agentAbilitys = agentAbilitys
-          data.storeAbilitys = storeAbilitys
-          if(data.userType == 'store'){
-          	params.agentId = data.storeIds[0]
-          	abilitys = storeAbilitys
-          }
-          if(data.userType == 'agent' && res.length == 0){
-          	data.agentAbilitys = storeAbilitys
-          }
-          for(var i in abilitys){
-          	data[i] = 1
-          }
-          window.agentInfo = data
-          commit('SET_NAME', data.nickname || data.username)
-          commit('SET_AVATAR', data.avastar || '')
-          commit('SET_AGENTINFO', data)
-          resolve({
-            roles: [data.userType]
+        //   let params = {
+        //   		agentId: data.id
+        //   	},
+        //   	agentAbilitys = {
+        //   		checkOrder: '查看订单',
+        //   		checkEndOrder: '结束订单',
+        //   		checkRefundOrder: '订单退款',
+        //   		checkWithdrawRight: '提现'
+        //   	},
+        //   	storeAbilitys = {
+        //   		checkOrder: '查看订单',
+        //   		checkWithdrawRight: '提现'
+        //   	},
+        //   	abilitys = agentAbilitys
+        //   data.agentAbilitys = agentAbilitys
+        //   data.storeAbilitys = storeAbilitys
+        //   if(data.userType == 'store'){
+        //   	params.agentId = data.storeIds[0]
+        //   	abilitys = storeAbilitys
+        //   }
+        //   if(data.userType == 'agent' && res.length == 0){
+        //   	data.agentAbilitys = storeAbilitys
+        //   }
+        //   for(var i in abilitys){
+        //   	data[i] = 1
+        //   }
+        //   window.agentInfo = data
+        //   commit('SET_NAME', data.nickname || data.username)
+        //   commit('SET_AVATAR', data.avastar || '')
+        //   commit('SET_AGENTINFO', data)
+        //   resolve({
+        //     roles: [data.userType]
+        //   })
+          getAuthMenu().then(res => {
+            data.authMenu = arrayToObj(res, 'id', 'checked')
+            window.agentInfo = data
+            commit('SET_NAME', data.nickname || data.username)
+            commit('SET_AVATAR', data.avastar || '')
+            commit('SET_AGENTINFO', data)
+            resolve({
+              roles: [data.userType],
+              authMenu: data.authMenu
+            })
           })
-          // getAuth(params).then(res => {
-          //   let auth = arrayToObj(res, 'code', 'have')
-          //   if(data.userType == 'agent' && res.length == 0){
-          //   	data.agentAbilitys = storeAbilitys
-          //   }
-          //   for(var i in abilitys){
-          //   	data[i] = auth[i] >= 0 ? auth[i] : 1
-          //   }
-          //   window.agentInfo = data
-          //   commit('SET_NAME', data.nickname || data.username)
-          //   commit('SET_AVATAR', data.avastar || '')
-          //   commit('SET_AGENTINFO', data)
-          //   resolve({
-          //     roles: [data.userType]
-          //   })
-          // })
         }
       }).catch(error => {
         reject(error)
@@ -148,7 +143,7 @@ const actions = {
   getPlatformConfig({ commit, state }, params = {}) {
     return new Promise((resolve, reject) => {
       getPlatformConfig({
-        brand: getToken('brand_id') || '941630140970790912'
+        brand: params.brand_id || getToken('brand_id') || '941630140970790912'
       }).then(data => {
         commit('SET_SITEINFO', data)
         if(data.mini_name){
@@ -201,9 +196,11 @@ const actions = {
           let myDeviceName = {}, myDeviceId = {}, myDevice = [], myProfitRatio = {}
           for(var i in res){
             let d = res[i]
-            myDeviceName[d.name] = d.id
-            myDeviceId[d.id] = d.name
-            myProfitRatio[d.id] = 100
+            if(!d.fatherCode){
+              myDeviceName[d.name] = d.code
+              myDeviceId[d.code] = d.name
+              myProfitRatio[d.code] = 100
+            }
             myDevice.push(d)
           }
           commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({
@@ -221,9 +218,11 @@ const actions = {
           let myDeviceName = {}, myDeviceId = {}, myDevice = [], myProfitRatio = {}
           for(var i in res){
             let d = res[i]
-            myDeviceName[d.name] = d.id
-            myDeviceId[d.id] = d.name
-            myProfitRatio[d.id] = d.profitRatio
+            if(!d.fatherCode){
+              myDeviceName[d.name] = d.deviceTypeCode
+              myDeviceId[d.deviceTypeCode] = d.name
+              myProfitRatio[d.deviceTypeCode] = d.profitRatio
+            }
             myDevice.push(d)
           }
           commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({

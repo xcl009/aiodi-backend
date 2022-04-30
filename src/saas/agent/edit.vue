@@ -28,7 +28,7 @@
 
           <h4 class="pt-20">运营产品</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">
-            <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
+            <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
           </el-checkbox-group>
 
           <template>
@@ -98,16 +98,14 @@
         return this.$store.getters.myDeviceId
       },
       myDevice() {
-        let myDevice = this.$store.getters.myDevice
-        return myDevice
+        return this.$store.getters.myDevice
       }
     },
     mounted() {
-      this.getCity()
       if(this.aid){
         this.getInfo()
       } else {
-        this.selDevice.push(this.myDevice[0].id)
+        this.selDevice.push(this.myDevice[0].code)
       }
     },
     methods: {
@@ -121,13 +119,13 @@
           res.deviceTypeProfitRatios = {}
           if(res.brandDeviceType.length > 0){
             res.brandDeviceType.map(item => {
-              res.deviceTypeProfitRatios[item.id] = item.profitRatio
-              if(this.selDevice.indexOf(item.id) == -1) {
-                this.selDevice.push(item.id)
+              res.deviceTypeProfitRatios[item.code] = item.profitRatio
+              if(this.selDevice.indexOf(item.code) == -1) {
+                this.selDevice.push(item.code)
               }
             })
           } else {
-            this.selDevice.push(this.myDevice[0].id)
+            this.selDevice.push(this.myDevice[0].code)
           }
           this.form = {
             id: res.id,
@@ -158,7 +156,7 @@
         let profitRatios = []
         for(var i in this.selDevice){
           profitRatios.push({
-            deviceTypeId: this.selDevice[i],
+            deviceTypeCode: this.selDevice[i],
             profitRatio: params.deviceTypeProfitRatios[this.selDevice[i]] || 0
           })
         }

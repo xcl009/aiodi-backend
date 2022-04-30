@@ -15,10 +15,12 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
-import {$get, $post, $export} from './utils/request'
+import {$get, $post, $put, $delete, $export} from './utils/request'
 
 Vue.prototype.$get = $get
 Vue.prototype.$post = $post
+Vue.prototype.$put = $put
+Vue.prototype.$delete = $delete
 Vue.prototype.$export = $export
 /**
  * If you don't want to use mock-server

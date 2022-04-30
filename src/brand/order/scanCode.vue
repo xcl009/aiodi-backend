@@ -251,7 +251,6 @@ export default {
     }
   },
   mounted(options) {
-    this.agentInfo = window.agentInfo
     this.getList()
   },
   methods: {

@@ -2,7 +2,7 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery" @savexlsx="saveXlsx">
       <template v-slot:tabs>
-        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
+        <el-tabs class="mb-15 bg-white" v-model="listQuery.device_type" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'-1'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>

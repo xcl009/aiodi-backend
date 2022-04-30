@@ -148,7 +148,7 @@
     },
     mounted() {
       this.device_mobile = this.$_isMobile()
-      this.getPlatformConfig()
+      //this.getPlatformConfig()
     },
     methods: {
       $_isMobile() {

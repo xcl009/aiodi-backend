@@ -33,6 +33,27 @@ export function filterAsyncRoutes(routes, roles) {
   return res
 }
 
+/**
+ * Filter asynchronous routing tables by recursion
+ * @param routes asyncRoutes
+ * @param authMenu
+ */
+export function filterAsyncRoutesAuthMenu(routes, authMenu) {
+  var res = []
+  routes.forEach(route => {
+    const tmp = { ...route }
+    if(tmp.label && authMenu[tmp.label]){
+      if (tmp.children) {
+        tmp.children = filterAsyncRoutesAuthMenu(tmp.children, authMenu)
+      }
+      res.push(tmp)
+    }
+  })
+  if(res.length == 0) res = routes
+  return res
+}
+
+
 const state = {
   routes: [],
   addRoutes: []
@@ -46,20 +67,21 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
+  generateRoutes({ commit }, info) {
     // TODO 设置角色权限菜单
     return new Promise(resolve => {
       let accessedRoutes, asyncRoutes = []
-      if (roles.includes('admin')) {
+      if (info.roles.includes('admin')) {
         asyncRoutes = saasRoutes
-      } else if (roles.includes('store')) {
+      } else if (info.roles.includes('store')) {
         asyncRoutes = storeRoutes
-      } else if (roles.includes('agent')) {
+      } else if (info.roles.includes('agent')) {
         asyncRoutes = agentRoutes
       } else {
         asyncRoutes = brandRoutes
       }
-      accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      //accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      accessedRoutes = filterAsyncRoutesAuthMenu(asyncRoutes, info.authMenu)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

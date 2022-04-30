@@ -2,7 +2,7 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-select placeholder="设备类型" v-model="form.deviceTypeId" @change="toQuery()">
+        <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
           <el-option :label="index" :value="item" v-for="(item, index) in myDeviceName"/>
         </el-select>
         <el-input placeholder="手机号码" v-model="form.mobile" />
@@ -35,7 +35,7 @@
         element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="身份" width="80">
           <template slot-scope="scope">
-            <div>{{ scope.row.issueSource }}</div>
+            <div>{{ getRoleName(scope.row.identity) }}</div>
           </template>
         </el-table-column>
         <el-table-column label="用户昵称" width="120">
@@ -68,7 +68,7 @@
         </el-table-column>
         <!-- <el-table-column label="设备类型" width="100">
           <template slot-scope="scope">
-            {{ myDeviceId[scope.row.deviceTypeId] }}
+            {{ myDeviceId[scope.row.deviceTypeCode] }}
           </template>
         </el-table-column> -->
         <!-- <el-table-column label="错误截图" width="190">
@@ -80,7 +80,7 @@
             </div>
           </template>
         </el-table-column> -->
-        <el-table-column label="反馈时间" width="100">
+        <el-table-column label="反馈时间" width="120">
           <template slot-scope="scope">
             {{ parseTime(scope.row.feedbackTime, '{m}-{d} {h}:{i}:{s}') }}
           </template>
@@ -141,6 +141,7 @@
 </template>
 
 <script>
+  import { getRoleName }  from '@/utils/index.js'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   export default {
@@ -151,6 +152,7 @@
     },
     data() {
       return {
+        getRoleName: getRoleName,
         clickSubmit: false,
         dealStatus: [
           {

@@ -10,8 +10,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="设备类型">
-          <el-select placeholder="选择设备类型" v-model="form.deviceTypeId">
-            <el-option v-for="item in myDevice" :label="item.name" :value="item.id">{{ item.name }}</el-option>
+          <el-select placeholder="选择设备类型" v-model="form.deviceTypeCode">
+            <el-option v-for="item in myDevice" :label="item.name" :value="item.code">{{ item.name }}</el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="服务名称">

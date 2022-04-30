@@ -2,15 +2,15 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.deviceTypeId" @tab-click="toQuery()">
+        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'0'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
       </template>
 
       <template v-slot:defult>
-        <el-input v-model="form.qrcodeSn" placeholder="二维码" />
-        <el-input v-model="form.deviceSn" placeholder="设备SN" />
+        <el-input v-model="form.deviceSn" placeholder="二维码" />
+        <el-input v-model="form.factorySn" placeholder="设备SN" />
         <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
         <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()" v-if="lowerDevice"></selectSearch>
       </template>
@@ -47,9 +47,26 @@
         <el-table-column label="设备SN码">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <div>二维码：{{ scope.row.qrcodeSn || "--" }}</div>
-              <div class="text-cut">设备SN：{{ scope.row.deviceSn || "--" }}</div>
+              <div>二维码：{{ scope.row.deviceSn || "--" }}</div>
+              <div class="text-cut">设备SN：{{ scope.row.factorySn || "--" }}</div>
             </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="可借|可还" v-if="myDeviceId['PA']">
+          <template slot-scope="scope">
+            <div v-if="scope.row.onlineStatus">
+              {{ scope.row.tenantNumber }}|{{ scope.row.restoreNumber }}
+            </div>
+            <div v-else>--</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="在线状态" v-if="myDeviceId['PA']">
+          <template slot-scope="scope">
+            <div v-if="scope.row.onlineStatus">
+              <div :class="scope.row.onlineStatus == 'online' ? 'text-primary' : 'text-danger'">{{ scope.row.onlineStatus == 'online' ? '在线' : '离线'}}</div>
+              <div>{{ parseTime(scope.row.updateTime) }}</div>
+            </div>
+            <div v-else>--</div>
           </template>
         </el-table-column>
         <el-table-column label="设备属性" width="110">
@@ -157,7 +174,7 @@
         <div class="text-center">
           <el-image class="access-url" :src="deviceInfo[curRow.id].accessUrl" fit="cover" v-if="deviceInfo[curRow.id] && deviceInfo[curRow.id].accessUrl"></el-image>
           <div class="access-url" id="accessUrl" v-else></div>
-          <div class="mt-20 text-grey">SN码：{{ curRow.qrcodeSn }}</div>
+          <div class="mt-20 text-grey">SN码：{{ curRow.deviceSn }}</div>
         </div>
       </template>
       <template v-if="dialogType == 3">
@@ -274,8 +291,9 @@
       let query = this.$route.query
       this.queryKey = ['brandId', 'storeId', 'agentId', 'deviceIds', 'sourceType']
       for (var i in this.queryKey) {
-        if(query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
+        if(query[this.queryKey[i]]) this.form[this.queryKey[i]] = query[this.queryKey[i]]
       }
+      console.log(this.myDeviceId)
       this.queryDeviceCount()
       this.toQuery()
     },
@@ -285,9 +303,9 @@
        */
       queryDeviceCount(){
         let params = {}
-        if(this.agentId){
+        if(this.form.agentId){
           params.countType = 'AGENT'
-          params.groupIds = this.agentId
+          params.groupIds = this.form.agentId
         } else if(this.isAgent()){
           params.countType = 'AGENT'
           params.groupIds = this.agentInfo.agentId
@@ -395,12 +413,7 @@
           page: this.listQuery.page - 1,
           lowerDevice: this.lowerDevice
         })
-        for(var i in this.queryKey){
-          if(this[this.queryKey[i]]){
-            params[this.queryKey[i]] = this[this.queryKey[i]]
-          }
-        }
-        if(params.deviceTypeId == 0) delete params.deviceTypeId
+        if(params.deviceTypeCode == 0) delete params.deviceTypeCode
         this.$get('iot-saas-device/admin/device/findPage', params).then(res => {
           this.list = res.rows
           this.listLoading = false
@@ -461,6 +474,7 @@
       unbindAgent(row, idx) {
         this.$alert('确定回收该设备？', '回收设备', {
           confirmButtonText: '确定',
+          center: true,
           callback: action => {
             if (action == 'confirm') {
               this.$post('iot-saas-device/admin/device/unbindAgent', {

@@ -17,15 +17,15 @@
               <el-image :src="require('@/assets/role_avatar.png')"></el-image>
               <div class="flex-sub pl-20">
                 <div class="flex align-center">
-                  <div class="flex-sub fs-c1">财务</div>
-                  <div class="text-primary" @click="$router.push({path: `/role/editRole/${index}`})">编辑</div>
+                  <div class="flex-sub fs-c1">{{ item.roleName }}</div>
+                  <div class="text-primary" @click="$router.push({path: `/role/editRole/${item.roleId}`})">编辑</div>
                 </div>
-                <div class="mt-10 text-grey">财务能够查看协作费，以及下载查看协作费账单</div>
+                <div class="mt-10 text-grey">{{ item.remark }}</div>
               </div>
             </div>
             <div class="text-right">
               <el-button size="small" class="btn-body" @click="setRows(1, item, 1, index)">删除</el-button>
-              <el-button type="primary" size="small" @click="$router.push({path: `/role/account/${index}`})">查看账号</el-button>
+              <el-button type="primary" size="small" @click="$router.push({path: `/role/account/${item.roleId}`})">查看账号</el-button>
             </div>
           </div>
         </el-col>
@@ -58,7 +58,8 @@
     data() {
       return {
         clickSubmit: false,
-        list: [{},{},{}],
+        form: {},
+        list: [],
 
         // 弹出相关
         dialogType: 1,
@@ -81,9 +82,9 @@
     },
     activated() {
       if(this.$route.meta.reload){
-        //this.getList()
+        this.getList()
       }else if(!this.list || this.list.length == 0) {
-        //this.toQuery(1)
+        this.toQuery(1)
       }
     },
     computed: {
@@ -99,8 +100,6 @@
       toQuery() {
         if(this.clickSubmit) return
         this.clickSubmit = true
-        this.listQuery.page = 1
-        this.listQuery.size = 20
         this.getList()
       },
 
@@ -109,8 +108,6 @@
        */
       reset(){
         this.form = {}
-        this.listQuery.page = 1
-        this.listQuery.size = 20
         this.getList()
       },
 
@@ -118,17 +115,11 @@
        * 获取列表
        */
       getList() {
-        var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
-        })
-        this.$get('/brand/findPage', params).then(res => {
+        var params = Object.assign({}, this.form)
+        this.$get('iot-saas-user/auth/role', params).then(res => {
           this.listLoading = false
-          this.list = res.list
+          this.list = res
           this.clickSubmit = false
-          if(params.page == 1){
-            this.count = res.count
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
-          }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false

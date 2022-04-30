@@ -4,8 +4,8 @@
       <template v-slot:defult>
         <el-select v-model="form.haveDevice" @change="toQuery()" placeholder="是否铺货">
           <el-option label="全部" :value="null" />
-          <el-option label="未铺货" value="1" />
-          <el-option label="已铺货" value="2" />
+          <el-option label="已铺货" value="1" />
+          <el-option label="未铺货" value="2" />
         </el-select>
         <el-input v-model="form.name" placeholder="商户名称" />
         <el-input v-model="form.mobile" placeholder="手机号码" />
@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column label="门头照" width="70">
           <template slot-scope="scope">
-            <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})">
+            <el-link>
               <el-avatar class="block" shape="square" :size="50" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
             </el-link>
           </template>
@@ -67,7 +67,7 @@
           <template slot-scope="scope">
             <div class="mt-5">
               <div class="mb-5 cursor" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: `/device?storeId=${scope.row.id}`})">
-                {{ myDeviceId[item.deviceTypeId] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
+                {{ myDeviceId[item.deviceTypeCode] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
               </div>
             </div>
           </template>

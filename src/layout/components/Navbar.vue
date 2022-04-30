@@ -8,6 +8,10 @@
       <!-- <div class="pl-15 pr-15 menu-item flex align-center">
         <svg-icon icon-class="head_new" class="head_new"></svg-icon>
       </div> -->
+      <div class="pl-30 pr-30 flex align-center text-primary cursor l-r" v-if="isBrand()" @click="getJoinCode">
+        <svg-icon icon-class="head_link" class="mr-10 head_new"></svg-icon>
+        邀请链接获取
+      </div>
       <el-dropdown class="mr-10 hover-effect" trigger="click">
         <div class="pl-15 pr-15 menu-item flex align-center">
           <svg-icon icon-class="head_user" class="head_user"></svg-icon>
@@ -28,6 +32,19 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <el-dialog :visible.sync="inviteDialog" width="500px" :modal-append-to-body="true" :append-to-body="true" :close-on-click-modal="false">
+      <div class="fs-c1 text-black text-center" slot="title">邀请二维码</div>
+      <div class="p-30 flex flex-wrap justify-around text-center">
+        <div class="p-10 qrcode-box">
+          <div id="inviteQrcode" />
+        </div>
+      </div>
+      <div class="pb-30 pt-20 text-center">
+        <el-button type="primary" @click="copyText()" class="mr-30">复制链接</el-button>
+        <el-button type="primary" @click="saveQrcode()">下载二维码</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -35,7 +52,8 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import { delComma } from '@/utils/index'
+import QRCode from 'qrcodejs2'
+import { copyText } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 export default {
@@ -64,7 +82,10 @@ export default {
     return {
       updateWxxcx: false,
       updateAlixcx: false,
-      token1: getToken('token1') || ''
+      token1: getToken('token1') || '',
+
+      inviteUrl: '',
+      inviteDialog: false
     }
   },
   mounted(){
@@ -93,7 +114,7 @@ export default {
     getWxxcx(template_id) {
       this.$get('WxOpen/getWxList', {
         page: 1,
-		limit: 10,
+        limit: 10,
         wx_status: 1
       }).then(res => {
         let list = res.list
@@ -139,7 +160,49 @@ export default {
       setTimeout(()=>{
         location.href = '/home'
       }, 100)
-    }
+    },
+
+    /**
+     * 获取邀请链接地址
+     */
+    getJoinCode(){
+      this.inviteDialog = true
+      if(this.active_url) {
+        return
+      }
+      this.$post('iot-saas-basic/admin/brand/buildInvitationCode', {
+        brandId: this.agentInfo.brandId
+      }).then(res => {
+        this.invitationCode = res.invitationCode
+        this.alertLink(res.invitationCode)
+      })
+    },
+
+    /**
+     * 设置二维码
+     */
+    alertLink(code){
+      let gid = this.agentInfo.brandId
+      let url = `${location.origin}/brandReg/${gid}/${code}`
+      this.inviteUrl = url
+      document.getElementById('inviteQrcode').innerHTML = ''
+      new QRCode('inviteQrcode', {
+        width: 150,
+        height: 150,
+        text: url
+      })
+    },
+
+    /**
+     * 复制链接
+     */
+    copyText(){
+      copyText(this.inviteUrl)
+      this.$message({
+        message: '复制成功',
+        type: 'success'
+      })
+    },
   }
 }
 </script>

@@ -87,6 +87,7 @@ service.interceptors.response.use(
     }
     switch (parseInt(res.data.code)) {
       case 200:
+        return Promise.resolve(res.data.data)
         if (res.data.data) {
           return Promise.resolve(res.data.data)
         } else {
@@ -112,6 +113,7 @@ service.interceptors.response.use(
     }
   },
   (error) => {
+    Message.closeAll()
     if(error.response && error.response.data && error.response.data.message){
       Message({
         message: error.response.data.message,
@@ -158,10 +160,20 @@ export function $post(url, data = {}) {
   return service.post(url, data)
 }
 
+export function $put(url, data = {}) {
+  data = filterNull(data)
+  return service.put(url, data)
+}
+
+export function $delete(url, data = {}) {
+  data = filterNull(data)
+  return service.delete(url, data)
+}
+
 export function $export(url, data = {}) {
   data = filterNull(data)
   return service({
-    method: 'post',
+    method: 'GET',
     url: url,
     data: data,
     responseType: 'blob'

@@ -2,7 +2,7 @@
   <div>
 		<condition ref="condition" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.iotServiceTypeId" @tab-click="toQuery()">
+        <el-tabs class="mb-15 bg-white" v-model="listQuery.iotServiceTypeId" @tab-click="toQuery()">
           <el-tab-pane label="全部" :name="'0'" />
           <el-tab-pane label="品类" :name="'1'" />
           <el-tab-pane label="系统服务" :name="'2'" />

@@ -37,12 +37,12 @@
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
-                  @click="$router.push({path: `/order/subOrder?agentIds=${scope.row.id}&sourceType=1`})">
+                  @click="$router.push({path: `/order/subOrder?agentId=${scope.row.id}&sourceType=1`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
                 </el-link>
               </div>
               <div>支付宝：<el-link type="primary"
-                  @click="$router.push({path: `/order/subOrder?agentIds=${scope.row.id}&sourceType=2`})">
+                  @click="$router.push({path: `/order/subOrder?agentId=${scope.row.id}&sourceType=2`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
                 </el-link>
               </div>
@@ -346,6 +346,8 @@
        * 弹窗确认
        */
       dialogConfim() {
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
@@ -366,17 +368,24 @@
                 message: '设置成功'
               })
               this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
             break
           case 2:
             this.$post('iot-saas-basic/admin/agent/delete', {
               agentId: curRow.id
             }).then(res => {
+              this.dialogStatus = false
               this.$message({
                 message: '删除成功',
                 type: 'success'
               })
               this.list.splice(curIdx, 1)
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
             break
         }

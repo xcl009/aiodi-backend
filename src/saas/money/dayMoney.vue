@@ -1,18 +1,10 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit">
+    <condition ref="condition" :clickSubmit="clickSubmit" @query="getTime(form.date)" @reset="getTime">
       <template v-slot:defult>
-        <el-date-picker
-          style="width: 300px; padding: 0 10px;"
-          class="range-day flex align-center"
-            v-model="form.date"
-            type="year"
-            :picker-options="pickerOptionsEnd"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="getTime">
-          </el-date-picker>
+        <el-date-picker v-model="form.date" type="month" :picker-options="pickerOptionsEnd" range-separator="-"
+          placeholder="选择月份" value-format="yyyy-MM" @change="getTime">
+        </el-date-picker>
       </template>
     </condition>
 
@@ -45,13 +37,26 @@
 </template>
 
 <script>
-  import { arrayToObj, delComma, parseTime, currentTime } from '@/utils/index'
+  import {
+    arrayToObj,
+    delComma,
+    parseTime,
+    currentTime
+  } from '@/utils/index'
   import condition from '@/components/condition/'
 
   import * as echarts from 'echarts/lib/echarts'
-  import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
-  import { LineChart } from 'echarts/charts'
-  import { LabelLayout } from 'echarts/features'
+  import {
+    TooltipComponent,
+    LegendComponent,
+    GridComponent
+  } from 'echarts/components'
+  import {
+    LineChart
+  } from 'echarts/charts'
+  import {
+    LabelLayout
+  } from 'echarts/features'
 
   echarts.use([
     TooltipComponent,
@@ -68,6 +73,7 @@
     data() {
       return {
         clickSubmit: false,
+        curMonth: this.$route.query.curMonth,
         form: {},
         filtrate: {},
         list: [],
@@ -78,10 +84,12 @@
             let timeOptionRange = this.timeOptionRange
             let secondNum = 60 * 60 * 24 * 31 * 1000
             if (timeOptionRange) {
-              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange.getTime() - secondNum) || time.getTime() > Date.now()
+              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+                .getTime() - secondNum) || time.getTime() > Date.now()
             }
             return time.getTime() > Date.now()
-          }, onPick: (time) => {
+          },
+          onPick: (time) => {
             //当第一时间选中才设置禁用
             if (time.minDate && !time.maxDate) {
               this.timeOptionRange = time.minDate
@@ -97,12 +105,17 @@
       let cutDate = new Date()
       this.curYear = cutDate.getFullYear()
       this.curMon = cutDate.getMonth() + 1
-      this.getTime(this.curYear, 2)
-
-      //this.getLineChart()
+      this.curMon = this.curMon > 9 ? this.curMon : '0' + this.curMon
+      this.curDay = cutDate.getDate()
+      this.getTime(this.curMonth || `${this.curYear}-${this.curMon}`, 2)
     },
     methods: {
-      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      objectSpanMethod({
+        row,
+        column,
+        rowIndex,
+        columnIndex
+      }) {
         if (columnIndex === 0) {
           if (rowIndex % 3 === 0) {
             return {
@@ -121,10 +134,8 @@
       /**
        * 近期数据对比
        */
-      getLineChart(){
-        let eTime = currentTime(),
-          sTime = eTime - (15 * 86400),
-          groupDate = [],
+      getLineChart() {
+        let groupDate = [],
           amount = [],
           orderNumber = [],
           doneOrderNumber = [],
@@ -133,11 +144,12 @@
 
         params.brandID = this.brandId
         this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
-          let obj = arrayToObj(res, 'countGroupDate'), pros = []
-          for(var i = this.selMon; i > 0; i--){
-          	let mon = this.selYear + '-' + (i < 10 ? '0' + i : i)
+          let obj = arrayToObj(res, 'countGroupDate'),
+            pros = []
+          for (var i = 1; i < this.selDay; i++) {
+            let mon = this.selMon + '-' + (i < 10 ? '0' + i : i)
             groupDate.push(mon)
-            if(obj[mon] && obj[mon].countGroupDate == mon){
+            if (obj[mon] && obj[mon].countGroupDate == mon) {
               amount.push(obj[mon].amount)
               orderNumber.push(obj[mon].orderNumber)
               doneOrderNumber.push(obj[mon].doneOrderNumber)
@@ -149,9 +161,8 @@
               unitPrice.push(0)
             }
           }
-
           this.tableList = res
-          if(this.dayChartInit){
+          if (this.dayChartInit) {
             this.dayChartOptions({
               groupDate,
               amount,
@@ -159,7 +170,7 @@
               doneOrderNumber,
               unitPrice,
             })
-          }else{
+          } else {
             this.setLineChart({
               groupDate,
               amount,
@@ -191,8 +202,7 @@
       } = {}) {
         if (!groupDate) return
         let legend = ['交易额', '订单量', '平均单量', '平均交易额'],
-          series = [
-            {
+          series = [{
               name: '交易额',
               type: 'line',
               data: amount,
@@ -255,39 +265,41 @@
         })
       },
 
-			/**
-			 * 选择日期或月份
-			 */
-			getTime(val, type = 1){
-        if(type == 1){
-          if(this.curMonth){
-            val = parseTime(val, '{y}-{m}')
-          } else {
-            val = parseTime(val, '{y}')
-          }
-        }
-        if(this.curMonth){
-
+      /**
+       * 选择日期或月份
+       */
+      getTime(val = '', type = 1) {
+        let mon = `${this.curYear}-${this.curMon}`
+        if (!val) val = mon
+        if(val == mon){
+          this.filtrate.startDateStr = `${val}-01`
+          this.filtrate.endDateStr = `${val}-${this.curDay < 10 ? '0' + this.curDay : this.curDay}`
+          this.selDay = this.curDay
         } else {
-          if(val == this.curYear){
-            this.filtrate.startDateStr = `${val}-01`
-            this.filtrate.endDateStr = `${val}-${this.curMon < 10 ? '0' + this.curMon : this.curMon}`
-          	this.selMon = this.curMon
-          } else {
-            this.filtrate.startDateStr = `${val}-01`
-            this.filtrate.endDateStr = `${val}-12`
-          	this.selMon = 12
-          }
-          this.selYear = val
+          this.selDay = this.getMonthLastDay(val)
+          this.filtrate.startDateStr = `${val}-01`
+          this.filtrate.endDateStr = `${val}-${this.selDay}`
         }
-				this.getLineChart()
+        this.selMon = val
+        this.getLineChart()
+      },
+
+			/**
+			 * 获取指定月最后一天
+			 * @param {Object} date
+			 */
+			getMonthLastDay(date) {
+				let a = date.split('-'),
+					curDate = new Date(a[0], a[1]),
+					endDay = new Date(curDate.setDate(0)).getDate()
+				return endDay
 			}
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .chart-daystat{
+  .chart-daystat {
     height: 500px;
   }
 </style>

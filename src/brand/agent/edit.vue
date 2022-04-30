@@ -4,9 +4,6 @@
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="100px">
           <h4>基础信息</h4>
-          <el-form-item label="代理头像" class="up-img">
-            <upload v-model="form.avastar" />
-          </el-form-item>
           <el-form-item label="代理名称" prop="name">
             <el-input v-model="form.name" placeholder="输入代理名称" />
           </el-form-item>
@@ -17,12 +14,12 @@
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
           <el-form-item label="运营区域">
-            <el-cascader v-model="form.regionTag" :options="cityList" :props="{ expandTrigger: 'hover' }" />
+            <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-
+          
           <h4 class="pt-20">运营产品</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">
-            <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
+            <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
           </el-checkbox-group>
 
           <template>
@@ -46,10 +43,9 @@
 </template>
 
 <script>
-  import upload from '@/components/upload'
   export default {
     components: {
-      upload
+      
     },
     data() {
       return {
@@ -113,21 +109,20 @@
           res.deviceTypeProfitRatios = {}
           if(res.agentDeviceType && res.agentDeviceType.length > 0){
             res.agentDeviceType.map(item => {
-              res.deviceTypeProfitRatios[item.id] = item.profitRatio
-              if(this.selDevice.indexOf(item.id) == -1) {
-                this.selDevice.push(item.id)
+              res.deviceTypeProfitRatios[item.code] = item.profitRatio
+              if(this.selDevice.indexOf(item.code) == -1) {
+                this.selDevice.push(item.code)
               }
             })
           } else {
-            this.selDevice.push(this.myDevice[0].id)
+            this.selDevice.push(this.myDevice[0].code)
           }
           this.form = {
             id: res.id,
             deviceTypeProfitRatios: res.deviceTypeProfitRatios,
-            avastar: res.avastar,
             name: res.name,
             mobile: res.mobile,
-            regionTag: res.regionTag
+            province: [res.province, res.city, res.district]
           }
         })
       },
@@ -148,12 +143,16 @@
         let profitRatios = []
         for(var i in this.selDevice){
           profitRatios.push({
-            deviceTypeId: this.selDevice[i],
+            deviceTypeCode: this.selDevice[i],
             profitRatio: params.deviceTypeProfitRatios[this.selDevice[i]] || 0
           })
         }
         params.deviceTypeProfitRatios = profitRatios
-        if(Array.isArray(params.areaId) && params.areaId.length > 0) params.areaId = params.areaId[params.areaId.length - 1]
+        if(Array.isArray(params.province) && params.province.length > 0){
+          params.district = params.province[2]
+          params.city = params.province[1]
+          params.province = params.province[0]
+        }
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
           if (valid) {
@@ -190,14 +189,14 @@
           res.map(item => {
             if(item.level == 1){
               list[item.tag] = {
-                value: item.tag,
+                value: item.title,
                 label: item.title,
                 children: {}
               }
             }else if(item.level == 2){
               let tag = item.tag.substring(0, 3)
               list[tag].children[item.tag] = {
-                value: item.tag,
+                value: item.title,
                 label: item.title,
                 children: []
               }
@@ -205,7 +204,7 @@
               areaId = areaId || item.tag
               let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
               list[tag1].children[tag2].children.push({
-                value: item.tag,
+                value: item.title,
                 label: item.title
               })
             }
@@ -220,9 +219,6 @@
             return item
           })
           this.cityList = list
-          if(!this.id){
-            this.$set(this.form, 'areaId', areaId)
-          }
         })
       },
     }

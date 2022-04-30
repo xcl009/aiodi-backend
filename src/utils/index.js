@@ -257,70 +257,6 @@ const util = {
   },
 
   /**
-   * 校验当前用户是否为SAAS
-   */
-  isSaas: () => {
-  	return agentInfo.userType == 'admin'
-  },
-
-	/**
-	 * 校验当前用户是否为品牌商
-	 */
-	isBrand: () => {
-		return agentInfo.userType == 'brand'
-	},
-
-	/**
-	 * 校验当前用户是否为商户
-	 */
-	isStore: () => {
-		return agentInfo.userType == 'store'
-	},
-
-	/**
-	 * 校验当前用户是否为代理商
-	 */
-	isAgent: () => {
-		return agentInfo.userType == 'agent'
-	},
-
-	/**
-	 * 获取角色名
-	 */
-	getRoleName: (type) => {
-		let roleName = {
-			brand: '总后台',
-			store: '商户',
-			agent: '代理商'
-		}
-		return roleName[type] || ''
-	},
-
-	/**
-	 * 套餐显示
-	 */
-	showFeeMode: (type, mode) => {
-		if(!mode) return ''
-		type = type || 1
-		mode = JSON.parse(mode)
-		if (type == 1) {
-			return `${mode.time}小时${mode.money}元`
-		}
-	},
-
-	/**
-	 * 分成显示
-	 */
-	divideType: (type) => {
-		let obj = {
-			"1": "真实分成",
-			"2": "相对分成",
-			"3": "分成不一致"
-		}
-		return obj[type] || ''
-	},
-
-	/**
 	 * Parse the time to string
 	 * @param {(Object|string|number)} time
 	 * @param {string} cFormat
@@ -459,7 +395,7 @@ const util = {
 	 * 数组指定key转对象
 	 */
 	arrayToObj: (array = [], key = '', nkey = '') => {
-		if (!key) return {}
+		if (!key || !Array.isArray(array)) return {}
 		let obj = {}
 		array.map(item => {
 			if(nkey){
@@ -548,7 +484,125 @@ const util = {
 			c += e.split(".")[1].length;
 		} catch (f) {}
 		return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
-	}
+	},
+  
+  /**
+   * 校验当前用户是否为SAAS
+   */
+  isSaas: () => {
+  	return agentInfo.userType == 'admin'
+  },
+  
+  /**
+   * 校验当前用户是否为品牌商
+   */
+  isBrand: () => {
+  	return agentInfo.userType == 'brand'
+  },
+  
+  /**
+   * 校验当前用户是否为商户
+   */
+  isStore: () => {
+  	return agentInfo.userType == 'store'
+  },
+  
+  /**
+   * 校验当前用户是否为代理商
+   */
+  isAgent: () => {
+  	return agentInfo.userType == 'agent'
+  },
+  
+  /**
+   * 获取角色名
+   */
+  getRoleName: (type) => {
+  	let roleName = {
+  		brand: '总后台',
+  		store: '商户',
+  		agent: '代理商',
+  		wechat: '微信用户',
+  		alipay: '支付宝用户'
+  	}
+  	return roleName[type] || ''
+  },
+  
+  /**
+   * 套餐显示
+   */
+  showFeeMode: (type, mode) => {
+  	if(!mode) return ''
+  	type = type || 1
+  	mode = JSON.parse(mode)
+  	if (type == 1) {
+  		return `${mode.time / 60}小时${mode.money}元`
+  	} else {
+  		return `前${mode.startingTime}分钟${mode.startingAmount}元，超则${mode.overBillingUnit}分钟/${mode.unitPrice}元`
+  	}
+  },
+  
+  /**
+   * 分成显示
+   */
+  divideType: (type) => {
+  	let obj = {
+  		"1": "真实分成",
+  		"2": "相对分成",
+  		"3": "分成不一致"
+  	}
+  	return obj[type] || ''
+  },
+  
+  /**
+   * 默认计费
+   */
+  defaultFee: () => {
+    let obj = {
+      status: 1,
+      closeType: '1',
+      storePayConfig: ['weixin', 'alipay'],
+      weixinPayMode: {
+        modeType: 'PACKAGE',
+        payModeDetail: [
+          {
+            time: 60,
+            money: 2
+          }
+        ],
+        payModeDetails: {
+          startingTime: 180,
+          startingAmount: 3,
+          overBillingUnit: 60,
+          unitPrice: 1,
+          maxBillingTimeUnit: 1440,
+          maxBillingTimePrice: 20,
+          maxAmount: 99,
+          depositAmount: 99
+        },
+      },
+      alipayPayMode: {
+        modeType: 'PACKAGE',
+        payModeDetail: [
+          {
+            time: 60,
+            money: 2
+          }
+        ],
+        payModeDetails: {
+          startingTime: 180,
+          startingAmount: 3,
+          overBillingUnit: 60,
+          unitPrice: 2,
+          maxBillingTimeUnit: 1440,
+          maxBillingTimePrice: 20,
+          maxAmount: 99,
+          depositAmount: 99
+        },
+      }
+    }
+    return obj
+  }
 }
 
 export const param2Obj = util.param2Obj
@@ -583,3 +637,4 @@ export const pick = util.pick
 export const isBe = util.isBe
 export const accAdd = util.accAdd
 export const accMul = util.accMul
+export const defaultFee = util.defaultFee

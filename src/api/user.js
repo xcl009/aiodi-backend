@@ -31,6 +31,6 @@ export function getWdConstant() {
   return $get('iot-saas-pay/open/pay/init/getInitMap')
 }
 
-export function getAuth(data) {
-  return $get('iot-saas-basic/admin/agent/agentAuth', data)
+export function getAuthMenu(data) {
+  return $get('iot-saas-user/auth/menu', data)
 }

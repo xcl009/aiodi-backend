@@ -2,7 +2,7 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <el-tabs class="pl-10 pr-10 mb-15 bg-white" v-model="listQuery.deviceTypeId" @tab-click="toQuery()">
+        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
           <el-tab-pane label="全部设备" :name="'0'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
@@ -10,10 +10,10 @@
 
       <template v-slot:defult>
         <el-input v-model="form.orderNo" placeholder="订单号" />
-        <selectSearch v-model="form.userIds" :key="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
-        <selectSearch v-model="form.userIds" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
-        <selectSearch v-model="form.storeIds" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
-        <selectSearch v-model="form.deviceIds" :type="4" name="deviceSn" placeholder="设备SN" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.userId" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.deviceId" :type="4" name="deviceSn" placeholder="设备SN" @change="toQuery()"></selectSearch>
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
           <el-option label="全部" value="0" />
@@ -23,13 +23,9 @@
           <el-option label="全部" value="0" />
           <el-option :label="item" :value="key" v-for="(item, key) in Constant.PayType" />
         </el-select>
-        <!-- <el-cascader v-model="cat_id" :options="categoryList" :show-all-levels="false"
-          :props="{ expandTrigger: 'hover' }" placeholder="行业分类" />
-        <el-cascader v-model="search_regions_tag" :options="areaList" :show-all-levels="false"
-          :props="{ expandTrigger: 'hover', checkStrictly: true }" placeholder="所在地区"/> -->
         <el-date-picker
           class="range-day flex align-center"
-            v-model="form.selDay"
+            v-model="form.date"
             type="daterange"
             range-separator="-"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -59,7 +55,7 @@
             {{ scope.row.orderNo || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="交易单号" width="142">
+        <el-table-column label="交易单号" width="155">
           <template slot-scope="scope">
             <div>{{ scope.row.transactionNo || '--' }}</div>
           </template>
@@ -92,7 +88,7 @@
             <!-- <div>{{ scope.row.back_store || '--' }}</div> -->
           </template>
         </el-table-column>
-        <el-table-column label="时间" width="140">
+        <el-table-column label="时间" width="150">
           <template slot-scope="scope">
             <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
             <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
@@ -100,8 +96,8 @@
         </el-table-column>
         <el-table-column label="设备SN码" width="240">
           <template slot-scope="scope">
-            <div>二维码：{{ scope.row.deviceQrcode || "--" }}</div>
-            <div>设备SN：{{ scope.row.deviceSn || "--" }}</div>
+            <div>二维码：{{ scope.row.deviceSn || "--" }}</div>
+            <div>设备SN：{{ scope.row.factorySn || "--" }}</div>
             <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
               @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
           </template>
@@ -131,22 +127,21 @@
         <el-table-column label="备注" min-width="150">
           <template slot-scope="scope">
             <div class="remark-box">
-              <div class="fs-s4 text-danger" v-if="scope.row.steal_type_des">{{ scope.row.steal_type_des }}</div>
               <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
-              <div v-if="scope.row.delivery_status == 2" class="fs-s4">快递单号：{{ scope.row.delivery_sn }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column label="操作" width="200" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
-            <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 1)">结束订单</el-button>
-            <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status >= 2 && scope.row.status <= 4)">订单退款</el-button>
+            <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && isBrand()">结束订单</el-button>
+            <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status.indexOf('G') > -1) && scope.row.amount > 0 && isBrand()">订单退款</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="flex justify-center">
         <pagination
+					v-show="listTotal > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
           :total="parseInt(listTotal)"
@@ -198,24 +193,31 @@
       <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
         <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
         <template v-if="dialogType == 1">
-          <el-form class="custom-form flex justify-center">
+          <el-form class="custom-form text-center">
+            <div class="text-black2">归还时间</div>
             <el-date-picker
-                v-model="dform.chargeEndTime"
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="请选择结束时间">
-              </el-date-picker>
+              class="mt-10"
+              v-model="dform.chargeEndTime"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择结束时间">
+            </el-date-picker>
+
+            <template v-if="curRow.deviceType == '充电宝'">
+              <div class="mt-30 text-black2">检测设备是否归还</div>
+              <el-switch class="mt-10" v-model="dform.validateDeviceRefund" />
+            </template>
           </el-form>
         </template>
         <template v-if="dialogType == 2">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
             <el-form-item label="退回方式">
               <el-radio-group v-model="dform.refundType">
-                <el-radio :label="key" v-for="(item, key) in Constant.RefundType" v-if="(key == 2 && curRow.feeType == 2) || (key != 2)">{{ item }}</el-radio>
+                <el-radio :label="key" v-for="(item, key) in Constant.RefundType" v-if="(key == 2 && curRow.feeType == 2 && curRow.payType < 3) || (key != 2)">{{ item }}</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="退款金额">
-              <el-input v-model="dform.amount" :placeholder="`最多${curRow.amountPaid}元`">
+              <el-input v-model="dform.amount" :placeholder="`最多${curRow.amount}元`">
                  <span slot="append">元</span>
               </el-input>
             </el-form-item>
@@ -240,6 +242,7 @@
   import toXlsx from '@/components/xlsx/'
   import {
     dealPhone,
+    showFeeMode,
     parseTime,
     currentTime,
     unixTime,
@@ -285,6 +288,7 @@
     data() {
       return {
         dealPhone: dealPhone,
+        showFeeMode: showFeeMode,
         clickSubmit: false,
         pickerOptionsEnd: {
           disabledDate: (time) => {
@@ -321,8 +325,8 @@
             nkey: 'orderNumber'
           },
           {
-            value: 1,
-            title: '使用中',
+            value: 'R',
+            title: '进行中',
             nkey: 'rentingNumber'
           },
           {
@@ -331,22 +335,22 @@
             nkey: 'todayNumber'
           },
           {
-            value: [2,3],
+            value: 'O',
             title: '已完成',
             nkey: 'doneNumber'
           },
           {
-            value: 4,
+            value: 'OT',
             title: '超时订单',
             nkey: 'expiredNumber'
           },
           {
-            value: 5,
+            value: 'F',
             title: '租借失败',
             nkey: 'rentFailedNumber'
           },
           {
-            value: 6,
+            value: 'OHW',
             title: '扣款失败',
             nkey: 'payFailedNumber'
           }
@@ -392,7 +396,7 @@
     },
     mounted() {
       let query = this.$route.query
-      this.queryKey = ['brandIds', 'storeIds', 'agentIds', 'deviceIds', 'sourceType']
+      this.queryKey = ['storeId', 'agentId', 'deviceId', 'sourceType']
       for (var i in this.queryKey) {
         if(query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
       }
@@ -405,17 +409,17 @@
        */
       getStatNum() {
         let url = 'iot-saas-order/admin/order/count/queryByUser', params = Object.assign({}, this.listQuery, this.form)
-        if(params.selDay && params.selDay.length > 0){
-          params.startTime = params.selDay[0]
-          params.endTime = params.selDay[1]
-          delete params.selDay
+        if(params.date && params.date.length > 0){
+          params.startTime = params.date[0]
+          params.endTime = params.date[1]
+          delete params.date
         }
         for(var i in this.queryKey){
           if(this[this.queryKey[i]]){
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
         }
-        if(this.lowerAgent) params.lowerAgent = true
+        params.lowerAgent = this.lowerAgent || false
         delete params.status
         this.$get(url, params).then(res => {
           this.statInfo = res
@@ -454,13 +458,13 @@
         var url = 'iot-saas-order/admin/order/list', params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        if(params.selDay && params.selDay.length > 0){
-          params.startTime = params.selDay[0]
-          params.endTime = params.selDay[1]
-          delete params.selDay
+        if(params.date && params.date.length > 0){
+          params.startTime = params.date[0]
+          params.endTime = params.date[1]
+          delete params.date
         }
         if(params.status == 'today'){
-          let todayTime = new Date(new Date().toLocaleDateString()).getTime()
+          let todayTime = new Date(new Date().toLocaleDateString()).getTime() / 1000
           params.startTime = parseTime(todayTime)
           params.endTime = parseTime(todayTime + 86400)
           delete params.status
@@ -470,8 +474,8 @@
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
         }
-        if(params.deviceTypeId == 0) delete params.deviceTypeId
-        if(this.lowerAgent) params.lowerAgent = true
+        if(params.deviceTypeCode == 0) delete params.deviceTypeCode
+        params.lowerAgent = this.lowerAgent || false
         this.$get(url, params).then(res => {
           this.list = res.rows
           this.listLoading = false
@@ -484,16 +488,6 @@
           this.listLoading = false
           this.clickSubmit = false
         })
-      },
-
-      /**
-       * 套餐显示
-       */
-      showFeeMode(type, mode){
-        mode = JSON.parse(mode)
-        if(type == 1){
-          return `${mode.time}小时${mode.money}元`
-        }
       },
 
       /**
@@ -578,13 +572,14 @@
        */
       getDetail(row) {
         this.$get('iot-saas-order/admin/order/detail/flow', {
-          orderId: row.id
+          orderNo: row.orderNo
         }).then(res => {
           this.orderFlow = res
+          this.orderDivide = []
           this.detailDialog = true
-          if(row.status > 0){
+          if(row.status.indexOf('O') > -1 && this.isBrand()){
             this.$get('iot-saas-order/admin/order/detail/divide', {
-              orderId: row.id
+              orderNo: row.orderNo
             }).then(res => {
               this.orderDivide = res.divideList
               this.amountPaid = res.amountPaid
@@ -598,9 +593,9 @@
        */
       fenRunSpanMethod({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
-          if (rowIndex % 4 === 0) {
+          if (rowIndex % 8 === 0) {
             return {
-              rowspan: 4,
+              rowspan: 8,
               colspan: 1
             }
           } else {
@@ -629,6 +624,7 @@
             this.dialogStatus = true
             if(dialogType == 1){
               this.$set(this.dform, 'chargeEndTime', this.parseTime(this.currentTime()))
+              if(row.deviceType == '充电宝') this.$set(this.dform, 'validateDeviceRefund', true)
             }else if(dialogType == 2){
               this.$set(this.dform, 'refundType', '0')
             }
@@ -655,14 +651,15 @@
               return
             }
             this.$post('iot-saas-order/admin/order/complete', {
-              orderId: this.curRow.id,
-              chargeEndTime: params.chargeEndTime
+              orderNo: this.curRow.orderNo,
+              chargeEndTime: params.chargeEndTime,
+              validateDeviceRefund: params.validateDeviceRefund || false
             }).then(res => {
               this.$message({
                 message: '结束订单成功',
                 type: 'success'
               })
-              curRow.status = 2
+              curRow.status = 'OHW'
               this.dialogStatus = false
               this.clickSubmit = false
             }).catch(err => {
@@ -677,13 +674,13 @@
               })
               return
             }
-            params.orderId = this.curRow.id
+            params.orderNo = this.curRow.orderNo
             this.$post('iot-saas-order/admin/order/refund', params).then(res => {
               this.$message({
                 message: '订单退款成功',
                 type: 'success'
               })
-              curRow.status = 9
+              curRow.status = 'OTD'
               curRow.amountRefund = params.amount
               this.dialogStatus = false
               this.clickSubmit = false

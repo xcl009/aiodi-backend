@@ -4,20 +4,20 @@
       <el-button type="primary" size="small" class="mr-10" @click="setRows(1, {}, 2)">添加账号</el-button>
       <div class="pt-15">
         <el-table id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-          stripe highlight-current-row :max-height="tableMaxH">
+          stripe highlight-current-row>
           <el-table-column label="角色名称">
             <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
+              {{ scope.row.roleName || '--' }}
             </template>
           </el-table-column>
           <el-table-column label="登录账号">
             <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
+              {{ scope.row.username || '--' }}
             </template>
           </el-table-column>
           <el-table-column label="登录密码">
             <template slot-scope="scope">
-              {{ scope.row.money || '--' }}
+              {{ scope.row.password || '--' }}
             </template>
           </el-table-column>
           <el-table-column label="操作">
@@ -27,10 +27,6 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="flex justify-center">
-          <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
-            :total="parseInt(listTotal)" @pagination="getList" />
-        </div>
       </div>
     </div>
 
@@ -44,13 +40,13 @@
       <template v-if="dialogType == 2">
         <el-form class="custom-form" label-width="auto">
           <el-form-item label="用户名称">
-            <el-input v-model="dform.amount" placeholder="请输入用户名称"></el-input>
+            <el-input v-model="dform.nickname" placeholder="请输入用户名称"></el-input>
           </el-form-item>
           <el-form-item label="登录账号">
-            <el-input v-model="dform.amount" placeholder="请输入登录账号"></el-input>
+            <el-input v-model="dform.username" placeholder="请输入登录账号"></el-input>
           </el-form-item>
           <el-form-item label="登录密码">
-            <el-input v-model="dform.amount" placeholder="请输入登录密码"></el-input>
+            <el-input v-model="dform.password" placeholder="请输入登录密码" type="password"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -72,15 +68,10 @@
     data() {
       return {
         clickSubmit: false,
-        tableMaxH: '250',
+        form: {},
         listTotal: 0,
-        list: [{}],
+        list: [],
         listLoading: false,
-        listQuery: {
-          page: 1,
-          size: 20,
-          count: 10
-        },
 
         // 弹出相关
         dialogType: 1,
@@ -91,7 +82,9 @@
         },
         curRow: {},
         curIdx: 0,
-        dform: {}
+        dform: {},
+
+        roleId: this.$route.params.roleId
       }
     },
     computed: {
@@ -107,8 +100,6 @@
       toQuery() {
         if(this.clickSubmit) return
         this.clickSubmit = true
-        this.listQuery.page = 1
-        this.listQuery.size = 20
         this.getList()
       },
 
@@ -116,9 +107,9 @@
        * 重置查询
        */
       reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.form = {}
-        this.listQuery.page = 1
-        this.listQuery.size = 20
         this.getList()
       },
 
@@ -126,17 +117,12 @@
        * 获取列表
        */
       getList() {
-        var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
-        })
-        this.$get('/brand/findPage', params).then(res => {
+        this.$get('iot-saas-user/auth/user', {
+          roleId: this.roleId
+        }).then(res => {
           this.listLoading = false
-          this.list = res.list
+          this.list = res
           this.clickSubmit = false
-          if(params.page == 1){
-            this.count = res.count
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
-          }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
@@ -157,6 +143,10 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
+            if(dialogType == 2 && row.userId){
+              row.nickname = row.roleName
+              this.dform = row
+            }
             break
         }
       },
@@ -172,13 +162,33 @@
         this.clickSubmit = true
         switch (this.dialogType) {
           case 1:
-            this.$message({
-              message: '删除成功',
-              type: 'success'
+            this.$delete(`iot-saas-user/auth/user/${curRow.userId}`, params).then(res => {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.list.splice(curIdx, 1)
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(() => {
+              this.clickSubmit = false
             })
-            this.list.splice(curIdx, 1)
-            this.dialogStatus = false
-            this.clickSubmit = false
+            break
+          case 2:
+            let type = '$post'
+            if(params.userId) type = '$put'
+            params.roleId = this.roleId
+            this[type](`iot-saas-user/auth/user`, params).then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.getList()
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(() => {
+              this.clickSubmit = false
+            })
             break
         }
       },
@@ -187,5 +197,5 @@
 </script>
 
 <style lang="scss" scoped>
-  
+
 </style>

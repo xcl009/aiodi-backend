@@ -2,8 +2,8 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-input v-model="form.qrcodeSn" placeholder="二维码"/>
-        <el-input v-model="form.deviceSn" placeholder="设备SN"/>
+        <el-input v-model="form.deviceSn" placeholder="二维码"/>
+        <el-input v-model="form.factorySn" placeholder="设备SN"/>
         <el-input v-model="form.storeName" placeholder="商户名称" />
         <el-input v-model="form.agentName" placeholder="代理名称" />
         <el-input v-model="form.brandName" placeholder="品牌名称" />

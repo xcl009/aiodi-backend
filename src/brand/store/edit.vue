@@ -20,8 +20,8 @@
             <maps v-if="form.lng" :center="{ lng: form.lng, lat: form.lat }" @locationOk="locationOk" :zooms="18" />
             <maps v-else @locationOk="locationOk" :zooms="18"/>
           </el-form-item>
-          <el-form-item ref="regionTag" label="所在地区" prop="regionTag">
-            <el-cascader v-model="form.regionTag" :options="cityList" :props="{ expandTrigger: 'hover' }" />
+          <el-form-item ref="province" label="所在地区" prop="province">
+            <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
           <el-form-item ref="address" label="商户地址" prop="address">
             <el-input v-model="form.address" placeholder="请填写商户地址" />
@@ -56,12 +56,12 @@
 
           <h4 class="pt-20">运营产品</h4>
           <el-checkbox-group v-model="selDevice" @change="changeDevice" class="pl-10">
-            <el-checkbox v-for="item in myDevice" :label="item.id">{{ item.name }}</el-checkbox>
+            <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
           </el-checkbox-group>
 
           <div>
             <template v-for="(item, index) in deviceDataArr" v-if="item.status == 1">
-              <h4 class="pt-20">{{ myDeviceId[item.deviceTypeId] }}设置</h4>
+              <h4 class="pt-20">{{ myDeviceId[item.deviceTypeCode] }}设置</h4>
 
               <template v-if="form.divisionMode != 2">
                 <el-form-item label="分成模式">
@@ -114,7 +114,7 @@
                 </template>
                 <template v-else>
                   <el-form-item label="分成比例">
-                    <el-input class="input-with" v-model="item.live" :placeholder="`最高不能超过100%`">
+                    <el-input class="input-with" v-model="item.live" :placeholder="`最高不能超过${myProfitRatio[item.deviceTypeCode]}%`">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
@@ -131,7 +131,7 @@
                 <div class="mt-30 mb-10 text-dfs">{{ name }}付费设置</div>
                 <el-form-item :label="`付费模式`">
                   <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
-                    <el-radio-button :label="item" v-for="(item, key) in config.mode_way.default" :disabled="key != 1">{{ key }}</el-radio-button>
+                    <el-radio-button :label="item" v-for="(item, key) in (config.mode_way[item.deviceTypeCode] ? config.mode_way[item.deviceTypeCode] : config.mode_way.default)">{{ key }}</el-radio-button>
                   </el-radio-group>
                   <el-popover
                     placement="right"
@@ -145,25 +145,82 @@
                   </el-popover>
                 </el-form-item>
 
-                <el-form-item :label="`套餐设置`" v-if="item[`${xcx}PayMode`]">
-                  <div class="flex align-center flex-wrap" v-for="(plan, index) in item[`${xcx}PayMode`].list">
-                    <el-select v-model="plan.time">
-                      <el-option :label="`${time}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
-                    </el-select>
-                    <el-input v-model="plan.money" class="flex1 ml-10 mr-10">
+                <template v-if="item[`${xcx}PayMode`].modeType == 'PACKAGE'">
+                  <el-form-item :label="`套餐设置`">
+                    <div class="flex align-center flex-wrap" v-for="(plan, index) in item[`${xcx}PayMode`].payModeDetail">
+                      <el-select v-model="plan.time">
+                        <el-option :label="`${time / 60}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
+                      </el-select>
+                      <el-input v-model="plan.money" class="flex1 ml-10 mr-10">
+                        <template slot="append">元</template>
+                      </el-input>
+                      <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
+                        @click="item[`${xcx}PayMode`].payModeDetail.push({time: 60, money: 2, tag: index + 1})">添加</el-button>
+                      <el-button type="text" size="small" v-else
+                        @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="text-danger">删除</el-button>
+                    </div>
+                  </el-form-item>
+                </template>
+
+                <template v-else>
+                  <el-form-item label="前">
+                    <div class="flex">
+                      <div class="flex1">
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingTime">
+                          <template slot="append">分钟</template>
+                        </el-input>
+                      </div>
+                      <div class="pl-10 flex1">
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount">
+                          <template slot="append">元</template>
+                        </el-input>
+                      </div>
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="超过后">
+                    <div class="flex">
+                      <div class="flex1">
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.overBillingUnit">
+                          <template slot="append">分钟</template>
+                        </el-input>
+                      </div>
+                      <div class="pl-10 flex1">
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice">
+                          <template slot="append">元</template>
+                        </el-input>
+                      </div>
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="封顶">
+                    <div class="flex">
+                      <div>
+                        <el-select v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
+                          <el-option :label="`${item / 60}小时封顶`" :value="item" v-for="item in config.day_unit"></el-option>
+                        </el-select>
+                      </div>
+                      <div class="pl-10 flex1">
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
+                          <template slot="append">元</template>
+                        </el-input>
+                      </div>
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="总封顶">
+                    <el-input v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount">
                       <template slot="append">元</template>
                     </el-input>
-                    <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].list.length == 4" v-if="index == 0"
-                      @click="item[`${xcx}PayMode`].list.push({time: 1, money: 2, tag: index + 1})">添加</el-button>
-                    <el-button type="text" size="small" v-else
-                      @click="item[`${xcx}PayMode`].list.splice(index, 1)" class="text-danger">删除</el-button>
-                  </div>
-                </el-form-item>
+                  </el-form-item>
+                  <el-form-item label="押金">
+                    <el-input v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount">
+                      <template slot="append">元</template>
+                    </el-input>
+                  </el-form-item>
+                </template>
               </template>
             </template>
           </div>
           <el-form-item>
-            <el-button class="mt-30 mb-10" type="primary" @click="onSubmit('form')" :disabled="clickSubmit">立即提交</el-button>
+            <el-button class="mt-10 mb-10" type="primary" @click="onSubmit('form')" :disabled="clickSubmit">立即提交</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -172,7 +229,7 @@
 </template>
 
 <script>
-import { bMapTransQQMap, qqMapTransBMap, arrayToObj } from '@/utils/index'
+import { defaultFee, bMapTransQQMap, qqMapTransBMap, arrayToObj } from '@/utils/index'
 import upload from '@/components/upload'
 import maps from '@/components/map'
 export default {
@@ -196,6 +253,9 @@ export default {
     siteInfo() {
       let siteInfo = this.$store.getters.siteInfo
       return siteInfo
+    },
+    myProfitRatio() {
+      return this.$store.getters.myProfitRatio
     }
   },
   data() {
@@ -221,7 +281,7 @@ export default {
           message: '请选择行业分类',
           trigger: 'blur'
         }],
-        regionTag: [{
+        province: [{
           required: true,
           message: '请选择城市区域',
           trigger: 'blur'
@@ -238,7 +298,7 @@ export default {
       cityList: [],
       form: {
         catId: [],
-        regionTag: [],
+        province: [],
         divisionMode: 1,
         avatar: '',
         loginPassword: '123456',
@@ -249,29 +309,7 @@ export default {
 
       selDevice: [],
       deviceDataArr: [],
-      defaultDevice: {
-        status: 1,
-        closeType: '1',
-        storePayConfig: ['weixin', 'alipay'],
-        weixinPayMode: {
-          modeType: 'PACKAGE',
-          list: [
-            {
-              time: 1,
-              money: 2
-            }
-          ]
-        },
-        alipayPayMode: {
-          modeType: 'PACKAGE',
-          list: [
-            {
-              time: 1,
-              money: 2
-            }
-          ]
-        }
-      },
+      defaultDevice: defaultFee(),
       subShop: false
     }
   },
@@ -281,8 +319,8 @@ export default {
     if (this.store_id > 0) {
       this.getInfo()
     } else {
-      this.selDevice.push(this.myDevice[0].id)
-      this.defaultDevice.deviceTypeId = this.myDevice[0].id
+      this.selDevice.push(Object.keys(this.myDeviceId)[0])
+      this.defaultDevice.deviceTypeCode = Object.keys(this.myDeviceId)[0]
       this.deviceDataArr.push(this.defaultDevice)
     }
   },
@@ -290,23 +328,28 @@ export default {
     /**
      * 类型选择
      */
-    changeDevice(selID){
+    changeDevice(selCode){
       let deviceDataArr = JSON.parse(JSON.stringify(this.deviceDataArr)), idArr = [], deviceObj = {}
       deviceDataArr.map(item => {
-        if(selID.indexOf(item.deviceTypeId) == -1){
+        if(selCode.indexOf(item.deviceTypeCode) == -1){
           return item.status = 0
         }
       })
-      selID.map(id => {
+      selCode.map(code => {
         let idxs = -1
         deviceDataArr.map((item, idx) => {
-          if(item.deviceTypeId == id){
+          if(item.deviceTypeCode == code){
             idxs = idx
             item.status = 1
           }
         })
         if(idxs == -1){
-          this.defaultDevice.deviceTypeId = id
+          let device = this.defaultDevice
+          device.deviceTypeCode = code
+          if(code == 'PA'){
+            device.weixinPayMode.modeType = Object.values(this.config.mode_way.PA)[0]
+            device.alipayPayMode.modeType = Object.values(this.config.mode_way.PA)[0]
+          }
           deviceDataArr.push(this.defaultDevice)
         }
       })
@@ -358,26 +401,25 @@ export default {
      */
     getCity(){
       this.$store.dispatch('api/getRegions').then(res => {
-        let list = {}, regionTag = ''
+        let list = {}
         res.map(item => {
           if(item.level == 1){
             list[item.tag] = {
-              value: item.tag,
+              value: item.title,
               label: item.title,
               children: {}
             }
           }else if(item.level == 2){
             let tag = item.tag.substring(0, 3)
             list[tag].children[item.tag] = {
-              value: item.tag,
+              value: item.title,
               label: item.title,
               children: []
             }
           }else if(item.level == 3){
-            regionTag = regionTag || item.tag
             let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
             list[tag1].children[tag2].children.push({
-              value: item.tag,
+              value: item.title,
               label: item.title
             })
           }
@@ -392,9 +434,6 @@ export default {
           return item
         })
         this.cityList = list
-        if(!this.store_id){
-          this.$set(this.form, 'regionTag', regionTag)
-        }
       })
     },
 
@@ -411,24 +450,45 @@ export default {
           for(var i in this.config.pay_way){
             if(item[i] == 1) payArr.push(i)
           }
-          storePayConfig[item.deviceTypeId] = payArr
-          payConfigId[item.deviceTypeId] = item.id
+          storePayConfig[item.deviceTypeCode] = payArr
+          payConfigId[item.deviceTypeCode] = item.id
         })
         res.storeDivisionConfig.map(item => {
+          if (item.alipayPayMode) {
+            if(item.weixinPayMode.modeType == 'PACKAGE'){
+              item.alipayPayMode.payModeDetail = JSON.parse(item.alipayPayMode.payModeDetail)
+              item.alipayPayMode.payModeDetails = this.defaultDevice.alipayPayMode.payModeDetails
+            } else {
+              item.alipayPayMode.payModeDetails = JSON.parse(item.alipayPayMode.payModeDetail)
+              item.alipayPayMode.payModeDetail = this.defaultDevice.alipayPayMode.payModeDetail
+            }
+          }
+          if (item.weixinPayMode) {
+            if(item.weixinPayMode.modeType == 'PACKAGE'){
+              item.weixinPayMode.payModeDetail = JSON.parse(item.weixinPayMode.payModeDetail)
+              item.weixinPayMode.payModeDetails = this.defaultDevice.weixinPayMode.payModeDetails
+            } else {
+              item.weixinPayMode.payModeDetails = JSON.parse(item.weixinPayMode.payModeDetail)
+              item.weixinPayMode.payModeDetail = this.defaultDevice.weixinPayMode.payModeDetail
+            }
+          }
           item.alipayPayMode = (item.alipayPayMode ? item.alipayPayMode : item.weixinPayMode ? item.weixinPayMode : this.defaultDevice.alipayPayMode)
           item.weixinPayMode = (item.weixinPayMode ? item.weixinPayMode : item.alipayPayMode ? item.alipayPayMode : this.defaultDevice.weixinPayMode)
           item.alipayPayMode = JSON.parse(JSON.stringify(item.alipayPayMode))
           item.weixinPayMode = JSON.parse(JSON.stringify(item.weixinPayMode))
-          item.storePayConfig = storePayConfig[item.deviceTypeId]
+          item.storePayConfig = storePayConfig[item.deviceTypeCode]
           item.status = 1
-          item.payConfigId = payConfigId[item.deviceTypeId]
-          this.selDevice.push(item.deviceTypeId)
+          item.payConfigId = payConfigId[item.deviceTypeCode]
+          this.selDevice.push(item.deviceTypeCode)
           deviceDataArr.push(item)
         })
         console.log(deviceDataArr)
         this.deviceDataArr = deviceDataArr
         info.userNickName = res.user.bindUserName
         info.userMobile = res.user.mobile
+        info.province = [res.province, res.city, res.district]
+        delete info.city
+        delete info.district
         delete info.storeDivisionConfig
         delete info.storePayConfig
         delete info.user
@@ -441,7 +501,7 @@ export default {
      * @param {Object} formName
      */
     onSubmit(formName) {
-      let url = 'iot-saas-basic/admin/store/save', deviceDataArr = this.deviceDataArr
+      let url = 'iot-saas-basic/admin/store/save', deviceDataArr = JSON.parse(JSON.stringify(this.deviceDataArr))
       if (this.store_id > 0) {
         url = 'iot-saas-basic/admin/store/updateById'
       }
@@ -464,41 +524,53 @@ export default {
           if(params.catId && typeof params.catId == 'object'){
             params.catId = params.catId[params.catId.length - 1]
           }
-          if(params.regionTag && typeof params.regionTag == 'object'){
-            params.regionTag = params.regionTag[params.regionTag.length - 1]
+          if(Array.isArray(params.province) && params.province.length > 0){
+            params.district = params.province[2]
+            params.city = params.province[1]
+            params.province = params.province[0]
           }
           params.storePayConfig = []
           params.storeDivisionConfig = []
           deviceDataArr.map(item => {
             if(item.status == 1){
               let payConfig = {
-                deviceTypeId: item.deviceTypeId
+                deviceTypeCode: item.deviceTypeCode
               }
               item.storePayConfig.map(item => {
                 payConfig[item] = 1
               })
               if(item.payConfigId) payConfig.id = item.payConfigId
               params.storePayConfig.push(payConfig)
-              if(item.alipayPayMode.list){
-                item.alipayPayMode.list.map((packItem, packI) => {
-                  return packItem.tag = packI + 1
-                })
+              if(item.alipayPayMode.payModeDetail){
+                if(item.alipayPayMode.modeType == 'PACKAGE'){
+                  item.alipayPayMode.payModeDetail.map((packItem, packI) => {
+                    return packItem.tag = packI + 1
+                  })
+                  item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetail)
+                }else{
+                  item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetails)
+                }
               }
-              if(item.weixinPayMode.list){
-                item.weixinPayMode.list.map((packItem, packI) => {
-                  return packItem.tag = packI + 1
-                })
+              if(item.weixinPayMode.payModeDetail){
+                if(item.weixinPayMode.modeType == 'PACKAGE'){
+                  item.weixinPayMode.payModeDetail.map((packItem, packI) => {
+                    return packItem.tag = packI + 1
+                  })
+                  item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetail)
+                } else {
+                  item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetails)
+                }
               }
               let division = {
                 closeType: item.closeType,
-                deviceTypeId: item.deviceTypeId,
+                deviceTypeCode: item.deviceTypeCode,
                 alipayPayMode: item.alipayPayMode,
                 weixinPayMode: item.weixinPayMode
               }
               if(item.id) division.id = item.id
               if(item.live >= 0) division.live = item.live
               if(item.relative >= 0) division.relative = item.relative
-              if(item.live >= 0) division.promised = item.promised
+              if(item.promised >= 0) division.promised = item.promised
               params.storeDivisionConfig.push(division)
             }
           })
@@ -521,7 +593,6 @@ export default {
             this.clickSubmit = false
           })
         } else {
-          this.formErrow(object)
           this.clickSubmit = false
         }
       })

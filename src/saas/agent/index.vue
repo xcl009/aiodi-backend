@@ -10,7 +10,7 @@
         <el-select placeholder="状态" v-model="form.status" @change="toQuery()">
           <el-option label="有效" :value="1" />
           <el-option label="无效" :value="2" />
-          <el-option label="已删除" :value="0" />
+          <!-- <el-option label="已删除" :value="0" /> -->
         </el-select>
 		  </template>
       <template v-slot:endButton>
@@ -30,22 +30,21 @@
         <el-table-column label="公司名称">
           <template slot-scope="scope">
             <div class="flex align-center">
-              <el-avatar shape="square" :size="40" :fit="fit" :src="scope.row.logo"></el-avatar>
+              <el-avatar shape="square" :size="40" fit="cover" :src="scope.row.logo"></el-avatar>
               <div class="pl-10">{{ scope.row.companyName || '--'}}</div>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="团长" width="130">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.tname || '--' }}</div>
-            <div>{{ scope.row.tphone || '--' }}</div>
-            <div class="text-primary cursor" @click="setRow(3, scope.row)">设为团长</div>
+            <div class="text-primary cursor" v-if="scope.row.isLeader == 1">团长</div>
+            <div class="text-primary cursor" @click="setRow(3, scope.row)" v-else-if="scope.row.isLeader == 0 && !scope.row.leaderBrandId">设为团长</div>
+            <div class="mb-5" v-else>{{ scope.row.leaderBrandName || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="邀请人" width="130">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.tname || '--' }}</div>
-            <div>{{ scope.row.tphone || '--' }}</div>
+            <div>{{ scope.row.fatherBrandName || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="品类" width="100">
@@ -67,12 +66,12 @@
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
-                  @click="$router.push({path: `/order?brandIds=${scope.row.id}&sourceType=1`})">
+                  @click="$router.push({path: `/order?brandId=${scope.row.id}&sourceType=1`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
                 </el-link>
               </div>
               <div>支付宝：<el-link type="primary"
-                  @click="$router.push({path: `/order?brandIds=${scope.row.id}&sourceType=2`})">
+                  @click="$router.push({path: `/order?brandId=${scope.row.id}&sourceType=2`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
                 </el-link>
               </div>
@@ -94,7 +93,7 @@
         </el-table-column>
         <el-table-column label="操作" width="190">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/order?=${scope.row.id}`})">订单列表</el-button>
+            <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandId=${scope.row.id}`})">订单列表</el-button>
             <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
             <el-button type="primary" size="mini" @click="$router.push({path: `/partner/edit/${scope.row.id}`})">修改信息</el-button>
             <el-dropdown trigger="click">

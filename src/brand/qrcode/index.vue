@@ -2,7 +2,7 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-select v-model="form.deviceTypeId" @change="toQuery()" placeholder="设备类型">
+        <el-select v-model="form.deviceTypeCode" @change="toQuery()" placeholder="设备类型">
           <el-option :label="index" :value="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-select>
         <!-- <el-input v-model="form.batchNumber" placeholder="二维码"/> -->
@@ -31,12 +31,12 @@
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="编号" width="200">
           <template slot-scope="scope">
-            {{ scope.row.codeSn }}
+            {{ scope.row.deviceSn }}
           </template>
         </el-table-column>
-        <el-table-column label="设备号">
+        <el-table-column label="设备SN">
           <template slot-scope="scope">
-            {{ scope.row.deviceId || '--' }}
+            {{ scope.row.factorySn || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="设备类型">
@@ -59,7 +59,6 @@
             <el-tooltip class="item" effect="dark" content='全选后点击查询后的"下载"按钮可下载本页所有设备二维码图片' placement="top" v-if="scope.row.accessUrl">
               <el-link type="primary" @click="downloadImgs(scope.row)">下载</el-link>
             </el-tooltip>
-            <a class="text-blue" @click="createImg(scope.row)" v-else-if="scope.row.content && !scope.row.accessUrl">生成图片</a>
           </template>
         </el-table-column>
       </el-table>

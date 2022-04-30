@@ -77,7 +77,6 @@
       }
     },
     mounted(){
-      this.agentInfo = window.agentInfo
       this.getList()
     },
     methods: {

@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/regist'] // no redirect whitelist
+const whiteList = ['/brandReg', '/login', '/regist'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -31,11 +31,11 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           await store.dispatch('user/getPlatformConfig')
-          const { roles } = await store.dispatch('user/getInfo')
+          const { roles, authMenu } = await store.dispatch('user/getInfo')
           await store.dispatch('user/getConstant')
           await store.dispatch('user/getMyDevice')
           // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          const accessRoutes = await store.dispatch('permission/generateRoutes', { roles, authMenu })
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
           // hack method to ensure that addRoutes is complete
@@ -54,7 +54,7 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-    if (whiteList.indexOf(to.path) !== -1 || to.path.indexOf('/login') !== -1) {
+    if (whiteList.indexOf(to.path) !== -1 || to.path.indexOf('/login') !== -1 || to.path.indexOf('/brandReg') !== -1) {
       // in the free login whitelist, go directly
       next()
     } else {

@@ -30,14 +30,17 @@
           <el-form-item label="微信支付APIV3秘钥">
             <el-input v-model="form.apiv3Key"></el-input>
           </el-form-item>
-          <el-form-item label="支付证书(apiclient_cert)">
-            <el-input v-model="form.apiclientCert" type="textarea" :rows="6"></el-input>
-          </el-form-item>
-          <el-form-item label="支付证书密钥(apiclient_key)">
-            <el-input v-model="form.apiclientKey" type="textarea" :rows="6"></el-input>
-          </el-form-item>
           <el-form-item label="微信支付分ID">
             <el-input v-model="form.serviceId"></el-input>
+          </el-form-item>
+          <el-form-item label="支付证书(p12)">
+            <div class="flex align-center">
+              <upload uploadText="上传支付证书" :raw="true" @getFile="getCert"/>
+              <div class="pl-15">{{ certName }}</div>
+            </div>
+          </el-form-item>
+          <el-form-item label="支付证书密钥(apiclient_key)：">
+            <el-input v-model="form.apiclientKey" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit" :disabled="clickSubmit">提交</el-button>
@@ -49,15 +52,17 @@
 </template>
 
 <script>
+  import upload from '@/components/upload'
   export default {
     components: {
-
+      upload
     },
     data() {
       return {
         clickSubmit: false,
         baseURL: this.config.BASE_URL,
-        form: {}
+        form: {},
+        certName: ''
       }
     },
     computed: {
@@ -110,6 +115,18 @@
         }).catch(err => {
           this.clickSubmit = false
         })
+      },
+
+      /**
+       * 证书上传
+       */
+      getCert(e){
+        var reader = new FileReader()
+        reader.readAsDataURL(e)
+        reader.onload = (res) => {
+          this.form.apiclientCert = res.currentTarget.result.replace('data:application/x-pkcs12;base64,', '')
+          this.certName = e.name
+        }
       }
     }
   }

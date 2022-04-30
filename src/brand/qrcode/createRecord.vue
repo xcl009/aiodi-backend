@@ -10,7 +10,7 @@
         </el-table-column>
         <el-table-column label="生成数量">
           <template slot-scope="scope">
-            {{ scope.row.amount || 0 }}
+            {{ scope.row.number || 0 }}
           </template>
         </el-table-column>
         <el-table-column label="生成时间">

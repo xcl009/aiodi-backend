@@ -45,12 +45,12 @@
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
-                  @click="$router.push({path: `/order?agentIds=${scope.row.id}&sourceType=1`})">
+                  @click="$router.push({path: `/order?agentId=${scope.row.id}&sourceType=1`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
                 </el-link>
               </div>
               <div>支付宝：<el-link type="primary"
-                  @click="$router.push({path: `/order?agentIds=${scope.row.id}&sourceType=2`})">
+                  @click="$router.push({path: `/order?agentId=${scope.row.id}&sourceType=2`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
                 </el-link>
               </div>

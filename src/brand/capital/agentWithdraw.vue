@@ -41,14 +41,14 @@
         </el-table-column>
         <el-table-column label="代理商" width="130" v-if="userType == 1">
           <template slot-scope="scope">
-            <div>{{ scope.row.name || '--' }}</div>
-            <div>{{ scope.row.phone || '--' }}</div>
+            <div>{{ scope.row.userNickName || '--' }}</div>
+            <div>{{ scope.row.userMobile || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="商户" width="130" v-if="userType == 2">
           <template slot-scope="scope">
-            <div>{{ scope.row.name || '--' }}</div>
-            <div>{{ scope.row.phone || '--' }}</div>
+            <div>{{ scope.row.storeName || '--' }}</div>
+            <div>{{ scope.row.userMobile || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="头像" width="60" v-if="userType == 3">
@@ -98,9 +98,13 @@
                 :preview-src-list="[scope.row.qrcode]">
               </el-image>
             </div>
+            <div class="flex align-center" v-else-if="scope.row.withdrawType == 3">
+              <el-avatar size="small" :src="scope.row.alipayHeadUrl"></el-avatar>
+              <div class="pl-10">{{ scope.row.alipayNickname || "--" }}</div>
+            </div>
             <div class="flex align-center" v-else>
-              <el-avatar size="small" :src="scope.row.userAvatar"></el-avatar>
-              <div class="pl-10">{{ scope.row.userNickName || "--" }}</div>
+              <el-avatar size="small" :src="scope.row.wechatHeadUrl"></el-avatar>
+              <div class="pl-10">{{ scope.row.wechatNickname || "--" }}</div>
             </div>
           </template>
         </el-table-column>
@@ -320,7 +324,7 @@
           params.endTime = params.date[1]
           delete params.date
         }
-        this.$get('iot-saas-pay//admin/pay/withdraw/summary', params).then(res => {
+        this.$get('iot-saas-pay/admin/pay/withdraw/summary', params).then(res => {
           this.numInfo = res
         })
       },

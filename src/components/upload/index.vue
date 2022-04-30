@@ -2,7 +2,7 @@
   <div>
     <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :show-file-list="false" name="file" :multiple="multiple" v-if="limit == 1">
       <template v-if="uploadText">
-        <el-button type="primary">{{ uploadText }}<i class="el-icon-upload el-icon--right"></i></el-button>
+        <el-button type="primary">{{ uploadText }}<i class="el-icon-upload2 el-icon--right"></i></el-button>
       </template>
       <template v-else>
         <el-image class="abs el-avatar_up" shape="square" fit="cover" :src="value" v-if="value"></el-image>

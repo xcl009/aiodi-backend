@@ -4,8 +4,8 @@
       <template v-slot:defult>
         <el-select v-model="form.haveDevice" @change="toQuery()" placeholder="是否铺货">
           <el-option label="全部" :value="null" />
-          <el-option label="未铺货" value="1" />
-          <el-option label="已铺货" value="2" />
+          <el-option label="已铺货" value="1" />
+          <el-option label="未铺货" value="2" />
         </el-select>
         <el-input v-model="form.name" placeholder="商户名称" />
         <el-input v-model="form.mobile" placeholder="手机号码" />
@@ -21,7 +21,7 @@
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
         <el-table-column label="门头照" width="70">
           <template slot-scope="scope">
-            <el-link @click="$router.push({path: `/shop/detail/${scope.row.id}`})">
+            <el-link>
               <el-avatar class="block" shape="square" :size="50" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
             </el-link>
           </template>
@@ -44,8 +44,8 @@
         <el-table-column label="订单量" width="140">
           <template slot-scope="scope">
             <div class="inline">
-              <div>订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx +  orderCount[scope.row.id].ali : 0 }}</div>
-              <div>设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
+              <div class="cursor" @click="$router.push({path: (lowerStore ? `/order/subOrder?storeId=${scope.row.id}` : `/order/meOrder?storeId=${scope.row.id}`)})">订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}</div>
+              <div class="cursor" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}` : `/device/meDevice?storeId=${scope.row.id}`)})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
             </div>
           </template>
         </el-table-column>
@@ -64,15 +64,17 @@
         <el-table-column label="分成比例">
           <template slot-scope="scope">
             <div class="mt-5">
-              <div class="mb-5" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: `/device?storeId=${scope.row.id}`})">
-                {{ myDeviceId[item.deviceTypeId] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
+              <div class="mb-5 cursor" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}` : `/device/meDevice?storeId=${scope.row.id}`)})">
+                {{ myDeviceId[item.deviceTypeCode] }}：{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="城市区域" width="90">
+        <el-table-column label="城市区域" width="120">
           <template slot-scope="scope">
-            {{ regionsObj[scope.row.regionTag] ? regionsObj[scope.row.regionTag].title : '--' }}
+            {{ scope.row.province }}
+            {{ scope.row.city }}
+            {{ scope.row.district }}
           </template>
         </el-table-column>
         <el-table-column label="行业分类" width="90">
@@ -82,12 +84,12 @@
         </el-table-column>
         <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <template v-if="deviceId">
+            <template v-if="form.deviceId">
               <el-button type="primary" size="mini" @click="bindStore(scope.row)">铺货</el-button>
             </template>
             <template v-else>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
-              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2, scope.$index)">权限设置</el-button>
+              <!-- <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2, scope.$index)">权限设置</el-button> -->
               <el-button type="primary" size="mini" @click="$router.push({path: `/store/edit/${scope.row.id}`})">编辑商户</el-button>
               <el-dropdown trigger="click">
                 <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i>
@@ -170,11 +172,7 @@
         cashStat: {},
         deviceCount: {},
         supUser: {},
-        regionsObj: {},
         cateObj: {},
-
-        // 操作相关
-        deviceId: '',
 
         // 弹出相关
         dialogType: 1,
@@ -219,7 +217,11 @@
       let query = this.$route.query
       this.queryKey = ['deviceId', 'agentId']
       for (var i in this.queryKey) {
-        if(query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
+        if(query[this.queryKey[i]]){
+          this.form[this.queryKey[i]] = query[this.queryKey[i]]
+        } else {
+          delete this.form[this.queryKey[i]]
+        }
       }
       if (this.$route.meta.reload) {
         this.getList()
@@ -261,7 +263,6 @@
           page: this.listQuery.page - 1,
           lowerStore: this.lowerStore
         })
-        if(this.agentId > 0) params.agentId = this.agentId
         this.$get('iot-saas-basic/admin/store/findPage', params).then(res => {
           this.list = res.rows
           this.listLoading = false
@@ -274,7 +275,6 @@
           this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
           this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))
           if(this.lowerStore) this.getSupUser(this.arrayKeys(res.rows, 'userId'))
-          this.getStoreRegions(this.arrayKeys(res.rows, 'regionTag'))
           this.getStoreCate(this.arrayKeys(res.rows, 'catId'))
         }).catch(() => {
           this.clickSubmit = false
@@ -342,21 +342,6 @@
           storeUserIds: uids.join(',')
         }).then(res => {
           this.supUser = res
-        })
-      },
-
-      /**
-       * 根据区域标识数组获取区域名称
-       */
-      getStoreRegions(tags){
-        if(tags.length == 0){
-          this.regionsObj = {}
-          return
-        }
-        this.$get('iot-saas-basic/admin/regions/findNameByTags', {
-          tags: tags.join(',')
-        }).then(res => {
-          this.regionsObj = res
         })
       },
 
@@ -449,8 +434,8 @@
         }
         if(row.deviceSns){
           params.deviceSns = row.deviceSns.split(',')
-        }else if(this.deviceId){
-          params.deviceIds = this.deviceId.split(',')
+        }else if(this.form.deviceId){
+          params.deviceIds = this.form.deviceId.split(',')
         }
         this.$post(url, params).then((res) => {
           this.$message({
@@ -529,13 +514,14 @@
             })
             break
           case 3:
-            this.$post('iot-saas-user/admin/store/delete', {
+            this.$post('iot-saas-basic/admin/store/delete', {
               storeId: curRow.id
             }).then(res => {
               this.$message({
                 message: '删除成功',
                 type: 'success'
               })
+              this.dialogStatus = false
               this.list.splice(curIdx, 1)
             })
             break

@@ -2,7 +2,7 @@
   <div class="home-box">
     <el-row :gutter="device === 'mobile' ? 10 : 20">
       <el-col :xs="24" :sm="12" :lg="6">
-        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money/dayMoney`})">
+        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money/monthMoney`})">
           <div>总交易额</div>
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
