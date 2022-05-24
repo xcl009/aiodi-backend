@@ -66,7 +66,7 @@
               <template v-if="form.divisionMode != 2">
                 <el-form-item label="分成模式">
                   <el-radio-group v-model="item.closeType">
-                    <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType" :disabled="cti != 1">{{ ct }}</el-radio-button>
+                    <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType">{{ ct }}</el-radio-button>
                   </el-radio-group>
                   <el-popover
                     placement="right"

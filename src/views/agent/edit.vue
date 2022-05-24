@@ -195,7 +195,7 @@
               })
               if(this.checkRoles(['terminal'])){
                 this.$router.push({
-                  path: '/partner/index'
+                  path: '/brand/index'
                 })
               }else if(params.admin_pid != this.agentInfo.id){
                 this.$router.push({

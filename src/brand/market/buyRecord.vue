@@ -3,53 +3,53 @@
     <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
       <div class="mb-15 flex align-center">
         <div class="flex1">
-          <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
-            :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
-            @click="toQuery(item.value)">{{ item.title }}</el-button>
+          <el-button size="medium" :type="!listQuery.serviceTypeCode ? 'primary' : ''"
+            :class="{'btn-body': listQuery.serviceTypeCode}"
+            @click="listQuery.serviceTypeCode = ''; toQuery()">全部</el-button>
+          <el-button size="medium" :type="listQuery.serviceTypeCode == item.code ? 'primary' : ''"
+            :class="{'btn-body': listQuery.serviceTypeCode != item.code}" v-for="item in tabs"
+            @click="listQuery.serviceTypeCode = item.code; toQuery()">{{ item.name }}</el-button>
         </div>
       </div>
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
-        :max-height="tableMaxH">
-        <el-table-column label="服务名称" width="120">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH">
+        <el-table-column label="服务名称">
           <template slot-scope="scope">
-            <div>{{ scope.row.charge_county || '--' }}</div>
+            <div>{{ scope.row.serviceName || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="模式" width="130">
+        <el-table-column label="模式">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '--' }}</div>
-            <div>{{ scope.row.phone || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="周期" width="130">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '--' }}</div>
-            <div>{{ scope.row.phone || '--' }}</div>
+            {{ scope.row.cycleTypeName || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="价格(元)">
+        <el-table-column label="快活币">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
+            {{ scope.row.price || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="实付金额(元)">
+        <el-table-column label="实付">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
+            {{ scope.row.payAmount || '0.00' }}
           </template>
         </el-table-column>
         <el-table-column label="购买时间">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
+            {{ scope.row.buyDatetime }}
           </template>
         </el-table-column>
         <el-table-column label="到期时间">
           <template slot-scope="scope">
-            {{ scope.row.charge_county || '0.00' }}
+            {{ scope.row.expiresDatetime }}
           </template>
         </el-table-column>
         <el-table-column label="订单状态">
           <template slot-scope="scope">
-            <el-tag class="normal fs-s4">正常</el-tag>
+            <el-tag class="normal fs-s4">{{ scope.row.orderStatusName }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -63,7 +63,6 @@
 
       <div class="flex justify-center">
         <pagination
-          v-show="listTotal > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
           :total="parseInt(listTotal)"
@@ -78,12 +77,6 @@
         <div class="text-center">
           <div class="text-black">确定该笔提现申请通过审核吗？</div>
         </div>
-      </template>
-      <template v-if="dialogType == 2">
-        <div class="text-black">确定该笔提现申请拒绝通过吗？</div>
-        <el-form class="custom-form">
-          <el-input v-model="dform.note" placeholder="请输入备注内容" type="textarea" :rows="5" />
-        </el-form>
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
@@ -110,30 +103,13 @@
     data() {
       return {
         clickSubmit: false,
-        statusArr: [{
-            value: 0,
-            title: '全部服务',
-            nkey: ''
-          },
-          {
-            value: 1,
-            title: '系统功能',
-            nkey: ''
-          },
-          {
-            value: 2,
-            title: '密码线',
-            nkey: ''
-          }
-        ],
-
+        tabs: [],
         form: {},
         tableMaxH: '250',
-        list: [{}],
-        listLoading: false,
+        list: [],
+        listLoading: true,
         listTotal: 0,
         listQuery: {
-          status: this.$route.query.status || 0,
           page: 1,
           size: 20
         },
@@ -142,8 +118,7 @@
         dialogType: 1,
         dialogStatus: false,
         dialogTitle: {
-          1: '通过提现',
-          2: '拒绝提现'
+          1: '通过提现'
         },
         curRow: {},
         curIdx: 0,
@@ -166,7 +141,9 @@
       }
     },
     mounted() {
-
+      this.$store.dispatch('api/getServiceType').then(res => {
+        this.tabs = res
+      })
     },
     methods: {
       /**
@@ -199,12 +176,12 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
-          this.list = res.rows || [{}]
+        this.$get('iot-saas-basic/client/service/market/record/findPage', params).then(res => {
+          this.list = res ? res.rows : []
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
-            this.listTotal = res.total
+            this.listTotal = res ? res.total : 0
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
         }).catch(() => {
@@ -217,7 +194,7 @@
        * 操作商户
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '提现通过', 2: '提现拒绝'
+       * @param {Object} dialogType dialog内容显示类型 1: '提现通过'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -249,19 +226,6 @@
                 type: 'success'
               })
               row.withdraw_status = 2
-            })
-            break
-          case 2:
-            this.$post('agentapi/upper_review_apply', {
-              apply_id: curRow.id,
-              note: params.note,
-              agree: 2
-            }).then(res => {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              row.withdraw_status = 3
             })
             break
         }

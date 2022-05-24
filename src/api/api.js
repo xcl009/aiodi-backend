@@ -5,5 +5,5 @@ export function getRegions() {
 }
 
 export function getServiceType() {
-  return $get('iot-saas-basic/admin/iotservice/serviceType')
+  return $get('iot-saas-basic/admin/service/market/serviceType')
 }

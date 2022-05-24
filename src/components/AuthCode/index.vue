@@ -8,7 +8,7 @@
 export default {
   name: 'AuthCode',
   props: {
-    
+
   },
   data() {
     return {
@@ -23,9 +23,9 @@ export default {
     /**
      * 获取验证码
      */
-    getAuthCode(params){
+    getAuthCode(params, url = 'iot-saas-basic/brand/open/sendRegisterCode'){
       this.codeTime()
-      this.$post('commonapi/register/get_captche', params).then(res => {
+      this.$post(url, params).then(res => {
 
       }).catch(() => {
         this.$message({

@@ -1,0 +1,122 @@
+<template>
+  <el-dialog :visible.sync="khyCoinDialog" :show-close="false" :modal-append-to-body="false" width="500px"
+    align="center" title="快活币充值">
+    <el-form class="custom-form" label-width="auto">
+      <el-form-item label="充值数量">
+        <el-input v-model="dform.amount" @blur="dform.payType = 1; getPayCode()">
+          <span slot="append">个</span>
+        </el-input>
+      </el-form-item>
+    </el-form>
+    <div>
+      <el-button-group class="mb-30">
+        <el-button type="primary" :plain="dform.payType != 1" @click="dform.payType = 1; getPayCode()">微信
+        </el-button>
+        <el-button type="primary" :plain="dform.payType != 2" @click="dform.payType = 2; getPayCode()">支付宝</el-button>
+      </el-button-group>
+      <div class="mb-30 p-10 qrcode-box" v-if="dform.payType == 1 || !dform.payType">
+        <div id="wxqrcode" />
+      </div>
+      <div class="mb-30 p-10 qrcode-box ali" v-if="dform.payType == 2">
+        <div id="aliqrcode" />
+      </div>
+    </div>
+    <div class="mt-30 text-center">
+      <el-button size="medium" class="bg-body" @click="khyCoinDialog = false">取消</el-button>
+      <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">支付成功</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+  import QRCode from 'qrcodejs2'
+  export default {
+    name: 'RechargeKhyCoin',
+    props: {
+      status: false
+    },
+    data() {
+      return {
+        clickSubmit: false,
+        khyCoinDialog: false,
+        dform: {
+          payType: 1
+        },
+        coinPayInfo: {},
+      }
+    },
+    mounted() {
+      console.log(100)
+    },
+    methods: {
+      /**
+       * 显示充值层
+       */
+      show() {
+        this.khyCoinDialog = true
+      },
+
+      /**
+       * 获取支付二维码
+       */
+      getPayCode() {
+        let params = JSON.parse(JSON.stringify(this.dform)),
+          url = 'iot-saas-pay/api/pay/recharge'
+        let amount = parseInt(params.amount)
+        if (amount < 1 || !amount) {
+          this.$message({
+            message: '请输入正确的快活币数量',
+            type: 'error'
+          })
+          return
+        }
+        if (params.payType == 1 && this.coinPayInfo[`wx_${amount}`]) return
+        if (params.payType == 2 && this.coinPayInfo[`ali_${amount}`]) return
+        params.happyCurrency = true
+        if (this.clickSubmit) return
+        this.clickSubmit = true
+        this.$post(url, params).then(res => {
+          console.log(res)
+          // if (params.payType == 1) {
+          //   this.coinPayInfo[`wx_${amount}`] = res.wx_qrcode_url
+          //   document.getElementById('wxqrcode').innerHTML = ''
+          //   new QRCode('wxqrcode', {
+          //     width: 150,
+          //     height: 150,
+          //     text: res.wx_qrcode_url
+          //   })
+          // } else if (params.payType == 2) {
+          //   this.coinPayInfo[`ali_${amount}`] = res.zfb_qrcode_url
+          //   document.getElementById('aliqrcode').innerHTML = ''
+          //   new QRCode('aliqrcode', {
+          //     width: 150,
+          //     height: 150,
+          //     text: res.res.zfb_qrcode_url
+          //   })
+          // }
+          this.clickSubmit = false
+        }).catch(err => {
+          this.clickSubmit = false
+        })
+      },
+
+      /**
+       * 弹窗确认
+       */
+      dialogConfim() {
+        location.reload()
+      }
+    }
+  }
+</script>
+<style scoped lang="scss">
+  .qrcode-box {
+    width: 174px;
+    height: 174px;
+    border: 2px solid #4bb414;
+
+    &.ali {
+      border-color: #07aaf0;
+    }
+  }
+</style>

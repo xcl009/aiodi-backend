@@ -12,7 +12,7 @@
         <el-input v-model="form.orderNo" placeholder="订单号" />
         <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
         <selectSearch v-model="form.userId" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
-        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" :isStoreOrder="true"></selectSearch>
         <selectSearch v-model="form.deviceId" :type="4" name="deviceSn" placeholder="设备SN" @change="toQuery()"></selectSearch>
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
@@ -378,15 +378,17 @@
           params.endTime = params.date[1]
           delete params.date
         }
-        if(this.brandIds) params.brandId = this.brandIds
+        if(this.brandId) params.brandId = this.brandId
+        if(params.storeId && params.storeId.indexOf('&') > -1){
+          let ids = params.storeId.split('&')
+          params.storeId = ids[0]
+          params.agentId = ids[1]
+          params.brandId = ids[2]
+        }
         for(var i in this.queryKey){
           if(this[this.queryKey[i]]){
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
-        }
-        if(params.brandIds){
-          params.brandId = params.brandIds
-          delete params.brandIds
         }
         delete params.status
         this.$get(url, params).then(res => {
@@ -441,6 +443,12 @@
           if(this[this.queryKey[i]]){
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
+        }
+        if(params.storeId && params.storeId.indexOf('&') > -1){
+          let ids = params.storeId.split('&')
+          params.storeId = ids[0]
+          params.agentId = ids[1]
+          params.brandId = ids[2]
         }
         if(params.deviceTypeCode == 0) delete params.deviceTypeCode
         this.$get(url, params).then(res => {

@@ -2,7 +2,7 @@
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="14" :xl="12">
-        <el-form ref="form" :rules="rules" :model="form" label-width="auto">
+        <el-form ref="form" :model="form" label-width="auto">
           <h4>基础信息</h4>
           <el-form-item label="微信模板ID">
             <el-input v-model="form.wechatLatestTemplateId" placeholder="微信模板ID" />
@@ -61,7 +61,6 @@
        */
       getInfo() {
         this.$get('iot-saas-pay/admin/pay/system/config').then(res => {
-          console.log(res)
           this.form = res
         })
       },

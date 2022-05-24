@@ -23,10 +23,10 @@
               <el-button type="primary" size="mini" round plain @click="setPer(scope.row)">{{ scope.row.son_has == 0 ? '开通' : '已开通' }}</el-button>
             </template>
             <template v-else-if="scope.row.has_access == 1">
-             <router-link :to="`/adver/photo?pid=${scope.row.position_id}`">
+             <router-link :to="`/advert/photo?pid=${scope.row.position_id}`">
                <el-button type="primary" size="mini" round plain>查看</el-button>
              </router-link>
-             <router-link :to="`/adver/edit?pid=${scope.row.position_id}`">
+             <router-link :to="`/advert/edit?pid=${scope.row.position_id}`">
                <el-button type="primary" size="mini" round plain>添加</el-button>
              </router-link>
             </template>

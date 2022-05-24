@@ -59,7 +59,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6">
+      <el-col :xs="24" :sm="12" :lg="6" v-if="isBrand()">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/userManage`})">
           <div>总用户数</div>
           <div class="flex align-center line-1">

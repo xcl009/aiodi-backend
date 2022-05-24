@@ -12,7 +12,7 @@
         <el-input v-model="form.orderNo" placeholder="订单号" />
         <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
         <selectSearch v-model="form.userId" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
-        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" :isStoreOrder="true"></selectSearch>
         <selectSearch v-model="form.deviceId" :type="4" name="deviceSn" placeholder="设备SN" @change="toQuery()"></selectSearch>
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
@@ -134,8 +134,8 @@
         <el-table-column label="操作" width="200" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
-            <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && isBrand()">结束订单</el-button>
-            <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status.indexOf('G') > -1) && scope.row.amount > 0 && isBrand()">订单退款</el-button>
+            <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && Ability['orderFinish']">结束订单</el-button>
+            <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status.indexOf('G') > -1) && scope.row.amount > 0 && Ability['orderRefund']">订单退款</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -159,7 +159,7 @@
           </el-col>
         </el-row>
 
-        <template>
+        <template v-if="orderDivide.length > 0">
           <el-table border stripe :data="orderDivide" :span-method="fenRunSpanMethod" class="custom">
             <el-table-column label="订单金额" align="center">
               <template slot-scope="scope">
@@ -283,6 +283,9 @@
       },
       siteInfo() {
         return this.$store.getters.siteInfo
+      },
+      Ability() {
+        return this.$store.getters.Ability
       }
     },
     data() {
@@ -419,6 +422,11 @@
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
         }
+        if(params.storeId && params.storeId.indexOf('&') > -1){
+          let ids = params.storeId.split('&')
+          params.storeId = ids[0]
+          params.agentId = ids[1]
+        }
         params.lowerAgent = this.lowerAgent || false
         delete params.status
         this.$get(url, params).then(res => {
@@ -473,6 +481,11 @@
           if(this[this.queryKey[i]]){
             params[this.queryKey[i]] = this[this.queryKey[i]]
           }
+        }
+        if(params.storeId && params.storeId.indexOf('&') > -1){
+          let ids = params.storeId.split('&')
+          params.storeId = ids[0]
+          params.agentId = ids[1]
         }
         if(params.deviceTypeCode == 0) delete params.deviceTypeCode
         params.lowerAgent = this.lowerAgent || false
@@ -577,7 +590,7 @@
           this.orderFlow = res
           this.orderDivide = []
           this.detailDialog = true
-          if(row.status.indexOf('O') > -1 && this.isBrand()){
+          if(row.status.indexOf('O') > -1 && row.amount > 0 && this.isBrand()){
             this.$get('iot-saas-order/admin/order/detail/divide', {
               orderNo: row.orderNo
             }).then(res => {

@@ -22,22 +22,18 @@
       </template>
     </condition>
 
-    <div class="p-5">
+    <div class="mt-15">
       <div class="flex bg-white">
-        <div class="flex1">
-          <el-tabs v-model="listQuery.apply_status" class="mb-0" type="card" @tab-click="typeClick">
+        <div class="pl-15 pr-15 flex1">
+          <el-tabs v-model="listQuery.apply_status" class="mb-0" @tab-click="typeClick">
             <el-tab-pane :label="`全部`" name="0"/>
             <el-tab-pane :label="`申请中`" name="1"/>
             <el-tab-pane :label="`已驳回`" name="3"/>
             <el-tab-pane :label="`已通过`" name="2"/>
           </el-tabs>
         </div>
-        <!-- <div class="pl-15 tabs-right fs-s3">
-          <span class="mr-15">总提现：{{ stat_data.total_apply_amount || 0 }}元</span>
-          <span class="mr-15">平台手续费：{{ stat_data.final_fee_amount || 0 }}元</span>
-        </div> -->
       </div>
-      <div class="bg-white">
+      <div class="pl-15 pr-15 pb-5 bg-white">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
           <el-table-column label="ID">
             <template slot-scope="scope">

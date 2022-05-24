@@ -1,31 +1,31 @@
 <template>
   <div>
-    <el-row class="pt-20 pb-10 pl-30 pr-30 custom-form bg-white">
+    <el-row class="pt-20 pb-10 pl-20 pr-20 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="8">
         <el-form ref="form" :model="form" label-position="left" label-width="120px">
-          <el-form-item label="可提现金额：">
-            <div class="text-primary fs-b1">{{ money }}</div>
+          <el-form-item label="可提现金额">
+            <div class="text-primary fs-b1">{{ balance }}</div>
           </el-form-item>
-          <el-form-item label="提现金额：">
+          <el-form-item label="提现金额">
             <el-input v-model="form.amount" placeholder="请输入提现金额" />
           </el-form-item>
           <!-- <el-form-item label="冻结金额：">
             <span class="mr-20">{{ money }}</span>
             <el-link type="primary" @click="freezVisible = true">什么是冻结金额？</el-link>
           </el-form-item> -->
-          <el-form-item label="提现方式：">
+          <el-form-item label="提现方式">
             <el-radio-group v-model="form.withdrawType">
               <el-radio-button :label="index" v-for="(item, index) in siteInfo.withdrawType">{{ item }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="到账账户：" v-show="form.withdrawType == 3">
+          <el-form-item label="到账账户" v-show="form.withdrawType == 3">
             <div class="flex align-center" v-if="bindAlipayInfo.alipayOpenid">
               <el-avatar size="medium" :src="bindAlipayInfo.avatar"></el-avatar>
               <div class="ml-10">{{ bindAlipayInfo.nickname }}</div>
             </div>
             <div class="flex align-center" v-else>您暂未绑定支付宝，请先进入小程序提现页面绑定支付宝</div>
           </el-form-item>
-          <el-form-item label="到账账户：" v-show="form.withdrawType == 1">
+          <el-form-item label="到账账户" v-show="form.withdrawType == 1">
             <div class="flex align-center" v-if="bindWechatInfo.wechatOpenid">
               <el-avatar size="medium" :src="bindWechatInfo.avatar"></el-avatar>
               <div class="ml-10">{{ bindWechatInfo.nickname }}</div>
@@ -33,32 +33,32 @@
             <div class="flex align-center" v-else>您暂未绑定微信，请先进入小程序提现页面绑定微信</div>
           </el-form-item>
           <div v-show="form.withdrawType == 5">
-            <el-form-item label="姓名：">
+            <el-form-item label="姓名">
               <el-input v-model="bindCardInfo.cardName" placeholder="您的姓名" />
             </el-form-item>
-            <el-form-item label="银行卡号：">
+            <el-form-item label="银行卡号">
               <el-input v-model="bindCardInfo.cardNo" placeholder="银行卡号" />
             </el-form-item>
-            <el-form-item label="开户行：">
+            <el-form-item label="开户行">
               <el-input v-model="bindCardInfo.bankName" placeholder="开户行" />
             </el-form-item>
-            <el-form-item label="所属支行：">
+            <el-form-item label="所属支行">
               <el-input v-model="bindCardInfo.branchName" placeholder="所属支行" />
             </el-form-item>
           </div>
           <div v-show="form.withdrawType == 2">
-            <el-form-item label="姓名：">
+            <el-form-item label="姓名">
               <el-input v-model="wxQrcodeInfo.userName" placeholder="您的姓名" />
             </el-form-item>
-            <el-form-item label="收款码：">
+            <el-form-item label="收款码">
               <upload v-model="wxQrcodeInfo.qrcode" :upObj="{fileType: 'paymentCode'}"></upload>
             </el-form-item>
           </div>
           <div v-show="form.withdrawType == 4">
-            <el-form-item label="姓名：">
+            <el-form-item label="姓名">
               <el-input v-model="aliQrcodeInfo.userName" placeholder="您的姓名" />
             </el-form-item>
-            <el-form-item label="收款码：">
+            <el-form-item label="收款码">
               <upload v-model="aliQrcodeInfo.qrcode" :upObj="{fileType: 'paymentCode'}"></upload>
             </el-form-item>
           </div>
@@ -132,7 +132,7 @@
           sourceType: 3,
           withdrawType: 0
         },
-        money: '',
+        balance: '',
         bindWechatInfo: {},
         bindAlipayInfo: {},
         bindCardInfo: {},
@@ -174,7 +174,7 @@
         let params = {}
         if(this.cutStoreId) params.storeId = this.cutStoreId
         this.$get('iot-saas-pay/api/pay/withdraw/balance', params).then(res => {
-          this.money = res || '0.00'
+          this.balance = res || '0.00'
         })
       },
 
@@ -243,7 +243,7 @@
           this.$message.error('请输入提现金额')
           return
         }
-        // else if (parseFloat(params.amount) > parseFloat(params.available_withdraw_money)){
+        // else if (parseFloat(params.amount) > parseFloat(this.balance)){
         //   this.$message.error('余额不足')
         //   return
         // }

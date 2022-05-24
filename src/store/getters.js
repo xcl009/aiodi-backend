@@ -12,6 +12,7 @@ const getters = {
   myProfitRatio: state => state.user.myProfitRatio,
   siteInfo: state => state.user.siteInfo,
   agentInfo: state => state.user.agentInfo,
+  Ability: state => state.user.Ability,
   Constant: state => state.user.Constant,
   rests: state => state.rests
 }

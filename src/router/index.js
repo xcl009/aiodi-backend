@@ -29,10 +29,8 @@ export const saasRoutes = [
   {
     path: '/order',
     component: Layout,
-    //label: 3,
     children: [
       {
-        //label: 3,
         path: '/order',
         name: 'order',
         component: () => import('@/saas/order/index'),
@@ -47,7 +45,6 @@ export const saasRoutes = [
   {
     path: '/device',
     component: Layout,
-    //label: 4,
     children: [
       {
         path: '/device',
@@ -64,7 +61,6 @@ export const saasRoutes = [
   {
     path: '/store',
     component: Layout,
-    //label: 5,
     children: [
       {
         path: '/store',
@@ -81,11 +77,10 @@ export const saasRoutes = [
   {
     path: '/userManage',
     component: Layout,
-    //label: 6,
     children: [
       {
-        path: '/userList',
-        name: 'userList',
+        path: '/userManage',
+        name: 'userManage',
         component: () => import('@/saas/userManage/index'),
         meta: {
           keepAlive: true,
@@ -96,9 +91,9 @@ export const saasRoutes = [
     ]
   },
   {
-    path: '/partner',
+    path: '/brand',
     component: Layout,
-    redirect: '/partner/index',
+    redirect: '/brand/index',
     meta: {
       title: '品牌管理',
       icon: 'agent'
@@ -128,7 +123,7 @@ export const saasRoutes = [
         component: () => import('@/saas/agent/edit'),
         meta: {
           title: '添加品牌',
-          activeMenu: '/partner/index'
+          activeMenu: '/brand/index'
         },
         hidden: true
       },
@@ -138,7 +133,7 @@ export const saasRoutes = [
         component: () => import('@/saas/agent/edit'),
         meta: {
           title: '修改品牌信息',
-          activeMenu: '/partner/index'
+          activeMenu: '/brand/index'
         },
         hidden: true
       },
@@ -185,9 +180,9 @@ export const saasRoutes = [
     ]
   },
   {
-    path: '/app',
+    path: '/market',
     component: Layout,
-    redirect: '/app/market',
+    redirect: '/market/market',
     meta: {
       title: '服务管理',
       icon: 'fuwu'
@@ -196,16 +191,16 @@ export const saasRoutes = [
       {
         path: 'payRecord',
         name: 'payRecord',
-        component: () => import('@/saas/app/payRecord'),
+        component: () => import('@/saas/market/payRecord'),
         meta: {
           title: '续费记录',
           keepAlive: true
         }
       },
       {
-        path: 'market',
+        path: 'index',
         name: 'market',
-        component: () => import('@/saas/app/market'),
+        component: () => import('@/saas/market/market'),
         meta: {
           title: '服务列表',
           keepAlive: true
@@ -214,29 +209,29 @@ export const saasRoutes = [
       {
         path: 'create',
         name: 'appCreate',
-        component: () => import('@/saas/app/edit'),
+        component: () => import('@/saas/market/edit'),
         meta: {
           title: '添加服务',
-          activeMenu: '/app/market'
+          activeMenu: '/market/market'
         },
         hidden: true
       },
       {
         path: 'edit/:id(\\d+)',
         name: 'appEdit',
-        component: () => import('@/saas/app/edit'),
+        component: () => import('@/saas/market/edit'),
         meta: {
           title: '修改服务信息',
-          activeMenu: '/app/market'
+          activeMenu: '/market/market'
         },
         hidden: true
       },
     ]
   },
   {
-    path: '/adver',
+    path: '/advert',
     component: Layout,
-    redirect: '/adver/weChatBase',
+    redirect: '/advert/weChatBase',
     meta: {
       title: '广告管理',
       icon: 'setting'
@@ -245,7 +240,7 @@ export const saasRoutes = [
       {
         path: 'weChatBase',
         name: 'weChatBase',
-        component: () => import('@/saas/adver/weChatBase'),
+        component: () => import('@/saas/advert/weChatBase'),
         meta: {
           keepAlive: true,
           title: '流量主广告'
@@ -254,10 +249,48 @@ export const saasRoutes = [
       {
         path: 'weChatList',
         name: 'weChatList',
-        component: () => import('@/saas/adver/weChatList'),
+        component: () => import('@/saas/advert/weChatList'),
         meta: {
-          keepAlive: true,
-          title: '广告位置'
+          title: '广告位置',
+          activeMenu: '/advert/weChatBase'
+        },
+        hidden: true
+      },
+      {
+        path: 'poster',
+        name: 'poster',
+        component: () => import('@/saas/advert/poster'),
+        meta: {
+          title: '传统广告'
+        }
+      },
+      {
+        path: 'posterEdit',
+        name: 'posterEdit',
+        component: () => import('@/saas/advert/posterEdit'),
+        meta: {
+          title: '编辑传统广告',
+          activeMenu: '/advert/poster'
+        },
+        hidden: true
+      },
+      {
+        path: 'posterList',
+        name: 'posterList',
+        component: () => import('@/saas/advert/posterList'),
+        meta: {
+          title: '传统广告列表',
+          activeMenu: '/advert/poster'
+        },
+        hidden: true
+      },
+      {
+        path: 'posterPosition',
+        name: 'posterPosition',
+        component: () => import('@/saas/advert/posterPosition'),
+        meta: {
+          title: '传统广告位置',
+          activeMenu: '/advert/poster'
         },
         hidden: true
       },
@@ -277,7 +310,7 @@ export const saasRoutes = [
         name: 'roleManage',
         component: () => import('@/saas/role/index'),
         meta: {
-          title: '角色',
+          title: '角色管理',
           keepAlive: true
         }
       },
@@ -331,6 +364,7 @@ export const saasRoutes = [
       title: '系统设置',
       icon: 'setting'
     },
+    hidden: true,
     children: [
       {
         path: 'wechat',
@@ -667,13 +701,23 @@ export const brandRoutes = [
           activeMenu: '/agent/index'
         },
         hidden: true
+      },
+      {
+        path: 'steal/:id(\\d+)',
+        name: 'agentSteal',
+        component: () => import('@/brand/steal/edit'),
+        meta: {
+          title: 'DD设置',
+          activeMenu: '/agent/index'
+        },
+        hidden: true
       }
     ]
   },
   {
-    path: '/capital',
+    path: '/withdrawal',
     component: Layout,
-    redirect: '/capital/agentWithdraw',
+    redirect: '/withdrawal/agentWithdraw',
     meta: {
       title: '资金管理',
       icon: 'zijing'
@@ -682,7 +726,7 @@ export const brandRoutes = [
       {
         path: 'agentWithdraw',
         name: 'agentWithdraw',
-        component: () => import('@/brand/capital/agentWithdraw'),
+        component: () => import('@/brand/withdrawal/agentWithdraw'),
         meta: {
           keepAlive: true,
           title: '代理提现'
@@ -694,7 +738,7 @@ export const brandRoutes = [
       {
         path: 'storeWithdraw',
         name: 'storeWithdraw',
-        component: () => import('@/brand/capital/agentWithdraw'),
+        component: () => import('@/brand/withdrawal/agentWithdraw'),
         meta: {
           keepAlive: true,
           title: '商户提现'
@@ -706,7 +750,7 @@ export const brandRoutes = [
       {
         path: 'userWithdraw',
         name: 'userWithdraw',
-        component: () => import('@/brand/capital/agentWithdraw'),
+        component: () => import('@/brand/withdrawal/agentWithdraw'),
         meta: {
           keepAlive: true,
           title: '用户提现'
@@ -757,6 +801,64 @@ export const brandRoutes = [
     ]
   },
   {
+    path: '/advert',
+    component: Layout,
+    redirect: '/advert/weChatBase',
+    meta: {
+      title: '广告管理',
+      icon: 'setting'
+    },
+    children: [
+      {
+        path: 'weChatBase',
+        name: 'weChatBase',
+        component: () => import('@/saas/advert/weChatBase'),
+        meta: {
+          keepAlive: true,
+          title: '流量主广告'
+        }
+      },
+      {
+        path: 'weChatList',
+        name: 'weChatList',
+        component: () => import('@/saas/advert/weChatList'),
+        meta: {
+          title: '广告管理',
+          activeMenu: '/advert/weChatBase'
+        },
+        hidden: true
+      },
+      {
+        path: 'poster',
+        name: 'poster',
+        component: () => import('@/saas/advert/poster'),
+        meta: {
+          title: '传统广告'
+        }
+      },
+      {
+        path: 'posterEdit',
+        name: 'posterEdit',
+        component: () => import('@/saas/advert/posterEdit'),
+        meta: {
+          title: '编辑传统广告',
+          activeMenu: '/advert/poster'
+        },
+        hidden: true
+      },
+      {
+        path: 'posterList',
+        name: 'posterList',
+        component: () => import('@/saas/advert/posterList'),
+        meta: {
+          title: '传统广告列表',
+          activeMenu: '/advert/poster'
+        },
+        hidden: true
+      },
+    ],
+  },
+  {
     path: '/systemSet',
     component: Layout,
     redirect: '/systemSet/wechat',
@@ -765,6 +867,30 @@ export const brandRoutes = [
       icon: 'setting'
     },
     children: [
+      {
+        path: 'steal',
+        name: 'steal',
+        component: () => import('@/brand/steal/edit'),
+        meta: {
+          title: 'DD设置'
+        }
+      },
+      {
+        path: 'billing',
+        name: 'billing',
+        component: () => import('@/brand/system/billing'),
+        meta: {
+          title: '默认设置'
+        }
+      },
+      {
+        path: 'platform',
+        name: 'platform',
+        component: () => import('@/brand/system/platform'),
+        meta: {
+          title: '平台信息'
+        }
+      },
       {
         path: 'wechat',
         name: 'wechat',
@@ -802,22 +928,6 @@ export const brandRoutes = [
           title: '支付宝小程序'
         },
         hidden: true
-      },
-      {
-        path: 'platform',
-        name: 'platform',
-        component: () => import('@/brand/system/platform'),
-        meta: {
-          title: '平台信息'
-        }
-      },
-      {
-        path: 'billing',
-        name: 'billing',
-        component: () => import('@/brand/system/billing'),
-        meta: {
-          title: '默认设置'
-        }
       },
       {
         path: 'link',
@@ -862,18 +972,10 @@ export const brandRoutes = [
     component: Layout,
     redirect: '/money/index',
     meta: {
-      
+
     },
     hidden: true,
     children: [
-      {
-        path: 'income',
-        name: 'income',
-        component: () => import('@/saas/money/income'),
-        meta: {
-          title: '收益明细'
-        }
-      },
       {
         path: 'monthMoney',
         name: 'monthMoney',
@@ -888,6 +990,14 @@ export const brandRoutes = [
         component: () => import('@/saas/money/dayMoney'),
         meta: {
           title: '日交易额'
+        }
+      },
+      {
+        path: 'khyCoin',
+        name: 'khyCoin',
+        component: () => import('@/saas/money/khyCoin'),
+        meta: {
+          title: '快活币明细'
         }
       }
     ]
@@ -1087,6 +1197,16 @@ export const agentRoutes = [
           activeMenu: '/agent/index'
         },
         hidden: true
+      },
+      {
+        path: 'steal/:id(\\d+)',
+        name: 'agentSteal',
+        component: () => import('@/brand/steal/edit'),
+        meta: {
+          title: 'DD设置',
+          activeMenu: '/agent/index'
+        },
+        hidden: true
       }
     ]
   },
@@ -1123,7 +1243,7 @@ export const agentRoutes = [
     component: Layout,
     redirect: '/money/index',
     meta: {
-      
+
     },
     hidden: true,
     children: [
@@ -1167,7 +1287,7 @@ export const storeRoutes = [
       {
         path: '/home',
         name: 'home',
-        component: () => import('@/stores/home/home'),
+        component: () => import('@/brand/home/home'),
         meta: {
           title: '主页',
           icon: 'home'
@@ -1176,65 +1296,75 @@ export const storeRoutes = [
     ],
   },
   {
-    path: '/withdraw',
+    path: '/order',
     component: Layout,
-    redirect: '/withdraw/withdraw',
+    children: [
+      {
+        path: '/order',
+        name: 'order',
+        component: () => import('@/brand/order/index'),
+        meta: {
+          title: '订单管理',
+          icon: 'order'
+        },
+        props:{
+          user_type: 1
+        }
+      }
+    ]
+  },
+  {
+    path: '/device',
+    component: Layout,
+    children: [
+      {
+        path: '/device',
+        name: 'device',
+        component: () => import('@/brand/device/index'),
+        meta: {
+          title: '设备管理',
+          icon: 'device'
+        }
+      }
+    ]
+  },
+  {
+    path: '/capital',
+    component: Layout,
+    redirect: '/capital/index',
     meta: {
-      title: '资金管理',
+      title: '财务管理',
       icon: 'zijing'
     },
     children: [
+      {
+        path: 'index',
+        name: 'capital',
+        component: () => import('@/stores/capital/index'),
+        meta: {
+          title: '财务管理'
+        }
+      },
       {
         path: 'withdraw',
         name: 'withdraw',
         component: () => import('@/stores/withdraw/withdraw'),
         meta: {
+          activeMenu: '/capital/index',
           title: '申请提现'
-        }
+        },
+        hidden: true
       },
-      {
-        path: 'record',
-        name: 'withdrawRecord',
-        component: () => import('@/stores/withdraw/record'),
-        meta: {
-          title: '我的提现记录'
-        }
-      },
+      // {
+      //   path: 'record',
+      //   name: 'withdrawRecord',
+      //   component: () => import('@/stores/withdraw/record'),
+      //   meta: {
+      //     title: '我的提现记录'
+      //   }
+      // },
     ],
   },
-  // {
-  //   path: '/order',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: '/order',
-  //       name: 'order',
-  //       component: () => import('@/store/order/index'),
-  //       meta: {
-  //         title: '订单管理',
-  //         icon: 'order'
-  //       },
-  //       props:{
-  //         user_type: 1
-  //       }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/device',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: '/device',
-  //       name: 'device',
-  //       component: () => import('@/store/device/index'),
-  //       meta: {
-  //         title: '设备管理',
-  //         icon: 'device'
-  //       }
-  //     }
-  //   ]
-  // },
   // {
   //   path: '/store',
   //   component: Layout,
@@ -1284,7 +1414,7 @@ export const storeRoutes = [
     component: Layout,
     redirect: '/money/index',
     meta: {
-      
+
     },
     hidden: true,
     children: [

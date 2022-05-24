@@ -14,7 +14,7 @@
         </el-select> -->
 		  </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/partner/edit`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/brand/edit`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
       </template>
 		</condition>
 
@@ -84,7 +84,7 @@
             <el-dropdown trigger="click">
               <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="$router.push({path: `/partner/edit?aid=${scope.row.id}`})">修改信息</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push({path: `/brand/edit?aid=${scope.row.id}`})">修改信息</el-dropdown-item>
                 <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-dropdown-item>
                 <el-dropdown-item @click.native="getMapIcon(scope.row)">地图图标</el-dropdown-item>
                 <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>

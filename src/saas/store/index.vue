@@ -122,7 +122,6 @@
           page: 1,
           size: 20
         },
-        oemInfo: {},
         orderCount: {},
         cashStat: {},
         deviceCount: {},

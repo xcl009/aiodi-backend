@@ -2,7 +2,7 @@
   <div class="p-5">
     <div class="bg-white">
       <div class="p-5">
-        <router-link :to="`/adver/edit?pid=${listQuery.position_id}`" v-if="listQuery.position_id">
+        <router-link :to="`/advert/edit?pid=${listQuery.position_id}`" v-if="listQuery.position_id">
           <el-button type="primary" size="small" icon="el-icon-plus">添加</el-button>
         </router-link>
       </div>
@@ -54,7 +54,7 @@
             <el-button type="primary" size="mini" round plain @click="setReview(scope.row)" v-else-if="scope.row.review_status == 0 || scope.row.review_status == 3">提交审核</el-button>
             <el-button type="primary" size="mini" round plain @click="$router.push({path: `/equipment/index?ad_id=${scope.row.id}&all=1`})" v-if="scope.row.is_all == 0">绑定设备</el-button>
             <p></p>
-            <el-button type="primary" size="mini" round plain @click="$router.push({path: `/adver/edit/?id=${scope.row.id}`})">编辑</el-button>
+            <el-button type="primary" size="mini" round plain @click="$router.push({path: `/advert/edit/?id=${scope.row.id}`})">编辑</el-button>
             <!-- <el-button type="danger" size="mini" round plain>删除</el-button> -->
           </template>
         </el-table-column>

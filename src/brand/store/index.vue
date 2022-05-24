@@ -44,8 +44,8 @@
         <el-table-column label="订单量" width="140">
           <template slot-scope="scope">
             <div class="inline">
-              <div class="cursor" @click="$router.push({path: (lowerStore ? `/order/subOrder?storeId=${scope.row.id}` : `/order/meOrder?storeId=${scope.row.id}`)})">订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}</div>
-              <div class="cursor" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}` : `/device/meDevice?storeId=${scope.row.id}`)})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
+              <div class="cursor" @click="$router.push({path: (lowerStore ? `/order/subOrder?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/order/meOrder?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}</div>
+              <div class="cursor" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/device/meDevice?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
             </div>
           </template>
         </el-table-column>
@@ -89,15 +89,16 @@
             </template>
             <template v-else>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
-              <!-- <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2, scope.$index)">权限设置</el-button> -->
+              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2, scope.$index)">权限设置</el-button>
               <el-button type="primary" size="mini" @click="$router.push({path: `/store/edit/${scope.row.id}`})">编辑商户</el-button>
               <el-dropdown trigger="click">
                 <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/market/index`})">更多应用
-                  </el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/market/index`})">更多应用</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/agent/steal/${scope.row.id}?userKey=storeId&deviceType=${seekDeviceType(scope.row.storeDivisionConfig)}`})">DD设置</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/market/index`})">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -119,8 +120,10 @@
         </el-form>
       </template>
       <template v-if="dialogType == 2">
-        <div class="text-center" v-if="dform.abilitys">
-          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys[key]" v-for="(item, key) in agentInfo.storeAbilitys">{{ item }}</el-checkbox>
+        <div class="text-center" v-if="dform.menus">
+          <template v-for="item in agentInfo.ability">
+            <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != 'AGENT_ASSIGN'">{{ item.name }}</el-checkbox>
+          </template>
         </div>
       </template>
       <template v-if="dialogType == 3">
@@ -463,22 +466,23 @@
             this.curIdx = idx
             this.dialogStatus = true
             if(dialogType == 2){
-              this.$get('iot-saas-basic/admin/agent/agentAuth', {
-                agentId: row.id
+              this.$get('iot-saas-user/auth/menu', {
+                childId: row.userId
               }).then(res => {
-                let abilitys = {}
-                if(res.length > 0){
-                	res.map(item => {
-                	  if(item.have == 1) abilitys[item.code] = true
-                	})
-                } else {
-                  for(var i in this.agentInfo.storeAbilitys){
-                    abilitys[i] = true
+                console.log(res)
+                let menus = {}
+                res.map(item => {
+                  menus[item.id] = true
+                  if(item.childrenAuthList && item.childrenAuthList.length > 0){
+                    item.childrenAuthList.map(sitem => {
+                      menus[sitem.id] = true
+                    })
                   }
-                }
-                this.$set(this.dform, 'abilitys', abilitys)
+                })
+                console.log(menus)
+                this.$set(this.dform, 'menus', menus)
               })
-              this.$set(this.dform, 'agentId', row.id)
+              this.$set(this.dform, 'childUserId', row.userId)
             }
             break
         }
@@ -526,6 +530,17 @@
             })
             break
         }
+      },
+
+      /**
+       * 查商户的设备类型对应名称
+       */
+      seekDeviceType(storeDivisionConfig){
+        let obj = {}
+        storeDivisionConfig.map(item => {
+          obj[item.deviceTypeCode] = this.myDeviceId[item.deviceTypeCode]
+        })
+        return JSON.stringify(obj)
       }
     }
   }

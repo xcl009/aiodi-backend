@@ -11,13 +11,13 @@
       <template v-slot:defult>
         <el-input v-model="form.deviceSn" placeholder="二维码" />
         <el-input v-model="form.factorySn" placeholder="设备SN" />
-        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
-        <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()" v-if="lowerDevice"></selectSearch>
+        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" v-if="!isStore()"></selectSearch>
+        <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()" v-if="lowerDevice && !isStore()"></selectSearch>
       </template>
     </condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="mb-15 flex">
+      <div class="mb-15 flex" v-if="!isStore()" >
         <div class="flex1">
           <el-button size="medium" :type="listQuery.haveBind === item.value ? 'primary' : ''"
             :class="{'btn-body': listQuery.haveBind !== item.value}" v-for="item in haveBind"
@@ -109,7 +109,7 @@
             {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false" v-if="!isStore()">
           <template slot-scope="scope">
             <div class="flex justify-center">
               <div class="flex flex-wrap w-160">
@@ -141,7 +141,7 @@
               @click="unbindAgent()">批量回收
             </el-button>
           </template>
-          <template v-else>
+          <template v-else-if="!isStore()">
             <el-button type="primary" size="medium" :disabled="selID.length == 0"
               @click="$router.push({path: `/store/meStore?deviceId=${selID}`})">批量铺货</el-button>
             <el-button type="primary" size="medium" :disabled="selID.length == 0"
@@ -293,8 +293,7 @@
       for (var i in this.queryKey) {
         if(query[this.queryKey[i]]) this.form[this.queryKey[i]] = query[this.queryKey[i]]
       }
-      console.log(this.myDeviceId)
-      this.queryDeviceCount()
+      if(!this.isStore()) this.queryDeviceCount()
       this.toQuery()
     },
     methods: {

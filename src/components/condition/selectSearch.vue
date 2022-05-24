@@ -12,7 +12,7 @@
       v-for="item in list"
       :key="item.id"
       :label="`${item[name]}`"
-      :value="item.id">
+      :value="isStoreOrder ? item : item.id">
     </el-option>
   </el-select>
 </template>
@@ -35,6 +35,11 @@ export default {
     placeholder: {
       type: String,
       default: ''
+    },
+
+    isStoreOrder: {
+      type: Boolean, // 是否是订单列表商户ID筛选
+      default: false
     }
   },
   computed: {
@@ -82,6 +87,9 @@ export default {
      * 选择结果
      */
     toQuery(val){
+      if(this.isStoreOrder){
+        val = `${val.id}&${val.agentId}&${val.brandId}`
+      }
       this.$emit('input', val)
       this.$emit('change')
     }

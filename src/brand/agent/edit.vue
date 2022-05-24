@@ -16,7 +16,7 @@
           <el-form-item label="运营区域">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          
+
           <h4 class="pt-20">运营产品</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">
             <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
@@ -45,7 +45,7 @@
 <script>
   export default {
     components: {
-      
+
     },
     data() {
       return {
@@ -95,7 +95,7 @@
       if(this.aid){
         this.getInfo()
       } else {
-        this.selDevice.push(this.myDevice[0].id)
+        this.selDevice.push(Object.keys(this.myDeviceId)[0])
       }
     },
     methods: {

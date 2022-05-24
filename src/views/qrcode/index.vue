@@ -306,7 +306,7 @@
           })
         } else {
           this.$router.push({
-            path: '/partner/index',
+            path: '/brand/index',
             query: {
               zuo_sn: row ? row.code_sn : selSn
             }

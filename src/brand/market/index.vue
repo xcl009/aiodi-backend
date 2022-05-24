@@ -1,36 +1,36 @@
 <template>
   <div>
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="flex align-center">
+    <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
+      <div class="mb-15 flex align-center">
         <div class="flex1">
-          <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
-            :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
-            @click="toQuery(item.value)">{{ item.title }}</el-button>
+          <el-button size="medium" :type="!listQuery.serviceTypeCode ? 'primary' : ''"
+            :class="{'btn-body': listQuery.serviceTypeCode}"
+            @click="listQuery.serviceTypeCode = ''; toQuery()">全部</el-button>
+          <el-button size="medium" :type="listQuery.serviceTypeCode == item.code ? 'primary' : ''"
+            :class="{'btn-body': listQuery.serviceTypeCode != item.code}" v-for="item in tabs"
+            @click="listQuery.serviceTypeCode = item.code; toQuery()">{{ item.name }}</el-button>
         </div>
-        <condition ref="condition" :resetStatus="false" :clickSubmit="clickSubmit" @query="toQuery">
-          <template v-slot:defult>
-            <el-input v-model="form.name" placeholder="搜索服务"/>
-          </template>
-        </condition>
       </div>
 
       <el-row :gutter="24">
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="8" v-for="item in 4">
-          <div class="flex align-center list-item cursor" @click="$router.push({path: `/market/buy`})">
+        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="8" v-for="item in list">
+          <div class="flex align-center list-item cursor" @click="$router.push({path: `/market/buy?id=${item.serviceId}`})">
             <el-image
               class="list-img"
-              src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+              :src="item.url"
               fit="cover"></el-image>
             <div class="pl-15 pr-15 flex1">
               <div class="flex align-center text-black">
-                <div>共享密码线</div>
+                <div>{{ item.serviceName }}</div>
                 <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)">免费试用七天</el-tag>
                 <div class="flex1"></div>
-                <el-rate :value="5" disabled></el-rate>
+                <!-- <el-rate :value="5" disabled></el-rate> -->
               </div>
-              <div class="mt-10 fs-s2">共享密码线以软件的可视化，智能化的操作页面和后台服务系统，用微信和支付宝等支付方式来便携和服务人们生活。</div>
+              <div class="mt-10 fs-s2 text-cut_two" v-html="item.description"></div>
               <div class="mt-10 flex align-center">
-                <div class="flex1 fs-b2 text-danger">¥10000.00/永久</div>
+                <template v-for="(sitem, idx) in item.priceSettings">
+                  <div class="flex1 fs-b2 text-danger" v-if="idx == 0">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}/月付` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}/年付` : `¥${sitem.permanentAmount}/永久` }}</div>
+                </template>
                 <el-button type="primary" size="medium">立即购买</el-button>
               </div>
             </div>
@@ -40,33 +40,15 @@
 
       <div class="flex justify-center">
         <pagination
-          v-show="listTotal > 0"
+          v-if="listTotal > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
           :total="parseInt(listTotal)"
           @pagination="getList"
         />
+        <div class="p-30" v-if="listTotal == 0">服务持续更新中，请持续关注服务市场</div>
       </div>
     </div>
-
-    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
-      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
-      <template v-if="dialogType == 1">
-        <div class="text-center">
-          <div class="text-black">确定该笔提现申请通过审核吗？</div>
-        </div>
-      </template>
-      <template v-if="dialogType == 2">
-        <div class="text-black">确定该笔提现申请拒绝通过吗？</div>
-        <el-form class="custom-form">
-          <el-input v-model="dform.note" placeholder="请输入备注内容" type="textarea" :rows="5" />
-        </el-form>
-      </template>
-      <div class="mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -83,44 +65,16 @@
     data() {
       return {
         clickSubmit: false,
-        statusArr: [{
-            value: 0,
-            title: '全部服务',
-            nkey: ''
-          },
-          {
-            value: 1,
-            title: '系统功能',
-            nkey: ''
-          },
-          {
-            value: 2,
-            title: '共享密码线',
-            nkey: ''
-          }
-        ],
-
+        tabs: [],
         form: {},
         tableMaxH: '250',
-        list: [{}],
+        list: [],
         listLoading: false,
         listTotal: 0,
         listQuery: {
-          status: this.$route.query.status || 0,
           page: 1,
           size: 20
-        },
-
-        // 弹出相关
-        dialogType: 1,
-        dialogStatus: false,
-        dialogTitle: {
-          1: '通过提现',
-          2: '拒绝提现'
-        },
-        curRow: {},
-        curIdx: 0,
-        dform: {}
+        }
       }
     },
     activated() {
@@ -139,7 +93,9 @@
       }
     },
     mounted() {
-
+      this.$store.dispatch('api/getServiceType').then(res => {
+        this.tabs = res
+      })
     },
     methods: {
       /**
@@ -160,12 +116,12 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
-          this.list = res.rows || [{}]
+        this.$get('iot-saas-basic/client/service/market/findPage', params).then(res => {
+          this.list = res ? res.rows : []
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
-            this.listTotal = res.total
+            this.listTotal = res ? res.total : 0
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
         }).catch(() => {
@@ -173,60 +129,6 @@
           this.clickSubmit = false
         })
       },
-
-      /**
-       * 操作商户
-       * @param {Object} type 1 dialog类型
-       * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '提现通过', 2: '提现拒绝'
-       * @param {Object} idx 当前数据所在位置
-       */
-      setRows(type, row, dialogType, idx) {
-        switch (row.type) {
-          case 1:
-            this.dialogType = dialogType
-            this.curRow = row
-            this.curIdx = idx
-            this.dialogStatus = true
-            break
-        }
-      },
-
-      /**
-       * 弹窗确认
-       */
-      dialogConfim() {
-        let curRow = this.curRow,
-          curIdx = this.curIdx,
-          params = JSON.parse(JSON.stringify(this.dform))
-        switch (this.dialogType) {
-          case 1:
-            this.$post('agentapi/upper_review_apply', {
-              apply_id: curRow.id,
-              agree: 1
-            }).then(res => {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              row.withdraw_status = 2
-            })
-            break
-          case 2:
-            this.$post('agentapi/upper_review_apply', {
-              apply_id: curRow.id,
-              note: params.note,
-              agree: 2
-            }).then(res => {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              row.withdraw_status = 3
-            })
-            break
-        }
-      }
     }
   }
 </script>

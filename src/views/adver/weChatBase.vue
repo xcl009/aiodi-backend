@@ -17,7 +17,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <router-link :to="`/adver/weChatList?business_type=${scope.row.business_type}`">
+            <router-link :to="`/advert/weChatList?business_type=${scope.row.business_type}`">
               <el-button type="primary" size="mini" round plain>设置广告</el-button>
             </router-link>
             <el-button type="primary" size="mini" round plain @click="setShow(scope.row)" v-if="checkRoles(['partner'])">{{ scope.row.is_show == 1 ? '已开启' : '已关闭' }}</el-button>

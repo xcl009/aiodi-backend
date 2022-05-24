@@ -115,7 +115,7 @@
             message: '提交成功',
             type: 'success'
           })
-          this.$router.push({ path: '/adver/photo', query: { 'pid': this.form.position_id } })
+          this.$router.push({ path: '/advert/photo', query: { 'pid': this.form.position_id } })
         })
       },
 

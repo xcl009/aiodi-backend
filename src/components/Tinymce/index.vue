@@ -14,7 +14,6 @@ import toolbar from './toolbar'
 import load from './dynamicLoadScript'
 
 // why use this cdn, detail see
-//const tinymceCDN = 'https://cdn.bootcdn.net/ajax/libs/tinymce/4.9.4/tinymce.min.js'
 const tinymceCDN = '/tinymce/tinymce.min.js'
 
 export default {
@@ -190,7 +189,7 @@ export default {
   position: absolute;
   right: 5px;
   top: 5px;
-  z-index: 2005;
+  z-index: 2;
 }
 .fullscreen .editor-custom-btn-container {
   z-index: 10000;

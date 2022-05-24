@@ -191,7 +191,7 @@
 
                     <el-dropdown-item @click.native="$router.push({path: `/shop/withdraw?aid=${scope.row.aid}`})" v-if="checkRoles(['partner'])">提现设置</el-dropdown-item>
                     <el-dropdown-item @click.native="showEntranceFeeObj(scope.row)" v-if="scope.row.divide_type_1 == 2 && checkRoles(['partner'])">入场费</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({path: `/adver/setPower?son_id=${scope.row.aid}`})">广告权限</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/advert/setPower?son_id=${scope.row.aid}`})">广告权限</el-dropdown-item>
                     <el-dropdown-item v-if="checkRoles(['partner'])"
                     @click.native="
                       storeSetDialog = true;

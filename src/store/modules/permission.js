@@ -41,8 +41,8 @@ export function filterAsyncRoutes(routes, roles) {
 export function filterAsyncRoutesAuthMenu(routes, authMenu) {
   var res = []
   routes.forEach(route => {
-    const tmp = { ...route }
-    if(tmp.label && authMenu[tmp.label]){
+    const tmp = { ...route }, path = tmp.path.replace('/', ''), redirect = tmp.redirect ? tmp.redirect.replace('/', '') : '0'
+    if(authMenu.indexOf(path) > -1 || authMenu.indexOf(redirect) > -1){
       if (tmp.children) {
         tmp.children = filterAsyncRoutesAuthMenu(tmp.children, authMenu)
       }

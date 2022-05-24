@@ -14,7 +14,7 @@
         </el-select>
 		  </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/partner/create`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/brand/create`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
       </template>
 		</condition>
 
@@ -95,7 +95,7 @@
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandId=${scope.row.id}`})">订单列表</el-button>
             <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
-            <el-button type="primary" size="mini" @click="$router.push({path: `/partner/edit/${scope.row.id}`})">修改信息</el-button>
+            <el-button type="primary" size="mini" @click="$router.push({path: `/brand/edit/${scope.row.id}`})">修改信息</el-button>
             <el-dropdown trigger="click">
               <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
               <el-dropdown-menu slot="dropdown">

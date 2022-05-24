@@ -6,7 +6,7 @@
         <el-input v-model="form.mobile" placeholder="手机号码"/>
 		  </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/agent/create`})"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/agent/create`})" v-if="Ability['agentAdd']"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
       </template>
 		</condition>
 
@@ -82,6 +82,7 @@
               <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)">删除代理</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/steal/${scope.row.id}?userKey=agentId&deviceType=${JSON.stringify(arrayToObj(scope.row.agentDeviceType, 'code', 'name'))}`})">DD设置</el-button>
             </template>
           </template>
         </el-table-column>
@@ -101,8 +102,10 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <div class="text-center" v-if="dform.abilitys">
-          <el-checkbox class="mt-5 mb-5" v-model="dform.abilitys[key]" v-for="(item, key) in agentInfo.agentAbilitys" v-if="agentInfo[key]">{{ item }}</el-checkbox>
+        <div class="text-center" v-if="dform.menus">
+          <template v-for="item in agentInfo.ability">
+            <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != 'STORE_ASSIGN'">{{ item.name }}</el-checkbox>
+          </template>
         </div>
       </template>
       <template v-if="dialogType == 2">
@@ -120,9 +123,9 @@
 </template>
 
 <script>
+  import { arrayToObj } from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
-
   export default {
     name: 'agent',
     components: {
@@ -137,6 +140,7 @@
     },
     data() {
       return {
+        arrayToObj: arrayToObj,
         clickSubmit: false,
         form: {},
         tableMaxH: '250',
@@ -153,12 +157,6 @@
         cashStat: {},
 
         deviceId: '',
-        abilitys: {
-          checkOrder: '查看订单',
-          checkEndOrder: '结束订单',
-          checkRefundOrder: '结束退款',
-          checkWithdrawRight: '提现'
-        },
 
         // 弹出相关
         dialogType: 1,
@@ -205,10 +203,13 @@
       },
       agentInfo(){
         return this.$store.getters.agentInfo
+      },
+      Ability() {
+        return this.$store.getters.Ability
       }
     },
     mounted() {
-      console.log(this.lowerAgent)
+
     },
     methods: {
       /**
@@ -321,22 +322,23 @@
             this.curIdx = idx
             this.dialogStatus = true
             if(dialogType == 1){
-              this.$get('iot-saas-basic/admin/agent/agentAuth', {
-                agentId: row.id
+              this.$get('iot-saas-user/auth/menu', {
+                childId: row.userId
               }).then(res => {
-                let abilitys = {}
-                if(res.length > 0){
-                	res.map(item => {
-                	  if(item.have == 1) abilitys[item.code] = true
-                	})
-                } else {
-                  for(var i in this.agentInfo.storeAbilitys){
-                    abilitys[i] = true
+                console.log(res)
+                let menus = {}
+                res.map(item => {
+                  menus[item.id] = true
+                  if(item.childrenAuthList && item.childrenAuthList.length > 0){
+                    item.childrenAuthList.map(sitem => {
+                      menus[sitem.id] = true
+                    })
                   }
-                }
-                this.$set(this.dform, 'abilitys', abilitys)
+                })
+                console.log(menus)
+                this.$set(this.dform, 'menus', menus)
               })
-              this.$set(this.dform, 'agentId', row.id)
+              this.$set(this.dform, 'childUserId', row.userId)
             }
             break
         }
@@ -353,16 +355,12 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            let abilitys = []
-            for(var i in params.abilitys){
-              abilitys.push({
-                name: this.abilitys[i],
-                code: i,
-                have: params.abilitys[i] ? 1 : 0
-              })
+            let menus = []
+            for(var i in params.menus){
+              if(params.menus[i]) menus.push(i)
             }
-            params.abilitys = abilitys
-            this.$post('iot-saas-basic/admin/agent/updateAgentAuth', params).then(res => {
+            params.menus = menus
+            this.$put('iot-saas-user/auth/childMenu', params).then(res => {
               this.$message({
                 type: 'success',
                 message: '设置成功'

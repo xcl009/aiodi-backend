@@ -892,6 +892,7 @@ div:focus {
     height: initial;
   }
   .el-form-item__content{
+    line-height: 32px;
     .el-input-group{
       vertical-align: inherit;
     }
@@ -900,6 +901,8 @@ div:focus {
     position: relative;
     padding-left: 10px;
     font-weight: 400;
+    height: 32px;
+    line-height: 32px;
     color: #4E5969;
     &::before{
       position: absolute;
@@ -925,7 +928,7 @@ div:focus {
     color: #4E5969 !important;
   }
   .el-input__icon{
-    line-height: 34px;
+    line-height: 32px;
   }
 }
 

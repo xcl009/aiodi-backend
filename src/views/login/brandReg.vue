@@ -90,7 +90,7 @@
             </el-table-column>
           </el-table>
         </div>
-        <div class="pb-30 text-center line-1" :class="{'mt-pc': clientWidth >= 992, 'mt-30': clientWidth < 992}">
+        <div class="pt-30 pb-30 text-center line-1" :class="{'mt-pc': clientWidth >= 992, 'mt-30': clientWidth < 992}">
           <el-button type="primary" class="login-btn" @click="$router.push({path: `/login/${gid}`})">立即登录</el-button>
         </div>
       </div>
@@ -229,12 +229,11 @@
        * 获取验证码
        */
       getAuthCode(){
-        this.$refs.form.validateField('phone_num', valid => {
+        this.$refs.form.validateField('mobile', valid => {
           if (valid) return false
           this.$refs.authCode.getAuthCode({
-            phone_num: this.form.phone_num,
-            platform_agent_id: this.gid,
-            type: 3
+            mobile: this.form.mobile,
+            invitationCode: this.form.invitationCode
           })
         })
       },

@@ -11,6 +11,7 @@ const getDefaultState = () => {
     avatar: '',
     siteInfo: {},
     agentInfo: {},
+    Ability: {},
     Constant: {}
   }
 }
@@ -44,6 +45,9 @@ const mutations = {
   },
   SET_AGENTINFO: (state, res) => {
     state.agentInfo = res
+  },
+  SET_ABILITY: (state, res) => {
+    state.Ability = res
   },
   SET_CONSTANT: (state, res) => {
     state.Constant = res
@@ -88,48 +92,39 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(data => {
         if(data.userType){
-        //   let params = {
-        //   		agentId: data.id
-        //   	},
-        //   	agentAbilitys = {
-        //   		checkOrder: '查看订单',
-        //   		checkEndOrder: '结束订单',
-        //   		checkRefundOrder: '订单退款',
-        //   		checkWithdrawRight: '提现'
-        //   	},
-        //   	storeAbilitys = {
-        //   		checkOrder: '查看订单',
-        //   		checkWithdrawRight: '提现'
-        //   	},
-        //   	abilitys = agentAbilitys
-        //   data.agentAbilitys = agentAbilitys
-        //   data.storeAbilitys = storeAbilitys
-        //   if(data.userType == 'store'){
-        //   	params.agentId = data.storeIds[0]
-        //   	abilitys = storeAbilitys
-        //   }
-        //   if(data.userType == 'agent' && res.length == 0){
-        //   	data.agentAbilitys = storeAbilitys
-        //   }
-        //   for(var i in abilitys){
-        //   	data[i] = 1
-        //   }
-        //   window.agentInfo = data
-        //   commit('SET_NAME', data.nickname || data.username)
-        //   commit('SET_AVATAR', data.avastar || '')
-        //   commit('SET_AGENTINFO', data)
-        //   resolve({
-        //     roles: [data.userType]
-        //   })
           getAuthMenu().then(res => {
-            data.authMenu = arrayToObj(res, 'id', 'checked')
+            let menu = {}, ability = []
+            res.map(item => {
+              menu[item.label] = true
+              if(item.displayFlag != 'CANNOT_ASSIGN'){
+                ability.push({
+                  id: item.id,
+                  displayFlag: item.displayFlag,
+                  name: item.name
+                })
+              }
+              if(item.childrenAuthList && item.childrenAuthList.length > 0){
+                item.childrenAuthList.map(sitem => {
+                  menu[sitem.label] = true
+                  if(sitem.displayFlag != 'CANNOT_ASSIGN'){
+                    ability.push({
+                      id: sitem.id,
+                      displayFlag: sitem.displayFlag,
+                      name: sitem.name
+                    })
+                  }
+                })
+              }
+            })
+            data.ability = ability
             window.agentInfo = data
             commit('SET_NAME', data.nickname || data.username)
             commit('SET_AVATAR', data.avastar || '')
             commit('SET_AGENTINFO', data)
+            commit('SET_ABILITY', menu)
             resolve({
               roles: [data.userType],
-              authMenu: data.authMenu
+              authMenu: Object.keys(menu)
             })
           })
         }

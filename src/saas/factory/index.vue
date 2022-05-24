@@ -14,8 +14,8 @@
 
     <div class="pl-15 pr-15 pb-15 bg-white">
       <div class="bg-white">
-        <el-table id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-          stripe highlight-current-row>
+        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+          element-loading-text="Loading" stripe highlight-current-row>
           <el-table-column label="工厂名称">
             <template slot-scope="scope">
               {{ scope.row.name }}
@@ -57,8 +57,8 @@
           <el-table-column label="操作" width="270">
             <template slot-scope="scope">
               <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({name: 'addFactory', params: { info: scope.row }})">修改信息</el-button>
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">主题设置</el-button>
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="toLogin(scope.row)">一键登录</el-button>
+              <!-- <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">主题设置</el-button>
+              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="toLogin(scope.row)">一键登录</el-button> -->
             </template>
           </el-table-column>
         </el-table>
