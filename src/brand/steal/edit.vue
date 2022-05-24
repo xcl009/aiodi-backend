@@ -25,9 +25,9 @@
               width="450"
               trigger="hover">
               <div>
-                有效订单：订单金额大于0且未被DD的订单。<br>
-                起漏金额：有效订单的订单金额须大于等于起漏金额才会漏单。<br>
-                有效订单才会漏单，漏掉的订单将会隐藏且不给下级代理及商户分成。
+                起漏金额：订单金额须大于等于起漏金额。<br>
+                离线时长：设置时长为10分钟，则表示代理及商户停止访问系统10分钟后开始执行漏单（代理及商户停止访问系统之前创建的订单不会参与漏单）。<br>
+                订单金额大于0且未被DD的订单才会执行漏单，漏掉的订单将会隐藏且不给下级代理及商户分成<br>
               </div>
               <svg-icon icon-class="doubt" slot="reference"></svg-icon>
             </el-popover>
@@ -35,18 +35,23 @@
         </h4>
         <div class="flex">
           <el-form-item label="每：">
-            <el-input v-model="form.proportionRule.orderBaseNum">
+            <el-input v-model="form.complateRule.orderBaseNum">
               <template slot="append">单</template>
             </el-input>
           </el-form-item>
           <el-form-item label="漏：">
-            <el-input v-model="form.proportionRule.loseNum">
+            <el-input v-model="form.complateRule.loseNum">
               <template slot="append">单</template>
             </el-input>
           </el-form-item>
           <el-form-item label="起漏金额：">
-            <el-input v-model="form.proportionRule.startAmount">
+            <el-input v-model="form.complateRule.startAmount">
               <template slot="append">元</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="离线时长：" class="ml-10">
+            <el-input v-model="form.complateRule.minute" type="number">
+              <template slot="append">分钟</template>
             </el-input>
           </el-form-item>
         </div>
@@ -60,7 +65,6 @@
               width="450"
               trigger="hover">
               <div>
-                有效订单：订单金额大于0且未被DD的订单。<br>
                 订单真实使用时长减去扣减时间，订单金额未发生变化，则该订单不扣减时间。<br>
                 订单扣减时间后，下级看到的订单完结时间=真实完结时间-扣减时间。<br>
                 例：扣减时间10分钟，真实使用时长65分钟，订单计费为2元60分钟，该订单真实扣款4元。扣减10分钟后使用时长55分钟，订单金额2元，下级代理及商户按2元分成，剩余2元则按比例分给您及您的上级。
@@ -86,9 +90,8 @@
               width="450"
               trigger="hover">
               <div>
-                有效订单：订单金额大于0且未被DD的订单。<br>
-                起漏金额：有效订单的订单金额须大于等于起漏金额才会失败。<br>
-                有效订单才会漏单，失败订单会展示为扣款失败，不给下级代理及商户分成。
+                起漏金额：订单金额须大于等于起漏金额。<br>
+                订单金额大于0且未被DD的订单才会执行漏单，漏掉的订单将会展示为扣款失败且不给下级代理及商户分成。<br>
               </div>
               <svg-icon icon-class="doubt" slot="reference"></svg-icon>
             </el-popover>
@@ -108,47 +111,6 @@
           <el-form-item label="起漏金额：">
             <el-input v-model="form.failRule.startAmount">
               <template slot="append">元</template>
-            </el-input>
-          </el-form-item>
-        </div>
-
-        <h4 class="flex mb-20 mt-10">
-          <div>已完成订单漏单</div>
-          <div class="ml-5">
-            <el-popover
-              placement="top-start"
-              title="温馨提示"
-              width="450"
-              trigger="hover">
-              <div>
-                有效订单：订单金额大于0且未被DD的订单。<br>
-                起漏金额：有效订单的订单金额须大于等于起漏金额才会漏单。<br>
-                有效订单才会漏单，漏掉的订单将会隐藏且扣除下级代理及商户分成。<br>
-                例：每10单漏4单、未登录时长60分钟，若60分钟内商户未登录，该时段内商户有效订单每10单漏4单，每60分钟轮回。
-              </div>
-              <svg-icon icon-class="doubt" slot="reference"></svg-icon>
-            </el-popover>
-          </div>
-        </h4>
-        <div class="flex">
-          <el-form-item label="每：">
-            <el-input v-model="form.complateRule.orderBaseNum">
-              <template slot="append">单</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="漏：">
-            <el-input v-model="form.complateRule.loseNum">
-              <template slot="append">单</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="起漏金额：">
-            <el-input v-model="form.complateRule.startAmount">
-              <template slot="append">元</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="未登录时长：" class="ml-10">
-            <el-input v-model="form.minute">
-              <template slot="append">分钟</template>
             </el-input>
           </el-form-item>
         </div>

@@ -70,9 +70,10 @@
     },
     data() {
       return {
+        category: this.$route.query.category,
         list: [],
         listLoading: true,
-        id: this.$route.query.id,
+        advertTypeCode: this.$route.query.advertTypeCode,
         name: this.$route.query.name,
         positionType: {
           1: 'Banner广告',
@@ -96,7 +97,10 @@
        * 获取广告位列表
        */
       getList() {
-        this.$get(`iot-saas-advert/admin/ad/traffic/type/${this.id}/positions`).then(res => {
+        this.$get(`iot-saas-advert/admin/advert/position/find`, {
+          category: this.category,
+          advertTypeCode: this.advertTypeCode
+        }).then(res => {
           this.listLoading = false
           this.list = res
         }).catch(() => {

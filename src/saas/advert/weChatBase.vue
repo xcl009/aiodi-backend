@@ -13,12 +13,12 @@
         </el-table-column>
         <el-table-column label="数量">
           <template slot-scope="scope">
-            <div>{{ scope.row.positionCount }}</div>
+            <div>{{ scope.row.number }}</div>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/advert/weChatList?id=${scope.row.id}&name=${scope.row.name}`})">位置管理</el-button>
+            <el-button type="primary" size="mini" @click="$router.push({path: `/advert/weChatList?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&name=${scope.row.name}`})">位置管理</el-button>
             <el-button type="primary" size="mini" @click="setShow(scope.row)" v-if="isBrand()">{{ scope.row.is_show == 1 ? '已开启' : '已关闭' }}</el-button>
           </template>
         </el-table-column>
@@ -80,6 +80,7 @@
     },
     data() {
       return {
+        category: 'TRAFFIC',
         clickSubmit: false,
         list: [],
         listLoading: true,
@@ -132,7 +133,9 @@
        * 获取广告位置
        */
       getList() {
-        this.$get('iot-saas-advert/admin/ad/traffic/types').then(res => {
+        this.$get('iot-saas-advert/admin/advert/findStatistics', {
+          category: this.category
+        }).then(res => {
           this.list = Object.values(res)
           this.listLoading = false
         }).catch(() => {
