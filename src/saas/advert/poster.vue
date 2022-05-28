@@ -5,21 +5,21 @@
         element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="类型">
           <template slot-scope="scope">
-            <div>{{ scope.row.name }}</div>
+            <div>{{ scope.row.advertTypeName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="数量">
           <template slot-scope="scope">
-            <div>{{ scope.row.positionCount }}</div>
+            <div>{{ scope.row.number }}</div>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <template>
-              <router-link :to="`/advert/posterList?pid=${scope.row.id}`">
+              <router-link :to="`/advert/posterList?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&advertTypeName=${scope.row.advertTypeName}`">
                 <el-button type="primary" size="mini">广告管理</el-button>
               </router-link>
-              <router-link :to="`/advert/posterPosition?pid=${scope.row.id}&name=${scope.row.name}`" v-if="isSaas()">
+              <router-link :to="`/advert/posterPosition?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&advertTypeName=${scope.row.advertTypeName}`" v-if="isSaas()">
                 <el-button type="primary" size="mini">位置管理</el-button>
               </router-link>
             </template>
@@ -38,6 +38,7 @@
     },
     data() {
       return {
+        category: 'ORDINARY',
         list: [],
         listLoading: true
       }
@@ -50,7 +51,9 @@
        * 获取广告位置
        */
       getList() {
-        this.$get('iot-saas-advert/admin/ad/ordinary/types').then(res => {
+        this.$get('iot-saas-advert/admin/advert/findAdvertType', {
+          category: this.category
+        }).then(res => {
           this.list = res
           this.listLoading = false
         }).catch(() => {

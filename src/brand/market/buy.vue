@@ -154,6 +154,8 @@
           this.form.priceCode = res.priceSettings[0].priceCode
           res.priceSettings = arrayToObj(res.priceSettings, 'priceCode')
           this.info = res
+          console.log(this.info)
+          console.log(this.form)
         })
       },
 

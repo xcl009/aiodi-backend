@@ -8,7 +8,7 @@
         element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="类型">
           <template slot-scope="scope">
-            <div>{{ scope.row.name }}</div>
+            <div>{{ scope.row.advertTypeName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="数量">
@@ -18,8 +18,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/advert/weChatList?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&name=${scope.row.name}`})">位置管理</el-button>
-            <el-button type="primary" size="mini" @click="setShow(scope.row)" v-if="isBrand()">{{ scope.row.is_show == 1 ? '已开启' : '已关闭' }}</el-button>
+            <el-button type="primary" size="mini" @click="$router.push({path: `/advert/weChatList?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&advertTypeName=${scope.row.advertTypeName}`})">广告设置</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -133,30 +132,13 @@
        * 获取广告位置
        */
       getList() {
-        this.$get('iot-saas-advert/admin/advert/findStatistics', {
+        this.$get('iot-saas-advert/admin/advert/findAdvertType', {
           category: this.category
         }).then(res => {
           this.list = Object.values(res)
           this.listLoading = false
         }).catch(() => {
           this.listLoading = false
-        })
-      },
-
-      /**
-       * 设置是否显示
-       */
-      setShow(row) {
-        let is_show = row.is_show == 1 ? 0 : 1
-        this.$post('iot-saas-adver/admin/ad/traffic/types', {
-          business_type: row.business_type,
-          is_show: is_show
-        }).then(res => {
-          this.$message({
-            message: '设置成功',
-            type: 'success'
-          })
-          row.is_show = is_show
         })
       },
 

@@ -2,7 +2,7 @@
   <div>
     <div class="p-15 bg-white">
       <div class="mb-15" v-if="isSaas()">
-        <el-button type="primary" size="small" icon="el-icon-plus" @click="setDialog()">添加广告位置</el-button>
+        <el-button type="primary" size="small" icon="el-icon-plus" @click="showDialog()">添加广告位置</el-button>
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
@@ -19,22 +19,22 @@
         </el-table-column>
         <el-table-column label="广告类型">
           <template slot-scope="scope">
-            <div>{{ positionType[scope.row.positionType] }}</div>
+            <div>{{ scope.row.positionTypeName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="setDialog(scope.row)" v-if="isSaas()">编辑</el-button>
+            <el-button type="primary" size="mini" @click="showDialog(scope.row)" v-if="isSaas()">编辑</el-button>
             <el-button type="danger" size="mini" @click="del(scope.row, scope.$index)" v-if="isSaas()">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <el-dialog title="编辑广告位置" :visible.sync="dialogStatus">
+    <el-dialog title="编辑广告位置" :visible.sync="dialogStatus" :center="true" width="600px">
       <el-form label-width="130px">
         <el-form-item label="广告类型">
-          <div>{{ name }}</div>
+          <div>{{ advertTypeName }}</div>
         </el-form-item>
         <el-form-item label="广告位置">
           <el-input v-model="form.position" placeholder="如:PL001"/>
@@ -64,12 +64,13 @@
     },
     data() {
       return {
+        category: this.$route.query.category,
+        advertTypeCode: this.$route.query.advertTypeCode,
+        advertTypeName: this.$route.query.advertTypeName,
         list: [],
         listLoading: true,
-        pid: this.$route.query.pid || '',
-        name: this.$route.query.name || '',
         positionType: {
-          1: '图片广告'
+          PICTURE: '图片广告'
         },
         dialogStatus: false,
         form: {},
@@ -84,7 +85,10 @@
        * 获取列表
        */
       getList() {
-        this.$get(`iot-saas-advert/admin/ad/ordinary/type/${this.pid}/positions`).then(res => {
+        this.$get(`iot-saas-advert/admin/advert/position/find`, {
+          category: this.category,
+          advertTypeCode: this.advertTypeCode
+        }).then(res => {
           this.listLoading = false
           this.list = res
         }).catch(() => {
@@ -95,15 +99,15 @@
       /**
        * 显示dialog
        */
-      setDialog(row = { positionType: 1}){
+      showDialog(row = { positionType: 'PICTURE'}){
         this.row = row
         this.dialogStatus = true
         let obj = {
+          category: this.category,
+          advertTypeCode: this.advertTypeCode,
           title: row.title || '',
           position: row.position || '',
-          positionType: row.positionType.toString(),
-          adTypeId: this.pid,
-          category: 1
+          positionType: row.positionType || ''
         }
         if(row.id) obj.id = row.id
         this.form = obj
@@ -113,9 +117,10 @@
        * 提交编辑广告位置
        */
       onSubmit(row){
-        let params = this.form
+        let params = this.form, type = '$post'
+        if(params.id) type = '$put'
         this.clickSubmit = true
-        this.$post('iot-saas-advert/admin/ad/save/position', params).then(res => {
+        this[type]('iot-saas-advert/admin/advert/position', params).then(res => {
           this.$message({
             message: '提交成功',
             type: 'success'
@@ -137,7 +142,7 @@
           center: true,
           callback: action => {
             if (action == 'confirm') {
-              this.$delete(`iot-saas-advert/admin/ad/position/${row.id}`).then(res => {
+              this.$delete(`iot-saas-advert/admin/advert/position/${row.id}`).then(res => {
                 this.$message({
                   message: '删除成功',
                   type: 'success'

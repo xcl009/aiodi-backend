@@ -4,7 +4,7 @@
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-form ref="form" :model="form" label-width="auto">
           <el-form-item label="广告位">
-            <el-select v-model="form.adPositonId" placeholder="选择广告位">
+            <el-select v-model="form.advertPositionId" placeholder="选择广告位">
               <el-option v-for="item in positionList" :label="item.title" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -17,11 +17,11 @@
           <el-form-item label="时间">
             <div class="flex align-center">
               <el-form-item>
-                <el-date-picker type="datetime" placeholder="开始时间" v-model="form.startTime" :picker-options="pickerOptions"></el-date-picker>
+                <el-date-picker type="datetime" placeholder="开始时间" v-model="form.startTime" :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
               </el-form-item>
               <div class="ml-10 mr-10 line">-</div>
               <el-form-item>
-                <el-date-picker type="datetime" placeholder="结束时间" v-model="form.endTime" :picker-options="pickerOptions"></el-date-picker>
+                <el-date-picker type="datetime" placeholder="结束时间" v-model="form.endTime" :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
               </el-form-item>
             </div>
           </el-form-item>
@@ -35,10 +35,10 @@
             <upload v-model="form.images" :emitUrl="false" :limit="99" />
           </el-form-item>
           <el-form-item label="小程序appid" v-if="form.expandMode == 2">
-            <el-input v-model="form.jump_appid" />
+            <el-input v-model="form.targetAppId" />
           </el-form-item>
           <el-form-item label="小程序链接" v-if="form.expandMode == 2">
-            <el-input v-model="form.jump_url" />
+            <el-input v-model="form.targetAppUrl" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit" :disabled="clickSubmit">提交</el-button>
@@ -59,9 +59,10 @@
     },
     data() {
       return {
+        category: 'ORDINARY',
+        id: this.$route.query.id || '',
+        advertTypeCode: this.$route.query.advertTypeCode || '',
         clickSubmit: false,
-        pid: this.$route.query.pid,
-        id: this.$route.query.id,
         positionList: [],
         form: {
           expandMode: 1,
@@ -85,7 +86,10 @@
        * 获取广告位
        */
       getPositions() {
-        this.$get(`iot-saas-advert/admin/ad/ordinary/type/${this.pid}/positions`).then(res => {
+        this.$get(`iot-saas-advert/admin/advert/position/find`, {
+          category: this.category,
+          advertTypeCode: this.advertTypeCode
+        }).then(res => {
           this.positionList = res
         })
       },
@@ -94,20 +98,23 @@
        * 获取商户信息
        */
       getInfo() {
-        this.$get('agentapi/ad/brand_ad_detail', {
-          id: this.id
-        }).then(res => {
+        this.$get(`iot-saas-advert/admin/advert/${this.id}`).then(res => {
           let images = []
-          res.images.map(item => {
-            images.push({
-              url: item
+          if(res.images && res.images.length > 0){
+            res.images.map(item => {
+              images.push({
+                url: item
+              })
             })
-          })
+          }
           res.images = images
           this.form = res
         })
       },
 
+      /**
+       * 提交保存
+       */
       onSubmit() {
         let params = JSON.parse(JSON.stringify(this.form)),
           type = '$post',
@@ -135,13 +142,12 @@
         } else {
           delete params.images
         }
-        params.adTypeId = this.pid
         if (this.id > 0) {
           params.id = this.id
           type = '$put'
         }
         this.clickSubmit = true
-        this[type](`iot-saas-advert/admin/ad/save`, params).then(res => {
+        this[type](`iot-saas-advert/admin/advert`, params).then(res => {
           this.$message({
             message: '提交成功',
             type: 'success'

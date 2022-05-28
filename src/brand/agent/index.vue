@@ -82,6 +82,7 @@
               <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/edit/${scope.row.id}`})">修改信息</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)">删除代理</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 3, scope.$index)">售货机设置</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/steal/${scope.row.id}?userKey=agentId&deviceType=${JSON.stringify(arrayToObj(scope.row.agentDeviceType, 'code', 'name'))}`})">DD设置</el-button>
             </template>
           </template>
@@ -113,6 +114,36 @@
           <div class="text-black">确定删除此代理吗？</div>
           <div class="mt-10 pl-40 pr-40 text-danger text-left">注：若该代理下存在设备，则无法删除。需解绑回收设备。</div>
         </div>
+      </template>
+      <template v-if="dialogType == 3">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto">
+          <el-form-item label="运营模式">
+            <el-radio-group v-model="dform.mType">
+              <el-radio label="1">分润模式</el-radio>
+              <el-radio label="2">自营模式</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="分润比例" v-if="dform.mType == 1">
+            <el-input v-model="dform.amount" :placeholder="`最高不能超过您自身的分润比例`">
+              <span slot="append">%</span>
+            </el-input>
+            <div class="fs-s3 text-gray">
+              TA的商户和设备关联您添加的商品，售出订单按比例分成
+            </div>
+          </el-form-item>
+          <el-form-item label="是否补货" v-if="dform.mType == 1">
+            <el-checkbox v-model="dform.as"></el-checkbox>
+          </el-form-item>
+          <el-form-item label="管理费" v-if="dform.mType == 2">
+            <el-input v-model="dform.reason" placeholder="每笔商品订单您想要收取的费用">
+              <span slot="append">元</span>
+            </el-input>
+            <div class="fs-s3 text-gray">
+              下级自己添加商品，商户和设备关联自己的商品，售出订单您得到设置的管理费
+            </div>
+          </el-form-item>
+          
+        </el-form>
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
@@ -163,7 +194,8 @@
         dialogStatus: false,
         dialogTitle: {
           1: '代理权限设置',
-          2: '删除代理'
+          2: '删除代理',
+          2: '售货机设置',
         },
         curRow: {},
         curIdx: 0,

@@ -178,7 +178,12 @@
             </el-table-column>
             <el-table-column label="分成金额(元)" align="center">
               <template slot-scope="scope">
-                {{ scope.row.amount }}
+                {{ accSub(scope.row.amount, scope.row.loseAmount) }}
+              </template>
+            </el-table-column>
+            <el-table-column label="DD金额(元)" align="center" v-if="amountPaidLose > 0">
+              <template slot-scope="scope">
+                {{ scope.row.loseAmount || '--' }}
               </template>
             </el-table-column>
             <el-table-column label="退款金额(元)" align="center">
@@ -246,6 +251,8 @@
     parseTime,
     currentTime,
     unixTime,
+    accAdd,
+    accSub
   } from '@/utils/index'
 
   export default {
@@ -292,6 +299,7 @@
       return {
         dealPhone: dealPhone,
         showFeeMode: showFeeMode,
+        accSub: accSub,
         clickSubmit: false,
         pickerOptionsEnd: {
           disabledDate: (time) => {
@@ -383,6 +391,7 @@
         orderFlow: [],
         orderDivide: [],
         amountPaid: '',
+        amountPaidLose: '',
 
         // 弹出相关
         dialogType: 1,
@@ -590,12 +599,19 @@
           this.orderFlow = res
           this.orderDivide = []
           this.detailDialog = true
-          if(row.status.indexOf('O') > -1 && row.amount > 0 && this.isBrand()){
+          if(row.status.indexOf('O') > -1 && row.amount > 0){
             this.$get('iot-saas-order/admin/order/detail/divide', {
               orderNo: row.orderNo
             }).then(res => {
+              let amountPaidLose = 0
+              if(res.divideList && res.divideList.length > 0){
+                res.divideList.map(item => {
+                  amountPaidLose = accAdd(amountPaidLose, item.loseAmount)
+                })
+              }
               this.orderDivide = res.divideList
               this.amountPaid = res.amountPaid
+              this.amountPaidLose = amountPaidLose
             })
           }
         })

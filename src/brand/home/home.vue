@@ -35,7 +35,7 @@
           </div>
           <div class="flex align-center">
             <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(orderStat.todayNumber)" :duration="2600" :decimals="2"/></div>
+            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(orderStat.todayNumber)" :duration="2600"/></div>
             <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
           </div>
         </div>

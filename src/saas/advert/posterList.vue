@@ -10,48 +10,57 @@
           </el-form-item>
         </template>
         <template v-slot:endButton>
-          <router-link :to="`/advert/posterEdit?pid=${pid}`">
+          <router-link :to="`/advert/posterEdit?advertTypeCode=${advertTypeCode}`">
             <el-button type="primary" size="small">添加广告</el-button>
           </router-link>
         </template>
       </condition>
 
-      <div class="p-10">
+      <div class="pl-10 pr-10">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-          element-loading-text="Loading" stripe highlight-current-row>
+          element-loading-text="Loading" stripe highlight-current-row :max-height="tableMaxH">
           <el-table-column label="图片" align="center">
             <template slot-scope="scope">
               <el-image
                 class="flex"
                 style="height: 80px;"
-                :src="scope.row.img_url"
-                :preview-src-list="[scope.row.img_url]"
+                :src="scope.row.logoUrl"
+                :preview-src-list="[scope.row.logoUrl]"
                 fit="contain"></el-image>
             </template>
           </el-table-column>
           <el-table-column label="名称" align="center">
             <template slot-scope="scope">
-              {{ scope.row.ad_name }}
+              {{ scope.row.title }}
             </template>
           </el-table-column>
           <el-table-column label="时间" align="center">
             <template slot-scope="scope">
-              <div>{{ parseTime(scope.row.start_date, '{y}-{m}-{d} {h}:{i}') }}<el-link type="primary">起</el-link></div>
-              <div>{{ parseTime(scope.row.end_date, '{y}-{m}-{d} {h}:{i}') }}<el-link type="danger">止</el-link></div>
+              <div>{{ scope.row.startTime }}<el-link type="primary">起</el-link></div>
+              <div>{{ scope.row.endTime }}<el-link type="danger">止</el-link></div>
             </template>
           </el-table-column>
           <el-table-column label="拓展方式" align="center">
             <template slot-scope="scope">
-              {{ scope.row.jump_type == 1 ? '拓展长图' : '跳转广告' }}
+              {{ scope.row.expandMode == 1 ? '拓展长图' : '跳转广告' }}
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="$router.push({path: `/advert/posterEdit?pid=${pid}&id=${scope.row.id}`})">编辑</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/advert/posterEdit?advertTypeCode=${advertTypeCode}&id=${scope.row.id}`})">编辑</el-button>
               <el-button type="danger" size="mini" @click="del(scope.row, scope.$index)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
+        <div class="flex justify-center">
+          <pagination
+            v-show="listTotal > 0"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.size"
+            :total="parseInt(listTotal)"
+            @pagination="getList"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -68,15 +77,19 @@
     },
     data() {
       return {
+        category: this.$route.query.category,
+        advertTypeCode: this.$route.query.advertTypeCode,
+        advertTypeName: this.$route.query.advertTypeName,
         clickSubmit: false,
-        statusObj: {
-          0: '未审核', 1: '审核中', 2: '审核通过', 3: '审核不通过'
-        },
-        pid: this.$route.query.pid || '',
-        name: this.$route.query.name || '',
         positionList: [],
-        list: [],
+        tableMaxH: '250',
         listLoading: true,
+        listTotal: 0,
+        list: [],
+        listQuery: {
+          page: 1,
+          size: 20
+        },
         form: {}
       }
     },
@@ -89,7 +102,10 @@
        * 获取广告位
        */
       getPositions() {
-        this.$get(`iot-saas-advert/admin/ad/ordinary/type/${this.pid}/positions`).then(res => {
+        this.$get(`iot-saas-advert/admin/advert/position/find`, {
+          category: this.category,
+          advertTypeCode: this.advertTypeCode
+        }).then(res => {
           this.positionList = res
         })
       },
@@ -117,9 +133,17 @@
        * 获取列表
        */
       getList() {
-        let params = Object.assign({}, this.form)
-        this.$get(`iot-saas-advert/admin/ad/${this.pid}/ordinary/list`, params).then(res => {
-          this.list = res
+        let params = Object.assign({}, this.listQuery, this.form, {
+          page: this.listQuery.page - 1,
+          category: this.category,
+          advertTypeCode: this.advertTypeCode
+        })
+        this.$get(`iot-saas-advert/admin/advert/findPage`, params).then(res => {
+          this.list = res.rows
+          if(params.page == 0){
+            this.listTotal = res.total
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          }
           this.listLoading = false
           this.clickSubmit = false
         }).catch(() => {
@@ -136,7 +160,7 @@
           confirmButtonText: '确定',
           callback: action => {
             if (action == 'confirm') {
-              this.$delete(`iot-saas-advert/admin/ad/${row.id}`).then(res => {
+              this.$delete(`iot-saas-advert/admin/advert/${row.id}`).then(res => {
                 this.$message({
                   message: '删除成功',
                   type: 'success'

@@ -312,6 +312,7 @@
           params.countType = 'BRAND'
           params.groupIds = this.agentInfo.brandId
         }
+        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
         this.$get('iot-saas-device/admin/device/count/queryGroupCount', params).then(res => {
           if(res[params.groupIds]){
             res = res[params.groupIds]
@@ -392,6 +393,7 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
+        this.queryDeviceCount()
       },
 
       /**
@@ -402,6 +404,7 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
+        this.queryDeviceCount()
       },
 
       /**

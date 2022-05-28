@@ -2,7 +2,7 @@
   <div>
     <div class="p-15 bg-white">
       <div class="mb-15" v-if="isSaas()">
-        <el-button type="primary" size="small" @click="setDialog()">添加广告位置</el-button>
+        <el-button type="primary" size="small" @click="showDialog()">添加广告位置</el-button>
       </div>
 
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" stripe highlight-current-row>
@@ -18,29 +18,29 @@
         </el-table-column>
         <el-table-column label="广告类型">
           <template slot-scope="scope">
-            <div>{{ positionType[scope.row.positionType] }}</div>
+            <div>{{ scope.row.positionTypeName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="微信广告ID" v-if="isBrand()">
           <template slot-scope="scope">
-            <div>{{ scope.row.wx_ad_id || '--' }}</div>
+            <div>{{ scope.row.weChatAdvertPositionId || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="setShow(scope.row)" v-if="isBrand()">{{ scope.row.is_show == 1 ? '已开启' : '已关闭' }}</el-button>
+            <el-button type="primary" size="mini" @click="setStatus(scope.row)" v-if="isBrand()">{{ scope.row.statusCode == 'ENABLE' ? '已开启' : '已关闭' }}</el-button>
             <el-button type="primary" size="mini" @click="adUnitId(scope.row)" v-if="isBrand()">设置广告ID</el-button>
-            <el-button type="primary" size="mini" @click="setDialog(scope.row)" v-if="isSaas()">编辑</el-button>
+            <el-button type="primary" size="mini" @click="showDialog(scope.row)" v-if="isSaas()">编辑</el-button>
             <el-button type="danger" size="mini" @click="del(scope.row, scope.$index)" v-if="isSaas()">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <el-dialog title="编辑广告位置" :visible.sync="adDialog" :center="true" width="750px">
+    <el-dialog title="编辑广告位置" :visible.sync="dialogStatus" :center="true" width="600px">
       <el-form label-width="130px">
         <el-form-item label="广告类型">
-          <div>{{ name }}</div>
+          <div>{{ advertTypeName }}</div>
         </el-form-item>
         <el-form-item label="广告位置">
           <el-input v-model="form.position" placeholder="如:PL001"/>
@@ -55,7 +55,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="adDialog = false">取 消</el-button>
+        <el-button @click="dialogStatus = false">取 消</el-button>
         <el-button type="primary" @click="onSubmit()" :disabled="clickSubmit">{{ clickSubmit ? '提交中' : '确 定'}}</el-button>
       </div>
     </el-dialog>
@@ -71,20 +71,19 @@
     data() {
       return {
         category: this.$route.query.category,
+        advertTypeCode: this.$route.query.advertTypeCode,
+        advertTypeName: this.$route.query.advertTypeName,
+        positionType: {
+          'BANNER': 'Banner广告',
+          'ENCOURAGE_VIDEO': '激励视频广告',
+          'TABLE_SCREEN': '插屏广告',
+          'VIDEO': '视频广告',
+          'VIDEO_BEFORE': '视频前贴广告',
+          'TEMPLATE': '原生模板广告'
+        },
         list: [],
         listLoading: true,
-        advertTypeCode: this.$route.query.advertTypeCode,
-        name: this.$route.query.name,
-        positionType: {
-          1: 'Banner广告',
-          2: '激励视频广告',
-          3: '插屏广告',
-          4: '视频广告',
-          5: '视频前贴广告',
-          6: '封面广告',
-          7: '原生模板广告'
-        },
-        adDialog: false,
+        dialogStatus: false,
         form: {},
         clickSubmit: false
       }
@@ -97,7 +96,9 @@
        * 获取广告位列表
        */
       getList() {
-        this.$get(`iot-saas-advert/admin/advert/position/find`, {
+        let url = 'iot-saas-advert/admin/advert/position/find'
+        if(this.isBrand()) url = 'iot-saas-advert/admin/advert/findBrandTraffic'
+        this.$get(url, {
           category: this.category,
           advertTypeCode: this.advertTypeCode
         }).then(res => {
@@ -111,15 +112,15 @@
       /**
        * 显示dialog
        */
-      setDialog(row = { positionType: 1}){
+      showDialog(row = { positionType: 'BANNER'}){
         this.row = row
-        this.adDialog = true
+        this.dialogStatus = true
         let obj = {
+          category: this.category,
+          advertTypeCode: this.advertTypeCode,
           title: row.title || '',
           position: row.position || '',
-          positionType: row.positionType.toString(),
-          adTypeId: this.id,
-          category: 2
+          positionType: row.positionType || ''
         }
         if(row.id) obj.id = row.id
         this.form = obj
@@ -129,15 +130,16 @@
        * 提交编辑广告位置
        */
       onSubmit(row){
-        let params = this.form
+        let params = this.form, type = '$post'
+        if(params.id) type = '$put'
         this.clickSubmit = true
-        this.$post('iot-saas-advert/admin/ad/save/position', params).then(res => {
+        this[type]('iot-saas-advert/admin/advert/position', params).then(res => {
           this.$message({
             message: '提交成功',
             type: 'success'
           })
           this.getList()
-          this.adDialog = false
+          this.dialogStatus = false
           this.clickSubmit = false
         }).catch(err => {
           this.clickSubmit = false
@@ -147,14 +149,17 @@
       /**
        * 设置是否显示
        */
-      setShow(row){
-        let status = row.status == 1 ? 0 : 1
-        this.$post(`iot-saas-advert/set/${row.id}/status/${status}`).then(res => {
+      setStatus(row){
+        let statusCode = row.statusCode == 'ENABLE' ? 'CLOSE' : 'ENABLE'
+        this.$put(`iot-saas-advert/client/advert/settingStatus`, {
+          advertPositionId: row.advertPositionId,
+          status: statusCode
+        }).then(res => {
           this.$message({
             message: '设置成功',
             type: 'success'
           })
-          row.status = status
+          this.$set(row, 'statusCode', statusCode)
         })
       },
 
@@ -162,7 +167,7 @@
        * 设置广告ID
        */
       adUnitId(row){
-        this.$prompt(`请输入微信${this.adType[row.ad_type]}位ID`, '设置微信广告ID', {
+        this.$prompt(`请输入微信${row.positionTypeName}ID`, '设置微信广告ID', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           inputType: 'text',
@@ -170,15 +175,15 @@
           beforeClose: (action, instance, done) => {
             if (action == 'confirm') {
               const value = instance.inputValue
-              this.$post('agentapi/ad/save_wx_ad_positions_detail_permission', {
-                position_id: row.position_id,
-                wx_ad_id: value.trim()
+              this.$put('iot-saas-advert/client/advert/settingPositionId', {
+                advertPositionId: row.advertPositionId,
+                weChatAdvertPositionId: value.trim()
               }).then(res => {
                 this.$message({
                   message: '设置成功',
                   type: 'success'
                 })
-                row.wx_ad_id = value
+                this.$set(row, 'weChatAdvertPositionId', value)
                 done()
               })
             } else {
