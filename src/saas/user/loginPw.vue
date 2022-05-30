@@ -2,8 +2,8 @@
   <el-row type="flex" justify="center" class="p-30  custom-form bg-white">
     <el-col :xs="24" :sm="12" :md="6" :lg="6">
       <el-form ref="form" :model="form" :rules="rules">
-        <el-form-item label="手机号码">
-          <el-input v-model="agentInfo.mobile" disabled></el-input>
+        <el-form-item label="用户名">
+          <el-input v-model="agentInfo.username" disabled></el-input>
         </el-form-item>
         <el-form-item label="旧密码" ref="oldPassword" prop="oldPassword">
           <el-input v-model="form.oldPassword" show-password></el-input>
@@ -100,7 +100,6 @@
               }, 1000)
             })
           } else {
-            this.formErrow(object)
             this.clickSubmit = false
           }
         })

@@ -100,10 +100,7 @@
       return {
         siteInfo: {},
         loginType: '1',
-        loginForm: {
-          username: 'admin',
-          password: '123456'
-        },
+        loginForm: {},
         loginRules: {
           username: [{
             required: true,
