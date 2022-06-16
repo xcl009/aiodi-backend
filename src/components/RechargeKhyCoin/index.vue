@@ -61,7 +61,7 @@
        */
       getPayCode() {
         let params = JSON.parse(JSON.stringify(this.dform)),
-          url = 'iot-saas-pay/api/pay/recharge'
+          url = 'iot-saas-pay/api/pay/codeRecharge'
         let amount = parseInt(params.amount)
         if (amount < 1 || !amount) {
           this.$message({

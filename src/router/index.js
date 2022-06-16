@@ -14,14 +14,17 @@ export const saasRoutes = [
     path: '/',
     redirect: '/home',
     component: Layout,
+    meta: {
+      title: '主页',
+      icon: 'home'
+    },
     children: [
       {
         path: '/home',
         name: 'home',
         component: () => import('@/saas/home/home'),
         meta: {
-          title: '主页',
-          icon: 'home'
+          title: '主页'
         }
       },
     ],
@@ -29,6 +32,10 @@ export const saasRoutes = [
   {
     path: '/order',
     component: Layout,
+    meta: {
+      title: '订单管理',
+      icon: 'device'
+    },
     children: [
       {
         path: '/order',
@@ -36,7 +43,6 @@ export const saasRoutes = [
         component: () => import('@/saas/order/index'),
         meta: {
           title: '订单管理',
-          icon: 'order',
           keepAlive: true
         }
       }
@@ -45,6 +51,10 @@ export const saasRoutes = [
   {
     path: '/device',
     component: Layout,
+    meta: {
+      title: '设备管理',
+      icon: 'device'
+    },
     children: [
       {
         path: '/device',
@@ -52,7 +62,6 @@ export const saasRoutes = [
         component: () => import('@/saas/device/index'),
         meta: {
           title: '设备管理',
-          icon: 'device',
           keepAlive: true
         }
       }
@@ -61,6 +70,10 @@ export const saasRoutes = [
   {
     path: '/store',
     component: Layout,
+    meta: {
+      title: '商户管理',
+      icon: 'store'
+    },
     children: [
       {
         path: '/store',
@@ -68,8 +81,7 @@ export const saasRoutes = [
         component: () => import('@/saas/store/index'),
         meta: {
           keepAlive: true,
-          title: '商户管理',
-          icon: 'store'
+          title: '商户管理'
         }
       }
     ]
@@ -77,6 +89,10 @@ export const saasRoutes = [
   {
     path: '/userManage',
     component: Layout,
+    meta: {
+      title: '用户管理',
+      icon: 'userList'
+    },
     children: [
       {
         path: '/userManage',
@@ -84,8 +100,7 @@ export const saasRoutes = [
         component: () => import('@/saas/userManage/index'),
         meta: {
           keepAlive: true,
-          title: '用户管理',
-          icon: 'userList'
+          title: '用户管理'
         }
       }
     ]
@@ -546,7 +561,17 @@ export const brandRoutes = [
           activeMenu: '/store/meStore'
         },
         hidden: true
-      }
+      },
+      {
+        path: 'steal/:id(\\d+)',
+        name: 'storeSteal',
+        component: () => import('@/brand/steal/edit'),
+        meta: {
+          title: 'DD设置',
+          activeMenu: '/store'
+        },
+        hidden: true
+      },
     ]
   },
   {
@@ -645,7 +670,7 @@ export const brandRoutes = [
         component: () => import('@/brand/steal/edit'),
         meta: {
           title: 'DD设置',
-          activeMenu: '/agent/index'
+          activeMenu: '/agent'
         },
         hidden: true
       }
@@ -708,21 +733,21 @@ export const brandRoutes = [
     },
     children: [
       {
+        path: 'buyRecord',
+        name: 'buyRecord',
+        component: () => import('@/brand/market/buyRecord'),
+        meta: {
+          keepAlive: true,
+          title: '我的服务'
+        }
+      },
+      {
         path: 'index',
         name: 'market',
         component: () => import('@/brand/market/index'),
         meta: {
           keepAlive: true,
           title: '服务列表'
-        }
-      },
-      {
-        path: 'buyRecord',
-        name: 'buyRecord',
-        component: () => import('@/brand/market/buyRecord'),
-        meta: {
-          keepAlive: true,
-          title: '服务记录'
         }
       },
       {
@@ -734,7 +759,17 @@ export const brandRoutes = [
           activeMenu: '/market/index'
         },
         hidden: true
-      }
+      },
+      {
+        path: 'steal',
+        name: 'steal',
+        component: () => import('@/brand/steal/edit'),
+        meta: {
+          title: 'DD设置',
+          activeMenu: '/market/buyRecord'
+        },
+        hidden: true
+      },
     ]
   },
   {
@@ -805,14 +840,6 @@ export const brandRoutes = [
     },
     children: [
       {
-        path: 'steal',
-        name: 'steal',
-        component: () => import('@/brand/steal/edit'),
-        meta: {
-          title: 'DD设置'
-        }
-      },
-      {
         path: 'billing',
         name: 'billing',
         component: () => import('@/brand/system/billing'),
@@ -876,6 +903,42 @@ export const brandRoutes = [
       }
     ]
   },
+  {
+    path: '/goods',
+    component: Layout,
+    redirect: '/goods/relatedTemplate',
+    meta: {
+      title: '商品管理',
+      icon: 'setting'
+    },
+    children: [
+      {
+        path: 'relatedTemplate',
+        name: 'relatedTemplate',
+        component: () => import('@/brand/goods/relatedTemplate'),
+        meta: {
+          title: '仓口模板'
+        }
+      },
+      {
+        path: 'relatedGoods',
+        name: 'relatedGoods',
+        component: () => import('@/brand/goods/relatedGoods'),
+        meta: {
+          title: '关联商品'
+        },
+        hidden: true
+      },
+      {
+        path: 'goodsOrder',
+        name: 'goodsOrder',
+        component: () => import('@/brand/goods/order'),
+        meta: {
+          title: '订单管理'
+        }
+      },
+    ],
+  }
   // {
   //   path: '/user',
   //   component: Layout,
@@ -1079,7 +1142,17 @@ export const agentRoutes = [
           activeMenu: '/store/meStore'
         },
         hidden: true
-      }
+      },
+      {
+        path: 'steal',
+        name: 'steal',
+        component: () => import('@/brand/steal/edit'),
+        meta: {
+          title: 'DD设置',
+          activeMenu: '/store'
+        },
+        hidden: true
+      },
     ]
   },
   {
@@ -1278,69 +1351,77 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-  {
-    path: '/user',
-    component: Layout,
-    redirect: '/user/index',
-    meta: {
-      title: '个人信息',
-      icon: 'user'
-    },
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        name: 'userInfo',
-        component: () => import('@/saas/user/index'),
-        meta: {
-          title: '个人信息'
-        }
-      },
-      {
-        path: 'lpw',
-        name: 'loginPw',
-        component: () => import('@/saas/user/loginPw'),
-        meta: {
-          title: '登陆密码'
-        }
-      }
-    ]
-  },
-  {
-    path: '/money',
-    component: Layout,
-    redirect: '/money/index',
-    meta: {
-      title: '收益明细'
-    },
-    hidden: true,
-    children: [
-      {
-        path: 'income',
-        name: 'income',
-        component: () => import('@/saas/money/income'),
-        meta: {
-          title: '收益明细'
-        }
-      },
-      {
-        path: 'monthMoney',
-        name: 'monthMoney',
-        component: () => import('@/saas/money/monthMoney'),
-        meta: {
-          title: '月交易额'
-        }
-      },
-      {
-        path: 'dayMoney',
-        name: 'dayMoney',
-        component: () => import('@/saas/money/dayMoney'),
-        meta: {
-          title: '日交易额'
-        }
-      }
-    ]
-  }
+  // {
+  //   path: '/user',
+  //   component: Layout,
+  //   redirect: '/user/index',
+  //   meta: {
+  //     title: '个人信息',
+  //     icon: 'user'
+  //   },
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'userInfo',
+  //       component: () => import('@/saas/user/index'),
+  //       meta: {
+  //         title: '个人信息'
+  //       }
+  //     },
+  //     {
+  //       path: 'lpw',
+  //       name: 'loginPw',
+  //       component: () => import('@/saas/user/loginPw'),
+  //       meta: {
+  //         title: '登陆密码'
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/money',
+  //   component: Layout,
+  //   redirect: '/money/index',
+  //   meta: {
+
+  //   },
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: 'income',
+  //       name: 'income',
+  //       component: () => import('@/saas/money/income'),
+  //       meta: {
+  //         title: '收益明细'
+  //       }
+  //     },
+  //     {
+  //       path: 'monthMoney',
+  //       name: 'monthMoney',
+  //       component: () => import('@/saas/money/monthMoney'),
+  //       meta: {
+  //         title: '月交易额'
+  //       }
+  //     },
+  //     {
+  //       path: 'dayMoney',
+  //       name: 'dayMoney',
+  //       component: () => import('@/saas/money/dayMoney'),
+  //       meta: {
+  //         title: '日交易额'
+  //       }
+  //     },
+  //     {
+  //       path: 'khyCoin',
+  //       name: 'khyCoin',
+  //       component: () => import('@/saas/money/khyCoin'),
+  //       meta: {
+  //         title: '快活币明细'
+  //       }
+  //     }
+  //   ]
+  // }
 ]
 
 const createRouter = () => new Router({

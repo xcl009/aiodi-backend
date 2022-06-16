@@ -1,16 +1,18 @@
 <template>
   <div>
+    <condition ref="condition" @reset="reset" @query="toQuery">
+      <template v-slot:tabs>
+        <el-tabs class="mb-15 bg-white" v-model="listQuery.serviceTypeCode" @tab-click="toQuery()">
+          <el-tab-pane label="全部" :name="'0'" />
+          <el-tab-pane :label="item.name" :name="item.code" v-for="(item, index) in tabs" />
+        </el-tabs>
+      </template>
+      <template v-slot:defult>
+        <el-input v-model="form.serviceName" placeholder="服务名称"/>
+      </template>
+    </condition>
+
     <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
-      <div class="mb-15 flex align-center">
-        <div class="flex1">
-          <el-button size="medium" :type="!listQuery.serviceTypeCode ? 'primary' : ''"
-            :class="{'btn-body': listQuery.serviceTypeCode}"
-            @click="listQuery.serviceTypeCode = ''; toQuery()">全部</el-button>
-          <el-button size="medium" :type="listQuery.serviceTypeCode == item.code ? 'primary' : ''"
-            :class="{'btn-body': listQuery.serviceTypeCode != item.code}" v-for="item in tabs"
-            @click="listQuery.serviceTypeCode = item.code; toQuery()">{{ item.name }}</el-button>
-        </div>
-      </div>
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH">
         <el-table-column label="服务名称">
           <template slot-scope="scope">
@@ -19,7 +21,7 @@
         </el-table-column>
         <el-table-column label="模式">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '--' }}</div>
+            <div class="mb-5">{{ scope.row.priceName || '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="周期" width="130">
@@ -54,9 +56,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <div class="flex justify-center">
-              <div class="p-10 cursor text-primary" @click="setRows(1, scope.row, 1)">续费</div>
-            </div>
+            <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order/subOrder?agentId=${scope.row.id}`})" v-if="scope.row.cycleTypeName != '永久'">续费</el-button>
+            <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/market/steal`})" v-if="scope.row.cycleTypeName != '永久'">去设置</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -88,11 +89,12 @@
 
 <script>
   import Pagination from '@/components/Pagination'
-
+  import condition from '@/components/condition/'
   export default {
     name: 'agentWithdraw',
     components: {
-      Pagination
+      Pagination,
+      condition
     },
     props: {
       user_type: {
@@ -176,6 +178,7 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
+        if(params.serviceTypeCode == 0) delete params.serviceTypeCode
         this.$get('iot-saas-basic/client/service/market/record/findPage', params).then(res => {
           this.list = res ? res.rows : []
           this.listLoading = false

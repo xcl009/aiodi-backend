@@ -12,7 +12,7 @@ export function getInfo(token) {
   return $get('iot-saas-user/admin/user/getLoginAuthUser')
 }
 export function getPlatformConfig(params = {}) {
-  return $get(`iot-saas-basic/open/platform/brand/${params.brand}`)
+  return $get(`iot-saas-basic/open/platform/brand/${params.brandId}`)
 }
 
 export function getMyDevice() {

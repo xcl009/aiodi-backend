@@ -16,6 +16,7 @@
           </el-form-item>
         </div>
 
+        <template v-if="Ability[`${curDevice}_DD_RATIO`]">
         <h4 class="flex mb-20 mt-10">
           <div>比例漏单</div>
           <div class="ml-5">
@@ -26,7 +27,7 @@
               trigger="hover">
               <div>
                 起漏金额：订单金额须大于等于起漏金额。<br>
-                离线时长：设置时长为10分钟，则表示代理及商户停止访问系统10分钟后开始执行漏单（代理及商户停止访问系统之前创建的订单不会参与漏单）。<br>
+                离线后漏单：开启则表示在代理及商户停止访问系统自动离线后才开始执行漏单（代理及商户停止访问系统之前创建的订单不会参与漏单）。<br>
                 订单金额大于0且未被DD的订单才会执行漏单，漏掉的订单将会隐藏且不给下级代理及商户分成<br>
               </div>
               <svg-icon icon-class="doubt" slot="reference"></svg-icon>
@@ -49,13 +50,13 @@
               <template slot="append">元</template>
             </el-input>
           </el-form-item>
-          <el-form-item label="离线时长：" class="ml-10">
-            <el-input v-model="form.complateRule.minute" type="number">
-              <template slot="append">分钟</template>
-            </el-input>
+          <el-form-item label="离线后漏单：" class="ml-10">
+            <el-switch v-model="form.complateRule.minute" :active-value="1" :inactive-value="0" />
           </el-form-item>
         </div>
+        </template>
 
+        <template v-if="Ability[`${curDevice}_DD_TIME`]">
         <h4 class="flex mb-20 mt-10">
           <div>时间扣减</div>
           <div class="ml-5">
@@ -80,7 +81,9 @@
             </el-input>
           </el-form-item>
         </div>
+        </template>
 
+        <template v-if="Ability[`${curDevice}_DD_FAIL`]">
         <h4 class="flex mb-20 mt-10">
           <div>扣款失败</div>
           <div class="ml-5">
@@ -114,6 +117,7 @@
             </el-input>
           </el-form-item>
         </div>
+        </template>
 
         <el-form-item class="mt-10">
           <el-button type="primary" @click="postCard()">立即提交</el-button>
@@ -142,6 +146,9 @@
     computed: {
       myDeviceId() {
         return this.$store.getters.myDeviceId
+      },
+      Ability() {
+        return this.$store.getters.Ability
       }
     },
     mounted() {

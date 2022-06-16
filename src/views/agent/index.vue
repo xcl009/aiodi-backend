@@ -2,236 +2,213 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-        <!-- <el-select placeholder="排序" v-model="form.sort" @change="toQuery()">
-          <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-        </el-select> -->
-        <el-input v-model="form.name" placeholder="品牌名"/>
+        <el-input v-model="form.name" placeholder="代理名"/>
         <el-input v-model="form.mobile" placeholder="手机号码"/>
-        <!-- <el-select placeholder="状态" v-model="form.activated_status" @change="toQuery()">
-          <el-option label="有效" :value="1" />
-          <el-option label="无效" :value="2" />
-          <el-option label="已删除" :value="0" />
-        </el-select> -->
 		  </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/brand/edit`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/agent/addAgent`})" v-if="Ability['agentManage']"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
       </template>
 		</condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" border
-        :max-height="tableMaxH">
-        <el-table-column label="品牌信息" width="130">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH">
+        <el-table-column label="代理信息" width="130">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="运营城市" width="120">
-          <template slot-scope="scope">
-            <div>{{ scope.row.charge_county || '深圳' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="公司名称">
-          <template slot-scope="scope">
-            {{ scope.row.child_agent_num || '--'}}
-          </template>
-        </el-table-column>
-        <el-table-column label="团长" width="130">
-          <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="邀请人" width="130">
-          <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div>{{ scope.row.phone || '手机号码' }}</div>
+            <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
+            <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="品类">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <el-tag
-                class="cursor"
-                :hit="true"
-                size="medium"
-                effect="plain"
-                @click="$router.push({path: `/device?store_name=${scope.row.store_name}`})">
-                {{ scope.row.depend_type_name || '密码线' }}&nbsp;&nbsp;{{ scope.row.goods_sum || '0' }}
-              </el-tag>
+            <div class="cursor" v-for="item in scope.row.agentDeviceType">
+              {{ item.name }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="下级总数" width="150">
+        <el-table-column label="设备数">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
-              <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
+            <div class="cursor inline text-left" @click="$router.push({path: `/device/myDevice?agentId=${scope.row.id}`})">
+              <div>全部：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) - parseFloat(deviceCount[scope.row.id].lowerDeviceNumber) : '0' }}</div>
+              <div>已铺货：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) - parseFloat(deviceCount[scope.row.id].lowerBindStoreNumber) : '0' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="收益(元)" width="150">
+        <el-table-column label="订单数" width="120">
           <template slot-scope="scope">
-            <span class="cursor text-blue" @click="$router.push({path: `/money/income?son_id=${scope.row.id}`})">{{ scope.row.income || '0.00' }}</span>
+            <div class="inline text-left">
+              <div>微信：<el-link type="primary"
+                  @click="$router.push({path: `/order/myOrder?agentId=${scope.row.id}&sourceType=1`})">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
+                </el-link>
+              </div>
+              <div>支付宝：<el-link type="primary"
+                  @click="$router.push({path: `/order/myOrder?agentId=${scope.row.id}&sourceType=2`})">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
+                </el-link>
+              </div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="190">
+        <el-table-column label="金额(元)" width="150">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/order?son_id=${scope.row.id}`})">订单列表</el-button>
-            <el-button type="primary" size="mini" @click="">功能设置</el-button>
-            <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
-            <el-dropdown trigger="click">
-              <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="$router.push({path: `/brand/edit?aid=${scope.row.id}`})">修改信息</el-dropdown-item>
-                <el-dropdown-item @click.native="$router.push({path: `/store?son_id=${scope.row.id}`})">商户列表</el-dropdown-item>
-                <el-dropdown-item @click.native="getMapIcon(scope.row)">地图图标</el-dropdown-item>
-                <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="form.activated_status == 1">删除品牌</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-if="form.activated_status != 1">账号恢复</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <div class="inline">
+              <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
+              <div>总收益：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="可提现金额(元)" width="120">
+          <template slot-scope="scope">
+            <span class="cursor text-blue">{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="分润比例">
+          <template slot-scope="scope">
+            <div class="inline text-left">
+              <div v-for="item in scope.row.agentDeviceType">
+                {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="240">
+          <template slot-scope="scope">
+            <template v-if="deviceId">
+              <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
+            </template>
+            <template v-else>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store/myStore?agentId=${scope.row.id}`})">商户列表</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/addAgent?agentId=${scope.row.id}`})" v-if="!lowerAgent">修改信息</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)" v-if="!lowerAgent">删除代理</el-button>
+              <el-dropdown trigger="click">
+                <el-button class="p-5 ml-0" size="medium" type="text">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)">售货机</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/market/appList`})">更多应用</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
           </template>
         </el-table-column>
       </el-table>
+
       <div class="flex justify-center">
         <pagination
-          v-show="listQuery.count > 0"
+          v-show="listTotal > 0"
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
-          :total="listQuery.count"
+          :total="parseInt(listTotal)"
           @pagination="getList"
         />
       </div>
-
-      <el-dialog title="地图图标设置" :visible.sync="iconDialog">
-        <el-form label-width="auto">
-          <el-form-item :label="`${ index }(25*25)：`" v-for="(item, index) in myDeviceName">
-            <upload v-model="brand_icon[`device_url_${item}`]" />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="iconDialog = false">取 消</el-button>
-          <el-button type="primary" @click="editDtIcon()">确 定</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog title="设备绑定" :visible.sync="deviceBindDialog" width="600px">
-        <el-input
-          type="textarea"
-          :rows="6"
-          placeholder="设备编号与编号之间用英文逗号隔开" v-model="deviceBindStr">
-        </el-input>
-        <div class="pt-5">注：设备编号与编号之间用 , 隔开(英文逗号)。</div>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="deviceBindDialog = false">取 消</el-button>
-          <el-button type="primary" @click="distribu()">确 定</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog title="设备绑定结果" :visible.sync="deviceBindEndDialog" width="600px">
-        <div class="mb-10 flex" v-for="item in bind_success">
-          <div>{{ item.sn }}</div>
-          <div class="flex1 pl-20">{{ item.msg }}</div>
-        </div>
-        <div class="mb-10 flex text-danger" v-for="item in bind_err">
-          <div>{{ item.sn }}</div>
-          <div class="flex1 pl-20">{{ item.msg }}</div>
-        </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="deviceBindEndDialog = false">确 定</el-button>
-        </div>
-      </el-dialog>
     </div>
+
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
+      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+      <template v-if="dialogType == 1">
+        <div class="text-center" v-if="dform.menus">
+          <template v-for="item in agentInfo.AssignAbility">
+            <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != 'STORE_ASSIGN'">{{ item.name }}</el-checkbox>
+          </template>
+        </div>
+      </template>
+      <template v-if="dialogType == 2">
+        <div class="text-center">
+          <div class="text-black">确定删除此代理吗？</div>
+          <div class="mt-10 pl-40 pr-40 text-danger text-left">注：若该代理下存在设备，则无法删除。需解绑回收设备。</div>
+        </div>
+      </template>
+      <template v-if="dialogType == 3">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto">
+          <el-form-item label="运营模式">
+            <el-radio-group v-model="dform.mType">
+              <el-radio label="1">分润模式</el-radio>
+              <el-radio label="2">自营模式</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="分润比例" v-if="dform.mType == 1">
+            <el-input v-model="dform.amount" :placeholder="`最高不能超过您自身的分润比例`">
+              <span slot="append">%</span>
+            </el-input>
+            <div class="fs-s3 text-gray">
+              TA的商户和设备关联您添加的商品，售出订单按比例分成
+            </div>
+          </el-form-item>
+          <el-form-item label="是否补货" v-if="dform.mType == 1">
+            <el-checkbox v-model="dform.as"></el-checkbox>
+          </el-form-item>
+          <el-form-item label="管理费" v-if="dform.mType == 2">
+            <el-input v-model="dform.reason" placeholder="每笔商品订单您想要收取的费用">
+              <span slot="append">元</span>
+            </el-input>
+            <div class="fs-s3 text-gray">
+              下级自己添加商品，商户和设备关联自己的商品，售出订单您得到设置的管理费
+            </div>
+          </el-form-item>
+
+        </el-form>
+      </template>
+      <div class="mt-30 text-center">
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import upload from '@/components/upload/'
+  import { arrayToObj } from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
-  import { copyText } from '@/utils/index'
-  import { getToken, setToken, removeToken } from '@/utils/auth'
-
   export default {
     name: 'agent',
     components: {
-      upload,
       Pagination,
       condition
     },
     props: {
-      user_type: {
-        type: Number,
-        default: 0
+      lowerAgent: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
       return {
+        arrayToObj: arrayToObj,
         clickSubmit: false,
-        sort_type: [{
-            name: '综合排序',
-            value: 0
-          },
-          {
-            name: '收益从高到低',
-            value: 1
-          },
-          {
-            name: '收益从低到高',
-            value: 2
-          },
-          {
-            name: '创建时间由近到远',
-            value: 3
-          },
-          {
-            name: '创建时间由远到近',
-            value: 4
-          }
-        ],
-        form: {
-          activated_status: 1
-        },
-        give_role: [],
+        form: {},
         tableMaxH: '250',
         list: [],
-        deviceNum: {},
         listLoading: false,
+        listTotal: 0,
         listQuery: {
-          search_agent_id: '0',
-          sort_type: '0',
-          search_agent_level: '0',
-          son_type: 0,
           page: 1,
-          size: 20,
-          count: 100
+          size: 20
         },
-        zuo_sn: '',
-        selSnArr: [],
 
-        // 提现费率
-        withdrawObj: {},
-        withdrawDialog: false,
+        orderCount: {},
+        deviceCount: {},
+        cashStat: {},
 
-        // 免费店员
-        freeObj: {},
-        freeDialog: false,
+        deviceId: '',
 
-        iconDialog: false,
-        brand_icon: {},
-
-        select_aid: '',
-        deviceBindStr: '',
-        deviceBindDialog: false,
-        deviceBindEndDialog: false,
-        bind_success: [],
-        bind_err: [],
+        // 弹出相关
+        dialogType: 1,
+        dialogStatus: false,
+        dialogTitle: {
+          1: '代理权限设置',
+          2: '删除代理',
+          2: '售货机设置',
+        },
+        curRow: {},
+        curIdx: 0,
+        dform: {}
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == "agentEdit") {
+      if (from.name == 'agentCreate') {
         to.meta.reload = true
       } else {
         to.meta.reload = false
@@ -239,11 +216,15 @@
       next()
     },
     activated() {
-      this.zuo_sn = this.$route.query.zuo_sn || ''
+      let queryKey = ['deviceId'],
+        query = this.$route.query
+      for (var i in queryKey) {
+        this[queryKey[i]] = query[queryKey[i]]
+      }
       if(this.$route.meta.reload){
-        this.getList()
+        this.toQuery()
       }else if(!this.list || this.list.length == 0) {
-        this.listQuery.son_type = this.user_type
+        this.listQuery.lowerAgent = this.lowerAgent
         this.toQuery(1)
       }
     },
@@ -259,6 +240,9 @@
       },
       agentInfo(){
         return this.$store.getters.agentInfo
+      },
+      Ability() {
+        return this.$store.getters.Ability
       }
     },
     mounted() {
@@ -295,165 +279,148 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('iot-saas-basic/brand/findPage', params).then(res => {
+        this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
+          this.list = res.rows
           this.listLoading = false
-          this.list = res.list
           this.clickSubmit = false
-          if(params.page == 1){
-            this.count = res.count
+          if(params.page == 0){
+            this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
+          this.queryCash(this.arrayKeys(res.rows, 'id'))
+          this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
+          this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))
         }).catch(() => {
-          this.clickSubmit = false
           this.listLoading = false
+          this.clickSubmit = false
         })
       },
 
-
       /**
-       * 获取设备数量
+       * 获取可提现金额
        */
-      getDeviceNum(agent_ids){
-        this.$get('SyStatistics/getmyDeviceNum', {
-          agent_ids: JSON.stringify(agent_ids)
+      queryCash(ids){
+        if(ids.length == 0){
+          this.cashStat = {}
+          return
+        }
+        this.$get('iot-saas-pay/api/pay/acount/list', {
+          accountType: 1,
+          ownerIds: ids.join(',')
         }).then(res => {
-          this.clickSubmit = false
-          this.deviceNum = res
-        }).catch(() => {
-          this.clickSubmit = false
+          this.cashStat = res
         })
       },
 
       /**
-       * 编辑
+       * 订单数量统计查询
        */
-      set(row) {
-
+      queryOrderCount(ids){
+        if(ids.length == 0){
+          this.orderCount = {}
+          return
+        }
+        this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+          countType: 'AGENT',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.orderCount = res
+        })
       },
 
       /**
-       * 编辑
-       * @param {Object} row
+       * 设备数量统计查询
        */
-      setRow(type, row) {
+      queryDeviceCount(ids){
+        if(ids.length == 0){
+          this.deviceCount = {}
+          return
+        }
+        this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+          countType: 'AGENT',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.deviceCount = res
+        })
+      },
+
+      /**
+       * 操作行
+       * @param {Object} type 1 dialog类型
+       * @param {Object} row 选择当前行
+       * @param {Object} dialogType dialog内容显示类型 1: '代理权限设置', 2: '删除代理'
+       * @param {Object} idx 当前行所在位置
+       */
+      setRows(type, row, dialogType, idx) {
         switch (type) {
           case 1:
-            this.$alert('确定删除此品牌吗？', '删除品牌', {
-              confirmButtonText: '确定',
-              callback: action => {
-                if (action == 'confirm') {
-                  this.$message({
-                    message: '删除成功',
-                    type: 'success'
-                  })
-                  this.list.splice(row.index, 1)
-                  return
-                  this.$post('agentapi/delete_agent', {
-                    son_id: row.id
-                  }).then(res => {
-                    this.$message({
-                      message: '删除成功',
-                      type: 'success'
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.dialogStatus = true
+            if(dialogType == 1){
+              this.$get('iot-saas-user/auth/menu', {
+                childId: row.userId
+              }).then(res => {
+                console.log(res)
+                let menus = {}
+                res.map(item => {
+                  menus[item.id] = true
+                  if(item.childrenAuthList && item.childrenAuthList.length > 0){
+                    item.childrenAuthList.map(sitem => {
+                      menus[sitem.id] = true
                     })
-                    this.list.splice(row.index, 1)
-                  })
-                }
-              }
+                  }
+                })
+                console.log(menus)
+                this.$set(this.dform, 'menus', menus)
+              })
+              this.$set(this.dform, 'childUserId', row.userId)
+            }
+            break
+        }
+      },
+
+      /**
+       * 弹窗确认
+       */
+      dialogConfim() {
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        let curRow = this.curRow,
+          curIdx = this.curIdx,
+          params = JSON.parse(JSON.stringify(this.dform))
+        switch (this.dialogType) {
+          case 1:
+            let menus = []
+            for(var i in params.menus){
+              if(params.menus[i]) menus.push(i)
+            }
+            params.menus = menus
+            this.$put('iot-saas-user/auth/childMenu', params).then(res => {
+              this.$message({
+                type: 'success',
+                message: '设置成功'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
             break
           case 2:
-            this.$alert('确定将账号恢复为正常吗？', '账号恢复', {
-              confirmButtonText: '确定',
-              callback: action => {
-                if (action == 'confirm') {
-                  this.$message({
-                    message: '恢复成功',
-                    type: 'success'
-                  })
-                  this.list.splice(row.index, 1)
-                  return
-                  this.$post('agentapi/delete_agent', {
-                    son_id: row.id
-                  }).then(res => {
-                    this.$message({
-                      message: '删除成功',
-                      type: 'success'
-                    })
-                    this.list.splice(row.index, 1)
-                  })
-                }
-              }
-            })
-            break
-          case 3:
-            this.$get('agentapi/edit_agent', {
-              son_id: row.id
+            this.$post('iot-saas-basic/admin/agent/delete', {
+              agentId: curRow.id
             }).then(res => {
-              this.withdrawDialog = true
-              this.withdrawObj = res.agent_info
-            })
-            break
-          case 5:
-            this.$prompt('请输入新登录密码', '重置登录密码', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              inputType: 'password',
-              beforeClose: (action, instance, done) => {
-                if (action == 'confirm') {
-                  const value = instance.inputValue
-                  this.$post('agentapi/edit_agent_password', {
-                    son_id: row.id,
-                    password: value
-                  }).then(res => {
-                    this.$message({
-                      message: '设置成功',
-                      type: 'success'
-                    })
-                    done()
-                  })
-                } else {
-                  done()
-                }
-              }
-            })
-            break
-          case 6:
-            this.$post('agentapi/sttuf/save_member_setting', {
-              son_id: rows.id,
-              member_num: rows.member_num,
-              member_day_count: rows.member_day_count,
-              member_free_due_hours: rows.member_free_due_hours
-            }).then(res => {
+              this.dialogStatus = false
               this.$message({
-                message: '设置成功',
+                message: '删除成功',
                 type: 'success'
               })
-              this.freeDialog = false
-            })
-            break
-          case 7:
-            this.$prompt('请输入新提现密码', '重置提现密码', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              inputType: 'password',
-              beforeClose: (action, instance, done) => {
-                if (action == 'confirm') {
-                  const value = instance.inputValue
-                  this.$post('agentapi/edit_agent_password', {
-                    son_id: row.id,
-                    password: value,
-                    type: 1
-                  }).then(res => {
-                    this.$message({
-                      message: '设置成功',
-                      type: 'success'
-                    })
-                    done()
-                  })
-                } else {
-                  done()
-                }
-              }
+              this.list.splice(curIdx, 1)
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
             break
         }
@@ -462,198 +429,28 @@
       /**
        * 分配设备
        */
-      setEquip(row) {
+      bindAgent(row) {
         this.loadObj = this.$loading({
           lock: true,
           text: '正在分配',
           spinner: 'el-icon-loading'
         })
-        this.$post('agentapi/save_distribute_agent_devices', {
-          son_id: row.id,
-          goods_sn: this.zuo_sn.split(',')
+        this.$post('iot-saas-device/admin/device/bindAgent', {
+          agentId: row.id,
+          deviceIds: this.deviceId.split(',')
         }).then(res => {
-          res.bind_fail = res.bind_fail || []
-          if(res.bind_fail.length == 0){
-            this.loadObj.close()
-            this.$message({
-              message: '分配成功',
-              type: 'success'
-            })
-            history.back()
-          } else {
-            this.loadObj.close()
-            let str = res.bind_fail.toString()
-            this.$alert('【' + str + '】等设备未分配成功，', '分配失败', {
-            confirmButtonText: '确定',
-              callback: action => {
-                history.back()
-              }
-            })
-          }
-        }).catch(()=>{
+          this.loadObj.close()
+          this.$message({
+            message: '分配成功',
+            type: 'success'
+          })
+          history.back()
+        }).catch(err => {
           this.loadObj.close()
         })
-      },
-
-      /**
-       * 设置提现费率
-       */
-      setWithdraw() {
-        this.$post('agentapi/save_agent_withdraw_percent', {
-          son_id: this.withdrawObj.id,
-          withdraw_percent: this.withdrawObj.withdraw_percent,
-          withdraw_fee: this.withdrawObj.withdraw_fee
-        }).then(res => {
-          this.$message({
-            message: '设置成功',
-            type: 'success'
-          })
-          this.withdrawDialog = false
-        })
-      },
-
-      /**
-       * 获取地图图标
-       */
-      getMapIcon(row){
-        let brand_icon = {}
-        this.freeObj = row
-        this.$get('agentapi/system/brand_icon', {
-          platform_id: this.freeObj.aid
-        }).then(res => {
-          for(var i in this.myDeviceName){
-            brand_icon[`device_url_${this.myDeviceName[i]}`] = res[`device_url_${this.myDeviceName[i]}`] || ''
-          }
-          this.brand_icon = brand_icon
-          this.iconDialog = true
-        })
-      },
-
-      /**
-       * 修改地图图标
-       */
-      editDtIcon() {
-        let params = this.brand_icon
-        params.platform_id = this.freeObj.aid
-        this.$post('agentapi/system/brand_icon', params).then(res => {
-          this.iconDialog = false
-          this.$message({
-            message: '设置成功',
-            type: 'success'
-          })
-        })
-      },
-
-      /**
-       * 登录代理后台
-       * @param {Object} row
-       */
-      toLogin(row){
-        this.loadObj = this.$loading({
-          lock: true,
-          text: '正在登录',
-          spinner: 'el-icon-loading'
-        })
-        this.$post('agentapi/pretend_son_login', {
-          son_id: row.id
-        }).then(res => {
-          setToken(getToken(), 'token1')
-          setToken(res.token)
-          setToken(res.belong_partner_aid, 'agent_id')
-          setToken(row.id, 'user_id')
-          setTimeout(()=>{
-            location.href = '/home'
-            this.loadObj.close()
-          }, 500)
-        })
-      },
-
-      /**
-       * 复制贴牌登录地址
-       * @param {Object} row
-       */
-      copyloginUrl(row){
-        copyText(`${location.origin}/login/${row.id}`)
-        this.$message({
-          message: '复制成功',
-          type: 'success'
-        })
-      },
-
-	      /**
-	       * 铺货
-	       */
-	      distribu(row) {
-	        let aid, zuo_sn
-	        this.bind_err = []
-	        this.bind_success = []
-	        if(row){
-	          aid = row.aid
-	          zuo_sn = this.zuo_sn
-	        }else{
-	          aid = this.select_aid
-	          zuo_sn = this.deviceBindStr
-	        }
-	        zuo_sn = zuo_sn.replace(/[ ]/g,"")
-	        zuo_sn = zuo_sn.replace(/[\r\n]/g,"")
-	        zuo_sn = zuo_sn.replace(/\ +/g,"")
-	        if(!zuo_sn){
-	          this.$message({
-	            message: '错误的设备码',
-	            type: 'error'
-	          })
-	          return
-	        }
-	        this.$alert('确定将设备绑定到该代理吗？', '设备铺货', {
-	          confirmButtonText: '确定',
-	          callback: action => {
-	            if (action == 'confirm') {
-	              zuo_sn = zuo_sn.split(',')
-	              this.load = this.$message({
-	                duration: 0,
-	                iconClass: 'el-icon-loading',
-	                message: '绑定中'
-	              })
-	              for (var i in zuo_sn) {
-	                this.postBind(zuo_sn[i], aid, zuo_sn.length, i)
-	              }
-	            }
-	          }
-	        })
-	      },
-
-	      async postBind(sn, aid, len, i){
-	        this.$post('agentapi/device/save_pickup_devices', {
-	          goods_sn: sn,
-	          son_id: aid
-	        }).then((res) => {
-	          this.bind_success.push({
-	            sn: sn,
-	            msg: '绑定成功'
-	          })
-	          if(i == len - 1){
-	            this.bindEnd()
-	          }
-	        }).catch(err=>{
-	          this.bind_err.push({
-	            sn: sn,
-	            msg: err.msg
-	          })
-	          if(i == len - 1){
-	            this.bindEnd()
-	          }
-	        })
-	      },
-
-	      bindEnd(){
-	        this.load.close()
-	        this.deviceBindEndDialog = true
-	        if(this.bind_err.length == 0){
-	          this.deviceBindDialog = false
-	        }
-	      },
-	    }
+      }
 	  }
+  }
 </script>
 
 <style lang="scss" scoped>

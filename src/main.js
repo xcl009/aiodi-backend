@@ -52,11 +52,26 @@ Vue.prototype.isAgent = isAgent
 Vue.prototype.dealPhone = dealPhone
 Vue.prototype.OsInfo = getOsInfo
 Vue.prototype.Browser = getBrowser
+Vue.prototype.Browser = getBrowser
+ /**
+ * 校验是否拥有设备类型相关能力
+ */
+Vue.prototype.checkAbility = function(deviceArr, keyArr){
+  let val = false
+  for(var i in deviceArr){
+    for(var s in keyArr){
+      if(Vue.prototype.Ability[deviceArr[i].deviceTypeCode + keyArr[s]]){
+        val = true
+        break
+      }
+    }
+    if(val == true) break
+  }
+  return val
+}
 
 // set ElementUI lang to EN
 Vue.use(ElementUI)
-// 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 

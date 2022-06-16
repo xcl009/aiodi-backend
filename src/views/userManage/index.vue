@@ -2,25 +2,18 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-select placeholder="用户来源" v-model="listQuery.search_user_type" @change="toQuery()">
-          <el-option label="全部" value="2" />
-          <el-option label="微信" value="0" />
-          <el-option label="支付宝" value="1" />
+        <el-select placeholder="用户来源" v-model="form.userType" @change="toQuery()">
+          <el-option label="全部" value="" />
+          <el-option label="微信" value="wechat" />
+          <el-option label="支付宝" value="alipay" />
         </el-select>
-        <el-input placeholder="用户ID" v-model="form.search_uid" />
-        <el-input placeholder="用户昵称" v-model="form.search_nick_name" />
-        <el-input placeholder="手机号码" v-model="form.search_phone" />
+        <el-input placeholder="用户昵称" v-model="form.nickname" />
+        <el-input placeholder="手机号码" v-model="form.mobile" />
       </template>
     </condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" border
-        element-loading-text="Loading" stripe highlight-current-row>
-        <el-table-column label="品牌商" width="120">
-          <template slot-scope="scope">
-            {{ oemInfo[scope.row.agent_id] ? oemInfo[scope.row.agent_id].mini_name : '品牌名' }}
-          </template>
-        </el-table-column>
+      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="头像" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
@@ -28,84 +21,50 @@
         </el-table-column>
         <el-table-column label="昵称" width="160">
           <template slot-scope="scope">
-            <el-link class="cursor">{{ scope.row.nick_name || '无昵称' }}</el-link>
+            <el-link class="cursor">{{ scope.row.nickname || '无昵称' }}</el-link>
           </template>
         </el-table-column>
         <el-table-column label="手机号码">
           <template slot-scope="scope">
-            <div v-if="checkRoles(config.system_other.have_role)">{{ scope.row.mobile || '--' }}</div>
-            <div v-else>{{ dealPhone(scope.row.mobile) }}</div>
+            <div>{{ dealPhone(scope.row.mobile) }}</div>
           </template>
         </el-table-column>
         <el-table-column label="来源">
           <template slot-scope="scope">
-            {{ scope.row.user_type == 0 ? '微信' : '支付宝' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="已交押金" v-if="checkRoles(config.system_other.have_role)">
-          <template slot-scope="scope">
-            {{ scope.row.money || '0.00' }}
+            {{ scope.row.userType == 'wechat' ? '微信' : '支付宝' }}
           </template>
         </el-table-column>
         <el-table-column label="租借次数">
           <template slot-scope="scope">
-            {{ scope.row.used_num || '0' }}
+            {{ scope.row.loanNumber || '0' }}
           </template>
         </el-table-column>
         <el-table-column label="消费总金额">
           <template slot-scope="scope">
-            {{ scope.row.paid_amount || '0.00' }}
+            {{ scope.row.totalConsumption || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="钱包余额" ><!-- v-if="checkRoles(config.system_other.have_role)" -->
+        <el-table-column label="钱包余额" v-if="isSaas() || isBrand()">
           <template slot-scope="scope">
-            {{ scope.row.balance || '0.00' }}
+            {{ scope.row.accountBalance || '0.00' }}
           </template>
         </el-table-column>
         <el-table-column label="注册日期" width="150">
           <template slot-scope="scope">
-            {{ parseTime(scope.row.add_date, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
+            {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/userManage/user_order?search_uid=${scope.row.id}`})">订单记录</el-button>
-            <!-- <el-button type="primary" size="mini" class="ml-0" @click="recharge(scope.row, 1)" v-if="checkRoles(['partner'])">余额充值</el-button>
-            <el-button type="primary" size="mini" class="ml-0" @click="recharge(scope.row, 0)" v-if="checkRoles(['partner'])">储值卡充值</el-button>
-            <el-button type="primary" plain round size="small" @click="setBlack(scope.row)">黑名单</el-button> -->
+            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/order?userIds=${scope.row.id}`})">订单记录</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="flex justify-center">
-        <pagination v-show="listQuery.page_num > 0" :page.sync="listQuery.start" :limit.sync="listQuery.limit"
-          :page-count="listQuery.page_num" @pagination="getList" />
+        <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
+          @pagination="getList" />
       </div>
     </div>
-
-    <el-dialog title="设置会员" :visible.sync="memberDialog">
-      <el-form label-width="140px">
-        <el-form-item label="会员资格：">
-          <el-switch v-model="memberObj.status" :active-value="1" :inactive-value="0"/>
-        </el-form-item>
-        <el-form-item label="设备类型：">
-          <el-radio-group v-model="memberObj.depend_type">
-            <el-radio-button :label="key" :disabled="key != 3" v-for="(item, key) in myDeviceId">{{ item }}</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="会员类型：">
-          <el-radio-group v-model="memberObj.date_type">
-            <el-radio-button :label="item.value" v-for="item in config.cardObj">{{ item.name }}</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="商户ID：">
-          <el-input v-model="memberObj.store_id"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="memberDialog = false">取 消</el-button>
-        <el-button type="primary" @click="setUserMember()">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -132,30 +91,43 @@
     data() {
       return {
         dealPhone: dealPhone,
-        tableMaxH: '250',
         clickSubmit: false,
-        form: {},
         oemInfo: {},
-        list: [{}],
+        tableMaxH: '250',
+        list: [],
         listLoading: false,
+        listTotal: 0,
         listQuery: {
-          search_agent_id: '0',
-          search_user_type: '2',
-          start: 1,
-          total: 10,
-          page_num: 1,
-          limit: 20
+          page: 1,
+          size: 20
         },
-        memberDialog: false,
-        memberObj: {
-          status: 1,
-          depend_type: 3,
-          date_type: 0
-        }
+        form: {}
       }
     },
+    beforeRouteEnter(to, from, next) {
+      to.meta.urlQuery = JSON.stringify(to.query)
+      if (from.name == '') {
+        to.meta.reload = true
+      } else {
+        to.meta.reload = false
+      }
+      next()
+    },
+    activated() {
+      let queryKey = [],
+        query = this.$route.query
+      for (var i in queryKey) {
+        this[queryKey[i]] = query[queryKey[i]]
+      }
+      if (this.$route.meta.reload) {
+        this.getList()
+      } else if (this.urlQuery != this.$route.meta.urlQuery) {
+        this.toQuery(1)
+      }
+      this.urlQuery = this.$route.meta.urlQuery
+    },
     mounted(options) {
-      //this.getList()
+
     },
     methods: {
       /**
@@ -173,6 +145,8 @@
        * 重置查询
        */
       reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.form = {}
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -184,13 +158,17 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
+          page: this.listQuery.page - 1,
+          needCount: true
         })
-        this.$get('open/user/findPage', params).then(res => {
+        this.$get('iot-saas-user/user/relation/findUserByAdmin', params).then(res => {
+          this.list = res.rows
           this.listLoading = false
-          this.list = res.list
           this.clickSubmit = false
-          this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          if (params.page == 0) {
+            this.listTotal = res.total
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false

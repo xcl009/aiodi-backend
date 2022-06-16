@@ -4,8 +4,8 @@
     <div class="login-form">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="24" :md="12" class="hidden-sm-and-down">
-          <div class="p-50 flexv justify-between login-left text-white">
-            <div class="pt-30">
+          <div class="rel p-50 flexv justify-between login-left text-white">
+            <div class="rel pt-30">
               <div class="title text-bold">
                 {{ siteInfo.appName }}<br>
                 SaaS后台管理系统
@@ -274,9 +274,22 @@
         width: 596px;
         max-height: 90vh;
         max-width: 100%;
-        background: rgba(255, 255, 255, 0.1);
         .title{
           font-size: 56px;
+        }
+        .rel{
+          z-index: 9;
+        }
+        &::after{
+          content: '';
+          background: rgba(255, 255, 255, .1);
+          backdrop-filter: blur(5px);
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          z-index: 0;
         }
       }
       .dot{

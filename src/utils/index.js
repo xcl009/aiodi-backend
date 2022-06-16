@@ -398,7 +398,7 @@ const util = {
 		if (!key || !Array.isArray(array)) return {}
 		let obj = {}
 		array.map(item => {
-			if(nkey){
+			if(nkey && item[key] && item[nkey]){
 				obj[item[key]] = item[nkey]
 			} else if (item[key] != 'undefined' && item[key] != null) {
 				obj[item[key]] = item
@@ -485,7 +485,7 @@ const util = {
 		} catch (f) {}
 		return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
 	},
-  
+
   /**
    ** 浮点数减法
    **/
@@ -507,35 +507,35 @@ const util = {
     n = (r1 >= r2) ? r1 : r2;
     return ((arg1 * m - arg2 * m) / m).toFixed(n);
   },
-  
+
   /**
    * 校验当前用户是否为SAAS
    */
   isSaas: () => {
   	return agentInfo.userType == 'admin'
   },
-  
+
   /**
    * 校验当前用户是否为品牌商
    */
   isBrand: () => {
   	return agentInfo.userType == 'brand'
   },
-  
+
   /**
    * 校验当前用户是否为商户
    */
   isStore: () => {
   	return agentInfo.userType == 'store'
   },
-  
+
   /**
    * 校验当前用户是否为代理商
    */
   isAgent: () => {
   	return agentInfo.userType == 'agent'
   },
-  
+
   /**
    * 获取角色名
    */
@@ -549,7 +549,7 @@ const util = {
   	}
   	return roleName[type] || ''
   },
-  
+
   /**
    * 套餐显示
    */
@@ -563,7 +563,7 @@ const util = {
   		return `前${mode.startingTime}分钟${mode.startingAmount}元，超则${mode.overBillingUnit}分钟/${mode.unitPrice}元`
   	}
   },
-  
+
   /**
    * 分成显示
    */
@@ -575,7 +575,7 @@ const util = {
   	}
   	return obj[type] || ''
   },
-  
+
   /**
    * 默认计费
    */

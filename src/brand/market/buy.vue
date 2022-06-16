@@ -13,7 +13,7 @@
       <div class="flex align-center mb-20 pb-5" v-if="info.priceSettings && Object.values(info.priceSettings).length > 1">
         <div class="mr-15 w-60">模式</div>
         <div>
-          <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-for="item in info.priceSettings" @click="form.priceCode = item.priceCode">
+          <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" :type="form.priceCode == item.priceCode ? '' : 'info'" v-for="item in info.priceSettings" @click="form.priceCode = item.priceCode">
             {{ item.priceName }}
           </el-tag>
         </div>

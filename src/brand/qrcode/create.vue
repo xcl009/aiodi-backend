@@ -22,6 +22,12 @@
         <el-form-item label="仓口数量" v-if="form.deviceFactoryCode == 'WS'" ref="windosNumber" prop="windosNumber">
           <el-input v-model="form.windosNumber" placeholder="设备仓口数量" />
         </el-form-item>
+        <el-form-item label="仓口数量" v-if="form.deviceTypeCode && form.deviceTypeCode.indexOf('VM') > -1" ref="windosNumber" prop="windosNumber">
+          <el-input v-model="form.windosNumber" placeholder="设备仓口数量" />
+        </el-form-item>
+        <el-form-item label="单口商品数" v-if="form.deviceTypeCode && form.deviceTypeCode.indexOf('VM') > -1" ref="windosNumber" prop="windosNumber">
+          <el-input v-model="form.windosNumber" placeholder="单口商品数量" />
+        </el-form-item>
         <label class="flex justify-center align-center mb-15 cursor">
           <el-checkbox v-model="form.picture"/><span class="ml-10">生成二维码图片</span>
         </label>

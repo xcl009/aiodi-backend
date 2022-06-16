@@ -122,7 +122,7 @@
             <el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="80">
+        <el-table-column label="状态" width="90">
           <template slot-scope="scope">
             <el-link :type="scope.row.status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
               {{ Constant.OrderStatus[scope.row.status] || "--" }}
@@ -156,7 +156,7 @@
         <el-row class="text-center">
           <el-col :xs="12" :sm="12" :md="4" class="rel pb-50 mb-15 timeline-item el-icon-" v-for="(item, index) in orderFlow">
             <div class="abs" style="width: 100%;">
-              <div>{{ item.event }}</div>
+              <div>{{ item.reason ? item.reason : item.event }}</div>
               <div class="mt-10 fs-s2 text-gray">{{ parseTime(item.createTime) }}</div>
             </div>
           </el-col>

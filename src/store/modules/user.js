@@ -92,39 +92,72 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(data => {
         if(data.userType){
+          if(data.brandId){
+            setToken(data.brandId, 'brandId')
+          }
           getAuthMenu().then(res => {
-            let menu = {}, ability = []
+            let menu = [], AssignAbility = [], Ability = []
+            res = res || []
             res.map(item => {
-              menu[item.label] = true
+              Ability[item.label] = true
               if(item.displayFlag != 'CANNOT_ASSIGN'){
-                ability.push({
+                AssignAbility.push({
                   id: item.id,
                   displayFlag: item.displayFlag,
                   name: item.name
                 })
               }
+              let childMenu = []
               if(item.childrenAuthList && item.childrenAuthList.length > 0){
                 item.childrenAuthList.map(sitem => {
-                  menu[sitem.label] = true
+                  Ability[sitem.label] = true
                   if(sitem.displayFlag != 'CANNOT_ASSIGN'){
-                    ability.push({
+                    AssignAbility.push({
                       id: sitem.id,
                       displayFlag: sitem.displayFlag,
                       name: sitem.name
                     })
                   }
+                  if(sitem.menuType == 'MENU' && sitem.url){
+                    let smenu = JSON.parse(sitem.url)
+                    childMenu.push({
+                      path: smenu.path,
+                      name: sitem.label,
+                      component: smenu.src,
+                      meta: {
+                        title: sitem.name,
+                        activeMenu: smenu.activeMenu || '',
+                        keepAlive: smenu.keepAlive || false
+                      },
+                      hidden: smenu.hidden || false,
+                      props: smenu.props || {}
+                    })
+                  }
+                })
+              }
+              if(item.menuType == 'MENU' && item.url){
+                let fmenu = JSON.parse(item.url)
+                menu.push({
+                  component: 'Layout',
+                  path: fmenu.path,
+                  redirect: fmenu.redirect || '',
+                  meta: {
+                    title: item.name,
+                    icon: item.icon,
+                  },
+                  children: childMenu
                 })
               }
             })
-            data.ability = ability
+            data.AssignAbility = AssignAbility
             window.agentInfo = data
             commit('SET_NAME', data.nickname || data.username)
             commit('SET_AVATAR', data.avastar || '')
             commit('SET_AGENTINFO', data)
-            commit('SET_ABILITY', menu)
+            commit('SET_ABILITY', Ability)
             resolve({
               roles: [data.userType],
-              authMenu: Object.keys(menu)
+              menu: menu
             })
           })
         }
@@ -138,8 +171,9 @@ const actions = {
   getPlatformConfig({ commit, state }, params = {}) {
     return new Promise((resolve, reject) => {
       getPlatformConfig({
-        brand: params.brand_id || getToken('brand_id') || '941630140970790912'
+        brandId: params.brandId || getToken('brandId')
       }).then(data => {
+        data = data || {}
         commit('SET_SITEINFO', data)
         if(data.mini_name){
           var icon_link = document.createElement('link')

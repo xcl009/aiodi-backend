@@ -1,62 +1,34 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery" @savexlsx="outTab('list_table', '日金额统计')">
+    <condition ref="condition" :clickSubmit="clickSubmit" @query="getTime(form.date)" @reset="getTime">
       <template v-slot:defult>
-        <el-date-picker
-          style="width: 300px; padding: 0 10px;"
-          class="range-day flex align-center"
-            v-model="form.day"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期">
-          </el-date-picker>
+        <el-date-picker v-model="form.date" type="month" :picker-options="pickerOptionsEnd" range-separator="-"
+          placeholder="选择月份" value-format="yyyy-MM" @change="getTime">
+        </el-date-picker>
       </template>
     </condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="chart-daystat" ref="chart_daystat"></div>
-      <el-table class="custom" stripe border id="list_table" :data="tableList">
-        <el-table-column label="日期">
+    <div class="p-15 bg-white">
+      <div class="chart-daystat" ref="chartDay"></div>
+      <el-table class="custom" stripe id="list_table" :data="tableList" border>
+        <el-table-column label="日期" align="center">
           <template slot-scope="scope">
-            {{ scope.row.date}}
+            {{ scope.row.countGroupDate }}
           </template>
         </el-table-column>
-        <el-table-column label="来源">
+        <el-table-column label="交易额(元)" align="center">
           <template slot-scope="scope">
-            <div class="td-info">
-              <div class="pl-10 pr-10 l-b">微信</div>
-              <div class="pl-10 pr-10 l-b">支付宝</div>
-              <div class="pl-10 pr-10">余额</div>
-            </div>
+            {{ scope.row.amount }}
           </template>
         </el-table-column>
-        <el-table-column label="交易额(元)">
+        <el-table-column label="订单量(单)" align="center">
           <template slot-scope="scope">
-            <div class="td-info">
-              <div class="pl-10 pr-10 l-b">1000.00</div>
-              <div class="pl-10 pr-10 l-b">500.00</div>
-              <div class="pl-10 pr-10">300.00</div>
-            </div>
+            {{ scope.row.orderNumber }}
           </template>
         </el-table-column>
-        <el-table-column label="订单量(单)">
+        <el-table-column label="收益额(元)" align="center">
           <template slot-scope="scope">
-            <div class="td-info">
-              <div class="pl-10 pr-10 l-b">100</div>
-              <div class="pl-10 pr-10 l-b">50</div>
-              <div class="pl-10 pr-10">30</div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="收益额(元)">
-          <template slot-scope="scope">
-            <div class="td-info">
-              <div class="pl-10 pr-10 l-b">500.00</div>
-              <div class="pl-10 pr-10 l-b">300.00</div>
-              <div class="pl-10 pr-10">100.00</div>
-            </div>
+            {{ scope.row.amountDivide }}
           </template>
         </el-table-column>
       </el-table>
@@ -65,12 +37,26 @@
 </template>
 
 <script>
+  import {
+    arrayToObj,
+    delComma,
+    parseTime,
+    currentTime
+  } from '@/utils/index'
   import condition from '@/components/condition/'
 
   import * as echarts from 'echarts/lib/echarts'
-  import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
-  import { LineChart } from 'echarts/charts'
-  import { LabelLayout } from 'echarts/features'
+  import {
+    TooltipComponent,
+    LegendComponent,
+    GridComponent
+  } from 'echarts/components'
+  import {
+    LineChart
+  } from 'echarts/charts'
+  import {
+    LabelLayout
+  } from 'echarts/features'
 
   echarts.use([
     TooltipComponent,
@@ -87,74 +73,49 @@
     data() {
       return {
         clickSubmit: false,
+        curMonth: this.$route.query.curMonth,
         form: {},
+        filtrate: {},
         list: [],
-        tableList: [{},{}],
+        tableList: [],
         listQuery: {},
-
-        pickerOptions: {
+        pickerOptionsEnd: {
           disabledDate: (time) => {
-            if (this.form.end) {
-              return time.getTime() > this.form.end || time.getTime() > new Date(new Date().toLocaleDateString()).getTime()
-            } else {
-              return time.getTime() > new Date(new Date().toLocaleDateString()).getTime()
+            let timeOptionRange = this.timeOptionRange
+            let secondNum = 60 * 60 * 24 * 31 * 1000
+            if (timeOptionRange) {
+              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+                .getTime() - secondNum) || time.getTime() > Date.now()
+            }
+            return time.getTime() > Date.now()
+          },
+          onPick: (time) => {
+            //当第一时间选中才设置禁用
+            if (time.minDate && !time.maxDate) {
+              this.timeOptionRange = time.minDate
+            }
+            if (time.maxDate) {
+              this.timeOptionRange = null
             }
           }
-        }
+        },
       }
     },
     mounted() {
-      this.dayChart({
-        "dayArr": [
-          "11-19",
-          "11-20",
-          "11-21",
-          "11-22",
-          "11-23",
-          "11-24",
-          "11-25"
-        ],
-        "day_order_amount": [
-          10515.23,
-          14484.7,
-          13969.25,
-          10455.24,
-          11234.67,
-          11622.14,
-          9078.13
-        ],
-        "day_order_num": [
-          3074,
-          3655,
-          3430,
-          2995,
-          2989,
-          3496,
-          2276
-        ],
-        "day_average_order_num": [
-          "3,130.71",
-          "3,130.71",
-          "3,130.71",
-          "3,130.71",
-          "3,130.71",
-          "3,130.71",
-          "3,130.71"
-        ],
-        "day_average_order_amount": [
-          11622.75,
-          11622.75,
-          11622.75,
-          11622.75,
-          11622.75,
-          11622.75,
-          11622.75
-        ]
-      })
-      //this.getList()
+      let cutDate = new Date()
+      this.curYear = cutDate.getFullYear()
+      this.curMon = cutDate.getMonth() + 1
+      this.curMon = this.curMon > 9 ? this.curMon : '0' + this.curMon
+      this.curDay = cutDate.getDate()
+      this.getTime(this.curMonth || `${this.curYear}-${this.curMon}`, 2)
     },
     methods: {
-      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      objectSpanMethod({
+        row,
+        column,
+        rowIndex,
+        columnIndex
+      }) {
         if (columnIndex === 0) {
           if (rowIndex % 3 === 0) {
             return {
@@ -171,59 +132,61 @@
       },
 
       /**
-       * 搜索查询
+       * 近期数据对比
        */
-      toQuery() {
-        if(this.clickSubmit) return
-        this.clickSubmit = true
-        this.listQuery.page = 1
-        this.listQuery.size = 50
-        if (this.xlsxStatus) this.xlsxStatus = false
-        this.getList()
-      },
+      getLineChart() {
+        let groupDate = [],
+          amount = [],
+          orderNumber = [],
+          doneOrderNumber = [],
+          unitPrice = [],
+          params = this.filtrate
 
-      /**
-       * 重置查询
-       */
-      reset(){
-        if(this.clickSubmit) return
-        this.clickSubmit = true
-        this.form = {}
-        this.listQuery.page = 1
-        this.listQuery.size = 20
-        this.getList()
-      },
-
-      getList() {
-        let url = 'agentapi/statistics/my_order_date_data'
-        let listQuery = Object.assign(this.form, this.listQuery, {})
-        if (listQuery.begin) listQuery.begin = this.parseTime(listQuery.begin, '{y}-{m}-{d}')
-        if (listQuery.end) listQuery.end = this.parseTime(listQuery.end, '{y}-{m}-{d}')
-        this.day_order_amount = []
-        this.day_profit = []
-        this.day_order_num = []
-        this.day = []
-        this.$get(url, listQuery).then(res => {
-          this.list = Object.values(JSON.parse(JSON.stringify(res))).reverse()
-          this.tableList = Object.values(res)
-          for(var i in res){
-            this.day.push(res[i].date)
-            this.day_order_amount.push(res[i].day_order_amount)
-            this.day_profit.push(res[i].day_profit)
-            this.day_order_num.push(res[i].day_order_num)
+        params.brandID = this.brandId
+        this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
+          let obj = arrayToObj(res, 'countGroupDate'),
+            pros = []
+          for (var i = 1; i < this.selDay; i++) {
+            let mon = this.selMon + '-' + (i < 10 ? '0' + i : i)
+            groupDate.push(mon)
+            if (obj[mon] && obj[mon].countGroupDate == mon) {
+              amount.push(obj[mon].amount)
+              orderNumber.push(obj[mon].orderNumber)
+              doneOrderNumber.push(obj[mon].doneOrderNumber)
+              unitPrice.push(obj[mon].unitPrice)
+            } else {
+              amount.push(0)
+              orderNumber.push(0)
+              doneOrderNumber.push(0)
+              unitPrice.push(0)
+            }
           }
-          this.initChart()
-          this.clickSubmit = false
-        }).catch(() => {
-          this.clickSubmit = false
+          this.tableList = res
+          if (this.dayChartInit) {
+            this.dayChartOptions({
+              groupDate,
+              amount,
+              orderNumber,
+              doneOrderNumber,
+              unitPrice,
+            })
+          } else {
+            this.setLineChart({
+              groupDate,
+              amount,
+              orderNumber,
+              doneOrderNumber,
+              unitPrice,
+            })
+          }
         })
       },
 
       /**
        * 图表初始化
        */
-      dayChart(chartData) {
-        this.dayChartInit = echarts.init(this.$refs.chart_daystat)
+      setLineChart(chartData) {
+        this.dayChartInit = echarts.init(this.$refs.chartDay)
         this.dayChartOptions(chartData)
       },
 
@@ -231,40 +194,39 @@
        * 图表设置数据
        */
       dayChartOptions({
-        dayArr,
-        day_order_amount,
-        day_order_num,
-        day_average_order_num,
-        day_average_order_amount
+        groupDate,
+        amount,
+        orderNumber,
+        doneOrderNumber,
+        unitPrice
       } = {}) {
-        if (!dayArr) return
+        if (!groupDate) return
         let legend = ['交易额', '订单量', '平均单量', '平均交易额'],
-          series = [
-            {
+          series = [{
               name: '交易额',
               type: 'line',
-              data: day_order_amount,
+              data: amount,
               animationDuration: 2800,
               animationEasing: 'cubicInOut',
             },
             {
               name: '订单量',
               type: 'line',
-              data: day_order_num,
+              data: orderNumber,
               animationDuration: 2800,
               animationEasing: 'quadraticOut'
             },
             {
               name: '平均单量',
               type: 'line',
-              data: day_average_order_num,
+              data: doneOrderNumber,
               animationDuration: 2800,
               animationEasing: 'quadraticOut'
             },
             {
               name: '平均交易额',
               type: 'line',
-              data: day_average_order_amount,
+              data: unitPrice,
               animationDuration: 2800,
               animationEasing: 'quadraticOut'
             }
@@ -272,7 +234,7 @@
         this.dayChartInit.setOption({
           color: ['#3CA1FE', '#FFA32B', '#07C160', '#FF5353'],
           xAxis: {
-            data: dayArr,
+            data: groupDate,
             boundaryGap: false,
             axisTick: {
               show: false
@@ -302,23 +264,42 @@
           series: series
         })
       },
+
+      /**
+       * 选择日期或月份
+       */
+      getTime(val = '', type = 1) {
+        let mon = `${this.curYear}-${this.curMon}`
+        if (!val) val = mon
+        if(val == mon){
+          this.filtrate.startDateStr = `${val}-01`
+          this.filtrate.endDateStr = `${val}-${this.curDay < 10 ? '0' + this.curDay : this.curDay}`
+          this.selDay = this.curDay
+        } else {
+          this.selDay = this.getMonthLastDay(val)
+          this.filtrate.startDateStr = `${val}-01`
+          this.filtrate.endDateStr = `${val}-${this.selDay}`
+        }
+        this.selMon = val
+        this.getLineChart()
+      },
+
+			/**
+			 * 获取指定月最后一天
+			 * @param {Object} date
+			 */
+			getMonthLastDay(date) {
+				let a = date.split('-'),
+					curDate = new Date(a[0], a[1]),
+					endDay = new Date(curDate.setDate(0)).getDate()
+				return endDay
+			}
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .chart-daystat{
+  .chart-daystat {
     height: 500px;
-  }
-  .custom.el-table{
-    /deep/ td{
-      padding: 0;
-    }
-    /deep/ .cell{
-      padding: 0;
-    }
-    .td-info{
-      line-height: 46px;
-    }
   }
 </style>

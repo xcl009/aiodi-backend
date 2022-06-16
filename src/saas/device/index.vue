@@ -211,16 +211,16 @@
             title: '全部',
             nkey: 'deviceNumber'
           },
-          {
-            value: 'online',
-            title: '在线',
-            nkey: 'bindStoreNumber'
-          },
-          {
-            value: 'offline',
-            title: '离线',
-            nkey: 'bindStoreNumber'
-          },
+          // {
+          //   value: 'online',
+          //   title: '在线',
+          //   nkey: 'bindStoreNumber'
+          // },
+          // {
+          //   value: 'offline',
+          //   title: '离线',
+          //   nkey: 'bindStoreNumber'
+          // },
           {
             value: true,
             title: '已绑',
@@ -297,6 +297,7 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
+        this.queryDeviceCount()
       },
 
       /**
@@ -314,17 +315,39 @@
        */
       queryDeviceCount(){
         let params = {}
-        if(this.agentIds){
+        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
+        if(this.agentId){
           params.countType = 'AGENT'
-          params.groupIds = this.agentIds
+          params.groupIds = this.agentId
         }else if(this.brandId){
           params.countType = 'BRAND'
           params.groupIds = this.brandId
         } else {
-          this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
-            res.noBindStoreNumber = parseInt( res.deviceNumber ) - parseInt( res.bindStoreNumber )
-            this.deviceCount = res
-          })
+          if(this.deviceCount.deviceNumber != undefined){
+            if(params.deviceTypeCode){
+              this.deviceCount.deviceNumber = 0
+              this.deviceCount.bindStoreNumber = 0
+              this.deviceCount.noBindStoreNumber = 0
+              for(var i in this.deviceCount.deviceTypeDetail){
+                let item = this.deviceCount.deviceTypeDetail[i]
+                if(i.indexOf(params.deviceTypeCode) > -1){
+                  this.deviceCount.deviceNumber += parseInt(item.deviceNumber)
+                  this.deviceCount.bindStoreNumber += parseInt(item.bindStoreNumber)
+                  this.deviceCount.noBindStoreNumber += parseInt( item.deviceNumber ) - parseInt( item.bindStoreNumber )
+                }
+              }
+            } else {
+              this.deviceCount.deviceNumber = this.deviceCountes.deviceNumber
+              this.deviceCount.bindStoreNumber = this.deviceCountes.bindStoreNumber
+              this.deviceCount.noBindStoreNumber = this.deviceCountes.noBindStoreNumber
+            }
+          } else {
+            this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
+              res.noBindStoreNumber = parseInt( res.deviceNumber ) - parseInt( res.bindStoreNumber )
+              this.deviceCountes = JSON.parse(JSON.stringify(res))
+              this.deviceCount = res
+            })
+          }
           return
         }
         this.$get('iot-saas-device/admin/device/count/queryGroupCount', params).then(res => {

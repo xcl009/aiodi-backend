@@ -1,4 +1,6 @@
 import { saasRoutes, brandRoutes, agentRoutes, storeRoutes, constantRoutes } from '@/router'
+import Layout from '@/layout'
+const _import = require('../../router/_import_' + process.env.NODE_ENV) // 获取组件的方法
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -36,21 +38,22 @@ export function filterAsyncRoutes(routes, roles) {
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
- * @param authMenu
  */
-export function filterAsyncRoutesAuthMenu(routes, authMenu) {
-  var res = []
-  routes.forEach(route => {
-    const tmp = { ...route }, path = tmp.path.replace('/', ''), redirect = tmp.redirect ? tmp.redirect.replace('/', '') : '0'
-    if(authMenu.indexOf(path) > -1 || authMenu.indexOf(redirect) > -1){
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutesAuthMenu(tmp.children, authMenu)
+export function filterAsyncRouter(asyncRouterMap) {
+  const accessedRouters = asyncRouterMap.filter(route => {
+    if (route.component) {
+      if (route.component === 'Layout') {
+        route.component = Layout
+      } else {
+        route.component = _import(route.component) // 导入组件
       }
-      res.push(tmp)
     }
+    if (route.children && route.children.length) {
+      route.children = filterAsyncRouter(route.children)
+    }
+    return true
   })
-  if(res.length == 0) res = routes
-  return res
+  return accessedRouters
 }
 
 
@@ -70,18 +73,7 @@ const actions = {
   generateRoutes({ commit }, info) {
     // TODO 设置角色权限菜单
     return new Promise(resolve => {
-      let accessedRoutes, asyncRoutes = []
-      if (info.roles.includes('admin')) {
-        asyncRoutes = saasRoutes
-      } else if (info.roles.includes('store')) {
-        asyncRoutes = storeRoutes
-      } else if (info.roles.includes('agent')) {
-        asyncRoutes = agentRoutes
-      } else {
-        asyncRoutes = brandRoutes
-      }
-      //accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      accessedRoutes = filterAsyncRoutesAuthMenu(asyncRoutes, info.authMenu)
+      const accessedRoutes = filterAsyncRouter(info.menu)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

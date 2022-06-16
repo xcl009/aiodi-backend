@@ -1,31 +1,29 @@
 <template>
-  <div class="p-5">
-    <div class="bg-white">
-      <el-table :data="list" stripe highlight-current-row>
-        <el-table-column label="名称">
-          <template slot-scope="scope">
-            {{ scope.row.name }}
-          </template>
-        </el-table-column>
-        <el-table-column label="链接">
-          <template slot-scope="scope">
-            <div v-if="scope.row.deviceType >= 0">二维码：{{ scope.row.link }}</div>
-            <div class="mt-10" v-if="scope.row.deviceType >= 0">小程序：{{ config.xcx_page[scope.row.deviceType] }}</div>
-            <div v-else>{{ scope.row.link }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" round plain @click="copyLink(scope.row)">复制链接</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pl-15 pb-10 pt-20 fs-s4">
-        <div class="mb-15">
-          温馨提示：扫二维码进入小程序需要登录微信、支付宝小程序添加普通二维码跳转小程序规则。添加方法：<a class="text-blue" href="https://developers.weixin.qq.com/miniprogram/introduction/qrcode.html#%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B" target="_blank">微信</a>、<a class="text-blue" href="https://opendocs.alipay.com/mini/operation/vzd5v0" target="_blank">支付宝</a>。需要上传校验文件时，下载文件后点击下面上传校验文件。
-        </div>
-        <upload uploadText="上传校验文件" :raw="true" @getFile="getFile"/>
+  <div class="bg-white">
+    <el-table :data="list" stripe highlight-current-row>
+      <el-table-column label="名称">
+        <template slot-scope="scope">
+          {{ scope.row.name }}
+        </template>
+      </el-table-column>
+      <el-table-column label="链接">
+        <template slot-scope="scope">
+          <div v-if="scope.row.deviceType >= 0">二维码：{{ scope.row.link }}</div>
+          <div class="mt-10" v-if="scope.row.deviceType >= 0">小程序：{{ config.xcx_page[scope.row.deviceType] }}</div>
+          <div v-else>{{ scope.row.link }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" round plain @click="copyLink(scope.row)">复制链接</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="pl-15 pb-10 pt-20 fs-s4">
+      <div class="mb-15">
+        温馨提示：扫二维码进入小程序需要登录微信、支付宝小程序添加普通二维码跳转小程序规则。添加方法：<a class="text-blue" href="https://developers.weixin.qq.com/miniprogram/introduction/qrcode.html#%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B" target="_blank">微信</a>、<a class="text-blue" href="https://opendocs.alipay.com/mini/operation/vzd5v0" target="_blank">支付宝</a>。需要上传校验文件时，下载文件后点击下面上传校验文件。
       </div>
+      <upload uploadText="上传校验文件" :raw="true" @getFile="getFile"/>
     </div>
   </div>
 </template>

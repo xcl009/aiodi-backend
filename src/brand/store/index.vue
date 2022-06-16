@@ -97,7 +97,7 @@
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/index`})">更多应用</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/agent/steal/${scope.row.id}?userKey=storeId&deviceType=${seekDeviceType(scope.row.storeDivisionConfig)}`})">DD设置</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store/steal/${scope.row.id}?userKey=storeId&deviceType=${seekDeviceType(scope.row.storeDivisionConfig)}`})">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/index`})">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>

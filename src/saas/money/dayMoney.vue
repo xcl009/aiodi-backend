@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column label="订单量(单)" align="center">
           <template slot-scope="scope">
-            {{ scope.row.doneOrderNumber }}
+            {{ scope.row.orderNumber }}
           </template>
         </el-table-column>
         <el-table-column label="收益额(元)" align="center">
