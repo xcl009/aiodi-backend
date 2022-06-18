@@ -26,7 +26,7 @@
           </el-table-column>
           <el-table-column label="计次周期(天)">
             <template slot-scope="scope">
-              {{ scope.row.countCycle == scope.row.availableDay ? '--'  : scope.row.availableDay}}
+              {{ scope.row.countCycle == scope.row.availableDay ? '--'  : scope.row.countCycle}}
             </template>
           </el-table-column>
           <el-table-column label="免费次数">
@@ -304,6 +304,7 @@
                     type: 'success'
                   })
                   this.dialogStatus = false
+                  this.clickSubmit = false
                   this.getList()
                 })
               } else {
