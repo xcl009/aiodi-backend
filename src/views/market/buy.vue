@@ -22,7 +22,7 @@
         <div class="mr-15 w-60">周期</div>
         <div v-if="info.priceSettings && info.priceSettings[form.priceCode]">
           <template v-for="item in cycle">
-            <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-if="!item.key || info.priceSettings[form.priceCode][item.key] > 0" :type="cycleKey == item.key ? '' : 'info'" @click="cycleKey = item.key; form.cycle = item.code">
+            <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-if="(info.priceSettings[form.priceCode][item.key] > 0) || (item.key == 'TRYOUT' && info.serviceTypeCode != 'CATEGORY')" :type="cycleKey == item.key ? '' : 'info'" @click="cycleKey = item.key; form.cycle = item.code">
               {{ item.label }}
             </el-tag>
           </template>
@@ -62,7 +62,7 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <div class="pb-20 text-center">
-          <div class="fs-a1 text-black">确定购买当前服务吗？</div>
+          <div class="fs-a1 text-black">{{ form.cycle == 'TRYOUT' ? '确定试用当前服务吗？' : '确定购买当前服务吗？'}}</div>
         </div>
       </template>
       <div class="mt-30 text-center">
@@ -87,8 +87,8 @@
         serviceType: {},
         cycle: [
           {
-            code: '',
-            key: '',
+            code: 'TRYOUT',
+            key: 'TRYOUT',
             label: '免费试用七天'
           },
           {
@@ -153,6 +153,13 @@
         this.$get(`iot-saas-basic/admin/service/market/${this.id}`).then(res => {
           this.form.priceCode = res.priceSettings[0].priceCode
           res.priceSettings = arrayToObj(res.priceSettings, 'priceCode')
+          for(var i in this.cycle){
+            if(res.priceSettings[this.form.priceCode][this.cycle[i].key] > 0){
+              this.form.cycle = this.cycle[i].code
+              this.cycleKey = this.cycle[i].key
+              break
+            }
+          }
           this.info = res
         })
       },
@@ -190,7 +197,7 @@
             payParams.serviceId = this.id
             this.$post('iot-saas-basic/client/service/market/buy', payParams).then(res => {
               this.$message({
-                message: '服务购买成功',
+                message: (payParams.cycle == 'TRYOUT' ? '服务试用成功'  : '服务购买成功'),
                 type: 'success'
               })
               setTimeout(() => {

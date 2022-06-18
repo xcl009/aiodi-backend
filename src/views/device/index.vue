@@ -18,7 +18,7 @@
     </condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="mb-15 flex" v-if="!isStore()" >
+      <div class="mb-15 flex" v-if="!isStore()">
         <div class="flex1">
           <el-button size="medium" :type="listQuery.haveBind === item.value ? 'primary' : ''"
             :class="{'btn-body': listQuery.haveBind !== item.value}" v-for="item in haveBind"
@@ -75,13 +75,13 @@
             工厂：{{ scope.row.deviceFactory.name }}
           </template>
         </el-table-column>
-        <el-table-column label="是否铺货" width="150">
+        <el-table-column label="是否铺货" width="150" v-if="!isStore()">
           <template slot-scope="scope">
             <div>{{ scope.row.distribute ? "是" : "否" }}</div>
             <div v-if="scope.row.distribute">{{ scope.row.bindStoreTime }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户名称" width="150">
+        <el-table-column label="商户名称" width="150" v-if="!isStore()">
           <template slot-scope="scope">
             <div v-if="scope.row.store">
               <div class="text-cut_two">{{ scope.row.store.name }}</div>
@@ -398,7 +398,7 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
-        this.queryDeviceCount()
+        if(!this.isStore()) this.queryDeviceCount()
       },
 
       /**
@@ -409,7 +409,7 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
-        this.queryDeviceCount()
+        if(!this.isStore()) this.queryDeviceCount()
       },
 
       /**

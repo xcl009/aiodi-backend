@@ -210,10 +210,27 @@
             })
             break
           case 5:
-            this.$post(`iot-saas-pay/wechat/${row.appId}/set/privacy`, {
+            this.$get(`iot-saas-pay/wechat/${row.appId}/get/privacy?privacy_ver=2`).then(res => {
+              let title = '用户隐私保护未设置'
+              if(res.owner_setting.contact_email != '' || res.owner_setting.contact_phone != '' || res.owner_setting.contact_qq != '' || res.owner_setting.contact_weixin != ''){
+                title = '用户隐私保护已设置'
+              }
+              this.$alert(title + '，确定提交小程序用户隐私保护设置吗？', '用户隐私保护设置', {
+                confirmButtonText: '确定',
+                center: true,
+                callback: action => {
+                  if (action == "confirm") {
+                    this.$post(`iot-saas-pay/wechat/${row.appId}/set/privacy`, {
 
-            }).then(res => {
-
+                    }).then(res => {
+                      this.$message({
+                        message: '设置成功',
+                        type: 'success'
+                      })
+                    })
+                  }
+                }
+              })
             })
             break
         }
@@ -226,6 +243,8 @@
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         switch (this.dialogType) {
           case 1:
             this.$post('iot-saas-pay/wechat/upload/code', {
@@ -241,8 +260,11 @@
                 message: '上传成功',
                 type: 'success'
               })
-              this.dialogStatus = false
               curRow.appAuditStatus = 1
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
             break
         }

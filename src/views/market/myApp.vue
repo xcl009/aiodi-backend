@@ -56,7 +56,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order/subOrder?agentId=${scope.row.id}`})" v-if="scope.row.cycleTypeName != '永久'">续费</el-button>
+            <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/market/buyApp?id=${scope.row.serviceId}`})" v-if="scope.row.cycleTypeName != '永久'">续费</el-button>
             <!-- <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/market/steal`})" v-if="scope.row.cycleTypeName != '永久'">去设置</el-button> -->
           </template>
         </el-table-column>
@@ -75,7 +75,9 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <div class="text-center">
-          <div class="text-black">确定该笔提现申请通过审核吗？</div>
+          <div class="text-black">
+            
+          </div>
         </div>
       </template>
       <div class="mt-30 text-center">
@@ -119,7 +121,7 @@
         dialogType: 1,
         dialogStatus: false,
         dialogTitle: {
-          1: '通过提现'
+          1: ''
         },
         curRow: {},
         curIdx: 0,
@@ -196,7 +198,7 @@
        * 操作商户
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '提现通过'
+       * @param {Object} dialogType dialog内容显示类型 1: ''
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -219,16 +221,7 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            this.$post('agentapi/upper_review_apply', {
-              apply_id: curRow.id,
-              agree: 1
-            }).then(res => {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              row.withdraw_status = 2
-            })
+          
             break
         }
       }

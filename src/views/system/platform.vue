@@ -26,9 +26,9 @@
         <el-form-item label="公司地址">
           <el-input v-model="form.companyAddress" placeholder="请填写公司地址" />
         </el-form-item>
-        <!-- <el-form-item label="小程序介绍">
+        <el-form-item label="小程序介绍">
           <tinymce v-model="form.appIntroduce" :height="300" />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
         </el-form-item>
@@ -48,9 +48,7 @@
     data() {
       return {
         clickSubmit: false,
-        form: {
-
-        },
+        form: {},
         fileList: [],
         rules: {
           avatar: [{
@@ -71,11 +69,7 @@
       getInfo() {
         this.$get('iot-saas-basic/admin/platform/find').then(res => {
           res = res || {}
-          if(res.appName){
-            this.form = res
-          } else {
-            this.form = {}
-          }
+          this.form = res
         })
       },
 

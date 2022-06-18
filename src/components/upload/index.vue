@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :show-file-list="false" name="file" :multiple="multiple" v-if="limit == 1">
+    <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleSuccess" :on-error="handleError" :data="upObj" :show-file-list="false" name="file" :multiple="multiple" v-if="limit == 1">
       <template v-if="uploadText">
         <el-button type="primary">{{ uploadText }}<i class="el-icon-upload2 el-icon--right"></i></el-button>
       </template>
@@ -9,7 +9,7 @@
         <i class="rel el-icon-plus avatar-uploader-icon"></i>
       </template>
     </el-upload>
-    <el-upload class="avatar-uploader" list-type="picture-card" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :data="upObj" :file-list="value" name="file" :limit="limit" :multiple="multiple" :on-exceed="exceed" v-else>
+    <el-upload class="avatar-uploader" list-type="picture-card" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :on-error="handleError" :data="upObj" :file-list="value" name="file" :limit="limit" :multiple="multiple" :on-exceed="exceed" v-else>
       <i class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
@@ -80,6 +80,14 @@
        * 图片上传之前
        */
       beforeUpload(file){
+        const isLt8M = file.size / 1024 / 1024 < 9
+        if(!isLt8M) {
+          this.$message({
+            message: '上传文件大小不能超过8M!',
+            type: 'error'
+          })
+          return false
+        }
         if(this.raw){
           let rawUrl = null
           if (window.createObjectURL != undefined) {
@@ -110,6 +118,13 @@
           if(res.data.ossFileKey) fileList[fileList.length - 1].ossFileKey = res.data.ossFileKey
           this.update(fileList)
         }
+      },
+
+      /**
+       * 上传失败
+       */
+      handleError(err){
+        console.log(err)
       },
 
       /**

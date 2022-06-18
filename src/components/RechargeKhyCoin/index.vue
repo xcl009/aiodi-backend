@@ -1,18 +1,17 @@
 <template>
   <el-dialog :visible.sync="khyCoinDialog" :show-close="false" :modal-append-to-body="false" width="500px"
     align="center" title="快活币充值">
-    <el-form class="custom-form" label-width="auto">
+    <el-form class="custom-form" label-width="auto" @submit.native.prevent>
       <el-form-item label="充值数量">
-        <el-input v-model="dform.amount" @blur="dform.payType = 1; getPayCode()">
+        <el-input v-model="dform.amount" @change.native="dform.payType = 1; getPayCode()">
           <span slot="append">个</span>
         </el-input>
       </el-form-item>
     </el-form>
     <div>
       <el-button-group class="mb-30">
-        <el-button type="primary" :plain="dform.payType != 1" @click="dform.payType = 1; getPayCode()">微信
-        </el-button>
-        <el-button type="primary" :plain="dform.payType != 2" @click="dform.payType = 2; getPayCode()">支付宝</el-button>
+        <el-button type="primary" :plain="dform.payType != 1" @click="dform.payType = 1; getPayCode()">微信</el-button>
+        <!-- <el-button type="primary" :plain="dform.payType != 2" @click="dform.payType = 2; getPayCode()">支付宝</el-button> -->
       </el-button-group>
       <div class="mb-30 p-10 qrcode-box" v-if="dform.payType == 1 || !dform.payType">
         <div id="wxqrcode" />
@@ -76,24 +75,31 @@
         if (this.clickSubmit) return
         this.clickSubmit = true
         this.$post(url, params).then(res => {
-          console.log(res)
-          // if (params.payType == 1) {
-          //   this.coinPayInfo[`wx_${amount}`] = res.wx_qrcode_url
-          //   document.getElementById('wxqrcode').innerHTML = ''
-          //   new QRCode('wxqrcode', {
-          //     width: 150,
-          //     height: 150,
-          //     text: res.wx_qrcode_url
-          //   })
-          // } else if (params.payType == 2) {
-          //   this.coinPayInfo[`ali_${amount}`] = res.zfb_qrcode_url
-          //   document.getElementById('aliqrcode').innerHTML = ''
-          //   new QRCode('aliqrcode', {
-          //     width: 150,
-          //     height: 150,
-          //     text: res.res.zfb_qrcode_url
-          //   })
-          // }
+          if(res.payResult){
+            let payResult = JSON.parse(res.payResult)
+            if (params.payType == 1) {
+              this.coinPayInfo[`wx_${amount}`] = payResult.code_url
+              document.getElementById('wxqrcode').innerHTML = ''
+              new QRCode('wxqrcode', {
+                width: 150,
+                height: 150,
+                text: payResult.code_url
+              })
+            } else if (params.payType == 2) {
+              this.coinPayInfo[`ali_${amount}`] = payResult.code_url
+              document.getElementById('aliqrcode').innerHTML = ''
+              new QRCode('aliqrcode', {
+                width: 150,
+                height: 150,
+                text: payResult.code_url
+              })
+            }
+          } else {
+            this.$message({
+              message: '支付二维码获取失败',
+              type: 'error'
+            })
+          }
           this.clickSubmit = false
         }).catch(err => {
           this.clickSubmit = false

@@ -96,7 +96,7 @@ const actions = {
             setToken(data.brandId, 'brandId')
           }
           getAuthMenu().then(res => {
-            let menu = [], AssignAbility = [], Ability = []
+            let menu = [], AssignAbility = [], Ability = {}
             res = res || []
             res.map(item => {
               Ability[item.label] = true

@@ -271,7 +271,7 @@
                 cardType: (((rows.availableDay == rows.countCycle) || (!rows.availableDay && rows.countCycle == 1)) ? 1 : 2),
                 storeId: rows.storeId,
                 agentId: rows.agentId,
-                deviceTypeCode: rows.deviceTypeCode
+                deviceTypeCode: rows.deviceTypeCode || this.deviceTypeCode
               }
             }else{
               this.dform = {}

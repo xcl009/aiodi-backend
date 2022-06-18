@@ -1,20 +1,18 @@
 <template>
   <div>
     <div class="p-20 bg-white">
-      <div class="fs-c1 text-black">快活币数量</div>
+      <div class="fs-c1 text-black">可提现金额</div>
       <div class="mt-10 mb-10 cursor">
-        <span class="text-primary khcoin">{{ money.happyCurrencyCount || 0 }}</span>
-        <span class="ml-10 fs-s3 text-gray" @click="khyCoinIntroDialog = true">什么是快活币？</span>
+        <span class="text-primary khcoin">￥{{ money.balance || 0.00 }}</span>
       </div>
       <div>
-        <el-button type="primary" size="small" class="fs-s3" @click="$refs.rechargeCoin.show()">充值</el-button>
+        <el-button type="primary" size="small" class="fs-s3" @click="$router.push({path: `/money/cash`})">去提现</el-button>
       </div>
     </div>
 
     <div class="pt-10 pl-10 pr-10 bg-white">
       <div class="mt-10 pb-10 pl-10 fs-c1 text-black">收支概况</div>
     </div>
-
     <div class="pt-10 pl-20 pr-20 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
@@ -28,7 +26,7 @@
             <span>{{ scope.row.tradeTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="快活币">
+        <el-table-column label="金额">
           <template slot-scope="scope">
             <el-link :type="scope.row.amount > 0 ? 'primary' : 'danger'">{{ scope.row.amount || "0.00" }}</el-link>
           </template>
@@ -39,58 +37,17 @@
           :total="parseInt(listTotal)" @pagination="getList" />
       </div>
     </div>
-
-    <el-dialog :visible.sync="khyCoinIntroDialog" width="600px">
-      <div class="fs-c1 text-black" slot="title">
-        快活币
-      </div>
-      <div class="renewal-box">
-        <div class="mb-20 flex">
-          <div class="fs-c1">1、</div>
-          <div>
-            <div class="mb-10 text-black">快活币是什么？</div>
-            <div>快活币是客房全能助手系统内部流通的货币，1快活币等于1元人民币。</div>
-          </div>
-        </div>
-        <div class="mb-20 flex">
-          <div class="fs-c1">2、</div>
-          <div>
-            <div class="mb-10 text-black">快活币怎么赚？</div>
-            <div>登录电脑端后台，点击电脑端后台头部右上角【邀请链接获取】按钮，复制邀请链接，发给有需要做共享设备的朋友，朋友入驻客房全能助手系统成为品牌商，每月系统服务续费时，您可得续费金额的40%，您的朋友也可以进行邀请，他邀请入驻的品牌商续费，您还可以得续费金额的10%。</div>
-          </div>
-        </div>
-        <div class="mb-20 flex">
-          <div class="fs-c1">3、</div>
-          <div v-if="checkRoles(['factory'])">
-            <div class="mb-10 text-black">快活币怎么用？</div>
-            <div>快活币提现。</div>
-          </div>
-          <div v-else>
-            <div class="mb-10 text-black">快活币怎么用？</div>
-            <div>快活币可用于系统服务续费、购买设备。</div>
-          </div>
-        </div>
-        <div>
-          <el-button type="primary" @click="khyCoinIntroDialog = false" style="margin-left: 25px;">已了解</el-button>
-        </div>
-      </div>
-    </el-dialog>
-
-    <recharge-khy-coin ref="rechargeCoin"></recharge-khy-coin>
   </div>
 </template>
 
 <script>
-  import QRCode from 'qrcodejs2'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
-  import RechargeKhyCoin from '@/components/RechargeKhyCoin/'
   export default {
     name: 'income',
     components: {
       Pagination,
-      condition,
-      RechargeKhyCoin
+      condition
     },
     computed: {
       agentInfo() {
@@ -99,6 +56,7 @@
     },
     data() {
       return {
+        money: {},
         clickSubmit: false,
         form: {},
         tableMaxH: '250',
@@ -108,25 +66,35 @@
         listQuery: {
           page: 1,
           size: 20
-        },
-        
-        money: {},
-        khyCoinIntroDialog: false
+        }
       }
     },
     mounted(options) {
-      this.getBalance()
+      if(this.isStore()){
+        this.getMyStore()
+      }else{
+        this.getBalance()
+      }
       this.toQuery()
     },
     methods: {
+      /**
+       * 获取我的商户
+       */
+      getMyStore(){
+      	let url = 'iot-saas-basic/admin/store/findMyStore'
+      	this.$get(url).then(res => {
+      		this.cutStoreId = Object.values(res)[0].id
+          this.getBalance()
+      	})
+      },
+
       /**
        * 获取可提现金额
        */
       getBalance(){
         let params = {}
-      	if(this.isStore()){
-      		params.storeId = this.agentInfo.storeIds[0]
-      	}
+        if(this.cutStoreId) params.storeId = this.cutStoreId
         this.$get('iot-saas-pay/api/pay/withdraw/balance', params).then(res => {
           this.money = res || {}
         })

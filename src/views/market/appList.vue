@@ -22,7 +22,7 @@
             <div class="pl-15 pr-15 flex1">
               <div class="flex align-center text-black">
                 <div>{{ item.serviceName }}</div>
-                <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)">免费试用七天</el-tag>
+                <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)" v-if="item.serviceTypeCode != 'CATEGORY'">免费试用七天</el-tag>
                 <div class="flex1"></div>
                 <!-- <el-rate :value="5" disabled></el-rate> -->
               </div>
@@ -53,9 +53,9 @@
 </template>
 
 <script>
+  import {arrayKeys} from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
-
   export default {
     name: 'agentWithdraw',
     components: {
@@ -67,13 +67,12 @@
         clickSubmit: false,
         tabs: [],
         form: {},
-        tableMaxH: '250',
         list: [],
         listLoading: false,
         listTotal: 0,
         listQuery: {
           page: 1,
-          size: 20
+          size: 15
         }
       }
     },
@@ -93,6 +92,7 @@
       }
     },
     mounted() {
+
       this.$store.dispatch('api/getServiceType').then(res => {
         this.tabs = res
       })
@@ -105,7 +105,7 @@
         if(this.clickSubmit) return
         this.clickSubmit = true
         this.listQuery.page = 1
-        this.listQuery.size = 20
+        this.listQuery.size = 15
         this.getList()
       },
 
@@ -122,13 +122,26 @@
           this.clickSubmit = false
           if(params.page == 0){
             this.listTotal = res ? res.total : 0
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
+          //this.getNoFreeApp(arrayKeys(this.list, 'serviceId'))
         }).catch(() => {
           this.listLoading = false
           this.clickSubmit = false
         })
       },
+
+      /**
+       * 免费使用
+       */
+      getNoFreeApp(serviceIds = []){
+        console.log(serviceIds)
+        if(serviceIds.length <= 0) return
+        this.$get('iot-saas-basic/client/service/market/findListTryoutStatus', {
+          serviceIds: serviceIds
+        }).then(res => {
+          console.log(res)
+        })
+      }
     }
   }
 </script>

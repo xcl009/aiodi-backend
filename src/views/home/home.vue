@@ -257,6 +257,9 @@
       myDeviceName() {
         return this.$store.getters.myDeviceName
       },
+      myDeviceId() {
+        return this.$store.getters.myDeviceId
+      },
       agentInfo() {
         return this.$store.getters.agentInfo
       },
@@ -316,7 +319,7 @@
             for(var i in res.deviceTypeDetail){
               deviceChartData.push({
                 "value": res.deviceTypeDetail[i].deviceNumber,
-                "name": i
+                "name": this.myDeviceId[i.substr(0, 2)]
               })
             }
             if(deviceChartData.length > 0){

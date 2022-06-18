@@ -1351,77 +1351,34 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-  // {
-  //   path: '/user',
-  //   component: Layout,
-  //   redirect: '/user/index',
-  //   meta: {
-  //     title: '个人信息',
-  //     icon: 'user'
-  //   },
-  //   hidden: true,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'userInfo',
-  //       component: () => import('@/saas/user/index'),
-  //       meta: {
-  //         title: '个人信息'
-  //       }
-  //     },
-  //     {
-  //       path: 'lpw',
-  //       name: 'loginPw',
-  //       component: () => import('@/saas/user/loginPw'),
-  //       meta: {
-  //         title: '登陆密码'
-  //       }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/money',
-  //   component: Layout,
-  //   redirect: '/money/index',
-  //   meta: {
-
-  //   },
-  //   hidden: true,
-  //   children: [
-  //     {
-  //       path: 'income',
-  //       name: 'income',
-  //       component: () => import('@/saas/money/income'),
-  //       meta: {
-  //         title: '收益明细'
-  //       }
-  //     },
-  //     {
-  //       path: 'monthMoney',
-  //       name: 'monthMoney',
-  //       component: () => import('@/saas/money/monthMoney'),
-  //       meta: {
-  //         title: '月交易额'
-  //       }
-  //     },
-  //     {
-  //       path: 'dayMoney',
-  //       name: 'dayMoney',
-  //       component: () => import('@/saas/money/dayMoney'),
-  //       meta: {
-  //         title: '日交易额'
-  //       }
-  //     },
-  //     {
-  //       path: 'khyCoin',
-  //       name: 'khyCoin',
-  //       component: () => import('@/saas/money/khyCoin'),
-  //       meta: {
-  //         title: '快活币明细'
-  //       }
-  //     }
-  //   ]
-  // }
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/index',
+    meta: {
+      title: '个人信息',
+      icon: 'user'
+    },
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        name: 'userInfo',
+        component: () => import('@/saas/user/index'),
+        meta: {
+          title: '个人信息'
+        }
+      },
+      {
+        path: 'lpw',
+        name: 'loginPw',
+        component: () => import('@/saas/user/loginPw'),
+        meta: {
+          title: '登陆密码'
+        }
+      }
+    ]
+  }
 ]
 
 const createRouter = () => new Router({
