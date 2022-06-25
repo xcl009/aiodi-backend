@@ -167,7 +167,7 @@
                 type: 'success'
               })
               this.$router.push({
-                path: '/agent/myAgent'
+                path: '/agent'
               })
             }).catch( err => {
               setTimeout(() => {

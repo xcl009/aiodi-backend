@@ -127,7 +127,7 @@
                     @click="$router.push({path: `/agent/subAgent?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
                     去分配</el-button>
                   <el-button type="primary" size="mini"
-                    @click="$router.push({path: `/store/myStore?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
+                    @click="$router.push({path: `/store?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
                   去铺货</el-button>
                 </template>
               </div>
@@ -144,7 +144,7 @@
           </template>
           <template v-else-if="!isStore()">
             <el-button type="primary" size="medium" :disabled="selID.length == 0"
-              @click="$router.push({path: `/store/myStore?deviceId=${selID}`})">批量铺货</el-button>
+              @click="$router.push({path: `/store?deviceId=${selID}`})">批量铺货</el-button>
             <el-button type="primary" size="medium" :disabled="selID.length == 0"
               @click="$router.push({path: `/agent/subAgent?deviceId=${selID}`})">批量分配
             </el-button>

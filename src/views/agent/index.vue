@@ -27,7 +27,7 @@
         </el-table-column>
         <el-table-column label="设备数">
           <template slot-scope="scope">
-            <div class="cursor inline text-left" @click="$router.push({path: `/device/myDevice?agentId=${scope.row.id}`})">
+            <div class="cursor inline text-left" @click="$router.push({path: `/device?agentId=${scope.row.id}`})">
               <div>全部：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) - parseFloat(deviceCount[scope.row.id].lowerDeviceNumber) : '0' }}</div>
               <div>已铺货：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) - parseFloat(deviceCount[scope.row.id].lowerBindStoreNumber) : '0' }}</div>
             </div>
@@ -37,12 +37,12 @@
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
-                  @click="$router.push({path: `/order/myOrder?agentId=${scope.row.id}&sourceType=1`})">
+                  @click="$router.push({path: `/order?agentId=${scope.row.id}&sourceType=1`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
                 </el-link>
               </div>
               <div>支付宝：<el-link type="primary"
-                  @click="$router.push({path: `/order/myOrder?agentId=${scope.row.id}&sourceType=2`})">
+                  @click="$router.push({path: `/order?agentId=${scope.row.id}&sourceType=2`})">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
                 </el-link>
               </div>
@@ -77,7 +77,7 @@
               <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
             </template>
             <template v-else>
-              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store/myStore?agentId=${scope.row.id}`})">商户列表</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store?agentId=${scope.row.id}`})">商户列表</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/addAgent?agentId=${scope.row.id}`})" v-if="!lowerAgent">修改信息</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)" v-if="!lowerAgent">删除代理</el-button>
@@ -108,7 +108,7 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <div class="text-center" v-if="dform.menus">
+        <div class="text-center" v-if="typeof(dform.menus) != 'undefined'">
           <template v-for="item in agentInfo.AssignAbility">
             <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != 'STORE_ASSIGN'">{{ item.name }}</el-checkbox>
           </template>
@@ -357,13 +357,12 @@
             this.dialogType = dialogType
             this.curRow = row
             this.curIdx = idx
-            this.dialogStatus = true
             if(dialogType == 1){
               this.$get('iot-saas-user/auth/menu', {
                 childId: row.userId
               }).then(res => {
-                console.log(res)
                 let menus = {}
+                res = res || []
                 res.map(item => {
                   menus[item.id] = true
                   if(item.childrenAuthList && item.childrenAuthList.length > 0){
@@ -372,10 +371,11 @@
                     })
                   }
                 })
-                console.log(menus)
                 this.$set(this.dform, 'menus', menus)
+                console.log(this.dform)
               })
               this.$set(this.dform, 'childUserId', row.userId)
+              this.dialogStatus = true
             }
             break
         }

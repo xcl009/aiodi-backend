@@ -22,7 +22,10 @@
         <div class="mr-15 w-60">周期</div>
         <div v-if="info.priceSettings && info.priceSettings[form.priceCode]">
           <template v-for="item in cycle">
-            <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-if="(info.priceSettings[form.priceCode][item.key] > 0) || (item.key == 'TRYOUT' && info.serviceTypeCode != 'CATEGORY')" :type="cycleKey == item.key ? '' : 'info'" @click="cycleKey = item.key; form.cycle = item.code">
+            <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-if="item.key == 'TRYOUT' && checkFree[id] != 'YES' && info.serviceTypeCode != 'CATEGORY'" :type="cycleKey == item.key ? '' : 'info'" @click="cycleKey = item.key; form.cycle = item.code">
+              {{ item.label }}
+            </el-tag>
+            <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-if="(info.priceSettings[form.priceCode][item.key] > 0)" :type="cycleKey == item.key ? '' : 'info'" @click="cycleKey = item.key; form.cycle = item.code">
               {{ item.label }}
             </el-tag>
           </template>
@@ -119,6 +122,7 @@
         cycleKey: 'monthAmount',
 
         id: this.$route.query.id,
+        checkFree: {},
 
         // 弹出相关
         dialogType: 1,
@@ -143,6 +147,7 @@
       this.$store.dispatch('api/getServiceType').then(res => {
         this.serviceType = arrayToObj(res, 'code', 'name')
       })
+      this.getNoFreeApp([this.id])
       this.getInfo()
     },
     methods: {
@@ -161,6 +166,18 @@
             }
           }
           this.info = res
+        })
+      },
+
+      /**
+       * 免费试用资格
+       */
+      getNoFreeApp(serviceIds = []){
+        if(serviceIds.length <= 0) return
+        this.$get('iot-saas-basic/client/service/market/findListTryoutStatus', {
+          serviceIds: serviceIds
+        }).then(res => {
+          if(res) this.checkFree = arrayToObj(res, 'serviceId', 'statusCode')
         })
       },
 
@@ -202,7 +219,7 @@
               })
               setTimeout(() => {
                 this.$router.push({
-                  path: '/market/myApp'
+                  path: '/market'
                 })
               }, 1000)
             }).catch(err => {

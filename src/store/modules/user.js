@@ -100,7 +100,7 @@ const actions = {
             res = res || []
             res.map(item => {
               Ability[item.label] = true
-              if(item.displayFlag != 'CANNOT_ASSIGN'){
+              if(item.displayFlag != 'CANNOT_ASSIGN' && item.id != 99){
                 AssignAbility.push({
                   id: item.id,
                   displayFlag: item.displayFlag,

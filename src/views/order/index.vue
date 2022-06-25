@@ -127,6 +127,7 @@
         <el-table-column label="备注" min-width="150">
           <template slot-scope="scope">
             <div class="remark-box">
+              <el-link type="danger" v-if="scope.row.freeTime > 0">{{ scope.row.freeTime == 600000 ? '会员卡订单' : `会员卡免费${scope.row.freeTime}分钟` }}</el-link>
               <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
             </div>
           </template>

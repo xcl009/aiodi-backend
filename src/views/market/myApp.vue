@@ -56,8 +56,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/market/buyApp?id=${scope.row.serviceId}`})" v-if="scope.row.cycleTypeName != '永久'">续费</el-button>
-            <!-- <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/market/steal`})" v-if="scope.row.cycleTypeName != '永久'">去设置</el-button> -->
+            <el-button class="ml-0" size="medium" type="text" @click="$router.push({path: `/market/buyApp?id=${scope.row.serviceId}`})" v-if="scope.row.cycleTypeName != '永久'">续费</el-button>
+            <el-button class="ml-5" size="medium" type="text" @click="$router.push({path: `/store/openMemberRecord`})" v-if="scope.row.priceCode && scope.row.priceCode.indexOf('_MEMBER_XF') > -1">开卡订单</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,7 +76,7 @@
       <template v-if="dialogType == 1">
         <div class="text-center">
           <div class="text-black">
-            
+
           </div>
         </div>
       </template>
@@ -202,7 +202,7 @@
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
-        switch (row.type) {
+        switch (type) {
           case 1:
             this.dialogType = dialogType
             this.curRow = row
@@ -221,7 +221,7 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-          
+
             break
         }
       }

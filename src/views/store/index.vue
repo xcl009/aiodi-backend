@@ -48,8 +48,8 @@
               <div class="cursor" @click="$router.push({path: `/device?storeId=${scope.row.id}&agentId=${scope.row.agentId}&brandId=${scope.row.brandId}`})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
             </div>
             <div class="inline" v-else>
-              <div class="cursor" @click="$router.push({path: (lowerStore ? `/order/subOrder?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/order/myOrder?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}</div>
-              <div class="cursor" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/device/myDevice?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
+              <div class="cursor" @click="$router.push({path: (lowerStore ? `/order/subOrder?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/order?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}</div>
+              <div class="cursor" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/device?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
             </div>
           </template>
         </el-table-column>
@@ -59,7 +59,7 @@
             <div>{{ supUser[scope.row.userId] ? dealPhone(supUser[scope.row.userId].mobile) : '' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="分润人" width="120">
+        <el-table-column label="分润人" width="180">
           <template slot-scope="scope">
             <div>{{ scope.row.user.nickname || '' }}</div>
             <div>{{ scope.row.user.mobile || '' }}</div>
@@ -68,7 +68,7 @@
         <el-table-column label="分成比例">
           <template slot-scope="scope">
             <div class="mt-5">
-              <div class="mb-5 cursor" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}` : `/device/meDevice?storeId=${scope.row.id}`)})">
+              <div class="mb-5 cursor" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}` : `/device?storeId=${scope.row.id}`)})">
                 {{ myDeviceId[item.deviceTypeCode] }}：<span v-if="scope.row.divisionMode == 1">{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})</span><span v-else>不分成</span>
               </div>
             </div>
@@ -486,7 +486,6 @@
                     })
                   }
                 })
-                console.log(menus)
                 this.$set(this.dform, 'menus', menus)
               })
               this.$set(this.dform, 'childUserId', row.userId)

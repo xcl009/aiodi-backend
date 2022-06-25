@@ -2,18 +2,21 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
+        <el-select placeholder="类型" v-model="form.feedbackType" @change="toQuery()" v-if="!isStore()">
+          <el-option :label="item" :value="index" v-for="(item, index) in feedbackType"/>
+        </el-select>
         <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
           <el-option :label="index" :value="item" v-for="(item, index) in myDeviceName"/>
         </el-select>
         <el-input placeholder="手机号码" v-model="form.mobile" />
-        <el-input placeholder="商户名称" v-model="form.storeName" />
-        <el-input placeholder="设备SN" v-model="form.snCode" />
+        <el-input placeholder="商户名称" v-model="form.storeName" v-if="!isStore()"/>
+        <el-input placeholder="设备SN" v-model="form.deviceSn" />
         <el-date-picker
           class="range-day flex align-center"
             v-model="form.date"
             type="daterange"
             range-separator="-"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptionsEnd"
@@ -35,7 +38,7 @@
         element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="身份" width="80">
           <template slot-scope="scope">
-            <div>{{ getRoleName(scope.row.identity) }}</div>
+            <div>{{ getRoleName(scope.row.userType) }}</div>
           </template>
         </el-table-column>
         <el-table-column label="用户昵称" width="120">
@@ -50,34 +53,25 @@
             {{ scope.row.mobile || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="问题类型" width="110">
+        <el-table-column label="商户" width="200" v-if="form.feedbackType == 'store'">
           <template slot-scope="scope">
-            <div>{{ issueArr[scope.row.issueType] }}</div>
+            <div>{{ scope.row.storeName }}</div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="商户" width="160">
+        <el-table-column label="问题类型" width="110">
           <template slot-scope="scope">
-            {{ scope.row.store_name }} <span v-if="scope.row.door">(房间号：{{ scope.row.door }})</span>
+            <div>{{ scope.row.issueType }}</div>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column label="设备二维码" width="100">
           <template slot-scope="scope">
-            <div>{{ scope.row.snCode }}</div>
+            <div>{{ scope.row.deviceSn || '--' }}</div>
             <a class="text-blue" v-if="scope.row.orderNo" :href="`/order/order?orderNo=${scope.row.orderNo}`" target="_blank">查看订单</a>
           </template>
         </el-table-column>
         <!-- <el-table-column label="设备类型" width="100">
           <template slot-scope="scope">
             {{ myDeviceId[scope.row.deviceTypeCode] }}
-          </template>
-        </el-table-column> -->
-        <!-- <el-table-column label="错误截图" width="190">
-          <template slot-scope="scope">
-            <div class="flex flex-wrap">
-              <el-image class="mr-5" v-for="item in scope.row.img_url" style="width: 50px; height: 50px" :src="item"
-                :preview-src-list="scope.row.img_url">
-              </el-image>
-            </div>
           </template>
         </el-table-column> -->
         <el-table-column label="反馈时间" width="120">
@@ -90,19 +84,29 @@
             {{ scope.row.content || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="回复" min-width="250">
+        <el-table-column label="截图" width="190">
           <template slot-scope="scope">
-            {{ scope.row.reply }}
+            <div class="flex flex-wrap" v-if="scope.row.errorImages">
+              <el-image class="mr-5" v-for="item in scope.row.errorImages.split(',')" style="width: 50px; height: 50px" :src="item"
+                :preview-src-list="scope.row.errorImages.split(',')">
+              </el-image>
+            </div>
+            <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="备注" width="100">
+        <el-table-column label="回复" min-width="250">
+          <template slot-scope="scope">
+            {{ scope.row.reply || '--' }}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="备注" width="100">
           <template slot-scope="scope">
             {{ scope.row.remark }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="状态" width="100">
           <template slot-scope="scope">
-            <el-button :type="scope.row.state == 1 ? 'success' : 'danger'" size="mini" plain>{{ statusObj[scope.row.state] || '未处理' }}</el-button>
+            <el-button class="ml-0" :type="scope.row.state == 1 ? 'success' : 'danger'" size="mini" plain>{{ statusObj[scope.row.state] || '未处理' }}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="160">
@@ -124,8 +128,8 @@
           <el-form-item label="反馈内容">
             <div>{{ curRow.content }}</div>
           </el-form-item>
-          <el-form-item label="错误截图" v-if="curRow.errorImages && curRow.errorImages.length > 0">
-            <el-image class="mr-5" v-for="item in curRow.errorImages" style="width: 50px; height: 50px" :src="item" :preview-src-list="curRow.errorImages"></el-image>
+          <el-form-item label="错误截图" v-if="dform.errorImages && dform.errorImages.length > 0">
+            <el-image class="mr-5" v-for="item in dform.errorImages" style="width: 50px; height: 50px" :src="item" :preview-src-list="dform.errorImages"></el-image>
           </el-form-item>
           <el-form-item label="后台回复">
             <el-input v-model="dform.reply" type="textarea" :rows="4" placeholder="请输入回复内容"></el-input>
@@ -156,27 +160,25 @@
         clickSubmit: false,
         dealStatus: [
           {
-            value: '-1',
+            value: '',
             title: '全部',
             nkey: 'totalCount'
           },
           {
-            value: 0,
+            value: '0',
             title: '未处理',
             nkey: 'processCount'
           },
           {
-            value: 1,
+            value: '1',
             title: '已处理',
             nkey: 'finishedCount'
           }
         ],
 
-        issueArr: {
-          1: '订单问题',
-          2: '系统bug',
-          3: '其他问题',
-          4: '设备问题'
+        feedbackType: {
+          brand: '平台问题',
+          store: '商户问题'
         },
         statusObj: {
           0: '未处理',
@@ -206,11 +208,13 @@
         listLoading: false,
         listTotal: 0,
         listQuery: {
-          state: '-1',
+          state: '',
           page: 1,
           size: 20
         },
-        form: {},
+        form: {
+          feedbackType: 'brand'
+        },
         statInfo: {},
 
         // 弹出相关
@@ -284,7 +288,9 @@
       reset(){
         if(this.clickSubmit) return
         this.clickSubmit = true
-        this.form = {}
+        this.form = {
+          feedbackType: 'brand'
+        }
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getStat()
@@ -296,6 +302,11 @@
        */
       getStat() {
         var params = Object.assign({}, this.form)
+        if(params.date){
+          params.startDate = params.date[0]
+          params.endDate = params.date[1]
+          delete params.date
+        }
         this.$get('iot-saas-basic/admin/feedback/findBrandCount', params).then(res => {
           this.statInfo = res
         })
@@ -341,8 +352,13 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
+            console.log(row.errorImages.split(','))
             if(dialogType == 1){
-              this.dform.id = row.id
+              this.dform = {
+                id: row.id,
+                errorImages: (row.errorImages ? row.errorImages.split(',') : []),
+                reply: row.reply
+              }
             }
             break
         }

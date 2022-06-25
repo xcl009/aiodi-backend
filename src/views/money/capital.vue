@@ -5,7 +5,7 @@
       <div class="mt-10 mb-10 cursor">
         <span class="text-primary khcoin">￥{{ money.balance || 0.00 }}</span>
       </div>
-      <div>
+      <div v-if="!isBrand()">
         <el-button type="primary" size="small" class="fs-s3" @click="$router.push({path: `/money/cash`})">去提现</el-button>
       </div>
     </div>

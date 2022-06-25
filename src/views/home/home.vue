@@ -41,7 +41,7 @@
         </div>
       </el-col>
       <el-col :xs="24" :sm="12" :lg="6">
-        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/device`})">
+        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: isSaas() ? `/device` : `/device`})">
           <div>总设备数</div>
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
@@ -74,6 +74,25 @@
           <div class="flex align-center">
             <div>今日</div>
             <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(userStat.todayNumber)" :duration="2600" :decimals="2"/></div>
+            <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="12" :lg="6" v-if="!isSaas()">
+        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money`})">
+          <div>总收益</div>
+          <div class="flex align-center line-1">
+            <div class="flex1 flex align-center">
+              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(orderStat.orderDivide)" :duration="2600" :decimals="2"/></div>
+              <i class="iconfont icon-right fs-s1"></i>
+            </div>
+            <div class="stat-icon flex align-center justify-center" style="background: rgba(255, 83, 83, 0.1)">
+              <peoples theme="outline" size="27" fill="#FF5353"/>
+            </div>
+          </div>
+          <div class="flex align-center">
+            <div>今日</div>
+            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(orderStat.todayDivide)" :duration="2600" :decimals="2"/></div>
             <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
           </div>
         </div>
@@ -275,7 +294,7 @@
       this.getQuerHistogram()
       this.getLineChart()
       this.getDeviceStat()
-      this.getUserStat()
+      if(this.isSaas()) this.getUserStat()
     },
     methods: {
       /**

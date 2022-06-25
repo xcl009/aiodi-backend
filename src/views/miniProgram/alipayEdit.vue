@@ -40,7 +40,7 @@
             <el-input v-model="form.alipayRootCert" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="信用服务id">
-            <el-input v-model="form.service_id"></el-input>
+            <el-input v-model="form.serviceId"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit" :disabled="clickSubmit">立即提交</el-button>
@@ -92,7 +92,7 @@
             'appCert',
             'alipayCert',
             'alipayRootCert',
-            'service_id'
+            'serviceId'
           ])
         })
       },
@@ -113,7 +113,7 @@
             type: 'success'
           })
           this.$router.push({
-            path: '/systemSet/alipay'
+            path: '/system/alipay'
           })
           this.clickSubmit = false
         }).catch(err => {

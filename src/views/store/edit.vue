@@ -590,7 +590,7 @@ export default {
               })
             } else {
               this.$router.push({
-                path: '/store/myStore'
+                path: '/store'
               })
             }
             this.clickSubmit = false
