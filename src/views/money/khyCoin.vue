@@ -3,7 +3,7 @@
     <div class="p-20 bg-white">
       <div class="fs-c1 text-black">快活币数量</div>
       <div class="mt-10 mb-10 cursor">
-        <span class="text-primary khcoin">{{ money.happyCurrencyCount || 0 }}</span>
+        <span class="text-primary khcoin">{{ money.happyCurrencyNum || 0 }}</span>
         <span class="ml-10 fs-s3 text-gray" @click="khyCoinIntroDialog = true">什么是快活币？</span>
       </div>
       <div>
