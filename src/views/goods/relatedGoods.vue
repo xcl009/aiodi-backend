@@ -99,7 +99,8 @@
     },
     data() {
       return {
-        num: this.$route.query.num || 2,
+        id: this.$route.query.id || '',
+        positionQty: this.$route.query.positionQty || 2,
         clickSubmit: false,
         tableMaxH: '250',
         listLoading: false,
@@ -129,10 +130,11 @@
 
     },
     mounted() {
-      console.log(this.num)
-      for(var i = 0; i < this.num; i++){
+      console.log(this.positionQty)
+      for(var i = 0; i < this.positionQty; i++){
         this.list.push(i)
       }
+      this.getInfo()
       // if (this.type == 2) {
       //   this.getShop()
       // } else {
@@ -168,10 +170,12 @@
        * 获取信息
        */
       getInfo() {
-        this.$get('agentapi/product/get_business_samples', {
-          store_id: this.id
+        this.$get(`iot-saas-device/admin/template/binding/${this.id}`, {
+          templateId: this.id
         }).then(res => {
-          this.save_plan = res.list ? Object.values(res.list) : []
+          if(res){
+            this.save_plan = res
+          }
         })
       },
 
