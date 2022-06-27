@@ -46,8 +46,8 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary"  @click="setRows(1, scope.row, 1)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="list.splice(scope.$index, 1)">删除</el-button>
+              <el-button size="mini" type="primary" @click="setRows(1, scope.row, 1)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="setRows(2, scope.row, scope.$index)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -276,7 +276,7 @@
 
       /**
        * 操作数据
-       * @param {Object} type 1 dialog类型
+       * @param {Object} type 1 dialog类型 2 删除
        * @param {Object} row 选择当前数据
        * @param {Object} dialogType dialog内容显示类型 1: '添加模板'
        * @param {Object} idx 当前数据所在位置
@@ -311,6 +311,25 @@
             }
             this.dialogStatus = true
             break
+          case 2:
+            this.$confirm('确定删除此会员卡吗？', '删除会员卡', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post(`iot-saas-basic/brand/goods/v1/delete`, {
+                    id: row.id
+                  }).then(res => {
+                    this.$message({
+                      message: '删除成功',
+                      type: 'success'
+                    })
+                    this.list.splice(dialogType, 1)
+                  })
+                }
+              }
+            })
+          break
         }
       },
 
