@@ -28,7 +28,7 @@
             {{ scope.row.name || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="套餐">
+        <el-table-column label="套餐" min-width="300">
           <template slot-scope="scope">
             <div v-for="item in scope.row.priceSettings">
               <span class="mr-10" v-if="scope.row.priceSettings.length > 1">{{ item.priceName }}</span>

@@ -129,7 +129,8 @@
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1,
-          queryType: 'all'
+          queryType: 'all',
+          capitalType: 'RMB'
         })
         this.$get('iot-saas-pay/api/pay/tradeLog/list', params).then(res => {
           this.list = res.rows

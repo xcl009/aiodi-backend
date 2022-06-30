@@ -2,38 +2,38 @@
   <div>
     <div class="pl-20 pr-20 pt-20 pb-5 bg-white">
       <el-form ref="form" label-width="auto">
-        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list">
+        <el-table class="ptd-5" id="list_table" ref="list_table" :data="list">
           <el-table-column
             label="仓口" width="150">
             <template slot-scope="scope">
-              {{ scope.$index + 1}}
+              {{ scope.row.position }}
             </template>
           </el-table-column>
           <el-table-column label="商品">
             <template slot-scope="scope">
               <div class="flex align-center">
-                <el-avatar shape="square" :size="50" :src="scope.row.img_url" fit="fill" icon="el-icon-picture-outline"  v-if="scope.row.img_url"></el-avatar>
-                <div class="pl-10 pr-10 flex1">{{ scope.row.product_name }}</div>
+                <el-avatar shape="square" :size="50" :src="scope.row.picture" fit="fill" icon="el-icon-picture-outline"  v-if="scope.row.picture"></el-avatar>
+                <div class="pl-10 pr-10 flex1">{{ scope.row.title }}</div>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="成本价" width="200">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.cost_price" placeholder="成本价" disabled>
+              <el-input v-model="scope.row.costPrice" placeholder="成本价" disabled>
                 <template slot="append">元</template>
               </el-input>
             </template>
           </el-table-column>
           <el-table-column label="零售价" width="200">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.market_price" placeholder="零售价">
+              <el-input v-model="scope.row.retailPrice" placeholder="零售价">
                 <template slot="append">元</template>
               </el-input>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="setRows(1, scope.row, 1)">选择商品</el-button>
+              <el-button size="mini" type="primary" class="ml-0" @click="setRows(1, scope.row, 1)">选择商品</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -50,24 +50,20 @@
         <el-table class="ptd-5" :data="goodsList" border>
           <el-table-column label="图片" width="80">
             <template slot-scope="scope">
-              <el-avatar shape="square" :size="50" :src="scope.row.img_url" fit="fill" icon="el-icon-picture-outline">
-              </el-avatar>
+              <div class="flex">
+                <el-avatar shape="square" :size="50" :src="scope.row.picture" fit="fill" icon="el-icon-picture-outline"></el-avatar>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="商品标题" width="250">
             <template slot-scope="scope">
-              {{ scope.row.product_name }}
-            </template>
-          </el-table-column>
-          <el-table-column label="副标题">
-            <template slot-scope="scope">
-              {{ scope.row.product_title }}
+              {{ scope.row.title }}
             </template>
           </el-table-column>
           <el-table-column label="价格">
             <template slot-scope="scope">
-              <div>成本价：{{ scope.row.cost_price }}</div>
-              <div>零售价：{{ scope.row.market_price }}</div>
+              <div>成本价：{{ scope.row.costPrice }}</div>
+              <div>零售价：{{ scope.row.retailPrice }}</div>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="120">
@@ -79,7 +75,7 @@
       </template>
       <div class="pb-20 mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit" v-if="dialogType != 1">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -103,16 +99,7 @@
         positionQty: this.$route.query.positionQty || 2,
         clickSubmit: false,
         tableMaxH: '250',
-        listLoading: false,
-        listTotal: 0,
         list: [],
-        listQuery: {
-          status: '',
-          page: 1,
-          size: 20
-        },
-        form: {},
-
         goodsList: [],
 
         // 弹出相关
@@ -130,17 +117,8 @@
 
     },
     mounted() {
-      console.log(this.positionQty)
-      for(var i = 0; i < this.positionQty; i++){
-        this.list.push(i)
-      }
       this.getInfo()
-      // if (this.type == 2) {
-      //   this.getShop()
-      // } else {
-      //   this.getInfo()
-      // }
-      // this.getGoods()
+      this.getGoods()
     },
     methods: {
       /**
@@ -148,70 +126,58 @@
        * @param {Object} row
        */
       selGoods(row) {
-        this.selCang.product_name = row.product_name
-        this.selCang.img_url = row.img_url
-        this.selCang.product_id = row.id
-        this.selCang.cost_price = row.cost_price
-        this.selCang.market_price = row.market_price
-        this.selGoodsDialog = false
-      },
-
-      /**
-       * 获取商户信息
-       */
-      getShop() {
-        this.$get('agentapi/store/merchant_store_detail').then(res => {
-          this.id = res.store_id
-          this.getInfo()
-        })
+        this.curRow.merchandiseId = row.id
+        this.curRow.title = row.title
+        this.curRow.costPrice = row.costPrice
+        this.curRow.retailPrice = row.retailPrice
+        this.curRow.picture = row.picture
+        this.dialogStatus = false
       },
 
       /**
        * 获取信息
        */
       getInfo() {
-        this.$get(`iot-saas-device/admin/template/binding/${this.id}`, {
-          templateId: this.id
-        }).then(res => {
-          if(res){
-            this.save_plan = res
+        this.$get(`iot-saas-device/admin/template/binding/${this.id}`).then(res => {
+          for(var i = 0; i < this.positionQty; i++){
+            let obj = {
+              position: i + 1
+            }
+            if(res){
+              obj = Object.assign(obj, res[i])
+            }
+            this.list.push(obj)
           }
         })
-      },
-
-      /**
-       * 搜索查询
-       */
-      toQuery(type = 0) {
-        this.$refs.filterDrawer.hide()
-        if (type == 1) this.form = {}
-        this.listQuery.start = 1
-        this.getList()
       },
 
       /**
        * 获取商品
        */
       getGoods() {
-        let url = 'agentapi/product/sample_list'
-        let listQuery = Object.assign(this.form, this.listQuery, {
-          start: this.listQuery.start - 1
-        })
-        this.$get(url, listQuery).then(res => {
-          this.listLoading = false
-          this.goodsList = res.list
-          this.listQuery.page_num = res.page_num
-        }).catch(() => {
-          this.listLoading = false
+        this.$get(`iot-saas-device/admin/merchandise/select`).then(res => {
+          this.goodsList = res
         })
       },
 
+      /**
+       * 提交关联
+       */
       onSubmit() {
-        let params = {}
-        params.plan = this.save_plan
-        params.store_id = this.id
-        console.log(params)
-        this.$post('agentapi/product/save_business_samples', params).then(res => {
+        let params = {
+          templateId: this.id,
+          merchandiseList: []
+        }
+        this.list.map(item => {
+          if(item.merchandiseId){
+            params.merchandiseList.push({
+              position: item.position,
+              merchandiseId: item.merchandiseId,
+              retailPrice: item.retailPrice
+            })
+          }
+        })
+        this.$post('iot-saas-device/admin/template/bindingMerchandise', params).then(res => {
           this.$message({
             message: '提交成功',
             type: 'success'
@@ -223,7 +189,7 @@
        * 操作数据
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '添加模板'
+       * @param {Object} dialogType dialog内容显示类型 1: '选择商品'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {

@@ -178,25 +178,30 @@
             this.dialogStatus = true
             break
           case 2:
-            this.$post('iot-saas-pay/alipay/submit/audit', {
-              regionType: 'CHINA',
-              regionType: 'CHINA',
-            }).then(res => {
-
+            this.$post(`iot-saas-pay/alipay/${row.appId}/submit/audit`).then(res => {
+              this.$message({
+                message: '提交审核成功',
+                type: 'success'
+              })
+              row.appAuditStatus = 2
             })
             break
           case 3:
-            this.$get('iot-saas-pay/iot-saas-pay/alipay/build/status', {
-
-            }).then(res => {
-
+            this.$get(`iot-saas-pay/alipay/${row.appId}/version`).then(res => {
+              this.$message({
+                message: '查询成功',
+                type: 'success'
+              })
+              row.appAuditStatus = (res.status == 0 ? 3 : res.status == 1 ? 4 : res.status)
             })
             break
           case 4:
-            this.$post('iot-saas-pay/alipay/push/release', {
-
-            }).then(res => {
-
+            this.$post(`iot-saas-pay/alipay/${row.appId}/push/release`).then(res => {
+              this.$message({
+                message: '发布成功',
+                type: 'success'
+              })
+              row.appAuditStatus = 5
             })
             break
           case 5:
@@ -205,10 +210,12 @@
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
-              this.$post('iot-saas-pay/alipay/cancel/audit', {
-
-              }).then(res => {
-
+              this.$post(`iot-saas-pay/alipay/${row.appId}/cancel/audit`).then(res => {
+                this.$message({
+                  message: '取消成功',
+                  type: 'success'
+                })
+                row.appAuditStatus = 1
               })
             })
             break
@@ -218,18 +225,18 @@
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
-              this.$post('iot-saas-pay/alipay/fallback/develop', {
-
-              }).then(res => {
-
+              this.$post(`iot-saas-pay/alipay/${row.appId}/fallback/develop`).then(res => {
+                this.$message({
+                  message: '回退成功',
+                  type: 'success'
+                })
+                row.appAuditStatus = 1
               })
             })
             break
           case 7:
-            this.$post('iot-saas-pay/alipay/create/experience', {
-
-            }).then(res => {
-
+            this.$post(`iot-saas-pay/alipay/${row.appId}/create/experience`).then(res => {
+              console.log(res)
             })
             break
         }
@@ -244,7 +251,7 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            this.$post('iot-saas-pay/alipay/upload/code', {
+            this.$post(`iot-saas-pay/alipay/${curRow.appId}/upload/code`, {
               appId: curRow.appId,
               directCommit: 1,
               enable: 1

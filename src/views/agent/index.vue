@@ -110,11 +110,11 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <!-- <div class="text-center" v-if="typeof(dform.menus) != 'undefined'">
+        <div class="text-center" v-if="dform.menus">
           <template v-for="item in agentInfo.AssignAbility">
             <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != 'STORE_ASSIGN'">{{ item.name }}</el-checkbox>
           </template>
-        </div> -->
+        </div>
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">
@@ -127,25 +127,27 @@
           <el-form-item label="运营模式">
             <el-radio-group v-model="dform.operationMode">
               <el-radio-button label="REBATE">分润模式</el-radio-button>
-              <el-radio-button label="SELF_RUN">自营模式</el-radio-button>
+              <el-radio-button label="SELF_RUN" v-if="vendorInfo.operationMode == 'SELF_RUN'">自营模式</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="分润比例" v-if="dform.operationMode == 'REBATE'">
-            <el-input v-model="dform.rebateRatio" :placeholder="`最高不能超过您自身的分润比例`">
+            <el-input v-model="dform.rebateRatio" :placeholder="`最高不能超过${vendorInfo.rebateRatio}`">
               <span slot="append">%</span>
             </el-input>
             <div class="mt-10 fs-s3 text-gray line-default">
               TA的商户和设备将关联您或您上级添加的商品，售出订单按比例分成
             </div>
           </el-form-item>
-          <el-form-item label="是否补货" v-if="dform.operationMode == 'REBATE'">
-            <el-switch
-              v-model="dform.replenishment"
-              active-value="YES"
-              inactive-value="NO"
-              >
-            </el-switch>
-          </el-form-item>
+          <template v-if="vendorInfo.operationMode == 'SELF_RUN' || vendorInfo.replenishment == 'YES'">
+            <el-form-item label="是否补货" v-if="dform.operationMode == 'REBATE'">
+              <el-switch
+                v-model="dform.replenishment"
+                active-value="YES"
+                inactive-value="NO"
+                >
+              </el-switch>
+            </el-form-item>
+          </template>
           <el-form-item label="管理费" v-if="dform.operationMode == 'SELF_RUN'">
             <el-input v-model="dform.poundage" placeholder="每笔商品订单您想要收取的费用">
               <span slot="append">元</span>
@@ -208,7 +210,12 @@
         },
         curRow: {},
         curIdx: 0,
-        dform: {}
+        dform: {},
+
+        vendorInfo: {
+          operationMode: 'SELF_RUN',
+          rebateRatio: 100
+        }, // 售货机运营信息
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -233,11 +240,11 @@
       }
     },
     computed: {
-      myDeviceName(){
-        return this.$store.state.user.myDeviceName
-      },
       siteInfo() {
         return this.$store.getters.siteInfo
+      },
+      myDeviceName(){
+        return this.$store.state.user.myDeviceName
       },
       myDeviceId(){
         return this.$store.state.user.myDeviceId
@@ -250,7 +257,9 @@
       }
     },
     mounted() {
-
+      if(this.myDeviceId['VM'] && !this.isBrand()){
+        this.getVendorInfo()
+      }
     },
     methods: {
       /**
@@ -349,6 +358,15 @@
       },
 
       /**
+       * 售货机详情
+       */
+      getVendorInfo(){
+        this.$get('iot-saas-device/admin/vendor/setting').then(res => {
+          this.vendorInfo = res || {}
+        })
+      },
+
+      /**
        * 操作行
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前行
@@ -366,26 +384,37 @@
               this.$get('iot-saas-user/auth/menu', {
                 childId: row.userId
               }).then(res => {
-                let menus = {}
-                res = res || []
-                res.map(item => {
-                  menus[item.id] = true
-                  if(item.childrenAuthList && item.childrenAuthList.length > 0){
-                    item.childrenAuthList.map(sitem => {
-                      menus[sitem.id] = true
-                    })
-                  }
-                })
-                this.$set(this.dform, 'menus', menus)
+                if(res && res.length > 0){
+                  let menus = {}
+                  res = res || []
+                  res.map(item => {
+                    menus[item.id] = true
+                    if(item.childrenAuthList && item.childrenAuthList.length > 0){
+                      item.childrenAuthList.map(sitem => {
+                        menus[sitem.id] = true
+                      })
+                    }
+                  })
+                  this.$set(this.dform, 'menus', menus)
+                }
               })
               this.$set(this.dform, 'childUserId', row.userId)
             }else if(dialogType == 3){
-              this.$get(`iot-saas-device/admin/vendor/${row.id}`).then(res => {
+              if(!this.isBrand() && !this.vendorInfo.operationMode){
+                this.$message({
+                  type: 'error',
+                  message: '暂未查询到您的运营模式，请联系您的上级处理'
+                })
+                return
+              }
+              this.$get(`iot-saas-device/admin/vendor/setting`, {
+                companyId: row.id
+              }).then(res => {
                 res = res || {}
                 this.dform = {
                   childId: row.id,
                   operationMode: res.operationMode || 'REBATE',
-                  rebateRatio: res.rebateRatio || 0,
+                  rebateRatio: res.rebateRatio || '',
                   poundage: res.poundage || 0,
                   replenishment: res.replenishment || 'NO',
                 }
