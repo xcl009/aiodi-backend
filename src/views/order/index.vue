@@ -132,7 +132,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column label="操作" min-width="100" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
             <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && Ability['orderFinish']">结束订单</el-button>

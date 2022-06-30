@@ -15,7 +15,7 @@
         <el-form-item label="设备工厂" ref="deviceFactoryCode" prop="deviceFactoryCode">
           <el-select v-model="form.deviceFactoryCode" placeholder="请选择设备工厂">
             <template v-for="item in factoryList">
-              <el-option :label="item.name" :value="item.code"></el-option>
+              <el-option :label="item.name" :value="item.code" v-if="form.deviceTypeCode && item.deviceTypeList[form.deviceTypeCode.substr(0, 2)]"></el-option>
             </template>
           </el-select>
         </el-form-item>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+  import { arrayToObj } from '@/utils/index'
   export default {
     components: {
 
@@ -97,6 +98,9 @@
        */
       getFactory(){
         this.$get('iot-saas-basic/admin/factory/list').then(res => {
+          res.map(item => {
+            return item.deviceTypeList = arrayToObj(item.deviceTypeList, 'deviceTypeCode')
+          })
           this.factoryList = res
         })
       },

@@ -27,22 +27,22 @@
             <div v-if="scope.row.brandUser">{{ scope.row.brandUser.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="公司名称">
+        <el-table-column label="公司名称" min-width="160">
           <template slot-scope="scope">
             <div class="flex align-center">
-              <el-avatar shape="square" :size="40" fit="cover" :src="scope.row.logo"></el-avatar>
-              <div class="pl-10">{{ scope.row.companyName || '--'}}</div>
+              <el-avatar shape="square" :size="35" fit="cover" :src="scope.row.logo"></el-avatar>
+              <div class="pl-5 flex-sub">{{ scope.row.companyName || '--'}}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="团长" width="130">
+        <el-table-column label="团长" width="100">
           <template slot-scope="scope">
             <div class="text-primary cursor" v-if="scope.row.isLeader == 1">团长</div>
             <div class="text-primary cursor" @click="setRow(3, scope.row)" v-else-if="scope.row.isLeader == 0 && scope.row.leaderBrandId == 0">设为团长</div>
             <div class="mb-5" v-else>{{ scope.row.leaderBrandName || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="邀请人" width="130">
+        <el-table-column label="邀请人" min-width="130">
           <template slot-scope="scope">
             <div>{{ scope.row.fatherBrandName || '--' }}</div>
           </template>
@@ -54,7 +54,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="设备数">
+        <el-table-column label="设备数" min-width="100">
           <template slot-scope="scope">
             <div class="inline text-left" @click="$router.push({path: `/device?brandId=${scope.row.id}`})">
               <div>全部：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
@@ -86,7 +86,7 @@
             </div>
           </template>
         </el-table-column> -->
-        <el-table-column label="交易额(元)" width="150">
+        <el-table-column label="交易额(元)" width="120">
           <template slot-scope="scope">
             {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>

@@ -18,17 +18,11 @@
           <el-form-item label="小程序标识(APPID)">
             <el-input v-model="form.appId"></el-input>
           </el-form-item>
-          <el-form-item label="接口内容加密方式">
+          <!--<el-form-item label="接口内容加密方式">
             <el-input v-model="form.signType"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="应用私钥">
             <el-input v-model="form.appPrivateKey" type="textarea" :rows="6"></el-input>
-          </el-form-item>
-          <el-form-item label="应用公钥">
-            <el-input v-model="form.appPublicKey" type="textarea" :rows="6"></el-input>
-          </el-form-item>
-          <el-form-item label="支付宝公钥">
-            <el-input v-model="form.alipayPublicKey" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="应用公钥证书">
             <el-input v-model="form.appCert" type="textarea" :rows="6"></el-input>
@@ -59,7 +53,6 @@
     data() {
       return {
         clickSubmit: false,
-        baseURL: this.config.BASE_URL,
         form: {
           status: 1
         }
@@ -85,10 +78,7 @@
             'pid',
             'appName',
             'appId',
-            'signType',
             'appPrivateKey',
-            'appPublicKey',
-            'alipayPublicKey',
             'appCert',
             'alipayCert',
             'alipayRootCert',
@@ -105,8 +95,6 @@
           params = JSON.parse(JSON.stringify(this.form))
         if(this.$route.params.id > 0) params.id = this.$route.params.id
         this.clickSubmit = true
-        params.signType = 'RSA2'
-        params.gatewayUrl = 'dsdf'
         this.$post(url, params).then(res => {
           this.$message({
             message: '提交成功',

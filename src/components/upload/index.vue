@@ -156,7 +156,7 @@
 
       update(fileList){
         if(this.limit == 1){
-          let l = fileList.length
+          let l = fileList.length - 1
           this.$emit('input', fileList[l] ? fileList[l].url : fileList[0].url)
         } else {
           this.$emit('input', fileList)

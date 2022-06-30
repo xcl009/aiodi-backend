@@ -1,27 +1,29 @@
 <template>
   <div>
     <div class="pl-20 pr-20 pb-10 bg-white">
-      <el-button class="mb-20 mt-20" type="primary" @click="setRows(1, {}, 1)">添加仓口模板</el-button>
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="[{},{}]"
+      <el-button class="mb-15 mt-15" type="primary" @click="setRows(1, {}, 1)">添加仓口模板</el-button>
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="模板名称">
           <template slot-scope="scope">
-            2口设备模板
+            {{ scope.row.name }}
           </template>
         </el-table-column>
         <el-table-column label="仓口数">
           <template slot-scope="scope">
-            {{ scope.$index + 1}}
+            {{ scope.row.positionQty }}
           </template>
         </el-table-column>
         <el-table-column label="单仓口商品数">
           <template slot-scope="scope">
-            {{ scope.$index + 1}}
+            {{ scope.row.merchandiseQty }}
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="$router.push({path: `/goods/relatedGoods?num=${scope.$index + 1}`})">关联商品</el-button>
+            <el-button class="ml-0" size="mini" type="primary"
+              @click="$router.push({path: `/goods/relatedGoods?id=${scope.row.id}&positionQty=${scope.row.positionQty}`})">关联商品</el-button>
+            <el-button size="mini" type="primary" @click="setRows(1, scope.row, 1)">修改</el-button>
             <el-button size="mini" type="danger" @click="list.splice(scope.$index, 1)">删除</el-button>
           </template>
         </el-table-column>
@@ -31,15 +33,15 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <el-form class="custom-form pl-20 pr-20" label-width="auto">
+        <el-form class="custom-form pl-20 pr-20" label-width="120px" label-position="left">
           <el-form-item label="模板名称">
-            <el-input v-model="dform.amount"></el-input>
+            <el-input v-model="dform.name" placeholder="例：2口设备模板"></el-input>
           </el-form-item>
           <el-form-item label="仓口数量">
-            <el-input v-model="dform.amount"></el-input>
+            <el-input v-model="dform.positionQty"></el-input>
           </el-form-item>
           <el-form-item label="单仓口商品数">
-            <el-input v-model="dform.amount"></el-input>
+            <el-input v-model="dform.merchandiseQty" placeholder="例：1"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -92,6 +94,7 @@
 
     },
     mounted() {
+      this.getList()
       // if (this.type == 2) {
       //   this.getShop()
       // } else {
@@ -101,13 +104,11 @@
     },
     methods: {
       /**
-       * 获取信息
+       * 获取列表
        */
-      getInfo() {
-        this.$get('agentapi/product/get_business_samples', {
-          store_id: this.id
-        }).then(res => {
-          this.save_plan = res.list ? Object.values(res.list) : []
+      getList() {
+        this.$get('iot-saas-device/admin/template').then(res => {
+          this.list = res || []
         })
       },
 
@@ -124,6 +125,15 @@
             this.dialogType = dialogType
             this.curRow = row
             this.curIdx = idx
+            this.dform = {}
+            if(dialogType == 1){
+              this.dform = {
+                id: row.id || '',
+                name: row.name || '',
+                positionQty: row.positionQty || '',
+                merchandiseQty: row.merchandiseQty || 1
+              }
+            }
             this.dialogStatus = true
             break
         }
@@ -133,14 +143,26 @@
        * 弹窗确认
        */
       dialogConfim() {
+        if (this.clickSubmit) return
+        this.clickSubmit = true
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
-        if(this.clickSubmit) return
-        this.clickSubmit = true
         switch (this.dialogType) {
           case 1:
-
+            let type = '$post'
+            if (params.id) type = '$put'
+            this[type]('iot-saas-device/admin/template', params).then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.getList()
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
             break
         }
       }

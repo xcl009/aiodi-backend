@@ -1,5 +1,5 @@
 <template>
-  <div class="home-box">
+  <div class="pb-30 home-box">
     <el-row :gutter="device === 'mobile' ? 10 : 20">
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money/monthMoney`})">

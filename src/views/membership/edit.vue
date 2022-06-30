@@ -6,7 +6,7 @@
       </el-tabs>
 
       <template v-if="Ability[`${deviceTypeCode}_MEMBER_XF`] || Ability[`${deviceTypeCode}_MEMBER_DQ`]">
-        <el-button class="mb-20" type="primary" @click="setRows(1, {ableState: 1, countCycle: 1}, 1)">添加会员卡</el-button>
+        <el-button class="mb-20" type="primary" @click="setRows(1, {ableState: 1, countCycle: 1, depositAmount: 99}, 1)">添加会员卡</el-button>
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading">
           <el-table-column label="卡名称">
             <template slot-scope="scope">
@@ -57,7 +57,7 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :close-on-click-modal="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <el-form class="custom-form pl-20 pr-20" label-width="auto" ref="cardForm" :rules="cardRules" :model="dform">
+        <el-form class="custom-form pl-20 pr-20" label-width="110px" label-position="left" ref="cardForm" :rules="cardRules" :model="dform">
           <el-form-item label="卡名称" ref="serviceName" prop="serviceName">
             <el-input v-model="dform.serviceName"></el-input>
           </el-form-item>
@@ -78,11 +78,11 @@
           </el-form-item>
           <div class="flex" v-if="dform.cardType == 2">
             <el-form-item label="每" ref="countCycle" prop="countCycle">
-              <el-select v-model="dform.countCycle" @change="toQuery()">
+              <el-select v-model="dform.countCycle">
                 <el-option :label="item.name" :value="item.val" v-for="(item, key) in Cycle" />
               </el-select>
             </el-form-item>
-            <el-form-item label="免费" ref="cycleFreeTimes" prop="cycleFreeTimes">
+            <el-form-item class="ml-20" label="免费" ref="cycleFreeTimes" prop="cycleFreeTimes">
               <el-input v-model="dform.cycleFreeTimes">
                 <template slot="append">次</template>
               </el-input>
@@ -93,35 +93,42 @@
               <template slot="append">次</template>
             </el-input>
           </el-form-item>
-          <el-form-item label="时长类型">
-            <el-radio-group v-model="dform.freeTimeType">
-              <el-radio :label="item.val" v-for="(item, key) in freeTimeType">{{ item.name }}</el-radio>
-            </el-radio-group>
+          <el-form-item label="押金模式">
+            <el-switch v-model="dform.cardModul" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item label="单次免费时长" ref="freeTime" prop="freeTime" v-if="dform.freeTimeType == 1">
-            <el-input v-model="dform.freeTime">
-              <template slot="append">分钟</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="卡押金">
-            <el-input v-model="dform.depositAmount">
-              <template slot="append">
-                <el-popover
-                  placement="top"
-                  title="温馨提示"
-                  width="250"
-                  trigger="hover"
-                  content="押金大于0时表示会员卡为押金模式,用户购买卡需缴纳押金,租借时无需缴纳押金">
-                  <span slot="reference">元<i class="el-icon-question text-primary"></i></span>
-                </el-popover>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="不退押金时长">
-            <el-input v-model="dform.overTime">
-              <template slot="append">分钟</template>
-            </el-input>
-          </el-form-item>
+          <template v-if="dform.cardModul == 1">
+            <el-form-item label="卡押金">
+              <el-input v-model="dform.depositAmount">
+                <template slot="append">
+                  <el-popover
+                    placement="top"
+                    title="温馨提示"
+                    width="250"
+                    trigger="hover"
+                    content="押金大于0时表示会员卡为押金模式,用户购买卡需缴纳押金,租借时无需缴纳押金">
+                    <span slot="reference">元<i class="el-icon-question text-primary"></i></span>
+                  </el-popover>
+                </template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="不退押金时长">
+              <el-input v-model="dform.overTime">
+                <template slot="append">分钟</template>
+              </el-input>
+            </el-form-item>
+          </template>
+
+          <template v-if="dform.cardModul == 0">
+            <el-form-item label="不限时长">
+              <el-switch v-model="dform.freeTimeType" :active-value="1" :inactive-value="0" />
+            </el-form-item>
+            <el-form-item label="单次免费时长" ref="freeTime" prop="freeTime" v-if="dform.freeTimeType == 0">
+              <el-input v-model="dform.freeTime">
+                <template slot="append">分钟</template>
+              </el-input>
+            </el-form-item>
+          </template>
+
           <el-form-item label="卡状态">
             <el-switch v-model="dform.ableState" :active-value="1" :inactive-value="2" />
           </el-form-item>
@@ -164,7 +171,6 @@
           size: 20
         },
         CardType: [{ name: '次卡', val: 1 },{ name: '周期卡', val: 2 },{ name: '无限次卡', val: 3 }],
-        freeTimeType: [{ name: '限时长', val: 1 },{ name: '不限时长', val: 2 }],
         Cycle: [{ name: '天', val: 1 },{ name: '周', val: 7 },{ name: '月', val: 30 }],
         form: {},
 
@@ -298,9 +304,10 @@
                 cycleFreeTimes: rows.cycleFreeTimes,
                 cardType: rows.cycleFreeTimes == this.cycleFreeTimes ? 3 : (((rows.availableDay == rows.countCycle) || (!rows.availableDay && rows.countCycle == 1)) ? 1 : 2),
                 freeTime: rows.freeTime,
-                freeTimeType: rows.freeTime == 600000 ? 2 : 1,
-                overTime: rows.overTime,
-                depositAmount: rows.depositAmount,
+                freeTimeType: rows.freeTime == 600000 ? 1 : 0,
+                overTime: rows.overTime || 7200,
+                depositAmount: rows.depositAmount || 0,
+                cardModul: rows.depositAmount > 0 ? 1 : 0,
                 ableState: rows.ableState,
                 storeId: rows.storeId,
                 agentId: rows.agentId,
@@ -353,8 +360,12 @@
                   params.cycleFreeTimes = this.cycleFreeTimes
                   params.countCycle = params.availableDay
                 }
-                if(params.freeTimeType == 2){
+                if(params.freeTimeType == 1 || params.cardModul == 1){
                   params.freeTime = 600000
+                }
+                if(params.cardModul == 0){
+                  params.depositAmount = 0
+                  params.overTime = 0
                 }
                 this.clickSubmit = false
                 this.$post('iot-saas-basic/brand/goods/v1/save', params).then(res => {

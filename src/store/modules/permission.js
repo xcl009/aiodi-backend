@@ -1,4 +1,4 @@
-import { saasRoutes, brandRoutes, agentRoutes, storeRoutes, constantRoutes } from '@/router'
+import { constantRoutes } from '@/router'
 import Layout from '@/layout'
 const _import = require('../../router/_import_' + process.env.NODE_ENV) // 获取组件的方法
 

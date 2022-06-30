@@ -16,7 +16,7 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
         stripe highlight-current-row :max-height="tableMaxH">
-        <el-table-column label="品牌">
+        <el-table-column label="品牌" min-width="120">
           <template slot-scope="scope">
             {{ scope.row.brandName || '--' }}
           </template>
@@ -31,7 +31,7 @@
             {{ scope.row.deviceTypeName || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="服务名称">
+        <el-table-column label="服务名称" min-width="200">
           <template slot-scope="scope">
             {{ scope.row.serviceName || '--' }}
           </template>
@@ -41,12 +41,12 @@
             {{ scope.row.cycleTypeName || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="支付快活币">
+        <el-table-column label="支付快活币" min-width="120">
           <template slot-scope="scope">
             {{ scope.row.payAmount || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="到期时间">
+        <el-table-column label="到期时间" min-width="150">
           <template slot-scope="scope">
             {{ scope.row.expiresDatetime || '--' }}
           </template>

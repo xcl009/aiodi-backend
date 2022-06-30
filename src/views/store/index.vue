@@ -476,17 +476,19 @@
               this.$get('iot-saas-user/auth/menu', {
                 childId: row.userId
               }).then(res => {
-                console.log(res)
-                let menus = {}
-                res.map(item => {
-                  menus[item.id] = true
-                  if(item.childrenAuthList && item.childrenAuthList.length > 0){
-                    item.childrenAuthList.map(sitem => {
-                      menus[sitem.id] = true
-                    })
-                  }
-                })
-                this.$set(this.dform, 'menus', menus)
+                if(res && res.length > 0){
+                  let menus = {}
+                  res = res || []
+                  res.map(item => {
+                    menus[item.id] = true
+                    if(item.childrenAuthList && item.childrenAuthList.length > 0){
+                      item.childrenAuthList.map(sitem => {
+                        menus[sitem.id] = true
+                      })
+                    }
+                  })
+                  this.$set(this.dform, 'menus', menus)
+                }
               })
               this.$set(this.dform, 'childUserId', row.userId)
             }

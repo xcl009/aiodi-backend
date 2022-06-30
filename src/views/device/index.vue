@@ -29,7 +29,7 @@
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" stripe highlight-current-row @selection-change="selList" :max-height="tableMaxH">
         <el-table-column type="selection" :selectable="checkSel" width="50" v-if="!isSaas()" />
-        <el-table-column label="设备名称" width="120">
+        <el-table-column label="设备名称" width="80">
           <template slot-scope="scope">
             {{ scope.row.deviceType.name || '密码线' }}
           </template>
@@ -45,7 +45,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="设备SN码">
+        <el-table-column label="设备SN码" min-width="150">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>二维码：{{ scope.row.deviceSn || "--" }}</div>
@@ -53,7 +53,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="可借|可还" v-if="myDeviceId['PA']">
+        <el-table-column label="可借|可还" v-if="myDeviceId['PA']" width="100">
           <template slot-scope="scope">
             <div v-if="scope.row.onlineStatus">
               {{ scope.row.tenantNumber }}|{{ scope.row.restoreNumber }}
@@ -61,7 +61,7 @@
             <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="在线状态" v-if="myDeviceId['PA']">
+        <el-table-column label="在线状态" v-if="myDeviceId['PA']" min-width="95">
           <template slot-scope="scope">
             <div v-if="scope.row.onlineStatus">
               <div :class="scope.row.onlineStatus == 'online' ? 'text-primary' : 'text-danger'">{{ scope.row.onlineStatus == 'online' ? '在线' : '离线'}}</div>
@@ -70,7 +70,7 @@
             <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="设备属性" width="110">
+        <el-table-column label="设备属性" width="120">
           <template slot-scope="scope">
             工厂：{{ scope.row.deviceFactory.name }}
           </template>
