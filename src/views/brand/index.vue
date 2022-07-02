@@ -173,7 +173,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == 'partnerCreate') {
+      if (from.name == 'addBrand') {
         to.meta.reload = true
       } else {
         to.meta.reload = false

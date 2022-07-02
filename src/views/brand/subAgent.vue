@@ -134,7 +134,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == '') {
+      if (from.name == 'addAgent') {
         to.meta.reload = true
       } else {
         to.meta.reload = false

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="pt-15 pl-15 pr-15 pb-15 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.appName || '小程序名称' }}</div>
@@ -14,12 +14,12 @@
         </el-table-column>
         <el-table-column label="最新版本">
           <template slot-scope="scope">
-            {{ scope.row.latestTemplateId || '--' }}
+            {{ scope.row.latestVersion || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="当前版本">
           <template slot-scope="scope">
-            {{ scope.row.appTemplate || '--' }}
+            {{ scope.row.currentVersion || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="状态">
@@ -29,7 +29,7 @@
         </el-table-column>
         <el-table-column label="备注">
           <template slot-scope="scope">
-            {{ scope.row.appAuditResut || '--' }}
+            {{ scope.row.appAuditResult || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="更新时间" width="150">
@@ -42,10 +42,9 @@
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">提交审核</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(3, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">审核状态</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 4">审核失败</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(5, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">取消审核</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(6, scope.row, 1)" v-if="scope.row.appAuditStatus == 4">回退开发</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(6, scope.row, 1)" v-if="scope.row.appAuditStatus == 4">退回开发</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(7, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">体验版本</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/system/alipayEdit?app_id=${scope.row.appId}`})">修改信息</div>
           </template>
@@ -79,8 +78,12 @@
     data() {
       return {
         clickSubmit: false,
-        form: {},
         tableMaxH: '250',
+        listQuery: {
+          page: 1,
+          size: 10
+        },
+        listTotal: 0,
         list: [],
         listLoading: false,
 
@@ -140,22 +143,19 @@
       },
 
       /**
-       * 重置查询
-       */
-      reset(){
-        this.form = {}
-        this.getList()
-      },
-
-      /**
        * 获取列表
        */
       getList() {
-        var params = Object.assign({}, this.form)
+        var params = Object.assign({}, this.listQuery, {
+          page: this.listQuery.page - 1
+        })
         this.$get('iot-saas-pay/admin/pay/config/alipay/list', params).then(res => {
-          this.list = res
+          this.list = res.rows || []
           this.listLoading = false
           this.clickSubmit = false
+          if(params.page == 0){
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+          }
         }).catch(() => {
           this.listLoading = false
           this.clickSubmit = false
@@ -192,7 +192,7 @@
                 message: '查询成功',
                 type: 'success'
               })
-              row.appAuditStatus = (res.status == 0 ? 3 : res.status == 1 ? 4 : res.status)
+              this.getList()
             })
             break
           case 4:
@@ -251,12 +251,19 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            this.$post(`iot-saas-pay/alipay/${curRow.appId}/upload/code`, {
+            this.$post(`iot-saas-pay/alipay/upload/code`, {
               appId: curRow.appId,
-              directCommit: 1,
-              enable: 1
+              ext: {
+                appId: curRow.appId,
+              },
+              extEnable: true,
             }).then(res => {
-
+              this.$message({
+                message: '上传成功',
+                type: 'success'
+              })
+              row.appAuditStatus = 1
+              this.dialogStatus = true
             })
             break
         }

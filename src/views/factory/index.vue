@@ -136,7 +136,7 @@
       },
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == 'addFactory' || from.name == 'addFactory') {
+      if (from.name == 'addFactory') {
         to.meta.reload = true
       } else {
         to.meta.reload = false

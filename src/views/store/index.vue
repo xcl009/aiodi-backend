@@ -93,13 +93,17 @@
             </template>
             <template v-else>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
-              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2, scope.$index)">权限设置</el-button>
+              <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
               <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?store_id=${scope.row.id}`})" v-if="!lowerStore">编辑商户</el-button>
               <el-dropdown trigger="click">
                 <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)" v-if="!lowerStore">删除商户</el-dropdown-item>
+                  <template v-if="checkAbility(scope.row.storeDivisionConfig, ['VM'], 2)">
+                    <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机运营模式</el-dropdown-item>
+                    <el-dropdown-item @click.native="$refs.relatedTemplates.getCompanyTemplate(scope.row.id)">售货机仓口模板</el-dropdown-item>
+                  </template>
                   <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_MEMBER_XF', '_MEMBER_DQ'])">会员卡</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})">更多应用</el-dropdown-item>
@@ -123,13 +127,6 @@
           <el-input v-model="dform.deviceSns" placeholder="设备编号与编号之间用英文逗号隔开" type="textarea" :rows="5" />
         </el-form>
       </template>
-      <template v-if="dialogType == 2">
-        <div class="text-center" v-if="dform.menus">
-          <template v-for="item in agentInfo.AssignAbility">
-            <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != 'AGENT_ASSIGN'">{{ item.name }}</el-checkbox>
-          </template>
-        </div>
-      </template>
       <template v-if="dialogType == 3">
         <div class="text-center">
           <div class="text-black">确定删除此商户吗？</div>
@@ -141,6 +138,10 @@
         <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
+
+    <relatedTemplate ref="relatedTemplates"></relatedTemplate>
+    <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN"></AssignAbility>
+    <VendorMode ref="VendorModes" v-if="myDeviceId['VM']"></VendorMode>
   </div>
 </template>
 
@@ -148,11 +149,17 @@
   import qs from 'qs'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
+  import RelatedTemplate from '@/components/RelatedTemplate/'
+  import VendorMode from '@/components/VendorMode/'
+  import AssignAbility from '@/components/AssignAbility/'
   export default {
     name: 'subShop',
     components: {
       Pagination,
-      condition
+      condition,
+      RelatedTemplate,
+      VendorMode,
+      AssignAbility,
     },
     props: {
       lowerStore: {
@@ -186,7 +193,7 @@
         dialogStatus: false,
         dialogTitle: {
           1: '设备绑定',
-          2: '商户权限设置',
+          2: '',
           3: '删除商户'
         },
         curRow: {},
@@ -216,7 +223,7 @@
     },
     beforeRouteEnter(to, from, next) {
       to.meta.urlQuery = JSON.stringify(to.query)
-      if (from.name == 'shopCreate') {
+      if (from.name == 'addStore') {
         to.meta.reload = true
       } else {
         to.meta.reload = false
@@ -462,7 +469,7 @@
        * 操作商户
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前商户
-       * @param {Object} dialogType dialog内容显示类型 1: '设备绑定', 2: '商户权限设置', 3: '删除商户'
+       * @param {Object} dialogType dialog内容显示类型 1: '设备绑定', 2: '', 3: '删除商户'
        * @param {Object} idx 当前商户所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -471,27 +478,8 @@
             this.dialogType = dialogType
             this.curRow = row
             this.curIdx = idx
+            this.dform = {}
             this.dialogStatus = true
-            if(dialogType == 2){
-              this.$get('iot-saas-user/auth/menu', {
-                childId: row.userId
-              }).then(res => {
-                if(res && res.length > 0){
-                  let menus = {}
-                  res = res || []
-                  res.map(item => {
-                    menus[item.id] = true
-                    if(item.childrenAuthList && item.childrenAuthList.length > 0){
-                      item.childrenAuthList.map(sitem => {
-                        menus[sitem.id] = true
-                      })
-                    }
-                  })
-                  this.$set(this.dform, 'menus', menus)
-                }
-              })
-              this.$set(this.dform, 'childUserId', row.userId)
-            }
             break
         }
       },
@@ -508,22 +496,7 @@
             this.bindStore({ id: curRow.id, deviceSns: params.deviceSns })
             break
           case 2:
-            let abilitys = []
-            for(var i in params.abilitys){
-              abilitys.push({
-                name: this.abilitys[i],
-                code: i,
-                have: params.abilitys[i] ? 1 : 0
-              })
-            }
-            params.abilitys = abilitys
-            this.$post('iot-saas-basic/admin/agent/updateAgentAuth', params).then(res => {
-              this.$message({
-                type: 'success',
-                message: '设置成功'
-              })
-              this.dialogStatus = false
-            })
+
             break
           case 3:
             this.$post('iot-saas-basic/admin/store/delete', {
@@ -543,11 +516,18 @@
       /**
        * 校验是否拥有设备类型相关能力
        */
-      checkAbility(deviceArr, keyArr){
+      checkAbility(deviceArr, keyArr, type = 1){
         let val = false
         for(var i in deviceArr){
-          for(var s in keyArr){
-            if(this.Ability[deviceArr[i].deviceTypeCode + keyArr[s]]){
+          if(type == 1){
+            for(var s in keyArr){
+              if(this.Ability[deviceArr[i].deviceTypeCode + keyArr[s]]){
+                val = true
+                break
+              }
+            }
+          } else if(type == 2){
+            if(keyArr.indexOf(deviceArr[i].deviceTypeCode) > -1){
               val = true
               break
             }

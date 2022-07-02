@@ -78,14 +78,14 @@
             </template>
             <template v-else>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store?agentId=${scope.row.id}`})">商户列表</el-button>
-              <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">权限设置</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/addAgent?agentId=${scope.row.id}`})" v-if="!lowerAgent">修改信息</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)" v-if="!lowerAgent">删除代理</el-button>
               <el-dropdown trigger="click">
                 <el-button class="p-5 ml-0" size="medium" type="text">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <template v-for="item in scope.row.agentDeviceType" v-if="item.code == 'VM'">
-                    <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)">售货机</el-dropdown-item>
+                    <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机</el-dropdown-item>
                   </template>
                   <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})">更多应用</el-dropdown-item>
@@ -110,11 +110,7 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <div class="text-center" v-if="dform.menus">
-          <template v-for="item in agentInfo.AssignAbility">
-            <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != 'STORE_ASSIGN'">{{ item.name }}</el-checkbox>
-          </template>
-        </div>
+        
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">
@@ -122,48 +118,14 @@
           <div class="mt-10 pl-40 pr-40 text-danger text-left line-default">注：若该代理下存在设备，则无法删除。需解绑回收设备。</div>
         </div>
       </template>
-      <template v-if="dialogType == 3">
-        <el-form class="custom-form pl-20 pr-20" label-width="auto">
-          <el-form-item label="运营模式">
-            <el-radio-group v-model="dform.operationMode">
-              <el-radio-button label="REBATE">分润模式</el-radio-button>
-              <el-radio-button label="SELF_RUN" v-if="vendorInfo.operationMode == 'SELF_RUN'">自营模式</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="分润比例" v-if="dform.operationMode == 'REBATE'">
-            <el-input v-model="dform.rebateRatio" :placeholder="`最高不能超过${vendorInfo.rebateRatio}`">
-              <span slot="append">%</span>
-            </el-input>
-            <div class="mt-10 fs-s3 text-gray line-default">
-              TA的商户和设备将关联您或您上级添加的商品，售出订单按比例分成
-            </div>
-          </el-form-item>
-          <template v-if="vendorInfo.operationMode == 'SELF_RUN' || vendorInfo.replenishment == 'YES'">
-            <el-form-item label="是否补货" v-if="dform.operationMode == 'REBATE'">
-              <el-switch
-                v-model="dform.replenishment"
-                active-value="YES"
-                inactive-value="NO"
-                >
-              </el-switch>
-            </el-form-item>
-          </template>
-          <el-form-item label="管理费" v-if="dform.operationMode == 'SELF_RUN'">
-            <el-input v-model="dform.poundage" placeholder="每笔商品订单您想要收取的费用">
-              <span slot="append">元</span>
-            </el-input>
-            <div class="mt-10 fs-s3 text-gray line-default">
-              下级自己添加商品，商户和设备关联自己的商品，售出订单您得到设置的管理费
-            </div>
-          </el-form-item>
-
-        </el-form>
-      </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
+
+    <AssignAbility ref="AssignAbilitys"></AssignAbility>
+    <VendorMode ref="VendorModes" v-if="myDeviceId['VM']"></VendorMode>
   </div>
 </template>
 
@@ -171,11 +133,15 @@
   import { arrayToObj } from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
+  import VendorMode from '@/components/VendorMode/'
+  import AssignAbility from '@/components/AssignAbility/'
   export default {
     name: 'agent',
     components: {
       Pagination,
-      condition
+      condition,
+      VendorMode,
+      AssignAbility,
     },
     props: {
       lowerAgent: {
@@ -204,22 +170,16 @@
         dialogType: 1,
         dialogStatus: false,
         dialogTitle: {
-          1: '代理权限设置',
-          2: '删除代理',
-          3: '售货机设置',
+          1: '',
+          2: '删除代理'
         },
         curRow: {},
         curIdx: 0,
-        dform: {},
-
-        vendorInfo: {
-          operationMode: 'SELF_RUN',
-          rebateRatio: 100
-        }, // 售货机运营信息
+        dform: {}
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == 'agentCreate') {
+      if (from.name == 'addAgent') {
         to.meta.reload = true
       } else {
         to.meta.reload = false
@@ -257,9 +217,7 @@
       }
     },
     mounted() {
-      if(this.myDeviceId['VM'] && !this.isBrand()){
-        this.getVendorInfo()
-      }
+
     },
     methods: {
       /**
@@ -358,19 +316,10 @@
       },
 
       /**
-       * 售货机详情
-       */
-      getVendorInfo(){
-        this.$get('iot-saas-device/admin/vendor/setting').then(res => {
-          this.vendorInfo = res || {}
-        })
-      },
-
-      /**
        * 操作行
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前行
-       * @param {Object} dialogType dialog内容显示类型 1: '代理权限设置', 2: '删除代理',  3: '售货机设置'
+       * @param {Object} dialogType dialog内容显示类型 1: '代理权限设置', 2: '删除代理'
        * @param {Object} idx 当前行所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -380,46 +329,6 @@
             this.curRow = row
             this.curIdx = idx
             this.dform = {}
-            if(dialogType == 1){
-              this.$get('iot-saas-user/auth/menu', {
-                childId: row.userId
-              }).then(res => {
-                if(res && res.length > 0){
-                  let menus = {}
-                  res = res || []
-                  res.map(item => {
-                    menus[item.id] = true
-                    if(item.childrenAuthList && item.childrenAuthList.length > 0){
-                      item.childrenAuthList.map(sitem => {
-                        menus[sitem.id] = true
-                      })
-                    }
-                  })
-                  this.$set(this.dform, 'menus', menus)
-                }
-              })
-              this.$set(this.dform, 'childUserId', row.userId)
-            }else if(dialogType == 3){
-              if(!this.isBrand() && !this.vendorInfo.operationMode){
-                this.$message({
-                  type: 'error',
-                  message: '暂未查询到您的运营模式，请联系您的上级处理'
-                })
-                return
-              }
-              this.$get(`iot-saas-device/admin/vendor/setting`, {
-                companyId: row.id
-              }).then(res => {
-                res = res || {}
-                this.dform = {
-                  childId: row.id,
-                  operationMode: res.operationMode || 'REBATE',
-                  rebateRatio: res.rebateRatio || '',
-                  poundage: res.poundage || 0,
-                  replenishment: res.replenishment || 'NO',
-                }
-              })
-            }
             this.dialogStatus = true
             break
         }
@@ -436,12 +345,7 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            let menus = []
-            for(var i in params.menus){
-              if(params.menus[i]) menus.push(i)
-            }
-            params.menus = menus
-            this.$put('iot-saas-user/auth/childMenu', params).then(res => {
+            this.$put('').then(res => {
               this.$message({
                 type: 'success',
                 message: '设置成功'
@@ -462,18 +366,6 @@
                 type: 'success'
               })
               this.list.splice(curIdx, 1)
-              this.clickSubmit = false
-            }).catch(err => {
-              this.clickSubmit = false
-            })
-            break
-          case 3:
-            this.$put('iot-saas-device/admin/vendor/setting', params).then(res => {
-              this.dialogStatus = false
-              this.$message({
-                message: '设置成功',
-                type: 'success'
-              })
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false

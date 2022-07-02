@@ -1358,6 +1358,7 @@ export const constantRoutes = [
   //     title: '商品管理',
   //     icon: 'mall'
   //   },
+  //   hidden: true,
   //   children: [
   //     {
   //       path: '',
@@ -1401,7 +1402,7 @@ export const constantRoutes = [
   //       meta: {
   //         title: '默认计费'
   //       }
-  //     },
+  //     }
   //   ],
   // },
   {

@@ -123,7 +123,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == 'qrcodeCreate') {
+      if (from.name == 'addQrcode') {
         to.meta.isBack = true
       } else {
         to.meta.isBack = false
