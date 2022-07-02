@@ -81,7 +81,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == 'appEdit') {
+      if (from.name == 'addApp') {
         to.meta.reload = true
       } else {
         to.meta.reload = false

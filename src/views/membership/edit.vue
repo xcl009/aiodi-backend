@@ -34,14 +34,14 @@
                 {{ scope.row.cycleFreeTimes == cycleFreeTimes ? '不限次' : `免费次数：${scope.row.cycleFreeTimes}次`}}
               </div>
               <div>
-                {{ scope.row.freeTime == 600000 ? '不限时长' : `单次免费：${scope.row.freeTime}分钟` }}
+                {{ scope.row.freeTime == 10000 ? '不限时长' : `单次免费：${scope.row.freeTime}小时` }}
               </div>
             </template>
           </el-table-column>
           <el-table-column label="押金">
             <template slot-scope="scope">
               <div>{{ scope.row.depositAmount }}元</div>
-              <div v-if="scope.row.depositAmount > 0">超{{ scope.row.overTime }}分钟不退</div>
+              <div v-if="scope.row.depositAmount > 0">超{{ scope.row.overTime }}小时不退</div>
             </template>
           </el-table-column>
           <el-table-column label="操作">
@@ -113,7 +113,7 @@
             </el-form-item>
             <el-form-item label="不退押金时长">
               <el-input v-model="dform.overTime">
-                <template slot="append">分钟</template>
+                <template slot="append">小时</template>
               </el-input>
             </el-form-item>
           </template>
@@ -124,7 +124,7 @@
             </el-form-item>
             <el-form-item label="单次免费时长" ref="freeTime" prop="freeTime" v-if="dform.freeTimeType == 0">
               <el-input v-model="dform.freeTime">
-                <template slot="append">分钟</template>
+                <template slot="append">小时</template>
               </el-input>
             </el-form-item>
           </template>
@@ -259,6 +259,11 @@
         params[this.userKey] = this.id
         this.$get('iot-saas-basic/brand/goods/v1/admin/list', params).then(res => {
           if(res && res.length > 0){
+            res.map(item => {
+              item.freeTime = parseInt(item.freeTime) / 60
+              item.overTime = parseInt(item.overTime) / 60
+              return item
+            })
             this.list = res
           }else{
             this.list.push({
@@ -267,7 +272,7 @@
               availableDay: 30,
               countCycle: 30,
               cycleFreeTimes: 60,
-              freeTime: 180,
+              freeTime: 3,
               ableState: 1,
               storeId: 0,
               agentId: 0,
@@ -304,8 +309,8 @@
                 cycleFreeTimes: rows.cycleFreeTimes,
                 cardType: rows.cycleFreeTimes == this.cycleFreeTimes ? 3 : (((rows.availableDay == rows.countCycle) || (!rows.availableDay && rows.countCycle == 1)) ? 1 : 2),
                 freeTime: rows.freeTime,
-                freeTimeType: rows.freeTime == 600000 ? 1 : 0,
-                overTime: rows.overTime || 7200,
+                freeTimeType: rows.freeTime == 10000 ? 1 : 0,
+                overTime: rows.overTime || 120,
                 depositAmount: rows.depositAmount || 0,
                 cardModul: rows.depositAmount > 0 ? 1 : 0,
                 ableState: rows.ableState,
@@ -360,12 +365,17 @@
                   params.cycleFreeTimes = this.cycleFreeTimes
                   params.countCycle = params.availableDay
                 }
-                if(params.freeTimeType == 1 || params.cardModul == 1){
+                if(params.freeTimeType == 1){
                   params.freeTime = 600000
+                } else {
+                  params.freeTime = parseFloat(params.freeTime) * 60
                 }
                 if(params.cardModul == 0){
                   params.depositAmount = 0
                   params.overTime = 0
+                }else if(params.cardModul == 1){
+                  params.freeTime = 600000
+                  params.overTime = parseFloat(params.overTime) * 60
                 }
                 this.clickSubmit = false
                 this.$post('iot-saas-basic/brand/goods/v1/save', params).then(res => {

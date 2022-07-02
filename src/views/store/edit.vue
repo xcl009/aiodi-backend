@@ -351,7 +351,7 @@ export default {
         if(idxs == -1){
           let device = JSON.parse(JSON.stringify(this.defaultDevice))
           device.deviceTypeCode = code
-          if(this.mode_way[code]){
+          if(this.config.mode_way[code]){
           	device.weixinPayMode.modeType = Object.values(this.config.mode_way[code])[0]
           	device.alipayPayMode.modeType = Object.values(this.config.mode_way[code])[0]
           }

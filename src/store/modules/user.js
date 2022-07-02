@@ -145,6 +145,7 @@ const actions = {
                     title: item.name,
                     icon: item.icon,
                   },
+                  hidden: fmenu.hidden || false,
                   children: childMenu
                 })
               }

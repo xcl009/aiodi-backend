@@ -116,19 +116,21 @@
               <div class="flex flex-wrap w-160">
                 <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2)">二维码</el-button>
                 <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)" v-if="lowerDevice == false">设备归属</el-button>
-                <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
-                <template v-if="lowerDevice">
-                  <el-button type="primary" size="mini"
-                    @click="unbindAgent(scope.row, scope.$index)" v-if="!scope.row.distribute">
-                  回收设备</el-button>
-                </template>
-                <template v-else>
-                  <el-button type="primary" size="mini"
-                    @click="$router.push({path: `/agent/subAgent?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
-                    去分配</el-button>
-                  <el-button type="primary" size="mini"
-                    @click="$router.push({path: `/store?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
-                  去铺货</el-button>
+                <template v-if="!isSaas() && !isStore()">
+                  <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
+                  <template v-if="lowerDevice">
+                    <el-button type="primary" size="mini"
+                      @click="unbindAgent(scope.row, scope.$index)" v-if="!scope.row.distribute">
+                    回收设备</el-button>
+                  </template>
+                  <template v-else>
+                    <el-button type="primary" size="mini"
+                      @click="$router.push({path: `/agent/subAgent?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
+                      去分配</el-button>
+                    <el-button type="primary" size="mini"
+                      @click="$router.push({path: `/store?deviceId=${scope.row.id}`})" v-if="!scope.row.distribute">
+                    去铺货</el-button>
+                  </template>
                 </template>
               </div>
             </div>
@@ -158,7 +160,7 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <el-table :data="deviceInfo[curRow.id].deviceOwnerUserList" border v-if="deviceInfo[curRow.id]">
+        <el-table :data="deviceInfo[curRow.deviceSn].deviceOwnerUserList" border v-if="deviceInfo[curRow.deviceSn]">
           <el-table-column label="角色">
             <template slot-scope="scope">
               {{ config.system_role[scope.row.userType] }}
@@ -173,7 +175,7 @@
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">
-          <el-image class="access-url" :src="deviceInfo[curRow.id].accessUrl" fit="cover" v-if="deviceInfo[curRow.id] && deviceInfo[curRow.id].accessUrl"></el-image>
+          <el-image class="access-url" :src="deviceInfo[curRow.deviceSn].accessUrl" fit="cover" v-if="deviceInfo[curRow.deviceSn] && deviceInfo[curRow.deviceSn].accessUrl"></el-image>
           <div class="access-url" id="accessUrl" v-else></div>
           <div class="mt-20 text-grey">SN码：{{ curRow.deviceSn }}</div>
         </div>
@@ -517,18 +519,18 @@
             this.curIdx = idx
             this.dialogStatus = true
             if(dialogType == 1 || dialogType == 2){
-              if(this.deviceInfo[row.id]){
+              if(this.deviceInfo[row.deviceSn]){
                 this.$nextTick(()=>{
-                  if(!this.deviceInfo[row.id].accessUrl && dialogType == 2){
-                    this.deviceCode(this.deviceInfo[row.id].content)
+                  if(!this.deviceInfo[row.deviceSn].accessUrl && dialogType == 2){
+                    this.deviceCode(this.deviceInfo[row.deviceSn].content)
                   }
                 })
                 return
               }
-              this.$get('iot-saas-device/admin/device/findBelongById', {
-                id: row.id
+              this.$get('iot-saas-device/admin/device/findBelong', {
+                deviceSn: row.deviceSn
               }).then(res => {
-                this.$set(this.deviceInfo, row.id, res)
+                this.$set(this.deviceInfo, row.deviceSn, res)
                 if(!res.accessUrl && dialogType == 2){
                   this.deviceCode(res.content)
                 }

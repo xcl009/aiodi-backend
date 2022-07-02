@@ -10,7 +10,7 @@ import {
   getToken
 } from '@/utils/auth'
 
-const windowScreen = `${window.screen.width} * ${window.screen.height}` 
+const windowScreen = `${window.screen.width} * ${window.screen.height}`
 
 let pending = []; //声明一个数组用于存储每个ajax请求的取消函数和ajax标识
 let cancelToken = axios.CancelToken; //初始化取消请求的构造函数
@@ -88,11 +88,12 @@ service.interceptors.response.use(
     switch (parseInt(res.data.code)) {
       case 200:
         return Promise.resolve(res.data.data)
-        if (res.data.data) {
-          return Promise.resolve(res.data.data)
-        } else {
-          return Promise.resolve(res.data)
-        }
+        // if (res.data.data) {
+        //   return Promise.resolve(res.data.data)
+        // } else {
+        //   return Promise.resolve(res.data)
+        // }
+      break
       default:
         Message.closeAll()
         if(['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1){
@@ -103,13 +104,14 @@ service.interceptors.response.use(
           setTimeout(()=>{
             location.href = '/login'
           }, 1500)
-        }else{
+        } else {
           Message({
             message: res.data.message || '网络卡住了，请刷新',
             type: 'error'
           })
           return Promise.reject(res.data)
         }
+      break
     }
   },
   (error) => {

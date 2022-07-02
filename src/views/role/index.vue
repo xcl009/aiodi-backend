@@ -73,7 +73,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == "roleEdit") {
+      if (from.name == "addRole") {
         to.meta.reload = true
       } else {
         to.meta.reload = false

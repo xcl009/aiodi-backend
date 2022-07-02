@@ -99,7 +99,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == 'goodsEdit') {
+      if (from.name == 'addGoods') {
         to.meta.isBack = true
       } else {
         to.meta.isBack = false

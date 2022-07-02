@@ -108,7 +108,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == "agentEdit") {
+      if (from.name == '') {
         to.meta.reload = true
       } else {
         to.meta.reload = false

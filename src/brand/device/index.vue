@@ -520,7 +520,7 @@
                 })
                 return
               }
-              this.$get('iot-saas-device/admin/device/findBelongById', {
+              this.$get('iot-saas-device/admin/device/findBelong', {
                 id: row.id
               }).then(res => {
                 this.$set(this.deviceInfo, row.id, res)

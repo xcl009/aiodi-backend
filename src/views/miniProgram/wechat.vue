@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="pt-15 pl-15 pr-15 pb-15 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading">
+    <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.appName || '小程序名称' }}</div>
@@ -44,12 +44,22 @@
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(3, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">审核状态</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(5, scope.row)">隐私设置</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/system/wechatEdit?app_id=${scope.row.appId}`})">修改信息</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/system/wechatEdit?app_id=${scope.row.appId}`})" v-if="isBrand()">修改信息</div>
             <!-- <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div> -->
           </template>
         </el-table-column>
       </el-table>
+
+      <div class="flex justify-center">
+        <pagination
+      		v-show="listTotal > 0"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          :total="parseInt(listTotal)"
+          @pagination="getList"
+        />
+      </div>
 
       <div class="pt-20 text-center text-primary cursor" @click="$router.push({path: `/system/wechatEdit`})" v-if="list.length == 0">绑定小程序</div>
     </div>
@@ -70,20 +80,24 @@
 </template>
 
 <script>
+  import Pagination from '@/components/Pagination'
   export default {
     name: 'wechat',
-    components: {},
+    components: {
+      Pagination
+    },
     props: {
-      user_type: {
-        type: Number,
-        default: 0
-      }
+
     },
     data() {
       return {
         clickSubmit: false,
-        form: {},
         tableMaxH: '250',
+        listQuery: {
+          page: 1,
+          size: 10
+        },
+        listTotal: 0,
         list: [],
         listLoading: false,
 
@@ -156,11 +170,17 @@
        * 获取列表
        */
       getList() {
-        var params = Object.assign({}, this.form)
+        var params = Object.assign({}, this.listQuery, {
+          page: this.listQuery.page - 1
+        })
         this.$get('iot-saas-pay/admin/pay/config/wechat/list', params).then(res => {
-          this.list = res
+          this.list = res.rows || []
+          this.listTotal = res.total
           this.listLoading = false
           this.clickSubmit = false
+          if(params.page == 0){
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+          }
         }).catch(err => {
           this.listLoading = false
           this.clickSubmit = false
