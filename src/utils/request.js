@@ -79,10 +79,10 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   res => {
-    if (res.headers['content-type'] === 'application/vnd.ms-excel;charset=UTF-8') {
+    if (res.config.headers['Content-Type'] === 'application/vnd.ms-excel;charset=UTF-8') {
       return Promise.resolve(res.data)
     }
-    if (res.headers['content-type'] === 'image/jpeg') {
+    if (res.headers['Content-Type'] === 'image/jpeg') {
       return Promise.resolve(res.data)
     }
     switch (parseInt(res.data.code)) {
@@ -178,7 +178,10 @@ export function $export(url, data = {}) {
     method: 'GET',
     url: url,
     data: data,
-    responseType: 'blob'
+    responseType: 'blob',
+    headers: {
+      'Content-Type': 'application/vnd.ms-excel;charset=UTF-8'
+    }
   })
 }
 

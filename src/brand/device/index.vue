@@ -63,7 +63,7 @@
         <el-table-column label="在线状态" v-if="myDeviceId['PA']">
           <template slot-scope="scope">
             <div v-if="scope.row.onlineStatus">
-              <div :class="scope.row.onlineStatus == 'online' ? 'text-primary' : 'text-danger'">{{ scope.row.onlineStatus == 'online' ? '在线' : '离线'}}</div>
+              <div :class="scope.row.onlineStatus == 'ONLINE' ? 'text-primary' : 'text-danger'">{{ scope.row.onlineStatus == 'ONLINE' ? '在线' : '离线'}}</div>
               <div>{{ parseTime(scope.row.updateTime) }}</div>
             </div>
             <div v-else>--</div>
