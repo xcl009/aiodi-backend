@@ -243,10 +243,15 @@
           this.$message.error('请输入提现金额')
           return
         }
-        // else if (parseFloat(params.amount) > parseFloat(this.balance)){
-        //   this.$message.error('余额不足')
-        //   return
-        // }
+        else if (parseFloat(params.amount) > parseFloat(this.money.balance)){
+          this.$message.error('余额不足')
+          return
+        }
+        if(params.withdrawType == 2){
+          params = Object.assign(params, this.wxQrcodeInfo)
+        }else if(params.withdrawType == 4){
+          params = Object.assign(params, this.aliQrcodeInfo)
+        }
         if(this.cutStoreId) params.storeId = this.cutStoreId
         this.clickSubmit = true
         this.$post('iot-saas-pay/api/pay/withdraw/apply', params).then(res => {

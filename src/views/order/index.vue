@@ -46,6 +46,7 @@
             <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.status != item.value}" v-for="item in orderTab" @click="listQuery.status = item.value; toQuery(2)">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
           </el-scrollbar>
         </div>
+        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 3)">取消支付分订单</el-button>
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
@@ -232,6 +233,16 @@
             </el-form-item>
           </el-form>
         </template>
+        <template v-if="dialogType == 3">
+          <el-form class="custom-form pl-20 pr-20" label-width="auto">
+            <el-form-item label="订单单号">
+              <el-input v-model="dform.orderNo"></el-input>
+            </el-form-item>
+            <el-form-item label="取消原因">
+              <el-input v-model="dform.reason"></el-input>
+            </el-form-item>
+          </el-form>
+        </template>
         <div class="mt-30 text-center">
           <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
           <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
@@ -400,7 +411,7 @@
         dialogTitle: {
           1: '结束订单',
           2: '订单退款',
-          3: '删除商户'
+          3: '取消支付分订单'
         },
         curRow: {},
         curIdx: 0,
@@ -712,6 +723,31 @@
               })
               curRow.status = 'OTD'
               curRow.amountRefund = params.amount
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 3:
+            if(!params.orderNo){
+              this.$message({
+                message: '请输入订单号',
+                type: 'error'
+              })
+              return
+            }else if(!params.reason){
+              this.$message({
+                message: '请输入取消原因',
+                type: 'error'
+              })
+              return
+            }
+            this.$post('iot-saas-order/admin/order/cancel', params).then(res => {
+              this.$message({
+                message: '取消成功',
+                type: 'success'
+              })
               this.dialogStatus = false
               this.clickSubmit = false
             }).catch(err => {

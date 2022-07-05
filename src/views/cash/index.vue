@@ -123,7 +123,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <div class="flex justify-center" v-if="scope.row.status == 0">
+            <div class="flex" v-if="scope.row.status == 0">
               <div class="p-10 cursor text-primary" @click="setRows(1, scope.row, 2)">通过</div>
               <div class="p-10 cursor text-danger" @click="setRows(1, scope.row, 1)">拒绝</div>
             </div>

@@ -20,11 +20,11 @@
   "mode_way": {
     "default": {
       "套餐": "PACKAGE",
-      "预存+先充后付": "DEPOSIT_FREE",
+      "预存+免押": "DEPOSIT_FREE",
       "预存": "DEPOSIT"
     },
     "PA": {
-      "预存+先充后付": "DEPOSIT_FREE",
+      "预存+免押": "DEPOSIT_FREE",
       "预存": "DEPOSIT"
     }
   },
@@ -35,9 +35,7 @@
     }
   },
   "closeType": {
-    "1": "真实分成",
-    "2": "相对分成",
-    "3": "分成不一致"
+    "1": "真实分成"
   },
   "withdrawType": {
     "1": "微信提现",

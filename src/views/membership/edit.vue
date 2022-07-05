@@ -47,7 +47,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="setRows(1, scope.row, 1)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="setRows(2, scope.row, scope.$index)">删除</el-button>
+              <el-button size="mini" type="danger" @click="setRows(2, scope.row, scope.$index)" v-if="scope.row.id">删除</el-button>
             </template>
           </el-table-column>
         </el-table>

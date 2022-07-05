@@ -68,7 +68,7 @@
                   <el-radio-group v-model="item.closeType">
                     <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType">{{ ct }}</el-radio-button>
                   </el-radio-group>
-                  <el-popover
+                  <!-- <el-popover
                     placement="right"
                     title=""
                     width="400"
@@ -85,13 +85,13 @@
                       <div>
                         <div class="mb-5 text-black">分成不一致</div>
                         承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。注：每天只有第1笔订单按照承诺分成比例分润。</span><br>
-                        实际分成：若自身的分成为50%，设置实际分成为50%，则10元订单商户可分润10×50%×50%=2.5元。注：每天从第2笔订单开始就按照实际分成比例分润。<br>
+                        相对分成：若自身的分成为50%，设置相对分成为50%，则10元订单商户可分润10×50%×50%=2.5元。注：每天从第2笔订单开始就按照相对分成比例分润。<br>
                       </div>
 
                       <div class="mt-20">需设置分成不一致？<el-link type="primary" :underline="false">点此去购买</el-link></div>
                     </div>
                     <el-link type="danger" slot="reference" :underline="false" class="ml-10 el-icon-question fs-c1"></el-link>
-                  </el-popover>
+                  </el-popover> -->
                 </el-form-item>
                 <template v-if="item.closeType == 3">
                   <el-form-item label="承诺分成">
@@ -131,15 +131,14 @@
                 <div class="mt-30 mb-10 text-dfs">{{ name }}付费设置</div>
                 <el-form-item :label="`付费模式`">
                   <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
-                    <el-radio-button :label="item" v-for="(item, key) in (config.mode_way[item.deviceTypeCode] ? config.mode_way[item.deviceTypeCode] : config.mode_way.default)">{{ key }}</el-radio-button>
+                    <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode)" :disabled="!Ability[key] && key != Object.values(getModeType(item.deviceTypeCode))[0]">{{ name }}</el-radio-button>
                   </el-radio-group>
                   <el-popover
                     placement="right"
                     title=""
-                    width="400"
                     trigger="hover">
                     <div>
-                      需了解和设置预存+先充后付？<el-link type="primary" :underline="false">点此去购买</el-link>
+                      需了解和设置预存+免押或预存？<el-link type="primary" :underline="false">点此去购买</el-link>
                     </div>
                     <el-link type="danger" :underline="false" slot="reference" class="ml-10 el-icon-question fs-c1"></el-link>
                   </el-popover>
@@ -242,6 +241,9 @@ export default {
     agentInfo() {
       let agentInfo = this.$store.getters.agentInfo
       return agentInfo
+    },
+    Ability() {
+      return this.$store.getters.Ability
     },
     myDevice() {
       let myDevice = this.$store.getters.myDevice
@@ -633,6 +635,13 @@ export default {
         })
         if(regionTag.length > 0) this.form.regionTag = regionTag
       })
+    },
+
+    /**
+     * 获取设备支持模式
+     */
+    getModeType(code){
+      return this.config.mode_way[code] ? this.config.mode_way[code] : this.config.mode_way.default
     }
   }
 }

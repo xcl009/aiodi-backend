@@ -115,6 +115,12 @@
                   message: '导出成功',
                   type: 'success'
                 })
+              }).catch(err => {
+                this.loadObj.close()
+                this.$message({
+                  message: '导出失败',
+                  type: 'error'
+                })
               })
             }
           }

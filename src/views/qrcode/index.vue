@@ -23,7 +23,7 @@
         <div class="flex1">
           <el-button size="medium" type="primary" @click="$router.push({path: `/device/addQrcode`})">生成二维码</el-button>
           <el-button size="medium" type="primary" @click="$router.push({path: `/device/qrAddRecord`})">生成记录</el-button>
-          <el-button size="medium" type="primary" :disabled="selSnArr.length == 0" @click="toQuery(item.value)">批量下载</el-button>
+          <el-button size="medium" type="primary" :disabled="selSnArr.length == 0" @click="downloadImg()">批量下载</el-button>
         </div>
       </div>
 
@@ -57,7 +57,7 @@
         <el-table-column label="下载" width="80">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content='全选后点击查询后的"下载"按钮可下载本页所有设备二维码图片' placement="top" v-if="scope.row.accessUrl">
-              <el-link type="primary" @click="downloadImgs(scope.row)">下载</el-link>
+              <el-link :href="scope.row.accessUrl" target="_blank" type="primary">下载</el-link>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -186,35 +186,19 @@
       },
 
       /**
-       * 校验是否可选
-       */
-      checkSel(row) {
-        return !row.agent_id && row.device_id
-      },
-
-      /**
        * 选择设备铺货
        * @param {Object} res
        */
       selSb(list) {
         let selSnArr = [], selSnUrl = []
         for (var i in list){
-          selSnArr.push(list[i].code_sn)
-          if(list[i].code_url) selSnUrl.push(list[i].code_url)
+          if(list[i].accessUrl){
+            selSnArr.push(list[i].deviceSn)
+            selSnUrl.push(list[i].accessUrl)
+          }
         }
         this.selSnArr = selSnArr
         this.selSnUrl = selSnUrl
-      },
-
-      /**
-       * 生成二维码图片
-       */
-      createImg(row){
-        this.$get('QRcode/createCodeSnImage', {
-          id: row.id
-        }).then(res => {
-          row.code_url = res.img_url
-        })
       },
 
       downloadImgs(row){
@@ -224,7 +208,6 @@
           console.log(res)
         })
       },
-
 
       /**
        * 下载二维码
@@ -257,7 +240,7 @@
             let url = canvas.toDataURL() // 得到图片的base64编码数据
             canvas.toDataURL('image/png')
             baseList.push(url.substring(22))    // 去掉base64编码前的 data:image/png;base64,
-            imgNameList.push(image.src.substring(image.src.lastIndexOf("/") + 1))
+            imgNameList.push(image.src.split("?")[0].substring(image.src.lastIndexOf("/") + 1))
             if (baseList.length === arr.length && baseList.length > 0) {
               for (let k = 0; k < baseList.length; k++) {
                 imgs.file(imgNameList[k], baseList[k], {base64: true})

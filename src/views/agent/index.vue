@@ -6,7 +6,7 @@
         <el-input v-model="form.mobile" placeholder="手机号码"/>
 		  </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/agent/addAgent`})" v-if="Ability['agentManage']"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/agent/addAgent`})" v-if="!lowerAgent && Ability['addAgent']"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
       </template>
 		</condition>
 
@@ -79,7 +79,7 @@
             <template v-else>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store?agentId=${scope.row.id}`})">商户列表</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/addAgent?agentId=${scope.row.id}`})" v-if="!lowerAgent">修改信息</el-button>
+              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/addAgent?agentId=${scope.row.id}`})" v-if="!lowerAgent && Ability['addAgent']">修改信息</el-button>
               <el-button class="p-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 2, scope.$index)" v-if="!lowerAgent">删除代理</el-button>
               <el-dropdown trigger="click">
                 <el-button class="p-5 ml-0" size="medium" type="text">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
@@ -110,7 +110,7 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        
+
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">

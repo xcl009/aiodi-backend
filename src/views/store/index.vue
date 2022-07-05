@@ -11,7 +11,7 @@
         <el-input v-model="form.mobile" placeholder="手机号码" />
       </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})"><i
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore"><i
             class="el-icon-plus el-icon--left" />添加商户</el-button>
       </template>
     </condition>
