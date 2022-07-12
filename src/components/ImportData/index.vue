@@ -1,5 +1,5 @@
 <template>
-  <upload :uploadText="uploadText" :name="name" :btnSize="btnSize" accept=".xls,.xlsx" :action="action[type]"/>
+  <upload :uploadText="uploadText" :name="name" :btnSize="btnSize" accept=".xls,.xlsx" :action="action[type]" @onSuccess="onSuccess"/>
 </template>
 <script>
   import upload from '@/components/upload'
@@ -42,10 +42,18 @@
       }
     },
     mounted(){
-      
+
     },
     methods: {
-
+      /**
+       * 监听成功
+       */
+      onSuccess(res){
+        this.$message({
+          message: '导入成功',
+          type: 'success'
+        })
+      }
     }
   }
 </script>

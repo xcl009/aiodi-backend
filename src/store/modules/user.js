@@ -176,13 +176,13 @@ const actions = {
       }).then(data => {
         data = data || {}
         commit('SET_SITEINFO', data)
-        if(data.mini_name){
+        if(data.appName){
           var icon_link = document.createElement('link')
               icon_link.type = 'image/x-icon'
               icon_link.rel = 'shortcut icon'
-              icon_link.href = data.mini_logo || data.mini_logo
+              icon_link.href = data.appLogo
           document.getElementsByTagName('head')[0].appendChild(icon_link)
-          document.title = `${data.mini_name}-管理后台`;
+          document.title = `${data.appName}-管理后台`;
         }
         data.time_unit = data.fund_fee_time_unit == 0 ? '分钟' : '小时'
         data.withdrawType = {

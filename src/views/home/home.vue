@@ -428,7 +428,7 @@
           startDateStr: parseTime(sTime, '{y}-{m}-{d}'),
           endDateStr: parseTime(eTime, '{y}-{m}-{d}')
         }
-        this.$get('iot-saas-order/admin/order/count/queryLineChart', params).then(res => {
+        this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
           let obj = arrayToObj(res, 'countGroupDate')
           for(var i = sTime; i < (eTime + 86400); i = i + 86400){
             groupDate.push(parseTime(i, '{m}-{d}'))

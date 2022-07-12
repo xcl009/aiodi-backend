@@ -148,7 +148,7 @@
           params = this.filtrate
 
         params.brandID = this.brandId
-        this.$get('iot-saas-order/admin/order/count/queryLineChart', params).then(res => {
+        this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
           let obj = arrayToObj(res, 'countGroupDate'),
             pros = []
           for (var i = this.selMon; i > 0; i--) {

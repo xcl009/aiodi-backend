@@ -65,7 +65,7 @@
         type: String,
         default: '.jpg,jpeg,.png,.gif,.tif,.eps,.bmp,.webp,.pcx,.svg'
       },
-      
+
       btnSize: {
         type: String,
         default: 'small'
@@ -78,7 +78,7 @@
             fileType: 'userAvatar'
           }
         }
-      },
+      }
     },
     data() {
       return {
@@ -129,13 +129,22 @@
        * 图片上传调用接口成功 但上传不一定成功
        */
       handleSuccess(res, file, fileList){
-        if(res.data.code > 0){
+        if(res.code != 200){
           file.status = 'error'
           this.$message.error(`图片上传失败:${res.data.message}, 请删除失败的图片重新上传`)
         } else {
-          if(res.data.url) fileList[fileList.length - 1].url = res.data.url
-          if(res.data.ossFileKey) fileList[fileList.length - 1].ossFileKey = res.data.ossFileKey
-          this.update(fileList)
+          if(this.$listeners['onSuccess']){
+            this.$emit('onSuccess', res)
+          }else if(res.data){
+            if(res.data.url) fileList[fileList.length - 1].url = res.data.url
+            if(res.data.ossFileKey) fileList[fileList.length - 1].ossFileKey = res.data.ossFileKey
+            this.update(fileList)
+          } else {
+            this.$message({
+              message: '上传成功但data为空!',
+              type: 'success'
+            })
+          }
         }
       },
 
