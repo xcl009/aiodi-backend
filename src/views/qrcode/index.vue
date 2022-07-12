@@ -20,11 +20,10 @@
 
     <div class="pl-15 pr-15 pb-5 bg-white">
       <div class="mb-15 flex">
-        <div class="flex1">
-          <el-button size="medium" type="primary" @click="$router.push({path: `/device/addQrcode`})">生成二维码</el-button>
-          <el-button size="medium" type="primary" @click="$router.push({path: `/device/qrAddRecord`})">生成记录</el-button>
-          <el-button size="medium" type="primary" :disabled="selSnArr.length == 0" @click="downloadImg()">批量下载</el-button>
-        </div>
+        <el-button size="medium" type="primary" @click="$router.push({path: `/device/addQrcode`})">生成二维码</el-button>
+        <el-button size="medium" type="primary" @click="$router.push({path: `/device/qrAddRecord`})">生成记录</el-button>
+        <el-button size="medium" type="primary" :disabled="selSnArr.length == 0" @click="downloadImg()">批量下载</el-button>
+        <import-data name="files" btnSize="medium" class="ml-10"></import-data>
       </div>
 
       <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading" stripe highlight-current-row :max-height="tableMaxH" @selection-change="selSb">
@@ -79,6 +78,7 @@
 <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
+  import ImportData from '@/components/ImportData/'
 
   import JSZip from 'jszip'
   import FileSaver from 'file-saver'
@@ -87,7 +87,8 @@
     name: 'qrcode',
     components: {
       condition,
-      Pagination
+      Pagination,
+      ImportData
     },
     computed: {
       myDeviceName(){

@@ -1,15 +1,15 @@
 <template>
-  <div>
-    <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleSuccess" :on-error="handleError" :data="upObj" :show-file-list="false" name="file" :multiple="multiple" v-if="limit == 1">
+  <div class="uploader-box">
+    <el-upload class="avatar-uploader" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleSuccess" :on-error="handleError" :data="upObj" :headers="headers" :accept="accept" :show-file-list="false" :name="name" :multiple="multiple" v-if="limit == 1">
       <template v-if="uploadText">
-        <el-button type="primary">{{ uploadText }}<i class="el-icon-upload2 el-icon--right"></i></el-button>
+        <el-button type="primary" :size="btnSize">{{ uploadText }}<i class="el-icon-upload2 el-icon--right"></i></el-button>
       </template>
       <template v-else>
         <el-image class="abs el-avatar_up" shape="square" fit="cover" :src="value" v-if="value"></el-image>
         <i class="rel el-icon-plus avatar-uploader-icon"></i>
       </template>
     </el-upload>
-    <el-upload class="avatar-uploader" list-type="picture-card" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :on-error="handleError" :data="upObj" :file-list="value" name="file" :limit="limit" :multiple="multiple" :on-exceed="exceed" v-else>
+    <el-upload class="avatar-uploader" list-type="picture-card" :action="`${baseURL}${action}`" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :on-error="handleError" :data="upObj" :headers="headers" :accept="accept" :file-list="value" :name="name" :limit="limit" :multiple="multiple" :on-exceed="exceed" v-else>
       <i class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
@@ -56,12 +56,26 @@
         default: ''
       },
 
+      name: {
+        type: String,
+        default: 'file'
+      },
+
+      accept: {
+        type: String,
+        default: '.jpg,jpeg,.png,.gif,.tif,.eps,.bmp,.webp,.pcx,.svg'
+      },
+      
+      btnSize: {
+        type: String,
+        default: 'small'
+      },
+
       upObj: {
         type: Object,
         default (){
           return {
-            fileType: 'userAvatar',
-            token: getToken()
+            fileType: 'userAvatar'
           }
         }
       },
@@ -72,8 +86,13 @@
         dialogImageUrl: '',
         dialogVisible: false,
         percentage: 1,
-        rawUrl: ''
+        rawUrl: '',
+        headers: {
+          Authorization: getToken()
+        }
       }
+    },
+    mounted(){
     },
     methods: {
       /**
@@ -123,8 +142,12 @@
       /**
        * 上传失败
        */
-      handleError(err){
-        console.log(err)
+      handleError(error){
+        let err = JSON.parse(error.message)
+        this.$message({
+          message: err.message || '上传失败',
+          type: 'error'
+        })
       },
 
       /**
@@ -169,24 +192,25 @@
 <style scoped lang="scss">
   .avatar-uploader {
     /deep/ .el-upload{
-      border: 1px dashed #E5E6EB;
-      border-radius: 6px;
       cursor: pointer;
       position: relative;
-      overflow: hidden;
-      vertical-align: middle;
       background: #F2F3F5;
-      &:hover {
-        border-color: var(--olive);
+      .el-image{
+        border-radius: 6px;
       }
     }
     .avatar-uploader-icon {
-      font-size: 28px;
-      color: #8c939d;
       width: 100px;
       height: 100px;
       line-height: 100px;
+      border: 1px dashed #E5E6EB;
+      border-radius: 6px;
+      font-size: 28px;
+      color: #8c939d;
       text-align: center;
+      &:hover {
+        border-color: var(--olive);
+      }
     }
     .el-avatar_up{
       width: 100%;

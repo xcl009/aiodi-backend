@@ -47,10 +47,12 @@
             <div>{{ scope.row.fatherBrandName || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="品类" width="100">
+        <el-table-column label="品类" width="200">
           <template slot-scope="scope">
-            <div class="text-primary cursor" v-for="item in scope.row.brandDeviceType">
-              {{ item.name }}
+            <div>
+              <span class="mr-20 inline" v-for="item in scope.row.brandDeviceType">
+                {{ item.name }}
+              </span>
             </div>
           </template>
         </el-table-column>

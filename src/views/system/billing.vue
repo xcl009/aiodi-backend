@@ -26,9 +26,9 @@
               </el-form-item>
 
               <el-form-item :label="`套餐默认`" v-if="billing.deviceTypeCode != 'PA'">
-                <div class="flex align-center flex-wrap" v-for="(plan, index) in billing[`${xcx}PayMode`].payModeDetail">
+                <div class="flex align-center flex-wrap mb-10" v-for="(plan, index) in billing[`${xcx}PayMode`].payModeDetail">
                   <el-select v-model="plan.time">
-                    <el-option :label="`${time}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
+                    <el-option :label="`${time / 60}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
                   </el-select>
                   <el-input v-model="plan.money" class="flex1 ml-10 mr-10">
                     <template slot="append">元</template>
@@ -135,13 +135,8 @@
       getConfig(e){
         let defaultDevice = JSON.parse(JSON.stringify(this.defaultDevice))
         this.$get(`iot-saas-basic/admin/billing/${this.deviceTypeCode}/-1/configs`).then(res => {
-          if(JSON.stringify(res) == '[]'){
-            defaultDevice.deviceTypeCode = this.deviceTypeCode
-            this.billing = defaultDevice
-            console.log(this.billing)
-          } else {
-            this.deviceDataArr.push(res.paymentSettings)
-          }
+          defaultDevice.deviceTypeCode = this.deviceTypeCode
+          this.billing = defaultDevice
         })
       },
 

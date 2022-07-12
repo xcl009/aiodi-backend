@@ -26,10 +26,12 @@
             <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="品类">
+        <el-table-column label="品类" width="200">
           <template slot-scope="scope">
-            <div class="cursor" @click="$router.push({path: `/device?agentId=${scope.row.id}`})" v-for="item in scope.row.agentDeviceType">
-              {{ item.name }}
+            <div>
+              <span class="mr-20 inline" v-for="item in scope.row.agentDeviceType" @click="$router.push({path: `/device?agentId=${scope.row.id}`})">
+                {{ item.name }}
+              </span>
             </div>
           </template>
         </el-table-column>

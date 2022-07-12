@@ -55,7 +55,7 @@
         </el-table-column>
         <el-table-column label="可借|可还" v-if="myDeviceId['PA']" width="100">
           <template slot-scope="scope">
-            <div v-if="scope.row.onlineStatus">
+            <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
               {{ scope.row.tenantNumber }}|{{ scope.row.restoreNumber }}
             </div>
             <div v-else>--</div>
@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column label="在线状态" v-if="myDeviceId['PA']" min-width="95">
           <template slot-scope="scope">
-            <div v-if="scope.row.onlineStatus">
+            <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
               <div :class="scope.row.onlineStatus == 'ONLINE' ? 'text-primary' : 'text-danger'">{{ scope.row.onlineStatus == 'ONLINE' ? '在线' : '离线'}}</div>
               <div>{{ parseTime(scope.row.updateTime) }}</div>
             </div>
@@ -89,7 +89,7 @@
             <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="订单数" width="120">
+        <el-table-column label="订单数" width="120" v-if="Ability['order']">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
@@ -234,7 +234,10 @@
       },
       siteInfo() {
         return this.$store.getters.siteInfo
-      }
+      },
+      Ability() {
+        return this.$store.getters.Ability
+      },
     },
     data() {
       return {

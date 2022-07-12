@@ -56,7 +56,7 @@
         </el-table-column>
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/order?userIds=${scope.row.id}`})">订单记录</el-button>
+            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/order?userId=${scope.row.id}`})">订单记录</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -167,7 +167,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
           }
         }).catch(() => {
           this.clickSubmit = false

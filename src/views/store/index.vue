@@ -11,8 +11,8 @@
         <el-input v-model="form.mobile" placeholder="手机号码" />
       </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore"><i
-            class="el-icon-plus el-icon--left" />添加商户</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
+        <import-data :type="3" uploadText="导入商户"></import-data>
       </template>
     </condition>
 
@@ -94,7 +94,7 @@
             <template v-else>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
               <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-              <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?store_id=${scope.row.id}`})" v-if="!lowerStore">编辑商户</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?store_id=${scope.row.id}`})">编辑商户</el-button>
               <el-dropdown trigger="click">
                 <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i>
                 </el-button>
@@ -106,7 +106,8 @@
                   </template>
                   <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_MEMBER_XF', '_MEMBER_DQ'])">会员卡</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/market/appList`})">更多应用</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -133,6 +134,21 @@
           <div class="mt-10 pl-40 pr-40 text-danger text-left">注：若该商户下存在设备，则无法删除。需由该设备的归属代理去回收，无法跨级回收。</div>
         </div>
       </template>
+      <template v-if="dialogType == 4">
+        <div class="text-center">
+          <div class="pb-20">
+            <selectSearch :type="5" :emitRow="true" name="name" placeholder="输入代理名称搜索" @change="getAgent"></selectSearch>
+          </div>
+          <div class="pb-20" v-if="agentRow.id">
+            <span>名称：{{ agentRow.name }}</span>
+            <span class="ml-10">电话：{{ agentRow.mobile }}</span>
+          </div>
+          <div class="flex justify-center align-center" v-if="!agentRow.id && lowerStore">
+            <div class="mr-10">分配给自己</div>
+            <el-switch v-model="dform.allotMe" />
+          </div>
+        </div>
+      </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
@@ -152,6 +168,8 @@
   import RelatedTemplate from '@/components/RelatedTemplate/'
   import VendorMode from '@/components/VendorMode/'
   import AssignAbility from '@/components/AssignAbility/'
+  import ImportData from '@/components/ImportData/'
+  import selectSearch from '@/components/condition/selectSearch'
   export default {
     name: 'subShop',
     components: {
@@ -160,6 +178,8 @@
       RelatedTemplate,
       VendorMode,
       AssignAbility,
+      ImportData,
+      selectSearch
     },
     props: {
       lowerStore: {
@@ -194,11 +214,14 @@
         dialogTitle: {
           1: '设备绑定',
           2: '',
-          3: '删除商户'
+          3: '删除商户',
+          4: '分配商户',
         },
         curRow: {},
         curIdx: 0,
-        dform: {}
+        dform: {},
+
+        agentRow: {} //分配代理选择的代理信息
       }
     },
     computed: {
@@ -461,6 +484,8 @@
           })
           if(this.deviceIds){
             history.back()
+          } else {
+            this.dialogStatus = false
           }
         })
       },
@@ -469,7 +494,7 @@
        * 操作商户
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前商户
-       * @param {Object} dialogType dialog内容显示类型 1: '设备绑定', 2: '', 3: '删除商户'
+       * @param {Object} dialogType dialog内容显示类型 1: '设备绑定', 2: '', 3: '删除商户' 4: '分配给代理'
        * @param {Object} idx 当前商户所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -493,7 +518,16 @@
           params = JSON.parse(JSON.stringify(this.dform))
         switch (this.dialogType) {
           case 1:
-            this.bindStore({ id: curRow.id, deviceSns: params.deviceSns })
+            if(this.lowerStore){
+              this.$post('iot-saas-device/admin/device/bindAgent', {
+                deviceSns: params.deviceSns,
+                agentId: curRow.agentId,
+              }).then(res => {
+                this.bindStore({ id: curRow.id, deviceSns: params.deviceSns })
+              })
+            } else {
+              this.bindStore({ id: curRow.id, deviceSns: params.deviceSns })
+            }
             break
           case 2:
 
@@ -504,6 +538,32 @@
             }).then(res => {
               this.$message({
                 message: '删除成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.list.splice(curIdx, 1)
+            })
+            break
+          case 4:
+            let agentId = -1
+            if(this.lowerStore && params.allotMe){
+              agentId = this.isBrand() ? '0' : this.agentInfo.agentId
+            } else {
+              agentId = this.agentRow.id
+            }
+            if(!agentId){
+              this.$message({
+                message: '请选择分配对象',
+                type: 'error'
+              })
+              return
+            }
+            this.$post('iot-saas-basic/admin/store/updateFather', {
+              storeId: curRow.id,
+              agentId: agentId
+            }).then(res => {
+              this.$message({
+                message: '分配成功',
                 type: 'success'
               })
               this.dialogStatus = false
@@ -535,6 +595,13 @@
           if(val == true) break
         }
         return val
+      },
+
+      /**
+       * 搜索代理
+       */
+      getAgent(row){
+        this.agentRow = row
       }
     }
   }

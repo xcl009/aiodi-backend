@@ -7,8 +7,8 @@
           <div class="rel p-50 flexv justify-between login-left text-white">
             <div class="rel pt-30">
               <div class="title text-bold">
-                {{ siteInfo.appName }}<br>
-                SaaS后台管理系统
+                {{ siteInfo.appName || '物享云联' }}<br>
+                {{ !siteInfo.appName ? 'SaaS' : '' }}后台管理系统
               </div>
               <div class="mt-15 flex align-center fs-c1">
                 <div>万物互联</div>
@@ -145,7 +145,7 @@
     },
     mounted() {
       this.device_mobile = this.$_isMobile()
-      //this.getPlatformConfig()
+      if(this.gid) this.getPlatformConfig()
     },
     methods: {
       $_isMobile() {
@@ -158,7 +158,7 @@
        */
       getPlatformConfig(){
         this.$store.dispatch('user/getPlatformConfig', {
-          brand_id: this.gid
+          brandId: this.gid
         }).then(res => {
           this.siteInfo = res
         })

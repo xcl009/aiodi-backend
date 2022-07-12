@@ -12,7 +12,7 @@
       v-for="item in list"
       :key="item.id"
       :label="`${item[name]}`"
-      :value="isStoreOrder ? item : item.id">
+      :value="isStoreOrder || emitRow ? item : item.id">
     </el-option>
   </el-select>
 </template>
@@ -38,6 +38,11 @@ export default {
     },
 
     isStoreOrder: {
+      type: Boolean, // 是否是订单列表商户ID筛选
+      default: false
+    },
+    
+    emitRow: {
       type: Boolean, // 是否是订单列表商户ID筛选
       default: false
     }
@@ -90,8 +95,13 @@ export default {
       if(this.isStoreOrder){
         val = `${val.id}&${val.agentId}&${val.brandId}`
       }
-      this.$emit('input', val)
-      this.$emit('change')
+      if(this.emitRow){
+        this.$emit('change', val)
+      }else{
+        this.$emit('input', val)
+        this.$emit('change')
+      }
+      
     }
   }
 }

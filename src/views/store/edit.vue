@@ -146,7 +146,7 @@
 
                 <template v-if="item[`${xcx}PayMode`].modeType == 'PACKAGE'">
                   <el-form-item :label="`套餐设置`">
-                    <div class="flex align-center flex-wrap" v-for="(plan, index) in item[`${xcx}PayMode`].payModeDetail">
+                    <div class="mb-5 flex align-center flex-wrap" v-for="(plan, index) in item[`${xcx}PayMode`].payModeDetail">
                       <el-select v-model="plan.time">
                         <el-option :label="`${time / 60}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
                       </el-select>

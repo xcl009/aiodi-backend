@@ -21,7 +21,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6">
+      <el-col :xs="24" :sm="12" :lg="6" v-if="Ability['order']">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/order`})">
           <div>总订单数</div>
           <div class="flex align-center line-1">
@@ -188,6 +188,33 @@
         </div>
       </el-col>
     </el-row>
+
+    <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15" v-if="(myDeviceId['KF'] || myDeviceId['VM']) && isStore()">
+      <el-col :xs="24" :sm="10" :lg="8">
+        <div class="pl-15 pr-15 pt-10 pb-10 bg-white" @click="$router.push({path: `/hotelTools`})">
+          <div class="flex align-center">
+            <div class="flex1 text-black">酒店功能区</div>
+            <div class="flex align-center pl-10 pr-10 box-grey cursor text-primary">
+              去管理<i class="el-icon-arrow-right fs-s1"></i>
+            </div>
+          </div>
+          <el-carousel height="80px" direction="vertical" arrow="never">
+            <el-carousel-item v-for="item in tool" :key="item">
+              <div class="tool-item flex align-center cursor">
+                <div class="flex1">
+                  <div class="fs-a1 text-black">{{ item.title }}</div>
+                  <div class="mt-5 text-gray fs-s4">{{ item.desc }}</div>
+                </div>
+                <i class="el-icon-arrow-right fs-c1"></i>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="14" :lg="16">
+
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -266,7 +293,22 @@
         day_type_arr: ['近7天', '本周', '上周', '本月', '上月'],
         day_type: 0,
         contrast_arr: ['交易额', '订单量', '客单价'],
-        contrast_type: 0
+        contrast_type: 0,
+
+        tool: [
+          {
+            title: '连接WIFI',
+            desc: '设置WIFI账号密码，客人扫一扫一键连接wifi',
+          },
+          {
+            title: '联系前台',
+            desc: '设置多个前台电话，客人扫一扫一键联系前台',
+          },
+          {
+            title: '投诉建议',
+            desc: '开启投诉建议，随时随地接收客人反馈信息，快速响应处理',
+          }
+        ]
       }
     },
     computed: {
@@ -281,6 +323,9 @@
       },
       agentInfo() {
         return this.$store.getters.agentInfo
+      },
+      Ability() {
+        return this.$store.getters.Ability
       },
       rests() {
         return this.$store.getters.rests
@@ -604,4 +649,7 @@
     }
   }
 
+  .tool-item{
+    height: 100%;
+  }
 </style>

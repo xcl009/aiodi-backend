@@ -16,11 +16,11 @@
         <selectSearch v-model="form.deviceId" :type="4" name="deviceSn" placeholder="设备SN" @change="toQuery()"></selectSearch>
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
-          <el-option label="全部" value="0" />
+          <el-option label="全部" value="" />
            <el-option :label="item" :value="key" v-for="(item, key) in Constant.SourceType" />
         </el-select>
         <el-select v-model="form.payType" placeholder="支付类型" @change="toQuery()">
-          <el-option label="全部" value="0" />
+          <el-option label="全部" value="" />
           <el-option :label="item" :value="key" v-for="(item, key) in Constant.PayType" />
         </el-select>
         <el-date-picker
@@ -420,7 +420,7 @@
     },
     mounted() {
       let query = this.$route.query
-      this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceId', 'sourceType']
+      this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceId', 'sourceType', 'userId']
       for (var i in this.queryKey) {
         if(query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
       }

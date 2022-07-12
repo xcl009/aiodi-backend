@@ -1355,46 +1355,10 @@ export const constantRoutes = [
   //   path: '/goods',
   //   component: Layout,
   //   meta: {
-  //     title: '商品管理',
+  //     title: '默认计费',
   //     icon: 'mall'
   //   },
-  //   hidden: true,
   //   children: [
-  //     {
-  //       path: '',
-  //       name: 'goodsList',
-  //       component: () => import('@/views/goods/goodsList'),
-  //       meta: {
-  //         title: '商品列表',
-  //         keepAlive: true
-  //       }
-  //     },
-  //     {
-  //       path: 'addGoods',
-  //       name: 'addGoods',
-  //       component: () => import('@/views/goods/edit'),
-  //       meta: {
-  //         title: '添加商品'
-  //       },
-  //       hidden: true
-  //     },
-  //     {
-  //       path: 'relatedTemplate',
-  //       name: 'relatedTemplate',
-  //       component: () => import('@/views/goods/relatedTemplate'),
-  //       meta: {
-  //         title: '仓口模板'
-  //       }
-  //     },
-  //     {
-  //       path: 'relatedGoods',
-  //       name: 'relatedGoods',
-  //       component: () => import('@/views/goods/relatedGoods'),
-  //       meta: {
-  //         title: '关联商品'
-  //       },
-  //       hidden: true
-  //     },
   //     {
   //       path: 'billing',
   //       name: 'billing',

@@ -99,12 +99,12 @@
               </el-image>
             </div>
             <div class="flex align-center" v-else-if="scope.row.withdrawType == 3">
-              <el-avatar size="small" :src="scope.row.alipayHeadUrl"></el-avatar>
-              <div class="pl-10">{{ scope.row.alipayNickname || "--" }}</div>
+              <el-avatar size="small" :src="scope.row.alipayHeadUrl || scope.row.userAvatar"></el-avatar>
+              <div class="pl-10">{{ scope.row.alipayNickname || scope.row.userNickName }}</div>
             </div>
             <div class="flex align-center" v-else>
-              <el-avatar size="small" :src="scope.row.wechatHeadUrl"></el-avatar>
-              <div class="pl-10">{{ scope.row.wechatNickname || "--" }}</div>
+              <el-avatar size="small" :src="scope.row.wechatHeadUrl || scope.row.userAvatar"></el-avatar>
+              <div class="pl-10">{{ scope.row.wechatNickname || scope.row.userNickName }}</div>
             </div>
           </template>
         </el-table-column>

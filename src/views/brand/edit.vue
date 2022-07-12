@@ -182,7 +182,7 @@
                 type: 'success'
               })
               this.$router.push({
-                path: '/brand/meBrand'
+                path: '/brand'
               })
             }).catch( err => {
               setTimeout(() => {

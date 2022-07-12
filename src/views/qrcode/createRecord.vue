@@ -93,9 +93,7 @@
                 text: '正在打包导出',
                 spinner: 'el-icon-loading'
               })
-              this.$export('iot-saas-device/admin/qrcode/exportAll', {
-                batchNumber: row.batchNumber
-              }).then(res => {
+              this.$export(`iot-saas-device/admin/qrcode/exportAll?batchNumber=${row.batchNumber}`).then(res => {
                 const blob = new Blob([res])
                 const fileName = `二维码列表(${this.parseTime(row.createTime)}).xlsx`
                 if ('download' in document.createElement('a')) {
