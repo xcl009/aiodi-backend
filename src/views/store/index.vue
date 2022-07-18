@@ -11,8 +11,8 @@
         <el-input v-model="form.mobile" placeholder="手机号码" />
       </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
-        <import-data :type="3" uploadText="导入商户"></import-data>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas()"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
+        <import-data :type="3" uploadText="导入商户" v-if="isBrand()"></import-data>
       </template>
     </condition>
 
@@ -61,8 +61,8 @@
         </el-table-column>
         <el-table-column label="分润人" width="180">
           <template slot-scope="scope">
-            <div>{{ scope.row.user.nickname || '' }}</div>
-            <div>{{ scope.row.user.mobile || '' }}</div>
+            <div v-if="scope.row.user">{{ scope.row.user.nickname || '' }}</div>
+            <div v-if="scope.row.user">{{ scope.row.user.mobile || '' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="分成比例">
@@ -151,7 +151,7 @@
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
 
@@ -309,7 +309,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
           }
           this.queryCash(this.arrayKeys(res.rows, 'id'))
           this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
@@ -512,7 +512,7 @@
       /**
        * 弹窗确认
        */
-      dialogConfim() {
+      dialogConfirm() {
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))

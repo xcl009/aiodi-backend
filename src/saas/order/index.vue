@@ -608,7 +608,7 @@
       /**
        * 弹窗确认
        */
-      dialogConfim() {
+      dialogConfirm() {
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))

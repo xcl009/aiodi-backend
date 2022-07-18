@@ -137,7 +137,7 @@
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
 
@@ -362,7 +362,7 @@
       /**
        * 弹窗确认
        */
-      dialogConfim() {
+      dialogConfirm() {
         if(this.clickSubmit) return
         this.clickSubmit = true
         let curRow = this.curRow,

@@ -108,7 +108,7 @@
       </div>
       <div class="mt-30 text-center" v-if="dialogType != 2">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -227,7 +227,7 @@
       /**
        * 弹窗确认
        */
-      dialogConfim() {
+      dialogConfirm() {
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))

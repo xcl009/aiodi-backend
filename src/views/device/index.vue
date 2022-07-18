@@ -116,7 +116,7 @@
               <div class="flex flex-wrap w-160">
                 <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2)">二维码</el-button>
                 <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)" v-if="lowerDevice == false">设备归属</el-button>
-                <template v-if="!isSaas() && !isStore()">
+                <template v-if="!isSaas()">
                   <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
                   <template v-if="lowerDevice">
                     <el-button type="primary" size="mini"
@@ -148,7 +148,7 @@
             <el-button type="primary" size="medium" :disabled="selID.length == 0"
               @click="$router.push({path: `/store?deviceId=${selID}`})">批量铺货</el-button>
             <el-button type="primary" size="medium" :disabled="selID.length == 0"
-              @click="$router.push({path: `/agent/subAgent?deviceId=${selID}`})">批量分配
+              @click="$router.push({path: `/agent?deviceId=${selID}`})">批量分配
             </el-button>
           </template>
         </div>
@@ -189,7 +189,7 @@
       </template>
       <div class="mt-30 text-center" v-if="dialogType > 2">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
       <div class="mt-30 text-center" v-else>
         <el-button size="medium" type="primary" @click="dialogStatus = false">确定</el-button>

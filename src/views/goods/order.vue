@@ -1,21 +1,21 @@
 <template>
   <div>
     <div class="p-10 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="[{},{}]"
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="订单号">
           <template slot-scope="scope">
-            ----
+            {{ scope.row.orderNo }}
           </template>
         </el-table-column>
         <el-table-column label="交易单号">
           <template slot-scope="scope">
-            -------
+            {{ scope.row.orderNo }}
           </template>
         </el-table-column>
         <el-table-column label="类型">
           <template slot-scope="scope">
-            3口售货机
+            {{ scope.row.orderNo }}
           </template>
         </el-table-column>
         <el-table-column label="支付类型">
@@ -38,20 +38,14 @@
             --
           </template>
         </el-table-column>
-        <el-table-column label="设备">
+        <el-table-column label="二维码SN">
           <template slot-scope="scope">
-            <div>二维码：--</div>
-            <div>设备SN：--</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="下单时间">
-          <template slot-scope="scope">
-            --
+            {{ scope.row.deviceSn }}
           </template>
         </el-table-column>
         <el-table-column label="购买详情" width="150">
           <template slot-scope="scope">
-            成本价:0.1元，售价:0.2元，6号仓口
+            成本价:{{ scope.row.buyDetail.costPrice }}元，售价:{{ scope.row.buyDetail.retailPrice }}元，{{ scope.row.buyDetail.position }}号仓口
           </template>
         </el-table-column>
         <el-table-column label="收益(元)" width="75">
@@ -61,7 +55,7 @@
         </el-table-column>
         <el-table-column label="退款(元)" width="75">
           <template slot-scope="scope">
-            <el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
+            <el-link type="success">{{ scope.row.refundAmount || '0.00' }}</el-link>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="80">
@@ -83,6 +77,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="flex justify-center">
+        <pagination
+          v-show="listTotal > 0"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          :total="parseInt(listTotal)"
+          @pagination="getList"
+        />
+      </div>
     </div>
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
@@ -102,7 +105,7 @@
       </template>
       <div class="pb-20 mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfim()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -149,22 +152,50 @@
 
     },
     mounted() {
-      // if (this.type == 2) {
-      //   this.getShop()
-      // } else {
-      //   this.getInfo()
-      // }
-      // this.getGoods()
+      this.toQuery(1)
     },
     methods: {
       /**
-       * 获取信息
+       * 搜索查询
        */
-      getInfo() {
-        this.$get('agentapi/product/get_business_samples', {
-          store_id: this.id
-        }).then(res => {
-          this.save_plan = res.list ? Object.values(res.list) : []
+      toQuery() {
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        this.listQuery.page = 1
+        this.listQuery.size = 20
+        this.getList()
+      },
+
+      /**
+       * 重置查询
+       */
+      reset(){
+        this.form = {
+          activated_status: 1
+        }
+        this.listQuery.page = 1
+        this.listQuery.size = 20
+        this.getList()
+      },
+
+      /**
+       * h获取列表
+       */
+      getList() {
+        let params = Object.assign({}, this.form, this.listQuery, {
+          page: this.listQuery.page - 1
+        })
+        this.$get('iot-saas-order/admin/goods/', params).then(res => {
+          this.list = res.rows || []
+          if(params.page == 0){
+            this.listTotal = res.total
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          }
+          this.listLoading = false
+          this.clickSubmit = false
+        }).catch(() => {
+          this.clickSubmit = false
+          this.listLoading = false
         })
       },
 
@@ -189,7 +220,7 @@
       /**
        * 弹窗确认
        */
-      dialogConfim() {
+      dialogConfirm() {
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
