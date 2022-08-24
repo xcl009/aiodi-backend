@@ -55,12 +55,10 @@
 
 <script>
   import { getToken, setToken, removeToken } from '@/utils/auth'
-  import AuthCode from '@/components/AuthCode/'
   import { People, Lock, PreviewOpen, PreviewCloseOne } from '@icon-park/vue'
   export default {
     name: 'Login',
     components: {
-      AuthCode,
       People,
       Lock,
       PreviewOpen,
@@ -90,13 +88,6 @@
           callback()
         }
       }
-      const validateAuthcode = (rule, value, callback) => {
-        if (!value || value.length < 4) {
-          callback(new Error('请输入短信验证码'))
-        } else {
-          callback()
-        }
-      }
       return {
         siteInfo: {},
         loginType: '1',
@@ -119,11 +110,6 @@
             required: true,
             trigger: 'blur',
             validator: validatePhone
-          }],
-          captche_num: [{
-            required: true,
-            trigger: 'blur',
-            validator: validateAuthcode
           }]
         },
         loading: false,
@@ -188,42 +174,6 @@
             this.$store.dispatch('user/login', this.loginForm).then(res => {
               location.href = this.redirect || '/home'
               this.loading = false
-            }).catch(() => {
-              this.loading = false
-            })
-          } else {
-            return false
-          }
-        })
-      },
-
-      /**
-       * 获取验证码
-       */
-      getAuthCode(){
-        this.$refs.authForm.validateField('phone_num', valid => {
-          if (valid) return false
-          this.$refs.authCode.getAuthCode({
-            phone_num: this.authForm.phone_num,
-            platform_agent_id: this.gid,
-            type: 3
-          })
-        })
-      },
-
-      /**
-       * 验证码登录
-       */
-      authLogin() {
-        this.$refs.authForm.validate(valid => {
-          if (valid) {
-            this.loading = true
-            this.$store.dispatch('user/codeLogin', this.authForm).then(res => {
-              if(res.status_code == 'NEW_USER'){
-                this.$router.push({ path: '/regist', query: { 'gid': this.gid } })
-              } else {
-                location.href = this.redirect || '/home'
-              }
             }).catch(() => {
               this.loading = false
             })

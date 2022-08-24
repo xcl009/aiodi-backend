@@ -1,22 +1,24 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
-      <template v-slot:defult>
-        <el-select v-model="form.haveDevice" @change="toQuery()" placeholder="是否铺货">
-          <el-option label="全部" :value="null" />
-          <el-option label="已铺货" value="1" />
-          <el-option label="未铺货" value="2" />
-        </el-select>
-        <el-input v-model="form.name" placeholder="商户名称" />
-        <el-input v-model="form.mobile" placeholder="手机号码" />
-      </template>
-      <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas()"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
-        <import-data :type="3" uploadText="导入商户" v-if="isBrand()"></import-data>
-      </template>
-    </condition>
+    <template v-if="!isStore()">
+      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+        <template v-slot:defult>
+          <el-select v-model="form.haveDevice" @change="toQuery()" placeholder="是否铺货">
+            <el-option label="全部" :value="null" />
+            <el-option label="已铺货" value="1" />
+            <el-option label="未铺货" value="2" />
+          </el-select>
+          <el-input v-model="form.name" placeholder="商户名称" />
+          <el-input v-model="form.mobile" placeholder="手机号码" />
+        </template>
+        <template v-slot:endButton>
+          <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas()"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
+          <import-data :type="3" uploadText="导入商户" v-if="isBrand()"></import-data>
+        </template>
+      </condition>
+    </template>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
+    <div class="pl-15 pr-15 pb-5 bg-white" :class="{'pt-15': isStore()}">
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
         <el-table-column label="门头照" width="70">
@@ -32,7 +34,7 @@
             <div class="mt-5">{{ scope.row.address || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="金额(元)" width="140">
+        <el-table-column label="金额(元)">
           <template slot-scope="scope">
             <div class="inline">
               <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
@@ -59,13 +61,13 @@
             <div>{{ supUser[scope.row.userId] ? dealPhone(supUser[scope.row.userId].mobile) : '' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="分润人" width="180">
+        <el-table-column label="分润人" width="180" v-if="!isStore()">
           <template slot-scope="scope">
             <div v-if="scope.row.user">{{ scope.row.user.nickname || '' }}</div>
             <div v-if="scope.row.user">{{ scope.row.user.mobile || '' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="分成比例">
+        <el-table-column label="分成比例" v-if="!isStore()">
           <template slot-scope="scope">
             <div class="mt-5">
               <div class="mb-5 cursor" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}` : `/device?storeId=${scope.row.id}`)})">
@@ -86,26 +88,36 @@
             {{ cateObj[scope.row.catId] ? cateObj[scope.row.catId].catName : '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false" v-if="!isSaas()">
+        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false" v-if="isStore()">
           <template slot-scope="scope">
-            <template v-if="form.deviceId">
+            <template>
+              <el-button type="primary" size="mini" @click="setRows(2, scope.row)" v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">切换到此商户</el-button>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false" v-else-if="!isSaas()">
+          <template slot-scope="scope">
+            <template v-if="form.deviceSns">
               <el-button type="primary" size="mini" @click="bindStore(scope.row)">铺货</el-button>
             </template>
             <template v-else>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
               <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-              <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?store_id=${scope.row.id}`})">编辑商户</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})">编辑商户</el-button>
               <el-dropdown trigger="click">
-                <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i>
-                </el-button>
+                <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)" v-if="!lowerStore">删除商户</el-dropdown-item>
                   <template v-if="checkAbility(scope.row.storeDivisionConfig, ['VM'], 2)">
                     <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机运营模式</el-dropdown-item>
                     <el-dropdown-item @click.native="$refs.relatedTemplates.getCompanyTemplate(scope.row.id)">售货机仓口模板</el-dropdown-item>
                   </template>
+                  <template v-if="checkAbility(scope.row.storeDivisionConfig, ['BD'], 2) && isBrand()">
+                    <el-dropdown-item @click.native="$router.push({path: `/device/bedSetting?id=${scope.row.id}&userKey=storeId`})">按摩床设置</el-dropdown-item>
+                  </template>
                   <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_MEMBER_XF', '_MEMBER_DQ'])">会员卡</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
@@ -116,7 +128,7 @@
       </el-table>
 
       <div class="flex justify-center">
-        <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
+        <pagination page.sync="listQuery.page" :limit.sync="listQuery.size"
           :total="parseInt(listTotal)" @pagination="getList" />
       </div>
     </div>
@@ -157,12 +169,13 @@
 
     <relatedTemplate ref="relatedTemplates"></relatedTemplate>
     <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN"></AssignAbility>
-    <VendorMode ref="VendorModes" v-if="myDeviceId['VM']"></VendorMode>
+    <VendorMode ref="VendorModes" v-if="myDeviceId['VM'] && !isSaas()"></VendorMode>
   </div>
 </template>
 
 <script>
   import qs from 'qs'
+  import { getToken, setToken, removeToken } from '@/utils/auth'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import RelatedTemplate from '@/components/RelatedTemplate/'
@@ -255,7 +268,7 @@
     },
     activated() {
       let query = this.$route.query
-      this.queryKey = ['deviceId', 'agentId']
+      this.queryKey = ['deviceSns', 'agentId', 'brandId']
       for (var i in this.queryKey) {
         if(query[this.queryKey[i]]){
           this.form[this.queryKey[i]] = query[this.queryKey[i]]
@@ -301,7 +314,7 @@
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1,
-          lowerStore: this.lowerStore
+          lowerStore: this.isSaas() ? true : this.lowerStore
         })
         this.$get('iot-saas-basic/admin/store/findPage', params).then(res => {
           this.list = res.rows
@@ -474,8 +487,8 @@
         }
         if(row.deviceSns){
           params.deviceSns = row.deviceSns.split(',')
-        }else if(this.form.deviceId){
-          params.deviceIds = this.form.deviceId.split(',')
+        } else {
+          params.deviceSns = this.form.deviceSns.split(',')
         }
         this.$post(url, params).then((res) => {
           this.$message({
@@ -505,6 +518,27 @@
             this.curIdx = idx
             this.dform = {}
             this.dialogStatus = true
+            break
+          case 2:
+            this.$alert('确定切换到该商户？', '切换商户', {
+              confirmButtonText: '确定',
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-user/store/login', {
+                    storeId : row.id
+                  }).then(res => {
+                    setToken(res.loginToken.accessToken)
+                    this.$message({
+                      message: '切换成功',
+                      type: 'success'
+                    })
+                    setTimeout(() => {
+                      location.href = '/'
+                    }, 1500)
+                  })
+                }
+              }
+            })
             break
         }
       },

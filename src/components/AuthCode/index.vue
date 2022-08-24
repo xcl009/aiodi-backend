@@ -8,7 +8,7 @@
 export default {
   name: 'AuthCode',
   props: {
-
+    
   },
   data() {
     return {

@@ -141,7 +141,12 @@
         this.$get(`iot-saas-device/admin/template/binding/${this.id}`).then(res => {
           for(var i = 0; i < this.positionQty; i++){
             let obj = {
-              position: i + 1
+              position: i + 1,
+              merchandiseId: '',
+              title: '',
+              costPrice: '',
+              retailPrice: '',
+              picture: ''
             }
             if(res){
               obj = Object.assign(obj, res[i])

@@ -72,9 +72,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="190">
+        <el-table-column label="操作" align="center" width="190">
           <template slot-scope="scope">
-            <template v-if="deviceId">
+            <template v-if="deviceSns">
               <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
             </template>
             <template v-else>
@@ -85,10 +85,11 @@
                 <el-button class="p-5 ml-0" size="medium" type="text">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="setRows(1, scope.row, 2, scope.$index)">删除代理</el-dropdown-item>
-                  <template v-for="item in scope.row.agentDeviceType" v-if="item.code == 'VM'">
-                    <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机</el-dropdown-item>
+                  <template v-for="item in scope.row.agentDeviceType">
+                    <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)" v-if="item.code == 'VM'">售货机</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/device/bedSetting?id=${scope.row.id}&userKey=agentId`})" v-if="item.code == 'BD' && isBrand()">按摩床设置</el-dropdown-item>
                   </template>
-                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=agentId`})" v-if="checkAbility(scope.row.agentDeviceType, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
@@ -185,7 +186,7 @@
         deviceCount: {},
         cashStat: {},
 
-        deviceId: '',
+        deviceSns: '',
 
         // 弹出相关
         dialogType: 1,
@@ -212,7 +213,7 @@
       next()
     },
     activated() {
-      let queryKey = ['deviceId'],
+      let queryKey = ['deviceSns'],
         query = this.$route.query
       for (var i in queryKey) {
         this[queryKey[i]] = query[queryKey[i]]
@@ -447,7 +448,7 @@
         })
         this.$post('iot-saas-device/admin/device/bindAgent', {
           agentId: row.id,
-          deviceIds: this.deviceId.split(',')
+          deviceSns: this.deviceSns.split(',')
         }).then(res => {
           this.loadObj.close()
           this.$message({
@@ -458,7 +459,31 @@
         }).catch(err => {
           this.loadObj.close()
         })
-      }
+      },
+
+      /**
+       * 校验是否拥有设备类型相关能力
+       */
+      checkAbility(deviceArr, keyArr, type = 1){
+        let val = false
+        for(var i in deviceArr){
+          if(type == 1){
+            for(var s in keyArr){
+              if(this.Ability[deviceArr[i].code + keyArr[s]]){
+                val = true
+                break
+              }
+            }
+          } else if(type == 2){
+            if(keyArr.indexOf(deviceArr[i].code) > -1){
+              val = true
+              break
+            }
+          }
+          if(val == true) break
+        }
+        return val
+      },
 	  }
   }
 </script>

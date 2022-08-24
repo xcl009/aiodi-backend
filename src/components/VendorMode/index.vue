@@ -30,7 +30,7 @@
           <span slot="append">元</span>
         </el-input>
         <div class="mt-10 fs-s3 text-gray line-default">
-          下级自己添加商品，商户和设备关联自己的商品，售出订单您得到设置的管理费
+          代理自己添加仓口模板，Ta的下级商户和设备关联Ta的仓口模板，售出订单您得到设置的管理费
         </div>
       </el-form-item>
     </el-form>
@@ -55,6 +55,11 @@
         dform: {}
       }
     },
+    computed: {
+      agentInfo() {
+        return this.$store.getters.agentInfo
+      }
+    },
     mounted() {
       if(!this.isBrand()){
         this.getVendorInfo()
@@ -65,7 +70,9 @@
        * 我的运营模式详情
        */
       getVendorInfo(){
-        this.$get('iot-saas-device/admin/vendor/setting').then(res => {
+        this.$get('iot-saas-device/admin/vendor/setting', {
+          companyId: this.isAgent() ? this.agentInfo.agentId : this.agentInfo.storeIds[0]
+        }).then(res => {
           this.vendorInfo = res || {}
         })
       },

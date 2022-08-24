@@ -20,8 +20,11 @@
           <router-link to="/user/index">
             <el-dropdown-item>个人信息</el-dropdown-item>
           </router-link>
-          <router-link to="/user/lpw">
+          <router-link to="/user/lpwd">
             <el-dropdown-item>登录密码</el-dropdown-item>
+          </router-link>
+          <router-link to="/user/opwd">
+            <el-dropdown-item>操作密码</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="toAdmin()" v-if="token1">
             <span>返回总后台</span>

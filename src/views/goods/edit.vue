@@ -60,11 +60,11 @@
           status: 'ENABLE'
         },
         rules: {
-          pictures: [{
-            required: true,
-            message: '请最少上传一张商品图片',
-            trigger: 'blur'
-          }],
+          // pictures: [{
+          //   required: true,
+          //   message: '请最少上传一张商品图片',
+          //   trigger: 'blur'
+          // }],
           title: [{
             required: true,
             message: '请填写商品标题',

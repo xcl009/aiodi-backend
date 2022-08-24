@@ -354,28 +354,38 @@ const util = {
 	},
 
 	/**
-	 ** 秒转小时-分
+	 ** 秒 转 天-时-分-秒
 	 **/
-	formatSeconds: (value) => {
-		var theTime = parseInt(value); // 秒
-		var middle = 0; // 分
-		var hour = 0; // 小时
+	formatSeconds: (value, cFormat = 'd-h-m-s', type = 1) => {
+    var theTime = parseInt(value),
+      middle = 0,
+      hour = 0,
+      day = 0,
+      result = ''
 		if (theTime > 60) {
 			middle = parseInt(theTime / 60)
 			theTime = parseInt(theTime % 60)
-
 			if (middle > 60) {
 				hour = parseInt(middle / 60)
 				middle = parseInt(middle % 60)
+        if (hour > 24) {
+          day = parseInt(hour / 24)
+          hour = parseInt(hour / 24)
+        }
 			}
 		}
-		var result = '' + parseInt(theTime) + '秒'
-		if (middle > 0) {
-			result = '' + parseInt(middle) + '分' + result
-		}
-		if (hour > 0) {
-			result = '' + parseInt(hour) + '时' + result
-		}
+    if(cFormat.indexOf('s') > -1 && (theTime > 0 || type == 2)){
+      result = '' + parseInt(theTime) + '秒'
+    }
+    if(cFormat.indexOf('m') > -1 && (middle > 0 || type == 2)){
+      result = '' + parseInt(middle) + '分' + result
+    }
+    if(cFormat.indexOf('h') > -1 && (hour > 0 || type == 2)){
+      result = '' + parseInt(hour) + '时' + result
+    }
+    if(cFormat.indexOf('d') > -1 && (day > 0 || type == 2)){
+      result = '' + parseInt(day) + '天' + result
+    }
 		return result
 	},
 

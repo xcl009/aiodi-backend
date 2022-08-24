@@ -1,3 +1,4 @@
+import router from '../router';
 import Vue from 'vue'
 import axios from 'axios'
 import qs from 'qs'
@@ -116,11 +117,18 @@ service.interceptors.response.use(
   },
   (error) => {
     Message.closeAll()
-    if(error.response && error.response.data && error.response.data.message){
-      Message({
-        message: error.response.data.message,
-        type: 'error'
-      })
+    if(error.response){
+      let res = error.response.data
+      if(['19876', 19876].indexOf(res.code) > -1){
+        router.push({
+          path: '/user/checkPwd'
+        })
+      }else if(res.message){
+        Message({
+          message: res.message,
+          type: 'error'
+        })
+      }
     }
     if(error.response){
       return Promise.reject(error.response.data)

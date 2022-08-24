@@ -24,7 +24,7 @@
             <el-button class="ml-0" size="mini" type="primary"
               @click="$router.push({path: `/goods/relatedGoods?id=${scope.row.id}&positionQty=${scope.row.positionQty}`})">关联商品</el-button>
             <el-button size="mini" type="primary" @click="setRows(1, scope.row, 1)">修改</el-button>
-            <el-button size="mini" type="danger" @click="list.splice(scope.$index, 1)">删除</el-button>
+            <!-- <el-button size="mini" type="danger" @click="list.splice(scope.$index, 1)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>

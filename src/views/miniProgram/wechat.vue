@@ -37,7 +37,7 @@
             {{ parseTime(scope.row.updateTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1 || scope.row.appAuditStatus == 4">提交审核</div>
@@ -45,6 +45,7 @@
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(5, scope.row)">隐私设置</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/system/wechatEdit?app_id=${scope.row.appId}`})" v-if="isBrand()">修改信息</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(6, scope.row, 1)" v-if="isSaas()">刷新token</div>
             <!-- <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div> -->
           </template>
@@ -191,7 +192,7 @@
        * 操作
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '上传代码' 2: '提交审核' 3: '查询审核状态' 4: '发布代码' 5: '隐私设置'
+       * @param {Object} dialogType dialog内容显示类型 1: '上传代码' 2: '提交审核' 3: '查询审核状态' 4: '发布代码' 5: '隐私设置' 6: '刷新token'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -250,6 +251,14 @@
                     })
                   }
                 }
+              })
+            })
+            break
+          case 6:
+            this.$get(`iot-saas-pay/open/pay/init/refreshAuthorizerToken?appId=${row.appId}`).then(res => {
+              this.$message({
+                message: '刷新成功',
+                type: 'success'
               })
             })
             break

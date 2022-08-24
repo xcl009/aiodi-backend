@@ -105,6 +105,8 @@
                 <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
                 <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
                 <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(4)">设备统计数量</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(5)">代理层级缓存</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -287,7 +289,7 @@
 
       /**
        * 操作行
-       * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长
+       * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长 4 设备统计数量  5 代理层级缓存
        * @param {Object} row
        * @param {Object} index
        */
@@ -340,6 +342,42 @@
               callback: action => {
                 if (action == 'confirm') {
                   this.$post('iot-saas-basic/admin/brand/setLeader', {
+                    brandId: row.id
+                  }).then(res => {
+                    this.$message({
+                      message: '设置成功',
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
+            break
+          case 4:
+            this.$alert('确定刷新该品牌设备数量统计信息吗？', '统计刷新', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-device/admin/device/count/init', {
+                    brandId: row.id
+                  }).then(res => {
+                    this.$message({
+                      message: '设置成功',
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
+            break
+          case 5:
+            this.$alert('确定刷新该品牌代理层级关系吗？', '层级刷新', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-basic/admin/agent/initAgentCache', {
                     brandId: row.id
                   }).then(res => {
                     this.$message({

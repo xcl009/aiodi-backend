@@ -4,7 +4,7 @@
       <el-tabs class="mb-15 fs-b2" v-model="deviceTypeCode" @tab-click="getInfo">
         <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType"/>
       </el-tabs>
-      
+
       <!-- <el-tabs class="mb-15 fs-b2" v-model="curDevice" @tab-click="getInfo">
         <el-tab-pane :label="item" :name="code" v-for="(item, code) in deviceType" />
       </el-tabs> -->
@@ -179,18 +179,7 @@
           this.getInfo()
         })
       },
-      
-      /**
-       * 获取设备
-       */
-      getDevice() {
-        let params = {}
-        if(this.userKey && this.id) params[this.userKey] = this.id
-        this.$get(`iot-saas-basic/admin/queryDeviceType`, params).then(res => {
-          this.pickKeys
-        })
-      },
-      
+
       /**
        * 获取详情
        */

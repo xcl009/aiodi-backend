@@ -199,7 +199,7 @@
             </div>
           </div>
           <el-carousel height="80px" direction="vertical" arrow="never">
-            <el-carousel-item v-for="item in tool" :key="item">
+            <el-carousel-item v-for="item in tool">
               <div class="tool-item flex align-center cursor">
                 <div class="flex1">
                   <div class="fs-a1 text-black">{{ item.title }}</div>
@@ -382,8 +382,8 @@
           if(res.deviceTypeDetail){
             for(var i in res.deviceTypeDetail){
               deviceChartData.push({
-                "value": res.deviceTypeDetail[i].deviceNumber,
-                "name": this.myDeviceId[i.substr(0, 2)]
+                value: res.deviceTypeDetail[i].deviceNumber,
+                name: this.myDeviceId[i.substr(0, 2)]
               })
             }
             if(deviceChartData.length > 0){

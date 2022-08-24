@@ -52,7 +52,6 @@ Vue.prototype.isAgent = isAgent
 Vue.prototype.dealPhone = dealPhone
 Vue.prototype.OsInfo = getOsInfo
 Vue.prototype.Browser = getBrowser
-Vue.prototype.Browser = getBrowser
  /**
  * 校验是否拥有设备类型相关能力
  */

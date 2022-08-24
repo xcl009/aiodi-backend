@@ -49,21 +49,21 @@
           <div class="fs-c1">1、</div>
           <div>
             <div class="mb-10 text-black">快活币是什么？</div>
-            <div>快活币是客房全能助手系统内部流通的货币，1快活币等于1元人民币。</div>
+            <div>快活币是本系统内部流通的货币，1快活币等于1元人民币。</div>
           </div>
         </div>
         <div class="mb-20 flex">
           <div class="fs-c1">2、</div>
           <div>
             <div class="mb-10 text-black">快活币怎么赚？</div>
-            <div>登录电脑端后台，点击电脑端后台头部右上角【邀请链接获取】按钮，复制邀请链接，发给有需要做共享设备的朋友，朋友入驻客房全能助手系统成为品牌商，每月系统服务续费时，您可得续费金额的40%，您的朋友也可以进行邀请，他邀请入驻的品牌商续费，您还可以得续费金额的10%。</div>
+            <div>登录电脑端后台，点击电脑端后台头部右上角【邀请链接获取】按钮，复制邀请链接，发给有需要做共享设备的朋友，朋友入驻本系统成为品牌商，每月系统服务续费时，您可得续费金额的40%，您的朋友也可以进行邀请，他邀请入驻的品牌商续费，您还可以得续费金额的10%。</div>
           </div>
         </div>
         <div class="mb-20 flex">
           <div class="fs-c1">3、</div>
           <div v-if="checkRoles(['factory'])">
             <div class="mb-10 text-black">快活币怎么用？</div>
-            <div>快活币提现。</div>
+            <div>快活币可提现。</div>
           </div>
           <div v-else>
             <div class="mb-10 text-black">快活币怎么用？</div>
@@ -109,7 +109,7 @@
           page: 1,
           size: 20
         },
-        
+
         money: {},
         khyCoinIntroDialog: false
       }

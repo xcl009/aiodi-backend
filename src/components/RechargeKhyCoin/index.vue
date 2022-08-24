@@ -1,8 +1,13 @@
 <template>
-  <el-dialog :visible.sync="khyCoinDialog" :show-close="false" :modal-append-to-body="false" width="500px"
+  <el-dialog :visible.sync="khyCoinDialog" :show-close="false" :modal-append-to-body="false" width="600px"
     align="center" title="快活币充值">
-    <el-form class="custom-form" label-width="auto" @submit.native.prevent>
-      <el-form-item label="充值数量">
+    <el-form class="custom-form" label-position="left" label-width="120px" @submit.native.prevent>
+      <el-form-item label="选择充值数量" v-if="!isBrand() && moneyArr.length > 0">
+        <div class="text-left">
+          <el-button :class="{'el-button--primary is-plain': dform.amount == item.amount, 'bg-body': dform.amount != item.amount}" @click="dform.amount = item.amount; getPayCode()" v-for="item in moneyArr">充{{ item.amount }}{{ item.giftAmount > 0 ? '送'+ item.giftAmount : '' }}</el-button>
+        </div>
+      </el-form-item>
+      <el-form-item :label="isBrand() ? '充值数量' : '自定义数量'">
         <el-input v-model="dform.amount" @change.native="dform.payType = 1; getPayCode()">
           <span slot="append">个</span>
         </el-input>
@@ -41,11 +46,12 @@
         dform: {
           payType: 1
         },
+        moneyArr: [],
         coinPayInfo: {},
       }
     },
     mounted() {
-      console.log(100)
+      this.getMoneyList()
     },
     methods: {
       /**
@@ -53,6 +59,19 @@
        */
       show() {
         this.khyCoinDialog = true
+      },
+
+      /**
+       * 获取充值金额
+       */
+      getMoneyList(){
+      	this.$get('iot-saas-pay/api/recharge/list', {
+      		currencyType: 'KHB'
+      	}).then(res => {
+      		if(res.length > 0){
+      			this.moneyArr = res
+      		}
+      	})
       },
 
       /**

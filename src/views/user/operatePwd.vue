@@ -3,10 +3,12 @@
     <el-col :xs="24" :sm="12" :md="6" :lg="6">
       <el-form ref="form" :model="form" :rules="rules">
         <el-form-item label="用户名">
-          <el-input v-model="agentInfo.username" disabled></el-input>
+          <el-input v-model="agentInfo.mobile" disabled></el-input>
         </el-form-item>
-        <el-form-item label="旧密码" ref="oldPassword" prop="oldPassword">
-          <el-input v-model="form.oldPassword" show-password></el-input>
+        <el-form-item label="验证码" ref="verificationCode" prop="verificationCode">
+          <el-input v-model="form.verificationCode">
+            <auth-code ref="authCode" slot="append" @authCode="getAuthCode"></auth-code>
+          </el-input>
         </el-form-item>
         <el-form-item label="新密码" ref="newPassword" prop="newPassword">
           <el-input v-model="form.newPassword" show-password></el-input>
@@ -24,32 +26,33 @@
 </template>
 
 <script>
+  import AuthCode from '@/components/AuthCode/'
   export default {
-    name: 'loginPw',
+    name: 'operatePwd',
     components: {
-
+      AuthCode
     },
     data() {
       return {
         rules: {
-          oldPassword: [
+          verificationCode: [
             {
               required: true,
-              message: '请填写旧密码',
+              message: '请填写手机验证码',
               trigger: 'blur'
             },
           ],
           newPassword: [
             {
               required: true,
-              message: '请填写新登录密码',
+              message: '请填写新操作密码',
               trigger: 'blur'
             },
           ],
           repeatNewPassword: [
             {
               required: true,
-              message: '请再次填写新登录密码',
+              message: '请再次填写新操作密码',
               trigger: 'blur'
             },
             {
@@ -88,11 +91,12 @@
         this.$refs[formName].validate((valid, object) => {
           if (valid) {
             const params = JSON.parse(JSON.stringify(this.form))
-            this.$post('iot-saas-user/user/password/update', params).then(res => {
+            this.$post('iot-saas-user/admin/user/twoPassword/update', params).then(res => {
               this.$message({
                 message: '修改成功',
                 type: 'success'
               })
+              this.$router.back()
               this.clickSubmit = false
             }).catch( err => {
               setTimeout(() => {
@@ -103,7 +107,16 @@
             this.clickSubmit = false
           }
         })
-      }
+      },
+
+      /**
+       * 获取验证码
+       */
+      getAuthCode(){
+        this.$refs.authCode.getAuthCode({
+          mobile: this.agentInfo.mobile
+        }, 'iot-saas-user/admin/user/twoPassword/sendUpdateCode')
+      },
     }
   }
 </script>

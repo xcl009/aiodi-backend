@@ -3,11 +3,6 @@
     <el-row class="pt-20 pb-10 pl-20 pr-20 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="8">
         <el-form ref="form" :model="form" label-position="left" label-width="120px">
-          <!-- <el-form-item label="商户" v-if="isStore()">
-            <el-radio-group v-model="cutStoreId" @change="getBalance()">
-              <el-radio-button :label="item.id" v-for="(item, index) in storeList">{{ item.name }}</el-radio-button>
-            </el-radio-group>
-          </el-form-item> -->
           <el-form-item label="可提现金额">
             <div class="text-primary fs-b1">{{ money.balance || 0.00 }}</div>
           </el-form-item>
@@ -137,7 +132,6 @@
           sourceType: 3,
           withdrawType: 1
         },
-        storeList: [],
         money: {},
         bindWechatInfo: {},
         bindAlipayInfo: {},
@@ -163,10 +157,9 @@
     },
     mounted() {
       if(this.isStore()){
-        this.getMyStore()
-      }else{
-        this.getBalance()
+				this.cutStoreId = this.agentInfo.storeIds[0].id
       }
+      this.getBalance()
       this.wechatInfo()
       this.alipayInfo()
       this.cardInfo()
@@ -236,7 +229,6 @@
       	let url = 'iot-saas-basic/admin/store/findMyStore'
       	this.$get(url).then(res => {
       		this.cutStoreId = Object.values(res)[0].id
-          this.storeList = res
           this.getBalance()
       	})
       },
@@ -268,7 +260,7 @@
           })
           this.$router.push({ path: '/money/cashRecord' });
           this.clickSubmit = false
-        }).catch(err=>{
+        }).catch(err => {
           this.clickSubmit = false
         })
       }

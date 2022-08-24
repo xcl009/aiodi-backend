@@ -41,14 +41,14 @@
                 <el-radio-button :label="2">不给分成</el-radio-button>
               </el-radio-group>
             </el-form-item>
-            <div v-if="form.divisionMode != 2">
+            <div v-if="form.divisionMode != 2 && !parentId && (!form.parentId || form.parentId == '0')">
               <el-form-item ref="userNickName" label="联系人" prop="userNickName">
                 <el-input v-model="form.userNickName" placeholder="请填写联系人姓名" />
               </el-form-item>
               <el-form-item ref="userMobile" label="手机号码" prop="userMobile">
                 <el-input v-model="form.userMobile" placeholder="此手机号码会作为登录账户" />
               </el-form-item>
-              <el-form-item v-if="!store_id" label="登录密码">
+              <el-form-item v-if="!storeId" label="登录密码">
                 <el-input v-model="form.loginPassword" placeholder="请填写登录密码" />
               </el-form-item>
             </div>
@@ -66,9 +66,9 @@
               <template v-if="form.divisionMode != 2">
                 <el-form-item label="分成模式">
                   <el-radio-group v-model="item.closeType">
-                    <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType">{{ ct }}</el-radio-button>
+                    <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType" :disabled="!Ability[`${item.deviceTypeCode}_CLOSETYPE_${cti}`] && cti != 1">{{ ct }}</el-radio-button>
                   </el-radio-group>
-                  <!-- <el-popover
+                  <el-popover
                     placement="right"
                     title=""
                     width="400"
@@ -84,14 +84,15 @@
 
                       <div>
                         <div class="mb-5 text-black">分成不一致</div>
-                        承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。注：每天只有第1笔订单按照承诺分成比例分润。</span><br>
+                        承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。</span><br>
                         相对分成：若自身的分成为50%，设置相对分成为50%，则10元订单商户可分润10×50%×50%=2.5元。注：每天从第2笔订单开始就按照相对分成比例分润。<br>
+                        温馨提示：分成模式设置为分成不一致时，记得关闭商户查看订单权限噢！
                       </div>
 
-                      <div class="mt-20">需设置分成不一致？<el-link type="primary" :underline="false">点此去购买</el-link></div>
+                      <div class="mt-20">需了解或设置其他分成模式？<el-link type="primary" :underline="false">点此去了解</el-link></div>
                     </div>
                     <el-link type="danger" slot="reference" :underline="false" class="ml-10 el-icon-question fs-c1"></el-link>
-                  </el-popover> -->
+                  </el-popover>
                 </el-form-item>
                 <template v-if="item.closeType == 3">
                   <el-form-item label="承诺分成">
@@ -102,6 +103,11 @@
                   <el-form-item label="相对分成">
                     <el-input v-model="item.relative" placeholder="最高不能超过100%">
                       <template slot="append">%</template>
+                    </el-input>
+                  </el-form-item>
+                  <el-form-item label="每天前">
+                    <el-input v-model="item.promisedDeal" placeholder="单数">
+                      <template slot="append">单按承诺分成比例分润</template>
                     </el-input>
                   </el-form-item>
                 </template>
@@ -131,14 +137,14 @@
                 <div class="mt-30 mb-10 text-dfs">{{ name }}付费设置</div>
                 <el-form-item :label="`付费模式`">
                   <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
-                    <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode)" :disabled="!Ability[key] && key != Object.values(getModeType(item.deviceTypeCode))[0]">{{ name }}</el-radio-button>
+                    <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode)" :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode))[0]">{{ name }}</el-radio-button>
                   </el-radio-group>
                   <el-popover
                     placement="right"
                     title=""
                     trigger="hover">
                     <div>
-                      需了解和设置预存+免押或预存？<el-link type="primary" :underline="false">点此去购买</el-link>
+                      需了解和设置预存+免押或预存？<el-link type="primary" :underline="false">点此去了解</el-link>
                     </div>
                     <el-link type="danger" :underline="false" slot="reference" class="ml-10 el-icon-question fs-c1"></el-link>
                   </el-popover>
@@ -294,8 +300,8 @@ export default {
         }]
       },
       clickSubmit: false,
-      store_id: this.$route.query.store_id || '',
-      store_aid: this.$route.query.store_aid || '',
+      storeId: this.$route.query.storeId || '',
+      parentId: this.$route.query.parentId || '',
       catList: [],
       cityList: [],
       form: {
@@ -318,7 +324,7 @@ export default {
   mounted() {
     this.getOldCat()
     this.getCity()
-    if (this.store_id > 0) {
+    if (this.storeId > 0) {
       this.getInfo()
     } else {
       this.selDevice.push(Object.keys(this.myDeviceId)[0])
@@ -397,7 +403,7 @@ export default {
           }
         })
         this.catList = Object.values(list)
-        if(!this.store_id){
+        if(!this.storeId){
           this.$set(this.form, 'catId', catId)
         }
       })
@@ -449,48 +455,58 @@ export default {
      */
     getInfo() {
       this.$get('iot-saas-basic/admin/store/findById', {
-        id: this.store_id
+        id: this.storeId
       }).then(res => {
+        if(res.lat > 0 && res.lng > 0){
+          let ns = qqMapTransBMap(res.lng, res.lat)
+          res.lng = ns.lng
+          res.lat = ns.lat
+        }
         let info = res, deviceDataArr = [], storePayConfig = {}, payConfigId = {}
-        res.storePayConfig.map(item => {
-          let payArr = []
-          for(var i in this.config.pay_way){
-            if(item[i] == 1) payArr.push(i)
-          }
-          storePayConfig[item.deviceTypeCode] = payArr
-          payConfigId[item.deviceTypeCode] = item.id
-        })
-        res.storeDivisionConfig.map(item => {
-          if (item.alipayPayMode) {
-            if(item.weixinPayMode.modeType == 'PACKAGE'){
-              item.alipayPayMode.payModeDetail = JSON.parse(item.alipayPayMode.payModeDetail)
-              item.alipayPayMode.payModeDetails = this.defaultDevice.alipayPayMode.payModeDetails
-            } else {
-              item.alipayPayMode.payModeDetails = JSON.parse(item.alipayPayMode.payModeDetail)
-              item.alipayPayMode.payModeDetail = this.defaultDevice.alipayPayMode.payModeDetail
+        if(res.storePayConfig){
+          res.storePayConfig.map(item => {
+            let payArr = []
+            for(var i in this.config.pay_way){
+              if(item[i] == 1) payArr.push(i)
             }
-          }
-          if (item.weixinPayMode) {
-            if(item.weixinPayMode.modeType == 'PACKAGE'){
-              item.weixinPayMode.payModeDetail = JSON.parse(item.weixinPayMode.payModeDetail)
-              item.weixinPayMode.payModeDetails = this.defaultDevice.weixinPayMode.payModeDetails
-            } else {
-              item.weixinPayMode.payModeDetails = JSON.parse(item.weixinPayMode.payModeDetail)
-              item.weixinPayMode.payModeDetail = this.defaultDevice.weixinPayMode.payModeDetail
+            storePayConfig[item.deviceTypeCode] = payArr
+            payConfigId[item.deviceTypeCode] = item.id
+          })
+        }
+        if(res.storeDivisionConfig){
+          res.storeDivisionConfig.map(item => {
+            if (item.alipayPayMode) {
+              if(item.weixinPayMode.modeType == 'PACKAGE'){
+                item.alipayPayMode.payModeDetail = JSON.parse(item.alipayPayMode.payModeDetail)
+                item.alipayPayMode.payModeDetails = this.defaultDevice.alipayPayMode.payModeDetails
+              } else {
+                item.alipayPayMode.payModeDetails = JSON.parse(item.alipayPayMode.payModeDetail)
+                item.alipayPayMode.payModeDetail = this.defaultDevice.alipayPayMode.payModeDetail
+              }
             }
-          }
-          item.alipayPayMode = (item.alipayPayMode ? item.alipayPayMode : item.weixinPayMode ? item.weixinPayMode : this.defaultDevice.alipayPayMode)
-          item.weixinPayMode = (item.weixinPayMode ? item.weixinPayMode : item.alipayPayMode ? item.alipayPayMode : this.defaultDevice.weixinPayMode)
-          item.alipayPayMode = JSON.parse(JSON.stringify(item.alipayPayMode))
-          item.weixinPayMode = JSON.parse(JSON.stringify(item.weixinPayMode))
-          item.storePayConfig = storePayConfig[item.deviceTypeCode]
-          item.status = 1
-          item.payConfigId = payConfigId[item.deviceTypeCode]
-          this.selDevice.push(item.deviceTypeCode)
-          deviceDataArr.push(item)
-        })
+            if (item.weixinPayMode) {
+              if(item.weixinPayMode.modeType == 'PACKAGE'){
+                item.weixinPayMode.payModeDetail = JSON.parse(item.weixinPayMode.payModeDetail)
+                item.weixinPayMode.payModeDetails = this.defaultDevice.weixinPayMode.payModeDetails
+              } else {
+                item.weixinPayMode.payModeDetails = JSON.parse(item.weixinPayMode.payModeDetail)
+                item.weixinPayMode.payModeDetail = this.defaultDevice.weixinPayMode.payModeDetail
+              }
+            }
+            item.alipayPayMode = (item.alipayPayMode ? item.alipayPayMode : item.weixinPayMode ? item.weixinPayMode : this.defaultDevice.alipayPayMode)
+            item.weixinPayMode = (item.weixinPayMode ? item.weixinPayMode : item.alipayPayMode ? item.alipayPayMode : this.defaultDevice.weixinPayMode)
+            item.alipayPayMode = JSON.parse(JSON.stringify(item.alipayPayMode))
+            item.weixinPayMode = JSON.parse(JSON.stringify(item.weixinPayMode))
+            item.storePayConfig = storePayConfig[item.deviceTypeCode]
+            item.status = 1
+            item.payConfigId = payConfigId[item.deviceTypeCode]
+            this.selDevice.push(item.deviceTypeCode)
+            deviceDataArr.push(item)
+          })
+        }
         console.log(deviceDataArr)
         this.deviceDataArr = deviceDataArr
+        res.user = res.user || {}
         info.userNickName = res.user.bindUserName
         info.userMobile = res.user.mobile
         info.province = [res.province, res.city, res.district]
@@ -509,7 +525,7 @@ export default {
      */
     onSubmit(formName) {
       let url = 'iot-saas-basic/admin/store/save', deviceDataArr = JSON.parse(JSON.stringify(this.deviceDataArr))
-      if (this.store_id > 0) {
+      if (this.storeId > 0) {
         url = 'iot-saas-basic/admin/store/updateById'
       }
       if(this.selDevice.length == 0){
@@ -523,6 +539,7 @@ export default {
       this.$refs[formName].validate((valid, object) => {
         if (valid) {
           const params = JSON.parse(JSON.stringify(this.form))
+          if(this.parentId) params.parentId = this.parentId
           if(params.lat > 0 && params.lng > 0){
             let lng_lat = bMapTransQQMap(params.lng, params.lat)
             params.lng = lng_lat.lng
@@ -543,9 +560,13 @@ export default {
               let payConfig = {
                 deviceTypeCode: item.deviceTypeCode
               }
-              item.storePayConfig.map(item => {
-                payConfig[item] = 1
-              })
+              for(var i in this.config.pay_way){
+                if(item.storePayConfig.indexOf(i) > -1) {
+                  payConfig[i] = 1
+                } else {
+                  payConfig[i] = 0
+                }
+              }
               if(item.payConfigId) payConfig.id = item.payConfigId
               params.storePayConfig.push(payConfig)
               if(item.alipayPayMode.payModeDetail){
@@ -578,6 +599,7 @@ export default {
               if(item.live >= 0) division.live = item.live
               if(item.relative >= 0) division.relative = item.relative
               if(item.promised >= 0) division.promised = item.promised
+              division.promisedDeal = item.promisedDeal || 1
               params.storeDivisionConfig.push(division)
             }
           })
@@ -611,10 +633,10 @@ export default {
     locationOk(center) {
       this.form.lat = center.lat
       this.form.lng = center.lng
-      if(!this.store_id || this.onLoad){
+      if(!this.storeId || this.onLoad){
         this.form.address = center.address
         //this.getLatCity(center.lng, center.lat)
-      }else if(this.store_id){
+      }else if(this.storeId){
         setTimeout(() => {
           this.onLoad = true
         }, 3000)

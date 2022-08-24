@@ -13,7 +13,7 @@
         <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
         <selectSearch v-model="form.userId" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
         <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" :isStoreOrder="true"></selectSearch>
-        <selectSearch v-model="form.deviceId" :type="4" name="deviceSn" placeholder="设备SN" @change="toQuery()"></selectSearch>
+        <el-input v-model="form.deviceSn" placeholder="设备SN" />
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
           <el-option label="全部" value="" />
@@ -46,7 +46,7 @@
             <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.status != item.value}" v-for="item in orderTab" @click="listQuery.status = item.value; toQuery(2)">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
           </el-scrollbar>
         </div>
-        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 3)">取消支付分订单</el-button>
+        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</el-button>
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
@@ -68,7 +68,8 @@
         </el-table-column>
         <el-table-column label="来源" width="50">
           <template slot-scope="scope">
-            <i class="fs-a1 iconfont icon-weixin1 text-green" v-if="scope.row.sourceType == 1"></i>
+            <span v-if="scope.row.sourceType == 3">后台</span>
+            <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="scope.row.sourceType == 1"></i>
             <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
           </template>
         </el-table-column>
@@ -79,11 +80,16 @@
         </el-table-column>
         <el-table-column label="用户" width="150">
           <template slot-scope="scope">
-            <div>{{ dealPhone(scope.row.userMobile) }}</div>
-            <div class="text-cut">{{ scope.row.userNickName || "--" }}</div>
+            <div class="cursor text-blue" @click="setRows(1, scope.row, 4)" v-if="scope.row.userId == 0">
+              查看使用用户
+            </div>
+            <div v-else>
+              <div>{{ dealPhone(scope.row.userMobile) }}</div>
+              <div class="text-cut">{{ scope.row.userNickName || "--" }}</div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="商户" min-width="180">
+        <el-table-column label="商户" min-width="180" v-if="!isStore()">
           <template slot-scope="scope">
             <div>{{ scope.row.storeName || '--' }}</div>
             <!-- <div>{{ scope.row.back_store || '--' }}</div> -->
@@ -136,7 +142,7 @@
         <el-table-column label="操作" min-width="100" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
-            <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && Ability['orderFinish']">结束订单</el-button>
+            <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && (Ability['orderFinish'] || (isStore() && scope.row.userId == 0))">结束订单</el-button>
             <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status.indexOf('G') > -1) && scope.row.amount > 0 && Ability['orderRefund']">订单退款</el-button>
           </template>
         </el-table-column>
@@ -155,7 +161,9 @@
         <el-row class="text-center">
           <el-col :xs="12" :sm="12" :md="4" class="rel pb-50 mb-15 timeline-item el-icon-" v-for="(item, index) in orderFlow">
             <div class="abs" style="width: 100%;">
-              <div>{{ item.event }}</div>
+              <el-tooltip :content="item.reason || '无'" placement="top">
+                <div class="text-cut">{{ item.event }}</div>
+              </el-tooltip>
               <div class="mt-10 fs-s2 text-gray">{{ parseTime(item.createTime) }}</div>
             </div>
           </el-col>
@@ -243,9 +251,33 @@
             </el-form-item>
           </el-form>
         </template>
+        <template v-if="dialogType == 4">
+          <el-table border stripe :data="dform.list">
+            <el-table-column label="头像" align="center">
+              <template slot-scope="scope">
+                <el-avatar :size="30" :src="scope.row.avatar"></el-avatar>
+              </template>
+            </el-table-column>
+            <el-table-column label="昵称" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.nickname }}
+              </template>
+            </el-table-column>
+            <el-table-column label="手机号" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.mobiel }}
+              </template>
+            </el-table-column>
+            <el-table-column label="使用时间" align="center">
+              <template slot-scope="scope">
+                {{ parseTime(scope.row.startUseTime) }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
         <div class="mt-30 text-center">
           <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit" v-if="dialogType != 4">确定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -331,16 +363,6 @@
             }
           }
         },
-        endOptions: {
-          disabledDate: (time) => {
-            if (this.form.begin) {
-              return time.getTime() < this.form.begin || time.getTime() > new Date(new Date().toLocaleDateString())
-                .getTime()
-            } else {
-              return time.getTime() > new Date(new Date().toLocaleDateString()).getTime() + 86400
-            }
-          }
-        },
         orderTab: [
           {
             value: '',
@@ -411,7 +433,8 @@
         dialogTitle: {
           1: '结束订单',
           2: '订单退款',
-          3: '取消支付分订单'
+          3: '取消支付分订单',
+          4: '订单使用用户'
         },
         curRow: {},
         curIdx: 0,
@@ -420,7 +443,7 @@
     },
     mounted() {
       let query = this.$route.query
-      this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceId', 'sourceType', 'userId']
+      this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceSn', 'sourceType', 'userId']
       for (var i in this.queryKey) {
         if(query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
       }
@@ -648,12 +671,11 @@
         }
       },
 
-
       /**
        * 操作商户
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '结束订单' 2: '订单退款'
+       * @param {Object} dialogType dialog内容显示类型 1: '结束订单' 2: '订单退款' 3: '取消订单' 4: '查看订单使用人数'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -668,6 +690,12 @@
               if(row.deviceType == '充电宝') this.$set(this.dform, 'validateDeviceRefund', true)
             }else if(dialogType == 2){
               this.$set(this.dform, 'refundType', '0')
+            }else if(dialogType == 4){
+              this.$get('iot-saas-order/admin/order/queryStoreOrderUser', {
+                orderNo: row.orderNo
+              }).then(res => {
+                this.$set(this.dform, 'list', res)
+              })
             }
             break
         }
@@ -700,7 +728,7 @@
                 message: '结束订单成功',
                 type: 'success'
               })
-              curRow.status = 'OHW'
+              curRow.status = 'OTG'
               this.dialogStatus = false
               this.clickSubmit = false
             }).catch(err => {
