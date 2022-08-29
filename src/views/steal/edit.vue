@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="pr-20 pb-5 custom-form bg-white">
+    <div class="pr-20 pl-20 pb-5 custom-form bg-white">
       <el-tabs class="mb-15 fs-b2" v-model="deviceTypeCode" @tab-click="getInfo">
         <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType"/>
       </el-tabs>
@@ -225,15 +225,5 @@
     height: 50px;
     line-height: 50px;
     font-size: 16px;
-  }
-  .custom-form {
-    padding-right: 24px;
-    .el-tabs{
-      padding-left: 24px;
-    }
-    h4{
-      padding-left: 24px;
-      font-size: 16px;
-    }
   }
 </style>

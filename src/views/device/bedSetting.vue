@@ -29,7 +29,7 @@
           <el-input v-model="form.giftKhb" placeholder="赠送快活币数量">
             <template slot="append">快活币</template>
           </el-input>
-          <div class="fs-s2 text-gray">每绑定一个设备赠送商户{{ form.giftKhb }}快活币，解绑设备也会扣除赠送的快活币</div>
+          <div class="fs-s2 text-gray">每绑定一个设备赠送商户{{ form.giftKhb }}快活币（5分钟内完成赠送），解绑设备也会扣除赠送的快活币</div>
         </el-form-item>
         <el-form-item label="赠送天数" v-if="form.giftType == 1">
           <el-input v-model="form.giftDays" placeholder="赠送免费床东订单天数">

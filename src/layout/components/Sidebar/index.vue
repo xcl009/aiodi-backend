@@ -89,12 +89,16 @@ export default {
   mounted() {
     if(this.isBrand()){
       this.getBalance()
+      this.$root.$on('getBalance', ()=> {
+        this.getBalance()
+      })
     }
   },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
+
     /**
      * 获取可提现金额
      */

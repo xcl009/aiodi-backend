@@ -51,7 +51,7 @@
         </el-table-column>
         <el-table-column label="订单状态">
           <template slot-scope="scope">
-            <el-tag class="normal fs-s4">{{ scope.row.orderStatusName }}</el-tag>
+            <el-tag class="normal fs-s4" :class="{'expired' : scope.row.orderStatusName == '已到期', 'is-expired' : scope.row.orderStatusName == '即将到期'}">{{ scope.row.orderStatusName }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作">

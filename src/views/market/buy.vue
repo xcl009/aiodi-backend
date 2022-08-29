@@ -165,7 +165,6 @@
               break
             }
           }
-          console.log(this.cycle)
           this.info = res
         })
       },
@@ -219,6 +218,7 @@
                 type: 'success'
               })
               setTimeout(() => {
+                this.$root.$emit('getBalance')
                 this.$router.push({
                   path: '/market'
                 })

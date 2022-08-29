@@ -105,8 +105,9 @@
                 <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
                 <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
                 <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(4)">设备统计数量</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(5)">代理层级缓存</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(4, scope.row)">设备统计数量</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(5, scope.row)">代理层级缓存</el-dropdown-item>
+                <el-dropdown-item @click.native="setRow(6, scope.row)">租借中订单缓存</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -289,7 +290,7 @@
 
       /**
        * 操作行
-       * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长 4 设备统计数量  5 代理层级缓存
+       * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长 4 设备统计数量  5 代理层级缓存  6 租借订单数刷新
        * @param {Object} row
        * @param {Object} index
        */
@@ -359,11 +360,11 @@
               center: true,
               callback: action => {
                 if (action == 'confirm') {
-                  this.$post('iot-saas-device/admin/device/count/init', {
+                  this.$get('iot-saas-device/admin/device/count/init', {
                     brandId: row.id
                   }).then(res => {
                     this.$message({
-                      message: '设置成功',
+                      message: '刷新成功',
                       type: 'success'
                     })
                   })
@@ -377,11 +378,29 @@
               center: true,
               callback: action => {
                 if (action == 'confirm') {
-                  this.$post('iot-saas-basic/admin/agent/initAgentCache', {
+                  this.$get('iot-saas-basic/admin/agent/initAgentCache', {
                     brandId: row.id
                   }).then(res => {
                     this.$message({
-                      message: '设置成功',
+                      message: '刷新成功',
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
+            break
+          case 6:
+            this.$alert('确定刷新该品牌租借中订单数量统计吗？', '租借订单数量', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$get('iot-saas-order/admin/order/count/initRentingOrderCount', {
+                    brandId: row.id
+                  }).then(res => {
+                    this.$message({
+                      message: '刷新成功',
                       type: 'success'
                     })
                   })

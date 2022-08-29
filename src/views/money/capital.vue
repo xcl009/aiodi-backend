@@ -40,21 +40,12 @@
     <div class="pl-5 bg-white">
       <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
         <template v-slot:defult>
-          <el-select v-model="form.capitalType" placeholder="钱包类型" @change="toQuery()">
-            <el-option label="普通钱包" value="RMB" />
-            <el-option label="快活币钱包" value="KHB" />
-          </el-select>
-          <!-- <el-date-picker
-            class="range-day flex align-center"
-              v-model="form.date"
-              type="daterange"
-              range-separator="-"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :picker-options="pickerOptionsEnd"
-              @change="toQuery()">
-            </el-date-picker> -->
+          <el-form-item label="钱包类型">
+            <el-select v-model="form.capitalType" placeholder="钱包类型" @change="toQuery()">
+              <el-option label="普通钱包" value="RMB" />
+              <el-option label="快活币钱包" value="KHB" />
+            </el-select>
+          </el-form-item>
         </template>
       </condition>
     </div>
