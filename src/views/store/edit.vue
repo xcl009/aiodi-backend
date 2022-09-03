@@ -504,7 +504,6 @@ export default {
             deviceDataArr.push(item)
           })
         }
-        console.log(deviceDataArr)
         this.deviceDataArr = deviceDataArr
         res.user = res.user || {}
         info.userNickName = res.user.bindUserName
@@ -596,9 +595,9 @@ export default {
                 weixinPayMode: item.weixinPayMode
               }
               if(item.id) division.id = item.id
-              if(item.live >= 0) division.live = item.live
-              if(item.relative >= 0) division.relative = item.relative
-              if(item.promised >= 0) division.promised = item.promised
+              division.live = item.live || 0
+              division.relative = item.relative || 0
+              division.promised = item.promised || 0
               division.promisedDeal = item.promisedDeal || 1
               params.storeDivisionConfig.push(division)
             }

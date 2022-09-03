@@ -52,19 +52,38 @@ Vue.prototype.isAgent = isAgent
 Vue.prototype.dealPhone = dealPhone
 Vue.prototype.OsInfo = getOsInfo
 Vue.prototype.Browser = getBrowser
+
  /**
- * 校验是否拥有设备类型相关能力
+ * 校验是否拥有服务市场设备类型相关能力
  */
-Vue.prototype.checkAbility = function(deviceArr, keyArr){
+Vue.prototype.checkAbility = function(keyArr, type = 1, deviceArr){
   let val = false
-  for(var i in deviceArr){
+  if(type == 3){
     for(var s in keyArr){
-      if(Vue.prototype.Ability[deviceArr[i].deviceTypeCode + keyArr[s]]){
+      if(store.getters.Ability[keyArr[s]]){
         val = true
         break
       }
     }
-    if(val == true) break
+  } else {
+    deviceArr = deviceArr || store.getters.myDevice
+    for(var i in deviceArr){
+      let code = deviceArr[i].deviceTypeCode || deviceArr[i].code
+      if(type == 2){
+        if(keyArr.indexOf(code) > -1){
+          val = true
+          break
+        }
+      } else {
+        for(var s in keyArr){
+          if(store.getters.Ability[code + keyArr[s]]){
+            val = true
+            break
+          }
+        }
+      }
+      if(val == true) break
+    }
   }
   return val
 }

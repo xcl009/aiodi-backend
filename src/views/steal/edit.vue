@@ -124,7 +124,7 @@
         </template>
 
         <el-form-item class="mt-10">
-          <el-button type="primary" @click="postCard()">立即提交</el-button>
+          <el-button type="primary" @click="onSubmit">立即提交</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -205,7 +205,7 @@
       /**
        * 提交保存
        */
-      postCard() {
+      onSubmit() {
         let params = JSON.parse(JSON.stringify(this.form))
         if(this.userKey && this.id) params[this.userKey] = this.id
         params.deviceTypeCode = this.deviceTypeCode

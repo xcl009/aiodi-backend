@@ -149,7 +149,7 @@
           this.list = res ? res.rows : []
           if(params.page == 0){
             this.listTotal = res? res.total : 0
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
           }
         }).catch(() => {
           this.clickSubmit = false

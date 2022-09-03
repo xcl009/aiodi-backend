@@ -95,14 +95,15 @@ const actions = {
           if(data.brandId){
             setToken(data.brandId, 'brandId')
           }
-          getAuthMenu().then(res => {
+          getAuthMenu({ifTreeStructure: true}).then(res => {
             let menu = [], AssignAbility = [], Ability = {}
             res = res || []
             res.map(item => {
               Ability[item.label] = true
-              if(item.displayFlag != 'CANNOT_ASSIGN' && item.id != 99){
+              if(item.displayFlag != 'CANNOT_ASSIGN'){
                 AssignAbility.push({
                   id: item.id,
+                  parentId: item.parentId,
                   displayFlag: item.displayFlag,
                   name: item.name
                 })
@@ -114,6 +115,7 @@ const actions = {
                   if(sitem.displayFlag != 'CANNOT_ASSIGN'){
                     AssignAbility.push({
                       id: sitem.id,
+                      parentId: sitem.parentId,
                       displayFlag: sitem.displayFlag,
                       name: sitem.name
                     })
@@ -127,7 +129,8 @@ const actions = {
                       meta: {
                         title: sitem.name,
                         activeMenu: smenu.activeMenu || '',
-                        keepAlive: smenu.keepAlive || false
+                        keepAlive: smenu.keepAlive || false,
+                        breadcrumb: sitem.breadcrumb || true,
                       },
                       hidden: smenu.hidden || false,
                       props: smenu.props || {}
@@ -144,6 +147,7 @@ const actions = {
                   meta: {
                     title: item.name,
                     icon: item.icon,
+                    breadcrumb: fmenu.breadcrumb || true,
                   },
                   hidden: fmenu.hidden || false,
                   children: childMenu

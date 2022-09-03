@@ -7,7 +7,7 @@
 		  </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/agent/addAgent`})" v-if="!lowerAgent && Ability['addAgent']"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
-        <import-data :type="2" uploadText="导入代理"></import-data>
+        <import-data :type="2" uploadText="导入代理" v-if="isBrand()"></import-data>
       </template>
 		</condition>
 
@@ -89,7 +89,7 @@
                     <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)" v-if="item.code == 'VM'">售货机</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/device/bedSetting?id=${scope.row.id}&userKey=agentId`})" v-if="item.code == 'BD' && isBrand()">按摩床设置</el-dropdown-item>
                   </template>
-                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=agentId`})" v-if="checkAbility(scope.row.agentDeviceType, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=agentId`})" v-if="checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
@@ -459,31 +459,7 @@
         }).catch(err => {
           this.loadObj.close()
         })
-      },
-
-      /**
-       * 校验是否拥有设备类型相关能力
-       */
-      checkAbility(deviceArr, keyArr, type = 1){
-        let val = false
-        for(var i in deviceArr){
-          if(type == 1){
-            for(var s in keyArr){
-              if(this.Ability[deviceArr[i].code + keyArr[s]]){
-                val = true
-                break
-              }
-            }
-          } else if(type == 2){
-            if(keyArr.indexOf(deviceArr[i].code) > -1){
-              val = true
-              break
-            }
-          }
-          if(val == true) break
-        }
-        return val
-      },
+      }
 	  }
   }
 </script>

@@ -8,7 +8,7 @@
           <div class="mt-15 mb-15 cursor">
             <span class="text-primary khcoin">￥{{ money.balance || 0.00 }}</span>
           </div>
-          <div v-if="!isBrand()">
+          <div v-if="!isBrand() && Ability['cash']">
             <el-button type="primary" size="small" class="fs-s3" @click="$router.push({path: `/money/cash`})">去提现</el-button>
           </div>
         </el-col>
@@ -130,6 +130,9 @@
     computed: {
       agentInfo() {
         return this.$store.getters.agentInfo
+      },
+      Ability() {
+        return this.$store.getters.Ability
       }
     },
     data() {
@@ -169,6 +172,7 @@
       }
     },
     mounted(options) {
+      console.log(this.Ability)
       this.getBalance()
       this.toQuery()
     },

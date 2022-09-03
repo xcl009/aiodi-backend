@@ -108,15 +108,15 @@
                 <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)" v-if="!lowerStore">删除商户</el-dropdown-item>
-                  <template v-if="checkAbility(scope.row.storeDivisionConfig, ['VM'], 2)">
+                  <template v-if="checkAbility(['VM'], 2, scope.row.storeDivisionConfig)">
                     <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机运营模式</el-dropdown-item>
                     <el-dropdown-item @click.native="$refs.relatedTemplates.getCompanyTemplate(scope.row.id)">售货机仓口模板</el-dropdown-item>
                   </template>
-                  <template v-if="checkAbility(scope.row.storeDivisionConfig, ['BD'], 2) && isBrand()">
+                  <template v-if="checkAbility(['BD'], 2, scope.row.storeDivisionConfig) && isBrand()">
                     <el-dropdown-item @click.native="$router.push({path: `/device/bedSetting?id=${scope.row.id}&userKey=storeId`})">按摩床设置</el-dropdown-item>
                   </template>
-                  <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_MEMBER_XF', '_MEMBER_DQ'])">会员卡</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(scope.row.storeDivisionConfig, ['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">DD设置</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">会员卡</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
@@ -605,30 +605,6 @@
             })
             break
         }
-      },
-
-      /**
-       * 校验是否拥有设备类型相关能力
-       */
-      checkAbility(deviceArr, keyArr, type = 1){
-        let val = false
-        for(var i in deviceArr){
-          if(type == 1){
-            for(var s in keyArr){
-              if(this.Ability[deviceArr[i].deviceTypeCode + keyArr[s]]){
-                val = true
-                break
-              }
-            }
-          } else if(type == 2){
-            if(keyArr.indexOf(deviceArr[i].deviceTypeCode) > -1){
-              val = true
-              break
-            }
-          }
-          if(val == true) break
-        }
-        return val
       },
 
       /**

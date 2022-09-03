@@ -37,7 +37,7 @@
       }
     },
     mounted() {
-
+      console.log(this.agentInfo.AssignAbility)
     },
     methods: {
       /**
@@ -48,8 +48,8 @@
         this.$get('iot-saas-user/auth/menu', {
           childId: childId
         }).then(res => {
+          let menus = {}
           if(res && res.length > 0){
-            let menus = {}
             res = res || []
             res.map(item => {
               menus[item.id] = true
@@ -59,8 +59,8 @@
                 })
               }
             })
-            this.$set(this.dform, 'menus', menus)
           }
+          this.$set(this.dform, 'menus', menus)
         })
         this.$set(this.dform, 'childUserId', childId)
       },

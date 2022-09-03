@@ -1,7 +1,7 @@
 <template>
   <div class="pb-30 home-box">
-    <el-row :gutter="device === 'mobile' ? 10 : 20">
-      <el-col :xs="24" :sm="12" :lg="6">
+    <el-row :gutter="device === 'mobile' ? 10 : 20" type="flex">
+      <el-col :span="24">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money/monthMoney`})">
           <div>总交易额</div>
           <div class="flex align-center line-1">
@@ -21,7 +21,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6" v-if="Ability['order']">
+      <el-col :span="24" v-if="Ability['order']">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/order`})">
           <div>总订单数</div>
           <div class="flex align-center line-1">
@@ -40,7 +40,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6">
+      <el-col :span="24">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: isSaas() ? `/device` : `/device`})">
           <div>总设备数</div>
           <div class="flex align-center line-1">
@@ -59,7 +59,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6" v-if="isSaas()">
+      <el-col :span="24" v-if="isSaas()">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/userManage`})">
           <div>总用户数</div>
           <div class="flex align-center line-1">
@@ -78,7 +78,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :lg="6" v-if="!isSaas()">
+      <el-col :span="24" v-if="!isSaas()">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money`})">
           <div>总收益</div>
           <div class="flex align-center line-1">
@@ -100,7 +100,7 @@
     </el-row>
 
     <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15">
-      <el-col :xs="24" :sm="10" :lg="8">
+      <el-col :sm="24" :lg="8">
         <div class="pl-15 pr-15 pt-10 pb-15 data-contrast bg-white">
           <div class="flex align-center">
             <div class="flex1 text-black">交易数据对比</div>
@@ -157,7 +157,7 @@
           <div class="chart-device" ref="chart_device" style="height: 250px;"></div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="14" :lg="16">
+      <el-col :sm="24" :lg="16">
         <div class="pl-15 pr-15 pt-10 pb-10 bg-white">
           <div class="flex align-center">
             <div class="flex1 text-black">近期数据对比</div>
@@ -189,8 +189,8 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15" v-if="(myDeviceId['KF'] || myDeviceId['VM']) && isStore()">
-      <el-col :xs="24" :sm="10" :lg="8">
+    <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15" v-if="(myDeviceId['KF'] || myDeviceId['VM'] || myDeviceId['BD']) && isStore()">
+      <el-col :sm="24" :lg="8">
         <div class="pl-15 pr-15 pt-10 pb-10 bg-white" @click="$router.push({path: `/hotelTools`})">
           <div class="flex align-center">
             <div class="flex1 text-black">酒店功能区</div>
@@ -211,7 +211,7 @@
           </el-carousel>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="14" :lg="16">
+      <el-col :sm="24" :lg="16">
 
       </el-col>
     </el-row>
@@ -647,8 +647,10 @@
     .chart-daystat{
       width: calc(100vw - 50px);
     }
+    .el-row--flex{
+      flex-wrap: wrap;
+    }
   }
-
   .tool-item{
     height: 100%;
   }

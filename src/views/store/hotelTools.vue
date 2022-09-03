@@ -22,11 +22,11 @@
       </el-row>
     </div>
 
-    <el-dialog :title="dialogTitle[dialogType]" :visible.sync="dialogStatus" width="550px" align="center">
+    <el-dialog :title="dialogTitle[dialogType]" :visible.sync="dialogStatus" :close-on-click-modal="false" width="550px" align="center">
       <template v-if="dialogType == 2">
-        <el-form class="mt-20 pl-30 pr-30 custom-form" v-if="dform.content">
+        <el-form class="mt-20 pl-30 pr-30 custom-form" @submit.native.prevent v-if="dform.content">
           <el-form-item v-for="(item, index) in dform.content">
-            <el-input v-model="item.mobile"  placeholder="前台电话">
+            <el-input v-model="item.mobile" placeholder="前台电话">
               <template slot="append">
                 <i class="fs-b1 text-primary el-icon-circle-plus" @click="dform.content.push({mobile: ''})" v-if="index == 0 && dform.content.length < 3"></i>
                 <i class="fs-b1 text-danger el-icon-remove" @click="dform.content.splice(index, 1)" v-if="index > 0"></i>
@@ -36,18 +36,21 @@
         </el-form>
       </template>
       <template v-if="dialogType == 1">
-        <el-form class="mt-20 pl-30 pr-30 custom-form" v-if="dform.content">
+        <el-form class="pl-10 pr-10 custom-form wifi-form" @submit.native.prevent v-if="dform.content">
           <el-form-item v-for="(item, index) in dform.content">
             <div class="flex align-center">
-              <el-input v-model="item.name" placeholder="WIFI账号"></el-input>
-              <el-input class="ml-10" v-model="item.password" placeholder="WIFI密码">
-                <template slot="append">
-                  <i class="fs-b1 text-primary el-icon-circle-plus cursor" @click="dform.content.push({})" v-if="index == 0"></i>
-                  <i class="fs-b1 text-danger el-icon-remove cursor" @click="dform.content.splice(index, 1)" v-if="index > 0"></i>
-                </template>
-              </el-input>
+              <el-input v-model="item.roomNumber" placeholder="房间号(选填)"></el-input>
+              <el-input class="ml-10" v-model="item.name" placeholder="WIFI账号"></el-input>
+              <el-input class="ml-10" v-model="item.password" placeholder="WIFI密码"></el-input>
+              <div class="pl-10" @click="dform.content.push({})" v-if="index == 0">
+                <i class="fs-b1 text-primary el-icon-circle-plus cursor"></i>
+              </div>
+              <div class="pl-10" @click="dform.content.splice(index, 1)" v-if="index > 0">
+                <i class="fs-b1 text-danger el-icon-remove cursor" ></i>
+              </div>
             </div>
           </el-form-item>
+          <div class="mt-15 text-gray text-left">温馨提示：用户进入房间扫描设备，优先查询该房间号绑定的WIFI，未查询到时则会展示房间号为空的WIFI</div>
         </el-form>
       </template>
       <div slot="footer" class="dialog-footer text-center">
@@ -189,6 +192,7 @@
                 type: 'success',
                 message: '设置成功'
               })
+              this.curRow.functionContent = params.content
               this.dialogStatus = false
               this.clickSubmit = false
             }).catch(err => {
@@ -218,6 +222,12 @@
     }
     .bg-body{
       padding: 10px 15px;
+    }
+  }
+
+  .wifi-form{
+    /deep/ .el-form-item{
+      margin-bottom: 5px;
     }
   }
 </style>

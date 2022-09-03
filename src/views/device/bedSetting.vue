@@ -1,8 +1,7 @@
 <template>
-  <el-row class="p-30 custom-form bg-white">
-    <el-col :xs="24" :sm="18" :md="12" :lg="10">
+  <el-row class="pl-20 pr-20 pt-10 custom-form bg-white">
+    <el-col :sm="24" :md="16" :lg="14" :xl="10">
       <el-form ref="form" :model="form" label-position="left" label-width="130px">
-        <h4 class="mt-0">状态</h4>
         <el-form-item label="是否开启">
           <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
         </el-form-item>
@@ -37,7 +36,8 @@
           </el-input>
           <div class="fs-s2 text-gray">设备绑定商户后，商户在{{ form.giftDays }}天内在后台创建订单无需支付快活币</div>
         </el-form-item>
-        <el-form-item class="mb-0">
+
+        <el-form-item>
           <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
         </el-form-item>
       </el-form>

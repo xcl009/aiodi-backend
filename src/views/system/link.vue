@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-white">
-    <el-table :data="list" stripe highlight-current-row>
+  <div class="p-20 bg-white">
+    <el-table class="custom" :data="list" stripe highlight-current-row>
       <el-table-column label="名称">
         <template slot-scope="scope">
           {{ scope.row.name }}
@@ -15,11 +15,11 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" round plain @click="copyLink(scope.row)">复制链接</el-button>
+          <el-button type="primary" size="mini" plain @click="copyLink(scope.row)">复制链接</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div class="pl-15 pb-10 pt-20 fs-s4">
+    <div class="pt-20 fs-s4">
       <div class="mb-15">
         温馨提示：扫二维码进入小程序需要登录微信、支付宝小程序添加普通二维码跳转小程序规则。添加方法：<a class="text-blue" href="https://developers.weixin.qq.com/miniprogram/introduction/qrcode.html#%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B" target="_blank">微信</a>、<a class="text-blue" href="https://opendocs.alipay.com/mini/operation/vzd5v0" target="_blank">支付宝</a>。需要上传校验文件时，下载文件后点击下面上传校验文件。
       </div>
@@ -42,39 +42,27 @@
         list: [
           {
             name: '首页',
-            link: 'pages/index/index'
-          },
-          {
-            name: '附近商家',
-            link: 'packageB/pages/store/list'
+            link: 'pagesA/pages/index/index'
           },
           {
             name: '个人中心',
-            link: 'pages/me/user/user'
+            link: 'pagesA/pages/user/user'
           },
           {
             name: '我的订单',
-            link: 'pages/me/order/order'
-          },
-          {
-            name: '帮助中心',
-            link: 'packageB/pages/helpCenter/helpCenter'
-          },
-          {
-            name: '关于我们',
-            link: 'pages/me/about/about'
+            link: 'pagesA/pages/user/order'
           },
           {
             name: '我的钱包',
-            link: 'packageB/pages/wallet/index'
+            link: 'pagesA/pages/wallet/wallet'
           },
           {
             name: '代理商登录',
-            link: 'pages/agent/login/login'
+            link: 'pages/agent/login'
           },
           {
             name: 'PC端登录页',
-            link: `http://${window.location.host}/login/${getToken("agent_id")}`
+            link: `${window.location.host}/login/${agentInfo['brandId']}`
           }
         ],
         checkFile: ''
@@ -107,35 +95,12 @@
        * 获取设备类型
        */
       getDeviceList() {
-        this.$get('agentapi/goods/goods_detail_types', {
-          limit: 1000
-        }).then(res => {
-          let jump_tag_obj = {}
-          res.list.map(item => {
-            jump_tag_obj[item.depend_type] = jump_tag_obj[item.depend_type] ? jump_tag_obj[item.depend_type] : item.code_type
+        for(var i in this.myDeviceName){
+          this.list.push({
+            name: i,
+            link: `${this.config.CODE_URL}${this.agentInfo.code}/${this.myDeviceName[i]}/`
           })
-          this.getInfo(jump_tag_obj)
-        })
-      },
-
-      /**
-       * 获取配置
-       */
-      getInfo(jump_tag_obj){
-        this.$get('QRcode/getCodesnUnifiedConfig').then(res => {
-          this.codeConfig = res
-          let url = `http://${res.domain}/${res.jump_tag}${this.agentInfo.id}/`
-          if(res.open_scan == 1){
-            url = `${this.DEVICDE_CODE_URL}scan/${res.jump_tag}${this.agentInfo.id}/`
-          }
-          for(var i in this.myDeviceName){
-            this.list.push({
-              deviceType: this.myDeviceName[i],
-              name: `${i}二维码、小程序地址`,
-              link: `${url}${jump_tag_obj[this.myDeviceName[i]]}/`
-            })
-          }
-        })
+        }
       },
 
       /**
