@@ -39,14 +39,14 @@
             {{ scope.row.userType == 'wechat' ? '微信' : '支付宝' }}
           </template>
         </el-table-column>
-        <el-table-column label="不能免押时间" width="150">
+        <el-table-column label="到期时间" width="150">
           <template slot-scope="scope">
-            {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
+            {{ parseTime(scope.row.expiredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/order?userId=${scope.row.id}`})">移除名单</el-button>
+            <el-button type="danger" size="mini" class="ml-0" @click="del(scope.row, scope.$index)">移除名单</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -150,8 +150,7 @@
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1,
-          needCount: true
+          page: this.listQuery.page - 1
         })
         this.$get('iot-saas-order/admin/order/queryProbabilityDepositUser', params).then(res => {
           this.list = res.rows
@@ -164,6 +163,29 @@
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
+        })
+      },
+      
+      /**
+       * 移除押金名单
+       */
+      del(row, idx){
+        this.$alert('确定将该用户移除押金名单吗？', '移除', {
+          confirmButtonText: '确定',
+          callback: action => {
+            if (action == 'confirm') {
+              this.$post('iot-saas-order/admin/order/deleteProbabilityDepositUser', {
+                deviceTypeCode : row.deviceTypeCode,
+                userId: row.userId
+              }).then(res => {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.list.splice(idx, 1)
+              })
+            }
+          }
         })
       }
     }

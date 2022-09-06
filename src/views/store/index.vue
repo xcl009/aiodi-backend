@@ -107,7 +107,7 @@
               <el-dropdown trigger="click">
                 <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)" v-if="!lowerStore">删除商户</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-dropdown-item>
                   <template v-if="checkAbility(['VM'], 2, scope.row.storeDivisionConfig)">
                     <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机运营模式</el-dropdown-item>
                     <el-dropdown-item @click.native="$refs.relatedTemplates.getCompanyTemplate(scope.row.id)">售货机仓口模板</el-dropdown-item>

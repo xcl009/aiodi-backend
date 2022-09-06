@@ -21,7 +21,7 @@
           <el-form-item label="是否开启">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示设置有效</span>
+              <span class="ml-10 fs-s3">开启表示设置有效，设置后5分钟内生效</span>
             </div>
           </el-form-item>
 
@@ -88,6 +88,7 @@
           if (res.enable == undefined) {
             this.form = {}
           } else {
+            res.durationTime = parseInt(res.durationTime) / 1440
             this.form = res
           }
         })
@@ -99,6 +100,7 @@
       onSubmit() {
         let params = JSON.parse(JSON.stringify(this.form))
         params.deviceTypeCode = this.deviceTypeCode
+        params.durationTime = parseInt(res.durationTime) * 1440
         this.$post(`iot-saas-basic/admin/probabilityDeposit/v1/update`, params).then(res => {
           this.$message({
             message: '设置成功',

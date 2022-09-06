@@ -116,6 +116,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             if(params.id > 0){
+              params.factoryId = params.id
               url = 'iot-saas-basic/admin/factory/update'
             }
             this.$post(url, params).then(res => {

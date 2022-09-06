@@ -45,41 +45,24 @@ export const constantRoutes = [
   //     }
   //   ],
   // },
-  /* {
-    path: '/steal',
-    component: Layout,
-    meta: {
-      title: '概率押金',
-      icon: 'mall'
-    },
-    children: [
-      {
-        path: 'depositCash',
-        name: 'depositCash',
-        component: () => import('@/views/steal/depositCash'),
-        meta: {
-          title: '概率押金设置'
-        }
-      },
-      {
-        path: 'depositCashUser',
-        name: 'depositCashUser',
-        component: () => import('@/views/steal/depositCashUser'),
-        meta: {
-          title: '概率押金用户'
-        }
-      },
-      {
-        path: 'depositRefund',
-        name: 'depositRefund',
-        component: () => import('@/views/device/depositRefund'),
-        meta: {
-          title: '押金退款设置'
-        }
-      }
-    ],
-    hidden: true,
-  }, */
+  // {
+  //   path: '/cashSet',
+  //   component: Layout,
+  //   meta: {
+  //     title: '概率押金',
+  //     icon: 'mall'
+  //   },
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: 'cashSet',
+  //       component: () => import('@/views/system/cashSet'),
+  //       meta: {
+  //         title: '提现规则设置'
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/user',
     component: Layout,

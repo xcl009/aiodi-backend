@@ -10,7 +10,7 @@
           <el-form-item label="状态" v-if="id">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示设置有效</span>
+              <span class="ml-10 fs-s3">开启表示设置有效，设置后5分钟内生效</span>
             </div>
           </el-form-item>
 
@@ -85,10 +85,14 @@
           deviceTypeCode: this.deviceTypeCode
         }
         if(this.userKey && this.id) params[this.userKey] = this.id
-        this.$get(`iot-saas-basic/admin/depositRefundConfig/v1/find`, params).then(res => {
+        this.$get(`iot-saas-basic/admin/depositRefundConfig/v1/find`, params).then((res = {}) => {
           if (res.enable != undefined) {
             res.refundTimeStatus = res.delayedRefundTime > 0 ? 1 : 0
             this.form = res
+          } else {
+            this.form = {
+              refundTimeStatus: 2
+            }
           }
         })
       },
