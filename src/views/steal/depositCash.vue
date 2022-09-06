@@ -100,7 +100,7 @@
       onSubmit() {
         let params = JSON.parse(JSON.stringify(this.form))
         params.deviceTypeCode = this.deviceTypeCode
-        params.durationTime = parseInt(res.durationTime) * 1440
+        params.durationTime = parseInt(params.durationTime) * 1440
         this.$post(`iot-saas-basic/admin/probabilityDeposit/v1/update`, params).then(res => {
           this.$message({
             message: '设置成功',
