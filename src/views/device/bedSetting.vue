@@ -63,7 +63,7 @@
         },
         id: this.$route.query.id || '',
         userKey: this.$route.query.userKey || '',
-        deviceTypeCode: 'BD',
+        deviceTypeCode: this.$route.query.deviceTypeCode || 'BD',
       }
     },
     mounted() {

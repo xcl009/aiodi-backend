@@ -132,7 +132,7 @@
                     {{ item.deviceTypeName }}：{{ item.deviceSn }}<i class="el-icon-arrow-down"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <template v-if="item.deviceTypeCode.indexOf('BD') > -1">
+                    <template v-if="item.deviceTypeCode.indexOf('BD') > -1 || item.deviceTypeCode.indexOf('VG') > -1">
                       <el-dropdown-item @click.native="setRows(1, item, 6)">创建订单</el-dropdown-item>
                     </template>
                   </el-dropdown-menu>
@@ -282,12 +282,13 @@
               <el-option :label="`${item}小时`" :value="item" v-for="item in config.bed_order_time"/>
             </el-select>
           </div>
-          <div class="mt-15 fs-s3">注：提交设置后，{{ dform.duration }}小时内用户可扫码直接启动按摩床。</div>
+          <div class="mt-15 fs-s3">注：提交设置后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
 
           <div class="mt-30 text-black">
             <div class="cursor">当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span></div>
-            <div class="mt-15" v-if="bedConfig.giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + bedConfig.giftDays * 86400">剩余赠送免费时间：{{ formatSeconds((unixTime(curRow.bindStoreTime) + bedConfig.giftDays * 86400) - currentTime())}}</div>
-            <div class="mt-15" v-else>创建订单将会扣除快活币：<span class="text-danger">{{ bedConfig.amount }}</span></div>
+            <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">订单计费规则未配置，暂不可下单</div>
+            <div class="mt-15" v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">剩余赠送免费时间：{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400) - currentTime())}}</div>
+            <div class="mt-15" v-else>创建订单将会扣除快活币：<span class="text-danger">{{ createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
           </div>
         </div>
       </template>
@@ -395,8 +396,8 @@
         // 钱包 + 快活币余额
         money: {},
 
-        // 按摩床订单收费配置信息
-        bedConfig: {},
+        //订单收费配置信息
+        createOrderConfig: {},
 
         // 弹出相关
         dialogType: 1,
@@ -436,14 +437,6 @@
         this.$get('iot-saas-pay/api/pay/withdraw/balance').then(res => {
           this.money = res || {}
         })
-        if(this.myDeviceId['BD']){
-          this.$get('iot-saas-basic/admin/storeOrderConfig/v1/findById', {
-            deviceTypeCode: 'BD',
-            storeId: this.agentInfo.storeIds[0]
-          }).then(res => {
-            this.bedConfig = res
-          })
-        }
       },
 
       /**
@@ -710,8 +703,14 @@
                 }
               })
             } else if(dialogType == 6){
+              let code = row.deviceTypeCode.substr(0, 2)
+              if(!this.createOrderConfig[code]){
+                this.$set(this.createOrderConfig, code, {})
+                this.getCreateOrderConfig(code)
+              }
               this.dform = {
                 deviceSn: row.deviceSn,
+                deviceTypeCode: code,
                 duration: 2
               }
             }
@@ -806,6 +805,18 @@
             })
             break
         }
+      },
+
+      /**
+       * 获取创建的配置
+       */
+      getCreateOrderConfig(code){
+        this.$get('iot-saas-basic/admin/storeOrderConfig/v1/findById', {
+          deviceTypeCode: code,
+          storeId: this.agentInfo.storeIds[0]
+        }).then(res => {
+          this.createOrderConfig[code] = res
+        })
       },
 
       /**

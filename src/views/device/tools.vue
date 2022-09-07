@@ -2,14 +2,14 @@
   <div class="p-5">
     <div class="mt-5 pt-20 pl-20 pr-20 bg-white">
       <el-row :gutter="20">
-        <el-col :xs="12" :sm="12" :md="8" :xl="5" class="pb-20 cursor" v-if="myDeviceId['VM'] && vendorInfo.operationMode == 'SELF_RUN'">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="myDeviceId['VM'] && vendorInfo.operationMode == 'SELF_RUN'">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
                 <svg-icon icon-class="mall"></svg-icon>
               </div>
-              <div class="pl-20">
-                <div class="flex1 fs-b1">商品管理</div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">商品管理</div>
                 <div class="mt-5 fs-s3 text-gray">管理售货机出售的商品，管理不同仓口设备售货模板</div>
               </div>
             </div>
@@ -21,14 +21,14 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="12" :sm="12" :md="8" :xl="5" class="pb-20 cursor" v-else-if="myDeviceId['VM'] && Ability['order']">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-else-if="myDeviceId['VM'] && Ability['order']">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
                 <svg-icon icon-class="mall"></svg-icon>
               </div>
-              <div class="pl-20">
-                <div class="flex1 fs-b1">售货机订单管理</div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">售货机订单管理</div>
                 <div class="mt-5 fs-s3 text-gray">查看售货机的商品订单</div>
               </div>
             </div>
@@ -37,30 +37,46 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="12" :sm="12" :md="8" :xl="5" class="pb-20 cursor" v-if="myDeviceId['BD'] && isBrand()">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="myDeviceId['BD'] && isBrand()">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
                 <svg-icon icon-class="mall"></svg-icon>
               </div>
-              <div class="pl-20">
-                <div class="flex1 fs-b1">按摩床</div>
-                <div class="mt-5 fs-s3 text-gray">按摩床相关设置</div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">按摩床</div>
+                <div class="mt-5 fs-s3 text-gray">按摩床设备铺货赠送规则、商户创建订单订单等设置</div>
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/bedSetting`})">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/bedSetting?deviceTypeCode=BD`})">默认设置</el-button>
             </div>
           </div>
         </el-col>
-        <el-col :xs="12" :sm="12" :md="8" :xl="5" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'])">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="myDeviceId['VG'] && isBrand()">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
                 <svg-icon icon-class="mall"></svg-icon>
               </div>
-              <div class="pl-20">
-                <div class="flex1 fs-b1">概率押金</div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">电玩盒子</div>
+                <div class="mt-5 fs-s3 text-gray">电玩盒子设备铺货赠送规则、商户创建订单订单等设置</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/bedSetting?deviceTypeCode=VG`})">默认设置</el-button>
+            </div>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'])">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="mall"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">概率押金</div>
                 <div class="mt-5 fs-s3 text-gray">设置用户租借不能免押，需缴纳押金租借的概率</div>
               </div>
             </div>
@@ -70,14 +86,14 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="12" :sm="12" :md="8" :xl="5" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DEPOSIT_DELAY', '_DEPOSIT_MP'])">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DEPOSIT_DELAY', '_DEPOSIT_MP'])">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
                 <svg-icon icon-class="mall"></svg-icon>
               </div>
-              <div class="pl-20">
-                <div class="flex1 fs-b1">押金退款规则</div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">押金退款规则</div>
                 <div class="mt-5 fs-s3 text-gray">设置用户缴纳的押金退款方式、模式</div>
               </div>
             </div>
