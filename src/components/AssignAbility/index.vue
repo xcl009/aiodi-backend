@@ -37,7 +37,7 @@
       }
     },
     mounted() {
-      console.log(this.agentInfo.AssignAbility)
+      
     },
     methods: {
       /**

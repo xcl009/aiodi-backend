@@ -43,7 +43,7 @@ export default {
     },
 
     emitRow: {
-      type: Boolean, // 是否是订单列表商户ID筛选
+      type: Boolean, // 是否更新值value
       default: false
     }
   },
@@ -101,7 +101,6 @@ export default {
         this.$emit('input', val)
         this.$emit('change')
       }
-
     }
   }
 }

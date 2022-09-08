@@ -11,7 +11,7 @@
       <template v-slot:defult>
         <el-input v-model="form.orderNo" placeholder="订单号" />
         <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
-        <selectSearch v-model="form.userId" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
+        <selectSearch v-model="form.userIds" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
         <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" :isStoreOrder="true"></selectSearch>
         <el-input v-model="form.deviceSn" placeholder="设备SN" />
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
@@ -532,6 +532,10 @@
           params.agentId = ids[1]
         }
         if(params.deviceTypeCode == 0) delete params.deviceTypeCode
+        if(params.userIds){
+          params.userId = params.userIds
+          delete params.userIds
+        }
         params.lowerAgent = this.lowerAgent || false
         this.$get(url, params).then(res => {
           this.list = res.rows

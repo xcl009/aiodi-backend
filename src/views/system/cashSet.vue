@@ -15,7 +15,9 @@
         <el-form ref="form" :model="form" label-position="left" label-width="120px">
           <el-form-item label="提现方式">
             <el-checkbox-group v-model="sellType" @change="change">
-              <el-checkbox :label="key" v-for="(item, key) in withdrawType">{{ item }}</el-checkbox>
+              <draggable v-model="withdrawType" @end="change(sellType)">
+                <el-checkbox :label="item.type" v-for="(item, key) in withdrawType">{{ item.val }}</el-checkbox>
+              </draggable>
             </el-checkbox-group>
           </el-form-item>
 
@@ -79,7 +81,7 @@
 
           <template v-for="item in form.wdType">
             <template v-if="item.status == 1">
-              <h4>{{ withdrawType[item.type] }}手续费</h4>
+              <h4>手续费</h4>
               <el-form-item label="税点">
                 <div class="flex align-center flex-wrap">
                   <el-input v-model="item.amount" class="flex1 mr-10">
@@ -116,20 +118,37 @@
 
 <script>
   import condition from '@/components/condition/'
+  import draggable from "vuedraggable"
   export default {
     components: {
-      condition
+      condition,
+      draggable
     },
     data() {
       return {
         clickSubmit: false,
-        withdrawType: {
-          1: "微信提现",
-          2: "微信收款码",
-          3: "支付宝提现",
-          4: "支付宝收款码",
-          5: "银行卡"
-        },
+        withdrawType: [
+          {
+            type: 1,
+            val: '微信提现'
+          },
+          {
+            type: 2,
+            val: '微信收款码'
+          },
+          {
+            type: 3,
+            val: '支付宝提现'
+          },
+          {
+            type: 4,
+            val: '支付宝收款码'
+          },
+          {
+            type: 5,
+            val: '银行卡'
+          }
+        ],
         week: ['日', '一', '二', '三', '四', '五', '六'],
         sellType: [],
         currencyType: '1',
@@ -151,9 +170,10 @@
        * @param {Object} val
        */
       change(val){
+        console.log(this.withdrawType)
         let wdType = JSON.parse(JSON.stringify(this.form.wdType))
         for(var i in wdType){
-          if(val.indexOf(i) > -1){
+          if(val.indexOf(parseInt(i)) > -1){
             wdType[i].status = 1
           } else {
             wdType[i].status = 0
