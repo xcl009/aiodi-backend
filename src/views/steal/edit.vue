@@ -188,7 +188,7 @@
           deviceTypeCode: this.deviceTypeCode
         }
         if(this.userKey && this.id) params[this.userKey] = this.id
-        this.$get(`iot-saas-basic/admin/loseorderconfig/v1/findById`, params).then(res => {
+        this.$get(`iot-saas-basic/admin/loseorderconfig/v1/findById`, params).then((res = {}) => {
           if (res.enable == undefined) {
             res = {
               enable: 2,
