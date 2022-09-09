@@ -573,6 +573,18 @@ const util = {
   		return `前${mode.startingTime}分钟${mode.startingAmount}元，超则${mode.overBillingUnit}分钟/${mode.unitPrice}元`
   	}
   },
+  
+  /**
+   * 套餐名称显示
+   */
+  showFeeName: (type) => {
+  	let obj = {
+  		"1": "套餐",
+  		"2": "免押",
+  		"3": "预存"
+  	}
+  	return obj[type] || ''
+  },
 
   /**
    * 分成显示
@@ -655,6 +667,7 @@ export const isStore = util.isStore
 export const isAgent = util.isAgent
 export const getRoleName = util.getRoleName
 export const showFeeMode = util.showFeeMode
+export const showFeeName = util.showFeeName
 export const divideType = util.divideType
 export const parseTime = util.parseTime
 export const unixTime = util.unixTime

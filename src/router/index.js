@@ -45,24 +45,24 @@ export const constantRoutes = [
   //     }
   //   ],
   // },
-  // {
-  //   path: '/cashSet',
-  //   component: Layout,
-  //   meta: {
-  //     title: '概率押金',
-  //     icon: 'mall'
-  //   },
-  //   children: [
-  //     {
-  //       path: '',
-  //       name: 'cashSet',
-  //       component: () => import('@/views/system/cashSet'),
-  //       meta: {
-  //         title: '提现规则设置'
-  //       }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/cashSet',
+    component: Layout,
+    meta: {
+      title: '概率押金',
+      icon: 'mall'
+    },
+    children: [
+      {
+        path: '',
+        name: 'cashSet',
+        component: () => import('@/views/system/cashSet'),
+        meta: {
+          title: '提现规则设置'
+        }
+      }
+    ]
+  },
   {
     path: '/user',
     component: Layout,

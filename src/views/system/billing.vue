@@ -135,8 +135,14 @@
       getConfig(e){
         let defaultDevice = JSON.parse(JSON.stringify(this.defaultDevice))
         this.$get(`iot-saas-basic/admin/billing/${this.deviceTypeCode}/-1/configs`).then(res => {
-          defaultDevice.deviceTypeCode = this.deviceTypeCode
-          this.billing = defaultDevice
+          if(res.length > 0){
+            let info = res[0]
+            info.weixinPayMode = JSON.parse(info.wechatJson)
+            info.alipayPayMode = JSON.parse(info.wechatJson)
+            this.billing = info
+          } else {
+
+          }
         })
       },
 

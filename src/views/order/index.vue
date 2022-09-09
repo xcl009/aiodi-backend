@@ -109,6 +109,11 @@
               @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
           </template>
         </el-table-column>
+        <el-table-column label="套餐类型" width="100">
+          <template slot-scope="scope">
+            {{ showFeeName(scope.row.feeType) }}<span v-if="scope.row.feeType == 3">({{ scope.row.amountPaid }}元)</span>
+          </template>
+        </el-table-column>
         <el-table-column label="套餐" width="150">
           <template slot-scope="scope">
             {{ showFeeMode(scope.row.feeType, scope.row.feeMode)}}
@@ -292,6 +297,7 @@
   import {
     dealPhone,
     showFeeMode,
+    showFeeName,
     parseTime,
     currentTime,
     unixTime,
@@ -343,6 +349,7 @@
       return {
         dealPhone: dealPhone,
         showFeeMode: showFeeMode,
+        showFeeName: showFeeName,
         accSub: accSub,
         clickSubmit: false,
         pickerOptionsEnd: {

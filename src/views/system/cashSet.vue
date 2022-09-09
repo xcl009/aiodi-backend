@@ -162,7 +162,7 @@
       }
     },
     mounted() {
-
+      this.getInfo()
     },
     methods: {
       /**
@@ -195,7 +195,7 @@
        * 获取信息
        */
       getInfo() {
-        this.$get('iot-saas-pay/api/recharge/list', {
+        this.$get('iot-saas-basic/admin/withdraw/config/v1/find', {
           currencyType: this.form.currencyType
         }).then(res => {
           res = res.length > 0 ? res : [{

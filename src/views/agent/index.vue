@@ -19,6 +19,12 @@
             <div>{{ scope.row.mobile || '手机号码' }}</div>
           </template>
         </el-table-column>
+        <el-table-column label="上级代理" width="130" v-if="lowerAgent">
+          <template slot-scope="scope">
+            <div class="mb-5">{{ scope.row.parentName }}</div>
+            <div>{{ scope.row.parentMobile }}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="品类">
           <template slot-scope="scope">
             <div class="cursor" v-for="item in scope.row.agentDeviceType">
