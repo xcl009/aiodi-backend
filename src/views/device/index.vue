@@ -123,25 +123,30 @@
             {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="关联的设备" width="250" v-if="Ability['RELATION_DEVICE'] && isStore()">
+
+        <!-- 商户 -->
+        <el-table-column label="关联的设备" width="260" v-if="Ability['RELATION_DEVICE'] && isStore()">
           <template slot-scope="scope">
             <template v-if="scope.row.fatherDeviceSn == 'FATHER' && fatherSn[scope.row.deviceSn]">
-              <div class="cursor text-primary" v-for="(item, idx) in fatherSn[scope.row.deviceSn]">
-                <el-dropdown trigger="click">
-                  <span class="el-dropdown-link">
-                    {{ item.deviceTypeName }}：{{ item.deviceSn }}<i class="el-icon-arrow-down"></i>
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <template v-if="item.deviceTypeCode.indexOf('BD') > -1 || item.deviceTypeCode.indexOf('VG') > -1">
+              <div v-for="(item, idx) in fatherSn[scope.row.deviceSn]">
+                <div class="cursor text-primary" v-if="item.deviceTypeCode.indexOf('BD') > -1 || item.deviceTypeCode.indexOf('VG') > -1">
+                  <el-dropdown trigger="click">
+                    <el-link :underline="false" v-if="item.deviceTypeCode.indexOf('BD') > -1 || item.deviceTypeCode.indexOf('VG') > -1">
+                      <span class="inline relation-label">{{ item.deviceTypeName }}</span>{{ item.deviceSn }}<i class="el-icon-arrow-down"></i>
+                    </el-link>
+                    <el-dropdown-menu slot="dropdown" class="dropdown">
                       <el-dropdown-item @click.native="setRows(1, item, 6)">创建订单</el-dropdown-item>
-                    </template>
-                  </el-dropdown-menu>
-                </el-dropdown>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
+                <div v-else>
+                  <span class="inline relation-label">{{ item.deviceTypeName }}</span>{{ item.deviceSn }}
+                </div>
               </div>
             </template>
             <template v-else-if="scope.row.fatherDeviceSn">
               <div class="cursor">
-                主：{{ scope.row.fatherDeviceSn }}
+                <span class="inline relation-label">主设备</span>{{ scope.row.fatherDeviceSn }}
               </div>
             </template>
             <template v-else>
@@ -149,15 +154,26 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="关联设备" width="250" v-if="Ability['RELATION_DEVICE'] && !isStore()">
+        <el-table-column label="操作" align="center" width="100" v-if="isStore()">
+          <template slot-scope="scope">
+            <el-row class="line-six">
+              <el-col :span="24" v-if="scope.row.deviceType.code.indexOf('BD') > -1 || scope.row.deviceType.code.indexOf('VG') > -1">
+                <div class="text-primary cursor" @click="setRows(1, scope.row, 6)">创建订单</div>
+              </el-col>
+            </el-row>
+          </template>
+        </el-table-column>
+
+        <!-- 非商户 -->
+        <el-table-column label="关联设备" width="260" v-if="Ability['RELATION_DEVICE'] && !isStore()">
           <template slot-scope="scope">
             <template v-if="scope.row.fatherDeviceSn == 'FATHER' && fatherSn[scope.row.deviceSn]">
               <div class="cursor text-primary" v-for="(item, idx) in fatherSn[scope.row.deviceSn]">
                 <el-dropdown trigger="click">
-                  <span class="el-dropdown-link">
-                    {{ item.deviceTypeName }}：{{ item.deviceSn }}<i class="el-icon-arrow-down"></i>
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
+                  <el-link :underline="false">
+                    <span class="inline relation-label">{{ item.deviceTypeName }}</span>{{ scope.row.deviceSn }}<i class="el-icon-arrow-down"></i>
+                  </el-link>
+                  <el-dropdown-menu slot="dropdown" class="dropdown">
                     <el-dropdown-item @click.native="setRows(1, scope.row, 4, idx); dform.sonDeviceSn = item.deviceSn">解除关联</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(1, scope.row, 5)">新增关联</el-dropdown-item>
                   </el-dropdown-menu>
@@ -167,17 +183,17 @@
             <template v-else-if="scope.row.fatherDeviceSn">
               <div class="cursor text-primary">
                 <el-dropdown trigger="click">
-                  <span class="el-dropdown-link">
-                    主：{{ scope.row.fatherDeviceSn }}<i class="el-icon-arrow-down"></i>
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
+                  <el-link :underline="false">
+                    <span class="inline relation-label">主设备</span>{{ scope.row.fatherDeviceSn }}<i class="el-icon-arrow-down"></i>
+                  </el-link>
+                  <el-dropdown-menu slot="dropdown" class="dropdown">
                     <el-dropdown-item @click.native="setRows(1, scope.row, 4)">解除关联</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
             </template>
             <template v-else>
-              <div class="cursor text-primary" @click="setRows(1, scope.row, 5)">关联设备</div>
+              <span class="cursor text-primary" @click="setRows(1, scope.row, 5)">关联设备</span>
             </template>
           </template>
         </el-table-column>
@@ -703,7 +719,7 @@
                 }
               })
             } else if(dialogType == 6){
-              let code = row.deviceTypeCode.substr(0, 2)
+              let code = row.deviceTypeCode ? row.deviceTypeCode.substr(0, 2) : row.deviceType.code.substr(0, 2)
               if(!this.createOrderConfig[code]){
                 this.$set(this.createOrderConfig, code, {})
                 this.getCreateOrderConfig(code)
@@ -834,10 +850,19 @@
   }
 </script>
 
+<style>
+  .dropdown.el-popper{
+    margin-top: 0;
+    min-width: 150px;
+  }
+</style>
 <style lang="scss" scoped>
   .access-url{
     margin: 0 auto;
     width: 150px;
     height: 150px
+  }
+  .relation-label{
+    width: 5em;
   }
 </style>
