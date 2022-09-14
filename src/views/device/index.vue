@@ -171,7 +171,7 @@
               <div class="cursor text-primary" v-for="(item, idx) in fatherSn[scope.row.deviceSn]">
                 <el-dropdown trigger="click">
                   <el-link :underline="false">
-                    <span class="inline relation-label">{{ item.deviceTypeName }}</span>{{ scope.row.deviceSn }}<i class="el-icon-arrow-down"></i>
+                    <span class="inline relation-label">{{ item.deviceTypeName }}</span>{{ item.deviceSn }}<i class="el-icon-arrow-down"></i>
                   </el-link>
                   <el-dropdown-menu slot="dropdown" class="dropdown">
                     <el-dropdown-item @click.native="setRows(1, scope.row, 4, idx); dform.sonDeviceSn = item.deviceSn">解除关联</el-dropdown-item>
