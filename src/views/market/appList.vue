@@ -44,6 +44,7 @@
           :page.sync="listQuery.page"
           :limit.sync="listQuery.size"
           :total="parseInt(listTotal)"
+          :pageSizes="[15, 30]"
           @pagination="getList"
         />
         <div class="p-30" v-if="listTotal == 0">服务持续更新中，请持续关注服务市场</div>
@@ -93,7 +94,6 @@
       }
     },
     mounted() {
-
       this.$store.dispatch('api/getServiceType').then(res => {
         this.tabs = res
       })
@@ -106,7 +106,6 @@
         if(this.clickSubmit) return
         this.clickSubmit = true
         this.listQuery.page = 1
-        this.listQuery.size = 15
         this.getList()
       },
 
@@ -117,12 +116,12 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        this.$get('iot-saas-basic/client/service/market/findPage', params).then(res => {
-          this.list = res ? res.rows : []
+        this.$get('iot-saas-basic/client/service/market/findPage', params).then((res = {}) => {
+          this.list = res.rows || []
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
-            this.listTotal = res ? res.total : 0
+            this.listTotal = res.total
           }
           this.getNoFreeApp(arrayKeys(this.list, 'serviceId'))
         }).catch(() => {

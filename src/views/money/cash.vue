@@ -9,13 +9,9 @@
           <el-form-item label="提现金额">
             <el-input v-model="form.amount" placeholder="请输入提现金额" />
           </el-form-item>
-          <!-- <el-form-item label="冻结金额：">
-            <span class="mr-20">{{ money }}</span>
-            <el-link type="primary" @click="freezVisible = true">什么是冻结金额？</el-link>
-          </el-form-item> -->
           <el-form-item label="提现方式">
             <el-radio-group v-model="form.withdrawType">
-              <el-radio-button :label="index" v-for="(item, index) in siteInfo.withdrawType">{{ item }}</el-radio-button>
+              <el-radio-button :label="item.val" v-for="(item, index) in withdrawType">{{ item.name }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="到账账户" v-show="form.withdrawType == 3">
@@ -62,65 +58,29 @@
               <upload v-model="aliQrcodeInfo.qrcode" :upObj="{fileType: 'paymentCode'}"></upload>
             </el-form-item>
           </div>
+          <el-form-item label="可提现时间" v-if="timeLimit.type">
+            <div class="flex" v-if="timeLimit.type == 'DAY'">
+              <div v-for="(item, idx) in timeLimit.timeLimit">每天{{ item.startTime }}-{{ item.endTime }}<span class="ml-10 mr-10" v-if="idx < timeLimit.timeLimit.length - 1">|</span></div>
+            </div>
+            <div class="flex" v-else>
+              <div v-for="(item, idx) in timeLimit.days">
+                <span v-if="timeLimit.type == 'MONTH'">每月{{ item }}号<span class="ml-10 mr-10" v-if="idx < timeLimit.days.length - 1">|</span></span>
+                <span v-else>每周{{ week[item] }}<span class="ml-10 mr-10" v-if="idx < timeLimit.days.length - 1">|</span></span>
+              </div>
+            </div>
+          </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit" :disabled="clickSubmit">提交</el-button>
+            <el-button type="primary" @click="onSubmit" :disabled="clickSubmit || timeLimit.type">提交</el-button>
           </el-form-item>
         </el-form>
       </el-col>
     </el-row>
-
-    <el-dialog
-      title="冻结金额"
-      :visible.sync="freezVisible">
-      <span>
-        <div class="mb-10">
-          <span class="text-primary">什么是冻结金额？</span><br>
-          冻结金额为您当前收益中不可提现部分金额，冻结金额为您实际收益的一部分，由于产品规则或其他原因使这部分金额无法提现进行其他操作。
-        </div>
-        <div class="mb-10">
-          <span class="text-primary">冻结金额怎么产生的？</span><br>
-          冻结金额为你上级代理商，在设置您的收益时,所设置的冻结金额数量。一般情况设置冻结金额是由于您还有部分货款未
-          支付，或其他原因使您上级代理需要设置您起始部分收益需要冻结。
-        </div>
-        <div class="mb-10">
-          <span class="text-primary">冻结金额如何解冻？</span><br>
-           冻结金额解冻需要，您的上级代理修改您的冻结金额值，设置成功后，你通过提现功能就能够提现您那部分。
-        </div>
-        <div class="mb-10">
-          <span class="text-primary">冻结金额资金安全吗？</span><br>
-冻结金额部分资金会保留在平台账户上，您上级代理无法获取或修改您的冻结部分资金。
-        </div>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="freezVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog
-      title="可提现时间"
-      width="400px"
-      :center="true"
-      :show-close="false"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      :visible.sync="noWithdraw">
-      <div class="pt-15 text-center">
-        <div class="pb-15 mb-15 flex l-b" v-for="item in withdraw_plan.plan">
-          <div class="flex1">
-            {{ plan_date[withdraw_plan.date_type] }}<span v-if="withdraw_plan.date_type == 1">{{ week[item.week_day] }}</span><span v-if="withdraw_plan.date_type == 2">{{ item.month_day }}号</span>
-          </div>
-          <div class="flex1">{{ item.begin }} - {{ item.end }}</div>
-        </div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="$router.go(-1)">我知道了</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
   import upload from '@/components/upload/'
+  import { unixTime } from '@/utils/index'
   export default {
     components: {
       upload
@@ -132,6 +92,8 @@
           sourceType: 3,
           withdrawType: 1
         },
+        withdrawType: [],
+        timeLimit: {},
         money: {},
         bindWechatInfo: {},
         bindAlipayInfo: {},
@@ -139,13 +101,7 @@
         aliQrcodeInfo: {},
         wxQrcodeInfo: {},
 
-
-        freezVisible: false,
-        noWithdraw: false,
-
-        plan_date: ['每天', '每周', '每月'],
-        week: ['日', '一', '二', '三', '四', '五', '六'],
-        withdraw_plan: {},
+        week: ['', '一', '二', '三', '四', '五', '六', '日'],
         cutStoreId: ''
       }
     },
@@ -153,19 +109,80 @@
       siteInfo() {
         let siteInfo = this.$store.getters.siteInfo
         return siteInfo
+      },
+      agentInfo() {
+        return this.$store.getters.agentInfo
       }
     },
     mounted() {
       if(this.isStore()){
-				this.cutStoreId = this.agentInfo.storeIds[0].id
+				this.cutStoreId = this.agentInfo.storeIds[0]
       }
+      this.getCashType()
       this.getBalance()
-      this.wechatInfo()
-      this.alipayInfo()
-      this.cardInfo()
-      this.qrcodeInfo()
     },
     methods: {
+      /**
+       * 获取提现配置
+       */
+      getCashType(){
+        this.$get('iot-saas-basic/api/withdraw/config/v1/find', {
+          userType: this.agentInfo.userType
+        }).then((res = {}) => {
+          let withdrawType = []
+          if(res.enable){
+          	res.supportType.map(item => {
+          		withdrawType.push({
+                name: this.siteInfo.withdrawType[item.type],
+                val: item.type
+              })
+          	})
+          	let isCash = false
+          	switch(res.timeLimit.type){
+          		case 'DAY':
+          		let timeLimit = res.timeLimit.timeLimit, cutDay = this.parseTime(this.currentTime(), '{y}-{m}-{d}')
+          		for(var i in timeLimit){
+          			if(unixTime(`${cutDay} ${timeLimit[i].startTime}`) < this.currentTime() && unixTime(`${cutDay} ${timeLimit[i].endTime}`) > this.currentTime()){
+          				isCash = true
+          				break
+          			}
+          		}
+          		break
+          	}
+            if(!isCash){
+              this.timeLimit = res.timeLimit
+            }
+          } else {
+            withdrawType = [
+              {
+                name: '微信收款码',
+                val: '2'
+              },
+              {
+                name: '支付宝收款码',
+                val: '4'
+              }
+            ]
+          }
+          this.form.withdrawType = withdrawType[0].val
+          this.withdrawType = withdrawType
+          let types = this.arrayKeys(withdrawType, 'val')
+          console.log(types)
+          if(types.indexOf('2') > -1 || types.indexOf('4') > -1){
+          	this.qrcodeInfo()
+          }
+          if(types.indexOf('5') > -1){
+          	this.cardInfo()
+          }
+          if(types.indexOf('1') > -1){
+          	this.wechatInfo()
+          }
+          if(types.indexOf('3') > -1){
+          	this.alipayInfo()
+          }
+        })
+      },
+
       /**
        * 获取可提现金额
        */

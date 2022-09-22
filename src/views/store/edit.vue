@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
-      <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="10">
+      <el-col :sm="24" :md="18" :lg="15" :xl="10">
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="130px">
           <h4>基础信息</h4>
           <el-form-item label="门头照" class="up-img">
@@ -328,13 +328,9 @@ export default {
       this.getInfo()
     } else {
       this.selDevice.push(Object.keys(this.myDeviceId)[0])
-      let defaultDevice = JSON.parse(JSON.stringify(this.defaultDevice))
-      defaultDevice.deviceTypeCode = Object.keys(this.myDeviceId)[0]
-      if(this.config.mode_way[defaultDevice.deviceTypeCode]){
-      	defaultDevice.weixinPayMode.modeType = Object.values(this.config.mode_way[defaultDevice.deviceTypeCode])[0]
-      	defaultDevice.alipayPayMode.modeType = Object.values(this.config.mode_way[defaultDevice.deviceTypeCode])[0]
-      }
-      this.deviceDataArr.push(defaultDevice)
+      this.getDefaultBilling(Object.keys(this.myDeviceId)[0]).then(info => {
+        this.deviceDataArr.push(info)
+      })
     }
   },
   methods: {
@@ -357,16 +353,45 @@ export default {
           }
         })
         if(idxs == -1){
-          let device = JSON.parse(JSON.stringify(this.defaultDevice))
-          device.deviceTypeCode = code
-          if(this.config.mode_way[code]){
-          	device.weixinPayMode.modeType = Object.values(this.config.mode_way[code])[0]
-          	device.alipayPayMode.modeType = Object.values(this.config.mode_way[code])[0]
-          }
-          deviceDataArr.push(device)
+          this.getDefaultBilling(code).then(info => {
+            deviceDataArr.push(info)
+          })
         }
       })
       this.deviceDataArr = deviceDataArr
+    },
+
+    /**
+     * 获取信息
+     */
+    getDefaultBilling(deviceTypeCode){
+      let defaultDevice = JSON.parse(JSON.stringify(this.defaultDevice)), mode_way = Object.values(this.config.mode_way[deviceTypeCode] || this.config.mode_way.default)
+      defaultDevice.deviceTypeCode = deviceTypeCode
+      defaultDevice.weixinPayMode.modeType = mode_way[0]
+      defaultDevice.alipayPayMode.modeType = mode_way[0]
+      return new Promise((resolve, reject) => {
+        if(!this.Ability['defaultBilling']){
+          this.$get(`iot-saas-basic/admin/billing/configs/findMax`, {
+            deviceTypeCode: deviceTypeCode
+          }).then((res = {}) => {
+            if(res.deviceTypeCode){
+              defaultDevice.weixinPayMode = JSON.parse(res.wechatJson)
+              defaultDevice.alipayPayMode = JSON.parse(res.alipayJson)
+              if(!this.Ability[`${deviceTypeCode}_${defaultDevice.weixinPayMode.modeType}`]){
+                defaultDevice.weixinPayMode.modeType = mode_way[0]
+              }
+              if(!this.Ability[`${deviceTypeCode}_${defaultDevice.alipayPayMode.modeType}`]){
+                defaultDevice.alipayPayMode.modeType = mode_way[0]
+              }
+              resolve(defaultDevice)
+            } else {
+              resolve(defaultDevice)
+            }
+          })
+        } else {
+          resolve(defaultDevice)
+        }
+      })
     },
 
     /**

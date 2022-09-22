@@ -102,6 +102,38 @@
             </div>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_FREEQUOTA'])">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="mall"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">免费名额规则</div>
+                <div class="mt-5 fs-s3 text-gray">设置添加免费名额默认免费时长、次数</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/freeQuotaConfig`})">默认设置</el-button>
+            </div>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_BILLING'])">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="mall"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">默认计费规则</div>
+                <div class="mt-5 fs-s3 text-gray">设置添加商户时各设备的默认计费信息</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/billing`})">默认设置</el-button>
+            </div>
+          </div>
+        </el-col>
         <el-col :span="24" class="pb-20 cursor">
           <div>更多功能开发中，请持续关注</div>
         </el-col>

@@ -139,7 +139,10 @@
         <el-table-column label="备注" min-width="150">
           <template slot-scope="scope">
             <div class="remark-box">
-              <el-link type="danger" v-if="scope.row.freeTime > 0">{{ scope.row.freeTime == 600000 ? '会员卡订单' : `会员卡免费${scope.row.freeTime}分钟` }}</el-link>
+              <el-link type="danger" v-if="scope.row.freeTime > 0">
+                <span v-if="scope.row.freeUser == 1">免费名额：{{ parseInt(scope.row.freeTime) / 60 }}小时</span>
+                <span v-else>{{ scope.row.freeTime == 600000 ? '会员卡订单' : `会员卡免费${scope.row.freeTime}分钟` }}</span>
+              </el-link>
               <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
             </div>
           </template>
@@ -238,7 +241,7 @@
             </el-form-item>
             <el-form-item label="退款金额">
               <el-input v-model="dform.amount" :placeholder="`最多${curRow.amount}元`">
-                 <span slot="append">元</span>
+                <span slot="append">元</span>
               </el-input>
             </el-form-item>
             <el-form-item label="退款原因">

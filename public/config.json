@@ -35,6 +35,14 @@
       "alipay": "支付宝"
     }
   },
+  "xcx_page": {
+    "PA": "pagesA/pages/battery/index",
+    "PL": "pagesA/pages/chargingLine/index",
+    "KF": "pagesA/pages/butler/index",
+    "VM": "pagesA/pages/butler/index",
+    "BD": "pagesA/pages/butler/index",
+    "VG": "pagesA/pages/butler/index"
+  },
   "closeType": {
     "1": "真实分成",
     "2": "相对分成",

@@ -70,7 +70,7 @@ Vue.prototype.checkAbility = function(keyArr, type = 1, deviceArr){
     for(var i in deviceArr){
       let code = deviceArr[i].deviceTypeCode || deviceArr[i].code
       if(type == 2){
-        if(keyArr.indexOf(code) > -1){
+        if(keyArr.indexOf(code) > -1 || keyArr.indexOf(code.substr(0, 2)) > -1){
           val = true
           break
         }

@@ -209,6 +209,9 @@
               <el-col :span="12" v-if="scope.row.distribute">
                 <div class="text-primary cursor" @click="unboundStore(scope.row)">解绑</div>
               </el-col>
+              <el-col :span="12" v-if="scope.row.distribute && isBrand() && checkAbility(['BD', 'VG'], 2, [scope.row.deviceType])">
+                <div class="text-primary cursor" @click="$router.push({path: `/device/bedStat?deviceSn=${scope.row.deviceSn}`})">在线统计</div>
+              </el-col>
               <template v-if="!isSaas()">
                 <template v-if="lowerDevice">
                   <el-col :span="12" v-if="!scope.row.distribute">
@@ -388,7 +391,17 @@
             value: false,
             title: '未绑',
             nkey: 'noBindStoreNumber'
-          }
+          },
+          // {
+          //   value: false,
+          //   title: '在线',
+          //   nkey: 'aa'
+          // },
+          // {
+          //   value: false,
+          //   title: '离线',
+          //   nkey: 'bb'
+          // }
         ],
         form: {
           //search_store_name: this.$route.query.store_name || ''
@@ -718,6 +731,10 @@
                   this.deviceCode(res.content)
                 }
               })
+            } else if(dialogType == 3){
+              this.dform = {
+                place: row.place
+              }
             } else if(dialogType == 6){
               let code = row.deviceTypeCode ? row.deviceTypeCode.substr(0, 2) : row.deviceType.code.substr(0, 2)
               if(!this.createOrderConfig[code]){

@@ -74,10 +74,16 @@
         </el-table-column>
         <el-table-column label="手续费(元)">
           <template slot-scope="scope">
-            {{ scope.row.feeDeal || '0.00' }}
+            <div>单笔：{{ scope.row.feeDeal || '0.00' }}</div>
+            <div>税点：{{ scope.row.feePercent || '0.00' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="到账金额(元)">
+        <el-table-column label="应到账(元)">
+          <template slot-scope="scope">
+            {{ accSub(accSub(scope.row.amount, scope.row.feeDeal), scope.row.feePercent) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="实际到账(元)">
           <template slot-scope="scope">
             {{ scope.row.amountReceived || '0.00' }}
           </template>
@@ -89,8 +95,11 @@
               <div>{{ scope.row.bankName }}<span class="ml-10">{{ scope.row.branchName }}</span></div>
               <div>{{ scope.row.cardNo }}</div>
             </div>
-            <div v-else-if="scope.row.withdrawType == 2 || scope.row.withdrawType == 4">
-              <div>{{ scope.row.userName }}</div>
+            <div class="flex align-center" v-else-if="scope.row.withdrawType == 2 || scope.row.withdrawType == 4">
+              <div class="mr-10">
+                <div>{{ scope.row.userName }}</div>
+                <div class="fs-s2">收款码</div>
+              </div>
               <el-image
                 class="pay-code"
                 :src="scope.row.qrcode"
@@ -108,7 +117,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="提现方式" width="100">
+        <el-table-column label="提现方式" width="120">
           <template slot-scope="scope">
             {{ siteInfo.withdrawType[scope.row.withdrawType] }}
           </template>
@@ -167,7 +176,7 @@
 <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
-
+  import { accSub } from '@/utils/index'
   export default {
     name: 'agentWithdraw',
     components: {
@@ -182,6 +191,7 @@
     },
     data() {
       return {
+        accSub: accSub,
         clickSubmit: false,
         statusObj: {
           0: '审核中',
@@ -373,6 +383,9 @@
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
+              if(err && err.code == 19876){
+                this.dialogStatus = false
+              }
             })
             break
         }
@@ -383,7 +396,7 @@
 
 <style lang="scss" scoped>
   .pay-code{
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
   }
 </style>

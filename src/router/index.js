@@ -27,42 +27,6 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-  // {
-  //   path: '/goods',
-  //   component: Layout,
-  //   meta: {
-  //     title: '默认计费',
-  //     icon: 'mall'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'billing',
-  //       name: 'billing',
-  //       component: () => import('@/views/system/billing'),
-  //       meta: {
-  //         title: '默认计费'
-  //       }
-  //     }
-  //   ],
-  // },
-  // {
-  //   path: '/cashSet',
-  //   component: Layout,
-  //   meta: {
-  //     title: '概率押金',
-  //     icon: 'mall'
-  //   },
-  //   children: [
-  //     {
-  //       path: '',
-  //       name: 'cashSet',
-  //       component: () => import('@/views/system/cashSet'),
-  //       meta: {
-  //         title: '提现规则设置'
-  //       }
-  //     }
-  //   ]
-  // },
   {
     path: '/user',
     component: Layout,

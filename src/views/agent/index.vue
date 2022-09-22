@@ -98,6 +98,9 @@
                   <template v-if="checkAbility(['_DEPOSIT_DELAY', '_DEPOSIT_MP'], 1, scope.row.agentDeviceType) && isBrand()">
                     <el-dropdown-item @click.native="$router.push({path: `/device/depositRefund?id=${scope.row.id}&userKey=agentId`})">押金退回设置</el-dropdown-item>
                   </template>
+                  <template v-if="checkAbility(['_BILLING'], 1, scope.row.agentDeviceType) && isBrand()">
+                    <el-dropdown-item @click.native="$router.push({path: `/device/billing?agentId=${scope.row.id}`})">默认计费设置</el-dropdown-item>
+                  </template>
                   <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=agentId`})" v-if="checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
