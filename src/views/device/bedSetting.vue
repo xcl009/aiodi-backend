@@ -54,10 +54,10 @@
       return {
         clickSubmit: false,
         form: {
-          enable: 1,
-          giftKhb: 400,
-          giftDays: 0,
-          giftType: 0,
+          enable: 2,
+          giftKhb: 0,
+          giftDays: 3,
+          giftType: 1,
           limitUserNum: 1,
           amount: 20,
         },

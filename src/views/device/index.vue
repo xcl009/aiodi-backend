@@ -129,9 +129,9 @@
           <template slot-scope="scope">
             <template v-if="scope.row.fatherDeviceSn == 'FATHER' && fatherSn[scope.row.deviceSn]">
               <div v-for="(item, idx) in fatherSn[scope.row.deviceSn]">
-                <div class="cursor text-primary" v-if="item.deviceTypeCode.indexOf('BD') > -1 || item.deviceTypeCode.indexOf('VG') > -1">
+                <div class="cursor text-primary" v-if="checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType])">
                   <el-dropdown trigger="click">
-                    <el-link :underline="false" v-if="item.deviceTypeCode.indexOf('BD') > -1 || item.deviceTypeCode.indexOf('VG') > -1">
+                    <el-link :underline="false" v-if="checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType])">
                       <span class="inline relation-label">{{ item.deviceTypeName }}</span>{{ item.deviceSn }}<i class="el-icon-arrow-down"></i>
                     </el-link>
                     <el-dropdown-menu slot="dropdown" class="dropdown">
@@ -157,7 +157,7 @@
         <el-table-column label="操作" align="center" width="100" v-if="isStore()">
           <template slot-scope="scope">
             <el-row class="line-six">
-              <el-col :span="24" v-if="scope.row.deviceType.code.indexOf('BD') > -1 || scope.row.deviceType.code.indexOf('VG') > -1">
+              <el-col :span="24" v-if="checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType])">
                 <div class="text-primary cursor" @click="setRows(1, scope.row, 6)">创建订单</div>
               </el-col>
             </el-row>
@@ -209,7 +209,7 @@
               <el-col :span="12" v-if="scope.row.distribute">
                 <div class="text-primary cursor" @click="unboundStore(scope.row)">解绑</div>
               </el-col>
-              <el-col :span="12" v-if="scope.row.distribute && isBrand() && checkAbility(['BD', 'VG'], 2, [scope.row.deviceType])">
+              <el-col :span="12" v-if="scope.row.distribute && isBrand() && checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType])">
                 <div class="text-primary cursor" @click="$router.push({path: `/device/bedStat?deviceSn=${scope.row.deviceSn}`})">在线统计</div>
               </el-col>
               <template v-if="!isSaas()">

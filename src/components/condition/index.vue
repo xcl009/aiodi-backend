@@ -8,7 +8,7 @@
           <div id="setBox" class="flex align-center set-box">
             <el-button native-type="submit" :disabled="clickSubmit" class="icon-search" type="primary"><i class="el-icon-search fs-c1"/></el-button>
             <span class="pl-15 pr-15 text-primary cursor line-1" v-if="resetStatus" @click="reset()">重置</span>
-            <el-tooltip class="ml-15 mr-15 item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top" v-if="device != 'mobile'">
+            <el-tooltip class="mr-15 item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top" v-if="device != 'mobile'">
               <el-button type="primary" @click="saveXlsx()" v-if="exportStatus" class="icon-download"><i class="el-icon-download el-icon--left"/>导出</el-button>
             </el-tooltip>
             <span class="fs-s4 text-six cursor" v-if="unfoldShow && (child_i == -1 || child_i > 0)" @click="unfoldStatus = !unfoldStatus; controlChildren(2)">

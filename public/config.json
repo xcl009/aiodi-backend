@@ -41,7 +41,8 @@
     "KF": "pagesA/pages/butler/index",
     "VM": "pagesA/pages/butler/index",
     "BD": "pagesA/pages/butler/index",
-    "VG": "pagesA/pages/butler/index"
+    "VG": "pagesA/pages/butler/index",
+    "AV": "pagesA/pages/butler/index"
   },
   "closeType": {
     "1": "真实分成",

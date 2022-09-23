@@ -36,9 +36,7 @@
           </el-date-picker>
       </template>
     </condition>
-
-    <to-xlsx ref="toXlsx"></to-xlsx>
-
+    
     <div class="pl-15 pr-15 pb-5 bg-white">
       <div class="flex mb-5">
         <div class="flex1 white-space">
@@ -296,7 +294,6 @@
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import selectSearch from '@/components/condition/selectSearch'
-  import toXlsx from '@/components/xlsx/'
   import {
     dealPhone,
     showFeeMode,
@@ -313,8 +310,7 @@
     components: {
       Pagination,
       condition,
-      selectSearch,
-      toXlsx
+      selectSearch
     },
     props: {
       lowerAgent: {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" :exportStatus="true" @reset="reset" @query="toQuery" @saveXlsx="saveXlsx">
       <template v-slot:defult>
         <el-input v-model="form.deviceSn" placeholder="二维码" />
         <el-select v-model="form.duration" @change="toQuery()" placeholder="在线时长">
@@ -12,6 +12,17 @@
           <el-option label="大于8小时" :value="480" />
           <el-option label="大于12小时" :value="720" />
         </el-select>
+        <el-date-picker
+          class="range-day flex align-center"
+            v-model="form.date"
+            type="daterange"
+            range-separator="-"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptionsEnd"
+            @change="toQuery()">
+          </el-date-picker>
       </template>
     </condition>
 
@@ -82,7 +93,25 @@
         },
         form: {
           deviceSn: this.$route.query.deviceSn || '',
-        }
+        },
+        pickerOptionsEnd: {
+          disabledDate: (time) => {
+            let timeOptionRange = this.timeOptionRange
+            let secondNum = 60 * 60 * 24 * 31 * 1000
+            if (timeOptionRange) {
+              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange.getTime() - secondNum) || time.getTime() > Date.now()
+            }
+            return time.getTime() > Date.now()
+          }, onPick: (time) => {
+            //当第一时间选中才设置禁用
+            if (time.minDate && !time.maxDate) {
+              this.timeOptionRange = time.minDate
+            }
+            if (time.maxDate) {
+              this.timeOptionRange = null
+            }
+          }
+        },
       }
     },
     mounted(options) {
@@ -115,17 +144,82 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
+        if(params.date && params.date.length > 0){
+          params.startDatetime = params.date[0]
+          params.endDatetime = params.date[1]
+          delete params.date
+        }
         this.$get('iot-saas-device/massageBed/statistics/findPage', params).then((res = {}) => {
           this.list = res.rows
           this.listLoading = false
           this.clickSubmit = false
           if (params.page == 0) {
-            this.listTotal = res.total
+            this.listTotal = res.total || 0
           }
           this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
+        })
+      },
+
+      /**
+       * 导出记录
+       */
+      saveXlsx(){
+        this.$alert('确定导出设备在线记录吗？', '导出', {
+          confirmButtonText: '确定',
+          callback: action => {
+            if (action == 'confirm') {
+              this.loadObj = this.$loading({
+                lock: true,
+                text: '正在打包导出',
+                spinner: 'el-icon-loading'
+              })
+              var params = Object.assign({}, this.form, this.listQuery)
+              if(params.date && params.date.length > 0){
+                params.startDatetime = params.date[0]
+                params.endDatetime = params.date[1]
+                delete params.date
+              }
+              delete params.page
+              delete params.size
+              let param = '?'
+              for(var i in params){
+                if(params[i]){
+                  param = param + `${i}=${params[i]}&`
+                }
+              }
+              param = param.substring(0, param.length - 1)
+              this.$export(`iot-saas-device/massageBed/statistics/export${param}`).then(res => {
+                const blob = new Blob([res])
+                const fileName = `设备在线统计记录(${this.parseTime(this.currentTime())}).xlsx`
+                if ('download' in document.createElement('a')) {
+                  const elink = document.createElement('a')
+                  elink.download = fileName
+                  elink.style.display = 'none'
+                  elink.href = URL.createObjectURL(blob)
+                  document.body.appendChild(elink)
+                  elink.click()
+                  URL.revokeObjectURL(elink.href)
+                  document.body.removeChild(elink)
+                } else {
+                  navigator.msSaveBlob(blob, fileName)
+                }
+                this.loadObj.close()
+                this.$message({
+                  message: '导出成功',
+                  type: 'success'
+                })
+              }).catch(err => {
+                this.loadObj.close()
+                this.$message({
+                  message: '导出失败',
+                  type: 'error'
+                })
+              })
+            }
+          }
         })
       }
     }
