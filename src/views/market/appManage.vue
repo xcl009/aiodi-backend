@@ -41,6 +41,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button class="p-5 ml-0" type="text" @click="$router.push({path: `/market/addApp?id=${scope.row.id}`})">修改</el-button>
+            <el-button class="p-5 ml-0" type="text" @click="" v-if="brandId">赠送服务</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -53,6 +54,26 @@
         />
       </div>
     </div>
+
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
+      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+      <template v-if="dialogType == 1">
+        <el-form class="custom-form text-center">
+          <div class="text-black2">赠送结束时间</div>
+          <el-date-picker
+            class="mt-10"
+            v-model="dform.chargeEndTime"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择结束时间">
+          </el-date-picker>
+        </el-form>
+      </template>
+      <div class="mt-30 text-center">
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit" v-if="dialogType != 4">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -77,7 +98,18 @@
         listQuery: {
           page: 1,
           size: 20
-        }
+        },
+        brandId: this.$route.query.brandId || '',
+
+        // 弹出相关
+        dialogType: 1,
+        dialogStatus: false,
+        dialogTitle: {
+          1: '赠送服务'
+        },
+        curRow: {},
+        curIdx: 0,
+        dform: {}
       }
     },
     beforeRouteEnter(to, from, next) {

@@ -3,7 +3,7 @@
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
         <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
-          <el-tab-pane label="全部设备" :name="'0'" />
+          <el-tab-pane label="全部设备" :name="''" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
       </template>
@@ -456,7 +456,6 @@
       this.toQuery()
     },
     methods: {
-
       /**
        * 订单数量
        */
@@ -478,6 +477,7 @@
           params.agentId = ids[1]
         }
         params.lowerAgent = this.lowerAgent || false
+        if(params.deviceTypeCode == 0) delete params.deviceTypeCode
         delete params.status
         this.$get(url, params).then(res => {
           this.statInfo = res

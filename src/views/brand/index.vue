@@ -103,6 +103,8 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="$router.push({path: `/store?brandId=${scope.row.id}`})">商户列表</el-dropdown-item>
                 <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push({path: `/market?brandName=${scope.row.name}`})">购买服务记录</el-dropdown-item>
+                <!-- <el-dropdown-item @click.native="$router.push({path: `/market/appManage?brandId=${scope.row.id}`})">赠送服务</el-dropdown-item> -->
                 <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
                 <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
                 <el-dropdown-item @click.native="setRow(4, scope.row)">设备统计数量</el-dropdown-item>

@@ -73,7 +73,7 @@
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   export default {
-    name: 'agent',
+    name: 'payRecord',
     components: {
       Pagination,
       condition
@@ -96,7 +96,9 @@
             value: 'ALL'
           }
         ],
-        form: {},
+        form: {
+          brandName: ''
+        },
         tableMaxH: '250',
         list: [],
         listLoading: true,
@@ -116,7 +118,7 @@
       next()
     },
     activated() {
-      this.zuo_sn = this.$route.query.zuo_sn || ''
+      this.zuo_sn = this.$route.query.zuo_sn || '', this.form.brandName = this.$route.query.brandName || ''
       if(this.$route.meta.reload){
         this.getList()
       }else if(!this.list || this.list.length == 0) {

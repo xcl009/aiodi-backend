@@ -1,6 +1,13 @@
 <template>
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @query="getTime(form.date)" @reset="getTime">
+      <!-- <template v-slot:tabs>
+        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+          <el-tab-pane label="全部设备" :name="'0'" />
+          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+        </el-tabs>
+      </template> -->
+
       <template v-slot:defult>
         <el-date-picker v-model="form.date" type="year" :picker-options="pickerOptionsEnd" range-separator="-"
           placeholder="选择年份" value-format="yyyy" @change="getTime">
@@ -77,6 +84,11 @@
     name: 'dayMoney',
     components: {
       condition
+    },
+    computed: {
+      myDeviceName() {
+        return this.$store.state.user.myDeviceName
+      },
     },
     data() {
       return {
