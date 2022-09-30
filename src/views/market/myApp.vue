@@ -8,7 +8,13 @@
         </el-tabs>
       </template>
       <template v-slot:defult>
-        <el-input v-model="form.serviceName" placeholder="服务名称"/>
+        <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
+          <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
+        </el-select>
+        <el-select placeholder="服务状态" v-model="form.orderStatusCode" @change="toQuery()">
+          <el-option v-for="(item, code) in {PAYMENT: '正常', NOT_PAYMENT: '待支付', EXPIRES: '已到期', SOON_EXPIRES: '即将到期'}" :label="item" :value="code">{{ item }}</el-option>
+        </el-select>
+        <!-- <el-input v-model="form.serviceName" placeholder="服务名称"/> -->
       </template>
     </condition>
 
@@ -149,7 +155,10 @@
       },
       agentInfo(){
         return this.$store.getters.agentInfo
-      }
+      },
+      myDeviceId() {
+        return this.$store.getters.myDeviceId
+      },
     },
     mounted() {
       this.$store.dispatch('api/getServiceType').then(res => {
@@ -188,12 +197,12 @@
           page: this.listQuery.page - 1
         })
         if(params.serviceTypeCode == 0) delete params.serviceTypeCode
-        this.$get('iot-saas-basic/client/service/market/record/findPage', params).then(res => {
-          this.list = res ? res.rows : []
+        this.$get('iot-saas-basic/client/service/market/record/findPage', params).then((res = {}) => {
+          this.list = res.rows || []
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
-            this.listTotal = res ? res.total : 0
+            this.listTotal = res.total || 0
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
         }).catch(() => {

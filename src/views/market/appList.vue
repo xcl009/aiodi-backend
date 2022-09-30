@@ -1,17 +1,21 @@
 <template>
   <div>
-    <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
-      <div class="mb-15 flex align-center">
-        <div class="flex1">
-          <el-button size="medium" :type="!listQuery.serviceTypeCode ? 'primary' : ''"
-            :class="{'btn-body': listQuery.serviceTypeCode}"
-            @click="listQuery.serviceTypeCode = ''; toQuery()">全部</el-button>
-          <el-button size="medium" :type="listQuery.serviceTypeCode == item.code ? 'primary' : ''"
-            :class="{'btn-body': listQuery.serviceTypeCode != item.code}" v-for="item in tabs"
-            @click="listQuery.serviceTypeCode = item.code; toQuery()">{{ item.name }}</el-button>
-        </div>
-      </div>
+    <condition ref="condition" @reset="reset" @query="toQuery">
+      <template v-slot:tabs>
+        <el-tabs class="mb-15 bg-white" v-model="listQuery.serviceTypeCode" @tab-click="toQuery()">
+          <el-tab-pane label="全部" :name="'0'" />
+          <el-tab-pane :label="item.name" :name="item.code" v-for="(item, index) in tabs" />
+        </el-tabs>
+      </template>
+      <template v-slot:defult>
+        <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
+          <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
+        </el-select>
+        <el-input v-model="form.serviceName" placeholder="服务名称"/>
+      </template>
+    </condition>
 
+    <div class="pl-15 pr-15 pb-5 bg-white">
       <el-row :gutter="24">
         <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="8" v-for="item in list">
           <div class="flex align-center list-item cursor" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})">
@@ -91,7 +95,10 @@
       },
       agentInfo(){
         return this.$store.getters.agentInfo
-      }
+      },
+      myDeviceId() {
+        return this.$store.getters.myDeviceId
+      },
     },
     mounted() {
       this.$store.dispatch('api/getServiceType').then(res => {
@@ -110,18 +117,29 @@
       },
 
       /**
+       * 重置查询
+       */
+      reset(){
+        this.form = {}
+        this.listQuery.page = 1
+        this.listQuery.size = 15
+        this.getList()
+      },
+
+      /**
        * 获取列表
        */
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
+        if(params.serviceTypeCode == 0) delete params.serviceTypeCode
         this.$get('iot-saas-basic/client/service/market/findPage', params).then((res = {}) => {
           this.list = res.rows || []
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
-            this.listTotal = res.total
+            this.listTotal = res.total || 0
           }
           this.getNoFreeApp(arrayKeys(this.list, 'serviceId'))
         }).catch(() => {

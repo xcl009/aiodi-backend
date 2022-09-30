@@ -218,6 +218,7 @@
                 type: 'success'
               })
               setTimeout(() => {
+                this.$store.dispatch('user/getInfo')
                 this.$root.$emit('getBalance')
                 this.$router.push({
                   path: '/market'

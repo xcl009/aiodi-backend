@@ -9,7 +9,7 @@
         <!-- <el-input v-model="form.deviceId" placeholder="设备SN"/> -->
         <el-date-picker
           class="range-day flex align-center"
-            v-model="form.day"
+            v-model="form.date"
             type="datetimerange"
             range-separator="-"
             start-placeholder="创建开始时间"
@@ -170,8 +170,11 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        if(params.startTime) params.startTime = params.startTime / 1000
-        if(params.endTime) params.endTime = params.endTime / 1000
+        if(params.date && params.date.length > 0){
+          params.startTime = params.date[0]
+          params.endTime = params.date[1]
+          delete params.date
+        }
         this.$get('iot-saas-device/admin/qrcode/findPage', params).then(res => {
           this.listLoading = false
           this.clickSubmit = false

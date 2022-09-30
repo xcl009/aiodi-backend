@@ -28,7 +28,7 @@
         <div class="flex1">
           <el-button size="medium" :type="listQuery.haveBind === item.value ? 'primary' : ''"
             :class="{'btn-body': listQuery.haveBind !== item.value}" v-for="item in haveBind"
-            @click="listQuery.haveBind = item.value;toQuery()">{{ item.title }}({{deviceCount[item.nkey] || 0}})</el-button>
+            @click="listQuery.haveBind = item.value;toQuery()">{{ item.title }}({{deviceCount[item.nkey] || onLineCount[item.nkey] || 0}})</el-button>
         </div>
       </div>
 
@@ -67,9 +67,9 @@
             <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="在线状态" v-if="myDeviceId['PA']" min-width="95">
+        <el-table-column label="在线状态" min-width="95">
           <template slot-scope="scope">
-            <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
+            <div v-if="scope.row.onlineStatus && checkAbility(['PA', 'VG', 'AV', 'BD'], 2, [scope.row.deviceType])">
               <div :class="scope.row.onlineStatus == 'ONLINE' ? 'text-primary' : 'text-danger'">{{ scope.row.onlineStatus == 'ONLINE' ? '在线' : '离线'}}</div>
               <div>{{ parseTime(scope.row.updateTime) }}</div>
             </div>
@@ -392,16 +392,16 @@
             title: '未绑',
             nkey: 'noBindStoreNumber'
           },
-          // {
-          //   value: false,
-          //   title: '在线',
-          //   nkey: 'aa'
-          // },
-          // {
-          //   value: false,
-          //   title: '离线',
-          //   nkey: 'bb'
-          // }
+          {
+            value: 'ONLINE',
+            title: '在线',
+            nkey: 'onlineCount'
+          },
+          {
+            value: 'OFFLINE',
+            title: '离线',
+            nkey: 'offlineCount'
+          }
         ],
         form: {
           //search_store_name: this.$route.query.store_name || ''
@@ -417,6 +417,7 @@
         },
         orderCount: {},
         deviceCount: {},
+        onLineCount: {},
         fatherSn: {},
 
         selSnArr: [],
@@ -539,6 +540,20 @@
       },
 
       /**
+       * 在线设备数量统计
+       */
+      onlineDevice(){
+        let params = {
+          statisticsType: this.lowerDevice ? 'CHILDREN' : 'OWNER'
+        }
+        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
+        this.$get('iot-saas-device/deviceOnline/statistics', params).then((res = {}) => {
+          this.$set(this.onLineCount, 'onlineCount', res.onlineCount || 0)
+          this.$set(this.onLineCount, 'offlineCount', res.offlineCount || 0)
+        })
+      },
+
+      /**
        * 校验是否可选
        */
       checkSel(row) {
@@ -569,7 +584,10 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
-        if(!this.isStore()) this.queryDeviceCount()
+        if(!this.isStore()){
+          this.queryDeviceCount()
+          this.onlineDevice()
+        }
       },
 
       /**
@@ -580,7 +598,10 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
-        if(!this.isStore()) this.queryDeviceCount()
+        if(!this.isStore()){
+          this.queryDeviceCount()
+          this.onlineDevice()
+        }
       },
 
       /**
@@ -591,6 +612,10 @@
           page: this.listQuery.page - 1,
           lowerDevice: this.lowerDevice
         })
+        if(['ONLINE', 'OFFLINE'].indexOf(params.haveBind) > -1){
+          params.onlineStatus = params.haveBind
+          delete params.haveBind
+        }
         if(params.deviceTypeCode == 0) delete params.deviceTypeCode
         this.$get('iot-saas-device/admin/device/findPage', params).then((res = {}) => {
           this.list = res.rows || []

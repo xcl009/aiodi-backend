@@ -41,7 +41,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button class="p-5 ml-0" type="text" @click="$router.push({path: `/market/addApp?id=${scope.row.id}`})">修改</el-button>
-            <el-button class="p-5 ml-0" type="text" @click="" v-if="brandId">赠送服务</el-button>
+            <el-button class="p-5 ml-0" type="text" @click="setRows(1, scope.row, 1)" v-if="brandId">赠送服务</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -58,20 +58,27 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <el-form class="custom-form text-center">
-          <div class="text-black2">赠送结束时间</div>
-          <el-date-picker
-            class="mt-10"
-            v-model="dform.chargeEndTime"
-            type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            placeholder="请选择结束时间">
-          </el-date-picker>
-        </el-form>
+        <div class="flex justify-center">
+          <el-form class="custom-form pl-20 pr-20" label-width="auto">
+            <el-form-item label="套餐" v-if="curRow.priceSettings">
+              <el-radio-group v-model="dform.priceCode">
+                <el-radio-button :label="item.priceCode" v-for="(item, key) in curRow.priceSettings">{{ item.priceName }}</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="结束时间">
+              <el-date-picker
+                v-model="dform.giveEndDatetime"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                placeholder="请选择结束时间">
+              </el-date-picker>
+            </el-form-item>
+          </el-form>
+        </div>
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit" v-if="dialogType != 4">确定</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -187,6 +194,69 @@
           this.clickSubmit = false
           this.listLoading = false
         })
+      },
+
+      /**
+       * 操作商户
+       * @param {Object} type 1 dialog类型
+       * @param {Object} row 选择当前数据
+       * @param {Object} dialogType dialog内容显示类型 1: '赠送服务'
+       * @param {Object} idx 当前数据所在位置
+       */
+      setRows(type, row, dialogType, idx) {
+        switch (type) {
+          case 1:
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.dform = {}
+            if(dialogType == 1){
+              this.dform = {
+                priceCode: row.priceSettings[0].priceCode,
+                giveEndDatetime: this.parseTime(this.currentTime() + 30 * 86400)
+              }
+            }
+            console.log(this.dform)
+            this.dialogStatus = true
+            break
+        }
+      },
+
+      /**
+       * 弹窗确认
+       */
+      dialogConfirm() {
+        let curRow = this.curRow,
+          curIdx = this.curIdx,
+          params = JSON.parse(JSON.stringify(this.dform))
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        switch (this.dialogType) {
+          case 1:
+            if(!params.giveEndDatetime){
+              this.$message({
+                message: '请选择赠送服务结束时间',
+                type: 'error'
+              })
+              return
+            }
+            this.$post('iot-saas-basic/admin/service/market/give', {
+              priceCode: params.priceCode,
+              giveEndDatetime: params.giveEndDatetime,
+              serviceMarketId: this.curRow.id,
+              brandId : this.brandId
+            }).then(res => {
+              this.$message({
+                message: '赠送服务成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+        }
       }
 	  }
   }

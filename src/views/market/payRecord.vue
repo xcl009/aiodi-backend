@@ -5,6 +5,9 @@
         <el-select placeholder="服务类型" v-model="form.serviceTypeCode" @change="toQuery()">
           <el-option v-for="item in tabs" :label="item.name" :value="''+item.code" />
         </el-select>
+        <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
+          <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
+        </el-select>
         <el-select placeholder="周期类型" v-model="form.cycleType" @change="toQuery()">
           <el-option v-for="item in cycleType" :label="item.name" :value="''+item.value" />
         </el-select>
@@ -118,7 +121,7 @@
       next()
     },
     activated() {
-      this.zuo_sn = this.$route.query.zuo_sn || '', this.form.brandName = this.$route.query.brandName || ''
+      this.form.brandName = this.$route.query.brandName || ''
       if(this.$route.meta.reload){
         this.getList()
       }else if(!this.list || this.list.length == 0) {
@@ -127,7 +130,9 @@
       }
     },
     computed: {
-
+      myDeviceId() {
+        return this.$store.getters.myDeviceId
+      },
     },
     mounted() {
 
@@ -176,7 +181,7 @@
           this.clickSubmit = false
           if(params.page == 0){
             this.listTotal = res ? res.total : 0
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
           }
         }).catch(() => {
           this.clickSubmit = false
