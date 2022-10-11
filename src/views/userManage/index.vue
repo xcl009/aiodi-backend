@@ -161,12 +161,12 @@
           page: this.listQuery.page - 1,
           needCount: true
         })
-        this.$get('iot-saas-user/user/relation/findUserByAdmin', params).then(res => {
-          this.list = res.rows
+        this.$get('iot-saas-user/user/relation/findUserByAdmin', params).then((res = {}) => {
+          this.list = res.rows || []
           this.listLoading = false
           this.clickSubmit = false
           if (params.page == 0) {
-            this.listTotal = res.total
+            this.listTotal = res.total || 0
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
           }
         }).catch(() => {

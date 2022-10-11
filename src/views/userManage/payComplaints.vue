@@ -1,14 +1,20 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" :resetStatus="false" @query="toQuery">
       <template v-slot:defult>
+        <el-select v-model="form.appId" placeholder="小程序" @change="toQuery()">
+          <el-option :label="item.appName" :value="item.appId" v-for="(item, key) in wechatList" />
+        </el-select>
         <el-date-picker
           class="range-day flex align-center"
-            v-model="form.day"
+            v-model="form.date"
             type="daterange"
             range-separator="-"
+            value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
-            end-placeholder="结束日期">
+            end-placeholder="结束日期"
+            :picker-options="pickerOptionsEnd"
+            @change="toQuery()">
           </el-date-picker>
       </template>
     </condition>
@@ -26,7 +32,7 @@
             <template v-if="scope.row.complaint_order_info && scope.row.complaint_order_info.length > 0">
               <div v-for="item in scope.row.complaint_order_info">
                 <span class="mr-10">交易单号：{{ item.transaction_id }}</span><br>
-                <span>订单金额：￥{{ item.amount }}<a class="ml-10 text-blue" :href="`/order/order?transaction_id=${item.transaction_id}`" target="_blank">查看订单</a></span>
+                <span>订单金额：￥{{ item.amount / 100 }}<a class="ml-10 text-blue" @click="copyText(item.transaction_id)">复制单号</a></span>
               </div>
             </template>
           </template>
@@ -36,9 +42,9 @@
             <div class="text-cut_two">{{ scope.row.complaint_detail }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="投诉时间" width="110">
+        <el-table-column label="投诉时间" width="150">
           <template slot-scope="scope">
-            {{ RFCToDate(scope.row.complaint_time) }}
+            {{ parseTime(scope.row.complaint_time) }}
           </template>
         </el-table-column>
         <el-table-column label="投诉次数" width="100">
@@ -58,20 +64,15 @@
             <div class="text-danger">{{ scope.row.withdraw_reason || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="80">
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" round plain class="ml-0" @click="$router.push({path: `/userManage/PCDetail?id=${scope.row.complaint_id}`})">详情</el-button>
+            <el-button type="primary" size="mini" @click="$router.push({path: `/userManage/PCDetail?complaintId=${scope.row.complaint_id}&appId=${form.appId}`})">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="flex justify-center">
-        <pagination
-          v-show="listQuery.count > 0"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          :total="listQuery.count"
-          @pagination="getList"
-        />
+        <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
+          @pagination="getList" />
       </div>
     </div>
   </div>
@@ -79,13 +80,14 @@
 
 <script>
   import Pagination from '@/components/Pagination'
-  import selPlat from '@/components/selPlat'
   import condition from '@/components/condition/'
+  import {
+    copyText
+  } from '@/utils/index'
   export default {
-    name: 'userList',
+    name: 'payComplaints',
     components: {
       Pagination,
-      selPlat,
       condition
     },
     computed: {
@@ -98,18 +100,38 @@
     },
     data() {
       return {
+        copyText: copyText,
         clickSubmit: false,
-        form: {
-          begin: (Date.parse( new Date() ) - (29 * 86400 * 1000)),
-          end: Date.parse( new Date() ),
-        },
         tableMaxH: '250',
+        wechatList: [],
         list: [],
         listLoading: false,
+        listTotal: 0,
         listQuery: {
-          start: 1,
-          page_num: 0,
-          limit: 15
+          page: 1,
+          size: 20
+        },
+        form: {
+          appId: '',
+          date: [this.parseTime(this.currentTime() - (29 * 86400), '{y}-{m}-{d}'), this.parseTime(this.currentTime(), '{y}-{m}-{d}')]
+        },
+        pickerOptionsEnd: {
+          disabledDate: (time) => {
+            let timeOptionRange = this.timeOptionRange
+            let secondNum = 60 * 60 * 24 * 29 * 1000
+            if (timeOptionRange) {
+              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange.getTime() - secondNum) || time.getTime() > Date.now()
+            }
+            return time.getTime() > Date.now()
+          }, onPick: (time) => {
+            //当第一时间选中才设置禁用
+            if (time.minDate && !time.maxDate) {
+              this.timeOptionRange = time.minDate
+            }
+            if (time.maxDate) {
+              this.timeOptionRange = null
+            }
+          }
         },
         statu: {
           PENDING: "待处理",
@@ -119,44 +141,55 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      if (from.name == 'PCDetail') {
-        to.meta.isBack = true
+      to.meta.urlQuery = JSON.stringify(to.query)
+      if (from.name == '') {
+        to.meta.reload = true
       } else {
-        to.meta.isBack = false
+        to.meta.reload = false
       }
       next()
     },
     activated() {
-      if (!this.$route.meta.isBack || !this.list) {
-        //this.getList()
+      let queryKey = [],
+        query = this.$route.query
+      for (var i in queryKey) {
+        this[queryKey[i]] = query[queryKey[i]]
       }
+      if (this.$route.meta.reload) {
+        this.getList()
+      } else if (this.urlQuery != this.$route.meta.urlQuery) {
+        this.getWechatList()
+      }
+      this.urlQuery = this.$route.meta.urlQuery
     },
     mounted(options) {
 
     },
     methods: {
       /**
-       * 搜索查询
+       * 获取列表
        */
-      toQuery(val = '') {
-        if(this.clickSubmit) return
-        this.clickSubmit = true
-        if (type == 1) {
-          this.form = {}
-          this.listQuery.page = 1
-        } else {
-          this.listQuery.page = 1
-        }
-        this.getList()
+      getWechatList() {
+        this.$get('iot-saas-pay/admin/pay/config/wechat/list', {
+          page: 0,
+          size: 20
+        }).then((res = {}) => {
+          if(res.rows && res.rows.length > 0){
+            this.wechatList = res.rows || []
+            this.form.appId = res.rows[0].appId
+            this.toQuery(1)
+          }
+        })
       },
 
       /**
-       * 重置查询
+       * 搜索查询
        */
-      reset(){
-        this.form = {}
+      toQuery() {
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.listQuery.page = 1
-        this.listQuery.size = 10
+        this.listQuery.size = 20
         this.getList()
       },
 
@@ -165,27 +198,23 @@
        */
       getList() {
         let params = Object.assign({}, this.form, this.listQuery, {
-            start: this.listQuery.page - 1
-          }),
-          url = 'agentapi/analysis/wx_user_complaints'
-        if(params.begin) params.begin_date = this.parseTime(params.begin / 1000, '{y}-{m}-{d}')
-        if(params.end) params.end_date = this.parseTime(params.end / 1000, '{y}-{m}-{d}')
-        this.$get(url, params).then(res => {
+          page: this.listQuery.page - 1,
+        })
+        params.beginDate = params.date[0]
+        params.endDate = params.date[1]
+        delete params.date
+        this.$get('iot-saas-pay/admin/wx/complaints/list', params).then((res = {}) => {
+          this.list = res.rows || []
           this.listLoading = false
-          this.list = res.list
-          if (params.start == 0) this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+          this.clickSubmit = false
+          if (params.page == 0) {
+            this.listTotal = res.total || 0
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+          }
         }).catch(() => {
           this.listLoading = false
+          this.clickSubmit = false
         })
-      },
-
-      /**
-       * @param {Object} time RFC3339 日期格式
-       * RFC3339转为标准格式日期
-       */
-      RFCToDate(time){
-        var date = new Date(time).toJSON();
-        return new Date(+new Date(date)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
       }
     }
   }

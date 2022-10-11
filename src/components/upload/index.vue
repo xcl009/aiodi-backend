@@ -138,6 +138,7 @@
           }else if(res.data){
             if(res.data.url) fileList[fileList.length - 1].url = res.data.url
             if(res.data.ossFileKey) fileList[fileList.length - 1].ossFileKey = res.data.ossFileKey
+            if(res.data.media_id) fileList[fileList.length - 1].media_id = res.data.media_id
             this.update(fileList)
           } else {
             this.$message({

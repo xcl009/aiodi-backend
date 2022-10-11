@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row class="pl-20 pr-20 custom-form bg-white">
+    <el-row class="pl-20 pr-20 pb-20 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-tabs class="mb-10" v-model="userType" @tab-click="getInfo">
           <el-tab-pane label="代理提现规则" name="agent" />
@@ -150,7 +150,7 @@
           </el-form>
         </template>
         <template v-else>
-          <div class="pb-20 cursor" @click="$router.push({path: `/market/appList`})">暂未购买此功能服务，<span class="text-primary">去购买</span></div>
+          <div class="cursor" @click="$router.push({path: `/market/appList`})">暂未购买此功能服务，<span class="text-primary">去购买</span></div>
         </template>
       </el-col>
     </el-row>

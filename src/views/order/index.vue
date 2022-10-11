@@ -17,7 +17,7 @@
         <el-input v-model="form.transactionNo" placeholder="交易单号" />
         <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
           <el-option label="全部" value="" />
-           <el-option :label="item" :value="key" v-for="(item, key) in Constant.SourceType" />
+          <el-option :label="item" :value="key" v-for="(item, key) in Constant.SourceType" />
         </el-select>
         <el-select v-model="form.payType" placeholder="支付类型" @change="toQuery()">
           <el-option label="全部" value="" />

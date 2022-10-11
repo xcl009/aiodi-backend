@@ -107,12 +107,12 @@
             <div class="inline text-left">
               <div>微信：<el-link type="primary"
                   @click="$router.push({path: (lowerDevice ? `/order/subOrder?deviceSn=${scope.row.deviceSn}&sourceType=2` : `/order?deviceSn=${scope.row.deviceSn}&sourceType=1`)})">
-                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
+                  {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].wx : 0 }}
                 </el-link>
               </div>
               <div>支付宝：<el-link type="primary"
                   @click="$router.push({path: (lowerDevice ? `/order/subOrder?deviceSn=${scope.row.deviceSn}&sourceType=2` : `/order?deviceSn=${scope.row.deviceSn}&sourceType=2`)})">
-                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
+                  {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].ali : 0 }}
                 </el-link>
               </div>
             </div>
@@ -120,7 +120,7 @@
         </el-table-column>
         <el-table-column label="交易额(元)" width="90">
           <template slot-scope="scope">
-            {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
+            {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00' }}
           </template>
         </el-table-column>
 
@@ -625,7 +625,7 @@
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
           }
-          this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
+          this.queryOrderCount(this.arrayKeys(res.rows, 'deviceSn'))
           if(this.Ability['RELATION_DEVICE'] && this.list.length > 0){
             let fatherSn = []
             this.list.map(item => {
@@ -646,14 +646,14 @@
       /**
        * 订单统计数量查询
        */
-      queryOrderCount(ids){
-        if(ids.length == 0){
+      queryOrderCount(sns){
+        if(sns.length == 0){
           this.orderCount = {}
           return
         }
         this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
           countType: 'DEVICE',
-          groupIds: ids.join(',')
+          groupIds: sns.join(',')
         }).then(res => {
           this.orderCount = res
         })
