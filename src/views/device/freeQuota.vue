@@ -140,9 +140,6 @@
     computed: {
       myDeviceId(){
         return this.$store.state.user.myDeviceId
-      },
-      agentInfo(){
-        return this.$store.getters.agentInfo
       }
     },
     data() {
@@ -268,7 +265,7 @@
             this.dialogStatus = true
             break
           case 2:
-            this.$alert('确定删除该免费用户吗？', '删除用户', {
+            this.$alert('确定删除该免费用户吗？', '删除免费名额', {
               confirmButtonText: '确定',
               center: true,
               callback: action => {

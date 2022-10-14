@@ -36,7 +36,7 @@
           </el-date-picker>
       </template>
     </condition>
-    
+
     <div class="pl-15 pr-15 pb-5 bg-white">
       <div class="flex mb-5">
         <div class="flex1 white-space">

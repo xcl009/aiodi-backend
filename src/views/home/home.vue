@@ -99,6 +99,22 @@
       </el-col>
     </el-row>
 
+    <el-row :gutter="device === 'mobile' ? 10 : 20" type="flex" class="mt-15" v-if="isStore()">
+      <template v-for="(itme, key) in config.roomDevice">
+        <el-col :span="24" v-if="roomList[key] && roomList[key].length > 0">
+          <div class="o-v p-15 card-panel cursor bg-white">
+            <div class="mb-15"><span class="mr-15 fs-c1 text-black">{{ itme }}</span>点击房间号即可创建订单</div>
+            <div class="flex align-center flex-wrap room-box text-center fs-b2">
+              <div class="pt-15 pb-15 item" v-for="sitem in roomList[key]"  @click="setRows(1, sitem, 6)">
+                <div>{{ sitem.place || sitem.deviceSn }}</div>
+                <div class="fs-s3">房间号</div>
+              </div>
+            </div>
+          </div>
+        </el-col>
+      </template>
+    </el-row>
+
     <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15">
       <el-col :sm="24" :lg="8">
         <div class="pl-15 pr-15 pt-10 pb-15 data-contrast bg-white">
@@ -215,11 +231,37 @@
 
       </el-col>
     </el-row>
+
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
+      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+      <template v-if="dialogType == 6">
+        <div class="text-center">
+          <div class="flex align-center justify-center">
+            <div>订单可使用时长：</div>
+            <el-select v-model="dform.duration" placeholder="免费时长">
+              <el-option :label="`${item}小时`" :value="item" v-for="item in config.bed_order_time"/>
+            </el-select>
+          </div>
+          <div class="mt-15 fs-s3">注：提交后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
+
+          <div class="mt-30 text-black">
+            <div class="cursor">当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span></div>
+            <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">订单计费规则未配置，暂不可下单</div>
+            <div class="mt-15" v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">剩余赠送免费时间：{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400) - currentTime())}}</div>
+            <div class="mt-15" v-else>创建订单将会扣除快活币：<span class="text-danger">{{ createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
+          </div>
+        </div>
+      </template>
+      <div class="mt-30 text-center">
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import { arrayToObj, delComma, parseTime, currentTime } from '@/utils/index'
+  import { arrayToObj, delComma, parseTime, currentTime, unixTime, formatSeconds } from '@/utils/index'
   import DateUtil from '@/utils/date'
   import CountTo from 'vue-count-to'
 
@@ -252,7 +294,10 @@
     },
     data() {
       return {
-        delComma: delComma,
+        delComma,
+        unixTime,
+        formatSeconds,
+        clickSubmit: false,
         totalStat: {},
         form: {},
         orderStat: {},
@@ -308,7 +353,25 @@
             title: '投诉建议',
             desc: '开启投诉建议，随时随地接收客人反馈信息，快速响应处理',
           }
-        ]
+        ],
+
+        /*主题房*/
+        roomList: {},
+        //订单收费配置信息
+        createOrderConfig: {},
+        // 钱包 + 快活币余额
+        money: {},
+
+        // 弹出相关
+        dialogType: 1,
+        dialogStatus: false,
+        dialogTitle: {
+          6: '创建订单'
+        },
+        curRow: {},
+        curIdx: 0,
+        dform: {},
+
       }
     },
     computed: {
@@ -340,6 +403,10 @@
       this.getLineChart()
       this.getDeviceStat()
       if(this.isSaas()) this.getUserStat()
+      if(this.isStore()){
+        this.getDeviceList()
+        this.getBalance()
+      }
     },
     methods: {
       /**
@@ -597,6 +664,99 @@
           }]
         })
       },
+
+      /**
+       * 获取可提现金额
+       */
+      getBalance(){
+        this.$get('iot-saas-pay/api/pay/withdraw/balance').then(res => {
+          this.money = res || {}
+        })
+      },
+
+      /**
+       * 获取主题房设备
+       */
+      getDeviceList() {
+        Object.keys(this.config.roomDevice).map(item => {
+          this.$get('iot-saas-device/admin/device/findPage', {
+            page: 0,
+            size: 100,
+            deviceTypeCode: item
+          }).then((res = {}) => {
+            this.$set(this.roomList, item, res.rows || [])
+          })
+        })
+      },
+
+      /**
+       * 操作行
+       * @param {Object} type 1 dialog类型
+       * @param {Object} row 选择当前数据
+       * @param {Object} dialogType dialog内容显示类型 1: '' 6: '创建订单'
+       * @param {Object} idx 当前数据所在位置
+       */
+      setRows(type, row, dialogType, idx) {
+        switch (type) {
+          case 1:
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.dialogStatus = true
+            this.dform = {}
+            if(dialogType == 6){
+              let code = row.deviceTypeCode ? row.deviceTypeCode.substr(0, 2) : row.deviceType.code.substr(0, 2)
+              if(!this.createOrderConfig[code]){
+                this.$set(this.createOrderConfig, code, {})
+                this.getCreateOrderConfig(code)
+              }
+              this.dform = {
+                deviceSn: row.deviceSn,
+                deviceTypeCode: code,
+                duration: 2
+              }
+            }
+            break
+        }
+      },
+
+      /**
+       * 弹窗确认
+       */
+      dialogConfirm() {
+        let curRow = this.curRow,
+          curIdx = this.curIdx,
+          params = JSON.parse(JSON.stringify(this.dform))
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        switch (this.dialogType) {
+          case 6:
+            params.duration = params.duration * 60
+            this.$post('iot-saas-order/admin/order/create', params).then(res => {
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+        }
+      },
+
+      /**
+       * 获取创建的配置
+       */
+      getCreateOrderConfig(code){
+        this.$get('iot-saas-basic/admin/storeOrderConfig/v1/findById', {
+          deviceTypeCode: code,
+          storeId: this.agentInfo.storeIds[0]
+        }).then(res => {
+          this.createOrderConfig[code] = res
+        })
+      },
     }
   }
 </script>
@@ -653,5 +813,17 @@
   }
   .tool-item{
     height: 100%;
+  }
+
+  /** 主题房 */
+  .room-box{
+    .item{
+      margin: 1px;
+      min-width: 100px;
+      background-color: #f5f5f5;
+      &:hover{
+        color: var(--olive);
+      }
+    }
   }
 </style>

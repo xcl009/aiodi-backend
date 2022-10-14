@@ -301,7 +301,7 @@
               <el-option :label="`${item}小时`" :value="item" v-for="item in config.bed_order_time"/>
             </el-select>
           </div>
-          <div class="mt-15 fs-s3">注：提交设置后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
+          <div class="mt-15 fs-s3">注：提交后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
 
           <div class="mt-30 text-black">
             <div class="cursor">当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span></div>

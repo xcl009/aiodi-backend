@@ -172,7 +172,6 @@
       }
     },
     mounted(options) {
-      console.log(this.Ability)
       this.getBalance()
       this.toQuery()
     },

@@ -38,6 +38,19 @@
             </el-form-item>
           </template>
 
+          <!-- <el-form-item label="超时订单成本">
+            <el-input v-model="form.delayedRefundTime" type="number">
+              <template slot="append">元</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="只分商户直属上级">
+            <div class="flex align-center">
+              <el-switch v-model="form.refundTimeStatus" :active-value="1" :inactive-value="2" />
+              <span class="ml-10 fs-s3">开启表示超时的订单扣除成本后，剩余金额只分给该商户的直属上级代理</span>
+            </div>
+          </el-form-item> -->
+
           <el-form-item class="mt-10">
             <el-button type="primary" @click="onSubmit">立即提交</el-button>
           </el-form-item>

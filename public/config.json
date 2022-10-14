@@ -44,6 +44,11 @@
     "VG": "pagesA/pages/butler/index",
     "AV": "pagesA/pages/butler/index"
   },
+  "roomDevice": {
+    "BD": "震动大床房",
+    "VG": "怀旧电玩房",
+    "AV": "影音房"
+  },
   "closeType": {
     "1": "真实分成",
     "2": "相对分成",
