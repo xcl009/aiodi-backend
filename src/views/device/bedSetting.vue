@@ -1,6 +1,10 @@
 <template>
   <el-row class="pl-20 pr-20 pt-10 custom-form bg-white">
     <el-col :sm="24" :md="16" :lg="14" :xl="10">
+      <el-tabs class="mb-10 fs-b2" v-model="deviceTypeCode" @tab-click="getInfo">
+        <el-tab-pane :label="item" :name="name" v-for="(item, name) in themeRoom"/>
+      </el-tabs>
+
       <el-form ref="form" :model="form" label-position="left" label-width="130px">
         <el-form-item label="是否开启">
           <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
@@ -53,6 +57,7 @@
     data() {
       return {
         clickSubmit: false,
+        themeRoom: {},
         form: {
           enable: 2,
           giftKhb: 0,
@@ -66,7 +71,19 @@
         deviceTypeCode: this.$route.query.deviceTypeCode || 'BD',
       }
     },
+    computed: {
+      myDeviceId() {
+        return this.$store.getters.myDeviceId
+      }
+    },
     mounted() {
+      let themeRoom = {}
+      for(var i in this.myDeviceId){
+        if(Object.keys(this.config.roomDevice).indexOf(i) > -1){
+          themeRoom[i] = this.myDeviceId[i]
+        }
+      }
+      this.themeRoom = themeRoom
       this.getInfo()
     },
     methods: {

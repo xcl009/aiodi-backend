@@ -2,7 +2,7 @@
   <el-row class="pl-20 pr-20 custom-form bg-white">
     <el-col :sm="24" :md="16" :lg="14" :xl="10">
       <el-tabs class="mb-10 fs-b2" v-model="deviceTypeCode" @tab-click="getInfo">
-        <el-tab-pane :label="item" :name="name" v-for="(item, name) in myDeviceId" />
+        <el-tab-pane :label="item" :name="name" v-for="(item, name) in myDeviceId"/>
       </el-tabs>
 
       <template v-if="checkAbility([`${deviceTypeCode}_FREEQUOTA`], 3)">

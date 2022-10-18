@@ -38,24 +38,23 @@
           </div>
         </el-col>
 
-        <template v-for="item in ['BD', 'VG', 'AV']">
-          <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="myDeviceId['BD'] && isBrand() && checkAbility([item], 2)">
-            <div class="role-item flexv justify-between">
-              <div class="flex align-center">
-                <div class="icon-box flex align-center justify-center">
-                  <svg-icon icon-class="mall"></svg-icon>
-                </div>
-                <div class="pl-20 flex1">
-                  <div class="fs-b1">{{ myDeviceId[item] }}</div>
-                  <div class="mt-5 fs-s3 text-gray">{{ myDeviceId[item] }}设备铺货赠送规则、商户创建订单订单等设置</div>
-                </div>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(Object.keys(config.roomDevice), 2)">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="mall"></svg-icon>
               </div>
-              <div class="text-right">
-                <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/bedSetting?deviceTypeCode=${item}`})">默认设置</el-button>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">主题房设备</div>
+                <div class="mt-5 fs-s3 text-gray">设置按摩床、电玩盒子、影音盒子等设备铺货赠送规则、商户创建订单计费规则</div>
               </div>
             </div>
-          </el-col>
-        </template>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/bedSetting`})">默认设置</el-button>
+            </div>
+          </div>
+        </el-col>
+
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'])">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
@@ -118,6 +117,22 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/billing`})">默认设置</el-button>
+            </div>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="mall"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">DD设置</div>
+                <div class="mt-5 fs-s3 text-gray">设置全站DD单规则</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/store/steal`})">默认设置</el-button>
             </div>
           </div>
         </el-col>

@@ -120,6 +120,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
+      to.meta.urlQuery = JSON.stringify(to.query)
       if (from.name == 'addApp') {
         to.meta.reload = true
       } else {
@@ -128,12 +129,17 @@
       next()
     },
     activated() {
+      let queryKey = ['brandId'], query = this.$route.query
+      for(var i in queryKey){
+        this[queryKey[i]] = query[queryKey[i]]
+      }
       if(this.$route.meta.reload){
         this.getList()
-      }else if(!this.list || this.list.length == 0) {
+      }else if(!this.list || this.list.length == 0 || this.urlQuery != this.$route.meta.urlQuery) {
         this.toQuery()
         this.getServiceType()
       }
+      this.urlQuery = this.$route.meta.urlQuery
     },
     computed: {
 
@@ -216,7 +222,6 @@
                 giveEndDatetime: this.parseTime(this.currentTime() + 30 * 86400)
               }
             }
-            console.log(this.dform)
             this.dialogStatus = true
             break
         }

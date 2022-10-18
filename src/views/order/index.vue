@@ -194,7 +194,8 @@
             </el-table-column>
             <el-table-column label="分成金额(元)" align="center">
               <template slot-scope="scope">
-                {{ accSub(scope.row.amount, scope.row.loseAmount) }}
+                <span>{{ accSub(scope.row.amount, scope.row.loseAmount) }}</span>
+                <span v-if="scope.row.costAmount > 0">(包含超时成本{{ scope.row.costAmount }}元)</span>
               </template>
             </el-table-column>
             <el-table-column label="DD金额(元)" align="center" v-if="amountPaidLose > 0">
