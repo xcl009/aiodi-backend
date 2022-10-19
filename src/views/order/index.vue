@@ -44,7 +44,8 @@
             <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.status != item.value}" v-for="item in orderTab" @click="listQuery.status = item.value; toQuery(2)">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
           </el-scrollbar>
         </div>
-        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</el-button>
+        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 3)" v-if="isSaas()">取消支付分订单</el-button>
+        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 5)" v-if="isBrand()">待付款订单完结</el-button>
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
@@ -282,6 +283,13 @@
             </el-table-column>
           </el-table>
         </template>
+        <template v-if="dialogType == 5">
+          <el-form class="custom-form pl-20 pr-20" label-width="auto">
+            <el-form-item label="订单单号">
+              <el-input v-model="dform.orderNo"></el-input>
+            </el-form-item>
+          </el-form>
+        </template>
         <div class="mt-30 text-center">
           <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
           <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit" v-if="dialogType != 4">确定</el-button>
@@ -441,7 +449,8 @@
           1: '结束订单',
           2: '订单退款',
           3: '取消支付分订单',
-          4: '订单使用用户'
+          4: '订单使用用户',
+          5: '免押待付款订单0元完结'
         },
         curRow: {},
         curIdx: 0,
@@ -785,6 +794,27 @@
             this.$post('iot-saas-order/admin/order/cancel', params).then(res => {
               this.$message({
                 message: '取消成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 5:
+            if(!params.orderNo){
+              this.$message({
+                message: '请输入订单号',
+                type: 'error'
+              })
+              return
+            }
+            this.$post('iot-saas-order/admin/deposit/execute', {
+              orderNoList: [params.orderNo]
+            }).then(res => {
+              this.$message({
+                message: '提交成功',
                 type: 'success'
               })
               this.dialogStatus = false

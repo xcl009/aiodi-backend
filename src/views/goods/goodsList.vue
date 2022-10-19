@@ -107,7 +107,7 @@
       next()
     },
     activated() {
-      if (!this.$route.meta.isBack || !this.list) {
+      if (this.$route.meta.isBack || this.list.length == 0) {
         this.toQuery(1)
       }
     },
@@ -117,7 +117,7 @@
       }
     },
     mounted() {
-    
+
     },
     methods: {
       /**

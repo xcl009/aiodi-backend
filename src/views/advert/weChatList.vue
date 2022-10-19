@@ -28,7 +28,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="setStatus(scope.row)" v-if="isBrand()">{{ scope.row.statusCode == 'ENABLE' ? '已开启' : '已关闭' }}</el-button>
+            <el-button type="primary" size="mini" :plain="scope.row.statusCode != 'ENABLE'" @click="setStatus(scope.row)" v-if="isBrand() && scope.row.weChatAdvertPositionId">{{ scope.row.statusCode == 'ENABLE' ? '已开启' : '已关闭' }}</el-button>
             <el-button type="primary" size="mini" @click="adUnitId(scope.row)" v-if="isBrand()">设置广告ID</el-button>
             <el-button type="primary" size="mini" @click="showDialog(scope.row)" v-if="isSaas()">编辑</el-button>
             <el-button type="danger" size="mini" @click="del(scope.row, scope.$index)" v-if="isSaas()">删除</el-button>
@@ -151,7 +151,7 @@
        */
       setStatus(row){
         let statusCode = row.statusCode == 'ENABLE' ? 'CLOSE' : 'ENABLE'
-        this.$put(`iot-saas-advert/client/advert/settingStatus`, {
+        this.$put(`iot-saas-advert/admin/advert/settingStatus`, {
           advertPositionId: row.advertPositionId,
           status: statusCode
         }).then(res => {
@@ -175,7 +175,7 @@
           beforeClose: (action, instance, done) => {
             if (action == 'confirm') {
               const value = instance.inputValue
-              this.$put('iot-saas-advert/client/advert/settingPositionId', {
+              this.$put('iot-saas-advert/admin/advert/settingPositionId', {
                 advertPositionId: row.advertPositionId,
                 weChatAdvertPositionId: value.trim()
               }).then(res => {
@@ -202,7 +202,7 @@
           center: true,
           callback: action => {
             if (action == 'confirm') {
-              this.$delete(`iot-saas-advert/admin/ad/position/${row.id}`).then(res => {
+              this.$delete(`iot-saas-advert/admin/advert/position/${row.id}`).then(res => {
                 this.$message({
                   message: '删除成功',
                   type: 'success'
