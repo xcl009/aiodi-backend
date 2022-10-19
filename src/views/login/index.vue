@@ -1,8 +1,8 @@
 <template>
   <el-row type="flex" align="middle" class="pb-30 login-container flex-wrap">
-    <el-image class="abs p-all" src="https://oss.kuaihuoya.net/pwd/2021-12-14/090498296.png" fit="cover"></el-image>
+    <el-image class="abs p-all" :src="require('@/assets/LOGIN_'+ THEME +'.jpg')" fit="cover"></el-image>
     <div class="login-form">
-      <el-row :gutter="0">
+      <el-row :gutter="0" v-if="THEME == 'DEFAULT'">
         <el-col :xs="24" :sm="24" :md="12" class="hidden-sm-and-down">
           <div class="rel p-50 flexv justify-between login-left text-white">
             <div class="rel pt-30">
@@ -22,16 +22,14 @@
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="12">
-          <div class="flex align-center justify-center title-container bg-white" :class="{'mobile': device_mobile}">
+          <div class="flex align-center justify-center form-box bg-white" :class="{'mobile': $_isMobile()}">
             <div class="pb-40">
               <div class="hello">您好！</div>
-              <div class="mb-30 title fs-b2 text-gray">欢迎登录{{ siteInfo.appName }}后台管理系统</div>
+              <div class="mb-30 desc fs-b2 text-gray">欢迎登录{{ siteInfo.appName }}后台管理系统</div>
               <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
                 <el-form-item prop="username">
                   <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1" autocomplete="on" placeholder="请输入用户名/手机号">
                     <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969"/>
-
-                    <!-- <svg-icon class="svg-i" slot="prefix" icon-class="zhanghu" /> -->
                   </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
@@ -49,6 +47,37 @@
           </div>
         </el-col>
       </el-row>
+      <div class="flex justify-center align-end login-monkeyboos" v-if="THEME == 'MONKEYBOOS'">
+        <el-image class="left-img hidden-sm-and-down" :src="require('@/assets/MONKEYBOOS.png')" fit="contain"></el-image>
+        <div class="right-box bg-white">
+          <div class="form-box">
+            <div class="flex flexv align-center justify-around h-100 bg-white">
+              <div>
+                <div class="hello text-center text-bold">您好！</div>
+                <div class="title fs-b2 text-grey">欢迎登录{{ siteInfo.appName }}后台管理系统</div>
+              </div>
+              <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" class="">
+                <el-form-item prop="username">
+                  <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1" autocomplete="on" placeholder="请输入用户名/手机号">
+                    <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969"/>
+                  </el-input>
+                </el-form-item>
+                <el-form-item prop="password">
+                  <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" name="password" tabindex="2" autocomplete="on" placeholder="请输入密码" @keyup.enter.native="handleLogin">
+                    <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969"/>
+                  </el-input>
+                  <span class="show-pwd" @click="showPwd">
+                    <preview-close-one theme="outline" size="16" fill="#4E5969" v-if="passwordType === 'password'"/>
+                    <preview-open theme="outline" size="16" fill="#4E5969" v-else/>
+                  </span>
+                </el-form-item>
+                <el-button class="mt-20 login-btn" type="primary" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
+              </el-form>
+              <el-image :src="require('@/assets/MONKEYBOOS_LOGO.png')" class="mini-logo" fit="cover"></el-image>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </el-row>
 </template>
@@ -116,9 +145,8 @@
         passwordType: 'password',
         redirect: undefined,
 
-        device_mobile: false,
-
-        gid: this.$route.params.gid || ''
+        gid: this.$route.params.gid || getToken('brandId') || '',
+        THEME: ''
       }
     },
     watch: {
@@ -129,8 +157,10 @@
         immediate: true
       }
     },
+    created() {
+      this.THEME = this.config.THEME[this.gid] || 'DEFAULT'
+    },
     mounted() {
-      this.device_mobile = this.$_isMobile()
       if(this.gid) this.getPlatformConfig()
     },
     methods: {
@@ -218,7 +248,6 @@
       max-width: 96%;
       max-height: 90vh;
       margin: 0 auto;
-      overflow: hidden;
       .login-left{
         height: 692px;
         width: 596px;
@@ -263,7 +292,7 @@
       margin: 12px 0 0 8px;
       color: #4E5969;
     }
-    .title-container {
+    .form-box {
       width: 596px;
       height: 692px;
       max-height: 90vh;
@@ -294,6 +323,44 @@
     .auth-code_btn{
       background: rgba(11,161,248,0.4);
       color: #fff;
+    }
+
+    // 猴老板主题
+    .login-monkeyboos{
+      .right-box{
+        width: 574px;
+        max-height: 722px;
+        max-width: 98%;
+        padding: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border-radius: 20px;
+      }
+      .left-img{
+        margin-right: 160px;
+        height: 700px;
+        max-height: 90vh;
+      }
+      .form-box {
+        padding: 2px;
+        background-image: linear-gradient(to right, #EC1E79, #503EF9);
+        border-radius: 20px;
+        > div{
+          border-radius: 18px;
+        }
+      }
+      .hello{
+        color: #ED1E79;
+      }
+      // .el-form{
+      //   margin: 80px 0 130px;
+      // }
+      .mini-logo{
+        width: 184px;
+      }
+      .login-btn{
+        background: #ED1E79;
+        border-color: #ED1E79;
+      }
     }
   }
 </style>

@@ -149,7 +149,7 @@ export default {
 
     async logout() {
       let url = ''
-      url = `/login`
+      url = `/login/${this.agentInfo.brandId}`
       await this.$store.dispatch('user/logout')
       location.href = url
     },
