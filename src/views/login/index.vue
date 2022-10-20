@@ -54,7 +54,7 @@
             <div class="flex flexv align-center justify-around h-100 bg-white">
               <div>
                 <div class="hello text-center text-bold">您好！</div>
-                <div class="title fs-b2 text-grey">欢迎登录{{ siteInfo.appName }}后台管理系统</div>
+                <div class="title fs-b2 text-grey">欢迎登录后台管理系统</div>
               </div>
               <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" class="">
                 <el-form-item prop="username">

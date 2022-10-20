@@ -177,7 +177,7 @@
               const value = instance.inputValue
               this.$put('iot-saas-advert/admin/advert/settingPositionId', {
                 advertPositionId: row.advertPositionId,
-                weChatAdvertPositionId: value.trim()
+                weChatAdvertPositionId: value ? value.trim() : ''
               }).then(res => {
                 this.$message({
                   message: '设置成功',

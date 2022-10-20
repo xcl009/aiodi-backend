@@ -44,8 +44,8 @@
             <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.status != item.value}" v-for="item in orderTab" @click="listQuery.status = item.value; toQuery(2)">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
           </el-scrollbar>
         </div>
-        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 3)" v-if="isSaas()">取消支付分订单</el-button>
-        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 5)" v-if="isBrand()">待付款订单完结</el-button>
+        <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</el-button>
+        <!-- <el-button size="medium" class="mr-10 mb-10 ml-0" @click="setRows(1, {}, 5)" v-if="isBrand()">待付款订单完结</el-button> -->
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
