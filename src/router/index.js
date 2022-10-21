@@ -28,25 +28,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/devices',
-    component: Layout,
-    meta: {
-      title: '设备',
-      icon: 'user'
-    },
-    hidden: true,
-    children: [
-      {
-        path: 'eject',
-        name: 'eject',
-        component: () => import('@/views/device/eject'),
-        meta: {
-          title: '设备弹出'
-        }
-      },
-    ]
-  },
-  {
     path: '/user',
     component: Layout,
     redirect: '/user/index',
