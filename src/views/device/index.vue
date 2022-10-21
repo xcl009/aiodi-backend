@@ -227,6 +227,9 @@
                   </el-col>
                 </template>
               </template>
+              <el-col :span="12" v-if="scope.row.deviceType.code.indexOf('PA') > -1">
+                <div class="text-primary cursor" @click="$router.push({path: `/devices/eject?deviceSn=${scope.row.deviceSn}`})">设备弹出</div>
+              </el-col>
             </el-row>
           </template>
         </el-table-column>

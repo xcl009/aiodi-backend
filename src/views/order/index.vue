@@ -150,6 +150,7 @@
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
             <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && (Ability['orderFinish'] || (isStore() && scope.row.userId == 0))">结束订单</el-button>
+            <!-- <el-button type="info" size="mini" plain @click="setRows(2, scope.row)" v-if="(scope.row.status == 'R') && scope.row.deviceType == '充电宝'">宝状态</el-button> -->
             <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status.indexOf('G') > -1) && scope.row.amount > 0 && Ability['orderRefund']">订单退款</el-button>
           </template>
         </el-table-column>
@@ -693,7 +694,7 @@
 
       /**
        * 操作商户
-       * @param {Object} type 1 dialog类型
+       * @param {Object} type 1 dialog类型 2 查询宝归还状态
        * @param {Object} row 选择当前数据
        * @param {Object} dialogType dialog内容显示类型 1: '结束订单' 2: '订单退款' 3: '取消订单' 4: '查看订单使用人数'
        * @param {Object} idx 当前数据所在位置
@@ -718,6 +719,13 @@
               })
             }
             break
+          case 2:
+            this.$get('iot-saas-device/admin/device/findRestoreStatus', {
+              orderNo: row.orderNo
+            }).then(res => {
+              
+            })
+          break
         }
       },
 
