@@ -9,11 +9,13 @@
         <!-- <el-input v-model="form.deviceId" placeholder="设备SN"/> -->
         <el-date-picker
           class="range-day flex align-center"
+            @change="toQuery()"
             v-model="form.date"
-            type="datetimerange"
+            type="daterange"
+            value-format="yyyy-MM-dd"
             range-separator="-"
-            start-placeholder="创建开始时间"
-            end-placeholder="创建结束时间">
+            start-placeholder="创建开始"
+            end-placeholder="创建结束">
           </el-date-picker>
       </template>
     </condition>

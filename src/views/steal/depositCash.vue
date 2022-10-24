@@ -39,15 +39,15 @@
               用户在进入概率押金名单{{ form.durationTime || 0 }}天后再次租借会重新计算概率是否可免押租借
             </div>
           </el-form-item>
-          
-          <!-- <el-form-item label="钱包余额">
-            <el-input v-model="form.money">
+
+          <el-form-item label="钱包余额">
+            <el-input v-model="form.walletBalance">
               <template slot="append">元</template>
             </el-input>
             <div>
-              用户钱包余额大于{{ form.money || 1 }}元时无需进行概率押金计算，直接免押租借
+              用户钱包余额大于等于{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}元时无需进行概率押金计算，直接免押租借
             </div>
-          </el-form-item> -->
+          </el-form-item>
 
           <el-form-item class="mt-10">
             <el-button type="primary" @click="onSubmit">立即提交</el-button>

@@ -7,7 +7,7 @@
       :page-sizes="pageSizes"
       :page-count="pageCount"
       :layout="layout"
-      :total="total"
+      :total="(parseInt(total / pageSize) > 500 ? pageSize * 500 : total)"
       v-bind="$attrs"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -44,7 +44,7 @@ export default {
     },
     layout: {
       type: String,
-      default: 'total, prev, pager, next, sizes, jumper' // total, sizes,
+      default: 'prev, pager, next, sizes, jumper' // total, sizes,
     },
     background: {
       type: Boolean,

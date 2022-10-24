@@ -3,6 +3,10 @@
     <div class="bg-white">
       <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
         <template v-slot:defult>
+          <el-select v-model="listQuery.lowerAgent" placeholder="订单来源" @change="toQuery()">
+            <el-option label="我的订单" :value="false" />
+            <el-option label="下级订单" :value="true" />
+          </el-select>
           <el-input v-model="form.orderNo" placeholder="订单号" />
           <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
           <selectSearch v-model="form.userId" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
@@ -217,7 +221,8 @@
         listQuery: {
           status: '',
           page: 1,
-          size: 20
+          size: 20,
+          lowerAgent: false
         },
         form: {},
         pickerOptionsEnd: {

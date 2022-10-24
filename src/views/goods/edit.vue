@@ -110,6 +110,7 @@
       getInfo() {
         this.$get(`iot-saas-device/admin/merchandise/${this.id}`).then(res => {
           let pictures = []
+          res.pictures = res.pictures || []
           res.pictures.map((item, idx) => {
             pictures.push({
               name: `${idx}.jpg`,
@@ -156,7 +157,6 @@
               }, 1000)
             })
           } else {
-            this.formErrow(object)
             this.clickSubmit = false
           }
         })

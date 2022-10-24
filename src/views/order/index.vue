@@ -9,7 +9,7 @@
       </template>
 
       <template v-slot:defult>
-        <el-input v-model="form.orderNo" placeholder="订单号" />
+        <el-input v-model="form.orderNo" placeholder="订单号后6位或全部" class="order-no"/>
         <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
         <selectSearch v-model="form.userIds" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
         <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" :isStoreOrder="true"></selectSearch>
@@ -150,7 +150,7 @@
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
             <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && (Ability['orderFinish'] || (isStore() && scope.row.userId == 0))">结束订单</el-button>
-            <!-- <el-button type="info" size="mini" plain @click="setRows(2, scope.row)" v-if="(scope.row.status == 'R') && scope.row.deviceType == '充电宝'">宝状态</el-button> -->
+            <el-button type="info" size="mini" plain @click="setRows(2, scope.row)" v-if="scope.row.deviceType == '充电宝'">宝状态</el-button>
             <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status.indexOf('G') > -1) && scope.row.amount > 0 && Ability['orderRefund']">订单退款</el-button>
           </template>
         </el-table-column>
@@ -553,6 +553,10 @@
           params.userId = params.userIds
           delete params.userIds
         }
+        if(params.orderNo && params.orderNo.length == 6){
+          params.orderNoEndSix = params.orderNo
+          delete params.orderNo
+        }
         params.lowerAgent = this.lowerAgent || false
         this.$get(url, params).then(res => {
           this.list = res.rows
@@ -723,7 +727,17 @@
             this.$get('iot-saas-device/admin/device/findRestoreStatus', {
               orderNo: row.orderNo
             }).then(res => {
-              
+              if(res){
+                this.$message({
+                  message: '宝已归还',
+                  type: 'success'
+                })
+              } else {
+                this.$message({
+                  message: '宝还未归还，未查询到归还记录',
+                  type: 'error'
+                })
+              }
             })
           break
         }
@@ -844,6 +858,12 @@
 
   .remark-box {
     max-height: 80px;
+  }
+
+  /deep/ .order-no{
+    .el-input__inner{
+      width: 170px;
+    }
   }
 
   .timeline-item{
