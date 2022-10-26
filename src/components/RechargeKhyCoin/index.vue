@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="khyCoinDialog" :show-close="false" :modal-append-to-body="false" width="600px"
+  <el-dialog :visible.sync="khyCoinDialog" :show-close="false" :modal-append-to-body="false" :close-on-click-modal="false" width="600px"
     align="center" title="快活币充值">
     <el-form class="custom-form" label-position="left" label-width="120px" @submit.native.prevent>
       <el-form-item label="选择充值数量" v-if="!isBrand() && moneyArr.length > 0">
@@ -46,6 +46,7 @@
         clickSubmit: false,
         khyCoinDialog: false,
         dform: {
+          amount: '',
           payType: 1
         },
         moneyArr: [],
