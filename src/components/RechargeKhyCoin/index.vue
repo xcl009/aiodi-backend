@@ -3,8 +3,10 @@
     align="center" title="快活币充值">
     <el-form class="custom-form" label-position="left" label-width="120px" @submit.native.prevent>
       <el-form-item label="选择充值数量" v-if="!isBrand() && moneyArr.length > 0">
-        <div class="text-left">
-          <el-button :class="{'el-button--primary is-plain': dform.amount == item.amount, 'bg-body': dform.amount != item.amount}" @click="dform.amount = item.amount; getPayCode()" v-for="item in moneyArr">充{{ item.amount }}{{ item.giftAmount > 0 ? '送'+ item.giftAmount : '' }}</el-button>
+        <div class="flex flex-wrap">
+          <div class="mb-10 mr-10" v-for="item in moneyArr">
+            <el-button :class="{'el-button--primary is-plain': dform.amount == item.amount, 'bg-body': dform.amount != item.amount}" @click="dform.amount = item.amount; getPayCode()">充{{ item.amount }}{{ item.giftAmount > 0 ? '送'+ item.giftAmount : '' }}</el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item :label="isBrand() ? '充值数量' : '自定义数量'">
