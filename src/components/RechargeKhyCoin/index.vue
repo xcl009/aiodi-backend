@@ -9,7 +9,7 @@
           </div>
         </div>
       </el-form-item>
-      <el-form-item :label="isBrand() ? '充值数量' : '自定义数量'">
+      <el-form-item :label="isBrand() ? '充值数量' : '自定义数量'" v-if="moneyArr.length == 0">
         <el-input v-model="dform.amount" @change.native="dform.payType = 1; getPayCode()">
           <span slot="append">个</span>
         </el-input>
@@ -54,7 +54,7 @@
       }
     },
     mounted() {
-      this.getMoneyList()
+     if(!this.isBrand()) this.getMoneyList()
     },
     methods: {
       /**
