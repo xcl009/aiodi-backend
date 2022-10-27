@@ -1,12 +1,12 @@
 <template>
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @query="getTime(form.date)" @reset="getTime">
-      <!-- <template v-slot:tabs>
-        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+      <template v-slot:tabs>
+        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="getLineChart()">
           <el-tab-pane label="全部设备" :name="'0'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
-      </template> -->
+      </template>
 
       <template v-slot:defult>
         <el-date-picker v-model="form.date" type="year" :picker-options="pickerOptionsEnd" range-separator="-"
@@ -160,6 +160,7 @@
           params = this.filtrate
 
         params.brandID = this.brandId
+        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
         this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
           let obj = arrayToObj(res, 'countGroupDate'),
             pros = []
