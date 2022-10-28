@@ -54,7 +54,7 @@
         <el-table-column label="充值金额" prop="amount" sortable></el-table-column>
         <el-table-column label="实际到账">
           <template slot-scope="scope">
-            <span>{{ scope.row.actualAmount || '0.00' }}</span>
+            <span>{{ scope.row.actualAmount || scope.row.happyCurrencyNum || 0 }}</span>
           </template>
         </el-table-column>
         <el-table-column label="备注">
@@ -90,7 +90,7 @@
       return {
         clickSubmit: false,
         form: {
-          capitalType: 1
+          capitalType: (this.isSaas() ? 2 : 1)
         },
         pickerOptionsEnd: {
           disabledDate: (time) => {
@@ -142,7 +142,7 @@
         if (this.clickSubmit) return
         this.clickSubmit = true
         this.form = {
-          capitalType: 1
+          capitalType: (this.isSaas() ? 2 : 1)
         }
         this.listQuery.page = 1
         this.listQuery.size = 20
