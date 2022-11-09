@@ -114,8 +114,8 @@
                 this.selDevice.push(item.code)
               }
             })
-          } else {
-            this.selDevice.push(this.myDevice[0].code)
+          } else if(this.myDevice[0]){
+            this.selDevice.push(this.myDevice[0].deviceTypeCode)
           }
           this.form = {
             id: res.id,

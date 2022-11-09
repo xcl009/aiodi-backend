@@ -83,7 +83,8 @@
               查看使用用户
             </div>
             <div v-else>
-              <div>{{ dealPhone(scope.row.userMobile) }}</div>
+              <div v-if="isBrand() || isAdmin()">{{ scope.row.userMobile }}</div>
+              <div v-else>{{ dealPhone(scope.row.userMobile) }}</div>
               <div class="text-cut">{{ scope.row.userNickName || "--" }}</div>
             </div>
           </template>
@@ -149,7 +150,7 @@
         <el-table-column label="操作" min-width="120" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
-            <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="(scope.row.status == 'R') && (Ability['orderFinish'] || (isStore() && scope.row.userId == 0))">结束订单</el-button>
+            <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)" v-if="scope.row.status == 'R' && Ability['orderFinish']">结束订单</el-button>
             <el-button type="info" size="mini" plain @click="setRows(2, scope.row)" v-if="scope.row.deviceType == '充电宝'">宝状态</el-button>
             <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="(scope.row.status.indexOf('G') > -1) && scope.row.amount > 0 && Ability['orderRefund']">订单退款</el-button>
           </template>

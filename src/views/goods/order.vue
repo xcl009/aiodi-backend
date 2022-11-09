@@ -60,12 +60,6 @@
               <div class="text-cut">{{ scope.row.userInfo.nikeName || "--" }}</div>
             </template>
           </el-table-column>
-
-          <el-table-column label="用户">
-            <template slot-scope="scope">
-              {{ scope.row.payTypeName }}
-            </template>
-          </el-table-column>
           <el-table-column label="商户">
             <template slot-scope="scope">
               {{ scope.row.storeName }}
@@ -111,7 +105,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
-              <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)">订单退款</el-button>
+              <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="scope.row.statusName == '已完成'">订单退款</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -318,7 +312,7 @@
           this.listLoading = false
         })
       },
-      
+
       /**
        * 订单详情分润合并单元格
        */

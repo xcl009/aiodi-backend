@@ -48,7 +48,8 @@
     arrayToObj,
     delComma,
     parseTime,
-    currentTime
+    currentTime,
+    dateSort
   } from '@/utils/index'
   import condition from '@/components/condition/'
 
@@ -152,6 +153,7 @@
         params.brandID = this.brandId
         if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
         this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
+          res = res.sort(dateSort('countGroupDate'))
           let obj = arrayToObj(res, 'countGroupDate'),
             pros = []
           for (var i = 1; i < this.selDay; i++) {

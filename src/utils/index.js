@@ -646,6 +646,22 @@ const util = {
       }
     }
     return obj
+  },
+  
+  /**
+   * 日期排序
+   */
+  dateSort: (property, bol = false) => {
+    return function(a, b){
+      let value1 = a[property], value2 = b[property]
+      if(bol){
+        // 升序
+        return Date.parse(value1) - Date.parse(value2)
+      }else{
+        //降序
+        return Date.parse(value2) - Date.parse(value1)
+      }
+    }
   }
 }
 
@@ -684,3 +700,4 @@ export const accAdd = util.accAdd
 export const accMul = util.accMul
 export const accSub = util.accSub
 export const defaultFee = util.defaultFee
+export const dateSort = util.dateSort

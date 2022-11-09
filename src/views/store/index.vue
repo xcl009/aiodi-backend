@@ -121,6 +121,7 @@
                   <el-dropdown-item @click.native="$router.push({path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">免费名额</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
+                  <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 5)">重置登录密码</el-dropdown-item> -->
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -130,7 +131,7 @@
       </el-table>
 
       <div class="flex justify-center">
-        <pagination page.sync="listQuery.page" :limit.sync="listQuery.size"
+        <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size"
           :total="parseInt(listTotal)" @pagination="getList" />
       </div>
     </div>
@@ -161,6 +162,12 @@
             <div class="mr-10">分配给自己</div>
             <el-switch v-model="dform.allotMe" />
           </div>
+        </div>
+      </template>
+      <template v-if="dialogType == 5">
+        <div class="text-center">
+          <div class="text-black">确定重置到该商户登录密码吗？</div>
+          <div class="mt-10 pl-40 pr-40 text-danger">注：重置后登录密码为123456</div>
         </div>
       </template>
       <div class="mt-30 text-center">
@@ -231,6 +238,7 @@
           2: '',
           3: '删除商户',
           4: '分配商户',
+          5: '重置密码'
         },
         curRow: {},
         curIdx: 0,
@@ -507,7 +515,7 @@
 
       /**
        * 操作商户
-       * @param {Object} type 1 dialog类型
+       * @param {Object} type 1 dialog类型 2 切换商户 3 重置登录密码
        * @param {Object} row 选择当前商户
        * @param {Object} dialogType dialog内容显示类型 1: '设备绑定', 2: '', 3: '删除商户' 4: '分配给代理'
        * @param {Object} idx 当前商户所在位置
@@ -604,6 +612,17 @@
               })
               this.dialogStatus = false
               this.list.splice(curIdx, 1)
+            })
+            break
+          case 5:
+            this.$post('iot-saas-user/admin/user/updateMobilePass', {
+              id: curRow.userId,
+              password: '123456'
+            }).then(res => {
+              this.$message({
+                message: '重置成功',
+                type: 'success'
+              })
             })
             break
         }
