@@ -105,7 +105,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
-              <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="scope.row.statusName == '已完成'">订单退款</el-button>
+              <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="scope.row.statusName == '已支付'">订单退款</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -143,9 +143,15 @@
               {{ scope.row.dividerName }}
             </template>
           </el-table-column>
+          <el-table-column label="分成名称" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.dividerModeName }}
+            </template>
+          </el-table-column>
           <el-table-column label="分成比例" align="center">
             <template slot-scope="scope">
-              {{ scope.row.percent }}%
+              <span v-if="scope.row.dividerModeName.indexOf('成本价') > -1 || scope.row.dividerModeName.indexOf('管理费') > -1">--</span>
+              <span v-else>{{ scope.row.percent }}%</span>
             </template>
           </el-table-column>
           <el-table-column label="分成金额(元)" align="center">
@@ -336,7 +342,7 @@
        * 操作数据
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '添加模板'
+       * @param {Object} dialogType dialog内容显示类型 1: ''
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -346,6 +352,9 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
+            this.dform = {
+              refundType: '0'
+            }
             break
         }
       },
@@ -371,7 +380,7 @@
               })
               return
             }
-            params.orderId = this.curRow.orderId
+            params.orderId = this.curRow.id
             this.$post('iot-saas-order/admin/goods/refund', params).then(res => {
               this.$message({
                 message: '订单退款成功',
