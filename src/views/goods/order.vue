@@ -102,10 +102,10 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" min-width="120" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
-              <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="scope.row.statusName == '已支付'">订单退款</el-button>
+              <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)" v-if="Ability['orderRefund'] && scope.row.statusName == '已支付'">订单退款</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -262,8 +262,14 @@
       }
     },
     computed: {
+      device() {
+        return this.$store.state.app.device
+      },
       Constant() {
         return this.$store.getters.Constant
+      },
+      Ability() {
+        return this.$store.getters.Ability
       }
     },
     mounted() {

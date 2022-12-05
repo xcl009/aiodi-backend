@@ -11,8 +11,8 @@
         <el-input v-model="dform.rebateRatio" :placeholder="`最高不能超过${vendorInfo.rebateRatio}`">
           <span slot="append">%</span>
         </el-input>
-        <div class="mt-10 fs-s3 text-gray line-default">
-          TA的商户和设备将关联您或您上级添加的商品，售出订单按比例分成
+        <div class="mt-10 fs-s3 line-default">
+          TA的商户和设备将关联您或您上级添加的商品，售出订单按比例分成；非首次设置时，已有的老设备在下次补货时应重新绑定商品仓口模板
         </div>
       </el-form-item>
       <template v-if="vendorInfo.operationMode == 'SELF_RUN' || vendorInfo.replenishment == 'YES'">
@@ -29,8 +29,8 @@
         <el-input v-model="dform.poundage" placeholder="每笔商品订单您想要收取的费用">
           <span slot="append">元</span>
         </el-input>
-        <div class="mt-10 fs-s3 text-gray line-default">
-          代理自己添加仓口模板，Ta的下级商户和设备关联Ta的仓口模板，售出订单您得到设置的管理费
+        <div class="mt-10 fs-s3 line-default">
+          代理自己添加仓口模板，Ta的下级商户和设备关联Ta的仓口模板，售出订单您得到设置的管理费；非首次设置时，已有的老设备在下次补货时应重新绑定商品仓口模板
         </div>
       </el-form-item>
     </el-form>

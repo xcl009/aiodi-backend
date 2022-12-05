@@ -87,7 +87,7 @@
         <el-table-column label="截图" width="190">
           <template slot-scope="scope">
             <div class="flex flex-wrap" v-if="scope.row.errorImages">
-              <el-image class="mr-5" v-for="item in scope.row.errorImages.split(',')" style="width: 50px; height: 50px" :src="item"
+              <el-image class="mr-5" v-for="item in scope.row.errorImages.split(',')" style="width: 50px; height: 50px" fit="cover" :src="item"
                 :preview-src-list="scope.row.errorImages.split(',')">
               </el-image>
             </div>
