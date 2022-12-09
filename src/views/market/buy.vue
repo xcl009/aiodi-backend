@@ -100,7 +100,7 @@
             label: '一个月'
           },
           {
-            code: 'YEAR',
+            code: 'YEAY',
             key: 'yearAmount',
             label: '一年'
           },
