@@ -248,6 +248,9 @@
               @click="$router.push({path: `/agent?deviceId=${selID}`})">批量分配
             </el-button>
           </template>
+          <el-button type="primary" size="medium"
+            @click="setRows(1, {}, 7)">服务器地址
+          </el-button>
         </div>
         <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
           @pagination="getList" />
@@ -316,8 +319,22 @@
       </template>
       <template v-if="dialogType == 7">
         <el-form class="custom-form pl-20 pr-20" label-width="auto" @submit.native.prevent="dialogConfirm()">
+          <el-form-item label="设备SN">
+            <el-input v-model="dform.deviceSN" placeholder="设备SN"></el-input>
+          </el-form-item>
+          <el-form-item label="服务器地址">
+            <el-input v-model="dform.address" placeholder="服务域名或服务器IP地址"></el-input>
+          </el-form-item>
+          <el-form-item label="端口">
+            <el-input v-model="dform.port" placeholder="程序端口号"></el-input>
+          </el-form-item>
+          <el-form-item label="心跳时间">
+            <el-input v-model="dform.heartbeat" placeholder="建议30">
+              <template slot="append">秒</template>
+            </el-input>
+          </el-form-item>
           <el-form-item>
-            <el-input v-model="dform.place" placeholder="请输入设备投放位置(如设备所在房间号：101)"></el-input>
+            <div class="text-danger">温馨提示：请仔细确认服务器地址和端口号是否正确，若设置错误，将会导致设备无法使用</div>
           </el-form-item>
         </el-form>
       </template>
@@ -441,7 +458,8 @@
           3: '投放位置备注',
           4: '设备解除关联',
           5: '关联副设备',
-          6: '创建订单'
+          6: '创建订单',
+          7: '设备链接服务器地址'
         },
         curRow: {},
         curIdx: 0,
@@ -855,6 +873,39 @@
           case 6:
             params.duration = params.duration * 60
             this.$post('iot-saas-order/admin/order/create', params).then(res => {
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 7:
+            params.deviceSn = curRow.deviceSn
+            params.heartbeat = curRow.heartbeat || 30
+            if(!params.deviceSn){
+              this.$message({
+                message: '请输入设备SN',
+                type: 'error'
+              })
+              return
+            }else if(!params.address){
+              this.$message({
+                message: '请输入设备服务器地址',
+                type: 'error'
+              })
+              return
+            }else if(!params.port){
+              this.$message({
+                message: '请输入设备服务端口号',
+                type: 'error'
+              })
+              return
+            }
+            this.$post('http://139.159.246.248:9888/api/setting/address', params).then(res => {
               this.$message({
                 message: '操作成功',
                 type: 'success'

@@ -64,7 +64,9 @@ service.interceptors.request.use(
       config.headers['model'] = ''
       config.headers['screen'] = windowScreen
     }
-    config.baseURL = Vue.prototype.BASE_URL
+    if(config.url.indexOf('http') == -1){
+      config.baseURL = Vue.prototype.BASE_URL
+    }
     if(config.method == 'get'){
       config.paramsSerializer = function(params){
         return qs.stringify(params, { arrayFormat: 'repeat' })
