@@ -64,5 +64,5 @@
   "day_unit": [300,360,480,600,720,840,900,960,1080,1200,1320,1440],
   "plan_time": [30,60,120,180,240,300,360,420,480,540,600,660,720,1440],
   "bed_order_time": [1,2,3,4,5,6,8,9,10,11,12,24],
-  "ali_auth_url": "https://openauth.alipay.com/oauth2/appToAppBatchAuth.htm?app_id=2021003116672111&application_type=TINYAPP&redirect_uri=https%3A%2F%2Fapi.saas.wuxiangyunlian.cn%2Fiot-saas-pay%2Fopen%2Falipay%2Fauth%2Fcallback"
+  "ali_auth_url": "https://openauth.alipay.com/oauth2/appToAppBatchAuth.htm?app_id=2021003186692733&application_type=TINYAPP&redirect_uri=https%3A%2F%2Fapi.saas.wuxiangyunlian.cn%2Fiot-saas-pay%2Fopen%2Falipay%2Fauth%2Fcallback"
 }

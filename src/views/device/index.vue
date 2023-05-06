@@ -203,7 +203,7 @@
               <el-col :span="12">
                 <div class="text-primary cursor" @click="setRows(1, scope.row, 2)">二维码</div>
               </el-col>
-              <el-col :span="12" v-if="lowerDevice">
+              <el-col :span="12" v-if="lowerDevice || isSaas()">
                 <div class="text-primary cursor" @click="setRows(1, scope.row, 1)">设备归属</div>
               </el-col>
               <el-col :span="12" v-if="scope.row.distribute">

@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
+      <el-button size="medium" @click="refreshOpenToken">刷新第三方平台token</el-button>
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
           <template slot-scope="scope">
@@ -45,7 +46,7 @@
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(5, scope.row)">隐私设置</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/system/wechatEdit?app_id=${scope.row.appId}`})" v-if="isBrand()">修改信息</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(6, scope.row, 1)" v-if="isSaas()">刷新token</div>
+            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(6, scope.row, 1)">刷新token</div>
             <!-- <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div> -->
           </template>
@@ -263,6 +264,18 @@
             })
             break
         }
+      },
+      
+      /**
+       * 第三方平台token
+       */
+      refreshOpenToken(){
+        this.$get(`iot-saas-pay/open/pay/init/refreshComonentToken`).then(res => {
+          this.$message({
+            message: '刷新成功',
+            type: 'success'
+          })
+        })
       },
 
       /**
