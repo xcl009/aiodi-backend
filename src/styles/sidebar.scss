@@ -10,7 +10,7 @@
   .sidebar-container {
     transition: width 0.15s;
     width: $sideBarWidth !important;
-    background-color: $menuBg;
+    background: linear-gradient(rgba(89,166,249,1), rgba(90,166,252,1), rgba(68,197,227,1));
     height: 100%;
     position: fixed;
     font-size: 0px;
@@ -53,7 +53,7 @@
     }
 
     .el-menu {
-      padding: 4px 8px;
+      //padding: 4px 8px;
       width: 100% !important;
       height: 100%;
       border: none;
@@ -90,7 +90,9 @@
         background-color: $subMenuHover !important;
       }
       &.is-active {
-        background-color: $subMenuHover !important;
+        box-shadow: inset 0 0 8px 0 rgba(46, 116, 213, 1.0);
+        background-color: $menuActiveBg !important;
+        font-weight: 600;
       }
     }
   }

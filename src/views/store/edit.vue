@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
-      <el-col :sm="24" :md="18" :lg="15" :xl="10">
+      <el-col :sm="24" :xl="16">
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="130px">
-          <h4>基础信息</h4>
+          <h3>基础信息</h3>
           <el-form-item label="门头照" class="up-img">
             <upload v-model="form.avatar" :upObj="{fileType: 'storePhoto'}"/>
           </el-form-item>
@@ -34,7 +34,7 @@
           </el-form-item>
 
           <template>
-            <h4>分润信息</h4>
+            <h3>分润信息</h3>
             <el-form-item label="分成方式">
               <el-radio-group v-model="form.divisionMode">
                 <el-radio-button :label="1">比例分成</el-radio-button>
@@ -54,14 +54,14 @@
             </div>
           </template>
 
-          <h4 class="pt-20">运营产品</h4>
+          <h3 class="pt-20">运营产品</h3>
           <el-checkbox-group v-model="selDevice" @change="changeDevice" class="pl-10">
             <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
           </el-checkbox-group>
 
           <div>
-            <template v-for="(item, index) in deviceDataArr" v-if="item.status == 1">
-              <h4 class="pt-20">{{ myDeviceId[item.deviceTypeCode] }}设置</h4>
+            <div class="mt-15 p-10 radius-10 shadow-light" v-for="(item, index) in deviceDataArr" v-if="item.status == 1">
+              <h3 class="mt-0">{{ myDeviceId[item.deviceTypeCode] }}设置</h3>
 
               <template v-if="form.divisionMode != 2">
                 <el-form-item label="分成模式">
@@ -133,96 +133,100 @@
                 </el-checkbox-group>
               </el-form-item>
 
-              <template v-for="(name, xcx) in config.xcx_pay.default">
-                <div class="mt-30 mb-10 text-dfs">{{ name }}付费设置</div>
-                <el-form-item :label="`付费模式`">
-                  <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
-                    <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode)" :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode))[0]">{{ name }}</el-radio-button>
-                  </el-radio-group>
-                  <el-popover
-                    placement="right"
-                    title=""
-                    trigger="hover">
-                    <div>
-                      需了解和设置预存+免押或预存？<el-link type="primary" :underline="false">点此去了解</el-link>
-                    </div>
-                    <el-link type="danger" :underline="false" slot="reference" class="ml-10 el-icon-question fs-c1"></el-link>
-                  </el-popover>
-                </el-form-item>
+              <el-row class="radius-10" :gutter="20">
+                <el-col :sm="24" :lg="12" v-for="(name, xcx) in config.xcx_pay.default">
+                  <div>
+                    <div class="mb-10 text-dfs text-bold text-black">{{ name }}计费设置</div>
+                    <el-form-item :label="`付费模式`">
+                      <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
+                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode)" :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode))[0]">{{ name }}</el-radio-button>
+                      </el-radio-group>
+                      <el-popover
+                        placement="right"
+                        title=""
+                        trigger="hover">
+                        <div>
+                          需了解和设置预存+免押或预存？<el-link type="primary" :underline="false">点此去了解</el-link>
+                        </div>
+                        <el-link type="danger" :underline="false" slot="reference" class="ml-10 el-icon-question fs-c1"></el-link>
+                      </el-popover>
+                    </el-form-item>
 
-                <template v-if="item[`${xcx}PayMode`].modeType == 'PACKAGE'">
-                  <el-form-item :label="`套餐设置`">
-                    <div class="mb-5 flex align-center flex-wrap" v-for="(plan, index) in item[`${xcx}PayMode`].payModeDetail">
-                      <el-select v-model="plan.time">
-                        <el-option :label="`${time / 60}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
-                      </el-select>
-                      <el-input v-model="plan.money" class="flex1 ml-10 mr-10">
-                        <template slot="append">元</template>
-                      </el-input>
-                      <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
-                        @click="item[`${xcx}PayMode`].payModeDetail.push({time: 60, money: 2, tag: index + 1})">添加</el-button>
-                      <el-button type="text" size="small" v-else
-                        @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="text-danger">删除</el-button>
-                    </div>
-                  </el-form-item>
-                </template>
+                    <template v-if="item[`${xcx}PayMode`].modeType == 'PACKAGE'">
+                      <el-form-item :label="`套餐设置`">
+                        <div class="mb-5 flex align-center flex-wrap" v-for="(plan, index) in item[`${xcx}PayMode`].payModeDetail">
+                          <el-select v-model="plan.time">
+                            <el-option :label="`${time / 60}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
+                          </el-select>
+                          <el-input v-model="plan.money" class="flex1 ml-10 mr-10">
+                            <template slot="append">元</template>
+                          </el-input>
+                          <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
+                            @click="item[`${xcx}PayMode`].payModeDetail.push({time: 60, money: 2, tag: index + 1})">添加</el-button>
+                          <el-button type="text" size="small" v-else
+                            @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="text-danger">删除</el-button>
+                        </div>
+                      </el-form-item>
+                    </template>
 
-                <template v-else>
-                  <el-form-item label="前">
-                    <div class="flex">
-                      <div class="flex1">
-                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingTime">
-                          <template slot="append">分钟</template>
-                        </el-input>
-                      </div>
-                      <div class="pl-10 flex1">
-                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount">
+                    <template v-else>
+                      <el-form-item label="前">
+                        <div class="flex">
+                          <div class="flex1">
+                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingTime">
+                              <template slot="append">分钟</template>
+                            </el-input>
+                          </div>
+                          <div class="pl-10 flex1">
+                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount">
+                              <template slot="append">元</template>
+                            </el-input>
+                          </div>
+                        </div>
+                      </el-form-item>
+                      <el-form-item label="超过后">
+                        <div class="flex">
+                          <div class="flex1">
+                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.overBillingUnit">
+                              <template slot="append">分钟</template>
+                            </el-input>
+                          </div>
+                          <div class="pl-10 flex1">
+                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice">
+                              <template slot="append">元</template>
+                            </el-input>
+                          </div>
+                        </div>
+                      </el-form-item>
+                      <el-form-item label="封顶">
+                        <div class="flex">
+                          <div>
+                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
+                              <el-option :label="`${item / 60}小时封顶`" :value="item" v-for="item in config.day_unit"></el-option>
+                            </el-select>
+                          </div>
+                          <div class="pl-10 flex1">
+                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
+                              <template slot="append">元</template>
+                            </el-input>
+                          </div>
+                        </div>
+                      </el-form-item>
+                      <el-form-item label="总封顶">
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount">
                           <template slot="append">元</template>
                         </el-input>
-                      </div>
-                    </div>
-                  </el-form-item>
-                  <el-form-item label="超过后">
-                    <div class="flex">
-                      <div class="flex1">
-                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.overBillingUnit">
-                          <template slot="append">分钟</template>
-                        </el-input>
-                      </div>
-                      <div class="pl-10 flex1">
-                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice">
+                      </el-form-item>
+                      <el-form-item label="押金">
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount">
                           <template slot="append">元</template>
                         </el-input>
-                      </div>
-                    </div>
-                  </el-form-item>
-                  <el-form-item label="封顶">
-                    <div class="flex">
-                      <div>
-                        <el-select v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
-                          <el-option :label="`${item / 60}小时封顶`" :value="item" v-for="item in config.day_unit"></el-option>
-                        </el-select>
-                      </div>
-                      <div class="pl-10 flex1">
-                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
-                          <template slot="append">元</template>
-                        </el-input>
-                      </div>
-                    </div>
-                  </el-form-item>
-                  <el-form-item label="总封顶">
-                    <el-input v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </el-form-item>
-                  <el-form-item label="押金">
-                    <el-input v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </el-form-item>
-                </template>
-              </template>
-            </template>
+                      </el-form-item>
+                    </template>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
           </div>
           <el-form-item>
             <el-button class="mt-10 mb-10" type="primary" @click="onSubmit('form')" :disabled="clickSubmit">立即提交</el-button>

@@ -2,17 +2,23 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-select placeholder="用户来源" v-model="form.userType" @change="toQuery()">
-          <el-option label="全部" value="" />
-          <el-option label="微信" value="wechat" />
-          <el-option label="支付宝" value="alipay" />
-        </el-select>
-        <el-input placeholder="用户昵称" v-model="form.nickname" />
-        <el-input placeholder="手机号码" v-model="form.mobile" />
+        <el-form-item label="用户来源">
+          <el-select placeholder="用户来源" v-model="form.userType" @change="toQuery()">
+            <el-option label="全部" value="" />
+            <el-option label="微信" value="wechat" />
+            <el-option label="支付宝" value="alipay" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="用户昵称">
+          <el-input placeholder="用户昵称" v-model="form.nickname" />
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input placeholder="手机号码" v-model="form.mobile" />
+        </el-form-item>
       </template>
     </condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
+    <div class="pl-10 pr-10 bg-white">
       <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="头像" width="60">
           <template slot-scope="scope">
@@ -54,7 +60,7 @@
             {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="120">
+        <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/order?userId=${scope.row.id}`})">订单记录</el-button>
           </template>
@@ -86,7 +92,10 @@
       },
       agentInfo(){
         return this.$store.getters.agentInfo
-      }
+      },
+      device() {
+        return this.$store.state.app.device
+      },
     },
     data() {
       return {
@@ -167,7 +176,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total || 0
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
         }).catch(() => {
           this.clickSubmit = false

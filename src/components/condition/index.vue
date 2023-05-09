@@ -2,21 +2,37 @@
   <div class="rel filter-box">
     <slot name="tabs"></slot>
     <el-form size="small" @submit.native.prevent="query()" v-if="filterForm">
-      <div class="pt-10 pb-10 flex align-start bg-white" id="filterContent" style="padding-bottom: 1px;">
-        <div id="filterBox" class="flex flex-wrap flex1 filterBox" :class="{'fold': unfoldStatus}">
+      <div class="pt-10 pb-10 flex bg-white" id="filterContent" style="padding-bottom: 1px;">
+        <slot name="left"></slot>
+        <div class="flex1" v-if="defaultShowLength > 0"></div>
+        <div id="filterBox" class="flex flex-wrap filterBox" :class="{'fold': defaultShowLength == 0 && unfoldStatus}">
           <slot name="defult"></slot>
-          <div id="setBox" class="flex align-center set-box">
+          <div id="setBox" class="flex align-center set-box mr-10 line-1">
             <el-button native-type="submit" :disabled="clickSubmit" class="icon-search" type="primary"><i class="el-icon-search fs-c1"/></el-button>
-            <span class="pl-15 pr-15 text-primary cursor line-1" v-if="resetStatus" @click="reset()">重置</span>
-            <el-tooltip class="mr-15 item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top" v-if="device != 'mobile'">
+            <span class="pl-10 pr-10 text-six cursor" v-if="resetStatus" @click="reset()">重置</span>
+            <el-tooltip class="mr-10 item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top" v-if="device != 'mobile'">
               <el-button type="primary" @click="saveXlsx()" v-if="exportStatus" class="icon-download"><i class="el-icon-download el-icon--left"/>导出</el-button>
             </el-tooltip>
-            <span class="fs-s4 text-six cursor" v-if="unfoldShow && (child_i == -1 || child_i > 0)" @click="unfoldStatus = !unfoldStatus; controlChildren(2)">
+            <span class="fs-s4 text-primary cursor" v-if="unfoldShow && (child_i == -1 || child_i > 0)" @click="unfoldStatus = !unfoldStatus; controlChildren(2)">
               {{ unfoldStatus ? '收起' : '更多' }}<i class="el-icon--right" v-bind:class="{'el-icon-arrow-down': !unfoldStatus, 'el-icon-arrow-up' : unfoldStatus}"></i>
             </span>
           </div>
         </div>
         <slot name="endButton"></slot>
+      </div>
+      <div class="abs pt-10 pb-10 filter-popup bg-white" v-if="unfoldStatus && defaultShowLength > 0">
+        <div class="flex flex-wrap filterBox">
+          <slot name="defult"></slot>
+        </div>
+        <div class="flex justify-center align-center">
+          <el-button native-type="submit" :disabled="clickSubmit" size="medium" type="primary">
+            搜索
+          </el-button>
+          <span class="pl-10 pr-10 text-six cursor" v-if="resetStatus" @click="reset()">重置</span>
+          <span class="fs-s4 text-primary cursor" @click="unfoldStatus = !unfoldStatus">
+            收起<i class="el-icon--right el-icon-arrow-up"></i>
+          </span>
+        </div>
       </div>
     </el-form>
   </div>
@@ -44,6 +60,10 @@ export default {
     unfoldShow: {
       type: Boolean,
       default: true
+    },
+    defaultShowLength: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
@@ -72,8 +92,9 @@ export default {
         child = filterBox.children,
         box_width = document.getElementById('filterBox').clientWidth,
         end_width = document.getElementById('setBox').clientWidth,
-        child_width = 0
+        child_width = 0, cidx = 0
       if(type == 2){
+        if(this.defaultShowLength > 0) return
         for(var i in child){
           if(parseInt(child[i].clientWidth) >= 0 && i != child.length -1){
             if(this.unfoldStatus){
@@ -89,15 +110,20 @@ export default {
         box_width = box_width - end_width
         for(var i in child){
           if(parseInt(child[i].clientWidth) > 0 && i != child.length -1){
+            cidx++
             child_width += child[i].clientWidth + 1
-            if(box_width < child_width && i != 0 ){
+            if(this.defaultShowLength > 0){
+              if(this.defaultShowLength < cidx || (box_width < child_width && i != 0)){
+                if(this.child_i == -1) this.child_i = i
+                child[i].style.display = 'none'
+              }
+            }else if(box_width < child_width && i != 0){
               if(this.child_i == -1) this.child_i = i
               child[i].style.display = 'none'
             }
           }
         }
         filterBox.classList.remove('flex1')
-        //filterBox.style.width = document.getElementById('filterBox').clientWidth + 'px'
       }
       this.child_i = this.child_i > 0 ? this.child_i : 0
     },
@@ -150,18 +176,14 @@ export default {
     }
   }
   .filterBox{
-    padding-left: 15px;
     max-height: 42.667px;
     transition: max-height 0.5s linear;
     /deep/ .el-form-item{
-      padding-left: 15px;
+      margin-left: 15px;
       .el-form-item__label{
         min-width: 64px;
         font-weight: 500;
         font-size: 13px;
-      }
-      &:first-child{
-        padding-left: 0;
       }
     }
     &.fold{
@@ -184,7 +206,7 @@ export default {
       float: left;
       height: 32px;
     }
-    /deep/ > div {
+    /deep/ > div:not(.set-box) {
       margin-bottom: 10px;
       margin-right: -1px;
     }
@@ -193,6 +215,7 @@ export default {
       height: 32px;
     }
     /deep/ .el-input__inner{
+      padding-left: 10px;
       width: 135px;
       height: 32px !important;
       line-height: 32px;
@@ -220,7 +243,7 @@ export default {
     }
   }
   .set-box{
-    // height: 32px;
+    margin-bottom: 10px;
   }
   .icon-download{
     padding: 0 10px;
@@ -235,4 +258,18 @@ export default {
   /deep/ .el-tabs__header {
     margin-bottom: 0;
   }
+  /deep/ .el-button--small{
+    height: 32px;
+  }
+
+  .filter-popup{
+    width: 100%;
+    z-index: 99;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    .filterBox{
+      max-height: 999px;
+      justify-content: start;
+    }
+  }
+
 </style>

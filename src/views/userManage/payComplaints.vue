@@ -2,9 +2,12 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" :resetStatus="false" @query="toQuery">
       <template v-slot:defult>
+        <el-form-item label="小程序">
         <el-select v-model="form.appId" placeholder="小程序" @change="toQuery()">
           <el-option :label="item.appName" :value="item.appId" v-for="(item, key) in wechatList" />
         </el-select>
+        </el-form-item>
+        <el-form-item label="日期筛选">
         <el-date-picker
           class="range-day flex align-center"
             v-model="form.date"
@@ -16,12 +19,13 @@
             :picker-options="pickerOptionsEnd"
             @change="toQuery()">
           </el-date-picker>
+        </el-form-item>
       </template>
     </condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
+    <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
-        element-loading-text="Loading">
+        element-loading-text="Loading" stripe>
         <el-table-column label="投诉单号" width="140">
           <template slot-scope="scope">
             {{ scope.row.complaint_id }}
@@ -209,7 +213,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total || 0
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
         }).catch(() => {
           this.listLoading = false

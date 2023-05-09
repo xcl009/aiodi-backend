@@ -3,13 +3,19 @@
     <template v-if="!isStore()">
       <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
         <template v-slot:defult>
-          <el-select v-model="form.haveDevice" @change="toQuery()" placeholder="是否铺货">
-            <el-option label="全部" :value="null" />
-            <el-option label="已铺货" value="1" />
-            <el-option label="未铺货" value="2" />
-          </el-select>
+          <el-form-item label="是否铺货">
+            <el-select v-model="form.haveDevice" @change="toQuery()" placeholder="是否铺货">
+              <el-option label="全部" :value="null" />
+              <el-option label="已铺货" value="1" />
+              <el-option label="未铺货" value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="商户名称">
           <el-input v-model="form.name" placeholder="商户名称" />
-          <el-input v-model="form.mobile" placeholder="手机号码" />
+            </el-form-item>
+          <el-form-item label="手机号码">
+            <el-input v-model="form.mobile" placeholder="手机号码" />
+          </el-form-item>
         </template>
         <template v-slot:endButton>
           <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas()"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
@@ -18,9 +24,9 @@
       </condition>
     </template>
 
-    <div class="pl-15 pr-15 pb-5 bg-white" :class="{'pt-15': isStore()}">
+    <div class="pl-10 pr-10 bg-white" :class="{'pt-15': isStore()}">
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
-        v-loading="listLoading" :max-height="tableMaxH" :data="list">
+        v-loading="listLoading" :max-height="tableMaxH" :data="list" stripe>
         <el-table-column label="门头照" width="70">
           <template slot-scope="scope">
             <el-link>
@@ -95,36 +101,38 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false" v-else-if="!isSaas()">
+        <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false" v-else-if="!isSaas()">
           <template slot-scope="scope">
             <template v-if="form.deviceSns">
               <el-button type="primary" size="mini" @click="bindStore(scope.row)">铺货</el-button>
             </template>
             <template v-else>
-              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
-              <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-              <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})">编辑商户</el-button>
-              <el-dropdown trigger="click">
-                <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-dropdown-item>
-                  <template v-if="checkAbility(['VM'], 2, scope.row.storeDivisionConfig)">
-                    <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机运营模式</el-dropdown-item>
-                    <el-dropdown-item @click.native="$refs.relatedTemplates.getCompanyTemplate(scope.row.id)">售货机仓口模板</el-dropdown-item>
-                  </template>
-                  <template v-if="checkAbility(Object.keys(config.roomDevice), 2, scope.row.storeDivisionConfig) && isBrand()">
-                    <el-dropdown-item @click.native="$router.push({path: `/device/bedSetting?id=${scope.row.id}&userKey=storeId`})">主题房设置</el-dropdown-item>
-                  </template>
-                  <el-dropdown-item @click.native="$router.push({path: `/device/bedStat?id=${scope.row.id}`})" v-if="isBrand() && checkAbility(['BD', 'VG'], 2, scope.row.storeDivisionConfig)">在线统计</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">会员卡</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">DD设置</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">免费名额</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
-                  <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 5)">重置登录密码</el-dropdown-item> -->
-                  <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              <div class="flex flex-wrap">
+                <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
+                <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})">编辑商户</el-button>
+                <el-button type="primary" size="mini" @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
+                <el-dropdown trigger="click">
+                  <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="checkAbility(['VM'], 2, scope.row.storeDivisionConfig)">
+                      <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机运营模式</el-dropdown-item>
+                      <el-dropdown-item @click.native="$refs.relatedTemplates.getCompanyTemplate(scope.row.id)">售货机仓口模板</el-dropdown-item>
+                    </template>
+                    <template v-if="checkAbility(Object.keys(config.roomDevice), 2, scope.row.storeDivisionConfig) && isBrand()">
+                      <el-dropdown-item @click.native="$router.push({path: `/device/bedSetting?id=${scope.row.id}&userKey=storeId`})">主题房设置</el-dropdown-item>
+                    </template>
+                    <el-dropdown-item @click.native="$router.push({path: `/device/bedStat?id=${scope.row.id}`})" v-if="isBrand() && checkAbility(['BD', 'VG'], 2, scope.row.storeDivisionConfig)">在线统计</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">会员卡</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">DD设置</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">免费名额</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
+                    <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 5)">重置登录密码</el-dropdown-item> -->
+                    <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </template>
           </template>
         </el-table-column>
@@ -332,7 +340,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
           this.queryCash(this.arrayKeys(res.rows, 'id'))
           this.queryOrderCount(this.arrayKeys(res.rows, 'id'))

@@ -101,18 +101,21 @@ export default {
     padding: 0 0 0 30px !important;
   }
   /deep/ .el-submenu .el-submenu__title, .el-menu-item.submenu-title-noDropdown{
-    padding: 0 0 0 15px !important;
+    padding: 0 0 0 10px !important;
     &.is-active{
-      background-color: #F2F3F5 !important;
+      box-shadow: inset 0 0 8px 0 rgba(46, 116, 213, 1.0);
+      background-color: rgba(52,128,240,1) !important;
+      font-weight: 600;
     }
   }
   /deep/ .el-menu-item .svg-icon, /deep/ .el-submenu__title .svg-icon{
     width: 16px;
     height: 16px;
-    margin-right: 20px !important;
+    margin-right: 10px !important;
   }
   /deep/ .el-submenu__icon-arrow{
 		margin-top: -6px;
     right: 10px !important;
+    color: #fff;
   }
 </style>

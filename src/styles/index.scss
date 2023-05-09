@@ -591,9 +591,11 @@ div:focus {
   margin-bottom: 40px;
 }
 
-.max-w *{
+.max-w{
   max-width: 100%;
 }
+
+
 
 /*字体  */
 .fs-s1 {
@@ -837,10 +839,10 @@ div:focus {
     border-left: none;
   }
   .el-button--mini{
-    margin: 5px;
+    margin: 2px;
     min-width: 70px;
     height: 28px;
-    padding: 7px 10px;
+    padding: 6px 8px;
   }
   .el-button--danger.is-plain{
     background: rgba(255, 84, 84, 0.1);
@@ -860,10 +862,10 @@ div:focus {
 }
 .ptd-5.el-table{
   td {
-    //padding: 5px 0 !important;
+    padding: 5px 0 !important;
   }
   .cell{
-    //padding: 0 5px;
+    padding: 0 5px;
   }
 }
 .pagination-left{
@@ -890,6 +892,9 @@ div:focus {
     .el-form-item__label{
       margin-top: 30px;
     }
+  }
+  .el-form-item{
+    margin-bottom: 10px;
   }
   .el-textarea__inner{
     height: initial;
@@ -961,5 +966,10 @@ div:focus {
         width: 102px;
       }
     }
+  }
+}
+.filter-btn_box{
+  .el-button{
+    padding: 8px 10px;
   }
 }

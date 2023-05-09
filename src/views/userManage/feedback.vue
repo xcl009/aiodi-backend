@@ -1,41 +1,48 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="4" @reset="reset" @query="toQuery">
+      <template v-slot:left>
+        <div class="pl-10 max-w filter-btn_box white-space">
+          <el-scrollbar>
+            <el-button size="medium" :type="listQuery.state == item.value ? 'primary' : ''"
+              :class="{'btn-body': listQuery.state != item.value}" v-for="item in dealStatus"
+              @click="listQuery.state = item.value; toQuery()">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
+          </el-scrollbar>
+        </div>
+      </template>
+
       <template v-slot:defult>
-        <el-select placeholder="类型" v-model="form.feedbackType" @change="toQuery()" v-if="!isStore()">
-          <el-option :label="item" :value="index" v-for="(item, index) in feedbackType"/>
-        </el-select>
-        <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
-          <el-option :label="index" :value="item" v-for="(item, index) in myDeviceName"/>
-        </el-select>
-        <el-input placeholder="手机号码" v-model="form.mobile" />
-        <el-input placeholder="商户名称" v-model="form.storeName" v-if="!isStore()"/>
-        <el-input placeholder="设备SN" v-model="form.deviceSn" />
-        <el-date-picker
-          class="range-day flex align-center"
-            v-model="form.date"
-            type="daterange"
-            range-separator="-"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptionsEnd"
-            @change="toQuery()">
+        <el-form-item label="手机号码">
+          <el-input placeholder="用户手机号码" v-model="form.mobile" />
+        </el-form-item>
+        <el-form-item label="设备SN">
+          <el-input placeholder="设备SN" v-model="form.deviceSn" />
+        </el-form-item>
+        <el-form-item label="商户名称" v-if="!isStore()">
+          <el-input placeholder="商户名称" v-model="form.storeName" />
+        </el-form-item>
+        <el-form-item label="反馈对象" v-if="!isStore()">
+          <el-select placeholder="反馈对象" v-model="form.feedbackType" @change="toQuery()">
+            <el-option :label="item" :value="index" v-for="(item, index) in feedbackType" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="设备类型">
+          <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
+            <el-option :label="index" :value="item" v-for="(item, index) in myDeviceName" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="反馈日期">
+          <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange" range-separator="-"
+            value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期"
+            :picker-options="pickerOptionsEnd" @change="toQuery()">
           </el-date-picker>
+        </el-form-item>
       </template>
     </condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="flex mb-5">
-        <div class="flex1 white-space">
-          <el-scrollbar>
-            <el-button size="medium" :type="listQuery.state == item.value ? 'primary' : ''" class="mr-10 mb-10 ml-0" :class="{'btn-body': listQuery.state != item.value}" v-for="item in dealStatus" @click="listQuery.state = item.value; toQuery()">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
-          </el-scrollbar>
-        </div>
-      </div>
-
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
-        element-loading-text="Loading" stripe highlight-current-row>
+    <div class="pl-10 pr-10 bg-white">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+        :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="身份" width="80">
           <template slot-scope="scope">
             <div>{{ getRoleName(scope.row.userType) }}</div>
@@ -66,7 +73,8 @@
         <el-table-column label="设备二维码" width="100">
           <template slot-scope="scope">
             <div>{{ scope.row.deviceSn || '--' }}</div>
-            <a class="text-blue" v-if="scope.row.orderNo" :href="`/order/order?orderNo=${scope.row.orderNo}`" target="_blank">查看订单</a>
+            <a class="text-blue" v-if="scope.row.orderNo" :href="`/order/order?orderNo=${scope.row.orderNo}`"
+              target="_blank">查看订单</a>
           </template>
         </el-table-column>
         <!-- <el-table-column label="设备类型" width="100">
@@ -87,8 +95,8 @@
         <el-table-column label="截图" width="190">
           <template slot-scope="scope">
             <div class="flex flex-wrap" v-if="scope.row.errorImages">
-              <el-image class="mr-5" v-for="item in scope.row.errorImages.split(',')" style="width: 50px; height: 50px" fit="cover" :src="item"
-                :preview-src-list="scope.row.errorImages.split(',')">
+              <el-image class="mr-5" v-for="item in scope.row.errorImages.split(',')" style="width: 50px; height: 50px"
+                fit="cover" :src="item" :preview-src-list="scope.row.errorImages.split(',')">
               </el-image>
             </div>
             <div v-else>--</div>
@@ -106,12 +114,13 @@
         </el-table-column> -->
         <el-table-column label="状态" width="100">
           <template slot-scope="scope">
-            <el-button class="ml-0" :type="scope.row.state == 1 ? 'success' : 'danger'" size="mini" plain>{{ statusObj[scope.row.state] || '未处理' }}</el-button>
+            <el-button class="ml-0" :type="scope.row.state == 1 ? 'success' : 'danger'" size="mini"
+              plain>{{ statusObj[scope.row.state] || '未处理' }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="160">
+        <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">查看详情</el-button>
+            <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -129,7 +138,8 @@
             <div>{{ curRow.content }}</div>
           </el-form-item>
           <el-form-item label="错误截图" v-if="dform.errorImages && dform.errorImages.length > 0">
-            <el-image class="mr-5" v-for="item in dform.errorImages" style="width: 50px; height: 50px" :src="item" :preview-src-list="dform.errorImages"></el-image>
+            <el-image class="mr-5" v-for="item in dform.errorImages" style="width: 50px; height: 50px" :src="item"
+              :preview-src-list="dform.errorImages"></el-image>
           </el-form-item>
           <el-form-item label="后台回复">
             <el-input v-model="dform.reply" type="textarea" :rows="4" placeholder="请输入回复内容"></el-input>
@@ -145,7 +155,9 @@
 </template>
 
 <script>
-  import { getRoleName }  from '@/utils/index.js'
+  import {
+    getRoleName
+  } from '@/utils/index.js'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   export default {
@@ -158,8 +170,7 @@
       return {
         getRoleName: getRoleName,
         clickSubmit: false,
-        dealStatus: [
-          {
+        dealStatus: [{
             value: '',
             title: '全部',
             nkey: 'totalCount'
@@ -190,10 +201,12 @@
             let timeOptionRange = this.timeOptionRange
             let secondNum = 60 * 60 * 24 * 31 * 1000
             if (timeOptionRange) {
-              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange.getTime() - secondNum) || time.getTime() > Date.now()
+              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+                .getTime() - secondNum) || time.getTime() > Date.now()
             }
             return time.getTime() > Date.now()
-          }, onPick: (time) => {
+          },
+          onPick: (time) => {
             //当第一时间选中才设置禁用
             if (time.minDate && !time.maxDate) {
               this.timeOptionRange = time.minDate
@@ -242,7 +255,10 @@
       },
       myDeviceId() {
         return this.$store.state.user.myDeviceId
-      }
+      },
+      device() {
+        return this.$store.state.app.device
+      },
     },
     beforeRouteEnter(to, from, next) {
       to.meta.urlQuery = JSON.stringify(to.query)
@@ -274,7 +290,7 @@
        * 搜索查询
        */
       toQuery() {
-        if(this.clickSubmit) return
+        if (this.clickSubmit) return
         this.clickSubmit = true
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -285,8 +301,8 @@
       /**
        * 重置查询
        */
-      reset(){
-        if(this.clickSubmit) return
+      reset() {
+        if (this.clickSubmit) return
         this.clickSubmit = true
         this.form = {
           feedbackType: 'brand'
@@ -302,7 +318,7 @@
        */
       getStat() {
         var params = Object.assign({}, this.form)
-        if(params.date){
+        if (params.date) {
           params.startDate = params.date[0]
           params.endDate = params.date[1]
           delete params.date
@@ -319,7 +335,7 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        if(params.date){
+        if (params.date) {
           params.startDate = params.date[0]
           params.endDate = params.date[1]
           delete params.date
@@ -330,7 +346,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
         }).catch(() => {
           this.listLoading = false
@@ -353,7 +369,7 @@
             this.curIdx = idx
             this.dialogStatus = true
             console.log(row.errorImages.split(','))
-            if(dialogType == 1){
+            if (dialogType == 1) {
               this.dform = {
                 id: row.id,
                 errorImages: (row.errorImages ? row.errorImages.split(',') : []),

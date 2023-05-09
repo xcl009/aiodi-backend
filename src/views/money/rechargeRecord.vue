@@ -1,12 +1,15 @@
 <template>
   <div>
-    <div class="pl-5 bg-white">
+    <div class="bg-white">
       <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
         <template v-slot:defult>
-          <el-select v-model="form.capitalType" placeholder="钱包类型" @change="toQuery()">
-            <el-option label="普通钱包" :value="1" />
-            <el-option label="快活币钱包" :value="2" />
-          </el-select>
+          <el-form-item label="钱包类型">
+            <el-select v-model="form.capitalType" placeholder="钱包类型" @change="toQuery()">
+              <el-option label="普通钱包" :value="1" />
+              <el-option label="快活币钱包" :value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="日期筛选">
           <el-date-picker
             class="range-day flex align-center"
               v-model="form.date"
@@ -18,13 +21,14 @@
               :picker-options="pickerOptionsEnd"
               @change="toQuery()">
             </el-date-picker>
+          </el-form-item>
         </template>
       </condition>
     </div>
 
-    <div class="pt-10 pl-20 pr-20 bg-white">
+    <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" show-summary
-        :max-height="tableMaxH" element-loading-text="Loading">
+        :max-height="tableMaxH" element-loading-text="Loading" stripe>
         <el-table-column label="头像" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>

@@ -1,6 +1,6 @@
 <template>
-  <div class="pb-30 home-box">
-    <el-row :gutter="device === 'mobile' ? 10 : 20" type="flex">
+  <div class="home-box">
+    <el-row :gutter="10" type="flex">
       <el-col :span="24">
         <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money/monthMoney`})">
           <div>总交易额</div>
@@ -99,7 +99,7 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="device === 'mobile' ? 10 : 20" type="flex" class="mt-15" v-if="isStore()">
+    <el-row :gutter="10" type="flex" class="mt-10" v-if="isStore()">
       <template v-for="(itme, key) in config.roomDevice">
         <el-col :span="24" v-if="roomList[key] && roomList[key].length > 0">
           <div class="o-v p-15 card-panel cursor bg-white">
@@ -115,7 +115,7 @@
       </template>
     </el-row>
 
-    <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15">
+    <el-row :gutter="10" class="mt-10">
       <el-col :sm="24" :lg="8">
         <div class="pl-15 pr-15 pt-10 pb-15 data-contrast bg-white">
           <div class="flex align-center">
@@ -168,7 +168,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-20 pl-15 pr-15 pt-10 pb-10 data-contrast bg-white">
+        <div class="mt-10 pl-15 pr-15 pt-10 pb-10 data-contrast bg-white">
           <div class="text-black">设备数据统计</div>
           <div class="chart-device" ref="chart_device" style="height: 250px;"></div>
         </div>
@@ -205,7 +205,7 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="device === 'mobile' ? 10 : 20" class="mt-15" v-if="(myDeviceId['KF'] || myDeviceId['VM'] || myDeviceId['BD']) && isStore()">
+    <el-row :gutter="10" class="mt-10" v-if="(myDeviceId['KF'] || myDeviceId['VM'] || myDeviceId['BD']) && isStore()">
       <el-col :sm="24" :lg="8">
         <div class="pl-15 pr-15 pt-10 pb-10 bg-white" @click="$router.push({path: `/hotelTools`})">
           <div class="flex align-center">

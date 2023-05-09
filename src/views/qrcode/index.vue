@@ -2,9 +2,11 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-select v-model="form.deviceTypeCode" @change="toQuery()" placeholder="设备类型">
-          <el-option :label="index" :value="''+item+''" v-for="(item, index) in myDeviceName" />
-        </el-select>
+        <el-form-item label="设备类型">
+          <el-select v-model="form.deviceTypeCode" @change="toQuery()" placeholder="设备类型">
+            <el-option :label="index" :value="''+item+''" v-for="(item, index) in myDeviceName" />
+          </el-select>
+        </el-form-item>
         <!-- <el-input v-model="form.batchNumber" placeholder="二维码"/> -->
         <!-- <el-input v-model="form.deviceId" placeholder="设备SN"/> -->
         <el-date-picker
@@ -20,14 +22,13 @@
       </template>
     </condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="mb-15 flex">
+    <div class="pl-10 pr-10 bg-white">
+      <div class="mb-10 flex">
         <el-button size="medium" type="primary" @click="$router.push({path: `/device/addQrcode`})">生成二维码</el-button>
         <el-button size="medium" type="primary" @click="$router.push({path: `/device/qrAddRecord`})">生成记录</el-button>
         <el-button size="medium" type="primary" :disabled="selSnArr.length == 0" @click="downloadImg()">批量下载</el-button>
         <import-data name="files" btnSize="medium" class="ml-10"></import-data>
       </div>
-
       <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading" stripe highlight-current-row :max-height="tableMaxH" @selection-change="selSb">
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="编号" width="200">

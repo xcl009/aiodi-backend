@@ -1,39 +1,55 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+        <el-tabs class="bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
           <el-tab-pane label="全部设备" :name="'0'" />
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
       </template>
 
+      <template v-slot:left>
+        <div class="pl-10 max-w filter-btn_box white-space">
+          <el-scrollbar>
+            <el-button size="medium" :type="listQuery.haveBind === item.value ? 'primary' : ''"
+              :class="{'btn-body': listQuery.haveBind !== item.value}" v-for="item in haveBind"
+              @click="listQuery.haveBind = item.value;toQuery()">{{ item.title }}({{deviceCount[item.nkey] || onLineCount[item.nkey] || 0}})</el-button>
+          </el-scrollbar>
+        </div>
+      </template>
+
       <template v-slot:defult>
-        <el-input v-model="form.deviceSn" placeholder="二维码" />
-        <el-input v-model="form.factorySn" placeholder="设备SN" />
-        <el-input v-model="form.place" placeholder="位置备注" />
-        <el-select v-model="form.haveAssociateDevice" @change="toQuery()" placeholder="设备关联">
-          <el-option label="全部" :value="null" />
-          <el-option label="已关联" :value="true" />
-          <el-option label="未关联" :value="false" />
-        </el-select>
-        <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" v-if="!isStore()"></selectSearch>
-        <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()" v-if="lowerDevice && !isStore()"></selectSearch>
-        <selectSearch v-model="form.brandId" :type="6" name="name" placeholder="品牌名称" @change="toQuery()" v-if="isSaas()"></selectSearch>
+        <el-form-item label="二维码">
+          <el-input v-model="form.deviceSn" placeholder="二维码" />
+        </el-form-item>
+        <el-form-item label="设备SN">
+          <el-input v-model="form.factorySn" placeholder="设备SN" />
+        </el-form-item>
+        <el-form-item label="位置备注">
+          <el-input v-model="form.place" placeholder="位置备注" />
+        </el-form-item>
+        <el-form-item label="是否关联">
+          <el-select v-model="form.haveAssociateDevice" @change="toQuery()" placeholder="设备关联">
+            <el-option label="全部" :value="null" />
+            <el-option label="已关联" :value="true" />
+            <el-option label="未关联" :value="false" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="商户名称" v-if="!isStore()">
+          <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
+        </el-form-item>
+        <el-form-item label="代理名称" v-if="lowerDevice && !isStore()">
+          <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()"></selectSearch>
+        </el-form-item>
+        <el-form-item label="品牌名称" v-if="isSaas()">
+          <selectSearch v-model="form.brandId" :type="6" name="name" placeholder="品牌名称" @change="toQuery()"></selectSearch>
+        </el-form-item>
       </template>
     </condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="mb-15 flex" v-if="!isStore()">
-        <div class="flex1">
-          <el-button size="medium" :type="listQuery.haveBind === item.value ? 'primary' : ''"
-            :class="{'btn-body': listQuery.haveBind !== item.value}" v-for="item in haveBind"
-            @click="listQuery.haveBind = item.value;toQuery()">{{ item.title }}({{deviceCount[item.nkey] || onLineCount[item.nkey] || 0}})</el-button>
-        </div>
-      </div>
-
+    <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        element-loading-text="Loading" stripe highlight-current-row @selection-change="selList" :max-height="tableMaxH">
+        element-loading-text="Loading" stripe highlight-current-row @selection-change="selList" :max-height="tableMaxH" stripe>
         <el-table-column type="selection" :selectable="checkSel" width="50" v-if="!isSaas()" />
         <el-table-column label="设备名称" width="80">
           <template slot-scope="scope">
@@ -87,7 +103,7 @@
             <div v-if="scope.row.distribute">{{ scope.row.bindStoreTime }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户名称" width="150" v-if="!isStore()">
+        <el-table-column label="商户名称" width="200" v-if="!isStore()">
           <template slot-scope="scope">
             <div v-if="scope.row.store">
               <div class="text-cut_two">{{ scope.row.store.name }}</div>
@@ -197,60 +213,47 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="190" :fixed="device == 'desktop' ? 'right' : false" v-if="!isStore()">
+
+        <el-table-column label="操作" align="center" width="235" :fixed="device == 'desktop' ? 'right' : false" v-if="!isStore()">
           <template slot-scope="scope">
-            <el-row class="line-six">
-              <el-col :span="12">
-                <div class="text-primary cursor" @click="setRows(1, scope.row, 2)">二维码</div>
-              </el-col>
-              <el-col :span="12" v-if="lowerDevice || isSaas()">
-                <div class="text-primary cursor" @click="setRows(1, scope.row, 1)">设备归属</div>
-              </el-col>
-              <el-col :span="12" v-if="scope.row.distribute">
-                <div class="text-primary cursor" @click="unboundStore(scope.row)">解绑</div>
-              </el-col>
-              <el-col :span="12" v-if="scope.row.distribute && isBrand() && checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType])">
-                <div class="text-primary cursor" @click="$router.push({path: `/device/bedStat?deviceSn=${scope.row.deviceSn}`})">在线统计</div>
-              </el-col>
+            <div class="flex flex-wrap">
+              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2)">二维码</el-button>
+              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)" v-if="lowerDevice || isSaas()">设备归属</el-button>
+              <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
               <template v-if="!isSaas()">
                 <template v-if="lowerDevice">
-                  <el-col :span="12" v-if="!scope.row.distribute">
-                    <div class="text-primary cursor" @click="unbindAgent(scope.row, scope.$index)">回收设备</div>
-                  </el-col>
+                  <el-button type="primary" size="mini" @click="unbindAgent(scope.row, scope.$index)">回收设备</el-button>
                 </template>
                 <template v-else-if="!scope.row.distribute">
-                  <el-col :span="12">
-                    <div class="text-primary cursor" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})">去分配</div>
-                  </el-col>
-                  <el-col :span="12">
-                    <div class="text-primary cursor" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})">去铺货</div>
-                  </el-col>
+                  <el-button type="primary" size="mini" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})">去分配</el-button>
+                  <el-button type="primary" size="mini" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})">去铺货</el-button>
                 </template>
               </template>
-              <el-col :span="12" v-if="scope.row.deviceType.code.indexOf('PA') > -1">
-                <div class="text-primary cursor" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">设备弹出</div>
-              </el-col>
-            </el-row>
+              <template v-else-if="scope.row.deviceType.code.indexOf('PA') > -1">
+                <el-button type="primary" size="mini" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">设备弹出</el-button>
+              </template>
+              <el-button type="primary" size="mini" v-if="scope.row.distribute && checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType]) && (isBrand() || isSaas())" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">在线统计</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
       <div class="rel flex justify-center">
         <div class="abs flex pagination-left" v-if="!isSaas()">
           <template v-if="lowerDevice">
-            <el-button type="primary" size="medium" :disabled="selID.length == 0"
+            <el-button type="primary" size="mini" :disabled="selID.length == 0"
               @click="unbindAgent()">批量回收
             </el-button>
           </template>
           <template v-else-if="!isStore()">
-            <el-button type="primary" size="medium" :disabled="selID.length == 0"
+            <el-button type="primary" size="mini" :disabled="selID.length == 0"
               @click="$router.push({path: `/store?deviceId=${selID}`})">批量铺货</el-button>
-            <el-button type="primary" size="medium" :disabled="selID.length == 0"
+            <el-button type="primary" size="mini" :disabled="selID.length == 0"
               @click="$router.push({path: `/agent?deviceId=${selID}`})">批量分配
             </el-button>
           </template>
-          <el-button type="primary" size="medium"
+          <!-- <el-button type="primary" size="medium"
             @click="setRows(1, {}, 7)">服务器地址
-          </el-button>
+          </el-button> -->
         </div>
         <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
           @pagination="getList" />
@@ -644,7 +647,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
           this.queryOrderCount(this.arrayKeys(res.rows, 'deviceSn'))
           if(this.Ability['RELATION_DEVICE'] && this.list.length > 0){

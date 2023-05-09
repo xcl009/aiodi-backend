@@ -2,8 +2,12 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-        <el-input v-model="form.name" placeholder="代理姓名"/>
-        <el-input v-model="form.mobile" placeholder="手机号码"/>
+        <el-form-item label="代理姓名">
+          <el-input v-model="form.name" placeholder="代理姓名"/>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input v-model="form.mobile" placeholder="手机号码"/>
+        </el-form-item>
         <!-- <el-select placeholder="状态" v-model="form.activated_status" @change="toQuery()">
           <el-option label="有效" :value="1" />
           <el-option label="无效" :value="2" />
@@ -12,7 +16,7 @@
 		  </template>
 		</condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
+    <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
         <el-table-column label="品牌商" width="120">
           <template slot-scope="scope">
@@ -83,10 +87,10 @@
         </el-table-column>
         <el-table-column label="操作" width="240">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/order?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">订单列表</el-button>
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">商户列表</el-button>
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="toLogin(scope.row)">一键登录</el-button>
+            <div class="flex flex-wrap">
+              <el-button size="mini" @click="$router.push({path: `/order?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">订单列表</el-button>
+              <el-button size="mini" @click="$router.push({path: `/store?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">商户列表</el-button>
+              <el-button size="mini" @click="toLogin(scope.row)">一键登录</el-button>
             </div>
           </template>
         </el-table-column>
@@ -196,7 +200,7 @@
           this.clickSubmit = false
           if(params.page == 0){
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
           this.queryCash(this.arrayKeys(res.rows, 'id'))
           this.queryOrderCount(this.arrayKeys(res.rows, 'id'))

@@ -1,39 +1,47 @@
 <template>
   <div>
-		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
-		  <template v-slot:defult>
-        <el-date-picker
-          class="range-day flex align-center"
-          v-model="form.date"
-          type="datetimerange"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          @change="toQuery()">
-        </el-date-picker>
-        <el-select v-model="form.withdrawType" placeholder="提现方式" @change="toQuery()">
-          <el-option label="全部" value="" />
-          <el-option :label="item" :value="index" v-for="(item, index) in siteInfo.withdrawType"/>
-        </el-select>
-        <el-input v-model="form.name" placeholder="代理姓名" v-if="userType == 1"/>
-        <el-input v-model="form.storeName" placeholder="商户名称" v-if="userType == 2"/>
-        <el-input v-model="form.nickName" placeholder="用户昵称" v-if="userType == 3"/>
-        <el-input v-model="form.mobile" placeholder="手机号码"/>
-		  </template>
-		</condition>
-
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <div class="mb-15 flex">
-        <div class="flex1">
-          <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
-            :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
-            @click="listQuery.status = item.value; toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
-          <!-- <el-button size="medium" class="btn-body">总提现<span class="ml-15 mr-30 text-black">52877.52元</span>平台手续费<span class="ml-15 text-black">52877.52元</span></el-button> -->
+    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="4" @reset="reset" @query="toQuery">
+      <template v-slot:left>
+        <div class="pl-10 max-w filter-btn_box white-space">
+          <el-scrollbar>
+            <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
+              :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
+              @click="listQuery.status = item.value; toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
+          </el-scrollbar>
         </div>
-      </div>
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-        :max-height="tableMaxH">
+      </template>
+
+      <template v-slot:defult>
+        <el-form-item label="提现日期">
+          <el-date-picker class="range-day flex align-center" v-model="form.date" type="datetimerange"
+            value-format="yyyy-MM-dd HH:mm:ss" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"
+            @change="toQuery()">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="提现方式">
+          <el-select v-model="form.withdrawType" placeholder="提现方式" @change="toQuery()">
+            <el-option label="全部" value="" />
+            <el-option :label="item" :value="index" v-for="(item, index) in siteInfo.withdrawType" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="代理姓名" v-if="userType == 1" >
+          <el-input v-model="form.name" placeholder="代理姓名"/>
+        </el-form-item>
+        <el-form-item label="商户名称" v-if="userType == 2" >
+          <el-input v-model="form.storeName" placeholder="商户名称"/>
+        </el-form-item>
+        <el-form-item label="用户昵称" v-if="userType == 3" >
+          <el-input v-model="form.nickName" placeholder="用户昵称"/>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input v-model="form.mobile" placeholder="手机号码" />
+        </el-form-item>
+      </template>
+    </condition>
+
+    <div class="pl-10 pr-10 bg-white">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+        element-loading-text="Loading" :max-height="tableMaxH" stripe>
         <el-table-column label="提现单号" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.id || '--' }}</div>
@@ -100,10 +108,7 @@
                 <div>{{ scope.row.userName }}</div>
                 <div class="fs-s2">收款码</div>
               </div>
-              <el-image
-                class="pay-code"
-                :src="scope.row.qrcode"
-                fit="scale-down"
+              <el-image class="pay-code" :src="scope.row.qrcode" fit="scale-down"
                 :preview-src-list="[scope.row.qrcode]">
               </el-image>
             </div>
@@ -141,13 +146,8 @@
       </el-table>
 
       <div class="flex justify-center">
-        <pagination
-          v-show="listTotal > 0"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          :total="parseInt(listTotal)"
-          @pagination="getList"
-        />
+        <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
+          :total="parseInt(listTotal)" @pagination="getList" />
       </div>
     </div>
 
@@ -176,7 +176,9 @@
 <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
-  import { accSub } from '@/utils/index'
+  import {
+    accSub
+  } from '@/utils/index'
   export default {
     name: 'agentWithdraw',
     components: {
@@ -199,8 +201,7 @@
           2: '审核通过,到账中 ',
           3: '审核通过,已到账'
         },
-        statusArr: [
-          {
+        statusArr: [{
             value: '',
             title: '全部',
             nkey: 'all'
@@ -251,9 +252,9 @@
       }
     },
     activated() {
-      if(this.$route.meta.reload){
+      if (this.$route.meta.reload) {
         this.getList()
-      }else if(!this.list || this.list.length == 0) {
+      } else if (!this.list || this.list.length == 0) {
         this.toQuery()
       }
     },
@@ -261,7 +262,7 @@
       siteInfo() {
         return this.$store.getters.siteInfo
       },
-      agentInfo(){
+      agentInfo() {
         return this.$store.getters.agentInfo
       }
     },
@@ -273,7 +274,7 @@
        * 搜索查询
        */
       toQuery() {
-        if(this.clickSubmit) return
+        if (this.clickSubmit) return
         this.clickSubmit = true
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -284,8 +285,8 @@
       /**
        * 重置查询
        */
-      reset(){
-        if(this.clickSubmit) return
+      reset() {
+        if (this.clickSubmit) return
         this.clickSubmit = true
         this.form = {
           activated_status: 1
@@ -304,7 +305,7 @@
           page: this.listQuery.page - 1
         })
         params.userType = this.userType
-        if(params.date && params.date.length > 0){
+        if (params.date && params.date.length > 0) {
           params.startTime = params.date[0]
           params.endTime = params.date[1]
           delete params.date
@@ -313,7 +314,7 @@
           this.list = res.rows || []
           this.listLoading = false
           this.clickSubmit = false
-          if(params.page == 0){
+          if (params.page == 0) {
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
@@ -326,10 +327,10 @@
       /**
        * 统计数据
        */
-      getStat(){
+      getStat() {
         var params = Object.assign({}, this.form, this.listQuery)
         params.userType = this.userType
-        if(params.date && params.date.length > 0){
+        if (params.date && params.date.length > 0) {
           params.startTime = params.date[0]
           params.endTime = params.date[1]
           delete params.date
@@ -364,10 +365,11 @@
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
-        if(this.clickSubmit) return
+        if (this.clickSubmit) return
         this.clickSubmit = true
         switch (this.dialogType) {
-          case 1: case 2:
+          case 1:
+          case 2:
             this.$post('iot-saas-pay/admin/pay/withdraw/approve', {
               id: curRow.id,
               status: this.dialogType,
@@ -383,7 +385,7 @@
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
-              if(err && err.code == 19876){
+              if (err && err.code == 19876) {
                 this.dialogStatus = false
               }
             })
@@ -395,7 +397,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .pay-code{
+  .pay-code {
     width: 50px;
     height: 50px;
   }

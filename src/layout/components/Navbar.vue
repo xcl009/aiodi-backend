@@ -3,6 +3,7 @@
     <div class="pl-30 pr-20 cursor line-1" @click="toggleSideBar" style="color: #86909C;">
       <svg-icon slot="prefix" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
     </div>
+    <Breadcrumb class="breadcrumb-container" />
     <div class="flex1"></div>
     <div class="right-menu flex align-center">
       <!-- <div class="pl-15 pr-15 menu-item flex align-center">
@@ -212,7 +213,7 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 60px;
+  height: 45px;
   overflow: hidden;
   position: relative;
   background: #fff;

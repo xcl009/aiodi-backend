@@ -1,10 +1,10 @@
 <template>
   <div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <div v-if="sidebar.opened" class="pt-15 mb-10 text-center cursor"><!-- @click="toRenewal" -->
+      <div v-if="sidebar.opened" class="pt-15 mb-10 text-center text-white cursor"><!-- @click="toRenewal" -->
         <el-avatar :size="40" :src="agentInfo.avatar"></el-avatar>
         <div class="mt-5 pl-10 pr-10 fs-c1 text-cut">{{ agentInfo.nickname }}</div>
-        <div class="mt-5 fs-s4" v-if="isBrand()" @click="$router.push({path: `/money`})">快活币: <span class="text-black">{{ money.happyCurrencyNum || 0 }}</span></div>
+        <div class="mt-5 fs-s4" v-if="isBrand()" @click="$router.push({path: `/money`})">快活币: <span class="text-white">{{ money.happyCurrencyNum || 0 }}</span></div>
       </div>
       <el-menu
         :default-active="activeMenu"

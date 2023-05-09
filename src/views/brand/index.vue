@@ -2,25 +2,26 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-        <!-- <el-select placeholder="排序" v-model="form.sort" @change="toQuery()">
-          <el-option v-for="itme in sort_type" :label="itme.name" :value="''+itme.value" />
-        </el-select> -->
-        <el-input v-model="form.name" placeholder="品牌名"/>
-        <el-input v-model="form.mobile" placeholder="手机号码"/>
-        <el-select placeholder="状态" v-model="form.status" @change="toQuery()">
-          <el-option label="有效" :value="1" />
-          <el-option label="无效" :value="2" />
-          <!-- <el-option label="已删除" :value="0" /> -->
-        </el-select>
+        <el-form-item label="品牌名">
+          <el-input v-model="form.name" placeholder="品牌名"/>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input v-model="form.mobile" placeholder="手机号码"/>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select placeholder="状态" v-model="form.status" @change="toQuery()">
+            <el-option label="有效" :value="1" />
+            <el-option label="无效" :value="2" />
+          </el-select>
+        </el-form-item>
 		  </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/brand/addBrand`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
+        <el-button type="primary" size="small" @click="$router.push({path: `/brand/addBrand`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加品牌</el-button>
       </template>
 		</condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-        :max-height="tableMaxH">
+    <div class="pl-10 pr-10 bg-white">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe>
         <el-table-column label="品牌信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
@@ -93,25 +94,27 @@
             {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="190">
+        <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandId=${scope.row.id}`})">订单列表</el-button>
-            <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
-            <el-button type="primary" size="mini" @click="$router.push({path: `/brand/addBrand?brandId=${scope.row.id}`})">修改信息</el-button>
-            <el-dropdown trigger="click">
-              <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="$router.push({path: `/store?brandId=${scope.row.id}`})">商户列表</el-dropdown-item>
-                <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
-                <el-dropdown-item @click.native="$router.push({path: `/market?brandName=${scope.row.name}`})">购买服务记录</el-dropdown-item>
-                <el-dropdown-item @click.native="$router.push({path: `/market/appManage?brandId=${scope.row.id}`})">赠送服务</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(4, scope.row)">设备统计数量</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(5, scope.row)">代理层级缓存</el-dropdown-item>
-                <el-dropdown-item @click.native="setRow(6, scope.row)">租借中订单缓存</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <div class="flex flex-wrap">
+              <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandId=${scope.row.id}`})">订单列表</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/store?brandId=${scope.row.id}`})">商户列表</el-button>
+              <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+              <el-button type="primary" size="mini" @click.native="$router.push({path: `/market/appManage?brandId=${scope.row.id}`})">赠送服务</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/brand/addBrand?brandId=${scope.row.id}`})">修改信息</el-button>
+              <el-dropdown trigger="click">
+                <el-button type="primary" size="mini" class="" @click="">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/market?brandName=${scope.row.name}`})">购买服务记录</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(4, scope.row)">设备统计数量</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(5, scope.row)">代理层级缓存</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(6, scope.row)">租借中订单缓存</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -195,6 +198,9 @@
       }
     },
     computed: {
+      device() {
+        return this.$store.state.app.device
+      },
       siteInfo() {
         return this.$store.getters.siteInfo
       },
@@ -248,7 +254,7 @@
           this.clickSubmit = false
           if(params.page == 0){
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
           this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
           this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))

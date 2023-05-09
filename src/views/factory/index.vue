@@ -7,14 +7,14 @@
         </el-form-item>
       </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/factory/addFactory`})"><i
+        <el-button type="primary" size="small" @click="$router.push({path: `/factory/addFactory`})"><i
             class="el-icon-circle-plus-outline el-icon--left" />添加工厂</el-button>
       </template>
     </condition>
 
-    <div class="pl-15 pr-15 pb-15 bg-white">
+    <div class="pl-10 pr-10 pb-10 bg-white">
       <div class="bg-white">
-        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
           element-loading-text="Loading" stripe highlight-current-row>
           <el-table-column label="工厂名称">
             <template slot-scope="scope">
@@ -54,11 +54,13 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="270">
+          <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="$router.push({name: 'addFactory', params: { info: scope.row }})">修改信息</el-button>
-              <!-- <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">主题设置</el-button>
-              <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="toLogin(scope.row)">一键登录</el-button> -->
+              <div class="flex flex-wrap">
+                <el-button size="medium" @click="$router.push({name: 'addFactory', params: { info: scope.row }})">修改信息</el-button>
+                <!-- <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">主题设置</el-button>
+                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="toLogin(scope.row)">一键登录</el-button> -->
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -114,6 +116,7 @@
         clickSubmit: false,
         form: {},
         list: [],
+        tableMaxH: '250',
         listLoading: true,
         listQuery: {},
 
@@ -131,6 +134,9 @@
       }
     },
     computed: {
+      device() {
+        return this.$store.state.app.device
+      },
       myDeviceId() {
         return this.$store.getters.myDeviceId
       },
@@ -186,6 +192,7 @@
           this.clickSubmit = false
           this.totalRecommend(this.arrayKeys(res.list, 'aid'))
           this.totalCoin(this.arrayKeys(res.list, 'aid'))
+          this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false

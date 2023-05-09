@@ -4,12 +4,12 @@
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.appName || '小程序名称' }}</div>
+            {{ scope.row.appName || '小程序名称' }}
           </template>
         </el-table-column>
         <el-table-column label="APPID">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.appId || '--' }}</div>
+            {{ scope.row.appId || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="最新版本">
@@ -37,16 +37,18 @@
             {{ parseTime(scope.row.updateTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center" width="245" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">提交审核</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(3, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">审核状态</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(5, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">取消审核</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(6, scope.row, 1)" v-if="scope.row.appAuditStatus == 4">退回开发</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(7, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">体验版本</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/system/alipayEdit?app_id=${scope.row.appId}`})">修改信息</div>
+            <div class="flex flex-wrap">
+              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">上传代码</el-button>
+              <el-button type="primary" size="mini" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">提交审核</el-button>
+              <el-button type="primary" size="mini" @click="setRows(3, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">审核状态</el-button>
+              <el-button type="primary" size="mini" @click="setRows(5, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">取消审核</el-button>
+              <el-button type="primary" size="mini" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</el-button>
+              <el-button type="primary" size="mini" @click="setRows(6, scope.row, 1)" v-if="scope.row.appAuditStatus == 4">退回开发</el-button>
+              <el-button type="primary" size="mini" @click="setRows(7, scope.row, 1)" v-if="scope.row.appAuditStatus == 1">体验版本</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/system/alipayEdit?app_id=${scope.row.appId}`})" v-if="isBrand()">修改信息</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -122,6 +124,9 @@
       }
     },
     computed: {
+      device() {
+        return this.$store.state.app.device
+      },
       siteInfo() {
         return this.$store.getters.siteInfo
       },

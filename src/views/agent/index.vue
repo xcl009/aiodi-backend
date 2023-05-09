@@ -2,8 +2,12 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-        <el-input v-model="form.name" placeholder="代理名"/>
-        <el-input v-model="form.mobile" placeholder="手机号码"/>
+        <el-form-item label="代理名称">
+          <el-input v-model="form.name" placeholder="代理名称"/>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input v-model="form.mobile" placeholder="手机号码"/>
+        </el-form-item>
 		  </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/agent/addAgent`})" v-if="!lowerAgent && Ability['addAgent']"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
@@ -12,7 +16,7 @@
 		</condition>
 
     <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH" stripe>
         <el-table-column label="代理信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '姓名' }}</div>

@@ -1,16 +1,17 @@
 <template>
   <div>
-    <div class="pt-15 pl-15 pr-15 pb-5 bg-white">
-      <el-button size="medium" @click="refreshOpenToken">刷新第三方平台token</el-button>
+    <div class="pt-10 pl-10 pr-10 bg-white">
+      <el-button class="mb-10" type="primary" size="medium" @click="refreshOpenToken">刷新第三方平台token</el-button>
+
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.appName || '小程序名称' }}</div>
+            {{ scope.row.appName || '小程序名称' }}
           </template>
         </el-table-column>
         <el-table-column label="APPID">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.appId || '--' }}</div>
+            {{ scope.row.appId || '--' }}
           </template>
         </el-table-column>
         <el-table-column label="最新模板">
@@ -38,15 +39,17 @@
             {{ parseTime(scope.row.updateTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="245" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">上传代码</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1 || scope.row.appAuditStatus == 4">提交审核</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(3, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">审核状态</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(5, scope.row)">隐私设置</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="$router.push({path: `/system/wechatEdit?app_id=${scope.row.appId}`})" v-if="isBrand()">修改信息</div>
-            <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(6, scope.row, 1)">刷新token</div>
+            <div class="flex flex-wrap">
+              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">上传代码</el-button>
+              <el-button type="primary" size="mini" @click="setRows(2, scope.row, 1)" v-if="scope.row.appAuditStatus == 1 || scope.row.appAuditStatus == 4">提交审核</el-button>
+              <el-button type="primary" size="mini" @click="setRows(3, scope.row, 1)" v-if="scope.row.appAuditStatus == 2">审核状态</el-button>
+              <el-button type="primary" size="mini" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</el-button>
+              <el-button type="primary" size="mini" @click="setRows(5, scope.row)">隐私设置</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/system/wechatEdit?app_id=${scope.row.appId}`})" v-if="isBrand()">修改信息</el-button>
+              <el-button type="primary" size="mini" @click="setRows(6, scope.row, 1)">刷新token</el-button>
+            </div>
             <!-- <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div> -->
           </template>
@@ -138,6 +141,9 @@
       }
     },
     computed: {
+      device() {
+        return this.$store.state.app.device
+      },
       siteInfo() {
         return this.$store.getters.siteInfo
       },
@@ -181,7 +187,7 @@
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
         }).catch(err => {
           this.listLoading = false
@@ -265,7 +271,7 @@
             break
         }
       },
-      
+
       /**
        * 第三方平台token
        */
