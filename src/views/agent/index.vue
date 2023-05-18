@@ -15,7 +15,7 @@
       </template>
 		</condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
+    <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH" stripe>
         <el-table-column label="代理信息" width="130">
           <template slot-scope="scope">
@@ -82,17 +82,17 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="190">
+        <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <template v-if="deviceSns">
               <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
             </template>
             <template v-else>
-              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/store?agentId=${scope.row.id}`})">商户列表</el-button>
-              <el-button class="p-5 ml-0" size="medium" type="text" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-              <el-button class="p-5 ml-0" size="medium" type="text" @click="$router.push({path: `/agent/addAgent?agentId=${scope.row.id}`})" v-if="!lowerAgent && Ability['addAgent']">修改信息</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/store?agentId=${scope.row.id}`})">商户列表</el-button>
+              <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/agent/addAgent?agentId=${scope.row.id}`})" v-if="Ability['addAgent']">修改信息</el-button>
               <el-dropdown trigger="click">
-                <el-button class="p-5 ml-0" size="medium" type="text">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="setRows(1, scope.row, 2, scope.$index)">删除代理</el-dropdown-item>
                   <template v-for="item in scope.row.agentDeviceType">
@@ -194,7 +194,7 @@
         form: {},
         tableMaxH: '250',
         list: [],
-        listLoading: false,
+        listLoading: true,
         listTotal: 0,
         listQuery: {},
 
@@ -242,6 +242,9 @@
       }
     },
     computed: {
+      device() {
+        return this.$store.state.app.device
+      },
       siteInfo() {
         return this.$store.getters.siteInfo
       },

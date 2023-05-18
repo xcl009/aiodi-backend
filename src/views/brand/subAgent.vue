@@ -85,12 +85,12 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="240">
+        <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
-              <el-button size="mini" @click="$router.push({path: `/order?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">订单列表</el-button>
-              <el-button size="mini" @click="$router.push({path: `/store?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">商户列表</el-button>
-              <el-button size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">订单列表</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/store?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">商户列表</el-button>
+              <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
             </div>
           </template>
         </el-table-column>
@@ -126,7 +126,7 @@
         form: {},
         tableMaxH: '250',
         list: [],
-        listLoading: false,
+        listLoading: true,
         listTotal: 0,
         listQuery: {
           page: 1,
@@ -156,6 +156,9 @@
       }
     },
     computed: {
+      device() {
+        return this.$store.state.app.device
+      },
       siteInfo() {
         return this.$store.getters.siteInfo
       }

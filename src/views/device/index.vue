@@ -229,7 +229,7 @@
                   <el-button type="primary" size="mini" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})">去铺货</el-button>
                 </template>
               </template>
-              <template v-else-if="scope.row.deviceType.code.indexOf('PA') > -1">
+              <template v-if="scope.row.deviceType.code.indexOf('PA') > -1">
                 <el-button type="primary" size="mini" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">设备弹出</el-button>
               </template>
               <el-button type="primary" size="mini" v-if="scope.row.distribute && checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType]) && (isBrand() || isSaas())" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">在线统计</el-button>

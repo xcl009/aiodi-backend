@@ -19,13 +19,13 @@
           <el-form-item label="登录密码" v-if="!form.id">
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
-          <el-form-item label="工厂名称">
+          <el-form-item label="工厂名称" prop="name">
             <el-input v-model="form.name" placeholder="工厂名称" />
           </el-form-item>
-          <el-form-item label="所在区域">
+          <el-form-item label="所在区域" prop="province">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <el-form-item label="工厂地址">
+          <el-form-item label="工厂地址" prop="address">
             <el-input v-model="form.address" placeholder="工厂地址" />
           </el-form-item>
           <el-form-item label="工厂介绍">
@@ -67,17 +67,27 @@
           province: '',
           address: '',
           briefIntroduction: '',
-          profitRatio: ''
+          profitRatio: '',
+          code: ''
         },
         rules: {
           deviceTypeCodes: [
             { required: true, message: '请填写关联设备类型', trigger: 'blur' }
           ],
           name: [
-            { required: true, message: '请填写联系人姓名', trigger: 'blur' }
+            { required: true, message: '请填写工厂名称', trigger: 'blur' }
           ],
           mobile: [
             { required: true, message: '请填写手机号码作为登录账户', trigger: 'blur' }
+          ],
+          contacts: [
+            { required: true, message: '请填写联系人', trigger: 'blur' }
+          ],
+          province: [
+            { required: true, message: '请选择工厂所在城市', trigger: 'blur' }
+          ],
+          address: [
+            { required: true, message: '请选择工厂地址', trigger: 'blur' }
           ]
         },
         cityList: []

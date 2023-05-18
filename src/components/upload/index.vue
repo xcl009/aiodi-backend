@@ -38,7 +38,7 @@
 
       action: {
         type: String,
-        default: 'iot-saas-admin/open/aliyun/upload'
+        default: 'iot-saas-basic/open/aliyun/upload'
       },
 
       ratio: {

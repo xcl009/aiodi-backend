@@ -20,7 +20,7 @@
             <div class="mb-10">商户单号：{{ item.out_trade_no }}</div>
           </el-col>
           <el-col :xs="{span: 24}" :sm="{span: 12}">
-            <div class="mb-10">订单金额：￥{{ item.amount }}</div>
+            <div class="mb-10">订单金额：￥{{ item.amount / 100 }}</div>
           </el-col>
         </template>
       </el-row>

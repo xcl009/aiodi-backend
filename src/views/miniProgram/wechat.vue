@@ -100,7 +100,7 @@
         tableMaxH: '250',
         listQuery: {
           page: 1,
-          size: 10
+          size: 15
         },
         listTotal: 0,
         list: [],

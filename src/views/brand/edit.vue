@@ -19,7 +19,7 @@
           <el-form-item label="登录密码" v-if="!brandId">
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
           </el-form-item>
-          <el-form-item label="公司名称">
+          <el-form-item label="公司名称" prop="companyName">
             <el-input v-model="form.companyName" placeholder="公司名称" />
           </el-form-item>
           <el-form-item label="公司地址">
@@ -38,7 +38,7 @@
             <h4 class="pt-20">分润比例</h4>
             <template v-for="(id, index) in selDevice">
               <el-form-item :label="`${myDeviceId[id]}`">
-                <el-input v-model="form.deviceTypeProfitRatios[id]">
+                <el-input type="number" v-model="form.deviceTypeProfitRatios[id]">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -80,6 +80,9 @@
           ],
           mobile: [
             { required: true, message: '请填写手机号码作为登录账户', trigger: 'blur' }
+          ],
+          companyName: [
+            { required: true, message: '请填写公司名称', trigger: 'blur' }
           ]
         },
         cityList: [],

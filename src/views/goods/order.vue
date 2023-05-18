@@ -3,31 +3,49 @@
     <div class="bg-white">
       <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
         <template v-slot:defult>
-          <el-select v-model="listQuery.lowerAgent" placeholder="订单来源" @change="toQuery()">
-            <el-option label="我的订单" :value="false" />
-            <el-option label="下级订单" :value="true" />
-          </el-select>
-          <el-input v-model="form.orderNo" placeholder="订单号" />
-          <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
-          <selectSearch v-model="form.userId" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
-          <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" :isStoreOrder="true"></selectSearch>
+          <el-form-item label="订单来源">
+            <el-select v-model="listQuery.lowerAgent" placeholder="订单来源" @change="toQuery()">
+              <el-option label="我的订单" :value="false" />
+              <el-option label="下级订单" :value="true" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="订单号">
+            <el-input v-model="form.orderNo" placeholder="订单号" />
+          </el-form-item>
+          <el-form-item label="手机号">
+            <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()"></selectSearch>
+          </el-form-item>
+          <el-form-item label="用户昵称">
+            <selectSearch v-model="form.userId" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()"></selectSearch>
+          </el-form-item>
+          <el-form-item label="商户名称">
+            <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()" :isStoreOrder="true"></selectSearch>
+          </el-form-item>
+          <el-form-item label="设备SN">
           <el-input v-model="form.deviceSn" placeholder="设备SN" />
-          <el-input v-model="form.transactionNo" placeholder="交易单号" />
-          <el-select v-model="form.orderStatus" placeholder="订单状态" @change="toQuery()">
-            <el-option label="全部" value="" />
-            <el-option :label="item" :value="key" v-for="(item, key) in {'PAYMENT': '已完成', 'REFUND': '已退款'}" />
-          </el-select>
-          <el-date-picker
-            class="range-day flex align-center"
-              v-model="form.date"
-              type="daterange"
-              range-separator="-"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :picker-options="pickerOptionsEnd"
-              @change="toQuery()">
-            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="交易单号">
+            <el-input v-model="form.transactionNo" placeholder="交易单号" />
+          </el-form-item>
+          <el-form-item label="订单状态">
+            <el-select v-model="form.orderStatus" placeholder="订单状态" @change="toQuery()">
+              <el-option label="全部" value="" />
+              <el-option :label="item" :value="key" v-for="(item, key) in {'PAYMENT': '已完成', 'REFUND': '已退款'}" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="日期筛选">
+            <el-date-picker
+              class="range-day flex align-center"
+                v-model="form.date"
+                type="daterange"
+                range-separator="-"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="pickerOptionsEnd"
+                @change="toQuery()">
+              </el-date-picker>
+          </el-form-item>
         </template>
       </condition>
 

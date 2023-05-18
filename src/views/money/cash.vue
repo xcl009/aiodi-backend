@@ -7,7 +7,7 @@
             <div class="text-primary fs-b1">{{ money.balance || 0.00 }}</div>
           </el-form-item>
           <el-form-item label="提现金额">
-            <el-input v-model="form.amount" placeholder="请输入提现金额" />
+            <el-input type="money" v-model="form.amount" placeholder="请输入提现金额" />
           </el-form-item>
           <el-form-item label="提现方式">
             <el-radio-group v-model="form.withdrawType">
@@ -167,7 +167,6 @@
           this.form.withdrawType = withdrawType[0].val
           this.withdrawType = withdrawType
           let types = this.arrayKeys(withdrawType, 'val')
-          console.log(types)
           if(types.indexOf('2') > -1 || types.indexOf('4') > -1){
           	this.qrcodeInfo()
           }

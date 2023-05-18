@@ -63,8 +63,8 @@
         </el-table-column>
         <el-table-column label="上级代理" width="120" v-if="lowerStore">
           <template slot-scope="scope">
-            <div>{{ supUser[scope.row.userId] ? supUser[scope.row.userId].name : '' }}</div>
-            <div>{{ supUser[scope.row.userId] ? dealPhone(supUser[scope.row.userId].mobile) : '' }}</div>
+            <div>{{ supUser[scope.row.agentId] ? supUser[scope.row.agentId].name : '' }}</div>
+            <div>{{ supUser[scope.row.agentId] ? dealPhone(supUser[scope.row.agentId].mobile) : '' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="分润人" width="180" v-if="!isStore()">
@@ -101,16 +101,19 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false" v-else-if="!isSaas()">
+        <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false" v-else>
           <template slot-scope="scope">
-            <template v-if="form.deviceSns">
+            <template v-if="isSaas()">
+              <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+            </template>
+            <template v-else-if="form.deviceSns">
               <el-button type="primary" size="mini" @click="bindStore(scope.row)">铺货</el-button>
             </template>
             <template v-else>
               <div class="flex flex-wrap">
                 <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
                 <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})">编辑商户</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})">修改信息</el-button>
                 <el-button type="primary" size="mini" @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-button>
                 <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
                 <el-dropdown trigger="click">
@@ -641,7 +644,32 @@
        */
       getAgent(row){
         this.agentRow = row
-      }
+      },
+
+      /**
+       * 登录代理后台
+       * @param {Object} row
+       */
+      toLogin(row){
+        this.loadObj = this.$loading({
+          lock: true,
+          text: '正在登录',
+          spinner: 'el-icon-loading'
+        })
+        this.$post('iot-saas-user/admin/login', {
+          userType: 'store',
+          id: row.id
+        }).then(res => {
+          setToken(getToken(), 'token1')
+          setToken(res.loginToken.accessToken)
+          setTimeout(()=>{
+            location.href = '/home'
+            this.loadObj.close()
+          }, 500)
+        }).catch(err=>{
+          this.loadObj.close()
+        })
+      },
     }
   }
 </script>

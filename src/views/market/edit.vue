@@ -15,6 +15,9 @@
         <el-form-item label="服务名称">
           <el-input v-model="form.serviceName" placeholder="请输入服务名称" />
         </el-form-item>
+        <el-form-item label="服务简介">
+          <el-input v-model="form.desc" type="textarea" placeholder="请输入服务简介" />
+        </el-form-item>
         <el-form-item label="服务详情">
           <tinymce v-model="form.description" :height="300" v-if="form.description || !id"/>
         </el-form-item>

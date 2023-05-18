@@ -57,9 +57,9 @@
           <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <div class="flex flex-wrap">
-                <el-button size="medium" @click="$router.push({name: 'addFactory', params: { info: scope.row }})">修改信息</el-button>
-                <!-- <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="setRows(1, scope.row, 1)">主题设置</el-button>
-                <el-button class="pl-5 pr-5 ml-0" size="medium" type="text" @click="toLogin(scope.row)">一键登录</el-button> -->
+                <el-button type="primary" size="mini" @click="$router.push({name: 'addFactory', params: { info: scope.row }})">修改信息</el-button>
+                <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+                <!-- <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">主题设置</el-button> -->
               </div>
             </template>
           </el-table-column>
@@ -280,16 +280,6 @@
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-tabs__header {
-    margin-bottom: 0;
-  }
-
-  #list_table .el-button {
-    padding-left: 0;
-    padding-right: 0;
-    width: 80px;
-  }
-
   .ui-img {
     width: 60px;
     height: 60px;

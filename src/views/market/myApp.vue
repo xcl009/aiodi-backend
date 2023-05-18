@@ -1,146 +1,87 @@
 <template>
-  <div>
-    <condition ref="condition" @reset="reset" @query="toQuery">
-      <template v-slot:tabs>
-        <el-tabs class="mb-15 bg-white" v-model="listQuery.serviceTypeCode" @tab-click="toQuery()">
-          <el-tab-pane label="全部" :name="'0'" />
-          <el-tab-pane :label="item.name" :name="item.code" v-for="(item, index) in tabs" />
-        </el-tabs>
+  <div class="p-5">
+    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
+      <template v-slot:left>
+        <div class="pl-10 max-w filter-btn_box white-space">
+          <el-scrollbar>
+            <el-button size="medium" :type="!listQuery.serviceTypeCode ? 'primary' : ''"
+              :class="{'btn-body': listQuery.serviceTypeCode}"
+              @click="listQuery.serviceTypeCode = ''; toQuery(2)">全部服务</el-button>
+            <el-button size="medium" :type="listQuery.serviceTypeCode == item.code ? 'primary' : ''"
+              :class="{'btn-body': listQuery.serviceTypeCode != item.code}" v-for="item in tabs"
+              @click="listQuery.serviceTypeCode = item.code; toQuery(2)">{{ item.name }}</el-button>
+          </el-scrollbar>
+        </div>
       </template>
       <template v-slot:defult>
-        <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
-          <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
-        </el-select>
-        <el-select placeholder="服务状态" v-model="form.orderStatusCode" @change="toQuery()">
-          <el-option v-for="(item, code) in {PAYMENT: '正常', NOT_PAYMENT: '待支付', EXPIRES: '已到期', SOON_EXPIRES: '即将到期'}" :label="item" :value="code">{{ item }}</el-option>
-        </el-select>
-        <!-- <el-input v-model="form.serviceName" placeholder="服务名称"/> -->
+        <el-form-item label="设备类型">
+          <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
+            <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="服务名称">
+          <el-input v-model="form.serviceName" placeholder="服务名称" />
+        </el-form-item>
       </template>
     </condition>
 
-    <div class="pl-15 pr-15 pb-5 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH">
-        <el-table-column label="服务名称">
-          <template slot-scope="scope">
-            <div>{{ scope.row.serviceName || '--' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="模式">
-          <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.priceName || '--' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="周期" width="130">
-          <template slot-scope="scope">
-            {{ scope.row.cycleTypeName || '--' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="快活币">
-          <template slot-scope="scope">
-            {{ scope.row.price || '0.00' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="实付">
-          <template slot-scope="scope">
-            {{ scope.row.payAmount || '0.00' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="购买时间">
-          <template slot-scope="scope">
-            {{ scope.row.buyDatetime }}
-          </template>
-        </el-table-column>
-        <el-table-column label="到期时间">
-          <template slot-scope="scope">
-            {{ scope.row.expiresDatetime }}
-          </template>
-        </el-table-column>
-        <el-table-column label="订单状态">
-          <template slot-scope="scope">
-            <el-tag class="normal fs-s4" :class="{'expired' : scope.row.orderStatusName == '已到期', 'is-expired' : scope.row.orderStatusName == '即将到期'}">{{ scope.row.orderStatusName }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button class="ml-0" size="medium" type="text" @click="$router.push({path: `/market/buyApp?id=${scope.row.serviceId}`})" v-if="scope.row.cycleTypeName != '永久'">续费</el-button>
-            <el-button class="ml-5" size="medium" type="text" @click="$router.push({path: `/store/openMemberRecord`})" v-if="scope.row.priceCode && scope.row.priceCode.indexOf('_MEMBER_XF') > -1">开卡订单</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="flex justify-center">
-        <pagination
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          :total="parseInt(listTotal)"
-          @pagination="getList"
-        />
-      </div>
-    </div>
-
-    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
-      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
-      <template v-if="dialogType == 1">
-        <div class="text-center">
-          <div class="text-black">
-
+    <div v-infinite-scroll="loadPage" class="load-box">
+      <el-row :gutter="10">
+        <el-col :sm="24" :md="12" :lg="8" :xl="6" v-for="item in list">
+          <div class="p-10 list-item cursor bg-white shadow-light" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})">
+            <el-image
+              class="list-img"
+              :src="item.url"
+              fit="cover"></el-image>
+            <div class="mt-10 flex align-center">
+              <div class="text-black fs-c1">{{ item.serviceName }}</div>
+              <el-tag class="normal ml-5" size="mini" :class="{'expired' : item.orderStatusName == '已到期', 'is-expired' : item.orderStatusName == '即将到期'}">{{ item.orderStatusName }}</el-tag>
+            </div>
+            <div class="mt-10 fs-s2 text-cut_two">{{ item.desc  || '暂无简介'}}</div>
+            <div class="mt-15 flex align-center">
+              <template v-for="(sitem, idx) in item.priceSettings">
+                <div class="flex1" v-if="idx == 0">
+                  <span class="fs-b3 text-danger">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
+                  <span class="text-grey">{{ sitem.monthAmount > 0 ? `/月付` : sitem.yearAmount > 0 ? `/年付` : `/永久` }}</span>
+                </div>
+              </template>
+              <el-button type="primary" size="medium" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})" v-if="item.cycleTypeName != '永久'">立即续费</el-button>
+              <!-- <el-button type="primary" size="medium">立即购买</el-button> -->
+            </div>
           </div>
-        </div>
-      </template>
-      <div class="mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
-      </div>
-    </el-dialog>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="p-30 text-center bg-white text-primary cursor" @click="$router.push({path: `/market/appList`})" v-if="listTotal == 0">
+      暂未购买增值服务，去购买
+    </div>
   </div>
 </template>
 
 <script>
+  import { arrayKeys, arrayToObj} from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   export default {
-    name: 'agentWithdraw',
+    name: 'appList',
     components: {
       Pagination,
       condition
-    },
-    props: {
-      user_type: {
-        type: Number,
-        default: 0
-      }
     },
     data() {
       return {
         clickSubmit: false,
         tabs: [],
         form: {},
-        tableMaxH: '250',
         list: [],
-        listLoading: true,
+        listLoading: false,
         listTotal: 0,
         listQuery: {
           page: 1,
-          size: 20
+          size: 24
         },
-
-        // 弹出相关
-        dialogType: 1,
-        dialogStatus: false,
-        dialogTitle: {
-          1: ''
-        },
-        curRow: {},
-        curIdx: 0,
-        dform: {}
+        checkFree: {}
       }
-    },
-    beforeRouteEnter(to, from, next) {
-      if (from.name == 'buyApp') {
-        to.meta.reload = true
-      } else {
-        to.meta.reload = false
-      }
-      next()
     },
     activated() {
       if(this.$route.meta.reload){
@@ -173,7 +114,7 @@
         if(this.clickSubmit) return
         this.clickSubmit = true
         this.listQuery.page = 1
-        this.listQuery.size = 20
+        this.list = []
         this.getList()
       },
 
@@ -181,11 +122,10 @@
        * 重置查询
        */
       reset(){
-        this.form = {
-          activated_status: 1
-        }
+        this.form = {}
         this.listQuery.page = 1
-        this.listQuery.size = 20
+        this.listQuery.size = 24
+        this.list = []
         this.getList()
       },
 
@@ -198,13 +138,13 @@
         })
         if(params.serviceTypeCode == 0) delete params.serviceTypeCode
         this.$get('iot-saas-basic/client/service/market/record/findPage', params).then((res = {}) => {
-          this.list = res.rows || []
+          this.list = this.list.concat(res.rows || [])
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
             this.listTotal = res.total || 0
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
           }
+          this.onLoadPage = false
         }).catch(() => {
           this.listLoading = false
           this.clickSubmit = false
@@ -212,34 +152,13 @@
       },
 
       /**
-       * 操作商户
-       * @param {Object} type 1 dialog类型
-       * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: ''
-       * @param {Object} idx 当前数据所在位置
+       * 加载更多
        */
-      setRows(type, row, dialogType, idx) {
-        switch (type) {
-          case 1:
-            this.dialogType = dialogType
-            this.curRow = row
-            this.curIdx = idx
-            this.dialogStatus = true
-            break
-        }
-      },
-
-      /**
-       * 弹窗确认
-       */
-      dialogConfirm() {
-        let curRow = this.curRow,
-          curIdx = this.curIdx,
-          params = JSON.parse(JSON.stringify(this.dform))
-        switch (this.dialogType) {
-          case 1:
-
-            break
+      loadPage(){
+        if((parseInt(this.listTotal) / this.listQuery.size) > this.listQuery.page && !this.onLoadPage){
+          this.onLoadPage = true
+          this.listQuery.page++
+          this.getList()
         }
       }
     }
@@ -247,22 +166,42 @@
 </script>
 
 <style lang="scss" scoped>
-  .el-tag{
-    height: 24px;
-    line-height: 24px;
-    border: none;
-    border-radius: 2px;
-    &.normal{
-      background-color: rgba(7, 193, 96, 0.1);
-      color: #07C160;
+  /deep/ .el-row{
+    margin: 0 !important;
+  }
+  .load-box{
+    max-height: calc(100vh - 120px);
+    overflow-y: scroll;
+  }
+  .list-item{
+    margin-top: 10px;
+    border-radius: 4px;
+    .list-img{
+      width: 44px;
+      height: 44px;
+      border-radius: 4px;
+      border: thin solid #f5f5f5;
     }
-    &.is-expired{
-      background-color: rgba(255, 163, 44, 0.1);
-      color: #FFA32C;
+    .text-cut_two{
+      height: 32px;
     }
-    &.expired{
-      background-color: #F2F3F5;
-      color: #86909C;
+    /deep/ .el-rate__icon{
+      margin-right: 0;
+    }
+    .el-tag{
+      border: none;
+      &.normal{
+        background-color: rgba(7, 193, 96, 0.1);
+        color: #07C160;
+      }
+      &.is-expired{
+        background-color: rgba(255, 163, 44, 0.1);
+        color: #FFA32C;
+      }
+      &.expired{
+        background-color: #F2F3F5;
+        color: #86909C;
+      }
     }
   }
 

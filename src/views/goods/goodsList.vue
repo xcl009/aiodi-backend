@@ -2,11 +2,13 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-select v-model="form.status" placeholder="商品状态" @change="toQuery()">
-          <el-option label="全部" value="" />
-          <el-option label="上架" value="ENABLE" />
-          <el-option label="下架" value="CLOSE" />
-        </el-select>
+        <el-form-item label="商品状态">
+          <el-select v-model="form.status" placeholder="商品状态" @change="toQuery()">
+            <el-option label="全部" value="" />
+            <el-option label="上架" value="ENABLE" />
+            <el-option label="下架" value="CLOSE" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="商品名称">
           <el-input v-model="form.title" placeholder="商品名称" />
         </el-form-item>

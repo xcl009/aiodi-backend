@@ -46,7 +46,7 @@
                 <el-input v-model="form.userNickName" placeholder="请填写联系人姓名" />
               </el-form-item>
               <el-form-item ref="userMobile" label="手机号码" prop="userMobile">
-                <el-input v-model="form.userMobile" placeholder="此手机号码会作为登录账户" />
+                <el-input type="tel" v-model="form.userMobile" placeholder="此手机号码会作为登录账户" />
               </el-form-item>
               <el-form-item v-if="!storeId" label="登录密码">
                 <el-input v-model="form.loginPassword" placeholder="请填写登录密码" />
@@ -96,31 +96,31 @@
                 </el-form-item>
                 <template v-if="item.closeType == 3">
                   <el-form-item label="承诺分成">
-                    <el-input v-model="item.promised" placeholder="最高不能超过100%">
+                    <el-input  type="number" v-model="item.promised" placeholder="最高不能超过100%">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                   <el-form-item label="相对分成">
-                    <el-input v-model="item.relative" placeholder="最高不能超过100%">
+                    <el-input  type="number" v-model="item.relative" placeholder="最高不能超过100%">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                   <el-form-item label="每天前">
-                    <el-input v-model="item.promisedDeal" placeholder="单数">
+                    <el-input  type="number" v-model="item.promisedDeal" placeholder="单数">
                       <template slot="append">单按承诺分成比例分润</template>
                     </el-input>
                   </el-form-item>
                 </template>
                 <template v-else-if="item.closeType == 2">
                   <el-form-item label="相对分成">
-                    <el-input v-model="item.relative" placeholder="最高不能超过100%">
+                    <el-input  type="number" v-model="item.relative" placeholder="最高不能超过100%">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </template>
                 <template v-else>
                   <el-form-item label="分成比例">
-                    <el-input class="input-with" v-model="item.live" :placeholder="`最高不能超过${myProfitRatio[item.deviceTypeCode]}%`">
+                    <el-input class="input-with" type="number" v-model="item.live" :placeholder="`最高不能超过${myProfitRatio[item.deviceTypeCode]}%`">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
@@ -158,7 +158,7 @@
                           <el-select v-model="plan.time">
                             <el-option :label="`${time / 60}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
                           </el-select>
-                          <el-input v-model="plan.money" class="flex1 ml-10 mr-10">
+                          <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
                             <template slot="append">元</template>
                           </el-input>
                           <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
@@ -173,12 +173,12 @@
                       <el-form-item label="前">
                         <div class="flex">
                           <div class="flex1">
-                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingTime">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingTime">
                               <template slot="append">分钟</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1">
-                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount">
                               <template slot="append">元</template>
                             </el-input>
                           </div>
@@ -187,12 +187,12 @@
                       <el-form-item label="超过后">
                         <div class="flex">
                           <div class="flex1">
-                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.overBillingUnit">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.overBillingUnit">
                               <template slot="append">分钟</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1">
-                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice">
                               <template slot="append">元</template>
                             </el-input>
                           </div>
@@ -206,19 +206,19 @@
                             </el-select>
                           </div>
                           <div class="pl-10 flex1">
-                            <el-input v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
                               <template slot="append">元</template>
                             </el-input>
                           </div>
                         </div>
                       </el-form-item>
                       <el-form-item label="总封顶">
-                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount">
+                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount">
                           <template slot="append">元</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item label="押金">
-                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount">
+                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount">
                           <template slot="append">元</template>
                         </el-input>
                       </el-form-item>
@@ -563,7 +563,6 @@ export default {
       	})
         return
       }
-      this.clickSubmit = true
       this.$refs[formName].validate((valid, object) => {
         if (valid) {
           const params = JSON.parse(JSON.stringify(this.form))
@@ -583,7 +582,8 @@ export default {
           }
           params.storePayConfig = []
           params.storeDivisionConfig = []
-          deviceDataArr.map(item => {
+          for(var i in deviceDataArr){
+            let item = deviceDataArr[i]
             if(item.status == 1){
               let payConfig = {
                 deviceTypeCode: item.deviceTypeCode
@@ -630,7 +630,8 @@ export default {
               division.promisedDeal = item.promisedDeal || 1
               params.storeDivisionConfig.push(division)
             }
-          })
+          }
+          this.clickSubmit = true
           this.$post(url, params).then(res => {
             this.$message({
               message: '提交成功',
@@ -649,8 +650,6 @@ export default {
           }).catch( err => {
             this.clickSubmit = false
           })
-        } else {
-          this.clickSubmit = false
         }
       })
     },

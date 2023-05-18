@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="pt-15 pl-15 pr-15 pb-15 bg-white">
+    <div class="pt-10 pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
           <template slot-scope="scope">
@@ -53,6 +53,16 @@
         </el-table-column>
       </el-table>
 
+      <div class="flex justify-center">
+        <pagination
+      		v-show="listTotal > 0"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          :total="parseInt(listTotal)"
+          @pagination="getList"
+        />
+      </div>
+
       <div class="pt-20 text-center text-primary cursor" @click="$router.push({path: `/system/alipayEdit`})" v-if="list.length == 0">绑定小程序</div>
     </div>
 
@@ -72,10 +82,11 @@
 </template>
 
 <script>
+  import Pagination from '@/components/Pagination'
   export default {
     name: 'alipay',
     components: {
-
+      Pagination
     },
     data() {
       return {
@@ -83,7 +94,7 @@
         tableMaxH: '250',
         listQuery: {
           page: 1,
-          size: 10
+          size: 20
         },
         listTotal: 0,
         list: [],
@@ -156,6 +167,7 @@
         })
         this.$get('iot-saas-pay/admin/pay/config/alipay/list', params).then(res => {
           this.list = res.rows || []
+          this.listTotal = res.total
           this.listLoading = false
           this.clickSubmit = false
           if(params.page == 0){
