@@ -16,7 +16,7 @@
           <el-input v-model="form.serviceName" placeholder="请输入服务名称" />
         </el-form-item>
         <el-form-item label="服务简介">
-          <el-input v-model="form.desc" type="textarea" placeholder="请输入服务简介" />
+          <el-input v-model="form.brief" type="textarea" placeholder="请输入服务简介" />
         </el-form-item>
         <el-form-item label="服务详情">
           <tinymce v-model="form.description" :height="300" v-if="form.description || !id"/>
@@ -37,13 +37,13 @@
           <div class="mb-10 flex align-center" v-for="(item, index) in form.priceSettings">
             <el-input v-model="item.priceCode" class="mr-10" placeholder="套餐标识"></el-input>
             <el-input v-model="item.priceName" class="mr-10" placeholder="套餐名称"></el-input>
-            <el-input v-model="item.monthAmount" class="mr-10">
+            <el-input type="number" v-model="item.monthAmount" class="mr-10">
               <template slot="append">元/月</template>
             </el-input>
-            <el-input v-model="item.yearAmount" class="mr-10">
+            <el-input type="number" v-model="item.yearAmount" class="mr-10">
               <template slot="append">元/年</template>
             </el-input>
-            <el-input v-model="item.permanentAmount" class="mr-10">
+            <el-input type="number" v-model="item.permanentAmount" class="mr-10">
               <template slot="append">元/永久</template>
             </el-input>
             <el-button type="text" size="small" :disabled="form.priceSettings.length == 4" v-if="index == 0"
@@ -79,6 +79,7 @@
           serviceTypeCode: '',
           deviceTypeCode: '',
           serviceName: '',
+          brief: '',
           description: '',
           successfulCase: '',
           fileUrls: [],

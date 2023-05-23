@@ -39,7 +39,7 @@
             <div class="mt-10 text-black fs-c1">
               {{ item.name }}
             </div>
-            <div class="mt-10 fs-s2 text-cut_two">{{ item.desc  || '暂无简介'}}</div>
+            <div class="mt-10 fs-s2 text-cut_two">{{ item.brief  || '暂无简介'}}</div>
             <div class="mt-15 flex align-center">
               <template v-for="(sitem, idx) in item.priceSettings">
                 <div class="flex1" v-if="idx == 0">
@@ -125,6 +125,11 @@
       }
     },
     activated() {
+      let queryKey = ['brandId'],
+        query = this.$route.query
+      for (var i in queryKey) {
+        this[queryKey[i]] = query[queryKey[i]]
+      }
       if(this.$route.meta.reload){
         this.getList()
       }else if(!this.list || this.list.length == 0) {

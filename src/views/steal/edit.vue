@@ -40,17 +40,17 @@
         </h4>
         <div class="flex">
           <el-form-item label="每：">
-            <el-input v-model="form.complateRule.orderBaseNum">
+            <el-input type="number" v-model="form.complateRule.orderBaseNum">
               <template slot="append">单</template>
             </el-input>
           </el-form-item>
           <el-form-item label="漏：">
-            <el-input v-model="form.complateRule.loseNum">
+            <el-input type="number" v-model="form.complateRule.loseNum">
               <template slot="append">单</template>
             </el-input>
           </el-form-item>
           <el-form-item label="起漏金额：">
-            <el-input v-model="form.complateRule.startAmount">
+            <el-input type="number" v-model="form.complateRule.startAmount">
               <template slot="append">元</template>
             </el-input>
           </el-form-item>
@@ -80,7 +80,7 @@
         </h4>
         <div class="flex">
           <el-form-item label="扣减时间：">
-            <el-input v-model="form.minuteRule">
+            <el-input type="number" v-model="form.minuteRule">
               <template slot="append">分钟</template>
             </el-input>
           </el-form-item>
@@ -106,17 +106,17 @@
         </h4>
         <div class="flex">
           <el-form-item label="每：">
-            <el-input v-model="form.failRule.orderBaseNum">
+            <el-input type="number" v-model="form.failRule.orderBaseNum">
               <template slot="append">单</template>
             </el-input>
           </el-form-item>
           <el-form-item label="失败：">
-            <el-input v-model="form.failRule.loseNum">
+            <el-input type="number" v-model="form.failRule.loseNum">
               <template slot="append">单</template>
             </el-input>
           </el-form-item>
           <el-form-item label="起漏金额：">
-            <el-input v-model="form.failRule.startAmount">
+            <el-input type="number" v-model="form.failRule.startAmount">
               <template slot="append">元</template>
             </el-input>
           </el-form-item>

@@ -8,7 +8,7 @@
             <el-input v-model="form.name" placeholder="输入代理名称" />
           </el-form-item>
           <el-form-item label="手机号码" prop="mobile">
-            <el-input v-model="form.mobile" placeholder="请输入手机号码（此号码会作为登录账户）" />
+            <el-input type="tel" v-model="form.mobile" placeholder="请输入手机号码（此号码会作为登录账户）" />
           </el-form-item>
           <el-form-item label="登录密码" v-if="!agentId">
             <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />

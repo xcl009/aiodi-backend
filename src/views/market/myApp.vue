@@ -31,22 +31,18 @@
           <div class="p-10 list-item cursor bg-white shadow-light" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})">
             <el-image
               class="list-img"
-              :src="item.url"
+              :src="item.serviceUrl"
               fit="cover"></el-image>
             <div class="mt-10 flex align-center">
               <div class="text-black fs-c1">{{ item.serviceName }}</div>
               <el-tag class="normal ml-5" size="mini" :class="{'expired' : item.orderStatusName == '已到期', 'is-expired' : item.orderStatusName == '即将到期'}">{{ item.orderStatusName }}</el-tag>
             </div>
-            <div class="mt-10 fs-s2 text-cut_two">{{ item.desc  || '暂无简介'}}</div>
+            <div class="mt-10 fs-s2 text-cut_two">{{ item.brief  || '暂无简介'}}</div>
             <div class="mt-15 flex align-center">
-              <template v-for="(sitem, idx) in item.priceSettings">
-                <div class="flex1" v-if="idx == 0">
-                  <span class="fs-b3 text-danger">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
-                  <span class="text-grey">{{ sitem.monthAmount > 0 ? `/月付` : sitem.yearAmount > 0 ? `/年付` : `/永久` }}</span>
-                </div>
-              </template>
+              <div class="flex1">
+                到期时间：{{ item.expiresDatetime }}
+              </div>
               <el-button type="primary" size="medium" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})" v-if="item.cycleTypeName != '永久'">立即续费</el-button>
-              <!-- <el-button type="primary" size="medium">立即购买</el-button> -->
             </div>
           </div>
         </el-col>

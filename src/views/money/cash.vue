@@ -7,7 +7,7 @@
             <div class="text-primary fs-b1">{{ money.balance || 0.00 }}</div>
           </el-form-item>
           <el-form-item label="提现金额">
-            <el-input type="money" v-model="form.amount" placeholder="请输入提现金额" />
+            <el-input type="number" v-model="form.amount" placeholder="请输入提现金额" />
           </el-form-item>
           <el-form-item label="提现方式">
             <el-radio-group v-model="form.withdrawType">

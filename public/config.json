@@ -21,11 +21,11 @@
   "mode_way": {
     "default": {
       "套餐": "PACKAGE",
-      "预存+免押": "DEPOSIT_FREE",
+      "免押": "DEPOSIT_FREE",
       "预存": "DEPOSIT"
     },
     "PA": {
-      "预存+免押": "DEPOSIT_FREE",
+      "免押": "DEPOSIT_FREE",
       "预存": "DEPOSIT"
     }
   },

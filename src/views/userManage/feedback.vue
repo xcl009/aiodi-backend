@@ -368,7 +368,6 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
-            console.log(row.errorImages.split(','))
             if (dialogType == 1) {
               this.dform = {
                 id: row.id,
@@ -396,7 +395,8 @@
                   type: 'success',
                   message: '设置成功'
                 })
-                this.curRow = Object.assign(this.curRow, params)
+                this.curRow.state = params.state
+                this.curRow.reply = params.reply
                 this.dialogStatus = false
               })
             })

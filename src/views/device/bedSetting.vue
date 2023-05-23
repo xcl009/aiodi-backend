@@ -12,12 +12,12 @@
 
         <h4>订单相关</h4>
         <el-form-item label="扣除快活币">
-          <el-input v-model="form.amount" placeholder="商户创建按摩床订单扣除快活币数量">
+          <el-input type="number" v-model="form.amount" placeholder="商户创建按摩床订单扣除快活币数量">
             <template slot="append">快活币</template>
           </el-input>
         </el-form-item>
         <el-form-item label="使用人数">
-          <el-input v-model="form.limitUserNum" placeholder="商户创建的订单限几个用户使用">
+          <el-input type="number" v-model="form.limitUserNum" placeholder="商户创建的订单限几个用户使用">
             <template slot="append">人</template>
           </el-input>
         </el-form-item>
@@ -29,13 +29,13 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="赠送数量" v-if="form.giftType == 0">
-          <el-input v-model="form.giftKhb" placeholder="赠送快活币数量">
+          <el-input type="number" v-model="form.giftKhb" placeholder="赠送快活币数量">
             <template slot="append">快活币</template>
           </el-input>
           <div class="fs-s2 text-gray">每绑定一个设备赠送商户{{ form.giftKhb }}快活币（5分钟内完成赠送），解绑设备也会扣除赠送的快活币</div>
         </el-form-item>
         <el-form-item label="赠送天数" v-if="form.giftType == 1">
-          <el-input v-model="form.giftDays" placeholder="赠送免费床东订单天数">
+          <el-input type="number" v-model="form.giftDays" placeholder="赠送免费床东订单天数">
             <template slot="append">天</template>
           </el-input>
           <div class="fs-s2 text-gray">设备绑定商户后，商户在{{ form.giftDays }}天内在后台创建订单无需支付快活币</div>

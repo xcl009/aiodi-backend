@@ -14,16 +14,16 @@
             <el-input v-model="form.subhead" placeholder="请填写副标题" />
           </el-form-item>
           <el-form-item ref="costPrice" label="成本价" prop="costPrice">
-            <el-input v-model="form.costPrice" placeholder="请填写成本价" />
+            <el-input type="number" v-model="form.costPrice" placeholder="请填写成本价" />
           </el-form-item>
           <el-form-item ref="retailPrice" label="零售价" prop="retailPrice">
-            <el-input v-model="form.retailPrice" placeholder="请填写零售价" />
+            <el-input type="number" v-model="form.retailPrice" placeholder="请填写零售价" />
           </el-form-item>
           <el-form-item ref="stock" label="库存" prop="stock">
-            <el-input v-model="form.stock" placeholder="请填写库存" />
+            <el-input type="number" v-model="form.stock" placeholder="请填写库存" />
           </el-form-item>
           <el-form-item label="已售">
-            <el-input v-model="form.saleNum" placeholder="虚假的已售数量" />
+            <el-input type="number" v-model="form.saleNum" placeholder="虚假的已售数量" />
           </el-form-item>
           <el-form-item label="状态">
             <el-switch v-model="form.status" active-value="ENABLE" inactive-value="CLOSE" />

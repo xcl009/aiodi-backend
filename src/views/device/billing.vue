@@ -30,7 +30,7 @@
                   <el-select v-model="plan.time">
                     <el-option :label="`${time / 60}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
                   </el-select>
-                  <el-input v-model="plan.money" class="flex1 ml-10 mr-10">
+                  <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
                     <template slot="append">元</template>
                   </el-input>
                   <el-button type="text" size="small" :disabled="billing[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
@@ -44,12 +44,12 @@
               <el-form-item label="前">
                 <div class="flex">
                   <div class="flex1">
-                    <el-input v-model="billing[`${xcx}PayMode`].payModeDetails.startingTime">
+                    <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.startingTime">
                       <template slot="append">分钟</template>
                     </el-input>
                   </div>
                   <div class="pl-10 flex1">
-                    <el-input v-model="billing[`${xcx}PayMode`].payModeDetails.startingAmount">
+                    <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.startingAmount">
                       <template slot="append">元</template>
                     </el-input>
                   </div>
@@ -58,12 +58,12 @@
               <el-form-item label="超过后">
                 <div class="flex">
                   <div class="flex1">
-                    <el-input v-model="billing[`${xcx}PayMode`].payModeDetails.overBillingUnit">
+                    <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.overBillingUnit">
                       <template slot="append">分钟</template>
                     </el-input>
                   </div>
                   <div class="pl-10 flex1">
-                    <el-input v-model="billing[`${xcx}PayMode`].payModeDetails.unitPrice">
+                    <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.unitPrice">
                       <template slot="append">元</template>
                     </el-input>
                   </div>
@@ -72,24 +72,24 @@
               <el-form-item label="封顶">
                 <div class="flex">
                   <div>
-                    <el-select v-model="billing[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
+                    <el-select type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
                       <el-option :label="`${item / 60}小时封顶`" :value="item" v-for="item in config.day_unit"></el-option>
                     </el-select>
                   </div>
                   <div class="pl-10 flex1">
-                    <el-input v-model="billing[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
+                    <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
                       <template slot="append">元</template>
                     </el-input>
                   </div>
                 </div>
               </el-form-item>
               <el-form-item label="总封顶">
-                <el-input v-model="billing[`${xcx}PayMode`].payModeDetails.maxAmount">
+                <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.maxAmount">
                   <template slot="append">元</template>
                 </el-input>
               </el-form-item>
               <el-form-item label="押金">
-                <el-input v-model="billing[`${xcx}PayMode`].payModeDetails.depositAmount">
+                <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.depositAmount">
                   <template slot="append">元</template>
                 </el-input>
               </el-form-item>

@@ -108,6 +108,8 @@
             res.agentConfigFreeTime = parseInt(res.agentConfigFreeTime) / 60
             res.freeTime = parseInt(res.freeTime) / 60
             this.form = res
+          } else {
+            this.form = {}
           }
         })
       },

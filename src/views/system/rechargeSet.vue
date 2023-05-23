@@ -15,11 +15,11 @@
           <h4 class="mt-0" v-if="form.currencyType == 'RMB'">余额充值</h4>
           <el-form-item :label="`充值`" v-if="form.currencyType == 'RMB'">
             <div class="mb-10 flex align-center flex-wrap" v-for="(item, index) in form.configList">
-              <el-input v-model="item.amount" class="flex1 mr-10">
+              <el-input type="number" v-model="item.amount" class="flex1 mr-10">
                 <template slot="append">元</template>
               </el-input>
               <div>赠送</div>
-              <el-input v-model="item.giftAmount" class="flex1 ml-10 mr-10">
+              <el-input type="number" v-model="item.giftAmount" class="flex1 ml-10 mr-10">
                 <template slot="append">元</template>
               </el-input>
               <el-button type="text" size="small" :disabled="form.configList.length == 6" v-if="index == 0"
@@ -32,11 +32,11 @@
           <h4 class="mt-0" v-if="form.currencyType == 'KHB'">快活币充值</h4>
           <el-form-item :label="`充值`" v-if="form.currencyType == 'KHB'">
             <div class="mb-10 flex align-center flex-wrap" v-for="(item, index) in form.configList">
-              <el-input v-model="item.amount" class="flex1 mr-10">
+              <el-input type="number" v-model="item.amount" class="flex1 mr-10">
                 <template slot="append">快活币</template>
               </el-input>
               <div>赠送</div>
-              <el-input v-model="item.giftAmount" class="flex1 ml-10 mr-10">
+              <el-input type="number" v-model="item.giftAmount" class="flex1 ml-10 mr-10">
                 <template slot="append">快活币</template>
               </el-input>
               <el-button type="text" size="small" :disabled="form.configList.length == 6" v-if="index == 0"

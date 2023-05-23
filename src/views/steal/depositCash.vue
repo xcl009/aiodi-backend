@@ -26,13 +26,13 @@
           </el-form-item>
 
           <el-form-item label="概率">
-            <el-input v-model="form.probability">
+            <el-input type="number" v-model="form.probability">
               <template slot="append">%</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="时间">
-            <el-input v-model="form.durationTime">
+            <el-input type="number" v-model="form.durationTime">
               <template slot="append">天</template>
             </el-input>
             <div>
@@ -41,7 +41,7 @@
           </el-form-item>
 
           <el-form-item label="钱包余额">
-            <el-input v-model="form.walletBalance">
+            <el-input type="number" v-model="form.walletBalance">
               <template slot="append">元</template>
             </el-input>
             <div>
@@ -95,7 +95,12 @@
           deviceTypeCode: this.deviceTypeCode
         }).then((res = {} )=> {
           if (res.enable == undefined) {
-            this.form = {}
+            this.form = {
+              enable: 2,
+              durationTime: 7,
+              probability: 0,
+              walletBalance: 0
+            }
           } else {
             res.durationTime = parseInt(res.durationTime) / 1440
             this.form = res

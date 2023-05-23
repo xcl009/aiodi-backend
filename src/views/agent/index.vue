@@ -6,7 +6,7 @@
           <el-input v-model="form.name" placeholder="代理名称"/>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-input v-model="form.mobile" placeholder="手机号码"/>
+          <el-input type="tel" v-model="form.mobile" placeholder="手机号码"/>
         </el-form-item>
 		  </template>
       <template v-slot:endButton>

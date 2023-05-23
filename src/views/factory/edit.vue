@@ -32,7 +32,7 @@
             <el-input v-model="form.briefIntroduction" placeholder="工厂介绍(生产设备类型)" />
           </el-form-item>
           <el-form-item label="邀请分成">
-            <el-input v-model="form.profitRatio" placeholder="邀请品牌商分成比例">
+            <el-input type="number" v-model="form.profitRatio" placeholder="邀请品牌商分成比例">
               <template slot="append">%</template>
             </el-input>
           </el-form-item>

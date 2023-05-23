@@ -62,12 +62,12 @@
             <el-input v-model="dform.serviceName"></el-input>
           </el-form-item>
           <el-form-item label="卡金额" ref="amount" prop="amount">
-            <el-input v-model="dform.amount">
+            <el-input type="number" v-model="dform.amount">
               <template slot="append">元</template>
             </el-input>
           </el-form-item>
           <el-form-item label="卡时长" ref="availableDay" prop="availableDay">
-            <el-input v-model="dform.availableDay">
+            <el-input type="number" v-model="dform.availableDay">
               <template slot="append">天</template>
             </el-input>
           </el-form-item>
@@ -83,13 +83,13 @@
               </el-select>
             </el-form-item>
             <el-form-item class="ml-20" label="免费" ref="cycleFreeTimes" prop="cycleFreeTimes">
-              <el-input v-model="dform.cycleFreeTimes">
+              <el-input type="number" v-model="dform.cycleFreeTimes">
                 <template slot="append">次</template>
               </el-input>
             </el-form-item>
           </div>
           <el-form-item label="免费" ref="cycleFreeTimes" prop="cycleFreeTimes" v-else-if="dform.cardType == 1">
-            <el-input v-model="dform.cycleFreeTimes">
+            <el-input type="number" v-model="dform.cycleFreeTimes">
               <template slot="append">次</template>
             </el-input>
           </el-form-item>
@@ -98,7 +98,7 @@
           </el-form-item>
           <template v-if="dform.cardModul == 1">
             <el-form-item label="卡押金">
-              <el-input v-model="dform.depositAmount">
+              <el-input type="number" v-model="dform.depositAmount">
                 <template slot="append">
                   <el-popover
                     placement="top"
@@ -112,7 +112,7 @@
               </el-input>
             </el-form-item>
             <el-form-item label="不退押金时长">
-              <el-input v-model="dform.overTime">
+              <el-input type="number" v-model="dform.overTime">
                 <template slot="append">小时</template>
               </el-input>
             </el-form-item>
@@ -123,7 +123,7 @@
               <el-switch v-model="dform.freeTimeType" :active-value="1" :inactive-value="0" />
             </el-form-item>
             <el-form-item label="单次免费时长" ref="freeTime" prop="freeTime" v-if="dform.freeTimeType == 0">
-              <el-input v-model="dform.freeTime">
+              <el-input type="number" v-model="dform.freeTime">
                 <template slot="append">小时</template>
               </el-input>
             </el-form-item>

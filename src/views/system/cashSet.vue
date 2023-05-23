@@ -114,29 +114,29 @@
                 </h4>
                 <el-form-item label="税点">
                   <div class="flex align-center flex-wrap">
-                    <el-input v-model="item.taxRate" class="flex1 mr-10">
+                    <el-input type="number" v-model="item.taxRate" class="flex1 mr-10">
                       <template slot="append">%</template>
                     </el-input>
                     <div class="ml-30">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单笔</div>
-                    <el-input v-model="item.handlingFee" class="flex1 ml-10 mr-10">
+                    <el-input type="number" v-model="item.handlingFee" class="flex1 ml-10 mr-10">
                       <template slot="append">元</template>
                     </el-input>
                   </div>
                 </el-form-item>
                 <el-form-item label="最小金额">
                   <div class="flex align-center flex-wrap">
-                    <el-input v-model="item.minAmount" class="flex1 mr-10">
+                    <el-input type="number" v-model="item.minAmount" class="flex1 mr-10">
                       <template slot="append">元</template>
                     </el-input>
                     <div class="ml-30">最大金额</div>
-                    <el-input v-model="item.maxAmount" class="flex1 ml-10 mr-10">
+                    <el-input type="number" v-model="item.maxAmount" class="flex1 ml-10 mr-10">
                       <template slot="append">元</template>
                     </el-input>
                   </div>
                 </el-form-item>
                 <el-form-item label="需审核金额" v-if="item.type == 1 || item.type == 3">
                   <div class="flex align-center flex-wrap">
-                    <el-input v-model="item.needApprovalAmount" class="flex1 mr-10">
+                    <el-input type="number" v-model="item.needApprovalAmount" class="flex1 mr-10">
                       <template slot="append">元</template>
                     </el-input>
                   </div>

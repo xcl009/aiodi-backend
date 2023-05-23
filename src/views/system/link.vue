@@ -99,7 +99,7 @@
           this.list.push({
             name: i,
             deviceTypeCode: this.myDeviceName[i],
-            link: `${this.config.CODE_URL}${this.agentInfo.brandCode}/${this.myDeviceName[i]}/`
+            link: `${this.config.CODE_URL}${this.SITE_INFO.code}/${this.myDeviceName[i]}/`
           })
         }
       },

@@ -14,6 +14,8 @@
             <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
               :class="{'btn-body': listQuery.status != item.value}" v-for="item in orderTab"
               @click="listQuery.status = item.value; toQuery(2)">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
+            <el-button size="medium" type="warning" @click="setRows(1, {}, 3)"
+              v-if="isSaas() || isBrand()">取消支付分订单</el-button>
           </el-scrollbar>
         </div>
       </template>
@@ -58,12 +60,6 @@
           </el-date-picker>
         </el-form-item>
       </template>
-      <!-- <template v-slot:endButton>
-        <div class="filter-btn_box">
-          <el-button size="medium" @click="setRows(1, {}, 3)"
-            v-if="isSaas() || isBrand()">取消支付分订单</el-button>
-        </div>
-      </template> -->
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
@@ -831,12 +827,14 @@
                 message: '请输入订单号',
                 type: 'error'
               })
+              this.clickSubmit = false
               return
             } else if (!params.reason) {
               this.$message({
                 message: '请输入取消原因',
                 type: 'error'
               })
+              this.clickSubmit = false
               return
             }
             this.$post('iot-saas-order/admin/order/cancel', params).then(res => {

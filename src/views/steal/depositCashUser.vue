@@ -2,18 +2,24 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+        <el-tabs class="bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
           <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
         </el-tabs>
       </template>
       <template v-slot:defult>
-        <el-select placeholder="用户来源" v-model="form.userType" @change="toQuery()">
-          <el-option label="全部" value="" />
-          <el-option label="微信" value="wechat" />
-          <el-option label="支付宝" value="alipay" />
-        </el-select>
-        <el-input placeholder="用户昵称" v-model="form.nickname" />
-        <el-input placeholder="手机号码" v-model="form.mobile" />
+        <el-form-item label="用户来源">
+          <el-select placeholder="用户来源" v-model="form.userType" @change="toQuery()">
+            <el-option label="全部" value="" />
+            <el-option label="微信" value="wechat" />
+            <el-option label="支付宝" value="alipay" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="用户昵称">
+          <el-input placeholder="用户昵称" v-model="form.nickname" />
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input placeholder="手机号码" v-model="form.mobile" />
+        </el-form-item>
       </template>
     </condition>
 
@@ -165,7 +171,7 @@
           this.listLoading = false
         })
       },
-      
+
       /**
        * 移除押金名单
        */

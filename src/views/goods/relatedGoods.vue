@@ -19,14 +19,14 @@
           </el-table-column>
           <el-table-column label="成本价" width="200">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.costPrice" placeholder="成本价" disabled>
+              <el-input type="number" v-model="scope.row.costPrice" placeholder="成本价" disabled>
                 <template slot="append">元</template>
               </el-input>
             </template>
           </el-table-column>
           <el-table-column label="零售价" width="200">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.retailPrice" placeholder="零售价">
+              <el-input type="number" v-model="scope.row.retailPrice" placeholder="零售价">
                 <template slot="append">元</template>
               </el-input>
             </template>

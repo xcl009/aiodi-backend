@@ -16,7 +16,7 @@
           <el-form-item label="只分商户直属上级">
             <div class="flex align-center">
               <el-switch v-model="form.onlySuperior" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示超时订单扣除{{ form.deviceCost }}成本后，其余金额只分给该商户的直属上级代理</span>
+              <span class="ml-10 fs-s3">开启表示超时订单扣除{{ form.deviceCost }}元成本后，其余金额只分给该商户的直属上级代理</span>
             </div>
           </el-form-item>
 

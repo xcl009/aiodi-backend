@@ -98,7 +98,8 @@ service.interceptors.response.use(
         // }
       break
       default:
-        Message.closeAll()
+        Message.closeAll(res.data.code)
+        console.log()
         if(['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1){
           Message({
             message: res.data.message || '网络卡住了，请刷新',

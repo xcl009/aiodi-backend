@@ -70,6 +70,7 @@
     data() {
       return {
         form: {
+          returnWallet: 2,
           refundTimeStatus: 2
         },
         id: this.$route.query.id || '',
@@ -104,6 +105,7 @@
             this.form = res
           } else {
             this.form = {
+              returnWallet: 2,
               refundTimeStatus: 2
             }
           }

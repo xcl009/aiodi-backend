@@ -38,10 +38,10 @@
             <el-input v-model="dform.name" placeholder="例：2口设备模板"></el-input>
           </el-form-item>
           <el-form-item label="仓口数量">
-            <el-input v-model="dform.positionQty"></el-input>
+            <el-input type="number" v-model="dform.positionQty"></el-input>
           </el-form-item>
           <el-form-item label="单仓口商品数">
-            <el-input v-model="dform.merchandiseQty" placeholder="例：1"></el-input>
+            <el-input type="number" v-model="dform.merchandiseQty" placeholder="例：1"></el-input>
           </el-form-item>
         </el-form>
       </template>

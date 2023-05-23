@@ -7,8 +7,12 @@
         </el-tabs>
       </template>
       <template v-slot:defult>
-        <el-input placeholder="用户昵称" v-model="form.nickname" />
-        <el-input placeholder="手机号码" v-model="form.mobile" />
+        <el-form-item label="用户昵称">
+          <el-input placeholder="用户昵称" v-model="form.nickname" />
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input placeholder="手机号码" v-model="form.mobile" />
+        </el-form-item>
       </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="setRows(1, {}, 1)"><i class="el-icon-plus el-icon--left" />添加</el-button>
@@ -32,11 +36,11 @@
             <div>{{ dealPhone(scope.row.mobile) }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="来源">
+        <!-- <el-table-column label="来源">
           <template slot-scope="scope">
             {{ scope.row.userType == 'wechat' ? '微信' : '支付宝' }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="添加时间" width="150">
           <template slot-scope="scope">
             {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
@@ -67,7 +71,7 @@
         <div class="flex align-center">
           <el-input placeholder="用户昵称" v-model="dform.nickname" class="flex-sub" @keyup.enter.native="searchUser"/>
           <el-input placeholder="手机号码" v-model="dform.mobile" class="flex-sub ml-15 mr-15" @keyup.enter.native="searchUser"/>
-          <el-button type="primary" @click="searchUser">查找用户</el-button>
+          <el-button type="primary" @click="searchUser" :disabled="clickSubmit">查找用户</el-button>
         </div>
 
         <el-table class="mt-30 custom" :data="userList" empty-text="未查询到用户，请更换条件" stripe highlight-current-row v-if="userList.length > 0 || searchStatus">
@@ -106,12 +110,12 @@
       <template v-if="dialogType == 2">
         <el-form class="custom-form pl-20 pr-20" label-width="100px" label-position="left">
           <el-form-item label="免费时长">
-            <el-input v-model="dform.freeTime">
+            <el-input type="number" v-model="dform.freeTime">
               <span slot="append">小时</span>
             </el-input>
           </el-form-item>
           <el-form-item label="每天使用次数">
-            <el-input v-model="dform.freeTimes">
+            <el-input type="number" v-model="dform.freeTimes">
               <span slot="append">次</span>
             </el-input>
           </el-form-item>
@@ -235,9 +239,15 @@
           })
           return
         }
+        this.searchStatus = false
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         this.$get('iot-saas-user/api/user/query', params).then(res => {
           this.userList = res.rows
           this.searchStatus = true
+          this.clickSubmit = false
+        }).catch(err => {
+          this.clickSubmit = false
         })
       },
 
@@ -292,11 +302,11 @@
        * 弹窗确认
        */
       dialogConfirm() {
-        if(this.clickSubmit) return
-        this.clickSubmit = true
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
+        if(this.clickSubmit) return
+        this.clickSubmit = true
         switch (this.dialogType) {
           case 1:
             params = JSON.parse(JSON.stringify(this.listQuery))
