@@ -210,7 +210,6 @@
                 type: 'success'
               })
               row.appAuditStatus = res
-              this.getList()
             })
             break
           case 4:
