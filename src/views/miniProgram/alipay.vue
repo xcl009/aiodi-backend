@@ -209,6 +209,7 @@
                 message: '查询成功',
                 type: 'success'
               })
+              row.appAuditStatus = res
               this.getList()
             })
             break
