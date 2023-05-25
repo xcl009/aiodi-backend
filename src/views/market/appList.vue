@@ -36,6 +36,7 @@
             <div class="mt-10 flex align-center">
               <div class="text-black fs-c1">{{ item.serviceName }}</div>
               <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)" v-if="item.serviceTypeCode != 'CATEGORY' && checkFree[item.serviceId] != 'YES'">0元试用</el-tag>
+              <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)">会员免费</el-tag>
             </div>
             <div class="mt-10 fs-s2 text-cut_two">{{ item.desc  || '暂无简介'}}</div>
             <div class="mt-15 flex align-center">

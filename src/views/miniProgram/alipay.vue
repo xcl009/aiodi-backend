@@ -209,7 +209,7 @@
                 message: '查询成功',
                 type: 'success'
               })
-              this.getList()
+              row.appAuditStatus = res
             })
             break
           case 4:
@@ -279,8 +279,8 @@
                 message: '上传成功',
                 type: 'success'
               })
-              row.appAuditStatus = 1
-              this.dialogStatus = true
+              curRow.appAuditStatus = 1
+              this.dialogStatus = false
             })
             break
         }
