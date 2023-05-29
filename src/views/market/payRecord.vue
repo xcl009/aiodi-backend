@@ -2,17 +2,27 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
-        <el-select placeholder="服务类型" v-model="form.serviceTypeCode" @change="toQuery()">
-          <el-option v-for="item in tabs" :label="item.name" :value="''+item.code" />
-        </el-select>
-        <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
-          <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
-        </el-select>
-        <el-select placeholder="周期类型" v-model="form.cycleType" @change="toQuery()">
-          <el-option v-for="item in cycleType" :label="item.name" :value="''+item.value" />
-        </el-select>
-        <el-input placeholder="服务名称" v-model="form.serviceName" />
-        <el-input placeholder="品牌名称" v-model="form.brandName" />
+        <el-form-item label="服务类型">
+          <el-select placeholder="服务类型" v-model="form.serviceTypeCode" @change="toQuery()">
+            <el-option v-for="item in tabs" :label="item.name" :value="''+item.code" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="设备类型">
+          <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
+            <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="周期类型">
+          <el-select placeholder="周期类型" v-model="form.cycleType" @change="toQuery()">
+            <el-option v-for="item in cycleType" :label="item.name" :value="''+item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="服务名称">
+          <el-input placeholder="服务名称" v-model="form.serviceName" />
+        </el-form-item>
+        <el-form-item label="品牌名称">
+          <el-input placeholder="品牌名称" v-model="form.brandName" />
+        </el-form-item>
 		  </template>
 		</condition>
 

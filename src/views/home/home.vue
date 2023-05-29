@@ -205,6 +205,33 @@
       </el-col>
     </el-row>
 
+    <el-row :gutter="10" class="mt-10" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">
+      <el-col :sm="24" :lg="8">
+        <div class="pl-15 pr-15 pt-10 pb-15 bg-white">
+          <div class="flex align-center">
+            <div class="flex1 text-black">租赁订单统计</div>
+          </div>
+          <div class="mt-20 flex justify-around text-center">
+            <div>
+              <div class="fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
+              <div>总订单数</div>
+            </div>
+            <div>
+              <div class="fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
+              <div>已扣金额</div>
+            </div>
+            <div>
+              <div class="fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
+              <div>代扣金额</div>
+            </div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :sm="24" :lg="16">
+
+      </el-col>
+    </el-row>
+
     <el-row :gutter="10" class="mt-10" v-if="(myDeviceId['KF'] || myDeviceId['VM'] || myDeviceId['BD']) && isStore()">
       <el-col :sm="24" :lg="8">
         <div class="pl-15 pr-15 pt-10 pb-10 bg-white" @click="$router.push({path: `/hotelTools`})">
@@ -361,6 +388,9 @@
         createOrderConfig: {},
         // 钱包 + 快活币余额
         money: {},
+        
+        // 租赁订单
+        leaseStat: {},
 
         // 弹出相关
         dialogType: 1,
@@ -402,13 +432,27 @@
       this.getQuerHistogram()
       this.getLineChart()
       this.getDeviceStat()
-      if(this.isSaas()) this.getUserStat()
-      if(this.isStore()){
+      if(this.isSaas()){
+        this.getUserStat()
+      } else if(this.isStore()){
         this.getDeviceList()
         this.getBalance()
+      } else if(this.isBrand()){
+        if(this.checkAbility(['DEVICE_LEASE'], 3)){
+          this.get
+        }
       }
     },
     methods: {
+      /**
+       * 租赁订单统计
+       */
+      getLeaseStat() {
+        this.$get(`iot-saas-order/admin/order/device/rent/statistics/all/${this.agentInfo.brandId}`).then(res => {
+          this.leaseStat = res
+        })
+      },
+      
       /**
        * 总统计
        */
@@ -437,7 +481,6 @@
           this.userStat = res
         })
       },
-
 
       /**
        * 设备统计

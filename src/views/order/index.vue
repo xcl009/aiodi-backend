@@ -236,7 +236,7 @@
           <el-form class="custom-form text-center">
             <div class="text-black2">归还时间</div>
             <el-date-picker class="mt-10" v-model="dform.chargeEndTime" type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择结束时间">
+              value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptionsEnd" placeholder="请选择结束时间">
             </el-date-picker>
 
             <template v-if="curRow.deviceType == '充电宝'">

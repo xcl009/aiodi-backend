@@ -166,9 +166,7 @@
                 message: '提交成功',
                 type: 'success'
               })
-              this.$router.push({
-                path: '/agent'
-              })
+              this.$router.back()
             }).catch( err => {
               setTimeout(() => {
                 this.clickSubmit = false

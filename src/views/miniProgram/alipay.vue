@@ -279,7 +279,7 @@
                 message: '上传成功',
                 type: 'success'
               })
-              row.appAuditStatus = 1
+              curRow.appAuditStatus = 1
               this.dialogStatus = true
             })
             break

@@ -21,8 +21,8 @@
                   trigger="hover">
                   <div>
                     <div class="mb-15 text-bold text-black">提现方式</div>
-                    1、微信提现需要您的微信支付商户账号已开通企业付款到零钱或商家转账到零钱功能，需审核金额表示低于该金额的提现会自动到账<br><br>
-                    2、支付宝提现需要您的支付宝企业账户已开通转账到支付宝个人账户功能，需审核金额表示低于该金额的提现会自动到账<br><br>
+                    1、微信提现需要<span v-if="false">开启采用订单退款模式或</span>您的微信支付商户账号已开通商家转账到零钱功能，需审核金额表示低于该金额的提现会自动到账<br><br>
+                    2、支付宝提现需要<span v-if="false">开启采用订单退款模式或</span>您的支付宝企业账户已开通转账到支付宝个人账户功能，需审核金额表示低于该金额的提现会自动到账<br><br>
                     3、其他方式均需要您手动转账后在系统通过即可<br>
                   </div>
                   <el-link type="danger" slot="reference" :underline="false" class="ml-10 el-icon-question fs-c1"></el-link>
@@ -134,13 +134,21 @@
                     </el-input>
                   </div>
                 </el-form-item>
-                <el-form-item label="需审核金额" v-if="item.type == 1 || item.type == 3">
+                <template v-if="item.type == 1 || item.type == 3">
+                <el-form-item label="需审核金额" >
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.needApprovalAmount" class="flex1 mr-10">
                       <template slot="append">元</template>
                     </el-input>
                   </div>
                 </el-form-item>
+                <el-form-item label="采用订单退款" v-if="false">
+                  <div class="flex align-center">
+                    <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
+                    <span class="ml-10 fs-s3">开启表示用户从钱包提现，以订单退款的方式给用户返还提现金额</span>
+                  </div>
+                </el-form-item>
+                </template>
               </template>
             </template>
 

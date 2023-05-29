@@ -20,7 +20,12 @@
       </div>
       <div class="flex align-center mb-20 pb-5">
         <div class="mr-15 w-60">周期</div>
-        <div v-if="info.priceSettings && info.priceSettings[form.priceCode]">
+        <div v-if="agentInfo.BRAND_MEMBER">
+          <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain">
+            2023-05-30到期
+          </el-tag>
+        </div>
+        <div v-else-if="info.priceSettings && info.priceSettings[form.priceCode]">
           <template v-for="item in cycle">
             <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-if="item.key == 'TRYOUT' && checkFree[id] != 'YES' && info.serviceTypeCode != 'CATEGORY'" :type="cycleKey == item.key ? '' : 'info'" @click="cycleKey = item.key; form.cycle = item.code">
               {{ item.label }}
@@ -33,7 +38,8 @@
       </div>
       <div class="flex align-center mb-20 pb-5">
         <div class="mr-15 w-60">价格</div>
-        <div class="fs-c1 text-danger" v-if="info.priceSettings">{{ info.priceSettings[form.priceCode][cycleKey] || 0 }}</div>
+        <div class="fs-c1 text-danger" v-if="agentInfo.BRAND_MEMBER">0</div>
+        <div class="fs-c1 text-danger" v-else-if="info.priceSettings">{{ info.priceSettings[form.priceCode][cycleKey] || 0 }}</div>
       </div>
       <div class="flex align-center mb-20 pb-5">
         <div class="mr-15 w-60">支付方式</div>
