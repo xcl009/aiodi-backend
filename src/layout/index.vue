@@ -13,64 +13,77 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, TagsView } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
-export default {
-  name: 'Layout',
-  components: {
-    TagsView,
+  import {
     Navbar,
     Sidebar,
-    AppMain
-  },
-  mixins: [ResizeMixin],
-  computed: {
-    sidebar() {
-      return this.$store.state.app.sidebar
+    AppMain,
+    TagsView
+  } from './components'
+  import ResizeMixin from './mixin/ResizeHandler'
+  export default {
+    name: 'Layout',
+    components: {
+      TagsView,
+      Navbar,
+      Sidebar,
+      AppMain
     },
-    needTagsView() {
-      return this.$store.state.settings.needTagsView
+    mixins: [ResizeMixin],
+    computed: {
+      showSettings() {
+        return this.$store.state.settings.showSettings
+      },
+      sidebar() {
+        return this.$store.state.app.sidebar
+      },
+      needTagsView() {
+        return this.$store.state.settings.needTagsView
+      },
+      device() {
+        return this.$store.state.app.device
+      },
+      fixedHeader() {
+        return this.$store.state.settings.fixedHeader
+      },
+      classObj() {
+        return {
+          hideSidebar: !this.sidebar.opened,
+          openSidebar: this.sidebar.opened,
+          withoutAnimation: this.sidebar.withoutAnimation,
+          mobile: this.device === 'mobile'
+        }
+      }
     },
-    device() {
-      return this.$store.state.app.device
-    },
-    fixedHeader() {
-      return this.$store.state.settings.fixedHeader
-    },
-    classObj() {
-      return {
-        hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opened,
-        withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === 'mobile'
+    methods: {
+      handleClickOutside() {
+        this.$store.dispatch('app/closeSideBar', {
+          withoutAnimation: false
+        })
       }
     }
-  },
-  methods: {
-    handleClickOutside() {
-      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
-    }
   }
-}
 </script>
 
 <style lang="scss" scoped>
   @import "~@/styles/mixin.scss";
   @import "~@/styles/variables.scss";
 
-  .main-container{
+  .main-container {
     border-left: thin solid #f1f1f1;
   }
+
   .app-wrapper {
     @include clearfix;
     position: relative;
     height: 100%;
     width: 100%;
-    &.mobile.openSidebar{
+
+    &.mobile.openSidebar {
       position: fixed;
       top: 0;
     }
   }
+
   .drawer-bg {
     background: #000;
     opacity: 0.3;

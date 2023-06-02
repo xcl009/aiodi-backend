@@ -2,13 +2,16 @@
   <el-row type="flex" justify="center" class="p-30  custom-form bg-white">
     <el-col :xs="24" :sm="12" :md="6" :lg="6">
       <el-form ref="form" :model="form" :rules="rules">
-        <el-form-item label="用户名">
+        <!-- <el-form-item label="用户名">
           <el-input v-model="agentInfo.mobile" disabled></el-input>
         </el-form-item>
         <el-form-item label="验证码" ref="verificationCode" prop="verificationCode">
           <el-input v-model="form.verificationCode">
             <auth-code ref="authCode" slot="append" @authCode="getAuthCode"></auth-code>
           </el-input>
+        </el-form-item> -->
+        <el-form-item label="旧密码">
+          <el-input v-model="form.oldPassword" show-password placeholder="未设置过可不填写"></el-input>
         </el-form-item>
         <el-form-item label="新密码" ref="newPassword" prop="newPassword">
           <el-input v-model="form.newPassword" show-password></el-input>
@@ -35,13 +38,6 @@
     data() {
       return {
         rules: {
-          verificationCode: [
-            {
-              required: true,
-              message: '请填写手机验证码',
-              trigger: 'blur'
-            },
-          ],
           newPassword: [
             {
               required: true,

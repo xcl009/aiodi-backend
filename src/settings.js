@@ -17,5 +17,7 @@ module.exports = {
   /**
    * tag
    */
-  needTagsView: true
+  needTagsView: true,
+  
+  showSettings: false
 }

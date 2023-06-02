@@ -155,6 +155,7 @@ const actions = {
               }
             })
             data.AssignAbility = AssignAbility
+            data.BRAND_MEMBER = false
             window.agentInfo = data
             commit('SET_NAME', data.nickname || data.username)
             commit('SET_AVATAR', data.avastar || '')
