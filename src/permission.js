@@ -34,7 +34,7 @@ router.beforeEach(async(to, from, next) => {
           if(roles[0] != 'admin'){
             await store.dispatch('user/getPlatformConfig')
           }
-          //await store.dispatch('user/getConstant')
+          await store.dispatch('user/getConstant')
           await store.dispatch('user/getMyDevice')
 
           // generate accessible routes map based on roles

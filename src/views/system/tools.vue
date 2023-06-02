@@ -176,11 +176,11 @@
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">登录手机号授权设置</div>
-                <div class="mt-5 fs-s3 text-gray">配置微信、支付宝用户登录手机号授权规则</div>
+                <div class="mt-5 fs-s3 text-gray">配置微信用户登录手机号授权规则</div>
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="setRows(1, {}, 1)">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'MOBILE_POWER' }, 1)">设置</el-button>
             </div>
           </div>
         </el-col>
@@ -193,15 +193,15 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :close-on-click-modal="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <el-form class="custom-form pl-20 pr-20" label-width="110px" label-position="left" ref="cardForm" :rules="cardRules" :model="dform">
+        <el-form class="custom-form pl-20 pr-20" label-width="60px" label-position="left" :model="dform">
           <el-form-item label="微信">
             <el-switch v-model="dform.wx_phone" :active-value="1" :inactive-value="0" />
-            <span class="ml-10 fs-s3">开启表示微信用户登录必须授权手机号码</span>
+            <span class="ml-10 fs-s3">开启表示微信用户登录需授权手机号码</span>
           </el-form-item>
-          <el-form-item label="支付宝">
+          <!-- <el-form-item label="支付宝">
             <el-switch v-model="dform.ali_phone" :active-value="1" :inactive-value="0" />
-            <span class="ml-10 fs-s3">开启表示支付宝用户登录必须授权手机号码（须获得获取会员手机号权限，否则用户无法正常登录）</span>
-          </el-form-item>
+            <span class="ml-10 fs-s3">开启表示支付宝用户登录需授权手机号码（须获得获取会员手机号权限，否则用户无法正常登录）</span>
+          </el-form-item> -->
         </el-form>
       </template>
       <div class="pb-20 mt-30 text-center">
@@ -217,6 +217,7 @@
     name: 'systemTools',
     data() {
       return {
+        clickSubmit: false,
         vendorInfo: {}, // 售货机运营信息
 
         // 弹出相关
@@ -277,7 +278,18 @@
             this.curRow = row
             this.curIdx = idx
             if(dialogType == 1){
-
+              this.$get('iot-saas-basic/admin/settings/find', {
+                code: row.code
+              }).then(res => {
+                if(res && res.code){
+                  this.dform = JSON.parse(res.setting)
+                } else {
+                  this.dform = {
+                    wx_phone: 0,
+                    //ali_phone: 0
+                  }
+                }
+              })
             } else {
               this.dform = {}
             }
@@ -297,7 +309,19 @@
         this.clickSubmit = true
         switch (this.dialogType) {
           case 1:
-
+            this.$post('iot-saas-basic/admin/settings/save', {
+              code: curRow.code,
+              setting: JSON.stringify(params)
+            }).then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
             break
         }
       }

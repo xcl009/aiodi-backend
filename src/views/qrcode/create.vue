@@ -110,6 +110,7 @@
        */
       onSubmit() {
         let params = JSON.parse(JSON.stringify(this.form))
+        if(params.windosNumber) params.positionQty = params.windosNumber
         this.clickSubmit = true
         this.$refs['form'].validate((valid, object) => {
           if (valid) {

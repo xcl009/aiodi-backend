@@ -89,7 +89,7 @@
         </el-table-column>
         <el-table-column label="支付类型" width="100">
           <template slot-scope="scope">
-            <div class="fs-s3">{{ Constant.PayType[scope.row.payType] || '--' }}</div>
+            <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="用户" width="150">
@@ -147,7 +147,7 @@
         <el-table-column label="状态" width="90">
           <template slot-scope="scope">
             <el-link :type="scope.row.status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
-              {{ Constant.OrderStatus[scope.row.status] || "--" }}
+              {{ Constant.OrderStatus? Constant.OrderStatus[scope.row.status] : "--" }}
             </el-link>
           </template>
         </el-table-column>

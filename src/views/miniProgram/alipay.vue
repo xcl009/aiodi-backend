@@ -280,7 +280,7 @@
                 type: 'success'
               })
               curRow.appAuditStatus = 1
-              this.dialogStatus = true
+              this.dialogStatus = false
             })
             break
         }

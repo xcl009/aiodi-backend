@@ -505,7 +505,7 @@ export default {
         if(res.storeDivisionConfig){
           res.storeDivisionConfig.map(item => {
             if (item.alipayPayMode) {
-              if(item.weixinPayMode.modeType == 'PACKAGE'){
+              if(item.alipayPayMode.modeType == 'PACKAGE'){
                 item.alipayPayMode.payModeDetail = JSON.parse(item.alipayPayMode.payModeDetail)
                 item.alipayPayMode.payModeDetails = this.defaultDevice.alipayPayMode.payModeDetails
               } else {
