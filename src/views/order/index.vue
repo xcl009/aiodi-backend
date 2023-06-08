@@ -689,6 +689,13 @@
               this.orderDivide = res.divideList
               this.amountPaid = res.amountPaid
               this.amountPaidLose = amountPaidLose
+              this.orderDivide.push({
+                dividerName: '微信分账-(接收方姓名)',
+                percent: '12',
+                amount: '0.1',
+                loseAmount: '0',
+                refund: '0',
+              })
             })
           }
         })

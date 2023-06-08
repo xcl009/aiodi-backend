@@ -19,9 +19,9 @@
         <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
-    <!-- <div class="abs hamburger-container text-center cursor" @click="toggleSideBar">
+    <div class="abs hamburger-container text-center cursor" @click="toggleSideBar">
       <svg-icon slot="prefix" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
-    </div> -->
+    </div>
     <!-- <hamburger :is-active="sidebar.opened" class="abs hamburger-container"  /> -->
   </div>
 </template>

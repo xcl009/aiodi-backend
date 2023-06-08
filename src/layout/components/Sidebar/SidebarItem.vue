@@ -103,8 +103,7 @@ export default {
   /deep/ .el-submenu .el-submenu__title, .el-menu-item.submenu-title-noDropdown{
     padding: 0 0 0 10px !important;
     &.is-active{
-      box-shadow: inset 0 0 8px 0 rgba(46, 116, 213, 1.0);
-      background-color: rgba(52,128,240,1) !important;
+      background: linear-gradient(90deg, #0089FB 0%, rgba(0, 137, 251, 0) 100%) !important;
       font-weight: 600;
     }
   }

@@ -94,7 +94,7 @@
         </el-table-column>
         <el-table-column label="设备属性" width="150">
           <template slot-scope="scope">
-            工厂：{{ scope.row.deviceFactory.name }}
+            工厂：{{ scope.row.deviceFactory ? scope.row.deviceFactory.name : '--' }}
           </template>
         </el-table-column>
         <el-table-column label="是否铺货" width="150" v-if="!isStore()">
@@ -472,16 +472,37 @@
         deviceInfo: {},
       }
     },
-    mounted(options) {
+    beforeRouteEnter(to, from, next) {
+      to.meta.urlQuery = JSON.stringify(to.query)
+      if (from.name == 'addStore') {
+        to.meta.reload = true
+      } else {
+        to.meta.reload = false
+      }
+      next()
+    },
+    activated() {
       let query = this.$route.query
       this.queryKey = ['brandId', 'storeId', 'agentId', 'deviceIds', 'sourceType']
       for (var i in this.queryKey) {
-        if(query[this.queryKey[i]]) this.form[this.queryKey[i]] = query[this.queryKey[i]]
+        if(query[this.queryKey[i]]){
+          this.form[this.queryKey[i]] = query[this.queryKey[i]]
+        } else {
+          delete this.form[this.queryKey[i]]
+        }
       }
-      this.toQuery()
+      if (this.$route.meta.reload) {
+        this.getList()
+      } else if (this.urlQuery != this.$route.meta.urlQuery) {
+        this.toQuery()
+      }
+      this.urlQuery = this.$route.meta.urlQuery
       if(this.isStore()){
         this.getBalance()
       }
+    },
+    mounted(options) {
+      
     },
     methods: {
       /**

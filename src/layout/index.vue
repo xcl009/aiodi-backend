@@ -1,10 +1,10 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
+    <sidebar class="sidebar-container"/>
     <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
+      <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+      <div :class="{'fixed-header':fixedHeader, 'open': classObj.openSidebar}">
+        <navbar/>
         <!-- <tags-view v-if="needTagsView" /> -->
       </div>
       <app-main />
@@ -69,7 +69,7 @@
   @import "~@/styles/variables.scss";
 
   .main-container {
-    border-left: thin solid #f1f1f1;
+
   }
 
   .app-wrapper {
@@ -98,10 +98,13 @@
     position: fixed;
     top: 0;
     right: 0;
-    left: 0;
+    left: 48px;
     z-index: 1002;
-    //width: calc(100% - #{$sideBarWidth});
-    transition: width 0.28s;
+    width: calc(100% - 48px);
+    &.open{
+      left: $sideBarWidth;
+      width: calc(100% - #{$sideBarWidth});
+    }
   }
 
   .mobile .fixed-header {

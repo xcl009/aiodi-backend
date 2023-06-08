@@ -1,108 +1,284 @@
 <template>
-  <div class="home-box">
-    <el-row :gutter="10" type="flex">
-      <el-col :span="24">
-        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money/monthMoney`})">
-          <div>总交易额</div>
-          <div class="flex align-center line-1">
-            <div class="flex1 flex align-center">
-              <div class="fs-b5 text-black">￥</div>
-              <div class="mr-10 fs-b5 text-black"><count-to :start-val="0" :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2"/></div>
-              <i class="iconfont icon-right fs-s1"></i>
-            </div>
-            <div class="stat-icon flex align-center justify-center">
-              <finance theme="outline" size="27" fill="#3CA1FE"/>
-            </div>
-          </div>
-          <div class="flex align-center">
-            <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(orderStat.todayAmount)" :duration="2600" :decimals="2"/></div>
-            <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
+  <div class="rel pb-20 home-box mb-20">
+    <el-image class="abs quadrangle tl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
+    <el-image class="abs quadrangle tr" :src="require('@/assets/home/quadrangle.svg')"></el-image>
+    <el-image class="abs quadrangle bl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
+    <el-image class="abs quadrangle br" :src="require('@/assets/home/quadrangle.svg')"></el-image>
+    <el-image class="abs pieces l" :src="require('@/assets/home/pieces.svg')"></el-image>
+    <el-image class="abs pieces r" :src="require('@/assets/home/pieces.svg')"></el-image>
+    <el-row :gutter="10" type="flex" class="stat-box text-center">
+      <el-col :span="24" class="rel">
+        <div class="abs p-all flex justify-center">
+          <div class="o-v card-panel cursor" @click="$router.push({path: `/money/monthMoney`})">
+            <div class="flex align-center fs-b5 baby-blue">￥<count-to :start-val="0"
+                :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" /></div>
+            <div class="mt-5 fs-c1 text-white">总交易额</div>
+            <el-image class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')"></el-image>
           </div>
         </div>
+        <div class="dodge-icon b"></div>
       </el-col>
-      <el-col :span="24" v-if="Ability['order']">
-        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/order`})">
-          <div>总订单数</div>
-          <div class="flex align-center line-1">
-            <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)" :duration="2600"/></div>
-              <i class="iconfont icon-right fs-s1"></i>
-            </div>
-            <div class="stat-icon flex align-center justify-center" style="background: rgba(255, 163, 43, 0.1)">
-              <transaction-order theme="outline" size="27" fill="#FFA32B"/>
-            </div>
-          </div>
-          <div class="flex align-center">
-            <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(orderStat.todayNumber)" :duration="2600"/></div>
-            <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
+      <el-col :span="24" class="rel">
+        <div class="abs p-all flex justify-center">
+          <div class="o-v card-panel cursor" @click="$router.push({path: `/order`})">
+            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
+                :duration="2600" /></div>
+            <div class="mt-5 fs-c1 text-white">总订单数</div>
+            <el-image class="mt-10 type-icon" :src="require('@/assets/home/order.svg')"></el-image>
           </div>
         </div>
+        <div class="dodge-icon y"></div>
       </el-col>
-      <el-col :span="24">
-        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: isSaas() ? `/device` : `/device`})">
-          <div>总设备数</div>
-          <div class="flex align-center line-1">
-            <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)" :duration="2600"/></div>
-              <i class="iconfont icon-right fs-s1"></i>
-            </div>
-            <div class="stat-icon flex align-center justify-center" style="background: rgba(7, 193, 96, 0.1)">
-              <server theme="outline" size="27" fill="#07C160"/>
-            </div>
-          </div>
-          <div class="flex align-center">
-            <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(totalStat.todayDeviceNumber)" :duration="2600"/></div>
-            <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
+      <el-col :span="24" class="rel">
+        <div class="abs p-all flex justify-center">
+          <div class="o-v card-panel cursor" @click="$router.push({path: isSaas() ? `/device` : `/device`})">
+            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="delComma(orderStat.deviceNumber)"
+                :duration="2600" /></div>
+            <div class="mt-5 fs-c1 text-white">总设备数</div>
+            <el-image class="mt-10 type-icon" :src="require('@/assets/home/device.svg')"></el-image>
           </div>
         </div>
+        <div class="dodge-icon b"></div>
       </el-col>
-      <el-col :span="24" v-if="isSaas()">
-        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/userManage`})">
-          <div>总用户数</div>
-          <div class="flex align-center line-1">
-            <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
-              <i class="iconfont icon-right fs-s1"></i>
-            </div>
-            <div class="stat-icon flex align-center justify-center" style="background: rgba(255, 83, 83, 0.1)">
-              <peoples theme="outline" size="27" fill="#FF5353"/>
-            </div>
-          </div>
-          <div class="flex align-center">
-            <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(userStat.todayNumber)" :duration="2600" :decimals="2"/></div>
-            <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
+      <el-col :span="24" class="rel">
+        <div class="abs p-all flex justify-center">
+          <div class="o-v card-panel cursor">
+            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="200" :duration="2600" /></div>
+            <div class="mt-5 fs-c1 text-white">总代理数</div>
+            <el-image class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')"></el-image>
           </div>
         </div>
+        <div class="dodge-icon y"></div>
       </el-col>
-      <el-col :span="24" v-if="!isSaas()">
-        <div class="o-v p-15 card-panel cursor bg-white" @click="$router.push({path: `/money`})">
-          <div>总收益</div>
-          <div class="flex align-center line-1">
-            <div class="flex1 flex align-center">
-              <div class="mr-10 fs-b5"><count-to :start-val="0" :end-val="delComma(orderStat.orderDivide)" :duration="2600" :decimals="2"/></div>
-              <i class="iconfont icon-right fs-s1"></i>
-            </div>
-            <div class="stat-icon flex align-center justify-center" style="background: rgba(255, 83, 83, 0.1)">
-              <peoples theme="outline" size="27" fill="#FF5353"/>
+      <el-col :span="24" class="rel">
+        <div class="abs p-all flex justify-center">
+          <div class="o-v card-panel cursor">
+            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="200" :duration="2600" /></div>
+            <div class="mt-5 fs-c1 text-white">总商户数</div>
+            <el-image class="mt-10 type-icon" :src="require('@/assets/home/store.svg')"></el-image>
+          </div>
+        </div>
+        <div class="dodge-icon b"></div>
+      </el-col>
+    </el-row>
+
+    <div class="pl-20 pr-20 trapezoid-box">
+      <div class="trapezoid"></div>
+      <div class="trapezoid-strip"></div>
+    </div>
+
+    <el-row :gutter="20" type="flex" class="two-box mt-20 pl-20 pr-20 text-white">
+      <el-col :sm="24" :lg="8" class="">
+        <div class="p-20 item-box">
+          <div class="mb-20 flex align-center">
+            <div class="line"></div>
+            <div class="flex1 fs-b2">交易数据对比</div>
+            <div class="flex btn-box cursor">
+              <div class="btn" :class="{'act': contrast_type == index}" v-for="(item, index) in contrast_arr"
+                @click="contrast_type = index; $refs.contrastCarusel.setActiveItem(index)">{{ item }}</div>
             </div>
           </div>
+          <el-carousel height="300px" ref="contrastCarusel" @change="contrastChange" v-if="querHistogram.today">
+            <el-carousel-item v-for="(item, index) in contrast_arr" :interval="5000" :initial-index="contrast_type">
+              <div class="flex">
+                <div class="label">
+                  <div>今日</div>
+                  <div>昨日</div>
+                  <div>本周</div>
+                  <div>上周</div>
+                  <div>本月</div>
+                  <div>上月</div>
+                </div>
+                <div class="flex1">
+                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
+                      :percentage="index == 0 ? accMul(querHistogram.today.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.today.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.today.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
+                  </div>
+                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
+                      :percentage="index == 0 ? accMul(querHistogram.yesterday.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.yesterday.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.yesterday.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
+                  </div>
+                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
+                      :percentage="index == 0 ? accMul(querHistogram.week.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.week.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.week.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
+                  </div>
+                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
+                      :percentage="index == 0 ? accMul(querHistogram.lastWeek.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.lastWeek.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.lastWeek.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
+                  </div>
+                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
+                      :percentage="index == 0 ? accMul(querHistogram.month.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.month.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.month.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
+                  </div>
+                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
+                      :percentage="index == 0 ? accMul(querHistogram.lastMonth.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.lastMonth.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.lastMonth.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
+                  </div>
+                </div>
+                <div class="label">
+                  <div>
+                    {{ index == 0 ? querHistogram.today.amount + '元' : index == 1 ? querHistogram.today.orderNumber + '单' : querHistogram.today.unitPrice  + '元'}}
+                  </div>
+                  <div>
+                    {{ index == 0 ? querHistogram.yesterday.amount + '元' : index == 1 ? querHistogram.yesterday.orderNumber + '单' : querHistogram.yesterday.unitPrice  + '元'}}
+                  </div>
+                  <div>
+                    {{ index == 0 ? querHistogram.week.amount + '元' : index == 1 ? querHistogram.week.orderNumber + '单' : querHistogram.week.unitPrice  + '元'}}
+                  </div>
+                  <div>
+                    {{ index == 0 ? querHistogram.lastWeek.amount + '元' : index == 1 ? querHistogram.lastWeek.orderNumber + '单' : querHistogram.lastWeek.unitPrice  + '元'}}
+                  </div>
+                  <div>
+                    {{ index == 0 ? querHistogram.month.amount + '元' : index == 1 ? querHistogram.month.orderNumber + '单' : querHistogram.month.unitPrice  + '元'}}
+                  </div>
+                  <div>
+                    {{ index == 0 ? querHistogram.lastMonth.amount + '元' : index == 1 ? querHistogram.lastMonth.orderNumber + '单' : querHistogram.lastMonth.unitPrice  + '元'}}
+                  </div>
+                </div>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </el-col>
+      <el-col :sm="24" :lg="8">
+        <div class="p-20 item-box">
           <div class="flex align-center">
-            <div>今日</div>
-            <div class="ml-5 mr-5 text-danger"><count-to :start-val="0" :end-val="delComma(orderStat.todayDivide)" :duration="2600" :decimals="2"/></div>
-            <div class="iconfont icon-shangsheng fs-s1 text-danger"></div>
+            <div class="line"></div>
+            <div class="flex1 fs-b2">设备数量统计</div>
           </div>
+          <div class="chart-device" ref="chart_device" style="height: 300px;"></div>
+        </div>
+      </el-col>
+      <el-col :sm="24" :lg="8">
+        <div class="pl-20 pr-20 pt-20 item-box">
+          <div class="flex align-center">
+            <div class="line"></div>
+            <div class="flex1 fs-b2">设备产出使用情况</div>
+          </div>
+          <el-table class="store-table text-white" :highlight-current-row="false"
+            :header-row-style="{background:'none'}"
+            :header-cell-style="{background:'none',color:'#1CB9FB',border:'none',fontSize:'16px'}"
+            :row-style="{background:'none'}" :cell-style="{borderColor:'#143F84'}" :data="storeList"
+            style="background:none">
+            <el-table-column label="排名">
+              <template slot-scope="scope">
+                <span class="fs-c1 text-bold"
+                  :class="{'y-yellow': scope.row.ranking == 1, 'baby-blue': scope.row.ranking == 3, 'text-primary': scope.row.ranking == 2}">NO.{{ scope.row.ranking }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="商户名称">
+              <template slot-scope="scope">
+                <span class="y-yellow">{{ scope.row.name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="设备数量">
+              <template slot-scope="scope">
+                {{ scope.row.deviceNum }}
+              </template>
+            </el-table-column>
+            <el-table-column label="订单量">
+              <template slot-scope="scope">
+                {{ scope.row.orderNum }}
+              </template>
+            </el-table-column>
+            <el-table-column label="总金额">
+              <template slot-scope="scope">
+                {{ scope.row.orderAmount }}
+              </template>
+            </el-table-column>
+            <el-table-column label="在线">
+              <template slot-scope="scope">
+                {{ scope.row.deviceOnline }}
+              </template>
+            </el-table-column>
+            <el-table-column label="离线">
+              <template slot-scope="scope">
+                {{ scope.row.deviceOffline }}
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
       </el-col>
     </el-row>
 
-    <el-row :gutter="10" type="flex" class="mt-10" v-if="isStore()">
+    <el-row :gutter="20" type="flex" class="three-box mt-20 pl-20 pr-20 text-white">
+      <el-col :sm="24" :lg="12">
+        <div class="pl-20 pr-20 pt-20 item-box">
+          <div class="flex align-center">
+            <div class="line"></div>
+            <div class="flex1 fs-b2">订单数据明细</div>
+          </div>
+          <el-table ref="orderTable" class="order-table text-white" height="460px" :highlight-current-row="false"
+            :header-row-style="{background:'none'}"
+            :header-cell-style="{background:'none',color:'#1CB9FB',border:'none',fontSize:'16px'}"
+            :row-style="{background:'#0D2749'}" :cell-style="{border:'none'}" :data="orderList"
+            style="background:none">
+            <el-table-column label="序号" width="60">
+              <template slot-scope="scope">
+                <div class="fs-c1 text-bold idx text-center" :class="'idx_' + scope.$index % 3">{{ scope.$index + 1 }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="商户" width="80">
+              <template slot-scope="scope">
+                <span>{{ scope.row.storeName.substring(0, 1) }}***</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="用户" width="80">
+              <template slot-scope="scope">
+                {{ scope.row.userNickName.substring(0, 1) }}**
+              </template>
+            </el-table-column>
+            <el-table-column label="设备品类" width="100">
+              <template slot-scope="scope">
+                {{ scope.row.deviceType }}
+              </template>
+            </el-table-column>
+            <el-table-column label="来源" width="80">
+              <template slot-scope="scope">
+                {{ scope.row.sourceType == 2 ? '支付宝' : '微信' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="开始时间" width="150">
+              <template slot-scope="scope">
+                {{ scope.row.chargeStartTime || "--" }}
+              </template>
+            </el-table-column>
+            <el-table-column label="结束时间" width="150">
+              <template slot-scope="scope">
+                {{ scope.row.chargeEndTime || "--" }}
+              </template>
+            </el-table-column>
+            <el-table-column label="金额">
+              <template slot-scope="scope">
+                ￥{{ scope.row.amount }}
+              </template>
+            </el-table-column>
+            <el-table-column label="状态">
+              <template slot-scope="scope">
+                 {{ Constant.OrderStatus ? Constant.OrderStatus[scope.row.status] : "--" }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-col>
+      <el-col :sm="24" :lg="12">
+        <div class="pl-20 pr-20 pt-20 item-box">
+          <div class="flex align-center">
+            <div class="line"></div>
+            <div class="flex1 fs-b2">近期数据比较</div>
+            <div class="flex btn-box cursor">
+              <div class="btn" :class="{'act': day_type == index}" v-for="(item, index) in day_type_arr"
+                @click="day_type = index; getLineChart()">{{ item }}</div>
+            </div>
+            <div class="ml-15 box-grey">
+              <el-date-picker class="range-day" type="month" size="small" v-model="form.date" :picker-options="pickerOptionsEnd" range-separator="-"
+                placeholder="选择月份" value-format="yyyy-MM" @change="getTime">
+              </el-date-picker>
+            </div>
+          </div>
+          <div class="chart-daystat" ref="chartDay" style="height: 460px;"></div>
+        </div>
+      </el-col>
+    </el-row>
+
+    <!-- <el-row :gutter="10" type="flex" class="mt-10" v-if="isStore()">
       <template v-for="(itme, key) in config.roomDevice">
         <el-col :span="24" v-if="roomList[key] && roomList[key].length > 0">
-          <div class="o-v p-15 card-panel cursor bg-white">
+          <div class="o-v p-15 card-panel cursor ">
             <div class="mb-15"><span class="mr-15 fs-c1 text-black">{{ itme }}</span>点击房间号即可创建订单</div>
             <div class="flex align-center flex-wrap room-box text-center fs-b2">
               <div class="pt-15 pb-15 item" v-for="sitem in roomList[key]"  @click="setRows(1, sitem, 6)">
@@ -117,7 +293,7 @@
 
     <el-row :gutter="10" class="mt-10">
       <el-col :sm="24" :lg="8">
-        <div class="pl-15 pr-15 pt-10 pb-15 data-contrast bg-white">
+        <div class="pl-15 pr-15 pt-10 pb-15 data-contrast ">
           <div class="flex align-center">
             <div class="flex1 text-black">交易数据对比</div>
             <el-dropdown>
@@ -168,46 +344,16 @@
             </div>
           </div>
         </div>
-        <div class="mt-10 pl-15 pr-15 pt-10 pb-10 data-contrast bg-white">
+        <div class="mt-10 pl-15 pr-15 pt-10 pb-10 data-contrast ">
           <div class="text-black">设备数据统计</div>
           <div class="chart-device" ref="chart_device" style="height: 250px;"></div>
-        </div>
-      </el-col>
-      <el-col :sm="24" :lg="16">
-        <div class="pl-15 pr-15 pt-10 pb-10 bg-white">
-          <div class="flex align-center">
-            <div class="flex1 text-black">近期数据对比</div>
-            <el-dropdown>
-              <div class="flex align-center pl-10 pr-10 box-grey cursor text-primary white-space">
-                {{ day_type_arr[day_type] }}<i class="el-icon-arrow-down el-icon--right fs-s1"></i>
-              </div>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="(item, index) in day_type_arr" @click.native="day_type = index; getLineChart()">{{ item }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-            <div class="ml-15 box-grey">
-              <el-date-picker
-                class="range-day"
-                  v-model="form.date"
-                  type="daterange"
-                  size="small"
-                  range-separator="-"
-                  value-format="timestamp"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  :picker-options="pickerOptionsEnd"
-                  @change="getLineChart()">
-                </el-date-picker>
-            </div>
-          </div>
-          <div class="chart-daystat" ref="chartDay" style="height: 508px;"></div>
         </div>
       </el-col>
     </el-row>
 
     <el-row :gutter="10" class="mt-10" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">
       <el-col :sm="24" :lg="8">
-        <div class="pl-15 pr-15 pt-10 pb-15 bg-white">
+        <div class="pl-15 pr-15 pt-10 pb-15 ">
           <div class="flex align-center">
             <div class="flex1 text-black">租赁订单统计</div>
           </div>
@@ -234,7 +380,7 @@
 
     <el-row :gutter="10" class="mt-10" v-if="(myDeviceId['KF'] || myDeviceId['VM'] || myDeviceId['BD']) && isStore()">
       <el-col :sm="24" :lg="8">
-        <div class="pl-15 pr-15 pt-10 pb-10 bg-white" @click="$router.push({path: `/hotelTools`})">
+        <div class="pl-15 pr-15 pt-10 pb-10 " @click="$router.push({path: `/hotelTools`})">
           <div class="flex align-center">
             <div class="flex1 text-black">酒店功能区</div>
             <div class="flex align-center pl-10 pr-10 box-grey cursor text-primary">
@@ -257,7 +403,7 @@
       <el-col :sm="24" :lg="16">
 
       </el-col>
-    </el-row>
+    </el-row> -->
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
@@ -266,16 +412,21 @@
           <div class="flex align-center justify-center">
             <div>订单可使用时长：</div>
             <el-select v-model="dform.duration" placeholder="免费时长">
-              <el-option :label="`${item}小时`" :value="item" v-for="item in config.bed_order_time"/>
+              <el-option :label="`${item}小时`" :value="item" v-for="item in config.bed_order_time" />
             </el-select>
           </div>
           <div class="mt-15 fs-s3">注：提交后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
 
           <div class="mt-30 text-black">
-            <div class="cursor">当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span></div>
+            <div class="cursor">当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span
+                class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span></div>
             <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">订单计费规则未配置，暂不可下单</div>
-            <div class="mt-15" v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">剩余赠送免费时间：{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400) - currentTime())}}</div>
-            <div class="mt-15" v-else>创建订单将会扣除快活币：<span class="text-danger">{{ createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
+            <div class="mt-15"
+              v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">
+              剩余赠送免费时间：{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400) - currentTime())}}
+            </div>
+            <div class="mt-15" v-else>创建订单将会扣除快活币：<span
+                class="text-danger">{{ createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
           </div>
         </div>
       </template>
@@ -288,17 +439,44 @@
 </template>
 
 <script>
-  import { arrayToObj, delComma, parseTime, currentTime, unixTime, formatSeconds } from '@/utils/index'
+  import {
+    arrayToObj,
+    delComma,
+    parseTime,
+    currentTime,
+    unixTime,
+    formatSeconds,
+    accAdd,
+    accMul
+  } from '@/utils/index'
   import DateUtil from '@/utils/date'
   import CountTo from 'vue-count-to'
 
-  import { Finance, TransactionOrder, Server, Peoples } from '@icon-park/vue'
+  import {
+    Finance,
+    TransactionOrder,
+    Server,
+    Peoples
+  } from '@icon-park/vue'
 
   import * as echarts from 'echarts/lib/echarts'
-  import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
-  import { PieChart, LineChart } from 'echarts/charts'
-  import { LabelLayout } from 'echarts/features'
-  import { CanvasRenderer } from 'echarts/renderers'
+  import {
+    TooltipComponent,
+    LegendComponent,
+    GridComponent
+  } from 'echarts/components'
+  import {
+    PieChart,
+    LineChart
+  } from 'echarts/charts'
+  import {
+    LabelLayout
+  } from 'echarts/features'
+  import {
+    CanvasRenderer
+  } from 'echarts/renderers'
+  import 'echarts-gl'
+
   echarts.use([
     TooltipComponent,
     LegendComponent,
@@ -321,6 +499,7 @@
     },
     data() {
       return {
+        accMul,
         delComma,
         unixTime,
         formatSeconds,
@@ -331,16 +510,19 @@
         deviceStat: {},
         userStat: {},
         querHistogram: {},
+        totalHistogram: {},
 
         pickerOptionsEnd: {
           disabledDate: (time) => {
             let timeOptionRange = this.timeOptionRange
             let secondNum = 60 * 60 * 24 * 31 * 1000
             if (timeOptionRange) {
-              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange.getTime() - secondNum) || time.getTime() > Date.now()
+              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+                .getTime() - secondNum) || time.getTime() > Date.now()
             }
             return time.getTime() > Date.now()
-          }, onPick: (time) => {
+          },
+          onPick: (time) => {
             //当第一时间选中才设置禁用
             if (time.minDate && !time.maxDate) {
               this.timeOptionRange = time.minDate
@@ -367,8 +549,7 @@
         contrast_arr: ['交易额', '订单量', '客单价'],
         contrast_type: 0,
 
-        tool: [
-          {
+        tool: [{
             title: '连接WIFI',
             desc: '设置WIFI账号密码，客人扫一扫一键连接wifi',
           },
@@ -388,7 +569,7 @@
         createOrderConfig: {},
         // 钱包 + 快活币余额
         money: {},
-        
+
         // 租赁订单
         leaseStat: {},
 
@@ -402,9 +583,70 @@
         curIdx: 0,
         dform: {},
 
+        orderList: [],
+
+        storeList: [
+          {
+            ranking: 1,
+            name: '春生饭店',
+            deviceNum: 16,
+            orderNum: 1506,
+            orderAmount: '￥11,235.00',
+            deviceOnline: 16,
+            deviceOffline: 0
+          },
+          {
+            ranking: 2,
+            name: '夏生饭店',
+            deviceNum: 13,
+            orderNum: 1100,
+            orderAmount: '￥10,345.00',
+            deviceOnline: 12,
+            deviceOffline: 1
+          },
+          {
+            ranking: 3,
+            name: '秋生饭店',
+            deviceNum: 11,
+            orderNum: 920,
+            orderAmount: '￥9,345.00',
+            deviceOnline: 9,
+            deviceOffline: 2
+          },
+          {
+            ranking: 4,
+            name: '冬生饭店',
+            deviceNum: 8,
+            orderNum: 956,
+            orderAmount: '￥9125.00',
+            deviceOnline: 8,
+            deviceOffline: 0
+          },
+          {
+            ranking: 5,
+            name: '早生饭店',
+            deviceNum: 6,
+            orderNum: 812,
+            orderAmount: '￥7562.00',
+            deviceOnline: 5,
+            deviceOffline: 1
+          },
+          {
+            ranking: 6,
+            name: '晚生饭店',
+            deviceNum: 6,
+            orderNum: 806,
+            orderAmount: '￥7245.00',
+            deviceOnline: 5,
+            deviceOffline: 1
+          }
+        ]
       }
     },
     computed: {
+      Constant() {
+        return this.$store.getters.Constant
+      },
       device() {
         return this.$store.state.app.device
       },
@@ -432,14 +674,15 @@
       this.getQuerHistogram()
       this.getLineChart()
       this.getDeviceStat()
-      if(this.isSaas()){
+      this.getOrderList()
+      if (this.isSaas()) {
         this.getUserStat()
-      } else if(this.isStore()){
+      } else if (this.isStore()) {
         this.getDeviceList()
         this.getBalance()
-      } else if(this.isBrand()){
-        if(this.checkAbility(['DEVICE_LEASE'], 3)){
-          this.get
+      } else if (this.isBrand()) {
+        if (this.checkAbility(['DEVICE_LEASE'], 3)) {
+
         }
       }
     },
@@ -452,7 +695,7 @@
           this.leaseStat = res
         })
       },
-      
+
       /**
        * 总统计
        */
@@ -469,8 +712,30 @@
         this.$get('iot-saas-order/admin/order/count/querHistogram', {
           brandId: this.brandId
         }).then(res => {
+          let totalOrderNumber = 0,
+            totalAmount = 0,
+            totalUnitPrice = 0;
+          for (var i in res) {
+            if (i == 'month' || i == 'lastMonth') {
+              totalOrderNumber = accAdd(totalOrderNumber, res[i].orderNumber)
+              totalAmount = accAdd(totalAmount, res[i].amount)
+              totalUnitPrice = accAdd(totalUnitPrice, res[i].unitPrice)
+            }
+          }
+          this.totalHistogram = {
+            totalOrderNumber: totalOrderNumber > 0 ? totalOrderNumber : 1,
+            totalAmount: totalAmount > 0 ? totalAmount : 1,
+            totalUnitPrice: totalUnitPrice > 0 ? totalUnitPrice : 1
+          }
           this.querHistogram = res
         })
+      },
+
+      /**
+       * 交易数据对比滚动
+       */
+      contrastChange(idx) {
+        this.contrast_type = idx
       },
 
       /**
@@ -483,31 +748,35 @@
       },
 
       /**
-       * 设备统计
+       * 选择日期或月份
        */
-      getDeviceStat() {
-        this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
-          this.deviceStat = res
-          let deviceChartData = []
-          if(res.deviceTypeDetail){
-            for(var i in res.deviceTypeDetail){
-              deviceChartData.push({
-                value: res.deviceTypeDetail[i].deviceNumber,
-                name: this.myDeviceId[i.substr(0, 2)]
-              })
-            }
-            if(deviceChartData.length > 0){
-              this.deviceChartData = deviceChartData
-            }
-          }
-          this.deviceChart()
-        })
+      getTime(val = '', type = 1) {
+        if (val){
+          this.selDay = this.getMonthLastDay(val)
+          this.startDateStr = `${val}-01`
+          this.endDateStr = `${val}-${this.selDay}`
+        }else{
+          this.startDateStr = ''
+          this.endDateStr = ''
+        }
+        this.getLineChart()
+      },
+
+      /**
+       * 获取指定月最后一天
+       * @param {Object} date
+       */
+      getMonthLastDay(date) {
+      	let a = date.split('-'),
+      		curDate = new Date(a[0], a[1]),
+      		endDay = new Date(curDate.setDate(0)).getDate()
+      	return endDay
       },
 
       /**
        * 近期数据对比
        */
-      getLineChart(){
+      getLineChart() {
         let eTime = currentTime(),
           sTime = eTime - (6 * 86400),
           groupDate = [],
@@ -516,22 +785,21 @@
           doneOrderNumber = [],
           unitPrice = [],
           params = {}
-
-        if(this.day_type == 1){
+        if (this.day_type == 1) {
           sTime = DateUtil.getWeekStartDate()
           eTime = DateUtil.getWeekEndDate()
-        }else if(this.day_type == 2){
+        } else if (this.day_type == 2) {
           sTime = DateUtil.getLastWeekStartDate()
           eTime = DateUtil.getLastWeekEndDate()
-        }else if(this.day_type == 3){
+        } else if (this.day_type == 3) {
           sTime = DateUtil.getMonthStartDate()
           eTime = DateUtil.getMonthEndDate()
-        }else if(this.day_type == 4){
+        } else if (this.day_type == 4) {
           sTime = DateUtil.getLastMonthStartDate()
           eTime = DateUtil.getLastMonthEndDate()
-        }else if(this.form.date){
-          sTime = this.form.date[0] / 1000
-          eTime = this.form.date[1] / 1000
+        } else if (this.startDateStr) {
+          sTime = unixTime(this.startDateStr)
+          eTime = unixTime(this.endDateStr)
         }
         params = {
           brandID: this.brandId,
@@ -540,10 +808,10 @@
         }
         this.$get('iot-saas-order/admin/order/count/querLineChart', params).then(res => {
           let obj = arrayToObj(res, 'countGroupDate')
-          for(var i = sTime; i < (eTime + 86400); i = i + 86400){
+          for (var i = sTime; i < (eTime + 86400); i = i + 86400) {
             groupDate.push(parseTime(i, '{m}-{d}'))
             let ymd = parseTime(i, '{y}-{m}-{d}')
-            if(obj[ymd] && obj[ymd].countGroupDate == ymd){
+            if (obj[ymd] && obj[ymd].countGroupDate == ymd) {
               amount.push(obj[ymd].amount)
               orderNumber.push(obj[ymd].orderNumber)
               doneOrderNumber.push(obj[ymd].doneOrderNumber)
@@ -555,7 +823,7 @@
               unitPrice.push(0)
             }
           }
-          if(this.dayChartInit){
+          if (this.dayChartInit) {
             this.dayChartOptions({
               groupDate,
               amount,
@@ -563,7 +831,7 @@
               doneOrderNumber,
               unitPrice,
             })
-          }else{
+          } else {
             this.setLineChart({
               groupDate,
               amount,
@@ -595,8 +863,7 @@
       } = {}) {
         if (!groupDate) return
         let legend = ['交易额', '订单量', '平均单量', '平均交易额'],
-          series = [
-            {
+          series = [{
               name: '交易额',
               type: 'line',
               data: amount,
@@ -632,7 +899,13 @@
             boundaryGap: false,
             axisTick: {
               show: false
-            }
+            },
+            axisLabel: { //x轴文字的配置
+              show: true,
+              textStyle: {
+                color: "#fff",
+              }
+            },
           },
           grid: {
             left: 20,
@@ -646,72 +919,33 @@
             padding: [10, 10]
           },
           yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel: { //x轴文字的配置
+              show: true,
+              textStyle: {
+                color: "#fff",
+              }
+            },
           },
+
           legend: {
             bottom: 20,
             data: legend,
             lineStyle: {
               width: 0
+            },
+            textStyle: {
+              color: 'rgba(255, 255, 255, 0.6)'
             }
           },
           series: series
         })
       },
 
-
-      /**
-       * 设备图表初始化
-       */
-      deviceChart() {
-        this.deviceChartInit = echarts.init(this.$refs.chart_device)
-        this.deviceChartOptions()
-      },
-
-      /**
-       * 设备图表设置数据
-       */
-      deviceChartOptions() {
-        const that = this
-        this.deviceChartInit.setOption({
-          tooltip: {
-            trigger: 'item',
-            formatter: '{b} : {c} ({d}%)'
-          },
-          color: this.deviceChartColor,
-          series: [{
-            type: 'pie',
-            radius: ['55%', '83%'],
-            center: ['55%', '50%'],
-            label: { // 饼图图形上的文本标签
-              normal: {
-                show: true,
-                lineHeight: 20,
-                postion: 'outer',
-                // margin: '20%',
-                textStyle: {
-                  fontWeight: 300,
-                  fontSize: 12 // 文字的字体大小
-                },
-                formatter: '{b}（{d}%）' // {b}\n
-              }
-            },
-            labelLine: {
-              normal: {
-                smooth: 0.2,
-                length: 8,
-                length2: 15,
-              }
-            },
-            data: that.deviceChartData
-          }]
-        })
-      },
-
       /**
        * 获取可提现金额
        */
-      getBalance(){
+      getBalance() {
         this.$get('iot-saas-pay/api/pay/withdraw/balance').then(res => {
           this.money = res || {}
         })
@@ -747,9 +981,9 @@
             this.curIdx = idx
             this.dialogStatus = true
             this.dform = {}
-            if(dialogType == 6){
+            if (dialogType == 6) {
               let code = row.deviceTypeCode ? row.deviceTypeCode.substr(0, 2) : row.deviceType.code.substr(0, 2)
-              if(!this.createOrderConfig[code]){
+              if (!this.createOrderConfig[code]) {
                 this.$set(this.createOrderConfig, code, {})
                 this.getCreateOrderConfig(code)
               }
@@ -770,7 +1004,7 @@
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
-        if(this.clickSubmit) return
+        if (this.clickSubmit) return
         this.clickSubmit = true
         switch (this.dialogType) {
           case 6:
@@ -790,9 +1024,40 @@
       },
 
       /**
+       * 获取订单列表
+       */
+      getOrderList() {
+        var url = 'iot-saas-order/admin/order/list'
+        this.$get(url, {
+          page: 0,
+          size: 4
+        }).then(res => {
+          if(res.rows.length > 0){
+            let rows = res.rows
+            for(var i = res.rows.length - 1; i < 50; i++){
+              if(i < res.rows.length - 1){
+                rows.push(res.rows[i])
+              }else{
+                rows.push(res.rows[i % (res.rows.length - 1)])
+              }
+            }
+            this.orderList = rows
+            let orderTable = this.$refs.orderTable.bodyWrapper
+            clearInterval(this.orderTableTimer)
+            this.orderTableTimer = setInterval(() => {
+              orderTable.scrollTop += 1
+              if(orderTable.clientHeight + orderTable.scrollTop + 1 > orderTable.scrollHeight){
+                orderTable.scrollTop = 0
+              }
+            }, 50)
+          }
+        })
+      },
+
+      /**
        * 获取创建的配置
        */
-      getCreateOrderConfig(code){
+      getCreateOrderConfig(code) {
         this.$get('iot-saas-basic/admin/storeOrderConfig/v1/findById', {
           deviceTypeCode: code,
           storeId: this.agentInfo.storeIds[0]
@@ -800,71 +1065,749 @@
           this.createOrderConfig[code] = res
         })
       },
+
+      /**
+       * 设备统计
+       */
+      getDeviceStat() {
+        this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
+          this.deviceStat = res
+          let deviceChartData = [], idx = 0, colors = ['#2A9F9F','#224278','#82A8C6','#9DA5B2','#82B869','#A01E57','#E1B44F','#D65C5C','#4C65B2']
+          if (res.deviceTypeDetail) {
+            for (var i in res.deviceTypeDetail) {
+              if(this.myDeviceId[i.substr(0, 2)]){
+                deviceChartData.push({
+                  name: this.myDeviceId[i.substr(0, 2)],
+                  value: parseInt(res.deviceTypeDetail[i].deviceNumber),
+                  itemStyle: {
+                    color: colors[idx]
+                  },
+                })
+                idx++
+              }
+            }
+            if (deviceChartData.length > 0) {
+              this.deviceChartData = deviceChartData
+            }
+          }
+          this.deviceChart()
+        })
+      },
+
+      /**
+       * 设备图表初始化
+       */
+      deviceChart() {
+        this.deviceChartInit = echarts.init(this.$refs.chart_device)
+        // 传入数据生成 option ; getPie3D(数据，透明的空心占比（调节中间空心范围的0就是普通饼1就很镂空）)
+        this.deviceChartOption = this.getPie3D(this.deviceChartData, 0.85);
+        //将配置项设置进去
+        this.deviceChartInit.setOption(this.deviceChartOption);
+        //鼠标移动上去特效效果
+        //this.bindListen(this.deviceChartInit);
+      },
+
+      /**
+       * 监听鼠标事件，实现饼图选中效果（单选），近似实现高亮（放大）效果。
+       * @param {Object} myChart
+       */
+      bindListen(myChart) {
+        let that = this;
+        let selectedIndex = '';
+        let hoveredIndex = '';
+        // 监听点击事件，实现选中效果（单选）
+        myChart.on('click', function(params) {
+          // 从 option.series 中读取重新渲染扇形所需的参数，将是否选中取反。
+          let isSelected = !that.deviceChartOption.series[params.seriesIndex].pieStatus.selected;
+          let isHovered = that.deviceChartOption.series[params.seriesIndex].pieStatus.hovered;
+          let k = that.deviceChartOption.series[params.seriesIndex].pieStatus.k;
+          let startRatio = that.deviceChartOption.series[params.seriesIndex].pieData.startRatio;
+          let endRatio = that.deviceChartOption.series[params.seriesIndex].pieData.endRatio;
+          // 如果之前选中过其他扇形，将其取消选中（对 option 更新）
+          if (selectedIndex !== '' && selectedIndex !== params.seriesIndex) {
+            that.deviceChartOption.series[selectedIndex].parametricEquation = that.getParametricEquation(that.deviceChartOption.series[
+                selectedIndex].pieData
+              .startRatio, that.deviceChartOption.series[selectedIndex].pieData.endRatio, false, false, k, that.deviceChartOption
+              .series[
+                selectedIndex].pieData
+              .value);
+            that.deviceChartOption.series[selectedIndex].pieStatus.selected = false;
+          }
+          // 对当前点击的扇形，执行选中/取消选中操作（对 option 更新）
+          that.deviceChartOption.series[params.seriesIndex].parametricEquation = that.getParametricEquation(startRatio,
+            endRatio,
+            isSelected,
+            isHovered, k, that.deviceChartOption.series[params.seriesIndex].pieData.value);
+          that.deviceChartOption.series[params.seriesIndex].pieStatus.selected = isSelected;
+          // 如果本次是选中操作，记录上次选中的扇形对应的系列号 seriesIndex
+          isSelected ? selectedIndex = params.seriesIndex : null;
+          // 使用更新后的 option，渲染图表
+          myChart.setOption(that.deviceChartOption);
+        });
+        // 监听 mouseover，近似实现高亮（放大）效果
+        myChart.on('mouseover', function(params) {
+          // 准备重新渲染扇形所需的参数
+          let isSelected;
+          let isHovered;
+          let startRatio;
+          let endRatio;
+          let k;
+          // 如果触发 mouseover 的扇形当前已高亮，则不做操作
+          if (hoveredIndex === params.seriesIndex) {
+            return;
+            // 否则进行高亮及必要的取消高亮操作
+          } else {
+            // 如果当前有高亮的扇形，取消其高亮状态（对 option 更新）
+            if (hoveredIndex !== '') {
+              // 从 option.series 中读取重新渲染扇形所需的参数，将是否高亮设置为 false。
+              isSelected = that.deviceChartOption.series[hoveredIndex].pieStatus.selected;
+              isHovered = false;
+              startRatio = that.deviceChartOption.series[hoveredIndex].pieData.startRatio;
+              endRatio = that.deviceChartOption.series[hoveredIndex].pieData.endRatio;
+              k = that.deviceChartOption.series[hoveredIndex].pieStatus.k;
+              // 对当前点击的扇形，执行取消高亮操作（对 option 更新）
+              that.deviceChartOption.series[hoveredIndex].parametricEquation = that.getParametricEquation(startRatio, endRatio,
+                isSelected,
+                isHovered, k, that.deviceChartOption.series[hoveredIndex].pieData.value);
+              that.deviceChartOption.series[hoveredIndex].pieStatus.hovered = isHovered;
+              // 将此前记录的上次选中的扇形对应的系列号 seriesIndex 清空
+              hoveredIndex = '';
+            }
+            // 如果触发 mouseover 的扇形不是透明圆环，将其高亮（对 option 更新）
+            if (params.seriesName !== 'mouseoutSeries' && params.seriesName !== 'pie2d') {
+              // 从 option.series 中读取重新渲染扇形所需的参数，将是否高亮设置为 true。
+              isSelected = that.deviceChartOption.series[params.seriesIndex].pieStatus.selected;
+              isHovered = true;
+              startRatio = that.deviceChartOption.series[params.seriesIndex].pieData.startRatio;
+              endRatio = that.deviceChartOption.series[params.seriesIndex].pieData.endRatio;
+              k = that.deviceChartOption.series[params.seriesIndex].pieStatus.k;
+              // 对当前点击的扇形，执行高亮操作（对 option 更新）
+              that.deviceChartOption.series[params.seriesIndex].parametricEquation = that.getParametricEquation(startRatio,
+                endRatio,
+                isSelected, isHovered, k, that.deviceChartOption.series[params.seriesIndex].pieData.value + 5);
+              that.deviceChartOption.series[params.seriesIndex].pieStatus.hovered = isHovered;
+              // 记录上次高亮的扇形对应的系列号 seriesIndex
+              hoveredIndex = params.seriesIndex;
+            }
+            // 使用更新后的 option，渲染图表
+            myChart.setOption(that.deviceChartOption);
+          }
+        });
+        // 修正取消高亮失败的 bug
+        myChart.on('globalout', function() {
+          // 准备重新渲染扇形所需的参数
+          let isSelected;
+          let isHovered;
+          let startRatio;
+          let endRatio;
+          let k;
+          if (hoveredIndex !== '') {
+            // 从 option.series 中读取重新渲染扇形所需的参数，将是否高亮设置为 true。
+            isSelected = that.deviceChartOption.series[hoveredIndex].pieStatus.selected;
+            isHovered = false;
+            k = that.deviceChartOption.series[hoveredIndex].pieStatus.k;
+            startRatio = that.deviceChartOption.series[hoveredIndex].pieData.startRatio;
+            endRatio = that.deviceChartOption.series[hoveredIndex].pieData.endRatio;
+            // 对当前点击的扇形，执行取消高亮操作（对 option 更新）
+            that.deviceChartOption.series[hoveredIndex].parametricEquation = that.getParametricEquation(startRatio, endRatio,
+              isSelected,
+              isHovered, k, that.deviceChartOption.series[hoveredIndex].pieData.value);
+            that.deviceChartOption.series[hoveredIndex].pieStatus.hovered = isHovered;
+            // 将此前记录的上次选中的扇形对应的系列号 seriesIndex 清空
+            hoveredIndex = '';
+          }
+          // 使用更新后的 option，渲染图表
+          myChart.setOption(that.deviceChartOption);
+        });
+      },
+
+      /**
+       * 配置构建 pieData 饼图数据 internalDiameterRatio:透明的空心占比
+       * @param {Object} pieData
+       * @param {Object} internalDiameterRatio
+       */
+      getPie3D(pieData, internalDiameterRatio) {
+        let that = this;
+        let series = [];
+        let sumValue = 0;
+        let startValue = 0;
+        let endValue = 0;
+        let legendData = [];
+        let legendBfb = [];
+        let k = 1 - internalDiameterRatio;
+        pieData.sort((a, b) => {
+          return (b.value - a.value);
+        });
+        // 为每一个饼图数据，生成一个 series-surface(参数曲面) 配置
+        for (let i = 0; i < pieData.length; i++) {
+          sumValue += pieData[i].value;
+          let seriesItem = {
+            //系统名称
+            name: typeof pieData[i].name === 'undefined' ? `series${i}` : pieData[i].name,
+            type: 'surface',
+            //是否为参数曲面（是）
+            parametric: true,
+            //曲面图网格线（否）上面一根一根的
+            wireframe: {
+              show: false
+            },
+            pieData: pieData[i],
+            pieStatus: {
+              selected: false,
+              hovered: false,
+              k: k
+            }
+          }
+          //曲面的颜色、不透明度等样式。
+          if (typeof pieData[i].itemStyle != 'undefined') {
+            let itemStyle = {};
+            typeof pieData[i].itemStyle.color != 'undefined' ? itemStyle.color = pieData[i].itemStyle.color : null;
+            typeof pieData[i].itemStyle.opacity != 'undefined' ? itemStyle.opacity = pieData[i].itemStyle.opacity :
+              null;
+            seriesItem.itemStyle = itemStyle;
+          }
+          series.push(seriesItem);
+        }
+        // 使用上一次遍历时，计算出的数据和 sumValue，调用 getParametricEquation 函数，
+        // 向每个 series-surface 传入不同的参数方程 series-surface.parametricEquation，也就是实现每一个扇形。
+        legendData = [];
+        legendBfb = [];
+        for (let i = 0; i < series.length; i++) {
+          endValue = startValue + series[i].pieData.value;
+          series[i].pieData.startRatio = startValue / sumValue;
+          series[i].pieData.endRatio = endValue / sumValue;
+          series[i].parametricEquation = this.getParametricEquation(series[i].pieData.startRatio, series[i].pieData
+            .endRatio,
+            false, false, k, series[i].pieData.value);
+          startValue = endValue;
+          let bfb = that.fomatFloat(series[i].pieData.value / sumValue, 4);
+          legendData.push({
+            name: series[i].name,
+            value: bfb
+          });
+          legendBfb.push({
+            name: series[i].name,
+            value: bfb
+          });
+        }
+        //(第二个参数可以设置你这个环形的高低程度)
+        let boxHeight = this.getHeight3D(series, 13); //通过传参设定3d饼/环的高度
+        let option = {
+          //图例组件
+          legend: {
+            show: false,
+            data: legendData,
+            //图例列表的布局朝向。
+            orient: 'horizontal',
+            //图例文字每项之间的间隔
+            itemGap: 15,
+            textStyle: {
+              color: '#A1E2FF',
+            },
+            icon: "circle",
+            formatter: (name) => {
+              var target;
+              for (var i = 0, l = pieData.length; i < l; i++) {
+                if (pieData[i].name == name) {
+                  target = pieData[i].value;
+                }
+              }
+              return `${name}: ${target}`;
+            }
+            // 这个可以显示百分比那种（可以根据你想要的来配置）
+            //   formatter: function(param) {
+            //       let item = legendBfb.filter(item => item.name == param)[0];
+            //       let bfs = that.fomatFloat(item.value * 100, 2) + "%";
+            //       console.log(item.name)
+            //       return `${item.name} :${bfs}`;
+            //   }
+          },
+          //移动上去提示的文本内容
+          tooltip: {
+            formatter: params => {
+              if (params.seriesName !== 'mouseoutSeries' && params.seriesName !== 'pie2d') {
+                return `${params.seriesName}<br/>` +
+                  `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>` +
+                  `${ option.series[params.seriesIndex].pieData.value }`;
+              }
+            }
+          },
+          //这个可以变形
+          xAxis3D: {
+            min: -1,
+            max: 1
+          },
+          yAxis3D: {
+            min: -1,
+            max: 1
+          },
+          zAxis3D: {
+            min: -1,
+            max: 1
+          },
+          //此处是修改样式的重点
+          grid3D: {
+            show: false,
+            boxHeight: boxHeight, //圆环的高度
+            //这是饼图的位置
+            viewControl: { //3d效果可以放大、旋转等，请自己去查看官方配置
+              alpha: 30, //角度(这个很重要 调节角度的)
+              distance: 150, //调整视角到主体的距离，类似调整zoom(这是整体大小)
+              rotateSensitivity: 1, //设置为0无法旋转
+              zoomSensitivity: 0, //设置为0无法缩放
+              panSensitivity: 1, //设置为0无法平移
+              autoRotate: true //自动旋转
+            }
+          },
+          series: series
+        };
+        return option;
+      },
+      /**
+       * 获取3d图的最高扇区的高度
+       * @param {Object} series
+       * @param {Object} height
+       */
+      getHeight3D(series, height) {
+        series.sort((a, b) => {
+          return (b.pieData.value - a.pieData.value);
+        })
+        return height * 25 / series[0].pieData.value;
+      },
+      // 生成扇形的曲面参数方程，用于 series-surface.parametricEquation
+      getParametricEquation(startRatio, endRatio, isSelected, isHovered, k, h) {
+        // 计算
+        let midRatio = (startRatio + endRatio) / 2;
+        let startRadian = startRatio * Math.PI * 2;
+        let endRadian = endRatio * Math.PI * 2;
+        let midRadian = midRatio * Math.PI * 2;
+        // 如果只有一个扇形，则不实现选中效果。
+        if (startRatio === 0 && endRatio === 1) {
+          isSelected = false;
+        }
+        // 通过扇形内径/外径的值，换算出辅助参数 k（默认值 1/3）
+        k = typeof k !== 'undefined' ? k : 1 / 3;
+        // 计算选中效果分别在 x 轴、y 轴方向上的位移（未选中，则位移均为 0）
+        let offsetX = isSelected ? Math.cos(midRadian) * 0.1 : 0;
+        let offsetY = isSelected ? Math.sin(midRadian) * 0.1 : 0;
+        // 计算高亮效果的放大比例（未高亮，则比例为 1）
+        let hoverRate = isHovered ? 1.05 : 1;
+        // 返回曲面参数方程
+        return {
+          u: {
+            min: -Math.PI,
+            max: Math.PI * 3,
+            step: Math.PI / 32
+          },
+          v: {
+            min: 0,
+            max: Math.PI * 2,
+            step: Math.PI / 20
+          },
+          x: (u, v) => {
+            if (u < startRadian) {
+              return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            }
+            if (u > endRadian) {
+              return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            }
+            return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
+          },
+          y: (u, v) => {
+            if (u < startRadian) {
+              return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            }
+            if (u > endRadian) {
+              return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            }
+            return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
+          },
+          z: (u, v) => {
+            if (u < -Math.PI * 0.5) {
+              return Math.sin(u);
+            }
+            if (u > Math.PI * 2.5) {
+              return Math.sin(u) * h * .1;
+            }
+            return Math.sin(v) > 0 ? 1 * h * .1 : -1;
+          }
+        };
+      },
+
+      /**
+       * 自定义计算的方法
+       * @param {Object} num
+       * @param {Object} n
+       */
+      fomatFloat(num, n) {
+        var f = parseFloat(num);
+        if (isNaN(f)) {
+          return false;
+        }
+        f = Math.round(num * Math.pow(10, n)) / Math.pow(10, n); // n 幂
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        //判定如果是整数，增加小数点再补0
+        if (rs < 0) {
+          rs = s.length;
+          s += '.';
+        }
+        while (s.length <= rs + n) {
+          s += '0';
+        }
+        return s;
+      }
     }
   }
 </script>
 
+<style ang="scss">
+  .app-main {
+    &.is-home {
+      background-color: #001536;
+      background-image: url('../../assets/home_bg.png');
+      background-size: 100%;
+    }
+  }
+</style>
 <style lang="scss" scoped>
-  .stat-icon{
+  .home-box {
+    margin: -2px 2px 0;
+    padding-top: 2px;
+    border: 2px solid #1166B1;
+    .quadrangle{
+      width: 102px;
+      height: 102px;
+      z-index: 1099;
+      &.tl{
+        top: -16px;
+        left: -6px;
+      }
+      &.tr{
+        top: -16px;
+        right: -6px;
+        transform: rotate(90deg);
+      }
+      &.bl{
+        bottom: -6px;
+        left: -6px;
+        transform: rotate(-90deg);
+      }
+      &.br{
+        bottom: -6px;
+        right: -6px;
+        transform: rotate(180deg);
+      }
+    }
+    .pieces{
+      width: 23px;
+      height: 231px;
+      bottom: 296px;
+      &.l{
+        left: -23px;
+      }
+      &.r{
+        transform: rotate(180deg);
+        right: -23px;
+      }
+    }
+  }
+
+  .baby-blue {
+    color: #08EFF0;
+  }
+
+  .y-yellow {
+    color: #FFD21D;
+  }
+
+  .stat-box {
+    padding-top: 40px;
+    z-index: 3;
+
+    .abs {
+      z-index: 3;
+    }
+
+    .dodge-icon {
+      margin: 12px auto 0;
+      width: 154px;
+      height: 167px;
+
+      &.b {
+        animation: animateDodgeB 1s linear infinite;
+      }
+
+      &.y {
+        animation: animateDodgeY 1s linear infinite;
+      }
+    }
+
+    .type-icon {
+      width: 72px;
+      height: 72px;
+    }
+  }
+
+  @keyframes animateDodgeB {
+    0% {
+      background: url('../../assets/home/blue_dodge_05.svg') 100%;
+    }
+
+    45% {
+      background: url('../../assets/home/blue_dodge_05.svg') 100%;
+    }
+
+    50% {
+      background: url('../../assets/home/blue_dodge_1.svg') 100%;
+    }
+
+    95% {
+      background: url('../../assets/home/blue_dodge_1.svg') 100%;
+    }
+
+    100% {
+      background: url('../../assets/home/blue_dodge_05.svg') 100%;
+    }
+  }
+
+  @keyframes animateDodgeY {
+    0% {
+      background: url('../../assets/home/yellow_dodge_05.svg') 100%;
+    }
+
+    45% {
+      background: url('../../assets/home/yellow_dodge_05.svg') 100%;
+    }
+
+    50% {
+      background: url('../../assets/home/yellow_dodge_1.svg') 100%;
+    }
+
+    95% {
+      background: url('../../assets/home/yellow_dodge_1.svg') 100%;
+    }
+
+    100% {
+      background: url('../../assets/home/yellow_dodge_05.svg') 100%;
+    }
+  }
+
+  .trapezoid-box {
+    margin-top: -58px;
+
+    .trapezoid {
+      margin: 0 calc(100vw * 0.01);
+      height: 54px;
+      background: linear-gradient(180deg, #071A34 0%, #11356F 100%);
+      transform: perspective(20px) rotateX(1deg);
+    }
+
+    .trapezoid-strip {
+      height: 11px;
+      background: #0C234F;
+    }
+  }
+
+  .btn-box {
+    .btn {
+      margin-right: -1px;
+      padding: 7px 16px;
+      background: rgba(17, 102, 177, 0.1);
+      border: 1px solid #1166B1;
+      color: rgba(255, 255, 255, 0.8);
+
+      &.act {
+        box-shadow: inset 0 0 12px #1166B1;
+        color: #1CB9FB;
+      }
+    }
+  }
+
+  .two-box,
+  .three-box {
+    .item-box {
+      height: 100%;
+      border: 2px solid #1166B1;
+
+      .line {
+        margin-right: 8px;
+        width: 5px;
+        height: 20px;
+        background: #1CB9FB;
+      }
+
+      .progress {
+        margin: 25px;
+        padding: 3px;
+        border: 1px solid #38E5A5;
+        border-radius: 42px;
+
+        /deep/ .el-progress-bar__outer {
+          background: none;
+        }
+
+        /deep/ .el-progress-bar__inner {
+          background: linear-gradient(90deg, #38E5A5 0%, #FEF880 100%);
+        }
+      }
+
+      /deep/ .el-carousel__indicators {
+        display: none;
+      }
+
+      .label {
+        >div {
+          margin: 25px 0;
+          height: 20px;
+          line-height: 20px;
+        }
+      }
+    }
+  }
+
+  .store-table, .order-table {
+    /deep/ &.el-table {
+      &::before {
+        height: 0;
+      }
+      tbody tr:hover>td {
+        background: none !important
+      }
+      tbody tr {
+        &:last-child {
+          td {
+            border: none
+          }
+        }
+      }
+    }
+  }
+  .order-table{
+    .idx{
+      width: 20px;
+      height: 20px;
+      border-radius: 47px;
+      line-height: 20px;
+      color: #0A1B36;
+      background: #FC5354;
+      &.idx_1{
+        background: #F59A23;
+      }
+      &.idx_2{
+        background: #FFFF00;
+      }
+    }
+    /deep/ &.el-table {
+      tr{
+        height: 40px;
+        &:nth-child(2n){
+          background: none !important;
+        }
+        td{
+          padding: 0;
+        }
+      }
+      .gutter{
+        display: none;
+      }
+      .el-table__body-wrapper::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
+    }
+  }
+
+  .three-box {
+    .item-box {
+      .box-grey {
+        background: rgba(17, 102, 177, 0.1);
+        border: 1px solid #1166B1;
+
+        /deep/ .el-input__inner {
+          background: none;
+          border: none;
+        }
+      }
+    }
+  }
+
+
+
+
+  .stat-icon {
     width: 48px;
     height: 48px;
     border-radius: 2px;
     background: rgba(60, 161, 254, 0.1);
   }
-  .brand-box{
+
+  .brand-box {
     height: 36px;
     line-height: 36px;
-    /deep/ .el-input__inner{
+
+    /deep/ .el-input__inner {
       height: 36px;
       border: none;
     }
-    /deep/ .el-button{
+
+    /deep/ .el-button {
       padding: 10px;
       border-radius: 0;
     }
   }
-  .data-contrast{
+
+  .data-contrast {
     height: 270px;
-    .bar{
+
+    .bar {
       margin: 5px auto 8px;
       width: 25px;
       height: 117px;
       background: var(--olive);
       border-radius: 2px;
-      &.high{
+
+      &.high {
         height: 144px;
       }
-      &.cyan{
+
+      &.cyan {
         background: var(--cyan);
       }
     }
   }
-  .chart-device{
+
+  .chart-device {
     margin-top: -10px;
   }
+
   @media (max-width: 768px) {
-    .chart-device{
+    .chart-device {
       margin-top: 0;
       width: calc(100vw - 40px);
     }
-    .chart-daystat{
+
+    .chart-daystat {
       width: calc(100vw - 50px);
     }
-    .el-row--flex{
+
+    .el-row--flex {
       flex-wrap: wrap;
     }
   }
-  .tool-item{
+
+  .tool-item {
     height: 100%;
   }
 
   /** 主题房 */
-  .room-box{
-    .item{
+  .room-box {
+    .item {
       margin: 1px;
       min-width: 100px;
       background-color: #f5f5f5;
-      &:hover{
+
+      &:hover {
         color: var(--olive);
       }
     }

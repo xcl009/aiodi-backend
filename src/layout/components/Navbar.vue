@@ -1,21 +1,24 @@
 <template>
-  <div class="flex align-center navbar" style="overflow: initial;">
-    <div class="pl-30 pr-20 cursor line-1" @click="toggleSideBar" style="color: #86909C;">
+  <div class="rel flex navbar" style="overflow: initial;">
+    <div class="flex1 title-box text-center text-white">
+      <div>
+        <div class="mt-10 cn">{{ agentInfo.nickname }}管理后台</div>
+        <div class="en">Management Background</div>
+      </div>
+    </div>
+    <!-- <div class="pl-30 pr-20 cursor line-1" @click="toggleSideBar" style="color: #86909C;">
       <svg-icon slot="prefix" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
     </div>
     <Breadcrumb class="breadcrumb-container" />
-    <div class="flex1"></div>
-    <div class="right-menu flex align-center">
-      <!-- <div class="pl-15 pr-15 menu-item flex align-center">
-        <svg-icon icon-class="head_new" class="head_new"></svg-icon>
-      </div> -->
-      <div class="pl-30 pr-30 flex align-center text-primary cursor l-r" v-if="isBrand()" @click="getJoinCode">
+    <div class="flex1"></div> -->
+    <div class="abs right-menu flex align-center">
+      <!-- <div class="pl-30 pr-30 flex align-center text-primary cursor l-r" v-if="isBrand()" @click="getJoinCode">
         <svg-icon icon-class="head_link" class="mr-10 head_new"></svg-icon>
         邀请链接获取
-      </div>
+      </div> -->
       <el-dropdown class="mr-10 hover-effect" trigger="click">
         <div class="pl-15 pr-15 menu-item flex align-center">
-          <svg-icon icon-class="head_user" class="head_user"></svg-icon>
+          <svg-icon icon-class="head_user" class="head_user text-white"></svg-icon>
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/index">
@@ -213,14 +216,24 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 45px;
+  height: 55px;
   overflow: hidden;
   position: relative;
-  background: #fff;
-  box-shadow: 0 1px 1px #E5E6EB;
+  background-color: #01183A;
   z-index: 2;
+
+  .title-box{
+    height: 87px;
+    background-image: url('../../assets/head_bg.svg');
+    background-size: auto 100%;
+    background-position: center;
+    .cn{
+      font-size: 32px;
+    }
+  }
   .right-menu {
-    float: right;
+    right: 0;
+    top: 0;
     height: 100%;
     line-height: 36px;
     &:focus {
