@@ -6,6 +6,8 @@
     <el-image class="abs quadrangle br" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs pieces l" :src="require('@/assets/home/pieces.svg')"></el-image>
     <el-image class="abs pieces r" :src="require('@/assets/home/pieces.svg')"></el-image>
+
+    <div class="abs blur-box"></div>
     <el-row :gutter="10" type="flex" class="stat-box text-center">
       <el-col :span="24" class="rel">
         <div class="abs p-all flex justify-center">
@@ -154,28 +156,28 @@
             :header-cell-style="{background:'none',color:'#1CB9FB',border:'none',fontSize:'16px'}"
             :row-style="{background:'none'}" :cell-style="{borderColor:'#143F84'}" :data="storeList"
             style="background:none">
-            <el-table-column label="排名">
+            <el-table-column label="排名" width="60">
               <template slot-scope="scope">
                 <span class="fs-c1 text-bold"
                   :class="{'y-yellow': scope.row.ranking == 1, 'baby-blue': scope.row.ranking == 3, 'text-primary': scope.row.ranking == 2}">NO.{{ scope.row.ranking }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="商户名称">
+            <el-table-column label="商户名称" min-width="90">
               <template slot-scope="scope">
-                <span class="y-yellow">{{ scope.row.name }}</span>
+                <span class="y-yellow">{{ scope.row.name.substring(0, 2) }}**</span>
               </template>
             </el-table-column>
-            <el-table-column label="设备数量">
+            <el-table-column label="设备数量" min-width="90">
               <template slot-scope="scope">
                 {{ scope.row.deviceNum }}
               </template>
             </el-table-column>
-            <el-table-column label="订单量">
+            <el-table-column label="订单量" min-width="90">
               <template slot-scope="scope">
                 {{ scope.row.orderNum }}
               </template>
             </el-table-column>
-            <el-table-column label="总金额">
+            <el-table-column label="总金额" min-width="120">
               <template slot-scope="scope">
                 {{ scope.row.orderAmount }}
               </template>
@@ -1510,6 +1512,15 @@
         transform: rotate(180deg);
         right: -23px;
       }
+    }
+
+    .blur-box{
+      height: 213px;
+      width: calc(100% - 40px);
+      left: 20px;
+      background: linear-gradient(180deg, rgba(0, 43, 81, 0) 0%, #002B51 100%);
+      filter: blur(15px);
+      transform: perspective(20px) rotateX(-1deg);
     }
   }
 
