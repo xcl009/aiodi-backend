@@ -42,7 +42,6 @@
           onlySuperior: 2
         },
         id: this.$route.query.id || '',
-        userKey: this.$route.query.userKey || '',
         deviceTypeCode: ''
       }
     },

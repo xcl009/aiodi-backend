@@ -1,5 +1,6 @@
 <template>
-  <section class="app-main">
+  <section class="app-main" :class="{'is-home': key == '/home'}">
+    <Breadcrumb class="breadcrumb-container" v-if="key != '/home'" />
     <!-- <transition name="fade-transform" mode="out-in"> -->
     <!-- <router-view :key="key" /> -->
     <keep-alive>
@@ -11,10 +12,11 @@
 </template>
 
 <script>
+  import Breadcrumb from '@/components/Breadcrumb'
   export default {
     name: 'AppMain',
     components: {
-
+      Breadcrumb
     },
     computed: {
       key() {
@@ -27,22 +29,22 @@
 <style scoped>
   .app-main {
     /*60 = navbar  */
-    min-height: calc(100vh - 45px);
+    min-height: 100vh;
     width: 100%;
     position: relative;
     overflow: hidden;
-    padding: 5px;
+    padding: 0 20px;
   }
 
   .fixed-header+.app-main {
-    padding-top: 45px;
+    padding-top: 55px;
   }
 
-  /* @media (max-width: 768px) {
+  @media (max-width: 768px) {
     .app-main {
       padding: 0 10px;
     }
-  } */
+  }
 </style>
 
 <style lang="scss">

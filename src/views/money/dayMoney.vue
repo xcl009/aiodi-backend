@@ -9,9 +9,11 @@
       </template>
       
       <template v-slot:defult>
-        <el-date-picker v-model="form.date" type="month" :picker-options="pickerOptionsEnd" range-separator="-"
-          placeholder="选择月份" value-format="yyyy-MM" @change="getTime">
-        </el-date-picker>
+        <el-form-item label="选择月份">
+          <el-date-picker v-model="form.date" type="month" :picker-options="pickerOptionsEnd" range-separator="-"
+            placeholder="选择月份" value-format="yyyy-MM" @change="getTime">
+          </el-date-picker>
+        </el-form-item>
       </template>
     </condition>
 
