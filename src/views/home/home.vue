@@ -1461,7 +1461,7 @@
   }
 </script>
 
-<style ang="scss">
+<style lang="scss">
   .app-main {
     &.is-home {
       background-color: #001536;
