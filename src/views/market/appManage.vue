@@ -72,8 +72,8 @@
             <el-form-item label="结束时间">
               <el-date-picker
                 v-model="dform.giveEndDatetime"
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
+                type="date"
+                value-format="yyyy-MM-dd"
                 placeholder="请选择结束时间">
               </el-date-picker>
             </el-form-item>
@@ -253,7 +253,7 @@
             }
             this.$post('iot-saas-basic/admin/service/market/give', {
               priceCode: params.priceCode,
-              giveEndDatetime: params.giveEndDatetime,
+              giveEndDatetime: params.giveEndDatetime + ' 23:59:59',
               serviceMarketId: this.curRow.id,
               brandId : this.brandId
             }).then(res => {
@@ -291,7 +291,7 @@
     }
   }
   .load-box{
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 180px);
     overflow-y: scroll;
   }
 </style>

@@ -5,7 +5,7 @@
         <el-tab-pane :label="item" :name="name" v-for="(item, name) in myDeviceId" />
       </el-tabs>
       <template v-if="checkAbility([`${deviceTypeCode}_DEPOSIT_PRPR`], 3)">
-        <el-form ref="form" label-position="left" label-width="130px">
+        <el-form ref="form" label-position="left" label-width="auto">
           <h4 class="flex mb-20 mt-10">
             <div>概率押金</div>
             <div class="ml-5">
@@ -30,6 +30,19 @@
               <template slot="append">%</template>
             </el-input>
           </el-form-item>
+
+          <!-- <div class="flex">
+            <el-form-item label="每">
+              <el-input type="number" v-model="form.orderBaseNum">
+                <template slot="append">单</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="押">
+              <el-input type="number" v-model="form.probability">
+                <template slot="append">单</template>
+              </el-input>
+            </el-form-item>
+          </div> -->
 
           <el-form-item label="时间">
             <el-input type="number" v-model="form.durationTime">

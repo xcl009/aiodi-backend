@@ -42,7 +42,7 @@
         </div>
         <div class="dodge-icon b"></div>
       </el-col>
-      <el-col :span="24" class="rel">
+      <el-col :span="24" class="rel" v-if="!isStore()">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor">
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="200" :duration="2600" /></div>
@@ -52,7 +52,7 @@
         </div>
         <div class="dodge-icon y"></div>
       </el-col>
-      <el-col :span="24" class="rel">
+      <el-col :span="24" class="rel" v-if="!isStore()">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor">
             <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="200" :duration="2600" /></div>
@@ -69,8 +69,29 @@
       <div class="trapezoid-strip"></div>
     </div>
 
+    <el-row :gutter="20" type="flex" class="two-box mt-20 pl-20 pr-20 text-white" v-if="roomList['BD'] || roomList['VG'] || roomList['AV']">
+      <template v-for="(itme, key) in config.roomDevice">
+        <el-col :span="24" v-if="roomList[key] && roomList[key].length > 0">
+          <div class="p-20 item-box">
+            <div class="mb-20 flex align-center">
+              <div class="line"></div>
+              <div class="flex1"><span class="fs-b2">{{ itme }}</span><span class="ml-5">点击房间号即可创建订单</span></div>
+            </div>
+            <div class="o-v cursor">
+              <div class="flex align-center flex-wrap room-box text-center fs-b2">
+                <div class="pt-15 pb-15 item" v-for="sitem in roomList[key]"  @click="setRows(1, sitem, 6)">
+                  <div>{{ sitem.place || sitem.deviceSn }}</div>
+                  <div class="fs-s3">房间号</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </el-col>
+      </template>
+    </el-row>
+
     <el-row :gutter="20" type="flex" class="two-box mt-20 pl-20 pr-20 text-white">
-      <el-col :sm="24" :lg="8" class="">
+      <el-col :sm="24" :lg="(checkHotel() && isStore()) || !isStore() ? 8 : 12">
         <div class="p-20 item-box">
           <div class="mb-20 flex align-center">
             <div class="line"></div>
@@ -92,51 +113,25 @@
                   <div>上月</div>
                 </div>
                 <div class="flex1">
-                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
-                      :percentage="index == 0 ? accMul(querHistogram.today.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.today.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.today.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
-                  </div>
-                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
-                      :percentage="index == 0 ? accMul(querHistogram.yesterday.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.yesterday.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.yesterday.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
-                  </div>
-                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
-                      :percentage="index == 0 ? accMul(querHistogram.week.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.week.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.week.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
-                  </div>
-                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
-                      :percentage="index == 0 ? accMul(querHistogram.lastWeek.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.lastWeek.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.lastWeek.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
-                  </div>
-                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
-                      :percentage="index == 0 ? accMul(querHistogram.month.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.month.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.month.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
-                  </div>
-                  <div class="progress"><el-progress :stroke-width="12" :show-text="false"
-                      :percentage="index == 0 ? accMul(querHistogram.lastMonth.amount / totalHistogram.totalAmount, 100) : index == 1 ? accMul(querHistogram.lastMonth.orderNumber / totalHistogram.totalOrderNumber, 100) : accMul(querHistogram.lastMonth.unitPrice / totalHistogram.totalUnitPrice, 100)"></el-progress>
-                  </div>
+                  <template v-for="key in ['today','yesterday','week','lastWeek','month','lastMonth']">
+                    <div class="progress">
+                      <el-progress :stroke-width="12" :show-text="false" :percentage="index == 0 ? querHistogram[key].amountPP : index == 1 ? querHistogram[key].orderPP : querHistogram[key].unitPP"></el-progress>
+                    </div>
+                  </template>
                 </div>
                 <div class="label">
-                  <div>
-                    {{ index == 0 ? querHistogram.today.amount + '元' : index == 1 ? querHistogram.today.orderNumber + '单' : querHistogram.today.unitPrice  + '元'}}
-                  </div>
-                  <div>
-                    {{ index == 0 ? querHistogram.yesterday.amount + '元' : index == 1 ? querHistogram.yesterday.orderNumber + '单' : querHistogram.yesterday.unitPrice  + '元'}}
-                  </div>
-                  <div>
-                    {{ index == 0 ? querHistogram.week.amount + '元' : index == 1 ? querHistogram.week.orderNumber + '单' : querHistogram.week.unitPrice  + '元'}}
-                  </div>
-                  <div>
-                    {{ index == 0 ? querHistogram.lastWeek.amount + '元' : index == 1 ? querHistogram.lastWeek.orderNumber + '单' : querHistogram.lastWeek.unitPrice  + '元'}}
-                  </div>
-                  <div>
-                    {{ index == 0 ? querHistogram.month.amount + '元' : index == 1 ? querHistogram.month.orderNumber + '单' : querHistogram.month.unitPrice  + '元'}}
-                  </div>
-                  <div>
-                    {{ index == 0 ? querHistogram.lastMonth.amount + '元' : index == 1 ? querHistogram.lastMonth.orderNumber + '单' : querHistogram.lastMonth.unitPrice  + '元'}}
-                  </div>
+                  <template v-for="key in ['today','yesterday','week','lastWeek','month','lastMonth']">
+                    <div>
+                      {{ index == 0 ? querHistogram[key].amount + '元' : index == 1 ? querHistogram[key].orderNumber + '单' : querHistogram[key].unitPrice  + '元'}}
+                    </div>
+                  </template>
                 </div>
               </div>
             </el-carousel-item>
           </el-carousel>
         </div>
       </el-col>
-      <el-col :sm="24" :lg="8">
+      <el-col :sm="24" :lg="(checkHotel() && isStore()) || !isStore() ? 8 : 12">
         <div class="p-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
@@ -145,7 +140,7 @@
           <div class="chart-device" ref="chart_device" style="height: 300px;"></div>
         </div>
       </el-col>
-      <el-col :sm="24" :lg="8">
+      <el-col :sm="24" :lg="8" v-if="!isStore()">
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
@@ -195,9 +190,30 @@
           </el-table>
         </div>
       </el-col>
+      <el-col :sm="24" :lg="8" v-if="checkHotel() && isStore()">
+        <div class="pl-20 pr-20 pt-20 item-box">
+          <div @click="$router.push({path: `/hotelTools`})">
+            <div class="flex align-center">
+              <div class="line"></div>
+              <div class="flex1 fs-b2">酒店功能区</div>
+            </div>
+            <el-carousel height="80px" direction="vertical" arrow="never">
+              <el-carousel-item v-for="item in tool">
+                <div class="tool-item flex align-center cursor">
+                  <div class="flex1">
+                    <div class="fs-a1 text-white">{{ item.title }}</div>
+                    <div class="mt-5 text-gray fs-s4">{{ item.desc }}</div>
+                  </div>
+                  <i class="el-icon-arrow-right fs-c1"></i>
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+        </div>
+      </el-col>
     </el-row>
 
-    <el-row :gutter="20" type="flex" class="three-box mt-20 pl-20 pr-20 text-white">
+    <el-row :gutter="20" type="flex" class="three-box mt-20 pl-20 pr-20 text-white" v-if="Ability['order']">
       <el-col :sm="24" :lg="12">
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
@@ -221,7 +237,7 @@
             </el-table-column>
             <el-table-column label="用户" width="80">
               <template slot-scope="scope">
-                {{ scope.row.userNickName.substring(0, 1) }}**
+                {{ scope.row.userNickName ? scope.row.userNickName.substring(0, 1) : '' }}**
               </template>
             </el-table-column>
             <el-table-column label="设备品类" width="100">
@@ -277,83 +293,7 @@
       </el-col>
     </el-row>
 
-    <!-- <el-row :gutter="10" type="flex" class="mt-10" v-if="isStore()">
-      <template v-for="(itme, key) in config.roomDevice">
-        <el-col :span="24" v-if="roomList[key] && roomList[key].length > 0">
-          <div class="o-v p-15 card-panel cursor ">
-            <div class="mb-15"><span class="mr-15 fs-c1 text-black">{{ itme }}</span>点击房间号即可创建订单</div>
-            <div class="flex align-center flex-wrap room-box text-center fs-b2">
-              <div class="pt-15 pb-15 item" v-for="sitem in roomList[key]"  @click="setRows(1, sitem, 6)">
-                <div>{{ sitem.place || sitem.deviceSn }}</div>
-                <div class="fs-s3">房间号</div>
-              </div>
-            </div>
-          </div>
-        </el-col>
-      </template>
-    </el-row>
-
-    <el-row :gutter="10" class="mt-10">
-      <el-col :sm="24" :lg="8">
-        <div class="pl-15 pr-15 pt-10 pb-15 data-contrast ">
-          <div class="flex align-center">
-            <div class="flex1 text-black">交易数据对比</div>
-            <el-dropdown>
-              <div class="flex align-center pl-10 pr-10 box-grey cursor text-primary">
-                {{ contrast_arr[contrast_type] }}<i class="el-icon-arrow-down el-icon--right fs-s1"></i>
-              </div>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="(item, index) in contrast_arr" @click.native="contrast_type = index">{{ item }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </div>
-          <div class="mt-20 flex justify-around text-center" v-if="querHistogram.today">
-            <div class="flex align-end">
-              <div class="mr-5">
-                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.today.amount : contrast_type == 1 ? querHistogram.today.orderNumber : querHistogram.today.unitPrice}}</div>
-                <div class="bar"></div>
-                <div>今日</div>
-              </div>
-              <div>
-                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.yesterday.amount : contrast_type == 1 ? querHistogram.yesterday.orderNumber : querHistogram.yesterday.unitPrice}}</div>
-                <div class="bar high cyan"></div>
-                <div>昨日</div>
-              </div>
-            </div>
-            <div class="flex align-end">
-              <div class="mr-5">
-                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.week.amount : contrast_type == 1 ? querHistogram.week.orderNumber : querHistogram.week.unitPrice}}</div>
-                <div class="bar"></div>
-                <div>本周</div>
-              </div>
-              <div>
-                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.lastWeek.amount : contrast_type == 1 ? querHistogram.lastWeek.orderNumber : querHistogram.lastWeek.unitPrice}}</div>
-                <div class="bar high cyan"></div>
-                <div>上周</div>
-              </div>
-            </div>
-            <div class="flex align-end">
-              <div class="mr-5">
-                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.month.amount : contrast_type == 1 ? querHistogram.month.orderNumber : querHistogram.month.unitPrice}}</div>
-                <div class="bar"></div>
-                <div>本月</div>
-              </div>
-              <div>
-                <div class="fs-s2">{{ contrast_type == 0 ? querHistogram.lastMonth.amount : contrast_type == 1 ? querHistogram.lastMonth.orderNumber : querHistogram.lastMonth.unitPrice}}</div>
-                <div class="bar high cyan"></div>
-                <div>上月</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="mt-10 pl-15 pr-15 pt-10 pb-10 data-contrast ">
-          <div class="text-black">设备数据统计</div>
-          <div class="chart-device" ref="chart_device" style="height: 250px;"></div>
-        </div>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="10" class="mt-10" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">
+    <!-- <el-row :gutter="10" class="mt-10" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">
       <el-col :sm="24" :lg="8">
         <div class="pl-15 pr-15 pt-10 pb-15 ">
           <div class="flex align-center">
@@ -378,34 +318,8 @@
       <el-col :sm="24" :lg="16">
 
       </el-col>
-    </el-row>
-
-    <el-row :gutter="10" class="mt-10" v-if="(myDeviceId['KF'] || myDeviceId['VM'] || myDeviceId['BD']) && isStore()">
-      <el-col :sm="24" :lg="8">
-        <div class="pl-15 pr-15 pt-10 pb-10 " @click="$router.push({path: `/hotelTools`})">
-          <div class="flex align-center">
-            <div class="flex1 text-black">酒店功能区</div>
-            <div class="flex align-center pl-10 pr-10 box-grey cursor text-primary">
-              去管理<i class="el-icon-arrow-right fs-s1"></i>
-            </div>
-          </div>
-          <el-carousel height="80px" direction="vertical" arrow="never">
-            <el-carousel-item v-for="item in tool">
-              <div class="tool-item flex align-center cursor">
-                <div class="flex1">
-                  <div class="fs-a1 text-black">{{ item.title }}</div>
-                  <div class="mt-5 text-gray fs-s4">{{ item.desc }}</div>
-                </div>
-                <i class="el-icon-arrow-right fs-c1"></i>
-              </div>
-            </el-carousel-item>
-          </el-carousel>
-        </div>
-      </el-col>
-      <el-col :sm="24" :lg="16">
-
-      </el-col>
     </el-row> -->
+
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
@@ -724,10 +638,13 @@
               totalUnitPrice = accAdd(totalUnitPrice, res[i].unitPrice)
             }
           }
-          this.totalHistogram = {
-            totalOrderNumber: totalOrderNumber > 0 ? totalOrderNumber : 1,
-            totalAmount: totalAmount > 0 ? totalAmount : 1,
-            totalUnitPrice: totalUnitPrice > 0 ? totalUnitPrice : 1
+          for (var i in res) {
+            let amountPP = accMul(res[i].amount / totalAmount, 100),
+                orderPP = accMul(res[i].orderNumber / totalOrderNumber, 100),
+                unitPP = accMul(res[i].orderNumber / totalUnitPrice, 100)
+            res[i].amountPP = amountPP > 100 ? 100 : amountPP
+            res[i].orderPP = orderPP > 100 ? 100 : orderPP
+            res[i].unitPP = unitPP > 100 ? 100 : unitPP
           }
           this.querHistogram = res
         })
@@ -963,7 +880,7 @@
             size: 100,
             deviceTypeCode: item
           }).then((res = {}) => {
-            this.$set(this.roomList, item, res.rows || [])
+            this.$set(this.roomList, item, res.rows || '')
           })
         })
       },
@@ -1293,7 +1210,7 @@
           });
         }
         //(第二个参数可以设置你这个环形的高低程度)
-        let boxHeight = this.getHeight3D(series, 13); //通过传参设定3d饼/环的高度
+        let boxHeight = this.getHeight3D(series, 15); //通过传参设定3d饼/环的高度
         let option = {
           //图例组件
           legend: {
@@ -1372,10 +1289,12 @@
        */
       getHeight3D(series, height) {
         series.sort((a, b) => {
-          return (b.pieData.value - a.pieData.value);
+          return (b.pieData.value - a.pieData.value)
         })
-        return height * 25 / series[0].pieData.value;
+        let h = height * 25 / series[0].pieData.value
+        return h > 100 ? 25 : h
       },
+      
       // 生成扇形的曲面参数方程，用于 series-surface.parametricEquation
       getParametricEquation(startRatio, endRatio, isSelected, isHovered, k, h) {
         // 计算
@@ -1458,6 +1377,10 @@
           s += '0';
         }
         return s;
+      },
+      
+      checkHotel(){
+        return this.myDeviceId['KF'] || this.myDeviceId['VM'] || this.myDeviceId['BD']
       }
     }
   }
@@ -1500,6 +1423,9 @@
         right: -6px;
         transform: rotate(180deg);
       }
+      /deep/ .el-image__placeholder{
+        display: none;
+      }
     }
     .pieces{
       width: 23px;
@@ -1511,6 +1437,9 @@
       &.r{
         transform: rotate(180deg);
         right: -23px;
+      }
+      /deep/ .el-image__placeholder{
+        display: none;
       }
     }
 
@@ -1557,6 +1486,9 @@
     .type-icon {
       width: 72px;
       height: 72px;
+      /deep/ .el-image__placeholder{
+        display: none;
+      }
     }
   }
 
@@ -1813,10 +1745,11 @@
 
   /** 主题房 */
   .room-box {
+    padding: 1px;
     .item {
-      margin: 1px;
+      margin: -1px;
       min-width: 100px;
-      background-color: #f5f5f5;
+      border: 2px solid #1166B1;
 
       &:hover {
         color: var(--olive);

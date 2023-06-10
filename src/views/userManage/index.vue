@@ -15,11 +15,18 @@
         <el-form-item label="手机号码">
           <el-input placeholder="手机号码" v-model="form.mobile" />
         </el-form-item>
+        <el-form-item label="用户状态">
+          <el-select placeholder="用户状态" v-model="form.status" @change="toQuery()">
+            <el-option label="全部" value="" />
+            <el-option label="正常" value="0" />
+            <el-option label="已拉黑" value="1" />
+          </el-select>
+        </el-form-item>
       </template>
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
         <el-table-column label="头像" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
@@ -62,7 +69,10 @@
         </el-table-column>
         <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" class="ml-0" @click="$router.push({path: `/order?userId=${scope.row.id}`})">订单记录</el-button>
+            <div class="flex flex-wrap">
+              <el-button type="primary" size="mini" @click="$router.push({path: `/order?userId=${scope.row.id}`})">订单记录</el-button>
+              <el-button :type="scope.row.status == 1 ? 'danger' : ''" size="mini" @click="setBlack(scope.row)">{{ scope.row.status == 1 ? '恢复' : '拉黑' }}</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -188,10 +198,10 @@
        * 拉黑 或 移除黑名单
        */
       setBlack(row) {
-        row.black_status = row.black_status == 1 ? 0 : 1
-        this.$get('agentapi/business/manual_finish_order', {
-          uid: row.id,
-          black_status: row.black_status
+        row.status = row.status == 1 ? 0 : 1
+        this.$post('iot-saas-user/api/user/updateStatus', {
+          userId: row.id,
+          status: row.status
         }).then(res => {
           this.$message({
             message: '设置成功',
