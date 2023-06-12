@@ -5,7 +5,7 @@
         <el-avatar :size="40" :src="agentInfo.avatar"></el-avatar>
         <!-- <div class="mt-5 pl-10 pr-10 fs-c1 text-cut">{{ agentInfo.nickname }}</div> -->
         <div class="mt-10 fs-s4" v-if="isBrand()" @click="$router.push({path: `/money`})">快活币: <span class="text-white">{{ money.happyCurrencyNum || 0 }}</span></div>
-        <div class="mt-5 fs-s4" v-if="isBrand() && vipInfo.status > 0" @click="">
+        <div class="mt-5 fs-s4" v-if="isBrand() && vipInfo.status > 0" @click="setRows(1, {}, 1)">
           <template v-if="vipInfo.expiresDatetime"><span class="text-danger">VIP{{ vipInfo.expiresStr }}</span></template>
           <template v-else><span class="text-danger">暂未开通VIP，请开通</span></template>
         </div>

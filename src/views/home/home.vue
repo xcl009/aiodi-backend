@@ -949,7 +949,7 @@
         var url = 'iot-saas-order/admin/order/list'
         this.$get(url, {
           page: 0,
-          size: 4
+          size: 50
         }).then(res => {
           if(res.rows.length > 0){
             let rows = res.rows
