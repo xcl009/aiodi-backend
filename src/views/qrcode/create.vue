@@ -19,7 +19,7 @@
             </template>
           </el-select>
         </el-form-item>
-        <el-form-item label="仓口数量" v-if="form.deviceFactoryCode == 'WS'" ref="windosNumber" prop="windosNumber">
+        <el-form-item label="仓口数量" v-if="form.deviceTypeCode && form.deviceTypeCode.indexOf('PA') > -1" ref="windosNumber" prop="windosNumber">
           <el-input type="number" v-model="form.windosNumber" placeholder="设备仓口数量" />
         </el-form-item>
         <el-form-item label="仓口数量" v-if="form.deviceTypeCode && form.deviceTypeCode.indexOf('VM') > -1" ref="positionQty" prop="positionQty">
