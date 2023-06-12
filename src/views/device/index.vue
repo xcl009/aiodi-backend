@@ -493,7 +493,7 @@
       }
       if (this.$route.meta.reload) {
         this.getList()
-      } else if (this.urlQuery != this.$route.meta.urlQuery) {
+      }else if(this.urlQuery != this.$route.meta.urlQuery) {
         this.toQuery()
       }
       this.urlQuery = this.$route.meta.urlQuery
@@ -502,7 +502,7 @@
       }
     },
     mounted(options) {
-      
+
     },
     methods: {
       /**

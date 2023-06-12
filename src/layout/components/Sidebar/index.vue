@@ -190,9 +190,9 @@ export default {
             this.getVipService()
           } else {
             info.expiresStr = formatSeconds(unixTime(info.expiresDatetime) - currentTime(), 'd')
-            if(parseInt(info.expiresStr.substring(0, info.expiresStr.length - 1)) <= 5){
+            if(!info.expiresStr || parseInt(info.expiresStr.substring(0, info.expiresStr.length - 1)) <= 5){
               info.status = 1
-              info.expiresStr = info.expiresStr + '后到期'
+              info.expiresStr = info.expiresStr ? info.expiresStr + '后到期' : '今日到期'
               this.getVipService()
             }
           }

@@ -45,7 +45,7 @@
       <el-col :span="24" class="rel" v-if="!isStore()">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="200" :duration="2600" /></div>
+            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="20000" :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">总代理数</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')"></el-image>
           </div>
@@ -55,7 +55,7 @@
       <el-col :span="24" class="rel" v-if="!isStore()">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="200" :duration="2600" /></div>
+            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="20000" :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">总商户数</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/store.svg')"></el-image>
           </div>
@@ -144,7 +144,7 @@
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">设备产出使用情况</div>
+            <div class="flex1 fs-b2">设备产出使用情况-模拟数据</div>
           </div>
           <el-table class="store-table text-white" :highlight-current-row="false"
             :header-row-style="{background:'none'}"
@@ -1294,7 +1294,7 @@
         let h = height * 25 / series[0].pieData.value
         return h > 100 ? 25 : h
       },
-      
+
       // 生成扇形的曲面参数方程，用于 series-surface.parametricEquation
       getParametricEquation(startRatio, endRatio, isSelected, isHovered, k, h) {
         // 计算
@@ -1378,7 +1378,7 @@
         }
         return s;
       },
-      
+
       checkHotel(){
         return this.myDeviceId['KF'] || this.myDeviceId['VM'] || this.myDeviceId['BD']
       }
