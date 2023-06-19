@@ -44,7 +44,7 @@ export default {
     },
     layout: {
       type: String,
-      default: 'total, prev, pager, next, sizes, jumper' // total, sizes,
+      default: 'total, prev, pager, next, sizes' // total, sizes,
     },
     background: {
       type: Boolean,

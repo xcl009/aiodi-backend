@@ -224,13 +224,10 @@
                 message: (payParams.cycle == 'TRYOUT' ? '服务试用成功'  : '服务购买成功'),
                 type: 'success'
               })
-              setTimeout(() => {
-                this.$store.dispatch('user/getInfo')
-                this.$root.$emit('getBalance')
-                this.$router.push({
-                  path: '/market'
-                })
-              }, 1000)
+              this.$store.dispatch('user/getInfo')
+              this.$root.$emit('getBalance')
+              this.dialogStatus = false
+              this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
             })

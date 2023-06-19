@@ -47,7 +47,7 @@
                 </div>
               </template>
               <template v-else>
-                <template v-for="(sitem, idx) in item.priceSettings"> 
+                <template v-for="(sitem, idx) in item.priceSettings">
                   <div class="flex1" v-if="idx == 0">
                     <span class="fs-b3 text-danger">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
                     <span class="text-grey">{{ sitem.monthAmount > 0 ? `/月付` : sitem.yearAmount > 0 ? `/年付` : `/永久` }}</span>
@@ -87,7 +87,7 @@
         listTotal: 0,
         listQuery: {
           page: 1,
-          size: 24
+          size: 50
         },
         checkFree: {}
       }

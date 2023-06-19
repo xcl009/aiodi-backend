@@ -1,5 +1,5 @@
 /* 改变主题色变量 */
-$--color-primary: #3CA0FD;
+$--color-primary: #165DFF;
 $--background-color-base: #F2F3F5;
 $--border-color-extra-light: #F2F3F5;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
@@ -21,7 +21,7 @@ body {
   --red: #e54d42;
   --orange: #FF644F;
   --yellow: #FFA32B;
-  --olive: #3CA1FE;
+  --olive: #165DFF;
   --green: #07C160;
   /* --green: rgba(32, 172, 123, 1); */
   --cyan: #00D9EB;
@@ -48,8 +48,8 @@ body {
   --mauveLight: #ebd4ef;
   --pinkLight: #f9d7ea;
   --brownLight: #ede1d9;
-  --greyLight: #e7ebed;
-  --bodyBg: #F2F3F5;
+  --greyLight: #F2F3F5;
+  --bodyBg: #F2F8FF;
   /* 渐变色 */
   --gradualRed: linear-gradient(45deg, #f43f3b, #ec008c);
   --gradualOrange: linear-gradient(45deg, #ff9700, #ed1c24);
@@ -197,9 +197,9 @@ div:focus {
 }
 
 .bg-body{
-  background-color: var(--bodyBg);
+  background-color: var(--greyLight);
   &.el-button{
-		border-color: var(--bodyBg);
+		border-color: var(--greyLight);
   }
 }
 
@@ -683,7 +683,7 @@ div:focus {
 }
 
 .text-danger{
-  color: #FF5454;
+  color: #F53F3F;
   &:hover{
     color: #e14a4a;
   }
@@ -739,11 +739,13 @@ div:focus {
 }
 
 .l-b {
-  border-bottom: solid #f5f5f5 1px;
+  border-bottom: solid #E5E6EB 1px;
 }
-
+.l-b-dashed {
+  border-bottom: dashed #E5E6EB 1px;
+}
 .l-t {
-  border-top: solid #f5f5f5 1px;
+  border-top: solid #E5E6EB 1px;
 }
 
 .shadow-light{
@@ -785,8 +787,8 @@ div:focus {
 }
 
 .btn-body{
-  background-color: var(--bodyBg);
-  border-color: var(--bodyBg);
+  background-color: var(--greyLight);
+  border-color: var(--greyLight);
   color: #86909C;
 }
 
@@ -816,7 +818,7 @@ div:focus {
   border-bottom: 1px solid #E4E7ED;
 }
 
-.ptd-5.el-table, .custom.el-table{
+.custom, .ptd-5.el-table, .custom.el-table{
   color: #4E5969;
   .has-gutter th{
     background-color: #F2F3F5;
@@ -858,6 +860,12 @@ div:focus {
   }
   .w-160{
     width: 160px;
+  }
+  .operate{
+    cursor: pointer;
+    > div + div{
+      margin-left: 15px;
+    }
   }
 }
 .ptd-5.el-table{
@@ -972,4 +980,35 @@ div:focus {
   .el-button{
     padding: 8px 10px;
   }
+}
+
+.el-popover.el-popovers{
+  padding: 0;
+  .el-button--mini{
+    min-width: 48px;
+  }
+}
+
+.label-text{
+  min-width: 90px;
+  color: #86909C;
+}
+*:focus {
+  outline: 0;
+}
+.el-drawer__header{
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-bottom: thin solid #e5e6eb;
+  font-size: 16px;
+  color: var(--black);
+}
+.el-drawer__body {
+  overflow: auto;
+  .el-form-item__label{
+    color: #86909C;
+  }
+}
+.el-drawer__container::-webkit-scrollbar{
+  display: none;
 }

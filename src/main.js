@@ -35,7 +35,7 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
-import { setRem, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent, dealPhone, getOsInfo, getBrowser } from './utils/index'
+import { setRem, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent, dealPhone, getOsInfo, getBrowser, checkQueryRepeat } from './utils/index'
 Vue.prototype.parseTime = parseTime
 Vue.prototype.currentTime = currentTime
 Vue.prototype.pick = pick
@@ -52,6 +52,7 @@ Vue.prototype.isAgent = isAgent
 Vue.prototype.dealPhone = dealPhone
 Vue.prototype.OsInfo = getOsInfo
 Vue.prototype.Browser = getBrowser
+Vue.prototype.checkQueryRepeat = checkQueryRepeat
 
  /**
  * 校验是否拥有服务市场设备类型相关能力

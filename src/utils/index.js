@@ -662,7 +662,17 @@ const util = {
         return Date.parse(value2) - Date.parse(value1)
       }
     }
-  }
+  },
+  
+  /**
+   * 校验筛选条件重复
+   * @param {Object} key
+   * @param {Object} idx
+   * @param {Object} formKey
+   */
+  checkQueryRepeat(key, idx, formKey){
+    return Object.values(formKey).indexOf(key) == -1 || Object.values(formKey).indexOf(key) == idx - 1
+  },
 }
 
 export const param2Obj = util.param2Obj
@@ -701,3 +711,4 @@ export const accMul = util.accMul
 export const accSub = util.accSub
 export const defaultFee = util.defaultFee
 export const dateSort = util.dateSort
+export const checkQueryRepeat = util.checkQueryRepeat

@@ -12,12 +12,12 @@
             {{ scope.row.appId || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="最新版本">
+        <el-table-column label="最新模板版本">
           <template slot-scope="scope">
             {{ scope.row.latestVersion || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="当前版本">
+        <el-table-column label="当前模板版本">
           <template slot-scope="scope">
             {{ scope.row.currentVersion || '--' }}
           </template>

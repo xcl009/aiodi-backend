@@ -107,6 +107,7 @@
                   </template>
                   <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=agentId`})" v-if="checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR`})" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">概率押金</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/leaseOrder/index?createType=1&deductionId=${scope.row.id}`})" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">租赁订单</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DIVIDE_ACCOUNTS`})" v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">微信分账</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>

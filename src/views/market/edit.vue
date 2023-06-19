@@ -46,9 +46,9 @@
             <el-input type="number" v-model="item.permanentAmount" class="mr-10">
               <template slot="append">元/永久</template>
             </el-input>
-            <el-button type="text" size="small" :disabled="form.priceSettings.length == 4" v-if="index == 0"
+            <el-button type="text" size="small" v-if="index == 0"
               @click="form.priceSettings.push({})">添加</el-button>
-            <el-button type="text" size="small" v-else
+            <el-button type="text" size="small" v-if="index > 0 || form.priceSettings.length > 1"
               @click="form.priceSettings.splice(index, 1)" class="text-danger">删除</el-button>
           </div>
         </el-form-item>

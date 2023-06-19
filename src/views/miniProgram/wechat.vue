@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="pt-10 pl-10 pr-10 bg-white">
-      <el-button class="mb-10" type="primary" size="medium" @click="refreshOpenToken">刷新第三方平台token</el-button>
+      <el-button class="mb-10" type="primary" size="medium" @click="refreshOpenToken" v-if="isSaas()">刷新第三方平台token</el-button>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
