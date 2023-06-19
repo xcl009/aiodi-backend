@@ -1,59 +1,45 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <el-tabs class="bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
-          <el-tab-pane label="全部设备" :name="''" />
-          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
-        </el-tabs>
-      </template>
-
-      <template v-slot:left>
-        <div class="pl-10 max-w filter-btn_box white-space">
-          <el-scrollbar>
-            <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
-              :class="{'btn-body': listQuery.status != item.value}" v-for="item in orderTab"
-              @click="listQuery.status = item.value; toQuery(2)">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
-            <el-button size="medium" type="warning" @click="setRows(1, {}, 3)"
-              v-if="isSaas() || isBrand()">取消支付分订单</el-button>
-          </el-scrollbar>
+        <div class="mb-10 flex align-center bg-white">
+          <div class="mr-10">设备类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
+            <el-tab-pane label="全部设备" :name="''" />
+            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+          </el-tabs>
+        </div>
+        <div class="mb-10 flex align-center bg-white">
+          <div class="mr-10">订单状态</div>
+          <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
+            <el-tab-pane :label="`${item.title }(${statInfo[item.nkey] || 0})`" :name="''+item.value+''" v-for="item in orderTab" />
+          </el-tabs>
         </div>
       </template>
+
       <template v-slot:defult>
-        <el-form-item label="订单号">
-          <el-input v-model="form.orderNo" placeholder="订单号后6位或全部" class="order-no" />
+        <el-form-item v-for="item in 2">
+          <div class="flex combined">
+            <el-select v-model="formKey[`sel${item}`]" placeholder="请选择">
+              <template v-for="(q, key) in queryObj">
+                <el-option :label="q.title" :value="key" v-if="checkQueryRepeat(key, item, formKey)"></el-option>
+              </template>
+            </el-select>
+            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
+              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
+            </template>
+            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
+              <selectSearch v-model="form[formKey[`sel${item}`]]" :type="3" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"
+                :isStoreOrder="['storeId'].indexOf(formKey[`sel${item}`])> -1"></selectSearch>
+            </template>
+            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
+              <el-select v-model="form[formKey[`sel${item}`]]" :placeholder="`${queryObj[formKey['sel'+item]].title}`" clearable @change="toQuery()">
+                <el-option :label="item" :value="key" v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
+              </el-select>
+            </template>
+          </div>
         </el-form-item>
-        <el-form-item label="手机号">
-          <selectSearch v-model="form.userId" :type="1" name="mobile" placeholder="手机号" @change="toQuery()">
-          </selectSearch>
-        </el-form-item>
-        <el-form-item label="用户昵称">
-          <selectSearch v-model="form.userIds" :type="2" name="nickname" placeholder="用户昵称" @change="toQuery()">
-          </selectSearch>
-        </el-form-item>
-        <el-form-item label="商户名称">
-          <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"
-            :isStoreOrder="true"></selectSearch>
-        </el-form-item>
-        <el-form-item label="设备SN">
-          <el-input v-model="form.deviceSn" placeholder="设备SN" />
-        </el-form-item>
-        <el-form-item label="交易单号">
-          <el-input v-model="form.transactionNo" placeholder="交易单号" />
-        </el-form-item>
-        <el-form-item label="订单来源">
-          <el-select v-model="form.sourceType" placeholder="订单来源" @change="toQuery()">
-            <el-option label="全部" value="" />
-            <el-option :label="item" :value="key" v-for="(item, key) in Constant.SourceType" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="支付类型">
-          <el-select v-model="form.payType" placeholder="支付类型" @change="toQuery()">
-            <el-option label="全部" value="" />
-            <el-option :label="item" :value="key" v-for="(item, key) in Constant.PayType" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="日期筛选">
+        <el-form-item>
           <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange" range-separator="-"
             value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期"
             :picker-options="pickerOptionsEnd" @change="toQuery()">
@@ -63,206 +49,157 @@
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        :max-height="tableMaxH" element-loading-text="Loading" stripe>
-        <el-table-column label="订单号" width="140">
-          <template slot-scope="scope">
-            {{ scope.row.orderNo || '--' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="交易单号" width="155">
-          <template slot-scope="scope">
-            <div>{{ scope.row.transactionNo || '--' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="类型" width="90">
-          <template slot-scope="scope">
-            {{ scope.row.deviceType || '--' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="来源" width="50">
-          <template slot-scope="scope">
-            <span v-if="scope.row.sourceType == 3">后台</span>
-            <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="scope.row.sourceType == 1"></i>
-            <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
-          </template>
-        </el-table-column>
-        <el-table-column label="支付类型" width="100">
-          <template slot-scope="scope">
-            <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="用户" width="150">
-          <template slot-scope="scope">
-            <div class="cursor text-blue" @click="setRows(1, scope.row, 4)" v-if="scope.row.userId == 0">
-              查看使用用户
+      <div class="flex align-center pt-15 mb-15 l-t">
+        <div class="flex1 fs-c1 text-black">查询表格</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</div>
+
+        <el-popover
+          popper-class="el-popovers"
+          placement="bottom"
+          trigger="click"
+          v-model="popoversStatus"
+          >
+          <div class="custom">
+            <div class="pl-10 pt-10 pr-10 pb-5">
+              <el-checkbox class="block mb-5 mr-0" v-model="item.val" v-for="(item, key) in showColumn">{{ item.name }}</el-checkbox>
             </div>
-            <div v-else>
-              <div v-if="isBrand() || isSaas()">{{ scope.row.userMobile }}</div>
-              <div v-else>{{ dealPhone(scope.row.userMobile) }}</div>
-              <div class="text-cut">{{ scope.row.userNickName || "--" }}</div>
+            <div class="p-10 flex justify-around l-t">
+              <el-button type="info" size="mini" plain @click="setColumn(2)">重置</el-button>
+              <el-button type="primary" size="mini" @click="setColumn(1)">确定</el-button>
             </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="商户" min-width="180" v-if="!isStore()">
-          <template slot-scope="scope">
-            <div>{{ scope.row.storeName || '--' }}</div>
-            <!-- <div>{{ scope.row.back_store || '--' }}</div> -->
-          </template>
-        </el-table-column>
-        <el-table-column label="时间" width="150">
-          <template slot-scope="scope">
-            <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
-            <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="设备" width="240">
-          <template slot-scope="scope">
-            <div>二维码：{{ scope.row.deviceSn || "--" }}</div>
-            <div>设备SN：{{ scope.row.factorySn || "--" }}</div>
-            <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
-              @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="套餐类型" width="100">
-          <template slot-scope="scope">
-            {{ showFeeName(scope.row.feeType) }}<span v-if="scope.row.feeType == 3">({{ scope.row.amountPaid }}元)</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="套餐" width="150">
-          <template slot-scope="scope">
-            {{ showFeeMode(scope.row.feeType, scope.row.feeMode)}}
-          </template>
-        </el-table-column>
-        <el-table-column label="收益(元)" width="75">
-          <template slot-scope="scope">
-            <el-link type="success">{{ scope.row.amount || '0.00' }}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column label="退款(元)" width="75">
-          <template slot-scope="scope">
-            <el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column label="状态" width="90">
-          <template slot-scope="scope">
-            <el-link :type="scope.row.status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
-              {{ Constant.OrderStatus? Constant.OrderStatus[scope.row.status] : "--" }}
-            </el-link>
-          </template>
-        </el-table-column>
-        <el-table-column label="备注" min-width="150">
-          <template slot-scope="scope">
-            <div class="remark-box">
-              <el-link type="danger" v-if="scope.row.freeTime > 0">
-                <span v-if="scope.row.freeUser == 1">免费名额：{{ parseInt(scope.row.freeTime) / 60 }}小时</span>
-                <span v-else>{{ scope.row.freeTime == 600000 ? '会员卡订单' : `会员卡免费${scope.row.freeTime}分钟` }}</span>
+          </div>
+          <img :src="require('@/assets/table_head.svg')" slot="reference" class="ml-20 block cursor" width="16" alt="">
+        </el-popover>
+      </div>
+
+      <div v-if="Object.values(showColumn).length > 0">
+        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+          :max-height="tableMaxH" element-loading-text="Loading" stripe>
+          <el-table-column label="用户信息" width="140" v-if="showColumn.userNickName.val">
+            <template slot-scope="scope">
+              <div class="cursor text-blue" @click="setRows(1, scope.row, 4)" v-if="scope.row.userId == 0">
+                查看使用用户
+              </div>
+              <div v-else class="flex align-center">
+                <img :src="scope.row.userAvatar || agentInfo.avatar" class="mr-5 radius-15" width="30" alt="">
+                <div class="text-cut">{{ scope.row.userNickName || "--" }}</div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="手机号码" width="90" v-if="showColumn.userMobile.val">
+            <template slot-scope="scope">
+              <template v-if="scope.row.userId > 0">
+                <div v-if="isBrand() || isSaas()">{{ scope.row.userMobile || '--' }}</div>
+                <div v-else>{{ dealPhone(scope.row.userMobile) || '--' }}</div>
+              </template>
+              <template v-else>
+                --
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column label="商户" min-width="180" v-if="!isStore()">
+            <template slot-scope="scope">
+              <div>{{ scope.row.storeName || '--' }}</div>
+              <!-- <div>{{ scope.row.back_store || '--' }}</div> -->
+            </template>
+          </el-table-column>
+          <el-table-column label="类型" width="90" v-if="showColumn.deviceType.val">
+            <template slot-scope="scope">
+              {{ scope.row.deviceType || '--' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="二维码" width="240" v-if="showColumn.deviceSn.val">
+            <template slot-scope="scope">
+              <div>二维码：{{ scope.row.deviceSn || "--" }}</div>
+              <!-- <div>设备SN：{{ scope.row.factorySn || "--" }}</div> -->
+              <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
+                @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="来源" width="50" v-if="showColumn.sourceType.val">
+            <template slot-scope="scope">
+              <span v-if="scope.row.sourceType == 3">后台</span>
+              <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="scope.row.sourceType == 1"></i>
+              <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
+            </template>
+          </el-table-column>
+          <el-table-column label="支付类型" width="100" v-if="showColumn.PayType.val">
+            <template slot-scope="scope">
+              <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="时间" width="150" v-if="showColumn.chargeStartTime.val">
+            <template slot-scope="scope">
+              <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
+              <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column label="套餐类型" width="100" v-if="showColumn.feeType">
+            <template slot-scope="scope">
+              {{ showFeeName(scope.row.feeType) }}<span v-if="scope.row.feeType == 3">({{ scope.row.amountPaid }}元)</span>
+            </template>
+          </el-table-column> -->
+          <el-table-column label="套餐" width="150" v-if="showColumn.feeMode.val">
+            <template slot-scope="scope">
+              {{ showFeeMode(scope.row.feeType, scope.row.feeMode)}}
+            </template>
+          </el-table-column>
+          <el-table-column label="收益(元)" width="75" v-if="showColumn.amount.val">
+            <template slot-scope="scope">
+              <el-link type="success">{{ scope.row.amount || '0.00' }}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="退款(元)" width="75" v-if="showColumn.amountRefund.val">
+            <template slot-scope="scope">
+              <el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" width="90" v-if="showColumn.status.val">
+            <template slot-scope="scope">
+              <el-link :type="scope.row.status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
+                {{ Constant.OrderStatus? Constant.OrderStatus[scope.row.status] : "--" }}
               </el-link>
-              <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
-          <template slot-scope="scope">
-            <div class="flex flex-wrap">
-              <el-button type="primary" size="mini" @click="getDetail(scope.row)">订单详情</el-button>
-              <el-button type="danger" size="mini" plain @click="setRows(1, scope.row, 1)"
-                v-if="Ability['orderFinish'] && scope.row.status == 'R'">结束订单</el-button>
-              <!-- <el-button type="info" size="mini" plain @click="setRows(2, scope.row)" v-if="scope.row.deviceType == '充电宝'">宝状态</el-button> -->
-              <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 2)"
-                v-if="Ability['orderRefund'] && (scope.row.status.indexOf('G') > -1) && scope.row.amount > 0">订单退款</el-button>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="flex justify-center">
+            </template>
+          </el-table-column>
+          <el-table-column label="备注" min-width="150" v-if="showColumn.remark.val">
+            <template slot-scope="scope">
+              <div class="remark-box">
+                <el-link type="danger" v-if="scope.row.freeTime > 0">
+                  <span v-if="scope.row.freeUser == 1">免费名额：{{ parseInt(scope.row.freeTime) / 60 }}小时</span>
+                  <span v-else>{{ scope.row.freeTime == 600000 ? '会员卡订单' : `会员卡免费${scope.row.freeTime}分钟` }}</span>
+                </el-link>
+                <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="订单号" width="140" v-if="showColumn.orderNo.val">
+            <template slot-scope="scope">
+              {{ scope.row.orderNo || '--' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="交易单号" width="155" v-if="showColumn.transactionNo.val">
+            <template slot-scope="scope">
+              <div>{{ scope.row.transactionNo || '--' }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
+            <template slot-scope="scope">
+              <div class="flex flex-wrap operate">
+                <div class="text-primary" @click="setRows(3, scope.row, 6)">订单详情</div>
+                <div class="text-danger" @click="setRows(3, scope.row, 1)" v-if="Ability['orderFinish'] && scope.row.status == 'R'">结束订单</div>
+                <div class="text-grey" @click="setRows(3, scope.row, 2)" v-if="Ability['orderRefund'] && (scope.row.status.indexOf('G') > -1) && scope.row.amount > 0">订单退款</div>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="flex justify-end">
         <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
           :total="parseInt(listTotal)" @pagination="getList" />
       </div>
 
-      <el-dialog title="订单详情" :visible.sync="detailDialog">
-        <el-row class="text-center">
-          <el-col :xs="12" :sm="12" :md="4" class="rel pb-50 mb-15 timeline-item el-icon-"
-            v-for="(item, index) in orderFlow">
-            <div class="abs" style="width: 100%;">
-              <el-tooltip :content="item.reason || '无'" placement="top">
-                <div class="text-cut">{{ item.event }}</div>
-              </el-tooltip>
-              <div class="mt-10 fs-s2 text-gray">{{ parseTime(item.createTime) }}</div>
-            </div>
-          </el-col>
-        </el-row>
-
-        <template v-if="orderDivide.length > 0">
-          <el-table border stripe :data="orderDivide" :span-method="fenRunSpanMethod" class="custom">
-            <el-table-column label="订单金额" align="center">
-              <template slot-scope="scope">
-                {{ amountPaid }}元
-              </template>
-            </el-table-column>
-            <el-table-column width="190" label="分成人" align="center">
-              <template slot-scope="scope">
-                {{ scope.row.dividerName }}
-              </template>
-            </el-table-column>
-            <el-table-column label="分成比例" align="center">
-              <template slot-scope="scope">
-                {{ scope.row.percent }}%
-              </template>
-            </el-table-column>
-            <el-table-column label="分成金额(元)" align="center">
-              <template slot-scope="scope">
-                <span>{{ accSub(scope.row.amount, scope.row.loseAmount) }}</span>
-                <span v-if="scope.row.costAmount > 0">(包含超时成本{{ scope.row.costAmount }}元)</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="DD金额(元)" align="center" v-if="amountPaidLose > 0">
-              <template slot-scope="scope">
-                {{ scope.row.loseAmount || '--' }}
-              </template>
-            </el-table-column>
-            <el-table-column label="退款金额(元)" align="center">
-              <template slot-scope="scope">
-                {{ scope.row.refund }}
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
-      </el-dialog>
-
       <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
         <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
-        <template v-if="dialogType == 1">
-          <el-form class="custom-form text-center">
-            <div class="text-black2">归还时间</div>
-            <el-date-picker class="mt-10" v-model="dform.chargeEndTime" type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptionsEnd" placeholder="请选择结束时间">
-            </el-date-picker>
-
-            <template v-if="curRow.deviceType == '充电宝'">
-              <div class="mt-30 text-black2">检测设备是否归还</div>
-              <el-switch class="mt-10" v-model="dform.validateDeviceRefund" />
-            </template>
-          </el-form>
-        </template>
-        <template v-if="dialogType == 2">
-          <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item label="退回方式">
-              <el-radio-group v-model="dform.refundType">
-                <el-radio :label="key" v-for="(item, key) in Constant.RefundType"
-                  v-if="(key == 2 && curRow.feeType == 2 && curRow.payType < 3) || (key != 2)">{{ item }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="退款金额">
-              <el-input v-model="dform.amount" :placeholder="`最多${curRow.amount}元`">
-                <span slot="append">元</span>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="退款原因">
-              <el-input v-model="dform.reason" placeholder="非必填，若填写将展示在用户退款信息中"></el-input>
-            </el-form-item>
-          </el-form>
-        </template>
         <template v-if="dialogType == 3">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
             <el-form-item label="订单单号">
@@ -310,6 +247,337 @@
             v-if="dialogType != 4">确定</el-button>
         </div>
       </el-dialog>
+
+      <el-drawer
+        :title="dialogTitle[dialogType]"
+        :visible.sync="drawerStatus"
+        :size="dialogType == 6 ? '40%' : '30%'"
+        >
+        <template v-if="dialogType == 1">
+          <div class="pl-20 pr-20 text-black">
+            <div class="mb-15">用户信息</div>
+            <div class="flex align-center pb-20 l-b">
+              <img :src="curRow.userAvatar || agentInfo.avatar" class="round" width="56" alt="">
+              <div class="pl-20">
+                <div class="flex">
+                  <div class="label-text">用户名:</div>
+                  <div>{{ curRow.userNickName }}</div>
+                  <div class="ml-50 label-text">用户ID:</div>
+                  <div>{{ curRow.userId }}</div>
+                </div>
+                <div class="flex mt-10">
+                  <div class="label-text">手机号码:</div>
+                  <div v-if="isBrand() || isSaas()">{{ curRow.userMobile || '无' }}</div>
+                  <div v-else>{{ dealPhone(curRow.userMobile) || '无' }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-20 mb-15">
+              订单信息
+            </div>
+            <div class="pb-20 l-b">
+              <div class="flex mb-10">
+                <div class="label-text">订单号:</div>
+                <div>{{ curRow.orderNo }}</div>
+              </div>
+              <div class="flex mb-10">
+                <div class="label-text">商户名称:</div>
+                <div>{{ curRow.storeName }}</div>
+              </div>
+              <div class="flex mb-10">
+                <div class="label-text">订单来源:</div>
+                <div>
+                  <span v-if="curRow.sourceType == 3">后台</span>
+                  <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="curRow.sourceType == 1"></i>
+                  <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
+                </div>
+              </div>
+              <div class="flex mb-10">
+                <div class="label-text">设备类型:</div>
+                <div>{{ curRow.deviceType }}</div>
+              </div>
+              <div class="flex mb-10">
+                <div class="label-text">支付类型:</div>
+                <div>{{ Constant.PayType ? Constant.PayType[curRow.payType] : '--' }}</div>
+              </div>
+              <div class="flex mb-10">
+                <div class="label-text">套餐:</div>
+                <div class="text-cut">
+                  <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode)" placement="top">
+                    <span>{{ showFeeMode(curRow.feeType, curRow.feeMode) }}</span>
+                  </el-tooltip>
+                </div>
+              </div>
+              <div class="flex mb-10">
+                <div class="label-text">开始时间:</div>
+                <div>{{ curRow.chargeEndTime }}</div>
+              </div>
+            </div>
+
+            <div class="mt-20 mb-15">
+              操作
+            </div>
+            <el-form class="custom-form" label-width="130px" label-position="left">
+              <template v-if="curRow.deviceType == '充电宝'">
+                <el-form-item label="检测设备是否归还:">
+                  <el-switch v-model="dform.validateDeviceRefund" />
+                </el-form-item>
+              </template>
+              <el-form-item label="设置归还时间:">
+                <el-date-picker v-model="dform.chargeEndTime" type="datetime"
+                  value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptionsEnd" placeholder="请选择结束时间">
+                </el-date-picker>
+              </el-form-item>
+            </el-form>
+          </div>
+        </template>
+
+        <template v-if="dialogType == 2">
+          <div class="pl-20 pr-20 text-black">
+            <div class="mb-15">用户信息</div>
+            <div class="flex align-center pb-20 l-b">
+              <img :src="curRow.userAvatar || agentInfo.avatar" class="round" width="56" alt="">
+              <div class="pl-20">
+                <div class="flex">
+                  <div class="label-text">用户名:</div>
+                  <div>{{ curRow.userNickName }}</div>
+                  <div class="ml-50 label-text">用户ID:</div>
+                  <div>{{ curRow.userId }}</div>
+                </div>
+                <div class="flex mt-10">
+                  <div class="label-text">手机号码:</div>
+                  <div v-if="isBrand() || isSaas()">{{ curRow.userMobile || '无' }}</div>
+                  <div v-else>{{ dealPhone(curRow.userMobile) || '无' }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-20 mb-15">
+              订单信息
+            </div>
+            <div class="pb-20 l-b">
+              <div class="flex mb-10">
+                <div class="label-text">订单号:</div>
+                <div>{{ curRow.orderNo }}</div>
+              </div>
+              <div class="flex mb-10">
+                <div class="label-text">设备类型:</div>
+                <div>{{ curRow.deviceType }}</div>
+              </div>
+              <div class="flex mb-10">
+                <div class="label-text">开始时间:</div>
+                <div>{{ curRow.chargeEndTime }}</div>
+              </div>
+              <div class="flex">
+                <div class="label-text">结束时间:</div>
+                <div>{{ curRow.chargeStartTime }}</div>
+              </div>
+            </div>
+
+            <div class="mt-20 mb-15">
+              操作
+            </div>
+            <el-form class="custom-form" label-width="auto">
+              <el-form-item label="退回方式:">
+                <el-radio-group v-model="dform.refundType">
+                  <el-radio :label="key" v-for="(item, key) in Constant.RefundType"
+                    v-if="(key == 2 && curRow.feeType == 2 && curRow.payType < 3) || (key != 2)">{{ item }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="退款金额:">
+                <el-input v-model="dform.amount" :placeholder="`最多${curRow.amount}元`">
+                  <span slot="append">元</span>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="退款原因:">
+                <el-input v-model="dform.reason" placeholder="非必填，若填写将展示在用户退款信息中"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </template>
+        <template v-if="dialogType == 6">
+          <div class="pl-20 pr-20 text-black">
+            <div class="mb-15">用户信息</div>
+            <div class="flex align-center pb-20 l-b">
+              <img :src="curRow.userAvatar || agentInfo.avatar" class="round" width="56" alt="">
+              <div class="pl-20">
+                <div class="flex">
+                  <div class="label-text">用户名:</div>
+                  <div>{{ curRow.userNickName }}</div>
+                  <div class="ml-50 label-text">用户ID:</div>
+                  <div>{{ curRow.userId }}</div>
+                </div>
+                <div class="flex mt-10">
+                  <div class="label-text">手机号码:</div>
+                  <div v-if="isBrand() || isSaas()">{{ curRow.userMobile || '无' }}</div>
+                  <div v-else>{{ dealPhone(curRow.userMobile) || '无' }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-20 mb-15">
+              订单信息
+              <el-tag
+                class="ml-10"
+                :type="curRow.status > 2 || curRow.status == -1 ? 'danger' : 'success'"
+                size="mini"
+                effect="dark">
+                {{ Constant.OrderStatus ? Constant.OrderStatus[curRow.status] : "已完成" }}
+              </el-tag>
+            </div>
+            <div class="flex align-center pb-10 l-b-dashed">
+              <div class="flex1">
+                <div class="flex mb-10">
+                  <div class="label-text">订单号:</div>
+                  <div>{{ curRow.orderNo }}</div>
+                </div>
+                <div class="flex mb-10">
+                  <div class="label-text">设备类型:</div>
+                  <div>{{ curRow.deviceType }}</div>
+                </div>
+                <div class="flex">
+                  <div class="label-text">设备二维码:</div>
+                  <div>{{ curRow.deviceSn }}</div>
+                </div>
+              </div>
+              <div class="flex1">
+                <div class="flex mb-10">
+                  <div class="label-text">交易单号:</div>
+                  <div>{{ curRow.transactionNo || '--' }}</div>
+                </div>
+                <div class="flex mb-10">
+                  <div class="label-text">商户名称:</div>
+                  <div>{{ curRow.storeName }}</div>
+                </div>
+                <div class="flex">
+                  <div class="label-text">宝SN:</div>
+                  <div>{{ curRow.baoSn || '--' }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="flex align-center mt-10 pb-20 l-b">
+              <div class="flex1">
+                <div class="flex mb-10">
+                  <div class="label-text">开始时间:</div>
+                  <div>{{ curRow.chargeEndTime }}</div>
+                </div>
+                <div class="flex mb-10">
+                  <div class="label-text">订单来源:</div>
+                  <div>
+                    <span v-if="curRow.sourceType == 3">后台</span>
+                    <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="curRow.sourceType == 1"></i>
+                    <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
+                  </div>
+                </div>
+                <div class="flex mb-10">
+                  <div class="label-text">套餐:</div>
+                  <div class="text-cut">
+                    <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode)" placement="top">
+                      <span>{{ showFeeMode(curRow.feeType, curRow.feeMode) }}</span>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <div class="flex">
+                  <div class="label-text">退款:</div>
+                  <div>{{ curRow.amountRefund || '0.00' }}</div>
+                </div>
+              </div>
+              <div class="flex1">
+                <div class="flex mb-10">
+                  <div class="label-text">结束时间:</div>
+                  <div>{{ curRow.chargeStartTime || '--' }}</div>
+                </div>
+                <div class="flex mb-10">
+                  <div class="label-text">支付类型:</div>
+                  <div>{{ Constant.PayType ? Constant.PayType[curRow.payType] : '--' }}</div>
+                </div>
+                <div class="flex mb-10">
+                  <div class="label-text">收益:</div>
+                  <div>{{ curRow.amount || '0.00' }}</div>
+                </div>
+                <div class="flex">
+                  <div class="label-text">备注:</div>
+                  <div>
+                    <template v-if="curRow.freeTime > 0">
+                      <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ parseInt(curRow.freeTime) / 60 }}小时</span>
+                      <span class="mr-5" v-else>{{ scope.freeTime == 600000 ? '会员卡订单' : `会员卡免费${curRow.freeTime}分钟` }}</span>
+                    </template>
+                    <span>{{ curRow.remark ? curRow.remark: curRow.freeTime ? '' : '--' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-20 mb-15">订单流程</div>
+            <div class="flex pb-20 timeline-box white-space text-center l-b">
+              <div class="rel pt-30 timeline-item el-icon-"
+                v-for="(item, index) in dform.orderFlow">
+                <div class="pl-10 pr-10">
+                  <el-tooltip :content="item.reason || '无'" placement="top">
+                    <div class="text-cut">{{ item.event }}</div>
+                  </el-tooltip>
+                  <div class="mt-10 fs-s2 text-gray">{{ parseTime(item.createTime) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <template v-if="dform.orderDivide && dform.orderDivide.length > 0">
+              <div class="mt-20 mb-15">分成明细</div>
+              <el-table border stripe :data="dform.orderDivide" :span-method="fenRunSpanMethod" class="custom">
+                <el-table-column label="订单金额" align="center">
+                  <template slot-scope="scope">
+                    {{ dform.amountPaid }}元
+                  </template>
+                </el-table-column>
+                <el-table-column width="160" label="分成人" align="center">
+                  <template slot-scope="scope">
+                    {{ scope.row.dividerName }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="分成比例" align="center">
+                  <template slot-scope="scope">
+                    {{ scope.row.percent }}%
+                  </template>
+                </el-table-column>
+                <el-table-column label="分成金额(元)" align="center">
+                  <template slot-scope="scope">
+                    <span>{{ accSub(scope.row.amount, scope.row.loseAmount) }}</span>
+                    <span v-if="scope.row.costAmount > 0">(包含超时成本{{ scope.row.costAmount }}元)</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="DD金额(元)" align="center" v-if="dform.amountPaidLose > 0">
+                  <template slot-scope="scope">
+                    {{ scope.row.loseAmount || '--' }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="分成类型" align="center">
+                  <template slot-scope="scope">
+                    {{ scope.row.dividerPaymentType == 2 ? '微信' : '余额' }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="分成状态" align="center">
+                  <template slot-scope="scope">
+                    {{ scope.row.dividerPaymentStatus == 0 ? '分成进行中' : scope.row.dividerPaymentStatus == -1 ? '分成失败' : scope.row.dividerPaymentStatus == -2 ? '分账回退失败' : '已分成'  }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="退款金额(元)" align="center">
+                  <template slot-scope="scope">
+                    {{ scope.row.refund }}
+                  </template>
+                </el-table-column>
+              </el-table>
+            </template>
+          </div>
+        </template>
+
+        <template v-if="dialogType != 6">
+          <div class="p-15 mt-30 abs bfixed text-right l-t">
+            <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
+            <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+          </div>
+        </template>
+      </el-drawer>
     </div>
   </div>
 </template>
@@ -396,7 +664,7 @@
           }
         },
         orderTab: [{
-            value: '',
+            value: 0,
             title: '全部',
             nkey: 'orderNumber'
           },
@@ -447,41 +715,164 @@
           page: 1,
           size: 20
         },
+
+        queryObj: {
+          orderNo: {
+            title: '订单号',
+            type: 'input'
+          },
+          userId: {
+            title: '用户昵称',
+            type: 'selectSearch',
+            name: 'nickname'
+          },
+          userId: {
+            title: '手机号码',
+            type: 'selectSearch',
+            name: 'mobile'
+          },
+          storeId: {
+            title: '商户名称',
+            type: 'selectSearch',
+            name: 'name'
+          },
+          deviceSn: {
+            title: '设备二维码',
+            type: 'input'
+          },
+          transactionNo: {
+            title: '交易单号',
+            type: 'input'
+          },
+          sourceType: {
+            title: '订单来源',
+            type: 'select',
+            selectArr: []
+          },
+          payType: {
+            title: '支付类型',
+            type: 'select',
+            selectArr: []
+          }
+        },
+        formKey: {
+          sel1: 'orderNo',
+          sel2: 'storeId'
+        },
         form: {},
         order: {},
         selID: [],
 
-        // 订单详情
-        detailDialog: false,
-        orderFlow: [],
-        orderDivide: [],
-        amountPaid: '',
-        amountPaidLose: '',
-
         // 弹出相关
         dialogType: 1,
         dialogStatus: false,
+        drawerStatus: false,
         dialogTitle: {
           1: '结束订单',
           2: '订单退款',
           3: '取消支付分订单',
           4: '订单使用用户',
-          5: '免押待付款订单0元完结'
+          5: '免押待付款订单0元完结',
+          6: '订单详情',
         },
         curRow: {},
         curIdx: 0,
-        dform: {}
+        dform: {},
+
+        // 列的配置化对象，存储配置信息
+        checkList: {},
+        popoversStatus: false,
+        showColumn: {},
+        defaultColumn: {
+          userNickName: {
+            val: true,
+            name: '用户信息'
+          },
+          userMobile: {
+            val: true,
+            name: '手机号码'
+          },
+          deviceType: {
+            val: true,
+            name: '类型'
+          },
+          sourceType: {
+            val: true,
+            name: '来源'
+          },
+          PayType: {
+            val: true,
+            name: '支付类型'
+          },
+          chargeStartTime: {
+            val: true,
+            name: '时间'
+          },
+          deviceSn: {
+            val: true,
+            name: '二维码'
+          },
+          feeMode: {
+            val: true,
+            name: '套餐'
+          },
+          amount: {
+            val: true,
+            name: '收益'
+          },
+          amountRefund: {
+            val: true,
+            name: '退款'
+          },
+          status: {
+            val: true,
+            name: '状态'
+          },
+          remark: {
+            val: true,
+            name: '备注'
+          },
+          orderNo: {
+            val: true,
+            name: '订单号'
+          },
+          transactionNo: {
+            val: true,
+            name: '交易单号'
+          }
+        },
       }
     },
     mounted() {
+      if(localStorage.getItem('orderTableColumn')){
+        let showColumn = JSON.parse(localStorage.getItem('orderTableColumn'))
+        this.showColumn = Object.assign({}, this.defaultColumn, showColumn)
+      }else{
+        this.showColumn = this.defaultColumn
+      }
       let query = this.$route.query
       this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceSn', 'sourceType', 'userId']
       for (var i in this.queryKey) {
         if (query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
       }
+      this.queryObj.sourceType.selectArr = this.Constant.SourceType
+      this.queryObj.payType.selectArr = this.Constant.PayType
       this.toQuery()
     },
     methods: {
+      /**
+       * 设置表格表头
+       */
+      setColumn(type = 1) {
+        if(type == 1){
+          localStorage.setItem('orderTableColumn', JSON.stringify(this.showColumn))
+        } else {
+          localStorage.removeItem('orderTableColumn')
+          this.showColumn = this.defaultColumn
+        }
+        this.popoversStatus = false
+      },
+
       /**
        * 订单数量
        */
@@ -565,6 +956,7 @@
           params.storeId = ids[0]
           params.agentId = ids[1]
         }
+        if (params.status == 0) delete params.status
         if (params.deviceTypeCode == 0) delete params.deviceTypeCode
         if (params.userIds) {
           params.userId = params.userIds
@@ -581,7 +973,7 @@
           this.clickSubmit = false
           this.listTotal = res.total
           if (params.page == 0) {
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 55
           }
         }).catch(() => {
           this.listLoading = false
@@ -667,41 +1059,6 @@
       },
 
       /**
-       * 查询订单详情
-       */
-      getDetail(row) {
-        this.$get('iot-saas-order/admin/order/detail/flow', {
-          orderNo: row.orderNo
-        }).then(res => {
-          this.orderFlow = res
-          this.orderDivide = []
-          this.detailDialog = true
-          if (row.status.indexOf('O') > -1 && row.amount > 0) {
-            this.$get('iot-saas-order/admin/order/detail/divide', {
-              orderNo: row.orderNo
-            }).then(res => {
-              let amountPaidLose = 0
-              if (res.divideList && res.divideList.length > 0) {
-                res.divideList.map(item => {
-                  amountPaidLose = accAdd(amountPaidLose, item.loseAmount)
-                })
-              }
-              this.orderDivide = res.divideList
-              this.amountPaid = res.amountPaid
-              this.amountPaidLose = amountPaidLose
-              this.orderDivide.push({
-                dividerName: '微信分账-(接收方姓名)',
-                percent: '12',
-                amount: '0.1',
-                loseAmount: '0',
-                refund: '0',
-              })
-            })
-          }
-        })
-      },
-
-      /**
        * 订单详情分润合并单元格
        */
       fenRunSpanMethod({
@@ -727,7 +1084,7 @@
 
       /**
        * 操作商户
-       * @param {Object} type 1 dialog类型 2 查询宝归还状态
+       * @param {Object} type 1 dialog类型 2 查询宝归还状态 3 drawer类型
        * @param {Object} row 选择当前数据
        * @param {Object} dialogType dialog内容显示类型 1: '结束订单' 2: '订单退款' 3: '取消订单' 4: '查看订单使用人数'
        * @param {Object} idx 当前数据所在位置
@@ -739,16 +1096,46 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
+            this.dform = {}
+            if (dialogType == 4) {
+              this.$get('iot-saas-order/admin/order/queryStoreOrderUser', {
+                orderNo: row.orderNo
+              }).then(res => {
+                this.$set(this.dform, 'list', res)
+              })
+            }
+            break
+          case 3:
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.drawerStatus = true
+            this.dform = {}
             if (dialogType == 1) {
               this.$set(this.dform, 'chargeEndTime', this.parseTime(this.currentTime()))
               if (row.deviceType == '充电宝') this.$set(this.dform, 'validateDeviceRefund', true)
             } else if (dialogType == 2) {
               this.$set(this.dform, 'refundType', '0')
-            } else if (dialogType == 4) {
-              this.$get('iot-saas-order/admin/order/queryStoreOrderUser', {
+            } else if (dialogType == 6) {
+              this.$get('iot-saas-order/admin/order/detail/flow', {
                 orderNo: row.orderNo
               }).then(res => {
-                this.$set(this.dform, 'list', res)
+                this.$set(this.dform, 'orderFlow', res)
+                if (row.status.indexOf('O') > -1 && row.amount > 0) {
+                  this.$get('iot-saas-order/admin/order/detail/divide', {
+                    orderNo: row.orderNo
+                  }).then(res => {
+                    let amountPaidLose = 0
+                    if (res.divideList && res.divideList.length > 0) {
+                      res.divideList.map(item => {
+                        amountPaidLose = accAdd(amountPaidLose, item.loseAmount)
+                      })
+                    }
+                    this.$set(this.dform, 'orderDivide', res.divideList)
+                    this.$set(this.dform, 'amountPaid', res.amountPaid)
+                    this.$set(this.dform, 'amountPaidLose', amountPaidLose)
+                  })
+                }
               })
             }
             break
@@ -800,7 +1187,7 @@
                 type: 'success'
               })
               curRow.status = 'OTG'
-              this.dialogStatus = false
+              this.drawerStatus = false
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
@@ -822,7 +1209,7 @@
               })
               curRow.status = 'OTD'
               curRow.amountRefund = params.amount
-              this.dialogStatus = false
+              this.drawerStatus = false
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
@@ -883,10 +1270,6 @@
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-tabs__header {
-    margin-bottom: 0;
-  }
-
   .remark-box {
     max-height: 80px;
   }
@@ -897,61 +1280,43 @@
     }
   }
 
-  .timeline-item {
-    height: 100px;
-
-    &::after,
-    &::before {
-      content: '';
-      position: absolute;
-    }
-
-    &::before {
-      width: 60px;
-      height: 14px;
-      top: 45px;
-      margin-left: -30px;
-      content: "";
-      background-color: var(--white);
-      color: var(--olive);
-      z-index: 99;
-    }
-
-    &::after {
-      top: 51px;
-      margin-left: 20px;
-      width: 100%;
-      height: 1px;
-      background: var(--olive);
-    }
-
-    &:nth-child(2n) {
-      padding-top: 70px;
-    }
-
-    &.err {
+  .timeline-box{
+    overflow-y: scroll;
+    .timeline-item {
+      &::after,
       &::before {
-        content: "";
-        color: "#FF5353";
+        content: '';
+        position: absolute;
       }
-    }
-
-    @media only screen and (max-width: 991px) {
-
-      &:last-child,
-      &:nth-child(2n) {
-        &::after {
+      &::before {
+        width: 26px;
+        height: 14px;
+        top: 0;
+        margin-left: -13px;
+        content: "";
+        background-color: var(--white);
+        color: var(--olive);
+        z-index: 99;
+      }
+      &::after {
+        top: 6px;
+        margin-left: 10px;
+        width: 100%;
+        height: 1px;
+        background: var(--olive);
+      }
+      &:last-child{
+        &::before{
+          color: var(--orange);
+        }
+        &::after{
           width: 0;
         }
       }
-    }
-
-    @media only screen and (min-width: 992px) {
-
-      &:last-child,
-      &:nth-child(6n) {
-        &::after {
-          width: 0;
+      &.err {
+        &::before {
+          content: "";
+          color: var(--orange);
         }
       }
     }

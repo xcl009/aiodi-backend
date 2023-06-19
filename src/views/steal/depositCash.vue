@@ -25,31 +25,25 @@
             </div>
           </el-form-item>
 
-          <el-form-item label="概率">
-            <el-input type="number" v-model="form.probability">
-              <template slot="append">%</template>
-            </el-input>
-          </el-form-item>
-
-          <!-- <div class="flex">
+          <div class="flex">
             <el-form-item label="每">
-              <el-input type="number" v-model="form.orderBaseNum">
-                <template slot="append">单</template>
+              <el-input type="number" v-model="form.orderNumber">
+                <template slot="append">人</template>
               </el-input>
             </el-form-item>
             <el-form-item label="押">
-              <el-input type="number" v-model="form.probability">
-                <template slot="append">单</template>
+              <el-input type="number" v-model="form.freeNumber">
+                <template slot="append">人</template>
               </el-input>
             </el-form-item>
-          </div> -->
+          </div>
 
           <el-form-item label="时间">
             <el-input type="number" v-model="form.durationTime">
               <template slot="append">天</template>
             </el-input>
             <div>
-              用户在进入概率押金名单{{ form.durationTime || 0 }}天后再次租借会重新计算概率是否可免押租借
+              用户在初次下单租借{{ form.durationTime || 0 }}天后再次租借会重新计算概率
             </div>
           </el-form-item>
 
@@ -84,6 +78,8 @@
       return {
         form: {},
         deviceTypeCode: '',
+        id: this.$route.query.id || '',
+        userKey: this.$route.query.userKey || '',
       }
     },
     computed: {
@@ -103,16 +99,19 @@
        * 获取详情
        */
       getInfo() {
-        if(!this.checkAbility([`${this.deviceTypeCode}_DEPOSIT_PRPR`], 3)) return
-        this.$get(`iot-saas-basic/admin/probabilityDeposit/v1/find`, {
+        let params = {
           deviceTypeCode: this.deviceTypeCode
-        }).then((res = {} )=> {
+        }
+        if(this.userKey && this.id) params[this.userKey] = this.id
+        if(!this.checkAbility([`${this.deviceTypeCode}_DEPOSIT_PRPR`], 3)) return
+        this.$get(`iot-saas-basic/admin/probabilityDeposit/v1/find`, params).then((res = {} )=> {
           if (res.enable == undefined) {
             this.form = {
               enable: 2,
               durationTime: 7,
-              probability: 0,
-              walletBalance: 0
+              walletBalance: 0,
+              orderNumber: 0,
+              freeNumber: 0
             }
           } else {
             res.durationTime = parseInt(res.durationTime) / 1440
@@ -128,6 +127,7 @@
         let params = JSON.parse(JSON.stringify(this.form))
         params.deviceTypeCode = this.deviceTypeCode
         params.durationTime = parseInt(params.durationTime) * 1440
+        if(this.userKey && this.id) params[this.userKey] = this.id
         this.$post(`iot-saas-basic/admin/probabilityDeposit/v1/update`, params).then(res => {
           this.$message({
             message: '设置成功',

@@ -5,59 +5,156 @@
         <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType"/>
       </el-tabs>
 
-      <!-- <el-tabs class="mb-15 fs-b2" v-model="curDevice" @tab-click="getInfo">
-        <el-tab-pane :label="item" :name="code" v-for="(item, code) in deviceType" />
-      </el-tabs> -->
-
       <el-form ref="form" label-width="auto">
         <h4 class="mb-20 mt-10">DD状态</h4>
         <div class="flex">
           <el-form-item label="是否开启：">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：比例漏单>时间扣减>扣款失败</span>
+              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：时间段隐藏漏单>比例漏单>时间扣减>扣款失败</span>
             </div>
           </el-form-item>
         </div>
-
-        <template v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">
-        <h4 class="flex mb-20 mt-10">
-          <div>比例漏单</div>
-          <div class="ml-5">
-            <el-popover
-              placement="top-start"
-              title="温馨提示"
-              width="450"
-              trigger="hover">
-              <div>
-                起漏金额：订单金额须大于等于起漏金额。<br>
-                离线后漏单：开启则表示在代理及商户停止访问系统自动离线后才开始执行漏单（代理及商户停止访问系统之前创建的订单不会参与漏单）。<br>
-                订单金额大于0且未被DD的订单才会执行漏单，漏掉的订单将会隐藏且不给下级代理及商户分成<br>
-              </div>
-              <svg-icon icon-class="doubt" slot="reference"></svg-icon>
-            </el-popover>
+        
+        <template v-if="Ability[`${deviceTypeCode}_DD_END`]">
+          <h4 class="flex mb-20 mt-10">
+            <div>归还不结束</div>
+            <div class="ml-5">
+              <el-popover
+                placement="top-start"
+                title="温馨提示"
+                width="450"
+                trigger="hover">
+                <div>
+                  设置不结束规则后用户归还时将会计算不结束概率<br>
+                  设置时间段表示时间段内归还的订单才会计算不结束概率，不设置不限时间
+                </div>
+                <svg-icon icon-class="doubt" slot="reference"></svg-icon>
+              </el-popover>
+            </div>
+          </h4>
+          <div class="flex">
+            <el-form-item label="每：">
+              <el-input type="number" v-model="form.notCloseRule.orderNum">
+                <template slot="append">单</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="不结束：">
+              <el-input type="number" v-model="form.notCloseRule.notCloseNum">
+                <template slot="append">单</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="租借时长：">
+              <el-input type="number" v-model="form.notCloseRule.rentTimes">
+                <template slot="append">小时以上</template>
+              </el-input>
+            </el-form-item>
           </div>
-        </h4>
-        <div class="flex">
-          <el-form-item label="每：">
-            <el-input type="number" v-model="form.complateRule.orderBaseNum">
-              <template slot="append">单</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="漏：">
-            <el-input type="number" v-model="form.complateRule.loseNum">
-              <template slot="append">单</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="起漏金额：">
-            <el-input type="number" v-model="form.complateRule.startAmount">
-              <template slot="append">元</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="离线后漏单：" class="ml-10">
-            <el-switch v-model="form.complateRule.minute" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-        </div>
+          <div class="mb-5 pl-15 text-black">不结束时间段</div>
+          <div class="flex align-start flex-wrap" v-for="(item, index) in form.notCloseRule.timeRules">
+            <el-form-item class="mr-20" label="开始时间：">
+              <el-time-select v-model="item.startTime" :picker-options="{
+                    start: '00:00',
+                    step: '00:01',
+                    end: '23:59'
+                  }" placeholder="开始时间">
+              </el-time-select>
+            </el-form-item>
+            <el-form-item class="mr-20" label="结束时间：">
+              <el-time-select v-model="item.endTime" :picker-options="{
+                    start: '00:00',
+                    step: '00:01',
+                    end: '23:59',
+                    minTime: item.startTime
+                  }" placeholder="结束时间">
+              </el-time-select>
+            </el-form-item>
+            <el-button class="mt-5" type="primary" size="mini" icon="el-icon-plus" v-if="form.notCloseRule.timeRules.length < 4 && index == 0"
+              @click="form.notCloseRule.timeRules.push({startTime: '', endTime: ''})"></el-button>
+            <el-button class="mt-5" type="danger" size="mini" icon="el-icon-minus" v-if="form.notCloseRule.timeRules.length > 1 && index > 0"
+              @click="form.notCloseRule.timeRules.splice(index, 1)"></el-button>
+          </div>
+        </template>
+        
+        <template v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">
+          <h4 class="flex mb-20 mt-10">
+            <div>时间段隐藏漏单</div>
+            <div class="ml-5">
+              <el-popover
+                placement="top-start"
+                title="温馨提示"
+                width="450"
+                trigger="hover">
+                <div>
+                  设置了时间段表示该时间段完结的订单会执行漏单，漏掉的订单将会隐藏且不给下级代理及商户分成。<br>
+                </div>
+                <svg-icon icon-class="doubt" slot="reference"></svg-icon>
+              </el-popover>
+            </div>
+          </h4>
+          <div class="flex align-start flex-wrap" v-for="(item, index) in form.notDisplayRule.timeRules">
+            <el-form-item class="mr-20" label="开始时间：">
+              <el-time-select v-model="item.startTime" :picker-options="{
+                    start: '00:00',
+                    step: '00:01',
+                    end: '23:59'
+                  }" placeholder="开始时间">
+              </el-time-select>
+            </el-form-item>
+            <el-form-item class="mr-20" label="结束时间：">
+              <el-time-select v-model="item.endTime" :picker-options="{
+                    start: '00:00',
+                    step: '00:01',
+                    end: '23:59',
+                    minTime: item.startTime
+                  }" placeholder="结束时间">
+              </el-time-select>
+            </el-form-item>
+            <el-button class="mt-5" type="primary" size="mini" icon="el-icon-plus" v-if="form.notDisplayRule.timeRules.length < 4 && index == 0"
+              @click="form.notDisplayRule.timeRules.push({startTime: '', endTime: ''})"></el-button>
+            <el-button class="mt-5" type="danger" size="mini" icon="el-icon-minus" v-if="form.notDisplayRule.timeRules.length > 1 && index > 0"
+              @click="form.notDisplayRule.timeRules.splice(index, 1)"></el-button>
+          </div>
+        </template>
+        
+        <template v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">
+          <h4 class="flex mb-20 mt-10">
+            <div>比例漏单</div>
+            <div class="ml-5">
+              <el-popover
+                placement="top-start"
+                title="温馨提示"
+                width="450"
+                trigger="hover">
+                <div>
+                  起漏金额：订单金额须大于等于起漏金额。<br>
+                  离线后漏单：开启则表示在代理及商户停止访问系统自动离线后才开始执行漏单（代理及商户停止访问系统之前创建的订单不会参与漏单）。<br>
+                  订单金额大于0且未被DD的订单才会执行漏单，漏掉的订单将会隐藏且不给下级代理及商户分成<br>
+                </div>
+                <svg-icon icon-class="doubt" slot="reference"></svg-icon>
+              </el-popover>
+            </div>
+          </h4>
+          <div class="flex">
+            <el-form-item label="每：">
+              <el-input type="number" v-model="form.complateRule.orderBaseNum">
+                <template slot="append">单</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="漏：">
+              <el-input type="number" v-model="form.complateRule.loseNum">
+                <template slot="append">单</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="起漏金额：">
+              <el-input type="number" v-model="form.complateRule.startAmount">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="离线后漏单：" class="ml-10">
+              <el-switch v-model="form.complateRule.minute" :active-value="1" :inactive-value="0" />
+            </el-form-item>
+          </div>
         </template>
 
         <template v-if="Ability[`${deviceTypeCode}_DD_TIME`]">
@@ -88,40 +185,42 @@
         </template>
 
         <template v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">
-        <h4 class="flex mb-20 mt-10">
-          <div>扣款失败</div>
-          <div class="ml-5">
-            <el-popover
-              placement="top-start"
-              title="温馨提示"
-              width="450"
-              trigger="hover">
-              <div>
-                起漏金额：订单金额须大于等于起漏金额。<br>
-                订单金额大于0且未被DD的订单才会执行漏单，漏掉的订单将会展示为扣款失败且不给下级代理及商户分成。<br>
-              </div>
-              <svg-icon icon-class="doubt" slot="reference"></svg-icon>
-            </el-popover>
+          <h4 class="flex mb-20 mt-10">
+            <div>扣款失败</div>
+            <div class="ml-5">
+              <el-popover
+                placement="top-start"
+                title="温馨提示"
+                width="450"
+                trigger="hover">
+                <div>
+                  起漏金额：订单金额须大于等于起漏金额。<br>
+                  订单金额大于0且未被DD的订单才会执行漏单，漏掉的订单将会展示为扣款失败且不给下级代理及商户分成。<br>
+                </div>
+                <svg-icon icon-class="doubt" slot="reference"></svg-icon>
+              </el-popover>
+            </div>
+          </h4>
+          <div class="flex">
+            <el-form-item label="每：">
+              <el-input type="number" v-model="form.failRule.orderBaseNum">
+                <template slot="append">单</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="失败：">
+              <el-input type="number" v-model="form.failRule.loseNum">
+                <template slot="append">单</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="起漏金额：">
+              <el-input type="number" v-model="form.failRule.startAmount">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
           </div>
-        </h4>
-        <div class="flex">
-          <el-form-item label="每：">
-            <el-input type="number" v-model="form.failRule.orderBaseNum">
-              <template slot="append">单</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="失败：">
-            <el-input type="number" v-model="form.failRule.loseNum">
-              <template slot="append">单</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="起漏金额：">
-            <el-input type="number" v-model="form.failRule.startAmount">
-              <template slot="append">元</template>
-            </el-input>
-          </el-form-item>
-        </div>
         </template>
+
+        
 
         <el-form-item class="mt-10">
           <el-button type="primary" @click="onSubmit">立即提交</el-button>
@@ -138,9 +237,17 @@
     data() {
       return {
         form: {
+          enable: 2,
+          minuteRule: 0,
+          complateRule: {},
           proportionRule: {},
           failRule: {},
-          complateRule: {}
+          notCloseRule: {
+            timeRules: [{}]
+          },
+          notDisplayRule: {
+            timeRules: [{}],
+          }
         },
         id: this.$route.query.id || '',
         userKey: this.$route.query.userKey || '',
@@ -190,15 +297,15 @@
         if(this.userKey && this.id) params[this.userKey] = this.id
         this.$get(`iot-saas-basic/admin/loseorderconfig/v1/findById`, params).then((res = {}) => {
           if (res.enable == undefined) {
-            res = {
-              enable: 2,
-              proportionRule: {},
-              failRule: {},
-              complateRule: {},
-              minuteRule: 0
-            }
+            res = {}
           }
-          this.form = res
+          if(res.notCloseRule && !res.notCloseRule.timeRules){
+            res.notCloseRule.timeRules = [{}]
+          }
+          if(res.notDisplayRule && !res.notDisplayRule.timeRules){
+            res.notDisplayRule.timeRules = [{}]
+          }
+          this.form = Object.assign(this.form, res)
         })
       },
 

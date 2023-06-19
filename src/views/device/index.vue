@@ -1,6 +1,47 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+      <template v-slot:tabs>
+        <div class="mb-10 flex align-center bg-white">
+          <div class="mr-10">设备类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
+            <el-tab-pane label="全部设备" :name="''" />
+            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+          </el-tabs>
+        </div>
+        <div class="mb-10 flex align-center bg-white">
+          <div class="mr-10">设备状态</div>
+          <el-tabs class="flex-1" v-model="listQuery.haveBind" @tab-click="toQuery()">
+            <el-tab-pane :label="`${item.title }(${deviceCount[item.nkey] || onLineCount[item.nkey] || 0})`" :name="''+item.value+''" v-for="item in haveBind" />
+          </el-tabs>
+        </div>
+      </template>
+
+      <template v-slot:defult>
+        <el-form-item v-for="item in 2">
+          <div class="flex combined">
+            <el-select v-model="formKey[`sel${item}`]" placeholder="请选择">
+              <template v-for="(q, key) in queryObj">
+                <el-option :label="q.title" :value="key" v-if="checkQueryRepeat(key, item, formKey)"></el-option>
+              </template>
+            </el-select>
+            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
+              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
+            </template>
+            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
+              <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"></selectSearch>
+            </template>
+            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
+              <el-select v-model="form[formKey[`sel${item}`]]" :placeholder="`${queryObj[formKey['sel'+item]].title}`" clearable @change="toQuery()">
+                <el-option :label="item.label" :value="item.value" v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
+              </el-select>
+            </template>
+          </div>
+        </el-form-item>
+      </template>
+    </condition>
+
+    <!-- <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
         <el-tabs class="bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
           <el-tab-pane label="全部设备" :name="'0'" />
@@ -45,7 +86,7 @@
           <selectSearch v-model="form.brandId" :type="6" name="name" placeholder="品牌名称" @change="toQuery()"></selectSearch>
         </el-form-item>
       </template>
-    </condition>
+    </condition> -->
 
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
@@ -401,7 +442,7 @@
         clickSubmit: false,
         haveBind: [
           {
-            value: '',
+            value: 0,
             title: '全部',
             nkey: 'deviceNumber'
           },
@@ -426,9 +467,61 @@
             nkey: 'offlineCount'
           }
         ],
-        form: {
-          //search_store_name: this.$route.query.store_name || ''
+        queryObj: {
+          deviceSn: {
+            title: '二维码',
+            type: 'input'
+          },
+          place: {
+            title: '位置备注',
+            type: 'input'
+          },
+          haveAssociateDevice: {
+            title: '是否关联',
+            type: 'select',
+            selectArr: [
+              {
+                label: '全部',
+                value: null,
+              },
+              {
+                label: '已关联',
+                value: true,
+              },
+              {
+                label: '未关联',
+                value: false,
+              }
+            ]
+          },
+          storeId: {
+            title: '商户名称',
+            type: 'selectSearch',
+            name: 'name',
+            sType: 3
+          },
+          agentId: {
+            title: '代理名称',
+            type: 'selectSearch',
+            name: 'name',
+            sType: 5
+          },
+          brandId: {
+            title: '品牌名称',
+            type: 'selectSearch',
+            name: 'name',
+            sType: 6
+          },
+          factorySn: {
+            title: '设备SN',
+            type: 'input'
+          },
         },
+        formKey: {
+          sel1: 'deviceSn',
+          sel2: 'storeId'
+        },
+        form: {},
         tableMaxH: '250',
         list: [],
         listLoading: true,
@@ -661,6 +754,7 @@
           params.onlineStatus = params.haveBind
           delete params.haveBind
         }
+        if(params.haveBind == 0) delete params.haveBind
         if(params.deviceTypeCode == 0) delete params.deviceTypeCode
         this.$get('iot-saas-device/admin/device/findPage', params).then((res = {}) => {
           this.list = res.rows || []

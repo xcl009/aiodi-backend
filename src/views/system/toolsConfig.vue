@@ -5,25 +5,28 @@
         <el-tab-pane :label="item" :name="name" v-for="(item, name) in myDeviceId" />
       </el-tabs>
 
-      <template v-if="code == 'DIVIDE_ACCOUNTS' && (checkAbility([`${deviceTypeCode}_DIVIDE_ACCOUNTS`], 3) || true)">
+      <template v-if="code == 'DIVIDE_ACCOUNTS' && checkAbility([`${deviceTypeCode}_DIVIDE_ACCOUNTS`], 3)">
         <el-form class="custom-form" label-width="100px" label-position="left">
           <el-form-item label="状态">
             <div class="flex align-center">
-              <el-switch v-model="dform.enable" :active-value="1" :inactive-value="2" />
+              <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
               <span class="ml-10 fs-s3">开启表示设置有效，设置后5分钟内生效</span>
             </div>
           </el-form-item>
           <el-form-item label="接收方类型">
-            <el-radio-group v-model="dform.type">
-              <el-radio label="MERCHANT_ID">商户</el-radio>
-              <el-radio label="PERSONAL_OPENID">个人</el-radio>
+            <el-radio-group v-model="form.divideType">
+              <el-radio :label="1">商户</el-radio>
+              <el-radio :label="2">个人</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="接收方姓名">
-            <el-input v-model="dform.realname"></el-input>
+            <el-input v-model="form.divideName"></el-input>
+          </el-form-item>
+          <el-form-item label="接收方账号">
+            <el-input v-model="form.divideAccount"></el-input>
           </el-form-item>
           <el-form-item label="接收方关系">
-            <el-select v-model="dform.reType" placeholder="请选择">
+            <el-select v-model="form.divideRelationType" placeholder="请选择">
               <el-option
                 v-for="(name, val) in reType"
                 :label="name"
@@ -31,11 +34,64 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="分账关系名称" v-if="dform.reType == 'CUSTOM'">
-            <el-input v-model="dform.text"></el-input>
+          <el-form-item label="分账关系名称" v-if="form.divideRelationType == 'CUSTOM'">
+            <el-input v-model="form.divideCustomRelation"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit" :disabled="clickSubmit">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </template>
+
+      <template v-else-if="code == 'DEPOSIT_PRPR' && checkAbility([`${deviceTypeCode}_DEPOSIT_PRPR`], 3)">
+        <el-form ref="form" label-position="left" label-width="auto">
+          <h4 class="flex mb-20 mt-10">
+            <div>概率押金</div>
+          </h4>
+
+          <el-form-item label="是否开启">
+            <div class="flex align-center">
+              <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
+              <span class="ml-10 fs-s3">开启表示设置有效，设置后5分钟内生效</span>
+            </div>
+          </el-form-item>
+
+          <div class="flex">
+            <el-form-item label="每">
+              <el-input type="number" v-model="form.orderNumber">
+                <template slot="append">人</template>
+              </el-input>
+              <div>
+                每{{ form.orderNumber || 0 }}人下单，{{ form.freeNumber }}人不免押，需支付押金租借
+              </div>
+            </el-form-item>
+            <el-form-item label="押">
+              <el-input type="number" v-model="form.freeNumber">
+                <template slot="append">人</template>
+              </el-input>
+            </el-form-item>
+          </div>
+
+          <el-form-item label="时间">
+            <el-input type="number" v-model="form.durationTime">
+              <template slot="append">天</template>
+            </el-input>
+            <div>
+              用户在初次下单租借{{ form.durationTime || 0 }}天后再次租借时会重新计算概率
+            </div>
+          </el-form-item>
+
+          <el-form-item label="钱包余额">
+            <el-input type="number" v-model="form.walletBalance">
+              <template slot="append">元</template>
+            </el-input>
+            <div>
+              用户钱包余额大于等于{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}元时无需进行概率押金计算，直接免押租借
+            </div>
+          </el-form-item>
+
+          <el-form-item class="mt-10">
+            <el-button type="primary" @click="onSubmit">立即提交</el-button>
           </el-form-item>
         </el-form>
       </template>
@@ -69,8 +125,9 @@
         code: this.$route.query.code || '',
         deviceTypeCode: '',
 
-        // 分账接收方
-        reList: [{},{},{}],
+        form: {},
+
+        //分账关系
         reType: {
           STORE: '门店',
           STAFF: '员工',
@@ -99,14 +156,16 @@
       myDeviceId() {
         return this.$store.getters.myDeviceId
       },
+      agentInfo() {
+        return this.$store.getters.agentInfo
+      },
       Ability() {
         return this.$store.getters.Ability
       }
     },
     mounted() {
       this.deviceTypeCode = Object.keys(this.myDeviceId)[0]
-      if(this.code == '55555'){
-        this.form = {}
+      if(['DIVIDE_ACCOUNTS', 'DEPOSIT_PRPR'].indexOf(this.code) > -1){
         this.getInfo()
       }
     },
@@ -115,10 +174,40 @@
        * 获取详情
        */
       getInfo() {
-        this.$get(``, {
+        let url = 'iot-saas-basic/admin/orderdivideWXconfig/v1/findByStoryIdOrAgentId'
+        let params = {
           deviceTypeCode: this.deviceTypeCode
-        }).then((res = {}) => {
-
+        }
+        if(this.code == 'DEPOSIT_PRPR'){
+          url = 'iot-saas-basic/admin/probabilityDeposit/v1/find'
+        }
+        if(this.userKey && this.id) params[this.userKey] = this.id
+        this.$get(url, params).then((res = {}) => {
+          if(this.code == 'DEPOSIT_PRPR'){
+            if (res.enable == undefined) {
+              this.form = {
+                enable: 2,
+                durationTime: 7,
+                walletBalance: 90,
+                orderNumber: 0,
+                freeNumber: 0
+              }
+            } else {
+              res.durationTime = parseInt(res.durationTime) / 1440
+              this.form = res
+            }
+          }else if(this.code == 'DIVIDE_ACCOUNTS'){
+            if (res.enable == undefined) {
+              this.form = {
+                enable: 2,
+                divideType: 1
+              }
+            } else {
+              this.form = res
+            }
+          }else{
+            this.form = res
+          }
         })
       },
 
@@ -126,9 +215,19 @@
        * 提交保存
        */
       onSubmit() {
-        let params = JSON.parse(JSON.stringify(this.form))
+        let params = JSON.parse(JSON.stringify(this.form)), url = 'iot-saas-basic/admin/orderdivideWXconfig/v1/save'
+        if(this.userKey && this.id) params[this.userKey] = this.id
         params.deviceTypeCode = this.deviceTypeCode
-        this.$post(``, params).then(res => {
+        if(this.code == 'DIVIDE_ACCOUNTS'){
+          params.brandId = this.agentInfo.brandId
+          if(params.id){
+            url = 'iot-saas-basic/admin/orderdivideWXconfig/v1/update'
+          }
+        }else if(this.code == 'DEPOSIT_PRPR'){
+          params.durationTime = parseInt(params.durationTime) * 1440
+          url = 'iot-saas-basic/admin/probabilityDeposit/v1/update'
+        }
+        this.$post(url, params).then(res => {
           this.$message({
             message: '设置成功',
             type: 'success'
@@ -154,16 +253,16 @@
               //   code: row.code
               // }).then(res => {
               //   if(res && res.code){
-              //     this.dform = JSON.parse(res.setting)
+              //     this.form = JSON.parse(res.setting)
               //   } else {
-              //     this.dform = {
+              //     this.form = {
               //       wx_phone: 0,
               //       ali_phone: 0
               //     }
               //   }
               // })
             } else {
-              this.dform = {}
+              this.form = {}
             }
             this.dialogStatus = true
             break
@@ -176,7 +275,7 @@
       dialogConfirm() {
         let curRow = this.curRow,
           curIdx = this.curIdx,
-          params = JSON.parse(JSON.stringify(this.dform))
+          params = JSON.parse(JSON.stringify(this.form))
         if(this.clickSubmit) return
         this.clickSubmit = true
         switch (this.dialogType) {

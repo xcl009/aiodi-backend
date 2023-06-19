@@ -1,32 +1,26 @@
 <template>
-  <div class="rel p-10 filter-box  bg-white">
+  <div class="rel filter-box">
     <slot name="tabs"></slot>
-    <el-form size="small" label-width="auto" @submit.native.prevent="query()" v-if="filterForm">
-      <div class="flex" id="filterContent">
+    <el-form size="small" @submit.native.prevent="query()" v-if="filterForm">
+      <div class="pt-10 pb-10 flex bg-white" id="filterContent" style="padding-bottom: 1px;">
         <slot name="left"></slot>
         <div class="flex1" v-if="defaultShowLength > 0"></div>
-        <div id="filterBox" class="flex flex-wrap filterBox" :class="{'fold': defaultShowLength == 0 && unfoldStatus, 'flex1': defaultShowLength == 0}">
+        <div id="filterBox" class="flex flex-wrap filterBox" :class="{'fold': defaultShowLength == 0 && unfoldStatus}">
           <slot name="defult"></slot>
-          <div id="setBox" class="flex align-center set-box pl-20 pr-10 line-1">
-            <el-button native-type="submit" :disabled="clickSubmit" class="icon-search" type="primary" size="small">
-              <i class="mr-5 el-icon-search fs-s2"/><span class="fs-s3">查询</span>
-            </el-button>
-            <el-button class="icon-search icon-refresh" size="small" v-if="resetStatus" @click="reset()">
-              <i class="mr-5 el-icon-refresh fs-s2"/><span class="fs-s3">重置</span>
-            </el-button>
-            <el-tooltip class="item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top" v-if="device != 'mobile' && exportStatus">
-              <el-button class="icon-search icon-refresh" size="small" v-if="resetStatus" @click="reset()">
-                <i class="mr-5 el-icon-download fs-s2"/><span class="fs-s3">导出</span>
-              </el-button>
+          <div id="setBox" class="flex align-center set-box mr-10 line-1">
+            <el-button native-type="submit" :disabled="clickSubmit" class="icon-search" type="primary"><i class="el-icon-search fs-c1"/></el-button>
+            <span class="pl-10 pr-10 text-six cursor" v-if="resetStatus" @click="reset()">重置</span>
+            <el-tooltip class="mr-10 item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top" v-if="device != 'mobile'">
+              <el-button type="primary" @click="saveXlsx()" v-if="exportStatus" class="icon-download"><i class="el-icon-download el-icon--left"/>导出</el-button>
             </el-tooltip>
-            <span class="ml-10 fs-s4 text-primary cursor" v-if="unfoldShow && (child_i == -1 || child_i > 0)" @click="unfoldStatus = !unfoldStatus; controlChildren(2)">
+            <span class="fs-s4 text-primary cursor" v-if="unfoldShow && (child_i == -1 || child_i > 0)" @click="unfoldStatus = !unfoldStatus; controlChildren(2)">
               {{ unfoldStatus ? '收起' : '更多' }}<i class="el-icon--right" v-bind:class="{'el-icon-arrow-down': !unfoldStatus, 'el-icon-arrow-up' : unfoldStatus}"></i>
             </span>
           </div>
         </div>
         <slot name="endButton"></slot>
       </div>
-      <div class="abs pt-10 pb-10 filter-popup" v-if="unfoldStatus && defaultShowLength > 0">
+      <div class="abs pt-10 pb-10 filter-popup bg-white" v-if="unfoldStatus && defaultShowLength > 0">
         <div class="flex flex-wrap filterBox">
           <slot name="defult"></slot>
         </div>
@@ -167,42 +161,27 @@ export default {
 
 <style lang="scss" scoped>
   .filter-box{
-    padding-bottom: 1px;
-    /deep/ .el-tabs--top{
-      .el-tabs__item{
-        height: 28px;
-        margin: 0 6px;
-        padding: 0 12px;
-        line-height: 28px;
-      }
-      .el-tabs__item.is-active {
-        background-color: #F2F3F5;
-        border-radius: 100px;
-        font-weight: 550;
-        color: var(--olive);
-      }
-      .el-tabs__nav-wrap::after{
-        background: none;
-      }
-      .el-tabs__active-bar{
-        display: none;
-      }
+    /deep/ .el-tabs--top .el-tabs__item.is-top:nth-child(2){
+      padding-left: 20px;
+    }
+    /deep/ .el-tabs--top .el-tabs__item.is-top:last-child{
+      padding-right: 20px;
+    }
+    /deep/ .el-tabs__item.is-active {
+      background-color: #3CA1FE;
+      color: #fff;
+    }
+    /deep/ .el-tabs__nav-wrap::after{
+      background-color: #3CA1FE;
     }
   }
   .filterBox{
     max-height: 42.667px;
     transition: max-height 0.5s linear;
     /deep/ .el-form-item{
-      padding-right: 20px;
-      display: flex;
-      .el-form-item__label-wrap{
-        margin-left: 0 !important;
-        float: initial;
-      }
+      margin-left: 15px;
       .el-form-item__label{
-
-        padding-right: 10px;
-        //min-width: 64px;
+        min-width: 64px;
         font-weight: 500;
         font-size: 13px;
       }
@@ -224,31 +203,25 @@ export default {
       margin-right: -15px;
     }
     /deep/ .el-form-item__content{
-      margin-left: 0 !important;
+      float: left;
       height: 32px;
     }
     /deep/ > div:not(.set-box) {
       margin-bottom: 10px;
+      margin-right: -1px;
     }
     /deep/ .el-input{
       width: initial;
       height: 32px;
-    }
-    /deep/ .combined .el-select{
-      &:first-child{
-        border-right: 1px solid #E5E6EB;
-      }
     }
     /deep/ .el-input__inner{
       padding-left: 10px;
       width: 135px;
       height: 32px !important;
       line-height: 32px;
-      border: 1px solid #F2F3F5;
-      background: #F2F3F5;
+      border: 1px solid #E5E6EB;
       border-radius: 0;
     }
-
     /deep/ .el-select__caret{
       line-height: 32px;
     }
@@ -266,15 +239,10 @@ export default {
     }
     /deep/ .el-input__inner.range-day{
       width: 300px;
-      padding: 0 0 0 10px;
-      
-    }
-    /deep/ .el-range-input{
-      background: #F2F3F5;
+      padding: 0 10px;
     }
   }
   .set-box{
-    border-left: 1px solid #E5E6EB;
     margin-bottom: 10px;
   }
   .icon-download{
@@ -282,14 +250,10 @@ export default {
     height: 32px;
   }
   .icon-search{
-    padding: 0 16px;
-    // width: 32px;
-    // height: 32px;
-    // border-radius: 0 2px 2px 0;
-    &.icon-refresh{
-      background-color: var(--greyLight);
-      border-color: var(--greyLight);
-    }
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 0 2px 2px 0;
   }
   /deep/ .el-tabs__header {
     margin-bottom: 0;
