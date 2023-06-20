@@ -41,53 +41,6 @@
       </template>
     </condition>
 
-    <!-- <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
-      <template v-slot:tabs>
-        <el-tabs class="bg-white" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
-          <el-tab-pane label="全部设备" :name="'0'" />
-          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
-        </el-tabs>
-      </template>
-
-      <template v-slot:left>
-        <div class="pl-10 max-w filter-btn_box white-space">
-          <el-scrollbar>
-            <el-button size="medium" :type="listQuery.haveBind === item.value ? 'primary' : ''"
-              :class="{'btn-body': listQuery.haveBind !== item.value}" v-for="item in haveBind"
-              @click="listQuery.haveBind = item.value;toQuery()">{{ item.title }}({{deviceCount[item.nkey] || onLineCount[item.nkey] || 0}})</el-button>
-          </el-scrollbar>
-        </div>
-      </template>
-
-      <template v-slot:defult>
-        <el-form-item label="二维码">
-          <el-input v-model="form.deviceSn" placeholder="二维码" />
-        </el-form-item>
-        <el-form-item label="设备SN">
-          <el-input v-model="form.factorySn" placeholder="设备SN" />
-        </el-form-item>
-        <el-form-item label="位置备注">
-          <el-input v-model="form.place" placeholder="位置备注" />
-        </el-form-item>
-        <el-form-item label="是否关联">
-          <el-select v-model="form.haveAssociateDevice" @change="toQuery()" placeholder="设备关联">
-            <el-option label="全部" :value="null" />
-            <el-option label="已关联" :value="true" />
-            <el-option label="未关联" :value="false" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="商户名称" v-if="!isStore()">
-          <selectSearch v-model="form.storeId" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
-        </el-form-item>
-        <el-form-item label="代理名称" v-if="lowerDevice && !isStore()">
-          <selectSearch v-model="form.agentId" :type="5" name="name" placeholder="代理名称" @change="toQuery()"></selectSearch>
-        </el-form-item>
-        <el-form-item label="品牌名称" v-if="isSaas()">
-          <selectSearch v-model="form.brandId" :type="6" name="name" placeholder="品牌名称" @change="toQuery()"></selectSearch>
-        </el-form-item>
-      </template>
-    </condition> -->
-
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" stripe highlight-current-row @selection-change="selList" :max-height="tableMaxH" stripe>
