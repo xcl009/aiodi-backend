@@ -2,9 +2,9 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <div class="mb-10 flex align-center bg-white">
+        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
           <div class="mr-10">设备类型</div>
-          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
             <el-tab-pane label="全部设备" :name="''" />
             <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
           </el-tabs>
