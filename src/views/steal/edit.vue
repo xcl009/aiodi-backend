@@ -220,8 +220,6 @@
           </div>
         </template>
 
-        
-
         <el-form-item class="mt-10">
           <el-button type="primary" @click="onSubmit">立即提交</el-button>
         </el-form-item>
