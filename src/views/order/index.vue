@@ -11,7 +11,7 @@
         </div>
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">订单状态</div>
-          <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
+          <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
             <el-tab-pane :label="`${item.title }(${statInfo[item.nkey] || 0})`" :name="''+item.value+''" v-for="item in orderTab" />
           </el-tabs>
         </div>
