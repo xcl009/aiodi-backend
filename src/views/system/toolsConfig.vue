@@ -6,6 +6,23 @@
       </el-tabs>
 
       <template v-if="code == 'DIVIDE_ACCOUNTS' && checkAbility([`${deviceTypeCode}_DIVIDE_ACCOUNTS`], 3)">
+        <h4 class="flex mb-20 mt-10">
+          <div>微信分账</div>
+          <div class="ml-5">
+            <el-popover
+              placement="top-start"
+              title="温馨提示"
+              width="450"
+              trigger="hover">
+              <div>
+                切记订单的微信分账占比不可大于您商户号可分账比例，否则将不进行微信分账。<br>
+                接收方类型为个人时，订单分账后将无法退款。<br>
+                接收方类型为商户时，需告知该商户开启同意分账回退功能，未开启订单发生退款时金额将全部由您承担。（开启路径：访问商户平台-交易中心-分账-分账接收设置）
+              </div>
+              <svg-icon icon-class="doubt" slot="reference"></svg-icon>
+            </el-popover>
+          </div>
+        </h4>
         <el-form class="custom-form" label-width="100px" label-position="left">
           <el-form-item label="状态">
             <div class="flex align-center">
@@ -19,11 +36,11 @@
               <el-radio :label="2">个人</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="接收方姓名">
-            <el-input v-model="form.divideName"></el-input>
+          <el-form-item label="接收方名称">
+            <el-input v-model="form.divideName" :placeholder="form.divideType == 1 ? '接收方主体名称' : '接收方真实姓名'"></el-input>
           </el-form-item>
           <el-form-item label="接收方账号">
-            <el-input v-model="form.divideAccount"></el-input>
+            <el-input v-model="form.divideAccount" :placeholder="form.divideType == 1 ? '接收方微信商户号' : '接收方微信openid'"></el-input>
           </el-form-item>
           <el-form-item label="接收方关系">
             <el-select v-model="form.divideRelationType" placeholder="请选择">
@@ -34,7 +51,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="分账关系名称" v-if="form.divideRelationType == 'CUSTOM'">
+          <el-form-item label="关系名称" v-if="form.divideRelationType == 'CUSTOM'">
             <el-input v-model="form.divideCustomRelation"></el-input>
           </el-form-item>
           <el-form-item>

@@ -269,7 +269,7 @@ const util = {
 			return '--';
 		}
 
-		const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}';
+		const format = cFormat || '{y}-{m}-{d} {h}:{i}';
 		let date;
 
 		if (typeof time === 'object') {
