@@ -2,7 +2,7 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
+        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
           <div class="mr-10">设备类型</div>
           <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
             <el-tab-pane label="全部设备" :name="''" />
@@ -29,7 +29,7 @@
               <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
-              <selectSearch v-model="form[formKey[`sel${item}`]]" :type="3" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"
+              <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"
                 :isStoreOrder="['storeId'].indexOf(formKey[`sel${item}`])> -1"></selectSearch>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
@@ -57,9 +57,9 @@
 
       <div v-if="showColumn.length > 0">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-          :max-height="tableMaxH" element-loading-text="Loading" stripe>
+          :max-height="tableMaxH" element-loading-text="Loading">
           <template v-for="item in showColumn">
-            <el-table-column label="用户信息" width="140" v-if="item.val && item.key == 'userNickName'">
+            <el-table-column label="用户信息" width="170" v-if="item.val && item.key == 'userNickName'">
               <template slot-scope="scope">
                 <div class="cursor text-blue" @click="setRows(1, scope.row, 4)" v-if="scope.row.userId == 0">
                   查看使用用户
@@ -70,7 +70,14 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="手机号码" width="90" v-if="item.val && item.key == 'userMobile'">
+            <el-table-column label="用户ID" width="90" v-if="item.val && item.key == 'userId'">
+              <template slot-scope="scope">
+                <el-tooltip :content="scope.row.userId || '无'">
+                  <div>{{ scope.row.userId ? scope.row.userId.substr(-8, 8) : '' }}</div>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column label="手机号码" width="110" v-if="item.val && item.key == 'userMobile'">
               <template slot-scope="scope">
                 <template v-if="scope.row.userId > 0">
                   <div v-if="isBrand() || isSaas()">{{ scope.row.userMobile || '--' }}</div>
@@ -196,7 +203,7 @@
           </el-form>
         </template>
         <template v-if="dialogType == 4">
-          <el-table border stripe :data="dform.list">
+          <el-table border :data="dform.list">
             <el-table-column label="头像" align="center">
               <template slot-scope="scope">
                 <el-avatar :size="30" :src="scope.row.avatar"></el-avatar>
@@ -502,14 +509,14 @@
                   <el-tooltip :content="item.reason || '无'" placement="top">
                     <div class="text-cut">{{ item.event }}</div>
                   </el-tooltip>
-                  <div class="mt-10 fs-s2 text-gray">{{ parseTime(item.createTime) }}</div>
+                  <div class="mt-10 fs-s2 text-gray">{{ item.createTime }}</div>
                 </div>
               </div>
             </div>
 
             <template v-if="dform.orderDivide && dform.orderDivide.length > 0">
               <div class="mt-20 mb-15">分成明细</div>
-              <el-table border stripe :data="dform.orderDivide" :span-method="fenRunSpanMethod" class="custom">
+              <el-table border :data="dform.orderDivide" :span-method="fenRunSpanMethod" class="custom">
                 <el-table-column label="订单金额" align="center">
                   <template slot-scope="scope">
                     {{ dform.amountPaid }}元
@@ -525,13 +532,13 @@
                     {{ scope.row.percent }}%
                   </template>
                 </el-table-column>
-                <el-table-column label="分成金额(元)" align="center">
+                <el-table-column width="120" label="分成金额(元)" align="center">
                   <template slot-scope="scope">
                     <span>{{ accSub(scope.row.amount, scope.row.loseAmount) }}</span>
                     <span v-if="scope.row.costAmount > 0">(包含超时成本{{ scope.row.costAmount }}元)</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="DD金额(元)" align="center" v-if="dform.amountPaidLose > 0">
+                <el-table-column width="120" label="DD金额(元)" align="center" v-if="dform.amountPaidLose > 0">
                   <template slot-scope="scope">
                     {{ scope.row.loseAmount || '--' }}
                   </template>
@@ -546,7 +553,7 @@
                     {{ scope.row.dividerPaymentStatus == 0 ? '分成进行中' : scope.row.dividerPaymentStatus == -1 ? '分成失败' : scope.row.dividerPaymentStatus == -2 ? '分账回退失败' : '已分成'  }}
                   </template>
                 </el-table-column>
-                <el-table-column label="退款金额(元)" align="center">
+                <el-table-column width="120" label="退款金额(元)" align="center">
                   <template slot-scope="scope">
                     {{ scope.row.refund }}
                   </template>
@@ -707,20 +714,23 @@
             title: '订单号',
             type: 'input'
           },
-          userId: {
+          userIds: {
             title: '用户昵称',
             type: 'selectSearch',
-            name: 'nickname'
+            name: 'nickname',
+            sType: 2
           },
           userId: {
             title: '手机号码',
             type: 'selectSearch',
-            name: 'mobile'
+            name: 'mobile',
+            sType: 1
           },
           storeId: {
             title: '商户名称',
             type: 'selectSearch',
-            name: 'name'
+            name: 'name',
+            sType: 3
           },
           deviceSn: {
             title: '设备二维码',
@@ -774,6 +784,11 @@
             key: 'userNickName',
             val: true,
             name: '用户信息'
+          },
+          {
+            key: 'userId',
+            val: true,
+            name: '用户ID'
           },
           {
             key: 'userMobile',
@@ -1267,6 +1282,7 @@
   }
 
   .timeline-box{
+    max-width: 900px;
     overflow-y: scroll;
     .timeline-item {
       &::after,

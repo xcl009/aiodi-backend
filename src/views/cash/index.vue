@@ -41,7 +41,7 @@
 
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        element-loading-text="Loading" :max-height="tableMaxH" stripe>
+        element-loading-text="Loading" :max-height="tableMaxH">
         <el-table-column label="提现单号" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.id || '--' }}</div>

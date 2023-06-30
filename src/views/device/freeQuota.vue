@@ -20,7 +20,7 @@
     </condition>
 
     <div class="pl-15 pr-15 pb-15 bg-white">
-      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
+      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" highlight-current-row>
         <el-table-column label="头像" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
@@ -36,16 +36,6 @@
             <div>{{ dealPhone(scope.row.mobile) }}</div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="来源">
-          <template slot-scope="scope">
-            {{ scope.row.userType == 'wechat' ? '微信' : '支付宝' }}
-          </template>
-        </el-table-column> -->
-        <el-table-column label="添加时间" width="150">
-          <template slot-scope="scope">
-            {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
-          </template>
-        </el-table-column>
         <el-table-column label="免费时长">
           <template slot-scope="scope">
             {{ parseInt(scope.row.freeTime) / 60 }}小时
@@ -53,7 +43,7 @@
         </el-table-column>
         <el-table-column label="今日次数">
           <template slot-scope="scope">
-            {{ scope.row.haveUseTimes }}/{{ scope.row.freeTimes }}
+            {{ scope.row.today != parseTime(currentTime(), '{y}-{m}-{d}') ? 0 :  scope.row.haveUseTimes}}/{{ scope.row.freeTimes }}
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -74,7 +64,7 @@
           <el-button type="primary" @click="searchUser" :disabled="clickSubmit">查找用户</el-button>
         </div>
 
-        <el-table class="mt-30 custom" :data="userList" empty-text="未查询到用户，请更换条件" stripe highlight-current-row v-if="userList.length > 0 || searchStatus">
+        <el-table class="mt-30 custom" :data="userList" empty-text="未查询到用户，请更换条件" highlight-current-row v-if="userList.length > 0 || searchStatus">
           <el-table-column label="头像" width="60">
             <template slot-scope="scope">
               <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>

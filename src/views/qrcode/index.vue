@@ -29,7 +29,7 @@
         <el-button size="medium" type="primary" :disabled="selSnArr.length == 0" @click="downloadImg()">批量下载</el-button>
         <import-data name="files" btnSize="medium" class="ml-10"></import-data>
       </div>
-      <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading" stripe highlight-current-row :max-height="tableMaxH" @selection-change="selSb">
+      <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row :max-height="tableMaxH" @selection-change="selSb">
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="编号" width="200">
           <template slot-scope="scope">

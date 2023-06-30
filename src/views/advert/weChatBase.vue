@@ -2,7 +2,7 @@
   <div>
     <div class="p-15 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        element-loading-text="Loading" stripe highlight-current-row>
+        element-loading-text="Loading" highlight-current-row>
         <el-table-column label="类型">
           <template slot-scope="scope">
             <div>{{ scope.row.advertTypeName }}</div>

@@ -6,7 +6,7 @@
       </div>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        element-loading-text="Loading" stripe highlight-current-row>
+        element-loading-text="Loading" highlight-current-row>
         <el-table-column label="广告位置">
           <template slot-scope="scope">
             <div>{{ scope.row.position }}</div>

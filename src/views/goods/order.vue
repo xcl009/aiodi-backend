@@ -150,7 +150,7 @@
       </el-row>
 
       <template v-if="orderDivide.length > 0">
-        <el-table border stripe :data="orderDivide" :span-method="fenRunSpanMethod" class="custom">
+        <el-table border :data="orderDivide" :span-method="fenRunSpanMethod" class="custom">
           <el-table-column label="订单金额" align="center">
             <template slot-scope="scope">
               {{ amountPaid }}元

@@ -15,7 +15,7 @@
     <div class="pl-10 pr-10 pb-10 bg-white">
       <div class="bg-white">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
-          element-loading-text="Loading" stripe highlight-current-row>
+          element-loading-text="Loading" highlight-current-row>
           <el-table-column label="工厂名称">
             <template slot-scope="scope">
               {{ scope.row.name }}
@@ -70,7 +70,7 @@
     <el-dialog :visible.sync="dialogStatus" :center="true" width="650px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
-        <el-table :data="uiList" stripe highlight-current-row>
+        <el-table :data="uiList" highlight-current-row>
           <el-table-column label="demo">
             <template slot-scope="scope">
               <el-image class="ui-img" :src="scope.row.img_url" fit="cover" :preview-src-list="[scope.row.img_url]">

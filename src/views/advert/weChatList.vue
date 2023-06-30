@@ -5,7 +5,7 @@
         <el-button type="primary" size="small" @click="showDialog()">添加广告位置</el-button>
       </div>
 
-      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" stripe highlight-current-row>
+      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row>
         <el-table-column label="广告位置">
           <template slot-scope="scope">
             <div>{{ scope.row.position }}</div>

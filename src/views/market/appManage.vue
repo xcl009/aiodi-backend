@@ -225,7 +225,7 @@
             if(dialogType == 1){
               this.dform = {
                 priceCode: row.priceSettings[0].priceCode,
-                giveEndDatetime: this.parseTime(this.currentTime() + 30 * 86400)
+                giveEndDatetime: this.parseTime(this.currentTime() + 30 * 86400, '{y}-{m}-{d}')
               }
             }
             this.dialogStatus = true
