@@ -21,7 +21,7 @@
 		</condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" stripe>
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="品牌信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>

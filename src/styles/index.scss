@@ -77,7 +77,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: D-DIN, Inter,-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,noto sans,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-family: Inter,-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,noto sans,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
   background: var(--bodyBg);
   font-size: 14px;
   line-height: 1.4;
@@ -818,6 +818,14 @@ div:focus {
   border-bottom: 1px solid #E4E7ED;
 }
 
+.ptd-5.el-table{
+  td {
+    padding: 5px 0 !important;
+  }
+  .cell{
+    padding: 0 5px;
+  }
+}
 .custom, .ptd-5.el-table, .custom.el-table{
   color: #4E5969;
   .has-gutter th{
@@ -828,17 +836,21 @@ div:focus {
   .el-table__fixed-right{
     right: 0px !important;
     bottom: 9px !important;
-    box-shadow: none;
-    border-left: thin solid #EBEEF5;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.10);
     &::before{
       height: 0;
     }
     th{
       background-color: #F2F3F5;
     }
+    .is-leaf:not(.is-hidden), .operate {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+    }
   }
   .el-table__body-wrapper.is-scrolling-none ~ .el-table__fixed-right{
-    border-left: none;
+    box-shadow: none;
+    bottom: 0 !important;
   }
   .el-button--mini{
     margin: 2px;
@@ -858,6 +870,12 @@ div:focus {
     border: none;
     color: #86909C;
   }
+  .el-button--text.is-disabled{
+    color: #E5E6EB;
+  }
+  .el-button + .pop, .pop + .pop, .pop + .el-button{
+    margin-left: 10px;
+  }
   .w-160{
     width: 160px;
   }
@@ -866,14 +884,6 @@ div:focus {
     > div + div{
       margin-left: 15px;
     }
-  }
-}
-.ptd-5.el-table{
-  td {
-    padding: 5px 0 !important;
-  }
-  .cell{
-    padding: 0 5px;
   }
 }
 .pagination-left{
@@ -995,6 +1005,10 @@ div:focus {
 }
 *:focus {
   outline: 0;
+}
+.el-drawer{
+  max-width: 80%;
+  width: auto !important;
 }
 .el-drawer__header{
   margin-bottom: 20px;

@@ -42,7 +42,7 @@
 
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        :max-height="tableMaxH" element-loading-text="Loading" stripe highlight-current-row>
+        :max-height="tableMaxH" element-loading-text="Loading" highlight-current-row>
         <el-table-column label="身份" width="80">
           <template slot-scope="scope">
             <div>{{ getRoleName(scope.row.userType) }}</div>

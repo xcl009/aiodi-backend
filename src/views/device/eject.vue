@@ -2,7 +2,7 @@
   <div>
     <div class="p-15 bg-white">
       <el-button class="mb-15" type="primary" size="medium" @click="allEject()" :disabled="allEjectStatus">{{ allEjectStatus ? '弹出中' : '全部弹出'}} </el-button>
-      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" stripe highlight-current-row>
+      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row>
         <el-table-column label="卡槽位置">
           <template slot-scope="scope">
             {{ scope.row.slot }}

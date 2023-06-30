@@ -2,7 +2,7 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName && Object.keys(myDeviceName).length > 1">
+        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
           <div class="mr-10">设备类型</div>
           <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
             <el-tab-pane label="全部设备" :name="''" />
@@ -42,97 +42,118 @@
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        element-loading-text="Loading" stripe highlight-current-row @selection-change="selList" :max-height="tableMaxH" stripe>
+      <div class="flex align-center pt-15 mb-15 l-t">
+        <div class="flex1 fs-c1 text-black">查询表格</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">铺解记录</div>
+        <table-column-set storageKey="deviceTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
+      </div>
+
+      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+        element-loading-text="Loading" highlight-current-row @selection-change="selList" :max-height="tableMaxH">
         <el-table-column type="selection" :selectable="checkSel" width="50" v-if="!isSaas()" />
-        <el-table-column label="设备名称" width="80">
-          <template slot-scope="scope">
-            {{ scope.row.deviceType.name || '密码线' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="设备归属" width="180" v-if="lowerDevice">
-          <template slot-scope="scope">
-            <template v-if="scope.row.agent">
-              <div>{{ scope.row.agent.name }}</div>
-              <div>{{ dealPhone(scope.row.agent.mobile) }}</div>
+        <template v-for="item in showColumn">
+          <el-table-column label="设备类型" width="80" v-if="item.val && item.key == 'userNickName'">
+            <template slot-scope="scope">
+              {{ scope.row.deviceType.name || '密码线' }}
             </template>
-            <template v-else>
-              <div>{{ scope.row.brand.name }}</div>
+          </el-table-column>
+          <!-- <el-table-column label="设备归属" width="180" v-if="lowerDevice">
+            <template slot-scope="scope">
+              <template v-if="scope.row.agent">
+                <div>{{ scope.row.agent.name }}</div>
+                <div>{{ dealPhone(scope.row.agent.mobile) }}</div>
+              </template>
+              <template v-else>
+                <div>{{ scope.row.brand.name }}</div>
+              </template>
             </template>
-          </template>
-        </el-table-column>
-        <el-table-column label="设备SN码" min-width="150">
-          <template slot-scope="scope">
-            <div class="inline text-left">
-              <div>二维码：{{ scope.row.deviceSn || "--" }}</div>
-              <div class="text-cut">设备SN：{{ scope.row.factorySn || "--" }}</div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="可借|可还" v-if="myDeviceId['PA']" width="100">
-          <template slot-scope="scope">
-            <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
-              {{ scope.row.tenantNumber }}|{{ scope.row.restoreNumber }}
-            </div>
-            <div v-else>--</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="在线状态" min-width="95">
-          <template slot-scope="scope">
-            <div v-if="scope.row.onlineStatus && checkAbility(['PA', 'VG', 'AV', 'BD'], 2, [scope.row.deviceType])">
-              <div :class="scope.row.onlineStatus == 'ONLINE' ? 'text-primary' : 'text-danger'">{{ scope.row.onlineStatus == 'ONLINE' ? '在线' : '离线'}}</div>
-              <div>{{ parseTime(scope.row.updateTime) }}</div>
-            </div>
-            <div v-else>--</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="设备属性" width="150">
-          <template slot-scope="scope">
-            工厂：{{ scope.row.deviceFactory ? scope.row.deviceFactory.name : '--' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="是否铺货" width="150" v-if="!isStore()">
-          <template slot-scope="scope">
-            <div>{{ scope.row.distribute ? "是" : "否" }}</div>
-            <div v-if="scope.row.distribute">{{ scope.row.bindStoreTime }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="商户名称" width="200" v-if="!isStore()">
-          <template slot-scope="scope">
-            <div v-if="scope.row.store">
-              <div class="text-cut_two">{{ scope.row.store.name }}</div>
-            </div>
-            <div v-else>--</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="位置备注" width="100">
-          <template slot-scope="scope">
-            <div class="cursor text-primary" @click="setRows(1, scope.row, 3)">
-              {{ scope.row.place || '未设置' }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="订单数" width="120" v-if="Ability['order']">
-          <template slot-scope="scope">
-            <div class="inline text-left">
-              <div>微信：<el-link type="primary"
-                  @click="$router.push({path: (lowerDevice ? `/order/subOrder?deviceSn=${scope.row.deviceSn}&sourceType=2` : `/order?deviceSn=${scope.row.deviceSn}&sourceType=1`)})">
-                  {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].wx : 0 }}
-                </el-link>
+          </el-table-column> -->
+          <el-table-column label="设备SN码" width="130" v-if="item.val && item.key == 'factorySn'">
+            <template slot-scope="scope">
+              {{ scope.row.factorySn || "--" }}
+            </template>
+          </el-table-column>
+          <el-table-column label="二维码" width="240" v-if="item.val && item.key == 'deviceSn'">
+            <template slot-scope="scope">
+              <div class="flex align-center">
+                <span class="mr-10">{{ scope.row.deviceSn || "--" }}</span>
+                <el-popover
+                  trigger="hover"
+                  >
+                  <div class="access-url" :id="`sn_${scope.row.id}`"></div>
+                  <div class="flex" slot="reference">
+                    <svg-icon icon-class="h_qrcode" @mouseover="deviceCode(scope.row.id, scope.row.content)"></svg-icon>
+                  </div>
+                </el-popover>
               </div>
-              <div>支付宝：<el-link type="primary"
-                  @click="$router.push({path: (lowerDevice ? `/order/subOrder?deviceSn=${scope.row.deviceSn}&sourceType=2` : `/order?deviceSn=${scope.row.deviceSn}&sourceType=2`)})">
-                  {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].ali : 0 }}
-                </el-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="可借/可还" width="100" v-if="myDeviceId['PA'] && item.val && item.key == 'tenantNumber'">
+            <template slot-scope="scope">
+              <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
+                {{ scope.row.tenantNumber }} / {{ scope.row.restoreNumber }}
               </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="交易额(元)" width="90">
-          <template slot-scope="scope">
-            {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00' }}
-          </template>
-        </el-table-column>
+              <div v-else>--</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="设备属性" width="120" v-if="item.val && item.key == 'deviceFactory'">
+            <template slot-scope="scope">
+              {{ scope.row.deviceFactory ? scope.row.deviceFactory.name : '--' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" width="100" v-if="item.val && item.key == 'distribute'">
+            <template slot-scope="scope">
+              <div>{{ scope.row.distribute ? "已铺货" : "未铺货" }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="铺货时间" width="150" v-if="item.val && item.key == 'bindStoreTime'">
+            <template slot-scope="scope">
+              <div>{{ scope.row.bindStoreTime ? parseTime(scope.row.bindStoreTime) : '--' }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="商户名称" min-width="200" v-if="item.val && item.key == 'store'">
+            <template slot-scope="scope">
+              <div v-if="scope.row.store">
+                <div class="text-cut_two">{{ scope.row.store.name }}</div>
+              </div>
+              <div v-else>--</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="在线状态" width="95" v-if="item.val && item.key == 'onlineStatus'">
+            <template slot-scope="scope">
+              <div v-if="scope.row.onlineStatus && checkAbility(['PA', 'VG', 'AV', 'BD'], 2, [scope.row.deviceType])">
+                <el-popover
+                  trigger="hover"
+                  >
+                  <div>{{ scope.row.updateTime }}</div>
+                  <span class="cursor text-primary" slot="reference" v-if="scope.row.onlineStatus == 'ONLINE'">在线</span>
+                  <span class="cursor text-danger" slot="reference" v-else>掉线{{ formatSeconds(currentTime() - unixTime(scope.row.updateTime), 'd') }}</span>
+                </el-popover>
+              </div>
+              <div v-else>--</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="位置备注" width="100" v-if="item.val && item.key == 'place'">
+            <template slot-scope="scope">
+              <div class="cursor text-primary" @click="setRows(1, scope.row, 3)">
+                {{ scope.row.place || '未设置' }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="订单数" width="240" v-if="Ability['order'] && item.val && item.key == 'order'">
+            <template slot-scope="scope">
+              <div class="flex">
+                <div class="flex1">微信：{{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].wx : 0 }}</div>
+                <div class="pr-5 flex1">支付宝：{{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].ali : 0 }}</div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="交易额(元)" width="90" v-if="item.val && item.key == 'amount'">
+            <template slot-scope="scope">
+              {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00' }}
+            </template>
+          </el-table-column>
+        </template>
 
         <!-- 商户 -->
         <el-table-column label="关联的设备" width="260" v-if="Ability['RELATION_DEVICE'] && isStore()">
@@ -208,25 +229,38 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="center" width="235" :fixed="device == 'desktop' ? 'right' : false" v-if="!isStore()">
+        <el-table-column label="操作" width="235" :fixed="device == 'desktop' ? 'right' : false" v-if="!isStore()">
           <template slot-scope="scope">
-            <div class="flex flex-wrap">
-              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2)">二维码</el-button>
-              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)" v-if="lowerDevice || isSaas()">设备归属</el-button>
-              <el-button type="primary" size="mini" @click="unboundStore(scope.row)" v-if="scope.row.distribute">解绑</el-button>
-              <template v-if="!isSaas()">
-                <template v-if="lowerDevice">
-                  <el-button type="primary" size="mini" @click="unbindAgent(scope.row, scope.$index)">回收设备</el-button>
-                </template>
-                <template v-else-if="!scope.row.distribute">
-                  <el-button type="primary" size="mini" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})">去分配</el-button>
-                  <el-button type="primary" size="mini" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})">去铺货</el-button>
-                </template>
+            <div class="flex flex-wrap operate">
+              <template v-if="lowerDevice">
+                <el-button type="text" @click="setRows(1, scope.row, 1)">归属</el-button>
+                <el-popconfirm
+                  class="pop"
+                  cancel-button-type=""
+                  icon="el-icon-info"
+                  icon-color="#FF7D00"
+                  title="是否确定回收此设备？"
+                  @confirm="unbindAgent(scope.row, scope.$index)"
+                >
+                  <el-button type="text" :disabled="scope.row.distribute" slot="reference">回收</el-button>
+                </el-popconfirm>
               </template>
-              <template v-if="scope.row.deviceType.code.indexOf('PA') > -1">
-                <el-button type="primary" size="mini" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">设备弹出</el-button>
+              <template v-else>
+                <el-button type="text" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})">分配</el-button>
+                <el-button type="text" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})">铺货</el-button>
               </template>
-              <el-button type="primary" size="mini" v-if="scope.row.distribute && checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType]) && (isBrand() || isSaas())" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">在线统计</el-button>
+              <el-popconfirm
+                class="pop"
+                cancel-button-type=""
+                icon="el-icon-info"
+                icon-color="#FF7D00"
+                title="是否确定解绑此设备？"
+                @confirm="unboundStore(scope.row)"
+              >
+                <el-button type="text" :disabled="!scope.row.distribute" slot="reference">解绑</el-button>
+              </el-popconfirm>
+              <el-button type="text" v-if="myDeviceId['PA']" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">弹出</el-button>
+              <!-- <div class="text-primary" v-if="scope.row.distribute && checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType]) && (isBrand() || isSaas())" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">在线统计</div> -->
             </div>
           </template>
         </el-table-column>
@@ -350,14 +384,16 @@
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import selectSearch from '@/components/condition/selectSearch'
+  import TableColumnSet from '@/components/TableColumnSet/index'
   import QRCode from 'qrcodejs2'
   import { unixTime, formatSeconds } from '@/utils/index'
   export default {
     name: 'device',
     components: {
+      TableColumnSet,
       Pagination,
       condition,
-      selectSearch
+      selectSearch,
     },
     props: {
       lowerDevice: {
@@ -513,6 +549,73 @@
         curRow: {},
         curIdx: 0,
         dform: {},
+
+        /**
+         * 列的配置化对象，存储配置信息
+         */
+        showColumn: [],
+        defaultColumn: [
+          {
+            key: 'deviceType',
+            val: true,
+            name: '设备类型'
+          },
+          {
+            key: 'factorySn',
+            val: false,
+            name: '设备SN码'
+          },
+          {
+            key: 'deviceSn',
+            val: true,
+            name: '二维码'
+          },
+          {
+            key: 'tenantNumber',
+            val: true,
+            name: '可借|可还'
+          },
+          {
+            key: 'deviceFactory',
+            val: true,
+            name: '设备属性'
+          },
+          {
+            key: 'distribute',
+            val: true,
+            name: '状态'
+          },
+          {
+            key: 'bindStoreTime',
+            val: true,
+            name: '铺货时间'
+          },
+          {
+            key: 'onlineStatus',
+            val: true,
+            name: '在线状态'
+          },
+          {
+            key: 'store',
+            val: true,
+            name: '商户名称'
+          },
+          {
+            key: 'place',
+            val: true,
+            name: '位置备注'
+          },
+          {
+            key: 'order',
+            val: true,
+            name: '订单数'
+          },
+          {
+            key: 'amount',
+            val: true,
+            name: '交易额(元)'
+          }
+        ],
 
         // 设备归属
         deviceInfo: {},
@@ -770,22 +873,15 @@
        * 设备解绑
        */
       unboundStore(row) {
-        this.$alert('确定解绑该设备？', '解绑设备', {
-          confirmButtonText: '确定',
-          callback: action => {
-            if (action == 'confirm') {
-              this.$post('iot-saas-device/admin/device/unbindStore', {
-                deviceIds: [row.id]
-              }).then(res => {
-                this.$message({
-                  message: '解绑成功',
-                  type: 'success'
-                })
-                row.distribute = false
-                row.store = ''
-              })
-            }
-          }
+        this.$post('iot-saas-device/admin/device/unbindStore', {
+          deviceIds: [row.id]
+        }).then(res => {
+          this.$message({
+            message: '解绑成功',
+            type: 'success'
+          })
+          row.distribute = false
+          row.store = ''
         })
       },
 
@@ -1005,12 +1101,13 @@
       /**
        * 设置二维码
        */
-      deviceCode(url){
-        document.getElementById('accessUrl').innerHTML = ''
-        new QRCode('accessUrl', {
-          width: 150,
-          height: 150,
-          text: url
+      deviceCode(id, url){
+        this.$nextTick(()=>{
+          new QRCode('sn_' + id, {
+            width: 150,
+            height: 150,
+            text: url
+          })
         })
       },
     }

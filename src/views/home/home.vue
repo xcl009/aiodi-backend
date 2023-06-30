@@ -151,7 +151,7 @@
             :header-cell-style="{background:'none',color:'#1CB9FB',border:'none',fontSize:'16px'}"
             :row-style="{background:'none'}" :cell-style="{borderColor:'#143F84'}" :data="storeList"
             style="background:none">
-            <el-table-column label="排名" width="60">
+            <el-table-column label="排名" width="70">
               <template slot-scope="scope">
                 <span class="fs-c1 text-bold"
                   :class="{'y-yellow': scope.row.ranking == 1, 'baby-blue': scope.row.ranking == 3, 'text-primary': scope.row.ranking == 2}">NO.{{ scope.row.ranking }}</span>

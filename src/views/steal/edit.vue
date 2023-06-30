@@ -11,11 +11,11 @@
           <el-form-item label="是否开启：">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：时间段隐藏漏单>比例漏单>时间扣减>扣款失败</span>
+              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：<span v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">时间段隐藏漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">比例漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_TIME`]">时间扣减></span><span v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">扣款失败</span></span>
             </div>
           </el-form-item>
         </div>
-        
+
         <template v-if="Ability[`${deviceTypeCode}_DD_END`]">
           <h4 class="flex mb-20 mt-10">
             <div>归还不结束</div>
@@ -26,8 +26,7 @@
                 width="450"
                 trigger="hover">
                 <div>
-                  设置不结束规则后用户归还时将会计算不结束概率<br>
-                  设置时间段表示时间段内归还的订单才会计算不结束概率，不设置不限时间
+                  设置时间段内归还的订单将会根据配置规则计算不结束概率<br>
                 </div>
                 <svg-icon icon-class="doubt" slot="reference"></svg-icon>
               </el-popover>
@@ -75,7 +74,7 @@
               @click="form.notCloseRule.timeRules.splice(index, 1)"></el-button>
           </div>
         </template>
-        
+
         <template v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">
           <h4 class="flex mb-20 mt-10">
             <div>时间段隐藏漏单</div>
@@ -116,7 +115,7 @@
               @click="form.notDisplayRule.timeRules.splice(index, 1)"></el-button>
           </div>
         </template>
-        
+
         <template v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">
           <h4 class="flex mb-20 mt-10">
             <div>比例漏单</div>
@@ -274,7 +273,7 @@
         this.$get(`iot-saas-basic/admin/queryDeviceType`, params).then(res => {
           let deviceType = [], deviceTypeCode = ''
           res.map(item => {
-            if(!item.fatherCode && (this.Ability[`${item.deviceTypeCode}_DD_RATIO`] || this.Ability[`${item.deviceTypeCode}_DD_TIME`] || this.Ability[`${item.deviceTypeCode}_DD_FAIL`])){
+            if(!item.fatherCode && (this.checkAbility([`${item.deviceTypeCode}_DD_END`,`${item.deviceTypeCode}_DD_HIDE`,`${item.deviceTypeCode}_DD_RATIO`,`${item.deviceTypeCode}_DD_TIME`,`${item.deviceTypeCode}_DD_FAIL`], 3))){
               deviceType.push(item)
               deviceTypeCode = deviceTypeCode || item.deviceTypeCode
             }

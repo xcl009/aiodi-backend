@@ -1,6 +1,6 @@
 <template>
   <div class="p-20 bg-white">
-    <el-table class="custom" :data="list" stripe highlight-current-row>
+    <el-table class="custom" :data="list" highlight-current-row>
       <el-table-column label="名称">
         <template slot-scope="scope">
           {{ scope.row.name }}

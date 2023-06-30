@@ -26,7 +26,7 @@
 
     <div class="pl-10 pr-10 bg-white" :class="{'pt-15': isStore()}">
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
-        v-loading="listLoading" :max-height="tableMaxH" :data="list" stripe>
+        v-loading="listLoading" :max-height="tableMaxH" :data="list">
         <el-table-column label="门头照" width="70">
           <template slot-scope="scope">
             <el-link>
@@ -128,7 +128,7 @@
                     </template>
                     <el-dropdown-item @click.native="$router.push({path: `/device/bedStat?id=${scope.row.id}`})" v-if="isBrand() && checkAbility(['BD', 'VG'], 2, scope.row.storeDivisionConfig)">在线统计</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">会员卡</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">DD设置</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">DD设置</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">免费名额</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
                     <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 5)">重置登录密码</el-dropdown-item> -->

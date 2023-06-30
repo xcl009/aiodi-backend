@@ -18,7 +18,7 @@
 
       <div class="pl-10 pr-10">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-          element-loading-text="Loading" stripe highlight-current-row :max-height="tableMaxH">
+          element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
           <el-table-column label="图片" align="center">
             <template slot-scope="scope">
               <el-image

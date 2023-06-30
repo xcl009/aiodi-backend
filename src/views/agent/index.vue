@@ -16,7 +16,7 @@
 		</condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH" stripe>
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" :max-height="tableMaxH">
         <el-table-column label="代理信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
@@ -105,7 +105,7 @@
                   <template v-if="checkAbility(['_BILLING'], 1, scope.row.agentDeviceType) && isBrand()">
                     <el-dropdown-item @click.native="$router.push({path: `/device/billing?agentId=${scope.row.id}`})">默认计费设置</el-dropdown-item>
                   </template>
-                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=agentId`})" v-if="checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=agentId`})" v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR`})" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">概率押金</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/leaseOrder/index?createType=1&deductionId=${scope.row.id}`})" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">租赁订单</el-dropdown-item>

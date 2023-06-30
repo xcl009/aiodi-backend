@@ -17,7 +17,7 @@
 
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-        stripe highlight-current-row :max-height="tableMaxH">
+        highlight-current-row :max-height="tableMaxH">
         <el-table-column label="服务类型">
           <template slot-scope="scope">
             {{ scope.row.serviceTypeName || '--' }}

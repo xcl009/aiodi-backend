@@ -2,7 +2,7 @@
   <div>
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading"
-        stripe highlight-current-row :max-height="tableMaxH">
+        highlight-current-row :max-height="tableMaxH">
         <el-table-column label="批次编号">
           <template slot-scope="scope">
             {{ scope.row.batchNumber }}

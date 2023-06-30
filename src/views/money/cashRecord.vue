@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="pl-10 pr-10 bg-white">
-      <el-table id="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" stripe highlight-current-row>
+      <el-table id="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row>
         <el-table-column label="订单号">
           <template slot-scope="scope">
             {{ scope.row.id}}

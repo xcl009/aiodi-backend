@@ -35,7 +35,7 @@
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading" stripe highlight-current-row :max-height="tableMaxH">
+      <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="订单号" min-width="140">
           <template slot-scope="scope">

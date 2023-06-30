@@ -22,7 +22,7 @@
 
       <div class="pl-15 pr-15">
         <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-          stripe highlight-current-row :max-height="tableMaxH">
+          highlight-current-row :max-height="tableMaxH">
           <el-table-column label="操作人" width="150">
             <template slot-scope="scope">
               {{ scope.row.money || '--' }}

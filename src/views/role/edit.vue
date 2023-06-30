@@ -16,7 +16,7 @@
 
         <h4 class="pl-10">功能权限</h4>
         <el-table class="ml-10" id="list_table" ref="list_table" v-loading="listLoading" :data="mentList" element-loading-text="Loading"
-          :show-header="false" stripe highlight-current-row border>
+          :show-header="false" highlight-current-row border>
           <el-table-column width="200">
             <template slot-scope="scope">
               <el-checkbox v-model="scope.row.checked">{{ scope.row.name }}</el-checkbox>

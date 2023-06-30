@@ -19,7 +19,7 @@
 
     <div class="p-15 bg-white">
       <div class="chart-daystat" ref="chartDay"></div>
-      <el-table class="custom" stripe id="list_table" :data="tableList" border>
+      <el-table class="custom" id="list_table" :data="tableList" border>
         <el-table-column label="日期" align="center">
           <template slot-scope="scope">
             {{ scope.row.countGroupDate }}

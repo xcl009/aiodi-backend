@@ -25,7 +25,7 @@
 
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
-        element-loading-text="Loading" stripe>
+        element-loading-text="Loading">
         <el-table-column label="投诉单号" width="140">
           <template slot-scope="scope">
             {{ scope.row.complaint_id }}

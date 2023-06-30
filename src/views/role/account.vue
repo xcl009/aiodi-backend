@@ -4,7 +4,7 @@
       <el-button type="primary" size="small" class="mr-10" @click="setRows(1, {}, 2)">添加账号</el-button>
       <div class="pt-15">
         <el-table id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
-          stripe highlight-current-row>
+          highlight-current-row>
           <el-table-column label="角色名称">
             <template slot-scope="scope">
               {{ scope.row.roleName || '--' }}
