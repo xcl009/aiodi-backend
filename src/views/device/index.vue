@@ -185,6 +185,7 @@
             </template>
           </template>
         </el-table-column>
+        
         <el-table-column label="操作" align="center" width="100" v-if="isStore()">
           <template slot-scope="scope">
             <el-row class="line-six">
@@ -240,14 +241,14 @@
                   icon="el-icon-info"
                   icon-color="#FF7D00"
                   title="是否确定回收此设备？"
-                  @confirm="unbindAgent(scope.row, scope.$index)"
+                  @onConfirm="unbindAgent(scope.row, scope.$index)"
                 >
                   <el-button type="text" :disabled="scope.row.distribute" slot="reference">回收</el-button>
                 </el-popconfirm>
               </template>
               <template v-else>
-                <el-button type="text" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})">分配</el-button>
-                <el-button type="text" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})">铺货</el-button>
+                <el-button type="text" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})" :disabled="scope.row.distribute">分配</el-button>
+                <el-button type="text" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})" :disabled="scope.row.distribute">铺货</el-button>
               </template>
               <el-popconfirm
                 class="pop"
@@ -255,7 +256,7 @@
                 icon="el-icon-info"
                 icon-color="#FF7D00"
                 title="是否确定解绑此设备？"
-                @confirm="unboundStore(scope.row)"
+                @onConfirm="unboundStore(scope.row)"
               >
                 <el-button type="text" :disabled="!scope.row.distribute" slot="reference">解绑</el-button>
               </el-popconfirm>
