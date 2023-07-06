@@ -69,7 +69,7 @@
         if(this.checkRoles(['terminal','merchants']) || params.default_store_id == 0) delete params.default_store_id
         this.$post('agentapi/ucenter/save_key_value', params).then(res => {
           this.$message({
-            message: '提交成功',
+            message: '操作成功',
             type: 'success'
           })
         })

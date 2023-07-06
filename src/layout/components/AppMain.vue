@@ -37,7 +37,7 @@
   }
 
   .fixed-header+.app-main {
-    padding-top: 55px;
+    padding-top: 35px;
   }
 
   @media (max-width: 768px) {

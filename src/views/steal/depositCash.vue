@@ -130,7 +130,7 @@
         if(this.userKey && this.id) params[this.userKey] = this.id
         this.$post(`iot-saas-basic/admin/probabilityDeposit/v1/update`, params).then(res => {
           this.$message({
-            message: '设置成功',
+            message: '操作成功',
             type: 'success'
           })
         })

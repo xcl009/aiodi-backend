@@ -30,7 +30,7 @@
         form: {},
         rules: {
           password: [
-            { required: true, message: '请输入操作密码', trigger: 'blur' }
+            { required: true, message: '请输入您的操作密码', trigger: 'blur' }
           ]
         },
       }
@@ -49,7 +49,7 @@
           if (valid) {
             this.$post('iot-saas-user/admin/user/twoPassword/confirm', params).then(res => {
               this.$message({
-                message: '验证成功',
+                message: '操作成功',
                 type: 'success'
               })
               this.$router.back()

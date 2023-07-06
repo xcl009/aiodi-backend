@@ -111,7 +111,7 @@
         this.clickSubmit = true
         this.$put('iot-saas-device/admin/vendor/setting', this.dform).then(res => {
           this.$message({
-            message: '设置成功',
+            message: '操作成功',
             type: 'success'
           })
           this.dialogStatus = false

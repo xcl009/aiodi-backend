@@ -65,8 +65,10 @@ export default {
 
 <style lang="scss" scoped>
 .app-breadcrumb.el-breadcrumb {
+  margin-top: 20px;
+  margin-bottom: 10px;
   font-size: 14px;
-  line-height: 45px;
+  //line-height: 45px;
   // margin-left: 8px;
 
   .no-redirect {

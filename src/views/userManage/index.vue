@@ -234,7 +234,7 @@
               }).then(res => {
                 this.loadObj.close()
                 this.$message({
-                  message: '充值成功',
+                  message: '操作成功',
                   type: 'success'
                 })
                 this.toQuery()
@@ -260,7 +260,7 @@
         this.$post('agentapi/card/save_user_member_card_info', params).then(res => {
           this.loadObj.close()
           this.$message({
-            message: '设置成功',
+            message: '操作成功',
             type: 'success'
           })
           this.memberDialog = false

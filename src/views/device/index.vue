@@ -68,7 +68,7 @@
               </template>
             </template>
           </el-table-column> -->
-          <el-table-column label="设备SN码" width="130" v-if="item.val && item.key == 'factorySn'">
+          <el-table-column label="设备SN" width="130" v-if="item.val && item.key == 'factorySn'">
             <template slot-scope="scope">
               {{ scope.row.factorySn || "--" }}
             </template>
@@ -136,7 +136,7 @@
           <el-table-column label="位置备注" width="100" v-if="item.val && item.key == 'place'">
             <template slot-scope="scope">
               <div class="cursor text-primary" @click="setRows(1, scope.row, 3)">
-                {{ scope.row.place || '未设置' }}
+                {{ scope.row.place || '--' }}
               </div>
             </template>
           </el-table-column>
@@ -185,7 +185,7 @@
             </template>
           </template>
         </el-table-column>
-        
+
         <el-table-column label="操作" align="center" width="100" v-if="isStore()">
           <template slot-scope="scope">
             <el-row class="line-six">
@@ -233,7 +233,7 @@
         <el-table-column label="操作" width="235" :fixed="device == 'desktop' ? 'right' : false" v-if="!isStore()">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <template v-if="lowerDevice">
+              <template v-if="lowerDevice || isSaas()">
                 <el-button type="text" @click="setRows(1, scope.row, 1)">归属</el-button>
                 <el-popconfirm
                   class="pop"
@@ -269,9 +269,16 @@
       <div class="rel flex justify-center">
         <div class="abs flex pagination-left" v-if="!isSaas()">
           <template v-if="lowerDevice">
-            <el-button type="primary" size="mini" :disabled="selID.length == 0"
-              @click="unbindAgent()">批量回收
-            </el-button>
+            <el-popconfirm
+              class="pop"
+              cancel-button-type=""
+              icon="el-icon-info"
+              icon-color="#FF7D00"
+              title="确定回收该批设备吗？"
+              @onConfirm="unbindAgent()"
+            >
+              <el-button type="primary" size="mini" :disabled="selID.length == 0" slot="reference">批量回收</el-button>
+            </el-popconfirm>
           </template>
           <template v-else-if="!isStore()">
             <el-button type="primary" size="mini" :disabled="selID.length == 0"
@@ -309,7 +316,7 @@
         <div class="text-center">
           <el-image class="access-url" :src="deviceInfo[curRow.deviceSn].accessUrl" fit="cover" v-if="deviceInfo[curRow.deviceSn] && deviceInfo[curRow.deviceSn].accessUrl"></el-image>
           <div class="access-url" id="accessUrl" v-else></div>
-          <div class="mt-20 text-grey">SN码：{{ curRow.deviceSn }}</div>
+          <div class="mt-20 text-grey">SN：{{ curRow.deviceSn }}</div>
         </div>
       </template>
       <template v-if="dialogType == 3">
@@ -652,7 +659,6 @@
       }
     },
     mounted(options) {
-
     },
     methods: {
       /**
@@ -890,25 +896,17 @@
        * 设备回收
        */
       unbindAgent(row, idx) {
-        this.$alert('确定回收该设备？', '回收设备', {
-          confirmButtonText: '确定',
-          center: true,
-          callback: action => {
-            if (action == 'confirm') {
-              this.$post('iot-saas-device/admin/device/unbindAgent', {
-                deviceIds: row ? [row.id] : this.selID
-              }).then(res => {
-                this.$message({
-                  message: '回收成功',
-                  type: 'success'
-                })
-                if(idx){
-                  this.list.splice(idx, 1)
-                } else {
-                  this.getList()
-                }
-              })
-            }
+        this.$post('iot-saas-device/admin/device/unbindAgent', {
+          deviceIds: row ? [row.id] : this.selID
+        }).then(res => {
+          this.$message({
+            message: '回收成功',
+            type: 'success'
+          })
+          if(idx){
+            this.list.splice(idx, 1)
+          } else {
+            this.getList()
           }
         })
       },
@@ -1103,6 +1101,10 @@
        * 设置二维码
        */
       deviceCode(id, url){
+        let deviceCodeIds = this.deviceCodeIds || {}
+        if(deviceCodeIds[id]) return
+        deviceCodeIds[id] = true
+        this.deviceCodeIds = deviceCodeIds
         this.$nextTick(()=>{
           new QRCode('sn_' + id, {
             width: 150,

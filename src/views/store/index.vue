@@ -115,7 +115,7 @@
                 <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
                 <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})">修改信息</el-button>
                 <el-button type="primary" size="mini" @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
                 <el-dropdown trigger="click">
                   <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                   <el-dropdown-menu slot="dropdown">
@@ -595,7 +595,7 @@
               storeId: curRow.id
             }).then(res => {
               this.$message({
-                message: '删除成功',
+                message: '操作成功',
                 type: 'success'
               })
               this.dialogStatus = false
@@ -621,7 +621,7 @@
               agentId: agentId
             }).then(res => {
               this.$message({
-                message: '分配成功',
+                message: '操作成功',
                 type: 'success'
               })
               this.dialogStatus = false
@@ -634,7 +634,7 @@
               password: '123456'
             }).then(res => {
               this.$message({
-                message: '重置成功',
+                message: '操作成功',
                 type: 'success'
               })
             })

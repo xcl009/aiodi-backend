@@ -29,7 +29,7 @@ export default {
 
       }).catch(() => {
         this.$message({
-          message: '验证码发送失败，请重新尝试',
+          message: '验证码发送失败，请重试',
           type: 'error'
         })
         this.authCountdown = false

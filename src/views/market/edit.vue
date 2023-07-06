@@ -3,7 +3,7 @@
     <el-col :xs="24" :sm="18" :md="12" :lg="10">
       <el-form ref="form" :rules="rules" :model="form" label-width="auto">
         <el-form-item label="服务类型">
-          <el-select placeholder="选择服务类型" v-model="form.serviceTypeCode">
+          <el-select placeholder="请选择服务类型" v-model="form.serviceTypeCode">
             <el-option :label="item.name" :value="item.code" v-for="(item, index) in serviceType" />
           </el-select>
         </el-form-item>

@@ -40,7 +40,7 @@
           <el-input v-model="form.position" placeholder="如:PL001"/>
         </el-form-item>
         <el-form-item label="广告位置名称">
-          <el-input v-model="form.title" placeholder="如:首页插屏广告"/>
+          <el-input v-model="form.title" placeholder=""/>
         </el-form-item>
         <el-form-item label="广告类型">
           <el-select v-model="form.positionType">

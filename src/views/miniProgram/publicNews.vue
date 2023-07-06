@@ -284,7 +284,7 @@
           userId: row.id
         }).then(res => {
           this.$message({
-            message: '绑定成功',
+            message: '操作成功',
             type: 'success'
           })
           this.userList = []
@@ -305,7 +305,7 @@
                 id: row.id
               }).then(res => {
                 this.$message({
-                  message: '删除成功',
+                  message: '操作成功',
                   type: 'success'
                 })
                 this.bindUserList.splice(idx, 1)

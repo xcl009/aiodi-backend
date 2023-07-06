@@ -1,24 +1,30 @@
 <template>
-  <div class="p-5">
-    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
-      <template v-slot:left>
-        <div class="pl-10 max-w filter-btn_box white-space">
-          <el-scrollbar>
-            <el-button size="medium" :type="!listQuery.serviceTypeCode ? 'primary' : ''"
-              :class="{'btn-body': listQuery.serviceTypeCode}"
-              @click="listQuery.serviceTypeCode = ''; toQuery(2)">全部服务</el-button>
-            <el-button size="medium" :type="listQuery.serviceTypeCode == item.code ? 'primary' : ''"
-              :class="{'btn-body': listQuery.serviceTypeCode != item.code}" v-for="item in tabs"
-              @click="listQuery.serviceTypeCode = item.code; toQuery(2)">{{ item.name }}</el-button>
-          </el-scrollbar>
+  <div>
+    <el-tabs class="mb-0 bg-white" v-model="listQuery.serviceTypeCode" type="card" @tab-click="toQuery">
+      <el-tab-pane label="全部服务" name=""></el-tab-pane>
+      <el-tab-pane label="系统服务" name="SYSTEM"></el-tab-pane>
+      <el-tab-pane label="品类服务" name="CUSTOMIZE"></el-tab-pane>
+      <!-- <el-tab-pane label="主题皮肤" name="THEME"></el-tab-pane> -->
+    </el-tabs>
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+      <template v-slot:tabs>
+        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName && listQuery.serviceTypeCode == 'CUSTOMIZE'">
+          <div class="mr-10">设备类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部设备" :name="''" />
+            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+          </el-tabs>
         </div>
+        <!-- <div class="mb-10 flex align-center bg-white">
+          <div class="mr-10">服务类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.Type" @tab-click="toQuery()">
+            <el-tab-pane label="全部服务" name="" />
+            <el-tab-pane label="VIP服务" name="1" />
+            <el-tab-pane label="SVIP服务" name="2" />
+          </el-tabs>
+        </div> -->
       </template>
       <template v-slot:defult>
-        <el-form-item label="设备类型">
-          <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
-            <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="服务名称">
           <el-input v-model="form.serviceName" placeholder="服务名称" />
         </el-form-item>
@@ -26,6 +32,9 @@
     </condition>
 
     <div class="load-box" v-infinite-scroll="loadPage">
+      <div class="p-30 text-center bg-white" v-if="listTotal == 0">
+        服务持续更新中，请持续关注服务市场
+      </div>
       <el-row :gutter="10">
         <el-col :sm="24" :md="12" :lg="8" :xl="6" v-for="item in list">
           <div class="p-10 list-item cursor bg-white shadow-light" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})">
@@ -54,15 +63,17 @@
                   </div>
                 </template>
               </template>
-              <el-button type="primary" size="medium">立即购买</el-button>
+              <template v-if="item.serviceTypeCode != 'CUSTOMIZE' || myDeviceId[item.deviceTypeCode]">
+                <el-button type="info" size="medium" v-if="checkAbility(arrayKeys(item.priceSettings, 'priceCode'), 3)">已选用</el-button>
+                <el-button type="primary" size="medium" v-else>{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即添加' : '立即购买'}}</el-button>
+              </template>
+              <template v-else>
+                <el-button type="info" size="medium">无{{ myDeviceId[item.deviceTypeCode] }}品类，不可选</el-button>
+              </template>
             </div>
           </div>
         </el-col>
       </el-row>
-    </div>
-
-    <div class="p-30 text-center bg-white" v-if="listTotal == 0">
-      服务持续更新中，请持续关注服务市场
     </div>
   </div>
 </template>
@@ -79,6 +90,7 @@
     },
     data() {
       return {
+        arrayKeys: arrayKeys,
         clickSubmit: false,
         tabs: [],
         form: {},
@@ -87,16 +99,12 @@
         listTotal: 0,
         listQuery: {
           page: 1,
-          size: 50
+          size: 50,
+          serviceTypeCode: '',
+          deviceTypeCode: '',
+          //Type: ''
         },
         checkFree: {}
-      }
-    },
-    activated() {
-      if(this.$route.meta.reload){
-        this.getList()
-      }else if(!this.list || this.list.length == 0) {
-        this.toQuery()
       }
     },
     computed: {
@@ -106,9 +114,49 @@
       agentInfo(){
         return this.$store.getters.agentInfo
       },
+      myDeviceName() {
+        return this.$store.getters.myDeviceName
+      },
       myDeviceId() {
         return this.$store.getters.myDeviceId
       },
+    },
+    beforeRouteEnter(to, from, next) {
+      to.meta.urlQuery = JSON.stringify(to.query)
+      if (from.name == 'buyService') {
+        to.meta.reload = true
+      } else {
+        to.meta.reload = false
+      }
+      next()
+    },
+    activated() {
+      let query = this.$route.query,
+          queryKey = ['deviceTypeCode'],
+          fromKey = ['serviceName']
+      for (var i in queryKey) {
+        if(query[queryKey[i]]){
+          this.listQuery[queryKey[i]] = query[queryKey[i]]
+        }
+      }
+      for (var i in fromKey) {
+        if(query[fromKey[i]]){
+          this.$set(this.form, fromKey[i], query[fromKey[i]])
+        } else {
+          delete this.form[fromKey[i]]
+        }
+      }
+      if(this.listQuery.deviceTypeCode) this.listQuery.serviceTypeCode = 'CUSTOMIZE'
+      if (this.$route.meta.reload) {
+        this.getList()
+      } else if (this.urlQuery != this.$route.meta.urlQuery) {
+        if(!this.listQuery.deviceTypeCode && !this.form.serviceName){
+          this.listQuery.deviceTypeCode = Object.values(this.myDeviceName)[0]
+          this.listQuery.serviceTypeCode = 'CUSTOMIZE'
+        }
+        this.toQuery()
+      }
+      this.urlQuery = this.$route.meta.urlQuery
     },
     mounted() {
       this.$store.dispatch('api/getServiceType').then(res => {
@@ -146,6 +194,8 @@
           page: this.listQuery.page - 1
         })
         if(params.serviceTypeCode == 0) delete params.serviceTypeCode
+        if(params.deviceTypeCode == 0) delete params.deviceTypeCode
+        if(params.Type == 0) delete params.Type
         this.$get('iot-saas-basic/client/service/market/findPage', params).then((res = {}) => {
           this.list = this.list.concat(res.rows || [])
           this.listLoading = false
