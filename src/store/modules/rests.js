@@ -1,5 +1,6 @@
 const state = {
-  informClose: false
+  informClose: false,
+  expiresDatetime: ''
 }
 
 const mutations = {

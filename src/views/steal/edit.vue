@@ -11,7 +11,7 @@
           <el-form-item label="是否开启：">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：<span v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">时间段隐藏漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">比例漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_TIME`]">时间扣减></span><span v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">扣款失败</span></span>
+              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：<span v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">时间段隐藏漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">比例漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_TIMELIMIT`]">分成时长限制></span><span v-if="Ability[`${deviceTypeCode}_DD_TIME`]">时间扣减></span><span v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">扣款失败</span></span>
             </div>
           </el-form-item>
         </div>
@@ -156,31 +156,57 @@
           </div>
         </template>
 
-        <template v-if="Ability[`${deviceTypeCode}_DD_TIME`]">
-        <h4 class="flex mb-20 mt-10">
-          <div>时间扣减</div>
-          <div class="ml-5">
-            <el-popover
-              placement="top-start"
-              title="温馨提示"
-              width="450"
-              trigger="hover">
-              <div>
-                订单真实使用时长减去扣减时间，订单金额未发生变化，则该订单不扣减时间。<br>
-                订单扣减时间后，下级看到的订单完结时间=真实完结时间-扣减时间。<br>
-                例：扣减时间10分钟，真实使用时长65分钟，订单计费为2元60分钟，该订单真实扣款4元。扣减10分钟后使用时长55分钟，订单金额2元，下级代理及商户按2元分成，剩余2元则按比例分给您及您的上级。
-              </div>
-              <svg-icon icon-class="doubt" slot="reference"></svg-icon>
-            </el-popover>
+        <template v-if="Ability[`${deviceTypeCode}_DD_TIMELIMIT`]">
+          <h4 class="flex mb-20 mt-10">
+            <div>分成时长限制</div>
+            <div class="ml-5">
+              <el-popover
+                placement="top-start"
+                title="温馨提示"
+                width="450"
+                trigger="hover">
+                <div>
+                  订单时长超过分成时长，商户只分分成时长段金额。分成时长不可小于免费时长。<br>
+                  例：分成时间60分钟，真实使用时长120分钟，订单计费为2元60分钟，该订单真实扣款4元。下级代理及商户按2元分成，剩余2元则按比例分给您及您的上级。
+                </div>
+                <svg-icon icon-class="doubt" slot="reference"></svg-icon>
+              </el-popover>
+            </div>
+          </h4>
+          <div class="flex">
+            <el-form-item label="分成时长：">
+              <el-input type="number" v-model="form.minuteLimitRule">
+                <template slot="append">分钟</template>
+              </el-input>
+            </el-form-item>
           </div>
-        </h4>
-        <div class="flex">
-          <el-form-item label="扣减时间：">
-            <el-input type="number" v-model="form.minuteRule">
-              <template slot="append">分钟</template>
-            </el-input>
-          </el-form-item>
-        </div>
+        </template>
+
+        <template v-if="Ability[`${deviceTypeCode}_DD_TIME`]">
+          <h4 class="flex mb-20 mt-10">
+            <div>时间扣减</div>
+            <div class="ml-5">
+              <el-popover
+                placement="top-start"
+                title="温馨提示"
+                width="450"
+                trigger="hover">
+                <div>
+                  订单真实使用时长减去扣减时间，订单金额未发生变化，则该订单不扣减时间。<br>
+                  订单扣减时间后，下级看到的订单完结时间=真实完结时间-扣减时间。<br>
+                  例：扣减时间10分钟，真实使用时长65分钟，订单计费为2元60分钟，该订单真实扣款4元。扣减10分钟后使用时长55分钟，订单金额2元，下级代理及商户按2元分成，剩余2元则按比例分给您及您的上级。
+                </div>
+                <svg-icon icon-class="doubt" slot="reference"></svg-icon>
+              </el-popover>
+            </div>
+          </h4>
+          <div class="flex">
+            <el-form-item label="扣减时间：">
+              <el-input type="number" v-model="form.minuteRule">
+                <template slot="append">分钟</template>
+              </el-input>
+            </el-form-item>
+          </div>
         </template>
 
         <template v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">
@@ -236,6 +262,7 @@
         form: {
           enable: 2,
           minuteRule: 0,
+          minuteLimitRule: 0,
           complateRule: {},
           proportionRule: {},
           failRule: {},

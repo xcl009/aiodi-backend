@@ -110,7 +110,7 @@
                 }
                 this.loadObj.close()
                 this.$message({
-                  message: '导出成功',
+                  message: '操作成功',
                   type: 'success'
                 })
               }).catch(err => {

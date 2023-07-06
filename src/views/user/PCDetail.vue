@@ -169,7 +169,7 @@
           this.loadObj.close()
           this.formDialog = false
           this.$message({
-            message: '留言成功',
+            message: '操作成功',
             type: 'success'
           })
           this.getList()
@@ -198,7 +198,6 @@
             if (action == 'confirm') {
               that.loadObj = that.$loading({
                 lock: true,
-                text: '提交中',
                 spinner: 'el-icon-loading'
               })
               that.$post('agentapi/analysis/wx_complaint_complete', {
@@ -206,7 +205,7 @@
               }).then(res => {
                 that.loadObj.close()
                 that.$message({
-                  message: '完结成功',
+                  message: '操作成功',
                   type: 'success'
                 })
                 that.$router.push({

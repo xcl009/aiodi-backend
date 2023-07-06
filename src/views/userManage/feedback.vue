@@ -393,7 +393,7 @@
               this.$post('iot-saas-basic/admin/feedback/updateById', params).then(res => {
                 this.$message({
                   type: 'success',
-                  message: '设置成功'
+                  message: '操作成功'
                 })
                 this.curRow.state = params.state
                 this.curRow.reply = params.reply

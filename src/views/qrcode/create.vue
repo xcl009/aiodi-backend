@@ -20,13 +20,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="仓口数量" v-if="form.deviceTypeCode && form.deviceTypeCode.indexOf('PA') > -1" ref="windosNumber" prop="windosNumber">
-          <el-input type="number" v-model="form.windosNumber" placeholder="设备仓口数量" />
+          <el-input type="number" v-model="form.windosNumber" placeholder="请输入设备仓口数量" />
         </el-form-item>
         <el-form-item label="仓口数量" v-if="form.deviceTypeCode && form.deviceTypeCode.indexOf('VM') > -1" ref="positionQty" prop="positionQty">
-          <el-input type="number" v-model="form.positionQty" placeholder="设备仓口数量" />
+          <el-input type="number" v-model="form.positionQty" placeholder="请输入设备仓口数量" />
         </el-form-item>
         <el-form-item label="单口商品数" v-if="form.deviceTypeCode && form.deviceTypeCode.indexOf('VM') > -1" ref="merchandiseQty" prop="merchandiseQty">
-          <el-input type="number" v-model="form.merchandiseQty" placeholder="单口商品数量" />
+          <el-input type="number" v-model="form.merchandiseQty" placeholder="请输入单口商品数量" />
         </el-form-item>
         <label class="flex justify-center align-center mb-15 cursor">
           <el-checkbox v-model="form.picture"/><span class="ml-10">生成二维码图片</span>
@@ -66,7 +66,7 @@
           }],
           windosNumber: [{
             required: true,
-            message: '请输入充电宝口数量',
+            message: '请输入设备仓口数量',
             trigger: 'blur'
           }]
         },
@@ -121,7 +121,7 @@
             })
             this.$post('iot-saas-device/admin/qrcode', params).then(res => {
               this.$message({
-                message: '生成完成',
+                message: '操作完成',
                 type: 'success'
               })
               this.loadObj.close()

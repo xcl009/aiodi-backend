@@ -14,8 +14,8 @@
             <el-button class="icon-search icon-refresh" size="small" v-if="resetStatus" @click="reset()">
               <i class="mr-5 el-icon-refresh fs-s2"/><span class="fs-s3">重置</span>
             </el-button>
-            <el-tooltip class="item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的订单" placement="top" v-if="device != 'mobile' && exportStatus">
-              <el-button class="icon-search icon-refresh" size="small" v-if="resetStatus" @click="reset()">
+            <el-tooltip class="item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的记录" placement="top" v-if="device != 'mobile' && exportStatus">
+              <el-button class="icon-search icon-refresh" size="small" @click="saveXlsx()">
                 <i class="mr-5 el-icon-download fs-s2"/><span class="fs-s3">导出</span>
               </el-button>
             </el-tooltip>

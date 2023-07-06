@@ -41,7 +41,7 @@
         </el-form-item>
         <el-form-item>
           <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange" range-separator="-"
-            value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期"
+            value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期"
             :picker-options="pickerOptionsEnd" @change="toQuery()">
           </el-date-picker>
         </el-form-item>
@@ -104,7 +104,7 @@
                 <div>二维码：{{ scope.row.deviceSn || "--" }}</div>
                 <!-- <div>设备SN：{{ scope.row.factorySn || "--" }}</div> -->
                 <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
-                  @click="checkBao(scope.row.goods_sn)">宝SN码：{{ scope.row.goods_sn || "--" }}</div>
+                  @click="checkBao(scope.row.goods_sn)">宝SN：{{ scope.row.goods_sn || "--" }}</div>
               </template>
             </el-table-column>
             <el-table-column label="来源" width="50" v-if="item.val && item.key == 'sourceType'">
@@ -194,7 +194,7 @@
         <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
         <template v-if="dialogType == 3">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item label="订单单号">
+            <el-form-item label="订单号">
               <el-input v-model="dform.orderNo"></el-input>
             </el-form-item>
             <el-form-item label="取消原因">
@@ -214,7 +214,7 @@
                 {{ scope.row.nickname }}
               </template>
             </el-table-column>
-            <el-table-column label="手机号" align="center">
+            <el-table-column label="手机号码" align="center">
               <template slot-scope="scope">
                 {{ scope.row.mobiel }}
               </template>
@@ -228,7 +228,7 @@
         </template>
         <template v-if="dialogType == 5">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item label="订单单号">
+            <el-form-item label="订单号">
               <el-input v-model="dform.orderNo"></el-input>
             </el-form-item>
           </el-form>
@@ -359,11 +359,11 @@
               </div>
               <div class="flex mb-10">
                 <div class="label-text">开始时间:</div>
-                <div>{{ curRow.chargeEndTime }}</div>
+                <div>{{ curRow.chargeStartTime }}</div>
               </div>
               <div class="flex">
                 <div class="label-text">结束时间:</div>
-                <div>{{ curRow.chargeStartTime }}</div>
+                <div>{{ curRow.chargeEndTime }}</div>
               </div>
             </div>
 
@@ -452,7 +452,7 @@
               <div class="flex1">
                 <div class="flex mb-10">
                   <div class="label-text">开始时间:</div>
-                  <div>{{ curRow.chargeEndTime }}</div>
+                  <div>{{ curRow.chargeStartTime }}</div>
                 </div>
                 <div class="flex mb-10">
                   <div class="label-text">订单来源:</div>
@@ -478,7 +478,7 @@
               <div class="flex1">
                 <div class="flex mb-10">
                   <div class="label-text">结束时间:</div>
-                  <div>{{ curRow.chargeStartTime || '--' }}</div>
+                  <div>{{ curRow.chargeEndTime || '--' }}</div>
                 </div>
                 <div class="flex mb-10">
                   <div class="label-text">支付类型:</div>
@@ -501,6 +501,7 @@
               </div>
             </div>
 
+            <tempate v-if="!isStore()">
             <div class="mt-20 mb-15">订单流程</div>
             <div class="flex pb-20 timeline-box white-space text-center l-b">
               <div class="rel pt-30 timeline-item el-icon-"
@@ -513,6 +514,7 @@
                 </div>
               </div>
             </div>
+            </tempate>
 
             <template v-if="dform.orderDivide && dform.orderDivide.length > 0">
               <div class="mt-20 mb-15">分成明细</div>
@@ -881,8 +883,8 @@
         let url = 'iot-saas-order/admin/order/count/queryByUser',
           params = Object.assign({}, this.listQuery, this.form)
         if (params.date && params.date.length > 0) {
-          params.startTime = params.date[0]
-          params.endTime = params.date[1]
+          params.startTime = params.date[0] + ' 00:00:00'
+          params.endTime = params.date[1] + ' 23:59:59'
           delete params.date
         }
         for (var i in this.queryKey) {
@@ -937,8 +939,8 @@
             page: this.listQuery.page - 1
           })
         if (params.date && params.date.length > 0) {
-          params.startTime = params.date[0]
-          params.endTime = params.date[1]
+          params.startTime = params.date[0] + ' 00:00:00'
+          params.endTime = params.date[1] + ' 23:59:59'
           delete params.date
         }
         if (params.status == 'today') {

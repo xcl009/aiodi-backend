@@ -258,7 +258,7 @@
               brandId : this.brandId
             }).then(res => {
               this.$message({
-                message: '赠送服务成功',
+                message: '操作成功',
                 type: 'success'
               })
               this.dialogStatus = false

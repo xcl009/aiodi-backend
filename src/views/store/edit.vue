@@ -89,7 +89,7 @@
                         温馨提示：分成模式设置为分成不一致时，记得关闭商户查看订单权限噢！
                       </div>
 
-                      <div class="mt-20">需了解或设置其他分成模式？<el-link type="primary" :underline="false">点此去了解</el-link></div>
+                      <div class="mt-20">需了解或设置其他分成模式？<el-link type="primary" :underline="false" @click="$router.push({path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=分成方式`})">点此去了解</el-link></div>
                     </div>
                     <el-link type="danger" slot="reference" :underline="false" class="ml-10 el-icon-question fs-c1"></el-link>
                   </el-popover>
@@ -106,7 +106,7 @@
                     </el-input>
                   </el-form-item>
                   <el-form-item label="每天前">
-                    <el-input  type="number" v-model="item.promisedDeal" placeholder="单数">
+                    <el-input  type="number" v-model="item.promisedDeal" placeholder="0">
                       <template slot="append">单按承诺分成比例分润</template>
                     </el-input>
                   </el-form-item>
@@ -136,7 +136,11 @@
               <el-row class="radius-10" :gutter="20">
                 <el-col :sm="24" :lg="12" v-for="(name, xcx) in config.xcx_pay.default">
                   <div>
-                    <div class="mb-10 text-dfs text-bold text-black">{{ name }}计费设置</div>
+                    <div class="mb-10 text-dfs text-bold text-black">
+                      {{ name }}计费设置
+                      <span class="ml-10 text-primary cursor" v-if="xcx == 'alipay'" @click="item[`${xcx}PayMode`] = JSON.parse(JSON.stringify(item[`weixinPayMode`]))">一键同步微信的计费设置</span>
+                    </div>
+
                     <el-form-item :label="`付费模式`">
                       <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
                         <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode)" :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode))[0]">{{ name }}</el-radio-button>
@@ -146,7 +150,7 @@
                         title=""
                         trigger="hover">
                         <div>
-                          需了解和设置免押或预存？<el-link type="primary" :underline="false">点此去了解</el-link>
+                          需了解和设置免押或预存？<el-link type="primary" :underline="false" @click="$router.push({path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=计费模式`})">点此去了解</el-link>
                         </div>
                         <el-link type="danger" :underline="false" slot="reference" class="ml-10 el-icon-question fs-c1"></el-link>
                       </el-popover>
@@ -170,6 +174,11 @@
                     </template>
 
                     <template v-else>
+                      <el-form-item label="免费时长" v-if="item.deviceTypeCode == 'PA'">
+                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.freeTime" placeholder="不填默认5分钟">
+                          <template slot="append">分钟</template>
+                        </el-input>
+                      </el-form-item>
                       <el-form-item label="前">
                         <div class="flex">
                           <div class="flex1">
@@ -217,7 +226,7 @@
                           <template slot="append">元</template>
                         </el-input>
                       </el-form-item>
-                      <el-form-item label="押金">
+                      <el-form-item label="押金" v-if="item[`${xcx}PayMode`].modeType == 'DEPOSIT'">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount">
                           <template slot="append">元</template>
                         </el-input>
@@ -634,7 +643,7 @@ export default {
           this.clickSubmit = true
           this.$post(url, params).then(res => {
             this.$message({
-              message: '提交成功',
+              message: '操作成功',
               type: 'success'
             })
             if(this.subShop){

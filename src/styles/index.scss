@@ -868,6 +868,9 @@ div:focus {
     height: 28px;
     padding: 6px 8px;
   }
+  .el-button--text{
+    padding: 0;
+  }
   .el-button--danger.is-plain{
     background: rgba(255, 84, 84, 0.1);
     border-color: rgba(255, 84, 84, 0.1);

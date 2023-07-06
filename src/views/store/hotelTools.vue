@@ -190,7 +190,7 @@
             this.$post('iot-saas-basic/store/admin/function/update', params).then(res => {
               this.$message({
                 type: 'success',
-                message: '设置成功'
+                message: '操作成功'
               })
               this.curRow.functionContent = params.content
               this.dialogStatus = false

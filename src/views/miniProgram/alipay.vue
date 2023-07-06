@@ -197,7 +197,7 @@
           case 2:
             this.$post(`iot-saas-pay/alipay/${row.appId}/submit/audit`).then(res => {
               this.$message({
-                message: '提交审核成功',
+                message: '操作成功',
                 type: 'success'
               })
               row.appAuditStatus = 2
@@ -206,7 +206,7 @@
           case 3:
             this.$get(`iot-saas-pay/alipay/${row.appId}/version`).then(res => {
               this.$message({
-                message: '查询成功',
+                message: '操作成功',
                 type: 'success'
               })
               row.appAuditStatus = res
@@ -215,7 +215,7 @@
           case 4:
             this.$post(`iot-saas-pay/alipay/${row.appId}/push/release`).then(res => {
               this.$message({
-                message: '发布成功',
+                message: '操作成功',
                 type: 'success'
               })
               row.appAuditStatus = 5
@@ -229,7 +229,7 @@
             }).then(() => {
               this.$post(`iot-saas-pay/alipay/${row.appId}/cancel/audit`).then(res => {
                 this.$message({
-                  message: '取消成功',
+                  message: '操作成功',
                   type: 'success'
                 })
                 row.appAuditStatus = 1
@@ -244,7 +244,7 @@
             }).then(() => {
               this.$post(`iot-saas-pay/alipay/${row.appId}/fallback/develop`).then(res => {
                 this.$message({
-                  message: '回退成功',
+                  message: '操作成功',
                   type: 'success'
                 })
                 row.appAuditStatus = 1

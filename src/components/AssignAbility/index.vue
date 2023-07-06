@@ -79,7 +79,7 @@
         this.$put('iot-saas-user/auth/childMenu', params).then(res => {
           this.$message({
             type: 'success',
-            message: '设置成功'
+            message: '操作成功'
           })
           this.dialogStatus = false
           this.clickSubmit = false

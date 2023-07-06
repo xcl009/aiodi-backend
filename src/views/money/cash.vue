@@ -271,7 +271,7 @@
         this.clickSubmit = true
         this.$post('iot-saas-pay/api/pay/withdraw/apply', params).then(res => {
           this.$message({
-            message: '申请成功',
+            message: '操作成功',
             type: 'success'
           })
           this.$router.push({ path: '/money/cashRecord' });

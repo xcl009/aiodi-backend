@@ -13,16 +13,18 @@
       <div class="flex align-center mb-20 pb-5" v-if="info.priceSettings && Object.values(info.priceSettings).length > 0">
         <div class="mr-15 w-60">模式</div>
         <div>
-          <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" :type="form.priceCode == item.priceCode ? '' : 'info'" v-for="item in info.priceSettings" @click="form.priceCode = item.priceCode">
-            {{ item.priceName }}
-          </el-tag>
+          <template  v-for="item in info.priceSettings">
+            <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" :type="form.priceCode == item.priceCode ? '' : 'info'" @click="form.priceCode = item.priceCode">
+              {{ item.priceName }}{{ checkAbility([item.priceCode], 3) ? '（已选用)' : '' }}
+            </el-tag>
+          </template>
         </div>
       </div>
       <div class="flex align-center mb-20 pb-5">
         <div class="mr-15 w-60">周期</div>
-        <div v-if="checkAbility(['BRAND_MEMBER'], 3) && expiresDatetime">
+        <div v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
           <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain">
-            {{ expiresDatetime }}到期
+            {{ rests.expiresDatetime }}到期
           </el-tag>
         </div>
         <div v-else-if="info.priceSettings && info.priceSettings[form.priceCode]">
@@ -38,7 +40,7 @@
       </div>
       <div class="flex align-center mb-20 pb-5">
         <div class="mr-15 w-60">价格</div>
-        <div class="fs-c1 text-danger" v-if="checkAbility(['BRAND_MEMBER'], 3) && expiresDatetime">0</div>
+        <div class="fs-c1 text-danger" v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">0</div>
         <div class="fs-c1 text-danger" v-else-if="info.priceSettings">{{ info.priceSettings[form.priceCode][cycleKey] || 0 }}</div>
       </div>
       <div class="flex align-center mb-20 pb-5">
@@ -52,7 +54,7 @@
       </div>
       <div class="flex align-center mb-20 pb-5">
         <div class="mr-15 w-60"></div>
-        <el-button type="primary" :disabled="clickSubmit" @click="setRows(1, {}, 1)">立即支付</el-button>
+        <el-button type="primary" :disabled="clickSubmit" @click="setRows(1, {}, 1)">{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即添加' : '立即购买'}}</el-button>
       </div>
 
       <div>
@@ -71,7 +73,7 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <div class="pb-20 text-center">
-          <div class="fs-a1 text-black">{{ form.cycle == 'TRYOUT' ? '确定试用当前服务吗？' : '确定购买当前服务吗？'}}</div>
+          <div class="fs-a1 text-black">{{ form.cycle == 'TRYOUT' ? '确定试用当前服务吗？' : checkAbility(['BRAND_MEMBER'], 3) ? '确定选用当前服务吗？' : '确定购买当前服务吗？'}}</div>
         </div>
       </template>
       <div class="mt-30 text-center">
@@ -128,14 +130,13 @@
         cycleKey: 'monthAmount',
 
         id: this.$route.query.id,
-        expiresDatetime: window.expiresDatetime || '',
         checkFree: {},
 
         // 弹出相关
         dialogType: 1,
         dialogStatus: false,
         dialogTitle: {
-          1: '购买服务'
+          1: '选用服务'
         },
         curRow: {},
         curIdx: 0,
@@ -146,8 +147,8 @@
       siteInfo() {
         return this.$store.getters.siteInfo
       },
-      agentInfo() {
-        return this.$store.getters.agentInfo
+      rests() {
+        return this.$store.getters.rests
       }
     },
     mounted() {
@@ -221,7 +222,7 @@
             payParams.serviceId = this.id
             this.$post('iot-saas-basic/client/service/market/buy', payParams).then(res => {
               this.$message({
-                message: (payParams.cycle == 'TRYOUT' ? '服务试用成功'  : '服务购买成功'),
+                message: '操作成功',
                 type: 'success'
               })
               this.$store.dispatch('user/getInfo')

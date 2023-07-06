@@ -25,10 +25,10 @@
           <el-form-item label="所在区域" prop="province">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <el-form-item label="工厂地址" prop="address">
+          <el-form-item label="地址" prop="address">
             <el-input v-model="form.address" placeholder="工厂地址" />
           </el-form-item>
-          <el-form-item label="工厂介绍">
+          <el-form-item label="简介">
             <el-input v-model="form.briefIntroduction" placeholder="工厂介绍(生产设备类型)" />
           </el-form-item>
           <el-form-item label="邀请分成">

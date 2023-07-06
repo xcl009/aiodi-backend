@@ -213,7 +213,7 @@
           case 2:
             this.$post(`iot-saas-pay/wechat/${row.appId}/submit/audit`).then(res => {
               this.$message({
-                message: '提交审核成功',
+                message: '操作成功',
                 type: 'success'
               })
               row.appAuditStatus = 2
@@ -222,7 +222,7 @@
           case 3:
             this.$get(`iot-saas-pay/wechat/${row.appId}/latest/audit/status`).then(res => {
               this.$message({
-                message: '查询成功',
+                message: '操作成功',
                 type: 'success'
               })
               row.appAuditStatus = (res.status == 0 ? 3 : res.status == 1 ? 4 : res.status)
@@ -231,7 +231,7 @@
           case 4:
             this.$post(`iot-saas-pay/wechat/${row.appId}/push/release`).then(res => {
               this.$message({
-                message: '发布成功',
+                message: '操作成功',
                 type: 'success'
               })
               row.appAuditStatus = 5
@@ -252,7 +252,7 @@
 
                     }).then(res => {
                       this.$message({
-                        message: '设置成功',
+                        message: '操作成功',
                         type: 'success'
                       })
                     })
@@ -264,7 +264,7 @@
           case 6:
             this.$get(`iot-saas-pay/open/pay/init/refreshAuthorizerToken?appId=${row.appId}`).then(res => {
               this.$message({
-                message: '刷新成功',
+                message: '操作成功',
                 type: 'success'
               })
             })
@@ -278,7 +278,7 @@
       refreshOpenToken(){
         this.$get(`iot-saas-pay/open/pay/init/refreshComonentToken`).then(res => {
           this.$message({
-            message: '刷新成功',
+            message: '操作成功',
             type: 'success'
           })
         })
@@ -305,7 +305,7 @@
               extAppid: curRow.appId
             }).then(res => {
               this.$message({
-                message: '上传成功',
+                message: '操作成功',
                 type: 'success'
               })
               curRow.appAuditStatus = 1

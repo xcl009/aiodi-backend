@@ -2,8 +2,7 @@
   <div class="rel flex navbar" style="overflow: initial;">
     <div class="flex1 title-box text-center text-white">
       <div>
-        <div class="mt-10 cn">{{ agentInfo.nickname }}管理后台</div>
-        <div class="en">Management Background</div>
+        <div class="cn">{{ agentInfo.nickname }}管理后台</div>
       </div>
     </div>
     <!-- <div class="pl-30 pr-20 cursor line-1" @click="toggleSideBar" style="color: #86909C;">
@@ -216,19 +215,20 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 55px;
+  height: 40px;
   overflow: hidden;
   position: relative;
   background-color: #01183A;
   z-index: 2;
 
   .title-box{
-    height: 87px;
+    height: 65px;
     background-image: url('../../assets/head_bg.svg');
     background-size: auto 100%;
     background-position: center;
     .cn{
-      font-size: 32px;
+      margin-top: 12px;
+      font-size: 25px;
     }
   }
   .right-menu {

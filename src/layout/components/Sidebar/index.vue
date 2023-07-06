@@ -5,8 +5,8 @@
         <el-avatar :size="40" :src="agentInfo.avatar"></el-avatar>
         <!-- <div class="mt-5 pl-10 pr-10 fs-c1 text-cut">{{ agentInfo.nickname }}</div> -->
         <div class="mt-10 fs-s4" v-if="isBrand()" @click="$router.push({path: `/money`})">快活币: <span class="text-white">{{ money.happyCurrencyNum || 0 }}</span></div>
-        <div class="mt-5 fs-s4" v-if="isBrand() && vipInfo.status > 0" @click="setRows(1, {}, 1)">
-          <template v-if="vipInfo.expiresDatetime"><span class="text-danger">VIP{{ vipInfo.expiresStr }}</span></template>
+        <div class="mt-5 fs-s4" v-if="isBrand()" @click="setRows(1, {}, 1)">
+          <template v-if="vipInfo.expiresDatetime"><span class="text-danger">{{ vipInfo.expiresStr ? vipInfo.expiresStr : `到期时间:${ parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span></template>
           <template v-else><span class="text-danger">暂未开通VIP，请开通</span></template>
         </div>
       </div>
@@ -29,28 +29,40 @@
     <!-- <hamburger :is-active="sidebar.opened" class="abs hamburger-container"  /> -->
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :modal-append-to-body="false" :close-on-click-modal="false" width="600px">
+      <!-- <div>
+        <div class="flex align-center">
+          <el-avatar :size="50" :src="agentInfo.avatar"></el-avatar>
+          <div>
+            <div>开通账号：{{ agentInfo.nickname }}</div>
+            <div>
+              <template v-if="vipInfo.expiresDatetime"><span>{{ vipInfo.expiresStr ? vipInfo.expiresStr : `到期时间:${ parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span></template>
+              <template v-else><span>未开通</span></template>
+            </div>
+          </div>
+          <div>众多功能免费用</div>
+          <div>开通VIP</div>
+        </div>
+      </div> -->
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1 && vipService.priceSettings">
         <div class="vip-content fs-c1 text-black">
           <div class="mb-10"><span class="text-danger" v-if="vipInfo.expiresDatetime">VIP到期时间：{{ vipInfo.expiresDatetime }}</span><span v-else>您暂未开通VIP</span>，VIP可免费选用服务市场众多默认功能</div>
-          <div class="flex align-center justify-between vip-money fs-a1 text-center">
+          <div class="flex align-center justify-center vip-money fs-a1 text-center">
             <div class="pt-30 pb-30 item cursor" :class="{'act': dform.cycle == item.cycle}" v-for="item in vipPriceArr" @click="dform.mkey = item.mkey;dform.cycle = item.cycle">
               <div>{{ item.name }}</div>
               <div class="mt-5 text-danger">￥<span class="money">{{ vipPrice[item.mkey] }}</span></div>
             </div>
           </div>
-
-          <div class="flex align-center mt-20">
+          <div class="flex align-center justify-center mt-20">
             <span>快活币余额：</span>
             <svg-icon icon-class="KHB"></svg-icon>
             <span class="fs-b1">{{ money.happyCurrencyNum || 0 }}</span>
             <span class="ml-20 text-primary cursor" @click="$refs.rechargeCoin.show()">立即充值</span>
           </div>
-
           <div class="pb-20 mt-30 text-center">
             <el-button class="bg-body" @click="dialogStatus = false" v-if="vipInfo.status == 1">取消</el-button>
             <el-button type="danger" :disabled="clickSubmit" @click="$refs.rechargeCoin.show()" v-if="money.happyCurrencyNum < vipPrice[dform.mkey]">快活币不足，马上充值</el-button>
-            <el-button type="danger" :disabled="clickSubmit" @click="dialogConfirm()"  v-else>立即支付￥{{ vipPrice[dform.mkey] }}</el-button>
+            <el-button type="danger" :disabled="clickSubmit" @click="dialogConfirm()" v-else>立即支付￥{{ vipPrice[dform.mkey] }}</el-button>
           </div>
         </div>
       </template>
@@ -129,16 +141,16 @@ export default {
           mkey: 'mthPrice',
           cycle: 'MONTH'
         },
-        {
-          name: '年度VIP',
-          mkey: 'yearPrice',
-          cycle: 'YEAY'
-        },
-        {
-          name: '永久VIP',
-          mkey: 'overPrice',
-          cycle: 'PERMANENT'
-        }
+        // {
+        //   name: '年度VIP',
+        //   mkey: 'yearPrice',
+        //   cycle: 'YEAY'
+        // },
+        // {
+        //   name: '永久VIP',
+        //   mkey: 'overPrice',
+        //   cycle: 'PERMANENT'
+        // }
       ],
       vipPrice: {},
 
@@ -186,24 +198,26 @@ export default {
           let info = res.rows[0]
           if(info.orderStatusName == '已到期'){
             info.expiresStr = '已过期' + formatSeconds(currentTime() - unixTime(info.expiresDatetime), 'd')
-            info.status = 2
-            this.getVipService()
+            this.getVipService(2)
           } else {
-            info.expiresStr = formatSeconds(unixTime(info.expiresDatetime) - currentTime(), 'd')
-            if(!info.expiresStr || parseInt(info.expiresStr.substring(0, info.expiresStr.length - 1)) <= 5){
+            let expiresStr = formatSeconds(unixTime(info.expiresDatetime) - currentTime(), 'd')
+            if(!expiresStr || parseInt(expiresStr.substring(0, expiresStr.length - 1)) <= 5){
+              expiresStr = expiresStr ? expiresStr + '后到期' : '今日到期'
+              this.getVipService(2)
+              info.expiresStr = expiresStr
+            }else{
               info.status = 1
-              info.expiresStr = info.expiresStr ? info.expiresStr + '后到期' : '今日到期'
               this.getVipService()
             }
           }
           this.vipInfo = info
-          window.expiresDatetime = info.expiresDatetime
+          this.$store.dispatch('rests/changeSetting', {
+            key: 'expiresDatetime',
+            value: info.expiresDatetime
+          })
         } else {
-          this.vipInfo = {
-            status: 2
-          }
           this.dialogTitle[1] = 'VIP开通'
-          this.getVipService()
+          this.getVipService(2)
         }
       })
     },
@@ -220,7 +234,7 @@ export default {
     /**
      * 获取VIP服务
      */
-    getVipService(){
+    getVipService(type = 1){
       this.$get(`iot-saas-basic/admin/service/market/${this.config.vip_service_id}`).then(res => {
         this.dform.priceCode = res.priceSettings[0].priceCode
         res.priceSettings = arrayToObj(res.priceSettings, 'priceCode')
@@ -231,7 +245,7 @@ export default {
           }
         }
         this.vipService = res
-        this.setRows(1, {}, 1)
+        if(type == 2) this.setRows(1, {}, 1)
       })
     },
 

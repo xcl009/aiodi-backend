@@ -185,7 +185,7 @@
                 userId: row.userId
               }).then(res => {
                 this.$message({
-                  message: '删除成功',
+                  message: '操作成功',
                   type: 'success'
                 })
                 this.list.splice(idx, 1)
