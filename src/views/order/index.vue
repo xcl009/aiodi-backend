@@ -58,6 +58,7 @@
       <div v-if="showColumn.length > 0">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
           :max-height="tableMaxH" element-loading-text="Loading">
+          <el-table-column label="品牌" width="150" prop="brandName" v-if="isSaas()"></el-table-column>
           <template v-for="item in showColumn">
             <el-table-column label="用户信息" width="170" v-if="item.val && item.key == 'userNickName'">
               <template slot-scope="scope">
@@ -243,7 +244,6 @@
       <el-drawer
         :title="dialogTitle[dialogType]"
         :visible.sync="drawerStatus"
-        :size="dialogType == 6 ? '40%' : '30%'"
         >
         <template v-if="dialogType == 1">
           <div class="pl-20 pr-20 text-black">
@@ -418,90 +418,92 @@
                 {{ Constant.OrderStatus ? Constant.OrderStatus[curRow.status] : "已完成" }}
               </el-tag>
             </div>
-            <div class="flex align-center pb-10 l-b-dashed">
-              <div class="flex1">
-                <div class="flex mb-10">
-                  <div class="label-text">订单号:</div>
-                  <div>{{ curRow.orderNo }}</div>
-                </div>
-                <div class="flex mb-10">
-                  <div class="label-text">设备类型:</div>
-                  <div>{{ curRow.deviceType }}</div>
-                </div>
-                <div class="flex">
-                  <div class="label-text">设备二维码:</div>
-                  <div>{{ curRow.deviceSn }}</div>
-                </div>
-              </div>
-              <div class="flex1">
-                <div class="flex mb-10">
-                  <div class="label-text">交易单号:</div>
-                  <div>{{ curRow.transactionNo || '--' }}</div>
-                </div>
-                <div class="flex mb-10">
-                  <div class="label-text">商户名称:</div>
-                  <div>{{ curRow.storeName }}</div>
-                </div>
-                <div class="flex">
-                  <div class="label-text">宝SN:</div>
-                  <div>{{ curRow.baoSn || '--' }}</div>
-                </div>
-              </div>
-            </div>
-            <div class="flex align-center mt-10 pb-20 l-b">
-              <div class="flex1">
-                <div class="flex mb-10">
-                  <div class="label-text">开始时间:</div>
-                  <div>{{ curRow.chargeStartTime }}</div>
-                </div>
-                <div class="flex mb-10">
-                  <div class="label-text">订单来源:</div>
-                  <div>
-                    <span v-if="curRow.sourceType == 3">后台</span>
-                    <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="curRow.sourceType == 1"></i>
-                    <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
+            <div class="flex pb-20 l-b">
+              <div>
+                <div class="pb-10 l-b-dashed">
+                  <div class="flex mb-10">
+                    <div class="label-text">订单号:</div>
+                    <div>{{ curRow.orderNo }}</div>
+                  </div>
+                  <div class="flex mb-10">
+                    <div class="label-text">设备类型:</div>
+                    <div>{{ curRow.deviceType }}</div>
+                  </div>
+                  <div class="flex">
+                    <div class="label-text">设备二维码:</div>
+                    <div>{{ curRow.deviceSn }}</div>
                   </div>
                 </div>
-                <div class="flex mb-10">
-                  <div class="label-text">套餐:</div>
-                  <div class="text-cut">
-                    <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode)" placement="top">
-                      <span>{{ showFeeMode(curRow.feeType, curRow.feeMode) }}</span>
-                    </el-tooltip>
+                <div class="mt-10">
+                  <div class="flex mb-10">
+                    <div class="label-text">开始时间:</div>
+                    <div>{{ curRow.chargeStartTime }}</div>
+                  </div>
+                  <div class="flex mb-10">
+                    <div class="label-text">订单来源:</div>
+                    <div>
+                      <span v-if="curRow.sourceType == 3">后台</span>
+                      <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="curRow.sourceType == 1"></i>
+                      <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
+                    </div>
+                  </div>
+                  <div class="flex mb-10">
+                    <div class="label-text">套餐:</div>
+                    <div class="text-cut">
+                      <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode)" placement="top">
+                        <span>{{ showFeeMode(curRow.feeType, curRow.feeMode) }}</span>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                  <div class="flex">
+                    <div class="label-text">退款:</div>
+                    <div>{{ curRow.amountRefund || '0.00' }}</div>
                   </div>
                 </div>
-                <div class="flex">
-                  <div class="label-text">退款:</div>
-                  <div>{{ curRow.amountRefund || '0.00' }}</div>
-                </div>
               </div>
-              <div class="flex1">
-                <div class="flex mb-10">
-                  <div class="label-text">结束时间:</div>
-                  <div>{{ curRow.chargeEndTime || '--' }}</div>
+              <div>
+                <div class="pl-20 pb-10 l-b-dashed">
+                  <div class="flex mb-10">
+                    <div class="label-text">交易单号:</div>
+                    <div>{{ curRow.transactionNo || '--' }}</div>
+                  </div>
+                  <div class="flex mb-10">
+                    <div class="label-text">商户名称:</div>
+                    <div>{{ curRow.storeName }}</div>
+                  </div>
+                  <div class="flex">
+                    <div class="label-text">宝SN:</div>
+                    <div>{{ curRow.baoSn || '--' }}</div>
+                  </div>
                 </div>
-                <div class="flex mb-10">
-                  <div class="label-text">支付类型:</div>
-                  <div>{{ Constant.PayType ? Constant.PayType[curRow.payType] : '--' }}</div>
-                </div>
-                <div class="flex mb-10">
-                  <div class="label-text">收益:</div>
-                  <div>{{ curRow.amount || '0.00' }}</div>
-                </div>
-                <div class="flex">
-                  <div class="label-text">备注:</div>
-                  <div>
-                    <template v-if="curRow.freeTime > 0">
-                      <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ parseInt(curRow.freeTime) / 60 }}小时</span>
-                      <span class="mr-5" v-else>{{ scope.freeTime == 600000 ? '会员卡订单' : `会员卡免费${curRow.freeTime}分钟` }}</span>
-                    </template>
-                    <span>{{ curRow.remark ? curRow.remark: curRow.freeTime ? '' : '--' }}</span>
+                <div class="pl-20 mt-10">
+                  <div class="flex mb-10">
+                    <div class="label-text">结束时间:</div>
+                    <div>{{ curRow.chargeEndTime || '--' }}</div>
+                  </div>
+                  <div class="flex mb-10">
+                    <div class="label-text">支付类型:</div>
+                    <div>{{ Constant.PayType ? Constant.PayType[curRow.payType] : '--' }}</div>
+                  </div>
+                  <div class="flex mb-10">
+                    <div class="label-text">收益:</div>
+                    <div>{{ curRow.amount || '0.00' }}</div>
+                  </div>
+                  <div class="flex">
+                    <div class="label-text">备注:</div>
+                    <div>
+                      <template v-if="curRow.freeTime > 0">
+                        <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ parseInt(curRow.freeTime) / 60 }}小时</span>
+                        <span class="mr-5" v-else>{{ scope.freeTime == 600000 ? '会员卡订单' : `会员卡免费${curRow.freeTime}分钟` }}</span>
+                      </template>
+                      <span>{{ curRow.remark ? curRow.remark: curRow.freeTime ? '' : '--' }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <tempate v-if="!isStore()">
+            <template v-if="!isStore()">
             <div class="mt-20 mb-15">订单流程</div>
             <div class="flex pb-20 timeline-box white-space text-center l-b">
               <div class="rel pt-30 timeline-item el-icon-"
@@ -514,7 +516,7 @@
                 </div>
               </div>
             </div>
-            </tempate>
+            </template>
 
             <template v-if="dform.orderDivide && dform.orderDivide.length > 0">
               <div class="mt-20 mb-15">分成明细</div>
@@ -873,6 +875,14 @@
       }
       this.queryObj.sourceType.selectArr = this.Constant.SourceType
       this.queryObj.payType.selectArr = this.Constant.PayType
+      if(this.isSaas()){
+        this.$set(this.queryObj, 'brandId', {
+          title: '品牌名称',
+          type: 'selectSearch',
+          name: 'name',
+          sType: 6
+        })
+      }
       this.toQuery()
     },
     methods: {

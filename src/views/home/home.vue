@@ -45,7 +45,7 @@
       <el-col :span="24" class="rel" v-if="!isStore()">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="20000" :duration="2600" /></div>
+            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)" :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">总代理数</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')"></el-image>
           </div>
@@ -55,7 +55,7 @@
       <el-col :span="24" class="rel" v-if="!isStore()">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="20000" :duration="2600" /></div>
+            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)" :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">总商户数</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/store.svg')"></el-image>
           </div>
@@ -137,7 +137,7 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">设备数量统计</div>
           </div>
-          <div class="chart-device" ref="chart_device" style="height: 300px;"></div>
+          <div class="chart-device" ref="chart_device" style="height: 100%;"></div>
         </div>
       </el-col>
       <el-col :sm="24" :lg="8" v-if="!isStore()">
@@ -292,34 +292,6 @@
         </div>
       </el-col>
     </el-row>
-
-    <!-- <el-row :gutter="10" class="mt-10" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">
-      <el-col :sm="24" :lg="8">
-        <div class="pl-15 pr-15 pt-10 pb-15 ">
-          <div class="flex align-center">
-            <div class="flex1 text-black">租赁订单统计</div>
-          </div>
-          <div class="mt-20 flex justify-around text-center">
-            <div>
-              <div class="fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
-              <div>总订单数</div>
-            </div>
-            <div>
-              <div class="fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
-              <div>已扣金额</div>
-            </div>
-            <div>
-              <div class="fs-b5"><count-to :start-val="0" :end-val="delComma(userStat.userNumber)" :duration="2600"/></div>
-              <div>代扣金额</div>
-            </div>
-          </div>
-        </div>
-      </el-col>
-      <el-col :sm="24" :lg="16">
-
-      </el-col>
-    </el-row> -->
-
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
@@ -499,6 +471,10 @@
         curIdx: 0,
         dform: {},
 
+        agentStoreStat: {
+          agentCount: 0,
+          storeCount: 0
+        },
         orderList: [],
 
         storeList: [
@@ -591,27 +567,19 @@
       this.getLineChart()
       this.getDeviceStat()
       this.getOrderList()
-      if (this.isSaas()) {
+      if(this.isSaas()) {
         this.getUserStat()
-      } else if (this.isStore()) {
+      }else if(this.isStore()) {
         this.getDeviceList()
         this.getBalance()
-      } else if (this.isBrand()) {
-        if (this.checkAbility(['DEVICE_LEASE'], 3)) {
-
-        }
+      }
+      if(!this.isStore()) {
+        this.$get('iot-saas-basic/admin/platform/getOwnerCount').then(res => {
+          this.agentStoreStat = res
+        })
       }
     },
     methods: {
-      /**
-       * 租赁订单统计
-       */
-      getLeaseStat() {
-        this.$get(`iot-saas-order/admin/order/device/rent/statistics/all/${this.agentInfo.brandId}`).then(res => {
-          this.leaseStat = res
-        })
-      },
-
       /**
        * 总统计
        */
@@ -1214,7 +1182,8 @@
         let option = {
           //图例组件
           legend: {
-            show: false,
+            show: true,
+            bottom: 10,
             data: legendData,
             //图例列表的布局朝向。
             orient: 'horizontal',
@@ -1223,16 +1192,16 @@
             textStyle: {
               color: '#A1E2FF',
             },
-            icon: "circle",
-            formatter: (name) => {
-              var target;
-              for (var i = 0, l = pieData.length; i < l; i++) {
-                if (pieData[i].name == name) {
-                  target = pieData[i].value;
-                }
-              }
-              return `${name}: ${target}`;
-            }
+            //icon: "circle",
+            // formatter: (name) => {
+            //   var target;
+            //   for (var i = 0, l = pieData.length; i < l; i++) {
+            //     if (pieData[i].name == name) {
+            //       target = pieData[i].value;
+            //     }
+            //   }
+            //   return `${name}: ${target}`;
+            // }
             // 这个可以显示百分比那种（可以根据你想要的来配置）
             //   formatter: function(param) {
             //       let item = legendBfb.filter(item => item.name == param)[0];
@@ -1268,6 +1237,7 @@
           grid3D: {
             show: false,
             boxHeight: boxHeight, //圆环的高度
+            top: -40,
             //这是饼图的位置
             viewControl: { //3d效果可以放大、旋转等，请自己去查看官方配置
               alpha: 30, //角度(这个很重要 调节角度的)
@@ -1405,11 +1375,11 @@
       height: 102px;
       z-index: 1099;
       &.tl{
-        top: -16px;
+        top: 0;
         left: -6px;
       }
       &.tr{
-        top: -16px;
+        top: 0;
         right: -6px;
         transform: rotate(90deg);
       }

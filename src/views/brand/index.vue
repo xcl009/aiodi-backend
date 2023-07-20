@@ -25,7 +25,9 @@
         <el-table-column label="品牌信息" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
-            <div v-if="scope.row.brandUser">{{ scope.row.brandUser.mobile || '手机号码' }}</div>
+            <el-tooltip class="item" effect="dark" :content="scope.row.brandUser.mobile" placement="top" v-if="scope.row.brandUser">
+              <div>{{ dealPhone(scope.row.brandUser.mobile) }}</div>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="公司名称" min-width="160">
@@ -34,6 +36,11 @@
               <el-avatar shape="square" :size="35" fit="cover" :src="scope.row.logo"></el-avatar>
               <div class="pl-5 flex-sub">{{ scope.row.companyName || '--'}}</div>
             </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="入驻时间" min-width="130">
+          <template slot-scope="scope">
+            {{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}
           </template>
         </el-table-column>
         <el-table-column label="团长" width="100">

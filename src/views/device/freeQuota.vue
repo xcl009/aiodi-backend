@@ -59,7 +59,7 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <div class="flex align-center">
-          <el-input placeholder="用户昵称" v-model="dform.nickname" class="flex-sub" @keyup.enter.native="searchUser"/>
+          <el-input placeholder="用户昵称或ID" v-model="dform.nickname" class="flex-sub" @keyup.enter.native="searchUser"/>
           <el-input placeholder="手机号码" v-model="dform.mobile" class="flex-sub ml-15 mr-15" @keyup.enter.native="searchUser"/>
           <el-button type="primary" @click="searchUser" :disabled="clickSubmit">查找用户</el-button>
         </div>

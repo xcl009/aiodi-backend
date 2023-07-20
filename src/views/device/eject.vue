@@ -1,7 +1,17 @@
 <template>
   <div>
     <div class="p-15 bg-white">
-      <el-button class="mb-15" type="primary" size="medium" @click="allEject()" :disabled="allEjectStatus">{{ allEjectStatus ? '弹出中' : '全部弹出'}} </el-button>
+      <el-popconfirm
+        class="pop"
+        cancel-button-type=""
+        icon="el-icon-info"
+        icon-color="#FF7D00"
+        title="确定要全部弹出吗？"
+        @onConfirm="allEject()"
+        v-if="factoryCode == 'WS'"
+      >
+        <el-button class="mb-15" type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ? '弹出中' : '全部弹出'}} </el-button>
+      </el-popconfirm>
       <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row>
         <el-table-column label="卡槽位置">
           <template slot-scope="scope">
@@ -28,7 +38,18 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" :disabled="scope.row.onlineStatus == 2" @click="singleEject(scope.row)">{{ scope.row.onlineStatus == 2 ? '弹出中' : '弹出' }}</el-button>
+            <div class="flex flex-wrap operate">
+              <el-popconfirm
+                class="pop"
+                cancel-button-type=""
+                icon="el-icon-info"
+                icon-color="#FF7D00"
+                title="确定要弹出此口吗？"
+                @onConfirm="singleEject(scope.row)"
+              >
+                <el-button type="text" :disabled="scope.row.distribute" slot="reference">{{ scope.row.onlineStatus == 2 ? '弹出中' : '弹出' }}</el-button>
+              </el-popconfirm>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -51,13 +72,37 @@
         list: [],
         listLoading: false,
         deviceSn: this.$route.query.deviceSn || '',
-        allEjectStatus: false
+        allEjectStatus: false,
+        factoryCode: ''
       }
     },
     mounted(options) {
-      this.getBattery()
+      this.getInfo()
     },
     methods: {
+      /**
+       * 获取信息
+       */
+      getInfo(){
+      	this.$get('iot-saas-device/admin/device/findBelong', {
+      		deviceSn: this.deviceSn
+      	}).then(res => {
+      		if(res.deviceTypeCode.indexOf('PA') == -1){
+            this.$message({
+              message: '该设备非充电宝，不可弹出',
+              type: 'error'
+            })
+      			return
+      		}
+      		this.factoryCode = res.factoryCode
+      		this.getBattery()
+      	}).catch(err => {
+      		setTimeout(() => {
+      			uni.navigateBack()
+      		}, 1500)
+      	})
+      },
+
       /**
        * 获取列表
        */
@@ -92,7 +137,7 @@
           this.clickSubmit = false
           setTimeout(() => {
           	this.getBattery()
-          }, 3000)
+          }, 8000)
         }).catch(() => {
           this.clickSubmit = false
         })

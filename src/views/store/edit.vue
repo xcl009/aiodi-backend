@@ -66,7 +66,7 @@
               <template v-if="form.divisionMode != 2">
                 <el-form-item label="分成模式">
                   <el-radio-group v-model="item.closeType">
-                    <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType" :disabled="!Ability[`${item.deviceTypeCode}_CLOSETYPE_${cti}`] && cti != 1">{{ ct }}</el-radio-button>
+                    <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType" :disabled="!Ability[`${item.deviceTypeCode}_CLOSETYPE_${cti}`] && cti != 1">{{ ct }}{{ cti == 3 ? '(分成不一致)' : ''}}</el-radio-button>
                   </el-radio-group>
                   <el-popover
                     placement="right"
@@ -83,12 +83,11 @@
                       相对分成：若相对分成设置为50%，您的分成为50%，则10元订单商户可分润10×50%×50%=2.5元<br><br>
 
                       <div>
-                        <div class="mb-5 text-black">分成不一致</div>
+                        <div class="mb-5 text-black">分摊(分成不一致)</div>
                         承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。</span><br>
                         相对分成：若自身的分成为50%，设置相对分成为50%，则10元订单商户可分润10×50%×50%=2.5元。注：每天从第2笔订单开始就按照相对分成比例分润。<br>
-                        温馨提示：分成模式设置为分成不一致时，记得关闭商户查看订单权限噢！
+                        温馨提示：分成模式设置为分摊(分成不一致)时，记得关闭商户查看订单权限噢！
                       </div>
-
                       <div class="mt-20">需了解或设置其他分成模式？<el-link type="primary" :underline="false" @click="$router.push({path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=分成方式`})">点此去了解</el-link></div>
                     </div>
                     <el-link type="danger" slot="reference" :underline="false" class="ml-10 el-icon-question fs-c1"></el-link>
@@ -148,7 +147,8 @@
                       <el-popover
                         placement="right"
                         title=""
-                        trigger="hover">
+                        trigger="hover"
+                        v-if="getModeType(item.deviceTypeCode)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode)['DEPOSIT']">
                         <div>
                           需了解和设置免押或预存？<el-link type="primary" :underline="false" @click="$router.push({path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=计费模式`})">点此去了解</el-link>
                         </div>
@@ -159,17 +159,39 @@
                     <template v-if="item[`${xcx}PayMode`].modeType == 'PACKAGE'">
                       <el-form-item :label="`套餐设置`">
                         <div class="mb-5 flex align-center flex-wrap" v-for="(plan, index) in item[`${xcx}PayMode`].payModeDetail">
-                          <el-select v-model="plan.time">
+                          <el-select v-model="plan.time" v-if="item.deviceTypeCode == 'WM'">
+                            <el-option :label="`${wp.title}`" :value="wp.value" v-for="wp in config[`washing_package`]"></el-option>
+                          </el-select>
+                          <el-select v-model="plan.time" v-else>
                             <el-option :label="`${time / 60}小时`" :value="time" v-for="time in config[`plan_time`]"></el-option>
                           </el-select>
                           <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
                             <template slot="append">元</template>
                           </el-input>
                           <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
-                            @click="item[`${xcx}PayMode`].payModeDetail.push({time: 60, money: 2, tag: index + 1})">添加</el-button>
+                            @click="item[`${xcx}PayMode`].payModeDetail.push({time: (item.deviceTypeCode == 'WM' ? '01H' : 60), money: 2, tag: index + 1})">添加</el-button>
                           <el-button type="text" size="small" v-else
                             @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="text-danger">删除</el-button>
                         </div>
+                      </el-form-item>
+                      <el-form-item :label="`洗衣液设置`" v-if="item.deviceTypeCode == 'WM'">
+                        <template v-for="(laundry, lidx) in item[`${xcx}PayMode`].laundryMode">
+                          <!-- <el-input v-model="laundry.title" class="flex1 mr-10" disabled></el-input> -->
+                          <div class="text-black">{{ laundry.title }}</div>
+                          <div class="mb-5 flex align-center flex-wrap" v-for="(lpi, lpidx) in laundry.package">
+                            <el-input type="number" v-model="lpi.value" class="flex1 mr-10" disabled>
+                              <template slot="append">ml</template>
+                            </el-input>
+                            <el-input type="number" v-model="lpi.money" class="flex1 mr-10">
+                              <template slot="append">元</template>
+                            </el-input>
+                            <!-- <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].laundryMode[lidx].package.length == 3" v-if="lpidx == 0"
+                              @click="item[`${xcx}PayMode`].laundryMode[lidx].package.push({tag: lpidx + 1})">添加</el-button>
+                            <el-button type="text" size="small" v-else
+                              @click="item[`${xcx}PayMode`].laundryMode[lidx].package.splice(lpidx, 1)" class="text-danger">删除</el-button> -->
+                          </div>
+                        </template>
+
                       </el-form-item>
                     </template>
 
@@ -398,6 +420,8 @@ export default {
               }
               resolve(defaultDevice)
             } else {
+              defaultDevice.weixinPayMode.payModeDetail = defaultDevice.weixinPayMode[`payModeDetail`]
+              defaultDevice.alipayPayMode.payModeDetail = defaultDevice.alipayPayMode[`payModeDetail`]
               resolve(defaultDevice)
             }
           })
@@ -519,7 +543,7 @@ export default {
                 item.alipayPayMode.payModeDetails = this.defaultDevice.alipayPayMode.payModeDetails
               } else {
                 item.alipayPayMode.payModeDetails = JSON.parse(item.alipayPayMode.payModeDetail)
-                item.alipayPayMode.payModeDetail = this.defaultDevice.alipayPayMode.payModeDetail
+                item.alipayPayMode.payModeDetail = this.defaultDevice.alipayPayMode[`payModeDetail`]
               }
             }
             if (item.weixinPayMode) {
@@ -528,7 +552,7 @@ export default {
                 item.weixinPayMode.payModeDetails = this.defaultDevice.weixinPayMode.payModeDetails
               } else {
                 item.weixinPayMode.payModeDetails = JSON.parse(item.weixinPayMode.payModeDetail)
-                item.weixinPayMode.payModeDetail = this.defaultDevice.weixinPayMode.payModeDetail
+                item.weixinPayMode.payModeDetail = this.defaultDevice.weixinPayMode[`payModeDetail`]
               }
             }
             item.alipayPayMode = (item.alipayPayMode ? item.alipayPayMode : item.weixinPayMode ? item.weixinPayMode : this.defaultDevice.alipayPayMode)

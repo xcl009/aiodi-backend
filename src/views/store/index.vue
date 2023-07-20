@@ -3,6 +3,9 @@
     <template v-if="!isStore()">
       <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
         <template v-slot:defult>
+          <el-form-item label="品牌名称" v-if="isSaas()">
+            <selectSearch v-model="form.brandId" :type="6" name="name" placeholder="请输入品牌名称" @change="toQuery()"></selectSearch>
+          </el-form-item>
           <el-form-item label="是否铺货">
             <el-select v-model="form.haveDevice" @change="toQuery()" placeholder="是否铺货">
               <el-option label="全部" :value="null" />
@@ -18,8 +21,8 @@
           </el-form-item>
         </template>
         <template v-slot:endButton>
-          <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas()"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
-          <import-data :type="3" uploadText="导入商户" v-if="isBrand()"></import-data>
+          <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas() && !form.agentId"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
+          <import-data :type="3" uploadText="导入商户" v-if="isBrand() && !lowerStore && !form.agentId"></import-data>
         </template>
       </condition>
     </template>
@@ -27,29 +30,36 @@
     <div class="pl-10 pr-10 bg-white" :class="{'pt-15': isStore()}">
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
-        <el-table-column label="门头照" width="70">
+        <el-table-column label="品牌" width="150" prop="brandName" v-if="isSaas()"></el-table-column>
+        <el-table-column label="门头照" width="60">
           <template slot-scope="scope">
             <el-link>
-              <el-avatar class="block" shape="square" :size="50" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
+              <el-avatar class="block" shape="square" :size="35" :src="scope.row.avatar || agentInfo.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
             </el-link>
           </template>
         </el-table-column>
-        <el-table-column label="商户" width="180">
+        <el-table-column label="商户" min-width="190">
           <template slot-scope="scope">
             <div>{{ scope.row.name || '--' }}</div>
-            <div class="mt-5">{{ scope.row.address || '--' }}</div>
+            <div>{{ scope.row.address || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="金额(元)">
+        <el-table-column label="交易额(元)" width="120">
           <template slot-scope="scope">
-            <div class="inline">
-              <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
-              <div>总收益：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}</div>
-              <div>可提现：{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</div>
-            </div>
+            {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="订单量" width="140">
+        <el-table-column label="总收益(元)" width="120">
+          <template slot-scope="scope">
+            {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="可提现(元)" width="120">
+          <template slot-scope="scope">
+            {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="订单量" width="140">
           <template slot-scope="scope">
             <div class="inline" v-if="isSaas()">
               <div class="cursor" @click="$router.push({path: `/order?storeId=${scope.row.id}&agentId=${scope.row.agentId}&brandId=${scope.row.brandId}`})">订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}</div>
@@ -60,7 +70,7 @@
               <div class="cursor" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/device?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="上级代理" width="120" v-if="lowerStore">
           <template slot-scope="scope">
             <div>{{ supUser[scope.row.agentId] ? supUser[scope.row.agentId].name : '' }}</div>
@@ -70,19 +80,28 @@
         <el-table-column label="分润人" width="180" v-if="!isStore()">
           <template slot-scope="scope">
             <div v-if="scope.row.user">{{ scope.row.user.nickname || '' }}</div>
-            <div v-if="scope.row.user">{{ scope.row.user.mobile || '' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="分成比例" v-if="!isStore()">
-          <template slot-scope="scope">
-            <div class="mt-5">
-              <div class="mb-5 cursor" v-for="(item, index) in scope.row.storeDivisionConfig" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}` : `/device?storeId=${scope.row.id}`)})">
-                {{ myDeviceId[item.deviceTypeCode] }}：<span v-if="scope.row.divisionMode == 1">{{ item.live || '0' }}%({{ config.closeType[item.closeType] }})</span><span v-else>不分成</span>
-              </div>
+            <div v-if="scope.row.user && scope.row.user.mobile.length == 11">
+              <el-tooltip class="item" effect="dark" :content="scope.row.user.mobile" placement="top" v-if="isSaas()">
+                <div>{{ dealPhone(scope.row.user.mobile) }}</div>
+              </el-tooltip>
+              <div v-else>{{ scope.row.user.mobile }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="城市区域" width="120">
+        <el-table-column label="设备统计" width="300" v-if="!isStore()">
+          <template slot-scope="scope">
+            <div class="row-device_stat">
+              <template v-for="(item, index) in scope.row.storeDivisionConfig">
+                <div class="flex line-1 item" v-if="index < 2">
+                  <div class="w-80 l-r">{{ myDeviceId[item.deviceTypeCode] }}</div>
+                  <div class="w-80 pl-10 l-r">{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '10000' }}{{ item.deviceTypeCode == 'PL' ? '条' : '台' }}</div>
+                  <div class="flex1 pl-10"><span v-if="scope.row.divisionMode == 1"><span v-if="isStore()">{{ item.promised || item.live }}</span><span v-else>{{ item.live || item.promised }}</span>%({{ config.closeType[item.closeType] }})</span><span v-else>不分成</span></div>
+                </div>
+              </template>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="城市区域" min-width="150">
           <template slot-scope="scope">
             {{ scope.row.province }}
             {{ scope.row.city }}
@@ -133,8 +152,8 @@
                     <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
                     <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 5)">重置登录密码</el-dropdown-item> -->
                     <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DEPOSIT_PRPR`})" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">概率押金</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({path: `/leaseOrder/index?createType=0&deductionId=${scope.row.id}`})" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">租赁订单</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DIVIDE_ACCOUNTS`})" v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.storeDivisionConfig)">微信分账</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 6)" v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -184,6 +203,13 @@
           <div class="mt-10 pl-40 pr-40 text-danger">注：重置后登录密码为123456</div>
         </div>
       </template>
+      <template v-if="dialogType == 6">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" @submit.native.prevent="dialogConfirm()">
+          <el-form-item>
+            <el-input type="number" v-model="dform.frozenBalance" placeholder="请输入冻结金额"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
@@ -199,6 +225,7 @@
 <script>
   import qs from 'qs'
   import { getToken, setToken, removeToken } from '@/utils/auth'
+  import { arrayToObj } from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import RelatedTemplate from '@/components/RelatedTemplate/'
@@ -252,7 +279,8 @@
           2: '',
           3: '删除商户',
           4: '分配商户',
-          5: '重置密码'
+          5: '重置密码',
+          6: '冻结金额',
         },
         curRow: {},
         curIdx: 0,
@@ -333,6 +361,17 @@
       },
 
       /**
+       * 获取其他信息
+       */
+      getOtherData(url, params){
+      	return new Promise((resolve) => {
+      		this.$post(url, params).then(res => {
+      			resolve(res)
+      		})
+      	})
+      },
+
+      /**
        * 获取列表
        */
       getList() {
@@ -340,13 +379,33 @@
           page: this.listQuery.page - 1,
           lowerStore: this.isSaas() ? true : this.lowerStore
         })
-        this.$get('iot-saas-basic/admin/store/findPage', params).then(res => {
-          this.list = res.rows
+        this.$get('iot-saas-basic/admin/store/findPage', params).then(async (res = {}) => {
+          let list = res.rows || []
+          if(this.isSaas() && list.length > 0){
+            let brandIds = []
+            list.map(item => {
+              if(brandIds.indexOf(item.brandId) == -1){
+                brandIds.push(item.brandId)
+              }
+            })
+            if(brandIds.length > 0){
+              await this.getOtherData('iot-saas-order/admin/order/device/rent/getDeductions', {
+                deductionType: 2,
+                deductionIds: brandIds
+              }).then(ares => {
+                let brandObj = arrayToObj(ares, 'id')
+                list.map(item => {
+                  return item.brandName = brandObj[item.brandId].name
+                })
+              })
+            }
+          }
+          this.list = list
           this.listLoading = false
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
           this.queryCash(this.arrayKeys(res.rows, 'id'))
           this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
@@ -541,6 +600,11 @@
             this.curRow = row
             this.curIdx = idx
             this.dform = {}
+            if(dialogType == 6 && row.frozenBalance > 0){
+              this.dform = {
+                frozenBalance: row.frozenBalance
+              }
+            }
             this.dialogStatus = true
             break
           case 2:
@@ -639,6 +703,22 @@
               })
             })
             break
+          case 6:
+            this.$post('iot-saas-pay/api/pay/acount/updateFrozenBalance', {
+              ownerId: curRow.ownerId,
+              frozenBalance: params.frozenBalance
+            }).then(res => {
+              this.dialogStatus = false
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              curRow.frozenBalance = params.frozenBalance
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
         }
       },
 
@@ -678,14 +758,21 @@
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-tabs__header {
-    margin-bottom: 0;
-  }
-
   .text-cut_two {
     max-height: 66px;
     line-height: 22px;
     -webkit-line-clamp: 3;
     /*规定超过两行的部分截断*/
+  }
+
+  .row-device_stat{
+    .item{
+      &+.item{
+        margin-top: 10px;
+      }
+      .w-80{
+        width: 80px;
+      }
+    }
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="rel p-10 filter-box  bg-white">
+  <div :class="`rel filter-box bg-white ` + pdClass">
     <slot name="tabs"></slot>
     <el-form size="small" label-width="auto" @submit.native.prevent="query()" v-if="filterForm">
       <div class="flex" id="filterContent">
@@ -26,7 +26,7 @@
         </div>
         <slot name="endButton"></slot>
       </div>
-      <div class="abs pt-10 pb-10 filter-popup" v-if="unfoldStatus && defaultShowLength > 0">
+      <div class="abs pt-10 pb-10 filter-popup bg-white" v-if="unfoldStatus && defaultShowLength > 0">
         <div class="flex flex-wrap filterBox">
           <slot name="defult"></slot>
         </div>
@@ -70,7 +70,11 @@ export default {
     defaultShowLength: {
       type: Number,
       default: 0
-    }
+    },
+    pdClass: {
+      type: String,
+      default: 'p-10'
+    },
   },
   computed: {
     device() {
@@ -184,6 +188,9 @@ export default {
       .el-tabs__nav-wrap::after{
         background: none;
       }
+      .el-tabs__nav-next, .el-tabs__nav-prev{
+        line-height: 28px;
+      }
       .el-tabs__active-bar{
         display: none;
       }
@@ -267,7 +274,7 @@ export default {
     /deep/ .el-input__inner.range-day{
       width: 300px;
       padding: 0 0 0 10px;
-      
+
     }
     /deep/ .el-range-input{
       background: #F2F3F5;

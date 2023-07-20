@@ -1,20 +1,19 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="4" @reset="reset" @query="toQuery">
-      <template v-slot:left>
-        <div class="pl-10 max-w filter-btn_box white-space">
-          <el-scrollbar>
-            <el-button size="medium" :type="listQuery.status == item.value ? 'primary' : ''"
-              :class="{'btn-body': listQuery.status != item.value}" v-for="item in statusArr"
-              @click="listQuery.status = item.value; toQuery(item.value)">{{ item.title }}({{numInfo[item.nkey] || 0}})</el-button>
-          </el-scrollbar>
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+      <template v-slot:tabs>
+        <div class="mb-10 flex align-center bg-white">
+          <div class="mr-10">提现状态</div>
+          <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
+            <el-tab-pane :label="`${item.title }(${numInfo[item.nkey] || 0})`" :name="''+item.value+''" v-for="item in statusArr" />
+          </el-tabs>
         </div>
       </template>
 
       <template v-slot:defult>
         <el-form-item label="提现日期">
-          <el-date-picker class="range-day flex align-center" v-model="form.date" type="datetimerange"
-            value-format="yyyy-MM-dd HH:mm:ss" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"
+          <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange"
+            value-format="yyyy-MM-dd" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"
             @change="toQuery()">
           </el-date-picker>
         </el-form-item>
@@ -47,13 +46,13 @@
             <div>{{ scope.row.id || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="代理商" width="130" v-if="userType == 1">
+        <el-table-column label="代理商" min-width="150" v-if="userType == 1">
           <template slot-scope="scope">
             <div>{{ scope.row.userNickName || '--' }}</div>
             <div>{{ scope.row.userMobile || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商户" width="130" v-if="userType == 2">
+        <el-table-column label="商户" min-width="150" v-if="userType == 2">
           <template slot-scope="scope">
             <div>{{ scope.row.storeName || '--' }}</div>
             <div>{{ scope.row.userMobile || '--' }}</div>
@@ -64,7 +63,7 @@
             <el-avatar class="block" :src="scope.row.userAvatar"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column label="用户" width="130" v-if="userType == 3">
+        <el-table-column label="用户" min-width="150" v-if="userType == 3">
           <template slot-scope="scope">
             <div>{{ scope.row.userNickName || '--' }}</div>
             <div>{{ scope.row.userMobile || '--' }}</div>
@@ -122,6 +121,11 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column label="真实姓名" width="120">
+          <template slot-scope="scope">
+            <div class="el-link">{{ scope.row.userName || '--' }}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="提现方式" width="120">
           <template slot-scope="scope">
             {{ siteInfo.withdrawType[scope.row.withdrawType] }}
@@ -135,11 +139,12 @@
         <el-table-column label="备注" width="170">
           <template slot-scope="scope">{{ scope.row.remark }}</template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <div class="flex" v-if="scope.row.status == 0">
-              <div class="p-10 cursor text-primary" @click="setRows(1, scope.row, 2)">通过</div>
-              <div class="p-10 cursor text-danger" @click="setRows(1, scope.row, 1)">拒绝</div>
+            <div class="flex flex-wrap operate">
+              <el-button type="text" @click="setRows(1, scope.row, 2)" :disabled="scope.row.status != 0">通过</el-button>
+              <el-button type="text" @click="setRows(1, scope.row, 1)" :disabled="scope.row.status != 0">拒绝</el-button>
+              <el-button type="text" @click="copyText(scope.row.wechatOpenid)" :disabled="!scope.row.wechatOpenid">微信Id</el-button>
             </div>
           </template>
         </el-table-column>
@@ -177,7 +182,8 @@
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import {
-    accSub
+    accSub,
+    copyText
   } from '@/utils/index'
   export default {
     name: 'agentWithdraw',
@@ -194,6 +200,7 @@
     data() {
       return {
         accSub: accSub,
+        copyText: copyText,
         clickSubmit: false,
         statusObj: {
           0: '审核中',
@@ -201,8 +208,9 @@
           2: '审核通过,到账中',
           3: '审核通过,已到账'
         },
-        statusArr: [{
-            value: '',
+        statusArr: [
+          {
+            value: '-1',
             title: '全部',
             nkey: 'all'
           },
@@ -234,7 +242,7 @@
         listLoading: true,
         listTotal: 0,
         listQuery: {
-          status: this.$route.query.status || '',
+          status: this.$route.query.status || '-1',
           page: 1,
           size: 20
         },
@@ -264,7 +272,10 @@
       },
       agentInfo() {
         return this.$store.getters.agentInfo
-      }
+      },
+      device() {
+        return this.$store.state.app.device
+      },
     },
     mounted() {
 
@@ -305,9 +316,10 @@
           page: this.listQuery.page - 1
         })
         params.userType = this.userType
+        if(params.status == '-1') delete params.status
         if (params.date && params.date.length > 0) {
-          params.startTime = params.date[0]
-          params.endTime = params.date[1]
+          params.startTime = params.date[0] + ' 00:00:00'
+          params.endTime = params.date[1] + ' 23:59:59'
           delete params.date
         }
         this.$get('iot-saas-pay/admin/pay/withdraw/list', params).then(res => {
@@ -316,7 +328,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
         }).catch(() => {
           this.listLoading = false
@@ -330,9 +342,10 @@
       getStat() {
         var params = Object.assign({}, this.form, this.listQuery)
         params.userType = this.userType
+        if(params.status == '-1') delete params.status
         if (params.date && params.date.length > 0) {
-          params.startTime = params.date[0]
-          params.endTime = params.date[1]
+          params.startTime = params.date[0] + ' 00:00:00'
+          params.endTime = params.date[1] + ' 23:59:59'
           delete params.date
         }
         this.$get('iot-saas-pay/admin/pay/withdraw/summary', params).then(res => {

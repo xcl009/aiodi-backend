@@ -108,8 +108,8 @@
                   <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=agentId`})" v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR`})" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">概率押金</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({path: `/leaseOrder/index?createType=1&deductionId=${scope.row.id}`})" v-if="isBrand() && checkAbility(['DEVICE_LEASE'], 3)">租赁订单</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DIVIDE_ACCOUNTS`})" v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">微信分账</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)" v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -154,6 +154,13 @@
             <el-switch v-model="dform.allotMe" />
           </div>
         </div>
+      </template>
+      <template v-if="dialogType == 5">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" @submit.native.prevent="dialogConfirm()">
+          <el-form-item>
+            <el-input type="number" v-model="dform.frozenBalance" placeholder="请输入冻结金额"></el-input>
+          </el-form-item>
+        </el-form>
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
@@ -215,6 +222,7 @@
           2: '删除代理',
           3: '',
           4: '分配商户',
+          5: '冻结金额',
         },
         curRow: {},
         curIdx: 0,
@@ -367,7 +375,7 @@
        * 操作行
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前行
-       * @param {Object} dialogType dialog内容显示类型 1: '', 2: '删除代理' 4: '分配给代理'
+       * @param {Object} dialogType dialog内容显示类型 1: '', 2: '删除代理' 4: '分配给代理' 5: '冻结金额'
        * @param {Object} idx 当前行所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -378,6 +386,11 @@
             this.curIdx = idx
             this.dform = {}
             this.dialogStatus = true
+            if(dialogType == 5 && row.frozenBalance > 0){
+              this.dform = {
+                frozenBalance: row.frozenBalance
+              }
+            }
             break
         }
       },
@@ -445,6 +458,22 @@
               this.dialogStatus = false
               this.clickSubmit = false
               this.list.splice(curIdx, 1)
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 5:
+            this.$post('iot-saas-pay/api/pay/acount/updateFrozenBalance', {
+              ownerId: curRow.ownerId,
+              frozenBalance: params.frozenBalance
+            }).then(res => {
+              this.dialogStatus = false
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              curRow.frozenBalance = params.frozenBalance
+              this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
             })

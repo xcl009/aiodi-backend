@@ -106,8 +106,16 @@
       width: calc(100% - #{$sideBarWidth});
     }
   }
+	
+	.el-popup-parent--hidden{
+		.fixed-header.open{
+		  left: $sideBarWidth;
+		  width: calc(100% - #{$sideBarWidth} + 15px);
+		}
+	}
 
   .mobile .fixed-header {
     width: 100%;
+		left: 0;
   }
 </style>

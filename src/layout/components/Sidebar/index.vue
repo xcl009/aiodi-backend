@@ -1,12 +1,17 @@
 <template>
   <div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <div v-if="sidebar.opened" class="pt-15 mb-10 text-center text-white cursor"><!-- @click="toRenewal" -->
-        <el-avatar :size="40" :src="agentInfo.avatar"></el-avatar>
+      <div v-if="sidebar.opened" class="pt-15 mb-10 text-center text-white cursor">
+        <el-avatar :size="40" :src="agentInfo.avatar" mode="cover"></el-avatar>
         <!-- <div class="mt-5 pl-10 pr-10 fs-c1 text-cut">{{ agentInfo.nickname }}</div> -->
-        <div class="mt-10 fs-s4" v-if="isBrand()" @click="$router.push({path: `/money`})">快活币: <span class="text-white">{{ money.happyCurrencyNum || 0 }}</span></div>
+        <div class="mt-10 fs-s4" v-if="isBrand()" @click="$router.push({path: `/money`})">
+          快活币: <span class="text-white">{{ money.happyCurrencyNum || 0 }}</span>
+          <el-tooltip class="item" effect="dark" content="快活币低于下月续费金额,请及时充值" placement="right" v-if="money.happyCurrencyNum < vipPrice[dform.mthPrice]">
+            <i class="el-icon-warning-outline text-danger"></i>
+          </el-tooltip>
+        </div>
         <div class="mt-5 fs-s4" v-if="isBrand()" @click="setRows(1, {}, 1)">
-          <template v-if="vipInfo.expiresDatetime"><span class="text-danger">{{ vipInfo.expiresStr ? vipInfo.expiresStr : `到期时间:${ parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span></template>
+          <template v-if="vipInfo.expiresDatetime"><span :class="vipInfo.status > 0 ? 'text-danger' : ''">{{ vipInfo.expiresStr ? vipInfo.expiresStr : `到期时间:${ parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span></template>
           <template v-else><span class="text-danger">暂未开通VIP，请开通</span></template>
         </div>
       </div>
@@ -28,42 +33,62 @@
     </div>
     <!-- <hamburger :is-active="sidebar.opened" class="abs hamburger-container"  /> -->
 
-    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :modal-append-to-body="false" :close-on-click-modal="false" width="600px">
-      <!-- <div>
-        <div class="flex align-center">
-          <el-avatar :size="50" :src="agentInfo.avatar"></el-avatar>
-          <div>
-            <div>开通账号：{{ agentInfo.nickname }}</div>
-            <div>
-              <template v-if="vipInfo.expiresDatetime"><span>{{ vipInfo.expiresStr ? vipInfo.expiresStr : `到期时间:${ parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span></template>
-              <template v-else><span>未开通</span></template>
-            </div>
-          </div>
-          <div>众多功能免费用</div>
-          <div>开通VIP</div>
-        </div>
-      </div> -->
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :modal-append-to-body="false" :close-on-click-modal="false" :class="dialogType == 1 ? 'vip-content' : ''" width="680px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1 && vipService.priceSettings">
-        <div class="vip-content fs-c1 text-black">
-          <div class="mb-10"><span class="text-danger" v-if="vipInfo.expiresDatetime">VIP到期时间：{{ vipInfo.expiresDatetime }}</span><span v-else>您暂未开通VIP</span>，VIP可免费选用服务市场众多默认功能</div>
-          <div class="flex align-center justify-center vip-money fs-a1 text-center">
-            <div class="pt-30 pb-30 item cursor" :class="{'act': dform.cycle == item.cycle}" v-for="item in vipPriceArr" @click="dform.mkey = item.mkey;dform.cycle = item.cycle">
-              <div>{{ item.name }}</div>
-              <div class="mt-5 text-danger">￥<span class="money">{{ vipPrice[item.mkey] }}</span></div>
+        <div class="vip-header flex align-center p-30 text-white">
+          <el-avatar :size="50" :src="agentInfo.avatar"></el-avatar>
+          <div class="flex1 pl-15">
+            <div class="mb-5 fs-c1">开通账号：{{ agentInfo.nickname }}</div>
+            <div class="pl-10 pr-10 label-box fs-s2">
+              <span class="label" v-if="vipInfo.expiresDatetime">{{ vipInfo.expiresStr ? vipInfo.expiresStr : `到期时间：${ parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span>
+              <span class="label" v-else>未开通</span>
             </div>
           </div>
-          <div class="flex align-center justify-center mt-20">
-            <span>快活币余额：</span>
-            <svg-icon icon-class="KHB"></svg-icon>
-            <span class="fs-b1">{{ money.happyCurrencyNum || 0 }}</span>
-            <span class="ml-20 text-primary cursor" @click="$refs.rechargeCoin.show()">立即充值</span>
+          <div class="mt-10 fs-b3 text-bold">开通VIP</div>
+          <div class="mt-10 ml-10 fs-b3">众多功能免费用</div>
+          <i class="mb-20 ml-15 el-icon-close fs-b5 cursor" @click="dialogStatus = false" v-if="vipInfo.status != 2"></i>
+        </div>
+
+        <div class="flex align-end tab-box line-1">
+          <template v-for="item in vipPriceArr">
+            <div :class="`tab abs tab-nobg ` + item.mkey" v-if="dform.cycle != item.cycle"></div>
+            <div class="tab flex cursor" :class="{'act align-center': dform.cycle == item.cycle, 'abs align-start': dform.cycle != item.cycle}" @click="dform.mkey = item.mkey;dform.cycle = item.cycle">
+              <div class="line" v-if="dform.cycle == item.cycle"></div>
+              <div class="text-bold fs-b2" :class="{'text-black': dform.cycle == item.cycle, 'flex1': dform.cycle != item.cycle}">{{ item.name }}</div>
+              <div class="ml-10 fs-s2 text-black3" v-if="dform.cycle == item.cycle">{{ item.info }}</div>
+              <img :src="require('@/assets/vip_tabarrow.svg')" class="block" width="20" alt="" v-if="dform.cycle != item.cycle">
+            </div>
+          </template>
+        </div>
+        <div class="pl-30 pr-30 rel o-v bg-white" style="border-radius: 0 0 16px 16px;">
+          <div class="fs-c1 text-black text-bold">付费明细</div>
+          <div>
+            <template v-for="item in myDevice">
+              <div class="flex mt-10" v-if="!item.fatherCode">
+                <div class="flex1 text-grey">{{ item.name }}品类VIP</div>
+                <div class="text-danger">￥{{ dform.cycle == 'PERMANENT' ? item.overPrice : item.mthPrice }}/{{ dform.cycle == 'PERMANENT' ? '永久' : '月' }}</div>
+              </div>
+            </template>
           </div>
-          <div class="pb-20 mt-30 text-center">
-            <el-button class="bg-body" @click="dialogStatus = false" v-if="vipInfo.status == 1">取消</el-button>
-            <el-button type="danger" :disabled="clickSubmit" @click="$refs.rechargeCoin.show()" v-if="money.happyCurrencyNum < vipPrice[dform.mkey]">快活币不足，马上充值</el-button>
-            <el-button type="danger" :disabled="clickSubmit" @click="dialogConfirm()" v-else>立即支付￥{{ vipPrice[dform.mkey] }}</el-button>
+          <div class="flex mt-15 pt-25 l-t">
+            <div class="flex1 flex align-center">
+              <i class="el-icon-warning fs-c1"></i>
+              <div class="ml-5 text-black">快活币{{ money.happyCurrencyNum < vipPrice[dform.mkey] ? '余额不足，请先充值' : '' }}</div>
+              <div class="ml-5 text-gray fs-s2">
+                余额：<span class="text-black">{{ money.happyCurrencyNum || 0 }}</span>快活币
+              </div>
+            </div>
+            <div>
+              <span class="text-grey">金额合计</span>
+              <span class="text-danger">￥<span class="fs-b3">{{ vipPrice[dform.mkey] }}</span></span>
+            </div>
           </div>
+          <div class="pb-30 mt-50 text-center">
+            <el-button type="primary" :disabled="clickSubmit" @click="$refs.rechargeCoin.show()" v-if="money.happyCurrencyNum < vipPrice[dform.mkey]">去充值</el-button>
+            <el-button type="primary" :disabled="clickSubmit" @click="dialogConfirm()" v-else>立即支付</el-button>
+          </div>
+          <div class="abs dialog-br"></div>
         </div>
       </template>
       <div class="pb-20 mt-30 text-center" v-if="dialogType != 1">
@@ -105,6 +130,9 @@ export default {
       const agentInfo = this.$store.state.user.agentInfo
       return agentInfo
     },
+    myDevice() {
+      return this.$store.state.user.myDevice
+    },
     activeMenu() {
       const route = this.$route
       const {
@@ -138,6 +166,7 @@ export default {
       vipPriceArr: [
         {
           name: '月度VIP',
+          info: '按月续费，使用无忧',
           mkey: 'mthPrice',
           cycle: 'MONTH'
         },
@@ -146,11 +175,12 @@ export default {
         //   mkey: 'yearPrice',
         //   cycle: 'YEAY'
         // },
-        // {
-        //   name: '永久VIP',
-        //   mkey: 'overPrice',
-        //   cycle: 'PERMANENT'
-        // }
+        {
+          name: '永久VIP',
+          info: '一次买断，终身使用',
+          mkey: 'overPrice',
+          cycle: 'PERMANENT'
+        }
       ],
       vipPrice: {},
 
@@ -198,15 +228,16 @@ export default {
           let info = res.rows[0]
           if(info.orderStatusName == '已到期'){
             info.expiresStr = '已过期' + formatSeconds(currentTime() - unixTime(info.expiresDatetime), 'd')
+            info.status = 2
             this.getVipService(2)
           } else {
             let expiresStr = formatSeconds(unixTime(info.expiresDatetime) - currentTime(), 'd')
             if(!expiresStr || parseInt(expiresStr.substring(0, expiresStr.length - 1)) <= 5){
+              info.status = 1
               expiresStr = expiresStr ? expiresStr + '后到期' : '今日到期'
               this.getVipService(2)
               info.expiresStr = expiresStr
             }else{
-              info.status = 1
               this.getVipService()
             }
           }
@@ -350,22 +381,94 @@ export default {
   }
 
   .vip-content{
-    .vip-money{
-      .item{
-        width: 160px;
-        border: 1px solid #E5E6EB;
-        border-radius: 8px;
-        &.act{
-          background: #FFF7E8;
-          border-color: #FF7D00;
-        }
+    /deep/ .el-dialog{
+      border-radius: 16px;
+      background: linear-gradient(225deg, #0F3A7C 0%, #01183A 100%);
+      .el-dialog__header{
+        display: none;
       }
-      .money{
-        font-size: 32px;
+      .el-dialog__body{
+        padding: 0;
       }
     }
-    .svg-icon{
-      margin-right: 8px !important;
+    .vip-header{
+      background: url('../../../assets/vip_headbg.png'), -63px -72.85px / 115.108% 205.37% no-repeat;
+      border-radius: 16px;
+      .label-box{
+        display: inline-block;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        background-color: rgba(255, 255, 255, 0.10);
+        transform: skewX(-15deg);
+        border-radius: 4px;
+        .label{
+          display: inline-block;
+          transform: skewX(15deg);
+        }
+      }
+    }
+    .tab-box{
+      .tab{
+        width: 220px;
+        height: 66px;
+        padding: 14px 30px 0 40px;
+        z-index: 3;
+        .line{
+          margin-right: 8px;
+          width: 4px;
+          height: 18px;
+          background: #165DFF;
+        }
+        &.tab-nobg{
+          z-index: 1;
+          background: url('../../../assets/vip_tabnobg.svg');
+          transform: rotateY(180deg);
+          &.overPrice{
+            right: 0;
+            transform: rotateY(0deg);
+          }
+        }
+        &:not(.act){
+          .fs-b2{
+            background-image: linear-gradient(to right, #DF89B5, #BFD9FE);
+            color: transparent;
+            -webkit-background-clip: text;
+          }
+        }
+        &.align-start{
+          z-index: 9;
+        }
+        &.act{
+          position: relative;
+          padding-left: 30px;
+          padding-top: 0px;
+          height: 76px;
+          flex: 1;
+          &::after{
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('../../../assets/vip_yesbg.svg');
+            z-index: -1;
+          }
+        }
+        &:nth-child(3){
+          &.abs{
+            right: 0
+          }
+          &.act{
+            padding-left: 252px;
+            &::after{
+              transform: rotateY(180deg);
+            }
+          }
+        }
+      }
+    }
+    .el-icon-warning{
+      color: var(--orange);
     }
   }
 </style>

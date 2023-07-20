@@ -18,7 +18,7 @@
 
         <template v-if="Ability[`${deviceTypeCode}_DD_END`]">
           <h4 class="flex mb-20 mt-10">
-            <div>归还不结束</div>
+            <div>延时归还</div>
             <div class="ml-5">
               <el-popover
                 placement="top-start"
@@ -26,7 +26,8 @@
                 width="450"
                 trigger="hover">
                 <div>
-                  设置时间段内归还的订单将会根据配置规则计算不结束概率<br>
+                  未设置延时时间段则不走此规则。<br>
+                  在设置时间段内归还的订单将会根据配置规则计算延时归还概率<br>
                 </div>
                 <svg-icon icon-class="doubt" slot="reference"></svg-icon>
               </el-popover>
@@ -38,18 +39,18 @@
                 <template slot="append">单</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="不结束：">
+            <el-form-item label="延时：">
               <el-input type="number" v-model="form.notCloseRule.notCloseNum">
                 <template slot="append">单</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="租借时长：">
+            <el-form-item label="延时：">
               <el-input type="number" v-model="form.notCloseRule.rentTimes">
-                <template slot="append">小时以上</template>
+                <template slot="append">分钟后归还</template>
               </el-input>
             </el-form-item>
           </div>
-          <div class="mb-5 pl-15 text-black">不结束时间段</div>
+          <div class="mb-5 pl-15 text-black">延时时间段(未设置时间段表示不走延时归还规则)</div>
           <div class="flex align-start flex-wrap" v-for="(item, index) in form.notCloseRule.timeRules">
             <el-form-item class="mr-20" label="开始时间：">
               <el-time-select v-model="item.startTime" :picker-options="{
@@ -192,8 +193,9 @@
                 width="450"
                 trigger="hover">
                 <div>
-                  订单真实使用时长减去扣减时间，订单金额未发生变化，则该订单不扣减时间。<br>
-                  订单扣减时间后，下级看到的订单完结时间=真实完结时间-扣减时间。<br>
+                  起漏时间：订单使用时长须大于等于起漏时长。<br>
+                  订单真实使用时长减去扣减的时间，订单金额未发生变化，则不漏该订单。<br>
+                  订单扣减时间后，下级看到的订单完结时间=真实完结时间-扣减的时间。<br>
                   例：扣减时间10分钟，真实使用时长65分钟，订单计费为2元60分钟，该订单真实扣款4元。扣减10分钟后使用时长55分钟，订单金额2元，下级代理及商户按2元分成，剩余2元则按比例分给您及您的上级。
                 </div>
                 <svg-icon icon-class="doubt" slot="reference"></svg-icon>
@@ -203,6 +205,11 @@
           <div class="flex">
             <el-form-item label="扣减时间：">
               <el-input type="number" v-model="form.minuteRule">
+                <template slot="append">分钟</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="起漏时间：">
+              <el-input type="number" v-model="form.loseMinute">
                 <template slot="append">分钟</template>
               </el-input>
             </el-form-item>
@@ -262,6 +269,7 @@
         form: {
           enable: 2,
           minuteRule: 0,
+          loseMinute: 0,
           minuteLimitRule: 0,
           complateRule: {},
           proportionRule: {},

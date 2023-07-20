@@ -32,6 +32,11 @@
             <div class="el-link">{{ statusObj[scope.row.status] }}</div>
           </template>
         </el-table-column>
+        <el-table-column label="真实姓名">
+          <template slot-scope="scope">
+            <div class="el-link">{{ scope.row.userName || '--' }}</div>
+          </template>
+        </el-table-column>
         <!-- <el-table-column label="备注">
           <template slot-scope="scope">{{ scope.row.withdraw_reason }}</template>
         </el-table-column> -->

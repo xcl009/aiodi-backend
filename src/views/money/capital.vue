@@ -4,7 +4,7 @@
       <div class="pb-20 text-black fs-c1">账户总览</div>
       <el-row class="stat-box line-1">
         <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
-          <div class="fs-s3 text-black">可提现金额</div>
+          <div class="fs-s3 text-black">可提现金额（冻结金额：{{ money.frozenBalance || 0.00 }}）</div>
           <div class="mt-15 mb-15 cursor">
             <span class="text-primary khcoin">￥{{ money.balance || 0.00 }}</span>
           </div>
@@ -229,7 +229,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
         }).catch(() => {
           this.clickSubmit = false

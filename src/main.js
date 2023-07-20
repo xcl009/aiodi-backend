@@ -59,7 +59,15 @@ Vue.prototype.checkQueryRepeat = checkQueryRepeat
  */
 Vue.prototype.checkAbility = function(keyArr, type = 1, deviceArr){
   let val = false
-  if(type == 3){
+  if(type == 4){
+    for(var s in keyArr){
+      if(store.getters.Ability[keyArr[s]]){
+        val = true
+      } else {
+        val = false
+      }
+    }
+  }else if(type == 3){
     for(var s in keyArr){
       if(store.getters.Ability[keyArr[s]]){
         val = true

@@ -2,6 +2,9 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
 		  <template v-slot:defult>
+        <el-form-item label="品牌名称" v-if="isSaas()">
+          <selectSearch v-model="form.brandId" :type="6" name="name" placeholder="请输入品牌名称" @change="toQuery()"></selectSearch>
+        </el-form-item>
         <el-form-item label="代理姓名">
           <el-input v-model="form.name" placeholder="代理姓名"/>
         </el-form-item>
@@ -27,7 +30,9 @@
         <el-table-column label="代理信息" width="130">
           <template slot-scope="scope">
             <div>{{ scope.row.name || '姓名' }}</div>
-            <div>{{ scope.row.mobile || '手机号码' }}</div>
+            <el-tooltip class="item" effect="dark" :content="scope.row.mobile" placement="top">
+              <div>{{ dealPhone(scope.row.mobile) }}</div>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="品类" width="200">
@@ -113,12 +118,13 @@
   import condition from '@/components/condition/'
   import { copyText } from '@/utils/index'
   import { getToken, setToken, removeToken } from '@/utils/auth'
-
+  import selectSearch from '@/components/condition/selectSearch'
   export default {
     name: 'agent',
     components: {
       Pagination,
-      condition
+      condition,
+      selectSearch
     },
     data() {
       return {
