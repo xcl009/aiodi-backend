@@ -19,10 +19,10 @@
           <el-input v-model="form.brief" type="textarea" placeholder="请输入服务简介" />
         </el-form-item>
         <el-form-item label="服务详情">
-          <tinymce v-model="form.description" :height="300" v-if="form.description || !id"/>
+          <tinymce v-model="form.description" :height="300"/>
         </el-form-item>
         <el-form-item label="服务案例">
-          <tinymce v-model="form.successfulCase" :height="300" v-if="form.successfulCase || !id"/>
+          <tinymce v-model="form.successfulCase" :height="300"/>
         </el-form-item>
         <el-form-item label="图片详情" class="up-img">
           <upload v-model="form.fileUrls" :limit="5" />

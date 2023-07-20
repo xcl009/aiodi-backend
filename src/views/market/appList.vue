@@ -47,7 +47,9 @@
               <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)" v-if="checkAbility(['BRAND_MEMBER'], 3)">会员免费</el-tag>
               <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)" v-else-if="item.serviceTypeCode != 'CATEGORY' && checkFree[item.serviceId] != 'YES'">0元试用</el-tag>
             </div>
-            <div class="mt-10 fs-s2 text-cut_two">{{ item.desc  || '暂无简介'}}</div>
+            <div class="mt-10 fs-s2 text-cut_two">
+              {{ item.brief }}
+            </div>
             <div class="mt-15 flex align-center">
               <template v-if="checkAbility(['BRAND_MEMBER'], 3)">
                 <div class="flex1" >
@@ -64,7 +66,7 @@
                 </template>
               </template>
               <template v-if="item.serviceTypeCode != 'CUSTOMIZE' || myDeviceId[item.deviceTypeCode]">
-                <el-button type="info" size="medium" v-if="checkAbility(arrayKeys(item.priceSettings, 'priceCode'), 3)">已选用</el-button>
+                <el-button type="info" size="medium" v-if="checkAbility(arrayKeys(item.priceSettings, 'priceCode'), 4)">已选用</el-button>
                 <el-button type="primary" size="medium" v-else>{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即添加' : '立即购买'}}</el-button>
               </template>
               <template v-else>
@@ -194,7 +196,7 @@
           page: this.listQuery.page - 1
         })
         if(params.serviceTypeCode == 0) delete params.serviceTypeCode
-        if(params.deviceTypeCode == 0) delete params.deviceTypeCode
+        if(params.deviceTypeCode == 0 || params.serviceTypeCode != 'CUSTOMIZE') delete params.deviceTypeCode
         if(params.Type == 0) delete params.Type
         this.$get('iot-saas-basic/client/service/market/findPage', params).then((res = {}) => {
           this.list = this.list.concat(res.rows || [])

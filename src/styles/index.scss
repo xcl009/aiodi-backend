@@ -121,25 +121,25 @@ div:focus {
 // /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar
 {
-  width: 10px;  /*滚动条宽度*/
-  height: 10px;  /*滚动条高度*/
+  width: 8px;  /*滚动条宽度*/
+  height: 8px;  /*滚动条高度*/
 }
 ::-moz-scrollbar
 {
-  width: 10px;  /*滚动条宽度*/
-  height: 10px;  /*滚动条高度*/
+  width: 8px;  /*滚动条宽度*/
+  height: 8px;  /*滚动条高度*/
 }
 
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb
 {
-  //border-radius: 6px;  /*滚动条的圆角*/
+  border-radius: 4px;  /*滚动条的圆角*/
   background-color: #e9e9ea;/*滚动条的背景颜色*/
 }
 
 ::-moz-scrollbar-thumb
 {
-  //border-radius: 6px;  /*滚动条的圆角*/
+  border-radius: 4px;  /*滚动条的圆角*/
   background-color: #e9e9ea;/*滚动条的背景颜色*/
 }
 
@@ -242,7 +242,7 @@ div:focus {
   flex: none;
 }
 
-.flex1, .flex-sub {
+.flex1, .flex-sub,.flex-1 {
   flex: 1;
   overflow: hidden;
 }
@@ -656,6 +656,10 @@ div:focus {
   overflow: hidden;
 }
 
+.text-nowrap{
+  white-space: nowrap;
+}
+
 .text-cut_two{
   text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
   display: -webkit-box;
@@ -747,6 +751,9 @@ div:focus {
 .l-t {
   border-top: solid #E5E6EB 1px;
 }
+.l-r {
+  border-right: solid #E5E6EB 1px;
+}
 
 .shadow-light{
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
@@ -768,18 +775,21 @@ div:focus {
   border-radius: 2px;
 }
 
-.el-button--orange.is-plain {
+.el-button--orange.is-plain, .el-button--primary.is-plain {
   color: $webColor;
   background: none;
   border-color: $webColor;
 }
-
+.el-button--primary.is-plain {
+  color: $--color-primary;
+  background: none;
+  border-color: $--color-primary;
+}
 .el-button--orange {
   color: #ffffff;
   background: $webColor;
   border-color: $webColor;
 }
-
 .el-button--white.is-plain {
   color: #fff;
   background: none;
@@ -812,6 +822,15 @@ div:focus {
   }
 }
 
+.dialog-br{
+  bottom: -160px;
+  right: -160px;
+  width: 252px;
+  height: 252px;
+  background-color: #C1D4FF;
+  filter: blur(100px);
+}
+
 .tabs-right{
   height: 41px;
   line-height: 41px;
@@ -841,6 +860,9 @@ div:focus {
   .has-gutter th{
     background-color: #F2F3F5;
     font-weight: 500;
+    color: #1D2129;
+  }
+  .el-table__footer td{
     color: #1D2129;
   }
   .el-table__fixed-right{
@@ -1013,7 +1035,7 @@ div:focus {
 }
 
 .label-text{
-  min-width: 90px;
+  min-width: 95px;
   color: #86909C;
 }
 *:focus {
@@ -1022,6 +1044,15 @@ div:focus {
 .el-drawer{
   max-width: 80%;
   width: auto !important;
+  .el-input-group__prepend{
+    width: 100px;
+  }
+  .max-select.el-select, .max-select .el-select{
+    width: 140px;
+  }
+  .el-date-editor.el-input{
+    width: 100%;
+  }
 }
 .el-drawer__header{
   margin-bottom: 20px;

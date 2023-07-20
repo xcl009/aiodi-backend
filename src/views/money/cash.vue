@@ -6,6 +6,32 @@
           <el-form-item label="可提现金额">
             <div class="text-primary fs-b1">{{ money.balance || 0.00 }}</div>
           </el-form-item>
+          <el-form-item label="冻结金额">
+            <div class="text-primary fs-b1">
+              {{ money.frozenBalance || 0.00 }}
+              <el-tooltip placement="bottom" effect="light">
+                <div slot="content">
+                  <div class="mb-20">
+                    <span class="text-primary">什么是冻结金额？</span><br><br>
+                    冻结金额为您当前收益中不可提现部分金额，冻结金额为您实际收益的一部分，由于产品规则或其他原因使这部分金额无法提现进行其他操作。
+                  </div>
+                  <div class="mb-20">
+                    <span class="text-primary">冻结金额怎么产生的？</span><br><br>
+                    冻结金额是您的上级代理设置的。一般情况设置冻结金额是由于您还有部分货款未支付，或其他原因您的上级代理需要设置您起始部分收益需要冻结。
+                  </div>
+                  <div class="mb-20">
+                    <span class="text-primary">冻结金额如何解冻？</span><br><br>
+                     冻结金额解冻需要您的上级代理修改您的冻结金额，设置成功后，您通过提现功能就能够提现。
+                  </div>
+                  <div class="mb-20">
+                    <span class="text-primary">冻结金额资金安全吗？</span><br><br>
+                    冻结金额资金会一直保留在您的平台账户上，保证安全。
+                  </div>
+                </div>
+                <i class="el-icon-question text-danger"></i>
+              </el-tooltip>
+            </div>
+          </el-form-item>
           <el-form-item label="提现金额">
             <el-input type="number" v-model="form.amount" placeholder="请输入提现金额" />
           </el-form-item>
@@ -80,7 +106,7 @@
 
 <script>
   import upload from '@/components/upload/'
-  import { unixTime } from '@/utils/index'
+  import { unixTime, accSub } from '@/utils/index'
   export default {
     components: {
       upload
@@ -190,6 +216,9 @@
         if(this.cutStoreId) params.storeId = this.cutStoreId
         this.$get('iot-saas-pay/api/pay/withdraw/balance', params).then(res => {
           this.money = res || {}
+          if(this.money.balance){
+          	this.money.balance = accSub(this.money.balance, this.money.frozenBalance)
+          }
         })
       },
 

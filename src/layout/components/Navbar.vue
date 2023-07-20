@@ -1,23 +1,34 @@
 <template>
   <div class="rel flex navbar" style="overflow: initial;">
+    <div class="abs pt-10 pb-10 pl-20 pr-20 cursor line-1" @click="toggleSideBar">
+      <svg-icon slot="prefix" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
+    </div>
     <div class="flex1 title-box text-center text-white">
       <div>
         <div class="cn">{{ agentInfo.nickname }}管理后台</div>
       </div>
     </div>
-    <!-- <div class="pl-30 pr-20 cursor line-1" @click="toggleSideBar" style="color: #86909C;">
-      <svg-icon slot="prefix" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
-    </div>
-    <Breadcrumb class="breadcrumb-container" />
-    <div class="flex1"></div> -->
     <div class="abs right-menu flex align-center">
+      <template v-if="device != 'mobile'">
       <!-- <div class="pl-30 pr-30 flex align-center text-primary cursor l-r" v-if="isBrand()" @click="getJoinCode">
         <svg-icon icon-class="head_link" class="mr-10 head_new"></svg-icon>
         邀请链接获取
       </div> -->
+        <div class="pl-15 pr-15 menu-item flex align-center" @click="setRows(3, 2)" v-if="isBrand()">
+          <el-badge is-dot :hidden="!updateDetails.isNews" class="news-dot">
+            <i class="el-icon-bell fs-b2 text-white"></i>
+          </el-badge>
+          <span class="ml-10 text-white">消息</span>
+        </div>
+        <div class="pl-15 pr-15 menu-item flex align-center" @click="handleScreen">
+          <i class="el-icon-full-screen fs-b2 text-white"></i>
+          <span class="ml-10 text-white">全屏</span>
+        </div>
+      </template>
       <el-dropdown class="mr-10 hover-effect" trigger="click">
         <div class="pl-15 pr-15 menu-item flex align-center">
           <svg-icon icon-class="head_user" class="head_user text-white"></svg-icon>
+          <span class="ml-10 text-white">我的</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/index">
@@ -39,7 +50,7 @@
       </el-dropdown>
     </div>
 
-    <el-dialog :visible.sync="inviteDialog" width="500px" :modal-append-to-body="true" :append-to-body="true" :close-on-click-modal="false">
+    <!-- <el-dialog :visible.sync="inviteDialog" width="500px" :modal-append-to-body="true" :append-to-body="true" :close-on-click-modal="false">
       <div class="fs-c1 text-black text-center" slot="title">邀请二维码</div>
       <div class="p-30 flex flex-wrap justify-around text-center">
         <div class="p-10 qrcode-box">
@@ -50,7 +61,29 @@
         <el-button type="primary" @click="copyText()" class="mr-30">复制链接</el-button>
         <el-button type="primary" @click="saveQrcode()">下载二维码</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
+
+
+    <el-drawer
+      :title="dialogTitle[dialogType]"
+      :visible.sync="drawerStatus"
+      :modal-append-to-body="false"
+      >
+      <template v-if="dialogType == 1">
+        <div class="p-30 flex flex-wrap justify-around text-center">
+          <div class="p-10 qrcode-box">
+            <div id="inviteQrcode" />
+          </div>
+        </div>
+        <div class="pb-30 pt-20 text-center">
+          <el-button type="primary" @click="copyText()" class="mr-30">复制链接</el-button>
+          <el-button type="primary" @click="saveQrcode()">下载二维码</el-button>
+        </div>
+      </template>
+      <template v-if="dialogType == 2">
+        <div class="pl-20 pr-20" v-html="updateDetails.updateDetails"></div>
+      </template>
+    </el-drawer>
   </div>
 </template>
 
@@ -58,8 +91,9 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import screenfull from 'screenfull'
 import QRCode from 'qrcodejs2'
-import { copyText } from '@/utils/index'
+import { copyText, unixTime } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 export default {
@@ -91,11 +125,25 @@ export default {
       token1: getToken('token1') || '',
 
       inviteUrl: '',
-      inviteDialog: false
+      inviteDialog: false,
+
+      screenfull: false,
+
+      // 更新明细
+      updateDetails: {},
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      drawerStatus: false,
+      dialogTitle: {
+        1: '邀请二维码',
+        2: '系统更新明细'
+      },
     }
   },
   mounted(){
-
+    if(this.isBrand()) this.getConfigs()
   },
   methods: {
     toggleSideBar() {
@@ -103,15 +151,43 @@ export default {
     },
 
     /**
-     * 获取列表
+     * 获取配置
      */
     getConfigs() {
-      this.$get('WxOpen/getConfigs', {
-        tag: 'wm01'
+      this.$get('iot-saas-pay/open/pay/system/config', {
+        key: 'systemUpdateDetails'
       }).then(res => {
-        this.getWxxcx(res['wm010001'])
-        this.getAlixcx(res['wm010006'])
+        if(res && res.valueJson){
+          let valueJson = JSON.parse(res.valueJson), readUpTime = localStorage.getItem(`readUpTime${this.agentInfo.id}`)
+          if(readUpTime != valueJson.updateTime && this.currentTime() - unixTime(valueJson.updateTime) < 30 * 86400){
+            valueJson.isNews = true
+          }
+          this.updateDetails = valueJson
+        }
       })
+    },
+
+    /**
+     * 操作商户
+     * @param {Object} type 1 dialog类型 3 drawer类型
+     * @param {Object} dialogType dialog内容显示类型 1: '结束订单' 2: '更新明细'
+     */
+    setRows(type, dialogType) {
+      switch (type) {
+        case 1:
+          this.dialogType = dialogType
+          this.dialogStatus = true
+          break
+        case 3:
+          this.dialogType = dialogType
+          this.drawerStatus = true
+          if(dialogType == 2){
+            this.updateDetails.isNews = false
+            localStorage.setItem(`readUpTime${this.agentInfo.id}`, this.updateDetails.updateTime)
+            setToken(`readUpTime${this.agentInfo.id}`, this.updateDetails.updateTime)
+          }
+          break
+      }
     },
 
     /**
@@ -209,6 +285,13 @@ export default {
         type: 'success'
       })
     },
+
+    handleScreen() {
+      if (!screenfull.isEnabled) {
+        return false
+      }
+      screenfull.toggle()
+    }
   }
 }
 </script>
@@ -257,6 +340,12 @@ export default {
         width: 20px;
         height: 20px;
       }
+    }
+  }
+
+  /deep/ .news-dot{
+    .is-dot{
+      top: 8px;
     }
   }
 }

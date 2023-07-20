@@ -1,12 +1,11 @@
 <template>
   <div>
-
-
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="14" :xl="12">
         <el-tabs class="mb-15 bg-white" :value="key" @tab-click="getInfo">
           <el-tab-pane label="小程序配置" name="systemConfig" />
           <el-tab-pane label="免押拍摄配置" name="freeVideoConfig" />
+          <el-tab-pane label="更新明细" name="systemUpdateDetails" />
         </el-tabs>
 
         <el-form ref="form" :model="form" label-width="130px" label-position="left">
@@ -43,6 +42,15 @@
               <el-input v-model="form.appid" placeholder="小程序APPID" />
             </el-form-item>
           </template>
+          <template v-if="key == 'systemUpdateDetails'">
+            <h4>更新明细</h4>
+            <el-form-item label="最近时间">
+              <el-date-picker type="datetime" v-model="form.updateTime" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="更新内容">
+              <tinymce v-model="form.updateDetails" :height="600" />
+            </el-form-item>
+          </template>
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
           </el-form-item>
@@ -53,9 +61,11 @@
 </template>
 
 <script>
+  import Tinymce from '@/components/Tinymce'
   import upload from '@/components/upload'
   export default {
     components: {
+      Tinymce,
       upload
     },
     data() {

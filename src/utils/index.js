@@ -1,4 +1,6 @@
-import Vue from 'vue'
+import {
+  Message
+} from 'element-ui'
 
 const util = {
   /**
@@ -52,12 +54,16 @@ const util = {
    * @param {String} msg 提示内容
    */
   copyText: (text) => {
-    var aux = document.createElement("input");
-    aux.setAttribute("value", text);
-    document.body.appendChild(aux);
-    aux.select();
-    document.execCommand("copy");
-    document.body.removeChild(aux);
+    var aux = document.createElement("input")
+    aux.setAttribute("value", text)
+    document.body.appendChild(aux)
+    aux.select()
+    document.execCommand("copy")
+    document.body.removeChild(aux)
+    Message({
+      message: '复制成功',
+      type: 'success'
+    })
   },
 
   /**
@@ -161,7 +167,7 @@ const util = {
   dealPhone: (tel, start = 3, end = 7, symbol = '****') => {
     if (!tel) return tel
     tel = '' + tel
-    return tel.replace(tel.substring(start, end), symbol)
+    return tel.substr(0, start) + symbol + tel.substring(end, tel.length -1)
   },
 
   // 获取操作系统信息
@@ -563,17 +569,24 @@ const util = {
   /**
    * 套餐显示
    */
-  showFeeMode: (type, mode) => {
+  showFeeMode: (type, mode, stype = 1) => {
   	if(!mode) return ''
   	type = type || 1
   	mode = JSON.parse(mode)
   	if (type == 1) {
-  		return `${mode.time / 60}小时${mode.money}元`
+  		return mode.time >= 60 ? `${mode.time / 60 }小时${mode.money}元` : `${mode.time}分钟${mode.money}元`
   	} else {
-  		return `前${mode.startingTime}分钟${mode.startingAmount}元，超则${mode.overBillingUnit}分钟/${mode.unitPrice}元`
-  	}
+			let fee = `前${mode.startingTime}分钟${mode.startingAmount}元，超则${mode.overBillingUnit}分钟/${mode.unitPrice}元`
+			if(mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice){
+				fee = `${mode.startingTime}分钟${mode.startingAmount}元`
+			}
+			if(stype == 2){
+				fee = fee + `${mode.maxBillingTimeUnit == 1440 ? '，每天封顶' + (mode.maxBillingTimePrice || 19.9) + '元' : '，' + mode.maxBillingTimeUnit + '分钟封顶' + mode.maxBillingTimePrice + '元' }，总封顶${mode.maxAmount}元`
+			}
+			return fee
+		}
   },
-  
+
   /**
    * 套餐名称显示
    */
@@ -602,6 +615,44 @@ const util = {
    * 默认计费
    */
   defaultFee: () => {
+    let laundryMode = [
+      {
+        title: "专业除菌消毒液",
+        tag: 1,
+        package: [
+          {
+            value: 15,
+            money: 1
+          },
+          {
+            value: 18,
+            money: 2
+          },
+          {
+            value: 20,
+            money: 3
+          }
+        ]
+      },
+      {
+        title: "浓缩香薰洗衣液",
+        tag: 2,
+        package: [
+          {
+            value: 15,
+            money: 1
+          },
+          {
+            value: 18,
+            money: 2
+          },
+          {
+            value: 20,
+            money: 3
+          }
+        ]
+      }
+    ];
     let obj = {
       status: 1,
       closeType: '1',
@@ -614,6 +665,7 @@ const util = {
             money: 2
           }
         ],
+        laundryMode: laundryMode,
         payModeDetails: {
           startingTime: 180,
           startingAmount: 3,
@@ -633,6 +685,7 @@ const util = {
             money: 2
           }
         ],
+        laundryMode: laundryMode,
         payModeDetails: {
           startingTime: 180,
           startingAmount: 3,
@@ -647,7 +700,7 @@ const util = {
     }
     return obj
   },
-  
+
   /**
    * 日期排序
    */
@@ -663,7 +716,7 @@ const util = {
       }
     }
   },
-  
+
   /**
    * 校验筛选条件重复
    * @param {Object} key

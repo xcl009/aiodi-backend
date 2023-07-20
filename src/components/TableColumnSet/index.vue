@@ -14,7 +14,7 @@
         <el-button type="primary" size="mini" @click="setColumn(1)">确定</el-button>
       </div>
     </div>
-    <img :src="require('@/assets/table_head.svg')" slot="reference" class="ml-20 block cursor" width="16" alt="">
+    <i class="ml-20 block el-icon-s-tools text-primary fs-c1" slot="reference"></i>
   </el-popover>
 </template>
 

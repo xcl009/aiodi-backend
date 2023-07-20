@@ -42,7 +42,7 @@
               <div class="flex1">
                 到期时间：{{ item.expiresDatetime }}
               </div>
-              <el-button type="primary" size="medium" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})" v-if="item.cycleTypeName != '永久'">立即续费</el-button>
+              <el-button type="primary" size="medium" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})" v-if="item.cycleTypeName != '永久'">{{ checkAbility(['BRAND_MEMBER'], 3) ? '去续用' : '去续费'}}</el-button>
             </div>
           </div>
         </el-col>

@@ -51,23 +51,17 @@
       <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" highlight-current-row @selection-change="selList" :max-height="tableMaxH">
         <el-table-column type="selection" :selectable="checkSel" width="50" v-if="!isSaas()" />
+        <el-table-column label="品牌" width="150" v-if="isSaas()">
+          <template slot-scope="scope">
+            {{ scope.row.brand.name }}
+          </template>
+        </el-table-column>
         <template v-for="item in showColumn">
           <el-table-column label="设备类型" width="80" v-if="item.val && item.key == 'userNickName'">
             <template slot-scope="scope">
               {{ scope.row.deviceType.name || '密码线' }}
             </template>
           </el-table-column>
-          <!-- <el-table-column label="设备归属" width="180" v-if="lowerDevice">
-            <template slot-scope="scope">
-              <template v-if="scope.row.agent">
-                <div>{{ scope.row.agent.name }}</div>
-                <div>{{ dealPhone(scope.row.agent.mobile) }}</div>
-              </template>
-              <template v-else>
-                <div>{{ scope.row.brand.name }}</div>
-              </template>
-            </template>
-          </el-table-column> -->
           <el-table-column label="设备SN" width="130" v-if="item.val && item.key == 'factorySn'">
             <template slot-scope="scope">
               {{ scope.row.factorySn || "--" }}
@@ -80,18 +74,18 @@
                 <el-popover
                   trigger="hover"
                   >
-                  <div class="access-url" :id="`sn_${scope.row.id}`"></div>
+                  <div class="access-url" :id="`sn_${scope.row.deviceSn}`"></div>
                   <div class="flex" slot="reference">
-                    <svg-icon icon-class="h_qrcode" @mouseover="deviceCode(scope.row.id, scope.row.content)"></svg-icon>
+                    <svg-icon icon-class="h_qrcode" @mouseover="deviceCode(scope.row.deviceSn, scope.row.content)"></svg-icon>
                   </div>
                 </el-popover>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="可借/可还" width="100" v-if="myDeviceId['PA'] && item.val && item.key == 'tenantNumber'">
+          <el-table-column label="总口数/可借" width="100" v-if="myDeviceId['PA'] && item.val && item.key == 'tenantNumber'">
             <template slot-scope="scope">
               <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
-                {{ scope.row.tenantNumber }} / {{ scope.row.restoreNumber }}
+                {{ parseInt(scope.row.tenantNumber) + parseInt(scope.row.restoreNumber) }} / {{ scope.row.tenantNumber }}
               </div>
               <div v-else>--</div>
             </template>
@@ -108,7 +102,7 @@
           </el-table-column>
           <el-table-column label="铺货时间" width="150" v-if="item.val && item.key == 'bindStoreTime'">
             <template slot-scope="scope">
-              <div>{{ scope.row.bindStoreTime ? parseTime(scope.row.bindStoreTime) : '--' }}</div>
+              <div>{{ scope.row.distribute && scope.row.bindStoreTime ? parseTime(scope.row.bindStoreTime) : '--' }}</div>
             </template>
           </el-table-column>
           <el-table-column label="商户名称" min-width="200" v-if="item.val && item.key == 'store'">
@@ -135,7 +129,7 @@
           </el-table-column>
           <el-table-column label="位置备注" width="100" v-if="item.val && item.key == 'place'">
             <template slot-scope="scope">
-              <div class="cursor text-primary" @click="setRows(1, scope.row, 3)">
+              <div class="cursor text-primary text-cut" @click="setRows(1, scope.row, 3)">
                 {{ scope.row.place || '--' }}
               </div>
             </template>
@@ -233,8 +227,12 @@
         <el-table-column label="操作" width="235" :fixed="device == 'desktop' ? 'right' : false" v-if="!isStore()">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <template v-if="lowerDevice || isSaas()">
-                <el-button type="text" @click="setRows(1, scope.row, 1)">归属</el-button>
+              <template v-if="isSaas()">
+                <el-button type="text" @click="setRows(3, scope.row, 1)">归属</el-button>
+                <el-button type="text" @click="setRows(1, scope.row, 9)" :disabled="scope.row.distribute || scope.row.agentId">分配</el-button>
+              </template>
+              <template v-else-if="lowerDevice">
+                <el-button type="text" @click="setRows(3, scope.row, 1)">归属</el-button>
                 <el-popconfirm
                   class="pop"
                   cancel-button-type=""
@@ -247,8 +245,10 @@
                 </el-popconfirm>
               </template>
               <template v-else>
-                <el-button type="text" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})" :disabled="scope.row.distribute">分配</el-button>
-                <el-button type="text" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})" :disabled="scope.row.distribute">铺货</el-button>
+                <el-button type="text" @click="setRows(3, scope.row, 8, scope.$index)" :disabled="scope.row.distribute">分配</el-button>
+                <!-- <el-button type="text" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})" :disabled="scope.row.distribute">分配</el-button> -->
+                <el-button type="text" @click="setRows(3, scope.row, 10, scope.$index)" :disabled="scope.row.distribute">铺货</el-button>
+                <!-- <el-button type="text" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})" :disabled="scope.row.distribute">铺货</el-button> -->
               </template>
               <el-popconfirm
                 class="pop"
@@ -282,9 +282,9 @@
           </template>
           <template v-else-if="!isStore()">
             <el-button type="primary" size="mini" :disabled="selID.length == 0"
-              @click="$router.push({path: `/store?deviceId=${selID}`})">批量铺货</el-button>
+              @click="setRows(3, {}, 10)">批量铺货</el-button>
             <el-button type="primary" size="mini" :disabled="selID.length == 0"
-              @click="$router.push({path: `/agent?deviceId=${selID}`})">批量分配
+              @click="setRows(3, {}, 8)">批量分配
             </el-button>
           </template>
           <!-- <el-button type="primary" size="medium"
@@ -298,27 +298,6 @@
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
-      <template v-if="dialogType == 1">
-        <el-table :data="deviceInfo[curRow.deviceSn].deviceOwnerUserList" border v-if="deviceInfo[curRow.deviceSn]">
-          <el-table-column label="角色">
-            <template slot-scope="scope">
-              {{ config.system_role[scope.row.userType] }}
-            </template>
-          </el-table-column>
-          <el-table-column label="联系信息">
-            <template slot-scope="scope">
-              <div>{{ scope.row.name }}</div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
-      <template v-if="dialogType == 2">
-        <div class="text-center">
-          <el-image class="access-url" :src="deviceInfo[curRow.deviceSn].accessUrl" fit="cover" v-if="deviceInfo[curRow.deviceSn] && deviceInfo[curRow.deviceSn].accessUrl"></el-image>
-          <div class="access-url" id="accessUrl" v-else></div>
-          <div class="mt-20 text-grey">SN：{{ curRow.deviceSn }}</div>
-        </div>
-      </template>
       <template v-if="dialogType == 3">
         <el-form class="custom-form pl-20 pr-20" label-width="auto" @submit.native.prevent="dialogConfirm()">
           <el-form-item>
@@ -338,8 +317,49 @@
           </el-form-item>
         </el-form>
       </template>
+      <template v-if="dialogType == 9">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" @submit.native.prevent="dialogConfirm()">
+          <el-form-item>
+            <el-input v-model="dform.changeBrandId" placeholder="请输入品牌ID"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+      <div class="mt-30 text-center" v-if="dialogType > 2">
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+      </div>
+      <div class="mt-30 text-center" v-else>
+        <el-button size="medium" type="primary" @click="dialogStatus = false">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-drawer
+      :title="dialogTitle[dialogType]"
+      :visible.sync="drawerStatus"
+      >
+      <template v-if="dialogType == 1 && deviceInfo[curRow.deviceSn]">
+        <div class="owner-user">
+          <template v-for="(item, idx) in deviceInfo[curRow.deviceSn].deviceOwnerUserList">
+            <div :class="`flex p-15 item ` + item.userType">
+              <div class="rel mt-15 circle bg-white"></div>
+              <div class="rel flex1 p-15 ml-20 info radius-5">
+                <div class="role-label inline text-white">{{ config.system_role[item.userType] }}</div>
+                <div class="rel mt-10 fs-c1 text-black text-bold">{{ item.name }}</div>
+                <!-- <div class="flex text-gray">
+                  <i class="el-icon-phone"></i>
+                  <div>{{ dealPhone(item.mobile) }}</div>
+                </div> -->
+                <img :src="require(`@/assets/device/belong${idx + 1}.svg`)" width="86" class="abs n-img">
+              </div>
+            </div>
+          </template>
+        </div>
+      </template>
+      <template v-if="dialogType == 2">
+
+      </template>
       <template v-if="dialogType == 6">
-        <div class="text-center">
+        <div class="pl-20 pr-20">
           <div class="flex align-center justify-center">
             <div>订单可使用时长：</div>
             <el-select v-model="dform.duration" placeholder="免费时长">
@@ -349,15 +369,17 @@
           <div class="mt-15 fs-s3">注：提交后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
 
           <div class="mt-30 text-black">
-            <div class="cursor">当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span></div>
-            <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">订单计费规则未配置，暂不可下单</div>
+            <div class="cursor">
+              当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span>
+            </div>
+            <div class="mt-15 text-danger" v-if="!createOrderConfig[dform.deviceTypeCode]">订单计费规则未配置，暂不可下单</div>
             <div class="mt-15" v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">剩余赠送免费时间：{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400) - currentTime())}}</div>
             <div class="mt-15" v-else>创建订单将会扣除快活币：<span class="text-danger">{{ createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
           </div>
         </div>
       </template>
       <template v-if="dialogType == 7">
-        <el-form class="custom-form pl-20 pr-20" label-width="auto" @submit.native.prevent="dialogConfirm()">
+        <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
           <el-form-item label="设备SN">
             <el-input v-model="dform.deviceSN" placeholder="设备SN"></el-input>
           </el-form-item>
@@ -377,14 +399,166 @@
           </el-form-item>
         </el-form>
       </template>
-      <div class="mt-30 text-center" v-if="dialogType > 2">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
-      </div>
-      <div class="mt-30 text-center" v-else>
-        <el-button size="medium" type="primary" @click="dialogStatus = false">确定</el-button>
-      </div>
-    </el-dialog>
+      <template v-if="dialogType == 8">
+        <div class="flexv pl-20 pr-20 text-black" style="height: 100%;">
+          <div class="mb-20 pb-5 l-b">
+            <condition :clickSubmit="clickSubmit" :unfoldShow="false" pdClass="p-0" @reset="agentList.query={page: 1, size: 20}; getAgentList(2)" @query="getAgentList(2)" >
+              <template v-slot:defult>
+                <el-form-item label="代理姓名">
+                  <el-input placeholder="请输入代理姓名" v-model="agentList.query.name"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号">
+                  <el-input placeholder="请输入手机号" type="tel" v-model="agentList.query.mobile"></el-input>
+                </el-form-item>
+              </template>
+            </condition>
+          </div>
+          <template v-if="agentList.newly && agentList.newly.length > 0">
+            <div class="mb-15">
+              最近分配
+            </div>
+            <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
+              <template v-for="item in agentList.newly">
+                <el-col :xs="24" :md="12" class="pb-15 custom">
+                  <div class="p-15 item radius-5">
+                    <div class="flex">
+                      <div class="flex1">
+                        <div class="text-black">{{ item.name }}</div>
+                        <div class="mt-5 text-gray">{{ item.mobile }}</div>
+                      </div>
+                      <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">分配给Ta</el-button>
+                    </div>
+                    <div class="mt-5" v-if="item.agentDeviceType">
+                      <span class="text-gray">设备类型</span>
+                      <span class="ml-5" v-for="d in item.agentDeviceType">{{ d.name }}</span>
+                    </div>
+                    <div class="mt-5">
+                      <span class="text-gray">运营区域</span>
+                      <span class="ml-5">{{ item.province }}{{ item.city }}{{ item.district }}</span>
+                    </div>
+                  </div>
+                </el-col>
+              </template>
+            </el-row>
+          </template>
+
+          <div class="mb-10 flex align-center">
+            查询结果
+          </div>
+          <div v-infinite-scroll="getAgentList" infinite-scroll-distance="1" class="flex1 pt-5" style="overflow-y: auto;">
+            <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
+              <template v-for="item in agentList.list">
+                <el-col :xs="24" :md="12" class="pb-15 custom">
+                  <div class="p-15 item radius-5">
+                    <div class="flex">
+                      <div class="flex1">
+                        <div class="text-black">{{ item.name }}</div>
+                        <div class="mt-5 text-gray">{{ item.mobile }}</div>
+                      </div>
+                      <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">分配给Ta</el-button>
+                    </div>
+                    <div class="mt-5" v-if="item.agentDeviceType">
+                      <span class="text-gray">设备类型</span>
+                      <span class="ml-5" v-for="d in item.agentDeviceType">{{ d.name }}</span>
+                    </div>
+                    <div class="mt-5">
+                      <span class="text-gray">运营区域</span>
+                      <span class="ml-5">{{ item.province }}{{ item.city }}{{ item.district }}</span>
+                    </div>
+                  </div>
+                </el-col>
+              </template>
+            </el-row>
+          </div>
+        </div>
+      </template>
+      <template v-if="dialogType == 10">
+        <div class="flexv pl-20 pr-20 text-black" style="height: 100%;">
+          <div class="mb-20 pb-5 l-b">
+            <condition :clickSubmit="clickSubmit" :unfoldShow="false" pdClass="p-0" @reset="storeList.query={page: 1, size: 20}; getStoreList(2)" @query="getStoreList(2)" >
+              <template v-slot:defult>
+                <el-form-item label="商户名称">
+                  <el-input placeholder="请输入商户名称" v-model="storeList.query.name"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号">
+                  <el-input placeholder="请输入手机号" type="tel" v-model="storeList.query.mobile"></el-input>
+                </el-form-item>
+              </template>
+            </condition>
+          </div>
+          <template v-if="storeList.newly && storeList.newly.length > 0">
+            <div class="mb-15">
+              最近分配
+            </div>
+            <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
+              <template v-for="item in storeList.newly">
+                <el-col :xs="24" :md="12" class="pb-15 custom">
+                  <div class="p-15 item radius-5">
+                    <div class="flex">
+                      <img :src="item.avatar || agentInfo.avatar" width="46" height="46" class="radius-5" alt="">
+                      <div class="flex1 pl-10">
+                        <div class="text-black">{{ item.name }}</div>
+                        <div class="mt-5 text-gray text-cut">{{ item.address }}</div>
+                      </div>
+                    </div>
+                    <div class="mt-15 text-cut" v-if="item.user">
+                      <span class="text-gray">分润人</span>
+                      <span class="ml-5">{{ item.user.nickname }}</span>
+                      <span class="ml-5 text-gray">联系方式</span>
+                      <span class="ml-5">{{ item.user.mobile }}</span>
+                    </div>
+                    <div class="flex align-end">
+                      <span class="text-gray">创建时间</span>
+                      <span class="flex1 ml-5">{{ item.createTime }}</span>
+                      <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">铺给Ta</el-button>
+                    </div>
+                  </div>
+                </el-col>
+              </template>
+            </el-row>
+          </template>
+
+          <div class="mb-10 flex align-center">
+            查询结果
+          </div>
+          <div v-infinite-scroll="getStoreList" infinite-scroll-distance="1" class="flex1 pt-5" style="overflow-y: auto;">
+            <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
+              <template v-for="item in storeList.list">
+                <el-col :xs="24" :md="12" class="pb-15 custom">
+                  <div class="p-15 item radius-5">
+                    <div class="flex">
+                      <img :src="item.avatar || agentInfo.avatar" width="46" height="46" class="radius-5" alt="">
+                      <div class="flex1 pl-10">
+                        <div class="text-black">{{ item.name }}</div>
+                        <div class="mt-5 text-gray text-cut">{{ item.address }}</div>
+                      </div>
+                    </div>
+                    <div class="mt-15 text-cut" v-if="item.user">
+                      <span class="text-gray">分润人</span>
+                      <span class="ml-5">{{ item.user.nickname }}</span>
+                      <span class="ml-5 text-gray">联系方式</span>
+                      <span class="ml-5">{{ item.user.mobile }}</span>
+                    </div>
+                    <div class="flex align-end">
+                      <span class="text-gray">创建时间</span>
+                      <span class="flex1 ml-5">{{ item.createTime }}</span>
+                      <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">铺给Ta</el-button>
+                    </div>
+                  </div>
+                </el-col>
+              </template>
+            </el-row>
+          </div>
+        </div>
+      </template>
+      <template v-if="[3, 6, 7].indexOf(dialogType) > -1">
+        <div style="height: 66px;"></div>
+        <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        </div>
+      </template>
+    </el-drawer>
   </div>
 </template>
 
@@ -394,7 +568,7 @@
   import selectSearch from '@/components/condition/selectSearch'
   import TableColumnSet from '@/components/TableColumnSet/index'
   import QRCode from 'qrcodejs2'
-  import { unixTime, formatSeconds } from '@/utils/index'
+  import { unixTime, formatSeconds, currentTime } from '@/utils/index'
   export default {
     name: 'device',
     components: {
@@ -503,12 +677,6 @@
             name: 'name',
             sType: 5
           },
-          brandId: {
-            title: '品牌名称',
-            type: 'selectSearch',
-            name: 'name',
-            sType: 6
-          },
           factorySn: {
             title: '设备SN',
             type: 'input'
@@ -545,6 +713,7 @@
         // 弹出相关
         dialogType: 1,
         dialogStatus: false,
+        drawerStatus: false,
         dialogTitle: {
           1: '设备归属',
           2: '设备二维码',
@@ -552,11 +721,32 @@
           4: '设备解除关联',
           5: '关联副设备',
           6: '创建订单',
-          7: '设备链接服务器地址'
+          7: '设备链接服务器地址',
+          8: '分配设备',
+          9: '切换品牌',
+          10: '铺货给商户'
         },
         curRow: {},
         curIdx: 0,
         dform: {},
+        // 代理
+        agentList: {
+          query: {
+            page: 1,
+            size: 20
+          },
+          list: [],
+          newly: []
+        },
+        // 商户
+        storeList: {
+          query: {
+            page: 1,
+            size: 20
+          },
+          list: [],
+          newly: []
+        },
 
         /**
          * 列的配置化对象，存储配置信息
@@ -599,11 +789,6 @@
             name: '铺货时间'
           },
           {
-            key: 'onlineStatus',
-            val: true,
-            name: '在线状态'
-          },
-          {
             key: 'store',
             val: true,
             name: '商户名称'
@@ -612,6 +797,11 @@
             key: 'place',
             val: true,
             name: '位置备注'
+          },
+          {
+            key: 'onlineStatus',
+            val: true,
+            name: '在线状态'
           },
           {
             key: 'order',
@@ -659,6 +849,22 @@
       }
     },
     mounted(options) {
+      if(this.isSaas()){
+        this.$set(this.queryObj, 'brandId', {
+          title: '品牌名称',
+          type: 'selectSearch',
+          name: 'name',
+          sType: 6
+        })
+      }
+      let newlyAgent = localStorage.getItem(`newly_agent_${this.agentInfo.id}`) || ''
+      if (newlyAgent) {
+        this.agentList.newly = JSON.parse(newlyAgent)
+      }
+      let newlyStore = localStorage.getItem(`newly_store_${this.agentInfo.id}`) || ''
+      if (newlyStore) {
+        this.storeList.newly = JSON.parse(newlyStore)
+      }
     },
     methods: {
       /**
@@ -745,7 +951,7 @@
        */
       onlineDevice(){
         let params = {
-          statisticsType: this.lowerDevice ? 'CHILDREN' : 'OWNER'
+          statisticsType: this.isSaas() ? 'ALL' : this.lowerDevice ? 'CHILDREN' : 'OWNER'
         }
         if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
         this.$get('iot-saas-device/deviceOnline/statistics', params).then((res = {}) => {
@@ -769,7 +975,7 @@
         let selSnArr = [],
           selID = []
         for (var i in list) {
-          selSnArr.push(list[i].goods_sn)
+          selSnArr.push(list[i].deviceSn)
           selID.push(list[i].id)
         }
         this.selSnArr = selSnArr
@@ -825,7 +1031,7 @@
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
           this.queryOrderCount(this.arrayKeys(res.rows, 'deviceSn'))
           if(this.Ability['RELATION_DEVICE'] && this.list.length > 0){
@@ -913,9 +1119,9 @@
 
       /**
        * 操作行
-       * @param {Object} type 1 dialog类型
+       * @param {Object} type 1 dialog类型  3
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '设备归属'  2: '二维码' 3: '位置备注'  4: '设备解除关联'  5: '关联副设备' 6: '创建订单'
+       * @param {Object} dialogType dialog内容显示类型 1: '设备归属'  2: '' 3: '位置备注'  4: '设备解除关联'  5: '关联副设备' 6: '创建订单' 7: '设置服务器地址' 8: '分配设备' 9: '切换设备品牌商'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -926,27 +1132,31 @@
             this.curIdx = idx
             this.dialogStatus = true
             this.dform = {}
-            if(dialogType == 1 || dialogType == 2){
-              if(this.deviceInfo[row.deviceSn]){
-                this.$nextTick(()=>{
-                  if(!this.deviceInfo[row.deviceSn].accessUrl && dialogType == 2){
-                    this.deviceCode(this.deviceInfo[row.deviceSn].content)
-                  }
-                })
-                return
-              }
-              this.$get('iot-saas-device/admin/device/findBelong', {
-                deviceSn: row.deviceSn
-              }).then(res => {
-                this.$set(this.deviceInfo, row.deviceSn, res)
-                if(!res.accessUrl && dialogType == 2){
-                  this.deviceCode(res.content)
-                }
-              })
-            } else if(dialogType == 3){
+            if(dialogType == 3){
               this.dform = {
                 place: row.place
               }
+            }
+            break
+          case 3:
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.drawerStatus = true
+            this.dform = {}
+            if(dialogType == 1){
+              if(this.deviceInfo[row.deviceSn]) return
+              this.$get('iot-saas-device/admin/device/findBelong', {
+                deviceSn: row.deviceSn
+              }).then(res => {
+                if(res.storeName){
+                  res.deviceOwnerUserList.push({
+                    name: res.storeName,
+                    userType: 'store'
+                  })
+                }
+                this.$set(this.deviceInfo, row.deviceSn, res)
+              })
             } else if(dialogType == 6){
               let code = row.deviceTypeCode ? row.deviceTypeCode.substr(0, 2) : row.deviceType.code.substr(0, 2)
               if(!this.createOrderConfig[code]){
@@ -958,6 +1168,10 @@
                 deviceTypeCode: code,
                 duration: 2
               }
+            } else if(dialogType == 8){
+              if(this.agentList.list.length == 0) this.getAgentList()
+            } else if(dialogType == 10){
+              if(this.storeList.list.length == 0) this.getStoreList()
             }
             break
         }
@@ -966,7 +1180,7 @@
       /**
        * 弹窗确认
        */
-      dialogConfirm() {
+      dialogConfirm(row = {}) {
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
@@ -1043,7 +1257,7 @@
                 message: '操作成功',
                 type: 'success'
               })
-              this.dialogStatus = false
+              this.drawerStatus = false
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
@@ -1076,7 +1290,74 @@
                 message: '操作成功',
                 type: 'success'
               })
+              this.drawerStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 8:
+            this.$post('iot-saas-device/admin/device/bindAgent', {
+              agentId: row.id,
+              deviceSns: curRow.deviceSn ? curRow.deviceSn.split(',') : this.selSnArr
+            }).then(res => {
+              this.drawerStatus = false
+              if(curIdx){
+                this.list.splice(curIdx, 1)
+              }else{
+                this.getList()
+              }
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              let newlyAgent = JSON.parse(JSON.stringify(this.agentList.newly))
+              if(newlyAgent.length > 2) newlyAgent.pop()
+              if(this.arrayKeys(newlyAgent, 'id').indexOf(row.id) == -1) newlyAgent.unshift(row)
+              localStorage.setItem(`newly_agent_${this.agentInfo.id}`, JSON.stringify(newlyAgent))
+              this.agentList.newly = newlyAgent
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 9:
+            params.deviceSn = curRow.deviceSn
+            this.$post('iot-saas-device/admin/device/deviceChange', params).then(res => {
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
               this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 10:
+            this.$post('iot-saas-device/admin/device/bindStore', {
+              storeId: row.id,
+              deviceSns: curRow.deviceSn ? curRow.deviceSn.split(',') : this.selSnArr
+            }).then(res => {
+              this.drawerStatus = false
+              if(curIdx){
+                curRow.distribute = true
+                curRow.store = {
+                  name: row.name
+                }
+                curRow.bindStoreTime = this.parseTime(this.currentTime())
+              } else {
+                this.getList()
+              }
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              let newlyStore = JSON.parse(JSON.stringify(this.storeList.newly))
+              if(newlyStore.length > 2) newlyStore.pop()
+              if(this.arrayKeys(newlyStore, 'id').indexOf(row.id) == -1) newlyStore.unshift(row)
+              localStorage.setItem(`newly_store_${this.agentInfo.id}`, JSON.stringify(newlyStore))
+              this.storeList.newly = newlyStore
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
@@ -1100,17 +1381,63 @@
       /**
        * 设置二维码
        */
-      deviceCode(id, url){
+      deviceCode(sn, url){
         let deviceCodeIds = this.deviceCodeIds || {}
-        if(deviceCodeIds[id]) return
-        deviceCodeIds[id] = true
+        console.log(deviceCodeIds)
+        if(deviceCodeIds[sn]) return
+        deviceCodeIds[sn] = true
+        console.log(url)
         this.deviceCodeIds = deviceCodeIds
         this.$nextTick(()=>{
-          new QRCode('sn_' + id, {
+          new QRCode('sn_' + sn, {
             width: 150,
             height: 150,
             text: url
           })
+        })
+      },
+
+      /**
+       * 获取代理
+       */
+      getAgentList(type = 1){
+        let params = JSON.parse(JSON.stringify(this.agentList.query))
+        if(type == 2){
+          params.page = 1
+          this.agentList.list = []
+        }
+        params.page--
+        params.lowerAgent = false
+        if(this.onLoadAgent && type == 1) return
+        this.onLoadAgent = true
+        this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
+          this.agentList.list = this.agentList.list.concat(res.rows || [])
+          if(parseInt((parseInt(res.total) / params.size)) > params.page){
+            this.onLoadAgent = false
+            this.agentList.query.page = params.page + 2
+          }
+        })
+      },
+
+      /**
+       * 获取商户
+       */
+      getStoreList(type = 1){
+        let params = JSON.parse(JSON.stringify(this.storeList.query))
+        if(type == 2){
+          params.page = 1
+          this.storeList.list = []
+        }
+        params.page--
+        params.lowerStore = false
+        if(this.onLoadStore && type == 1) return
+        this.onLoadStore = true
+        this.$get('iot-saas-basic/admin/store/findPage', params).then(res => {
+          this.storeList.list = this.storeList.list.concat(res.rows || [])
+          if(parseInt((parseInt(res.total) / params.size)) > params.page){
+            this.onLoadStore = false
+            this.storeList.query.page = params.page + 2
+          }
         })
       },
     }
@@ -1131,5 +1458,74 @@
   }
   .relation-label{
     width: 5em;
+  }
+
+  /**
+   * 归属
+   */
+  .owner-user{
+    .item{
+      .circle{
+        width: 24px;
+        height: 24px;
+        border: 5px solid var(--olive);
+        border-radius: 24px;
+        &::after{
+          content: '';
+          position: absolute;
+          top: 20px;
+          left: 7px;
+          height: 120px;
+          width: 1px;
+          background-color: #E5E6EB;
+        }
+      }
+      &:last-child{
+        .circle{
+          &::after{
+            height: 0;
+          }
+        }
+      }
+      .info{
+        min-width: 280px;
+        border: 1px solid #E5E6EB;
+      }
+      .role-label{
+        padding: 3px 8px;
+        background: var(--olive);
+        border-radius: 2px;
+      }
+      .n-img{
+        right: 0;
+        bottom: 0;
+      }
+      &.agent{
+        .circle{
+          border-color: #F77234;
+        }
+        .role-label{
+          background: #F77234;
+        }
+      }
+      &.store{
+        .circle{
+          border-color: #0FC6C2;
+        }
+        .role-label{
+          background: #0FC6C2;
+        }
+      }
+    }
+  }
+
+  /**
+   * 代理
+   */
+  .agent-list{
+    width: 800px;
+    .item{
+      border: 1px solid #E5E6EB;
+    }
   }
 </style>
