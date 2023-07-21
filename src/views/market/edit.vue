@@ -62,8 +62,8 @@
 
 <script>
   import { pickKeys, currentTime } from  '@/utils/index'
-  import upload from '@/components/upload'
-  import Tinymce from '@/components/Tinymce'
+  import upload from '@/components/upload/'
+  import Tinymce from '@/components/Tinymce/'
   export default {
     components: {
       upload,

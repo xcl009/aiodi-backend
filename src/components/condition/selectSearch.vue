@@ -11,7 +11,7 @@
     <el-option
       v-for="item in list"
       :key="item.id"
-      :label="`${name == 'mobile' ? item.name + ' ' + (item[name] || '') : item[name]}`"
+      :label="`${(name == 'mobile' || name == 'idLastNine') ? (item.name || item.nickname) + ' ' + (item[name] || '') : item[name]}`"
       :value="isStoreOrder || emitRow ? item : item.id">
     </el-option>
   </el-select>

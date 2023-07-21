@@ -24,7 +24,9 @@
         <el-table-column label="品牌商" width="120">
           <template slot-scope="scope">
             <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].name : '--' }}</div>
-            <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].mobile : '--' }}</div>
+            <el-tooltip class="item" effect="dark" :content="brandUser[scope.row.brandId].mobile" placement="top" v-if="brandUser[scope.row.brandId]">
+              <div>{{ dealPhone(brandUser[scope.row.brandId].mobile) }}</div>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="代理信息" width="130">
