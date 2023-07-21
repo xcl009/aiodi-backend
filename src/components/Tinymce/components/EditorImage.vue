@@ -3,7 +3,7 @@
     <el-button :style="{background:color,borderColor:color}" icon="el-icon-upload" size="mini" type="primary" @click="dialogVisible=true">
       上传图片
     </el-button>
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" :modal-append-to-body="false">
       <el-upload
         :multiple="true"
         :file-list="fileList"
@@ -12,7 +12,7 @@
         :on-success="handleSuccess"
         :before-upload="beforeUpload"
         :data="upObj"
-        :action="`${baseURL}Image/uploadImage`"
+        :action="`${baseURL}iot-saas-basic/open/aliyun/upload`"
         class="editor-slide-upload"
         list-type="picture-card"
       >
@@ -47,6 +47,7 @@ export default {
       listObj: {},
       fileList: [],
       upObj: {
+        fileType: 'userAvatar',
         token: getToken()
       }
     }
@@ -71,7 +72,7 @@ export default {
       const objKeyArr = Object.keys(this.listObj)
       for (let i = 0, len = objKeyArr.length; i < len; i++) {
         if (this.listObj[objKeyArr[i]].uid === uid) {
-          this.listObj[objKeyArr[i]].url = response.data.file_url
+          this.listObj[objKeyArr[i]].url = response.data.url
           this.listObj[objKeyArr[i]].hasSuccess = true
           return
         }

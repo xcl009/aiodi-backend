@@ -433,7 +433,9 @@
     },
     computed: {
       myDeviceName(){
-        return this.$store.state.user.myDeviceName || { '充电宝': 'PA' }
+        let myDeviceName = this.$store.state.user.myDeviceName || { '充电宝': 'PA' }
+        //this.listQuery.deviceTypeCode = Object.values(myDeviceName)[0]
+        return myDeviceName
       },
       myDeviceId() {
         return this.$store.state.user.myDeviceId || {}
@@ -648,9 +650,9 @@
        * 获取订单数统计
        */
       getOrderStat(){
-        this.$get(`iot-saas-order/admin/order/device/rent/statistics/order`, {
-          deviceTypeCode: this.listQuery.deviceTypeCode || 0
-        }).then(res => {
+        let params = {}
+        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
+        this.$get(`iot-saas-order/admin/order/device/rent/statistics/order`, params).then(res => {
           let orderStat = arrayToObj(res, 'status', 'orderNumber')
           orderStat['-1'] = 0
           res.map(item => {

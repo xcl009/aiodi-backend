@@ -718,6 +718,12 @@
             title: '订单号',
             type: 'input'
           },
+          idLastNine: {
+            title: '用户ID',
+            type: 'selectSearch',
+            name: 'idLastNine',
+            sType: 1
+          },
           userIds: {
             title: '用户昵称',
             type: 'selectSearch',
@@ -757,7 +763,7 @@
         },
         formKey: {
           sel1: 'orderNo',
-          sel2: 'storeId'
+          sel2: 'idLastNine'
         },
         form: {},
         order: {},
@@ -974,6 +980,10 @@
         if (params.userIds) {
           params.userId = params.userIds
           delete params.userIds
+        }
+        if (params.idLastNine) {
+          params.userId = params.idLastNine
+          delete params.idLastNine
         }
         if (params.orderNo && params.orderNo.length == 6) {
           params.orderNoEndSix = params.orderNo
