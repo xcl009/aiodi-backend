@@ -59,8 +59,10 @@
       服务持续更新中，请持续关注服务市场
     </div>
 
-    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
-      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+    <el-drawer
+      :title="dialogTitle[dialogType]"
+      :visible.sync="drawerStatus"
+      >
       <template v-if="dialogType == 1">
         <div class="flex justify-center">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
@@ -77,14 +79,21 @@
                 placeholder="请选择结束时间">
               </el-date-picker>
             </el-form-item>
+            <el-form-item label="支付快活币">
+              <el-input v-model="dform.price" />
+              <div>支付快活币大0时，表示该记录显示为品牌正常支付，周期为月付。</div>
+            </el-form-item>
           </el-form>
         </div>
       </template>
-      <div class="mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
-      </div>
-    </el-dialog>
+      <template v-if="[1].indexOf(dialogType) > -1">
+        <div style="height: 66px;"></div>
+        <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        </div>
+      </template>
+    </el-drawer>
   </div>
 </template>
 
@@ -115,7 +124,7 @@
 
         // 弹出相关
         dialogType: 1,
-        dialogStatus: false,
+        drawerStatus: false,
         dialogTitle: {
           1: '赠送服务'
         },
@@ -228,7 +237,7 @@
                 giveEndDatetime: this.parseTime(this.currentTime() + 30 * 86400, '{y}-{m}-{d}')
               }
             }
-            this.dialogStatus = true
+            this.drawerStatus = true
             break
         }
       },
@@ -261,7 +270,7 @@
                 message: '操作成功',
                 type: 'success'
               })
-              this.dialogStatus = false
+              this.drawerStatus = false
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false

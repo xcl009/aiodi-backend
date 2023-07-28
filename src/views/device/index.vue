@@ -260,7 +260,7 @@
               >
                 <el-button type="text" :disabled="!scope.row.distribute" slot="reference">解绑</el-button>
               </el-popconfirm>
-              <el-button type="text" v-if="myDeviceId['PA']" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">弹出</el-button>
+              <el-button type="text" v-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">弹出</el-button>
               <!-- <div class="text-primary" v-if="scope.row.distribute && checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType]) && (isBrand() || isSaas())" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">在线统计</div> -->
             </div>
           </template>

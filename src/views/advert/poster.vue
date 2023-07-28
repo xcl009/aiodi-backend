@@ -33,14 +33,16 @@
 <script>
   export default {
     name: 'poster',
-    components: {
-
-    },
     data() {
       return {
         category: 'ORDINARY',
         list: [],
         listLoading: true
+      }
+    },
+    computed: {
+      myDeviceId() {
+        return this.$store.state.user.myDeviceId
       }
     },
     mounted() {
@@ -54,7 +56,13 @@
         this.$get('iot-saas-advert/admin/advert/findAdvertType', {
           category: this.category
         }).then(res => {
-          this.list = res
+          let list = []
+          res.map(item => {
+            if(this.myDeviceId[item.advertTypeCode]){
+              list.push(item)
+            }
+          })
+          this.list = list
           this.listLoading = false
         }).catch(() => {
           this.listLoading = false

@@ -62,12 +62,11 @@
         <el-button type="primary" @click="saveQrcode()">下载二维码</el-button>
       </div>
     </el-dialog> -->
-
-
+    
     <el-drawer
       :title="dialogTitle[dialogType]"
       :visible.sync="drawerStatus"
-      :modal-append-to-body="false"
+      :append-to-body="true"
       >
       <template v-if="dialogType == 1">
         <div class="p-30 flex flex-wrap justify-around text-center">
@@ -81,7 +80,7 @@
         </div>
       </template>
       <template v-if="dialogType == 2">
-        <div class="pl-20 pr-20" v-html="updateDetails.updateDetails"></div>
+        <div class="pl-40 pr-40" v-html="updateDetails.updateDetails" style="width: 500px;"></div>
       </template>
     </el-drawer>
   </div>

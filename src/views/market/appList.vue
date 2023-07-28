@@ -52,9 +52,14 @@
             </div>
             <div class="mt-15 flex align-center">
               <template v-if="checkAbility(['BRAND_MEMBER'], 3)">
-                <div class="flex1" >
-                  <span class="fs-b3 text-danger">￥0</span>
-                  <span class="text-grey">/月</span>
+                <div class="flex1">
+                  <span class="mr-5 fs-b3 text-danger">￥0</span>
+                  <template v-for="(sitem, idx) in item.priceSettings">
+                    <template v-if="idx == 0">
+                      <span class="text-grey text-line">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
+                      <span class="text-grey">{{ sitem.monthAmount > 0 ? `/月` : sitem.yearAmount > 0 ? `/年` : `/永久` }}</span>
+                    </template>
+                  </template>
                 </div>
               </template>
               <template v-else>

@@ -167,7 +167,7 @@ const util = {
   dealPhone: (tel, start = 3, end = 7, symbol = '****') => {
     if (!tel) return tel
     tel = '' + tel
-    return tel.substr(0, start) + symbol + tel.substring(end, tel.length -1)
+    return tel.substr(0, start) + symbol + tel.substring(end, tel.length)
   },
 
   // 获取操作系统信息
@@ -414,7 +414,7 @@ const util = {
 		if (!key || !Array.isArray(array)) return {}
 		let obj = {}
 		array.map(item => {
-			if(nkey && item[key] && item[nkey]){
+			if(nkey && item[nkey] && (item[key] || item[key] == 0) ){
 				obj[item[key]] = item[nkey]
 			} else if (item[key] != 'undefined' && item[key] != null) {
 				obj[item[key]] = item
@@ -614,7 +614,7 @@ const util = {
   /**
    * 默认计费
    */
-  defaultFee: () => {
+  defaultFee: (code = '') => {
     let laundryMode = [
       {
         title: "专业除菌消毒液",
@@ -659,6 +659,12 @@ const util = {
       storePayConfig: ['weixin', 'alipay'],
       weixinPayMode: {
         modeType: 'PACKAGE',
+        WMpayModeDetail: [
+          {
+            time: '46',
+            money: 2
+          }
+        ],
         payModeDetail: [
           {
             time: 60,
@@ -679,6 +685,12 @@ const util = {
       },
       alipayPayMode: {
         modeType: 'PACKAGE',
+        WMpayModeDetail: [
+          {
+            time: '46',
+            money: 2
+          }
+        ],
         payModeDetail: [
           {
             time: 60,
@@ -697,6 +709,10 @@ const util = {
           depositAmount: 99
         },
       }
+    }
+    if(code && obj.weixinPayMode[`${code}payModeDetail`]){
+      obj.weixinPayMode.payModeDetail = obj.weixinPayMode[`${code}payModeDetail`]
+      obj.alipayPayMode.payModeDetail = obj.alipayPayMode[`${code}payModeDetail`]
     }
     return obj
   },

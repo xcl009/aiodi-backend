@@ -97,7 +97,7 @@
             <div class="flex flex-wrap">
               <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">订单列表</el-button>
               <el-button type="primary" size="mini" @click="$router.push({path: `/store?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">商户列表</el-button>
-              <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+              <el-button type="primary" size="mini" @click="toLogin(scope.row)">代理管理</el-button>
             </div>
           </template>
         </el-table-column>

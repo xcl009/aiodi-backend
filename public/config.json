@@ -26,7 +26,7 @@
       "预存": "DEPOSIT"
     },
     "PA": {
-      "免押": "DEPOSIT_FREE",
+      "免押+预存": "DEPOSIT_FREE",
       "预存": "DEPOSIT"
     },
     "WM": {

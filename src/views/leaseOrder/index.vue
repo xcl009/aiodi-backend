@@ -6,7 +6,7 @@
           <img :src="require('@/assets/lease/total.svg')" width="54">
           <div class="flex1 ml-10">
             <div class="mb-5">总租赁订单数</div>
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.orderNumber }}</span>笔</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.orderNumber || 0 }}</span>笔</div>
           </div>
         </div>
       </el-col>
@@ -15,7 +15,7 @@
           <img :src="require('@/assets/lease/device.svg')" width="54">
           <div class="flex1 ml-10">
             <div class="mb-5">总租赁设备数</div>
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceNumber || 0 }}</span>台</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceNumber || 0.00 }}</span>台</div>
           </div>
         </div>
       </el-col>
@@ -24,7 +24,7 @@
           <img :src="require('@/assets/lease/ok.svg')" width="54">
           <div class="flex1 ml-10">
             <div class="mb-5">已扣金额</div>
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.payAmount }}</span>元</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.payAmount || 0.00 }}</span>元</div>
           </div>
         </div>
       </el-col>
@@ -33,7 +33,7 @@
           <img :src="require('@/assets/lease/wait.svg')" width="54">
           <div class="flex1 ml-10">
             <div class="mb-5">代扣金额</div>
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount }}</span>元</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount || 0.00 }}</span>元</div>
           </div>
         </div>
       </el-col>
@@ -50,7 +50,8 @@
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">订单状态</div>
           <el-tabs class="flex1" v-model="listQuery.status" @tab-click="toQuery()">
-            <el-tab-pane :label="`${item.title }(${orderStat[item.value] || 0})`" :name="''+item.value+''" v-for="item in orderTabs" />
+            <el-tab-pane :label="`${item.title }(${orderStat[item.value] || 0})`" :name="''+item.value+''"
+              v-for="item in orderTabs" />
           </el-tabs>
         </div>
       </template>
@@ -64,23 +65,27 @@
               </template>
             </el-select>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
+              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`"
+                v-model="form[formKey[`sel${item}`]]"></el-input>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
-              <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"
-                :isStoreOrder="['storeId'].indexOf(formKey[`sel${item}`])> -1"></selectSearch>
+              <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType"
+                :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`"
+                @change="toQuery()" :isStoreOrder="['storeId'].indexOf(formKey[`sel${item}`])> -1"></selectSearch>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
-              <el-select v-model="form[formKey[`sel${item}`]]" :placeholder="`${queryObj[formKey['sel'+item]].title}`" clearable @change="toQuery()">
-                <el-option :label="item" :value="key" v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
+              <el-select v-model="form[formKey[`sel${item}`]]" :placeholder="`${queryObj[formKey['sel'+item]].title}`"
+                clearable @change="toQuery()">
+                <el-option :label="item" :value="key"
+                  v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
               </el-select>
             </template>
           </div>
         </el-form-item>
         <el-form-item>
           <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange" range-separator="-"
-            value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期"
-            :picker-options="pickerOptionsEnd" @change="toQuery()">
+            value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptionsEnd"
+            @change="toQuery()">
           </el-date-picker>
         </el-form-item>
       </template>
@@ -90,15 +95,18 @@
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">查询表格</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 1)">创建订单</div>
-        <table-column-set storageKey="leaseOrderTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
+        <table-column-set storageKey="leaseOrderTableColumn" :showColumn.sync="showColumn"
+          :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
-      <el-table class="custom" id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
+      <el-table class="custom" id="table_box" ref="table_box" v-loading="listLoading" :data="list"
+        element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
         <template v-for="item in showColumn" v-if="item.val">
           <el-table-column :label="item.name" min-width="140" v-if="item.key == 'name'">
             <template slot-scope="scope">
               <div class="flex align-center">
-                <div :class="`role-label fs-s2 ` + (scope.row.createType == 1 ? 'agent' : '')">{{ scope.row.createType == 1 ? '代' : '商' }}</div>
+                <div :class="`role-label fs-s2 ` + (scope.row.createType == 1 ? 'agent' : '')">
+                  {{ scope.row.createType == 1 ? '代' : '商' }}</div>
                 <div class="pl-5 flex1">{{ scope.row.name }}</div>
               </div>
             </template>
@@ -124,16 +132,12 @@
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(3, scope.row, 2)">详情</el-button>
-              <el-button type="text" @click="setRows(3, scope.row, 3)" :disabled="[2, 9].indexOf(scope.row.status) > -1">编辑</el-button>
-              <el-popconfirm
-                class="pop"
-                cancel-button-type=""
-                icon="el-icon-info"
-                icon-color="#FF7D00"
-                title="确定取消该订单吗？取消后不可恢复"
-                @onConfirm="closeOrder(scope.row)"
-              >
-                <el-button type="text" :disabled="[2, 9].indexOf(scope.row.status) > -1" slot="reference"><span :class="{'text-danger': [2, 9].indexOf(scope.row.status) == -1}">取消</span></el-button>
+              <el-button type="text" @click="setRows(3, scope.row, 3)"
+                :disabled="[2, 9].indexOf(scope.row.status) > -1">编辑</el-button>
+              <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+                title="确定取消该订单吗？取消后不可恢复" @onConfirm="closeOrder(scope.row)">
+                <el-button type="text" :disabled="[2, 9].indexOf(scope.row.status) > -1" slot="reference"><span
+                    :class="{'text-danger': [2, 9].indexOf(scope.row.status) == -1}">取消</span></el-button>
               </el-popconfirm>
             </div>
           </template>
@@ -141,13 +145,8 @@
       </el-table>
 
       <div class="flex justify-end">
-        <pagination
-          v-show="listTotal > 0"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          :total="parseInt(listTotal)"
-          @pagination="getList"
-        />
+        <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
+          :total="parseInt(listTotal)" @pagination="getList" />
       </div>
     </div>
 
@@ -165,10 +164,7 @@
       </div>
     </el-dialog>
 
-    <el-drawer
-      :title="dialogTitle[dialogType]"
-      :visible.sync="drawerStatus"
-      >
+    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
       <template v-if="dialogType == 1 || dialogType == 3">
         <el-form class="custom-form" ref="form" :rules="rules" :model="dform" :hide-required-asterisk="true">
           <div class="pl-20 pr-20 text-black">
@@ -180,7 +176,8 @@
                 <el-option label="代理商手机号" :value="1"></el-option>
                 <el-option label="商户手机号" :value="0"></el-option>
               </el-select>
-              <selectSearch :type="dform.createType == 1 ? 5 : 3" :emitRow="true" name="mobile" :placeholder="dform.createType == 1 ? '请输入代理商手机号' : '请输入商户手机号'" @change="getSearchRow"></selectSearch>
+              <selectSearch :type="dform.createType == 1 ? 5 : 3" :emitRow="true" name="mobile"
+                :placeholder="dform.createType == 1 ? '请输入代理商手机号' : '请输入商户手机号'" @change="getSearchRow"></selectSearch>
             </div>
 
             <template v-if="showRow.id || curRow.id">
@@ -235,13 +232,8 @@
               </el-input>
             </el-form-item>
             <el-form-item label="扣款开始时间">
-              <el-date-picker
-                v-model="dform.deductionTimeStr"
-                type="date"
-                format="yyyy-MM-dd"
-                value-format="timestamp"
-                placeholder="选择日期"
-                :disabled="curRow.id ? true: false">
+              <el-date-picker v-model="dform.deductionTimeStr" type="date" format="yyyy-MM-dd" value-format="timestamp"
+                placeholder="选择日期" :disabled="curRow.id ? true: false" :picker-options="deductionTimeStart">
               </el-date-picker>
             </el-form-item>
           </div>
@@ -251,10 +243,7 @@
         <div class="pl-20 pr-20 text-black">
           <div class="mb-15">
             租赁单号：{{ curRow.orderNo }}
-            <el-tag
-              class="ml-10"
-              :type="(orderTab[curRow.status] ? orderTab[curRow.status].type : '')"
-              size="mini"
+            <el-tag class="ml-10" :type="(orderTab[curRow.status] ? orderTab[curRow.status].type : '')" size="mini"
               effect="dark">
               {{ orderTab[curRow.status] ? orderTab[curRow.status].title : '' }}
             </el-tag>
@@ -313,7 +302,8 @@
                 <img :src="require('@/assets/lease/info_amout.svg')" width="32">
                 <div class="pl-10 flex-1">
                   <div>应扣款总金额</div>
-                  <div class="mt-5"><span class="fs-b2 text-bold">{{ curRow.amountTotal }}</span><span class="fs-s2 text-gray"> 元</span></div>
+                  <div class="mt-5"><span class="fs-b2 text-bold">{{ curRow.amountTotal }}</span><span
+                      class="fs-s2 text-gray"> 元</span></div>
                 </div>
               </div>
             </el-col>
@@ -322,7 +312,9 @@
                 <img :src="require('@/assets/lease/info_time.svg')" width="32">
                 <div class="pl-10 flex-1">
                   <div>剩余未扣金额</div>
-                  <div class="mt-5"><span class="fs-b2 text-bold">{{ accSub(curRow.amountTotal, curRow.payAmount) }}</span><span class="fs-s2 text-gray"> 元</span></div>
+                  <div class="mt-5"><span
+                      class="fs-b2 text-bold">{{ accSub(curRow.amountTotal, curRow.payAmount) }}</span><span
+                      class="fs-s2 text-gray"> 元</span></div>
                 </div>
               </div>
             </el-col>
@@ -332,9 +324,11 @@
                 <div class="pl-10 flex-1">
                   <div>距离下次扣款</div>
                   <div class="mt-5" v-if="[2, 9].indexOf(curRow.status) == -1">
-                    <span class="fs-b2 text-bold">{{ formatSeconds(accSub(unixTime(curRow.nextDeductionTime), currentTime()), 'd-h') || '1小时内' }}</span>
+                    <span
+                      class="fs-b2 text-bold">{{ formatSeconds(accSub(unixTime(curRow.nextDeductionTime), currentTime()), 'd-h') || '1天内' }}</span>
                   </div>
-                  <div class="mt-5" v-else><span class="fs-b2 text-bold">{{ curRow.status == 9 ? '已取消' : '已完成' }}</span></div>
+                  <div class="mt-5" v-else><span class="fs-b2 text-bold">{{ curRow.status == 9 ? '已取消' : '已完成' }}</span>
+                  </div>
                 </div>
               </div>
             </el-col>
@@ -358,13 +352,8 @@
             </el-table-column>
           </el-table>
           <div class="flex justify-end" v-if="dform.listTotal > 0">
-            <pagination
-              :page.sync="dform.page"
-              :limit.sync="dform.size"
-              :total="parseInt(dform.listTotal)"
-              layout="total,prev,pager,next"
-              @pagination="getTradeLog"
-            />
+            <pagination :page.sync="dform.page" :limit.sync="dform.size" :total="parseInt(dform.listTotal)"
+              layout="total,prev,pager,next" @pagination="getTradeLog" />
           </div>
         </div>
       </template>
@@ -392,8 +381,7 @@
     arrayToObj
   } from '@/utils/index'
 
-  const orderStatus = [
-    {
+  const orderStatus = [{
       value: '-1',
       title: '全部',
       nkey: 'orderNumber'
@@ -432,15 +420,17 @@
       Pagination
     },
     computed: {
-      myDeviceName(){
-        let myDeviceName = this.$store.state.user.myDeviceName || { '充电宝': 'PA' }
+      myDeviceName() {
+        let myDeviceName = this.$store.state.user.myDeviceName || {
+          '充电宝': 'PA'
+        }
         //this.listQuery.deviceTypeCode = Object.values(myDeviceName)[0]
         return myDeviceName
       },
       myDeviceId() {
         return this.$store.state.user.myDeviceId || {}
       },
-      agentInfo(){
+      agentInfo() {
         return this.$store.getters.agentInfo
       },
       device() {
@@ -485,7 +475,10 @@
           createType: {
             title: '租赁角色',
             type: 'select',
-            selectArr: {0: '商户', 1: '代理'}
+            selectArr: {
+              0: '商户',
+              1: '代理'
+            }
           }
         },
         formKey: {
@@ -526,6 +519,11 @@
             }
           }
         },
+        deductionTimeStart: {
+          disabledDate: (time) => {
+            return time.getTime() < Date.now()
+          }
+        },
 
         // 弹出相关
         dialogType: 1,
@@ -546,8 +544,7 @@
          * 列的配置化对象，存储配置信息
          */
         showColumn: [],
-        defaultColumn: [
-          {
+        defaultColumn: [{
             key: 'name',
             val: true,
             name: '租赁人'
@@ -617,18 +614,41 @@
          * 添加修改校验条件
          */
         rules: {
-          deviceTypeCode: [
-            { required: true, message: '请选择设备类型', trigger: 'change' }
-          ],
-          amountTotal: [
-            { required: true, message: '请输入订单总金额', trigger: 'blur' }
-          ],
-          deviceNum: [
-            { required: true, message: '请填写设备数量', trigger: 'blur' }
-          ],
-          deductionAmount: [
-            { required: true, message: '请填写周期扣款金额', trigger: 'blur' }
-          ]
+          deviceTypeCode: [{
+            required: true,
+            message: '请选择设备类型',
+            trigger: 'change'
+          }],
+          amountTotal: [{
+            required: true,
+            message: '请输入订单总金额',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^([1-9][0-9]*|0)(\.[0-9]?[1-9])?$/,
+            message: '范围在1-9999999',
+            trigger: 'blur'
+          }],
+          deviceNum: [{
+              required: true,
+              message: '请填写设备数量',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^(?!00)(?:[0-9]{1,7}|9999999)$/,
+              message: '范围在1-999999',
+              trigger: 'blur'
+          }],
+          deductionAmount: [{
+            required: true,
+            message: '请填写周期扣款金额',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^(?!00)(?:[0-9]{1,7}|9999999)$/,
+            message: '范围在1-999999',
+            trigger: 'blur'
+          }]
         }
       }
     },
@@ -640,18 +660,18 @@
       /**
        * 获取统计
        */
-      getTotalStat(){
+      getTotalStat() {
         this.$get(`iot-saas-order/admin/order/device/rent/statistics/all/${this.agentInfo.brandId}`).then(res => {
-          this.totalStat = res
+          this.totalStat = res || {}
         })
       },
 
       /**
        * 获取订单数统计
        */
-      getOrderStat(){
+      getOrderStat() {
         let params = {}
-        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
+        if (this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
         this.$get(`iot-saas-order/admin/order/device/rent/statistics/order`, params).then(res => {
           let orderStat = arrayToObj(res, 'status', 'orderNumber')
           orderStat['-1'] = 0
@@ -666,7 +686,7 @@
        * 搜索查询
        */
       toQuery() {
-        if(this.clickSubmit) return
+        if (this.clickSubmit) return
         this.clickSubmit = true
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -677,8 +697,8 @@
       /**
        * 重置查询
        */
-      reset(){
-        if(this.clickSubmit) return
+      reset() {
+        if (this.clickSubmit) return
         this.clickSubmit = true
         this.form = {}
         this.listQuery.page = 1
@@ -689,12 +709,12 @@
       /**
        * 获取其他信息
        */
-      getOtherData(url, params){
-      	return new Promise((resolve) => {
-      		this.$post(url, params).then(res => {
-      			resolve(res)
-      		})
-      	})
+      getOtherData(url, params) {
+        return new Promise((resolve) => {
+          this.$post(url, params).then(res => {
+            resolve(res)
+          })
+        })
       },
 
       /**
@@ -711,8 +731,8 @@
         }
         if (params.status < 0) delete params.status
         if (params.deviceTypeCode == 0) delete params.deviceTypeCode
-        for(var i in params){
-          if(i.indexOf('deductionId') > -1 && params[i]){
+        for (var i in params) {
+          if (i.indexOf('deductionId') > -1 && params[i]) {
             let v = params[i]
             delete params[i]
             params.deductionId = v
@@ -722,37 +742,38 @@
           this.listLoading = false
           this.clickSubmit = false
           let list = res.rows || []
-          if(list.length > 0){
-            let storeIds = [], agentIds = []
+          if (list.length > 0) {
+            let storeIds = [],
+              agentIds = []
             list.map(item => {
-              if(item.createType == 0 && storeIds.indexOf(item.deductionId) == -1){
+              if (item.createType == 0 && storeIds.indexOf(item.deductionId) == -1) {
                 storeIds.push(item.deductionId)
-              }else if(item.createType == 1 && agentIds.indexOf(item.deductionId) == -1){
+              } else if (item.createType == 1 && agentIds.indexOf(item.deductionId) == -1) {
                 agentIds.push(item.deductionId)
               }
             })
-            if(storeIds.length > 0){
+            if (storeIds.length > 0) {
               await this.getOtherData('iot-saas-order/admin/order/device/rent/getDeductions', {
                 deductionType: 0,
                 deductionIds: storeIds
               }).then(ares => {
                 let storeObj = arrayToObj(ares, 'id')
                 list.map(item => {
-                  if(item.createType == 0 && storeObj[item.deductionId]){
+                  if (item.createType == 0 && storeObj[item.deductionId]) {
                     delete storeObj[item.deductionId]['id']
                     return item = Object.assign(item, storeObj[item.deductionId])
                   }
                 })
               })
             }
-            if(agentIds.length > 0){
+            if (agentIds.length > 0) {
               await this.getOtherData('iot-saas-order/admin/order/device/rent/getDeductions', {
                 deductionType: 1,
                 deductionIds: agentIds
               }).then(ares => {
                 let agentObj = arrayToObj(ares, 'id')
                 list.map(item => {
-                  if(item.createType == 1 && agentObj[item.deductionId]){
+                  if (item.createType == 1 && agentObj[item.deductionId]) {
                     delete agentObj[item.deductionId]['id']
                     return item = Object.assign(item, agentObj[item.deductionId])
                   }
@@ -761,9 +782,9 @@
             }
           }
           this.list = list
-          if(params.page == 0){
+          if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.table_box.$el.offsetTop - 85
+            this.tableMaxH = window.innerHeight - this.$refs.table_box.$el.offsetTop - 65
           }
         }).catch(() => {
           this.clickSubmit = false
@@ -791,8 +812,8 @@
             this.curRow = row
             this.curIdx = idx
             this.drawerStatus = true
-            if(dialogType == 1){
-              if(!this.dform.createType){
+            if (dialogType == 1) {
+              if (!this.dform.createType) {
                 this.dform = {
                   marketCode: 'DEVICE_LEASE',
                   createType: 1,
@@ -802,13 +823,13 @@
               }
             } else {
               this.dform = {}
-              if(dialogType == 2 && row.payAmount > 0){
+              if (dialogType == 2 && row.payAmount > 0) {
                 this.dform = {
                   page: 1,
                   size: 20,
                 }
                 this.getTradeLog()
-              }else if(dialogType == 3){
+              } else if (dialogType == 3) {
                 this.dform = {
                   createType: row.createType,
                   deviceTypeCode: row.deviceTypeCode,
@@ -827,7 +848,7 @@
       /**
        * 获取扣款记录
        */
-      getTradeLog(){
+      getTradeLog() {
         let params = JSON.parse(JSON.stringify(this.dform))
         this.$get('iot-saas-pay/api/pay/tradeLog/page', {
           page: params.page - 1,
@@ -849,12 +870,13 @@
         if (this.clickSubmit) return
         this.clickSubmit = true
         switch (this.dialogType) {
-          case 1: case 3:
+          case 1:
+          case 3:
             let url = 'iot-saas-order/admin/order/device/rent/save'
-            if(curRow.id){
+            if (curRow.id) {
               url = `iot-saas-order/admin/order/device/rent/update/${curRow.id}`
             }
-            if(!params.deductionId && !curRow.id){
+            if (!params.deductionId && !curRow.id) {
               this.$message({
                 message: '请先查找租赁对象',
                 type: 'error'
@@ -862,7 +884,8 @@
               this.clickSubmit = false
               return
             }
-            if(params.deductionTimeStr) params.deductionTimeStr = this.parseTime(params.deductionTimeStr / 1000, '{y}-{m}-{d} {h}:{i}:{s}')
+            if (params.deductionTimeStr) params.deductionTimeStr = this.parseTime(params.deductionTimeStr / 1000,
+              '{y}-{m}-{d} {h}:{i}:{s}')
             this.$refs['form'].validate((valid) => {
               if (valid) {
                 this.$post(url, params).then(res => {
@@ -870,9 +893,9 @@
                     message: '操作成功',
                     type: 'success'
                   })
+                  this.clickSubmit = false
                   this.toQuery()
                   this.drawerStatus = false
-                  this.clickSubmit = false
                 }).catch(err => {
                   this.clickSubmit = false
                 })
@@ -887,7 +910,7 @@
       /**
        * 取消订单
        */
-      closeOrder(row){
+      closeOrder(row) {
         this.$post(`iot-saas-order/admin/order/device/rent/close/${row.id}`).then(res => {
           this.$message({
             message: '操作成功',
@@ -901,7 +924,7 @@
       /**
        * 搜索数据显示
        */
-      getSearchRow(row){
+      getSearchRow(row) {
         this.showRow = row
         this.dform.deductionId = row.id
       },
@@ -910,14 +933,17 @@
        * 合计
        */
       getSummaries(param) {
-        const { columns, data } = param
+        const {
+          columns,
+          data
+        } = param
         const sums = []
         columns.forEach((column, index) => {
           if (index === 0) {
             sums[index] = '已扣金额合计(元)';
             return;
           }
-          if(index == columns.length - 1){
+          if (index == columns.length - 1) {
             sums[index] = this.curRow.payAmount
           }
         })
@@ -928,20 +954,23 @@
 </script>
 
 <style lang="scss" scoped>
-  .pay-i{
+  .pay-i {
     border: 1px solid #E5E6EB;
   }
-  .role-label{
+
+  .role-label {
     padding: 0 4px;
     border-radius: 2px;
     background: #E8FFFB;
     color: #0FC6C2;
-    &.agent{
+
+    &.agent {
       background: #FFF3E8;
       color: #F77234;
     }
   }
-  .max-select.l-r{
+
+  .max-select.l-r {
     border-right: solid #E5E6EB 1px;
   }
 </style>

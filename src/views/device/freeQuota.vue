@@ -229,6 +229,10 @@
           })
           return
         }
+        if(params.nickname && !isNaN(params.nickname)){
+          params.idLastNine = params.nickname
+          delete params.nickname
+        }
         this.searchStatus = false
         if(this.clickSubmit) return
         this.clickSubmit = true

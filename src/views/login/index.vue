@@ -144,7 +144,7 @@
         loading: false,
         passwordType: 'password',
         redirect: undefined,
-
+        
         gid: this.$route.params.gid || getToken('brandId') || '',
         THEME: ''
       }
@@ -201,6 +201,7 @@
         this.$refs.loginForm.validate(valid => {
           if (valid) {
             this.loading = true
+            if(this.gid) this.loginForm.brandId = this.gid
             this.$store.dispatch('user/login', this.loginForm).then(res => {
               location.href = this.redirect || '/home'
               this.loading = false
