@@ -22,7 +22,7 @@
       </el-col>
       <el-col :span="24" class="rel">
         <div class="abs p-all flex justify-center">
-          <div class="o-v card-panel cursor" @click="$router.push({path: `/order`})">
+          <div class="o-v card-panel cursor" @click="Ability['order'] ? $router.push({path: `/order`}) : ''">
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
                 :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">总订单数</div>
@@ -34,7 +34,7 @@
       <el-col :span="24" class="rel">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({path: isSaas() ? `/device` : `/device`})">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="delComma(orderStat.deviceNumber)"
+            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
                 :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">总设备数</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/device.svg')"></el-image>
@@ -90,7 +90,7 @@
       </template>
     </el-row>
 
-    <el-row :gutter="20" type="flex" class="two-box mt-20 pl-20 pr-20 text-white">
+    <el-row :gutter="20" type="flex" class="two-box flex-wrap mt-20 pl-20 pr-20 text-white">
       <el-col :sm="24" :lg="(checkHotel() && isStore()) || !isStore() ? 8 : 12">
         <div class="p-20 item-box">
           <div class="mb-20 flex align-center">
@@ -137,14 +137,14 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">设备数量统计</div>
           </div>
-          <div class="chart-device" ref="chart_device" style="height: 100%;"></div>
+          <div class="chart-device" ref="chart_device" style="height: 300px;"></div>
         </div>
       </el-col>
       <el-col :sm="24" :lg="8" v-if="!isStore()">
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">设备产出使用情况-模拟数据</div>
+            <div class="flex1 fs-b2">商户收益统计</div>
           </div>
           <el-table class="store-table text-white" :highlight-current-row="false"
             :header-row-style="{background:'none'}"
@@ -154,37 +154,37 @@
             <el-table-column label="排名" width="70">
               <template slot-scope="scope">
                 <span class="fs-c1 text-bold"
-                  :class="{'y-yellow': scope.row.ranking == 1, 'baby-blue': scope.row.ranking == 3, 'text-primary': scope.row.ranking == 2}">NO.{{ scope.row.ranking }}</span>
+                  :class="{'y-yellow': scope.$index == 0, 'baby-blue': scope.$index == 2, 'text-primary': scope.$index == 1}">NO.{{ scope.$index + 1 }}</span>
               </template>
             </el-table-column>
             <el-table-column label="商户名称" min-width="90">
               <template slot-scope="scope">
-                <span class="y-yellow">{{ scope.row.name.substring(0, 2) }}**</span>
+                <span class="y-yellow">{{ scope.row.storeName.substring(0, 2) }}**</span>
               </template>
             </el-table-column>
             <el-table-column label="设备数量" min-width="90">
               <template slot-scope="scope">
-                {{ scope.row.deviceNum }}
+                {{ scope.row.deviceNumber || 0 }}
               </template>
             </el-table-column>
             <el-table-column label="订单量" min-width="90">
               <template slot-scope="scope">
-                {{ scope.row.orderNum }}
+                {{ scope.row.orderNumber || 0 }}
               </template>
             </el-table-column>
             <el-table-column label="总金额" min-width="120">
               <template slot-scope="scope">
-                {{ scope.row.orderAmount }}
+                {{ scope.row.amount || 0 }}
               </template>
             </el-table-column>
             <el-table-column label="在线">
               <template slot-scope="scope">
-                {{ scope.row.deviceOnline }}
+                {{ scope.row.onlineNumber || 0}}
               </template>
             </el-table-column>
             <el-table-column label="离线">
               <template slot-scope="scope">
-                {{ scope.row.deviceOffline }}
+                {{ scope.row.offNumber || 0 }}
               </template>
             </el-table-column>
           </el-table>
@@ -250,12 +250,12 @@
                 {{ scope.row.sourceType == 2 ? '支付宝' : '微信' }}
               </template>
             </el-table-column>
-            <el-table-column label="开始时间" width="150">
+            <el-table-column label="开始时间" width="160">
               <template slot-scope="scope">
                 {{ scope.row.chargeStartTime || "--" }}
               </template>
             </el-table-column>
-            <el-table-column label="结束时间" width="150">
+            <el-table-column label="结束时间" width="160">
               <template slot-scope="scope">
                 {{ scope.row.chargeEndTime || "--" }}
               </template>
@@ -293,7 +293,15 @@
       </el-col>
     </el-row>
 
-    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
+    <!-- <el-dialog
+      title="提示"
+      :visible.sync="dialogStatus111"
+      :modal="false"
+      >
+      <div>sdfdsfsdf</div>
+    </el-dialog> -->
+
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :close-on-press-escape="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 6">
         <div class="text-center">
@@ -464,6 +472,7 @@
         // 弹出相关
         dialogType: 1,
         dialogStatus: false,
+        dialogStatus111: true,
         dialogTitle: {
           6: '创建订单'
         },
@@ -477,10 +486,11 @@
         },
         orderList: [],
 
-        storeList: [
+        storeList: [],
+        storeLists: [
           {
             ranking: 1,
-            name: '春生饭店',
+            storeName: '春生饭店',
             deviceNum: 16,
             orderNum: 1506,
             orderAmount: '￥11,235.00',
@@ -489,7 +499,7 @@
           },
           {
             ranking: 2,
-            name: '夏生饭店',
+            storeName: '夏生饭店',
             deviceNum: 13,
             orderNum: 1100,
             orderAmount: '￥10,345.00',
@@ -498,7 +508,7 @@
           },
           {
             ranking: 3,
-            name: '秋生饭店',
+            storeName: '秋生饭店',
             deviceNum: 11,
             orderNum: 920,
             orderAmount: '￥9,345.00',
@@ -507,7 +517,7 @@
           },
           {
             ranking: 4,
-            name: '冬生饭店',
+            storeName: '冬生饭店',
             deviceNum: 8,
             orderNum: 956,
             orderAmount: '￥9125.00',
@@ -516,7 +526,7 @@
           },
           {
             ranking: 5,
-            name: '早生饭店',
+            storeName: '早生饭店',
             deviceNum: 6,
             orderNum: 812,
             orderAmount: '￥7562.00',
@@ -525,7 +535,7 @@
           },
           {
             ranking: 6,
-            name: '晚生饭店',
+            storeName: '晚生饭店',
             deviceNum: 6,
             orderNum: 806,
             orderAmount: '￥7245.00',
@@ -558,15 +568,14 @@
         return this.$store.getters.rests
       }
     },
-    created() {
-
-    },
     mounted() {
       this.getOrderStat()
       this.getQuerHistogram()
       this.getLineChart()
       this.getDeviceStat()
-      this.getOrderList()
+      if(this.Ability['order']){
+        this.getOrderList()
+      }
       if(this.isSaas()) {
         this.getUserStat()
       }else if(this.isStore()) {
@@ -577,6 +586,7 @@
         this.$get('iot-saas-basic/admin/platform/getOwnerCount').then(res => {
           this.agentStoreStat = res
         })
+        this.queryDeviceUseCount()
       }
     },
     methods: {
@@ -596,9 +606,9 @@
         this.$get('iot-saas-order/admin/order/count/querHistogram', {
           brandId: this.brandId
         }).then(res => {
-          let totalOrderNumber = 0,
-            totalAmount = 0,
-            totalUnitPrice = 0;
+          let totalOrderNumber = 1,
+            totalAmount = 1,
+            totalUnitPrice = 1;
           for (var i in res) {
             if (i == 'month' || i == 'lastMonth') {
               totalOrderNumber = accAdd(totalOrderNumber, res[i].orderNumber)
@@ -615,6 +625,18 @@
             res[i].unitPP = unitPP > 100 ? 100 : unitPP
           }
           this.querHistogram = res
+        })
+      },
+
+      /**
+       * 商户统计
+       */
+      queryDeviceUseCount() {
+        this.$get('iot-saas-order/admin/order/count/queryDeviceUseCount', {
+          size: 6,
+          page: 0
+        }).then(res => {
+          this.storeList = res.rows && res.rows.length > 0 ? res.rows : this.storeLists
         })
       },
 
@@ -736,6 +758,11 @@
       setLineChart(chartData) {
         this.dayChartInit = echarts.init(this.$refs.chartDay)
         this.dayChartOptions(chartData)
+        this.dayChartInit.dispatchAction({
+          type: 'showTip',
+          seriesIndex: 0,
+          dataIndex: chartData.amount.length - 2
+        })
       },
 
       /**
@@ -976,6 +1003,16 @@
             if (deviceChartData.length > 0) {
               this.deviceChartData = deviceChartData
             }
+          }else{
+            this.deviceChartData = [
+              {
+                name: Object.values(this.myDeviceId)[0],
+                value: 0,
+                itemStyle: {
+                  color: colors[0]
+                },
+              }
+            ]
           }
           this.deviceChart()
         })
@@ -1193,15 +1230,15 @@
               color: '#A1E2FF',
             },
             //icon: "circle",
-            // formatter: (name) => {
-            //   var target;
-            //   for (var i = 0, l = pieData.length; i < l; i++) {
-            //     if (pieData[i].name == name) {
-            //       target = pieData[i].value;
-            //     }
-            //   }
-            //   return `${name}: ${target}`;
-            // }
+            formatter: (name) => {
+              var target;
+              for (var i = 0, l = pieData.length; i < l; i++) {
+                if (pieData[i].name == name) {
+                  target = pieData[i].value;
+                }
+              }
+              return `${name}(${target})`;
+            }
             // 这个可以显示百分比那种（可以根据你想要的来配置）
             //   formatter: function(param) {
             //       let item = legendBfb.filter(item => item.name == param)[0];
@@ -1697,11 +1734,11 @@
   @media (max-width: 768px) {
     .chart-device {
       margin-top: 0;
-      width: calc(100vw - 40px);
+      //width: calc(100vw - 40px);
     }
 
     .chart-daystat {
-      width: calc(100vw - 50px);
+      //width: calc(100vw - 50px);
     }
 
     .el-row--flex {

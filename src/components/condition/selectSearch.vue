@@ -48,7 +48,9 @@ export default {
     }
   },
   computed: {
-
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
   },
   data(){
     return {
@@ -79,6 +81,9 @@ export default {
         size: 20
       }
       params[this.name] = val
+      if(!this.isSaas()){
+        params.brandId = this.agentInfo.brandId
+      }
       this.loading = true
       this.$get(this.apiArr[this.type], params).then(res => {
         this.list = res.rows

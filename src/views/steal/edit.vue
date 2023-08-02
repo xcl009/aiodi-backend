@@ -11,7 +11,7 @@
           <el-form-item label="是否开启：">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：<span v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">时间段隐藏漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">比例漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_TIMELIMIT`]">分成时长限制></span><span v-if="Ability[`${deviceTypeCode}_DD_TIME`]">时间扣减></span><span v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">扣款失败</span></span>
+              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：<span v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">时间段隐藏漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">比例漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_TIMELIMIT`]">分成时长限制></span><span v-if="Ability[`${deviceTypeCode}_DD_TIME`]">时间扣减></span><span v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">免押待支付</span></span>
             </div>
           </el-form-item>
         </div>
@@ -218,7 +218,7 @@
 
         <template v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">
           <h4 class="flex mb-20 mt-10">
-            <div>扣款失败</div>
+            <div>免押待支付</div>
             <div class="ml-5">
               <el-popover
                 placement="top-start"

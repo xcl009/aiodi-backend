@@ -33,7 +33,7 @@
     </div>
     <!-- <hamburger :is-active="sidebar.opened" class="abs hamburger-container"  /> -->
 
-    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :modal-append-to-body="false" :close-on-click-modal="false" :class="dialogType == 1 ? 'vip-content' : ''" width="680px">
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :modal-append-to-body="false" :close-on-click-modal="false" :close-on-press-escape="false" :class="dialogType == 1 ? 'vip-content' : ''" width="680px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1 && vipService.priceSettings">
         <div class="vip-header flex align-center p-30 text-white">
@@ -47,54 +47,52 @@
           </div>
           <div class="mt-10 fs-b3 text-bold">开通VIP</div>
           <div class="mt-10 ml-10 fs-b3">众多功能免费用</div>
-          <i class="mb-20 ml-15 el-icon-close fs-b5 cursor" @click="dialogStatus = false" v-if="vipInfo.status != 2"></i>
+          <i class="mb-20 ml-15 el-icon-close fs-b5 cursor" @click="dialogStatus = false" v-if="vipInfo.status != 2 || token1"></i>
         </div>
 
-        <div class="flex align-end tab-box line-1">
+        <div class="flex align-end tab-box fs-b2 text-white">
           <template v-for="item in vipPriceArr">
-            <div :class="`tab abs tab-nobg ` + item.mkey" v-if="dform.cycle != item.cycle"></div>
-            <div class="tab flex cursor" :class="{'act align-center': dform.cycle == item.cycle, 'abs align-start': dform.cycle != item.cycle}" @click="dform.mkey = item.mkey;dform.cycle = item.cycle">
+            <div class="flexv align-center justify-center tab cursor" :class="{'act align-center': dform.cycle == item.cycle}" @click="dform.mkey = item.mkey;dform.cycle = item.cycle">
+              <div :class="{'text-black': dform.cycle == item.cycle}">{{ item.name }}</div>
               <div class="line" v-if="dform.cycle == item.cycle"></div>
-              <div class="text-bold fs-b2" :class="{'text-black': dform.cycle == item.cycle, 'flex1': dform.cycle != item.cycle}">{{ item.name }}</div>
-              <div class="ml-10 fs-s2 text-black3" v-if="dform.cycle == item.cycle">{{ item.info }}</div>
-              <img :src="require('@/assets/vip_tabarrow.svg')" class="block" width="20" alt="" v-if="dform.cycle != item.cycle">
             </div>
           </template>
         </div>
         <div class="pl-30 pr-30 rel o-v bg-white" style="border-radius: 0 0 16px 16px;">
-          <div class="fs-c1 text-black text-bold">付费明细</div>
+          <div class="mt-15 fs-c1 text-black text-bold">付费明细</div>
           <div>
             <template v-for="item in myDevice">
               <div class="flex mt-10" v-if="!item.fatherCode">
                 <div class="flex1 text-grey">{{ item.name }}品类VIP</div>
-                <div class="text-danger">￥{{ dform.cycle == 'PERMANENT' ? item.overPrice : item.mthPrice }}/{{ dform.cycle == 'PERMANENT' ? '永久' : '月' }}</div>
+                <div class="text-danger">￥{{ item[dform.mkey] }}/{{ dform.cycle == 'PERMANENT' ? '永久' : dform.cycle == 'yearPrice' ? '季' : '月' }}</div>
               </div>
             </template>
+            <div class="mt-10 l-b-dashed" v-if="vipCoupon[dform.mkey] > 0"></div>
+            <div class="flex mt-10" v-if="vipCoupon[dform.mkey] > 0">
+              <div class="flex1 text-grey">抵扣券</div>
+              <div class="text-black">-￥{{ vipCoupon[dform.mkey] }}</div>
+            </div>
           </div>
           <div class="flex mt-15 pt-25 l-t">
             <div class="flex1 flex align-center">
               <i class="el-icon-warning fs-c1"></i>
-              <div class="ml-5 text-black">快活币{{ money.happyCurrencyNum < vipPrice[dform.mkey] ? '余额不足，请先充值' : '' }}</div>
+              <div class="ml-5 text-black">快活币{{ money.happyCurrencyNum < accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0)) ? '余额不足，请先充值' : '' }}</div>
               <div class="ml-5 text-gray fs-s2">
                 余额：<span class="text-black">{{ money.happyCurrencyNum || 0 }}</span>快活币
               </div>
             </div>
             <div>
               <span class="text-grey">金额合计</span>
-              <span class="text-danger">￥<span class="fs-b3">{{ vipPrice[dform.mkey] }}</span></span>
+              <span class="text-danger">￥<span class="fs-b3">{{ accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0)) }}</span></span>
             </div>
           </div>
           <div class="pb-30 mt-50 text-center">
-            <el-button type="primary" :disabled="clickSubmit" @click="$refs.rechargeCoin.show()" v-if="money.happyCurrencyNum < vipPrice[dform.mkey]">去充值</el-button>
+            <el-button type="primary" :disabled="clickSubmit" @click="$refs.rechargeCoin.show()" v-if="money.happyCurrencyNum < accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0))">去充值</el-button>
             <el-button type="primary" :disabled="clickSubmit" @click="dialogConfirm()" v-else>立即支付</el-button>
           </div>
           <div class="abs dialog-br"></div>
         </div>
       </template>
-      <div class="pb-20 mt-30 text-center" v-if="dialogType != 1">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ dialogType == 1 ? '立即支付￥498' : '确定' }}</el-button>
-      </div>
     </el-dialog>
 
     <recharge-khy-coin ref="rechargeCoin"></recharge-khy-coin>
@@ -112,7 +110,7 @@ import RechargeKhyCoin from '@/components/RechargeKhyCoin/'
 import variables from '@/styles/variables.scss'
 import QRCode from 'qrcodejs2'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { arrayToObj, formatSeconds, currentTime, unixTime } from '@/utils/index'
+import { arrayToObj, formatSeconds, currentTime, unixTime, accSub, accMul } from '@/utils/index'
 export default {
   components: {
     SidebarItem,
@@ -157,6 +155,7 @@ export default {
   },
   data() {
     return {
+      accSub: accSub,
       clickSubmit: false,
       money: {},
       token1: getToken('token1') || '',
@@ -171,7 +170,7 @@ export default {
           cycle: 'MONTH'
         },
         // {
-        //   name: '年度VIP',
+        //   name: '季度VIP',
         //   mkey: 'yearPrice',
         //   cycle: 'YEAY'
         // },
@@ -186,6 +185,7 @@ export default {
 
       //品牌vip信息
       vipInfo: {},
+      vipCoupon: {},
 
       // 弹出相关
       dialogType: 1,
@@ -245,6 +245,16 @@ export default {
           this.$store.dispatch('rests/changeSetting', {
             key: 'expiresDatetime',
             value: info.expiresDatetime
+          })
+          this.$get('iot-saas-basic/admin/settings/find', {
+            code: 'VIP_COUPON'
+          }).then(res => {
+            if(res && res.setting){
+              let coupon = JSON.parse(res.setting)
+              coupon.mthPrice = coupon.amount
+              coupon.yearPrice = accMul(coupon.amount, 3)
+              this.vipCoupon = coupon
+            }
           })
         } else {
           this.dialogTitle[1] = 'VIP开通'
@@ -408,59 +418,48 @@ export default {
       }
     }
     .tab-box{
+      height: 50px;
+      background: linear-gradient(225deg, #6A85B6 0%, #BAC8E0 100%);
       .tab{
         width: 220px;
-        height: 66px;
-        padding: 14px 30px 0 40px;
+        height: 50px;
         z-index: 3;
         .line{
-          margin-right: 8px;
-          width: 4px;
-          height: 18px;
+          margin-top: 2px;
+          width: 69px;
+          height: 4px;
           background: #165DFF;
-        }
-        &.tab-nobg{
-          z-index: 1;
-          background: url('../../../assets/vip_tabnobg.svg');
-          transform: rotateY(180deg);
-          &.overPrice{
-            right: 0;
-            transform: rotateY(0deg);
-          }
-        }
-        &:not(.act){
-          .fs-b2{
-            background-image: linear-gradient(to right, #DF89B5, #BFD9FE);
-            color: transparent;
-            -webkit-background-clip: text;
-          }
-        }
-        &.align-start{
-          z-index: 9;
         }
         &.act{
           position: relative;
-          padding-left: 30px;
-          padding-top: 0px;
-          height: 76px;
+          margin-top: -10px;
+          height: 60px;
           flex: 1;
           &::after{
             content: "";
             position: absolute;
             left: 0;
-            width: 100%;
-            height: 100%;
+            top: 1px;
+            width: 496px;
+            height: 60px;
             background: url('../../../assets/vip_yesbg.svg');
             z-index: -1;
           }
         }
-        &:nth-child(3){
-          &.abs{
-            right: 0
-          }
+        /* &:nth-child(2){
           &.act{
-            padding-left: 252px;
             &::after{
+              width: 335px;
+              left: -48px;
+              background: url('../../../assets/vip_yesbgc.svg');
+            }
+          }
+        } */
+        &:nth-child(2){
+          &.act{
+            &::after{
+              left: inherit;
+              right: 0;
               transform: rotateY(180deg);
             }
           }

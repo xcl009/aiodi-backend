@@ -634,6 +634,9 @@ div:focus {
 .fs-b3 {
   font-size: 22px;
 }
+.fs-b4 {
+  font-size: 24px;
+}
 .fs-b5 {
   font-size: 26px;
 }
@@ -668,6 +671,10 @@ div:focus {
   overflow : hidden;
   word-break: break-all;/*在任何地方换行*/
   max-height: 50px;
+}
+
+.text-line{
+  text-decoration: line-through;
 }
 
 .text-blue{

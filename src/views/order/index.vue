@@ -74,7 +74,7 @@
             <el-table-column label="用户ID" width="90" v-if="item.val && item.key == 'userId'">
               <template slot-scope="scope">
                 <el-tooltip :content="scope.row.userId || '无'">
-                  <div>{{ scope.row.userId ? scope.row.userId.substr(-8, 8) : '' }}</div>
+                  <div>{{ scope.row.userId ? parseInt(scope.row.userId.substr(-8, 8)) : '' }}</div>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -117,7 +117,7 @@
             </el-table-column>
             <el-table-column label="支付类型" width="100" v-if="item.val && item.key == 'PayType'">
               <template slot-scope="scope">
-                <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}</div>
+                <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3">(￥{{ scope.row.orderAmount }})</span>  </div>
               </template>
             </el-table-column>
             <el-table-column label="时间" width="150" v-if="item.val && item.key == 'chargeStartTime'">
@@ -244,6 +244,7 @@
       <el-drawer
         :title="dialogTitle[dialogType]"
         :visible.sync="drawerStatus"
+        :wrapperClosable="false"
         >
         <template v-if="dialogType == 1">
           <div class="pl-20 pr-20 text-black">
@@ -429,9 +430,13 @@
                     <div class="label-text">设备类型:</div>
                     <div>{{ curRow.deviceType }}</div>
                   </div>
-                  <div class="flex">
+                  <div class="flex mb-10">
                     <div class="label-text">设备二维码:</div>
                     <div>{{ curRow.deviceSn }}</div>
+                  </div>
+                  <div class="flex" v-if="curRow.returnStore">
+                    <div class="label-text">归还设备:</div>
+                    <div>{{ curRow.afterDeviceSn || '--' }}</div>
                   </div>
                 </div>
                 <div class="mt-10">
@@ -468,12 +473,16 @@
                     <div>{{ curRow.transactionNo || '--' }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">商户名称:</div>
+                    <div class="label-text">租借商户:</div>
                     <div>{{ curRow.storeName }}</div>
                   </div>
-                  <div class="flex">
+                  <div class="flex mb-10">
                     <div class="label-text">宝SN:</div>
-                    <div>{{ curRow.baoSn || '--' }}</div>
+                    <div>{{ curRow.terminalId || '--' }}</div>
+                  </div>
+                  <div class="flex" v-if="curRow.returnStore">
+                    <div class="label-text">归还商户:</div>
+                    <div>{{ curRow.returnStore.name }}</div>
                   </div>
                 </div>
                 <div class="pl-20 mt-10">
@@ -1140,6 +1149,22 @@
             } else if (dialogType == 2) {
               this.$set(this.dform, 'refundType', '0')
             } else if (dialogType == 6) {
+              this.$get('iot-saas-order/admin/order/detail', {
+              	orderNo: row.orderNo
+              }).then(res => {
+              	if(res.devicePopupRecordFeignOutFeign && res.status != 'R'){
+                  this.$set(this.curRow, 'terminalId', res.devicePopupRecordFeignOutFeign.terminalId)
+                  this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn)
+                  if(res.devicePopupRecordFeignOutFeign.afterStoreId){
+                    this.$post('iot-saas-order/api/order/getDeductions', {
+                      deductionType: 0,
+                      deductionIds: [res.devicePopupRecordFeignOutFeign.afterStoreId]
+                    }).then(res => {
+                      this.$set(this.curRow, 'returnStore', res[0])
+                    })
+                  }
+              	}
+              })
               this.$get('iot-saas-order/admin/order/detail/flow', {
                 orderNo: row.orderNo
               }).then(res => {

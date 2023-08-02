@@ -21,7 +21,7 @@
           </el-form-item>
         </template>
         <template v-slot:endButton>
-          <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas() && !form.agentId"><i class="el-icon-plus el-icon--left" />添加商户</el-button>
+          <!-- <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas() && !form.agentId"><i class="el-icon-plus el-icon--left" />添加商户</el-button> -->
           <import-data :type="3" uploadText="导入商户" v-if="isBrand() && !lowerStore && !form.agentId"></import-data>
         </template>
       </condition>
@@ -40,7 +40,7 @@
         </el-table-column>
         <el-table-column label="商户" min-width="190">
           <template slot-scope="scope">
-            <div>{{ scope.row.name || '--' }}</div>
+            <div class="cursor" @click="copyText(scope.row.id)">{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.address || '--' }}</div>
           </template>
         </el-table-column>
@@ -94,7 +94,7 @@
               <template v-for="(item, index) in scope.row.storeDivisionConfig">
                 <div class="flex line-1 item" v-if="index < 2">
                   <div class="w-80 l-r">{{ myDeviceId[item.deviceTypeCode] }}</div>
-                  <div class="w-80 pl-10 l-r">{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '10000' }}{{ item.deviceTypeCode == 'PL' ? '条' : '台' }}</div>
+                  <div class="w-80 pl-10 l-r">{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : 0 }}{{ item.deviceTypeCode == 'PL' ? '条' : '台' }}</div>
                   <div class="flex1 pl-10"><span v-if="scope.row.divisionMode == 1"><span v-if="isStore()">{{ item.promised || item.live }}</span><span v-else>{{ item.live || item.promised }}</span>%({{ config.closeType[item.closeType] }})</span><span v-else>不分成</span></div>
                 </div>
               </template>
@@ -123,7 +123,7 @@
         <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false" v-else>
           <template slot-scope="scope">
             <template v-if="isSaas()">
-              <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+              <el-button type="primary" size="mini" @click="toLogin(scope.row)">商户管理</el-button>
             </template>
             <template v-else-if="form.deviceSns">
               <el-button type="primary" size="mini" @click="bindStore(scope.row)">铺货</el-button>
@@ -132,7 +132,7 @@
               <div class="flex flex-wrap">
                 <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
                 <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})">修改信息</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore}`})">修改信息</el-button>
                 <el-button type="primary" size="mini" @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-button>
                 <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
                 <el-dropdown trigger="click">
@@ -225,7 +225,7 @@
 <script>
   import qs from 'qs'
   import { getToken, setToken, removeToken } from '@/utils/auth'
-  import { arrayToObj } from '@/utils/index'
+  import { arrayToObj, copyText } from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import RelatedTemplate from '@/components/RelatedTemplate/'
@@ -253,6 +253,7 @@
     data() {
       return {
         clickSubmit: false,
+        copyText: copyText,
         catList: [],
         cityList: [],
         form: {},

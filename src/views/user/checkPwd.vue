@@ -2,7 +2,7 @@
   <div>
     <el-row class="pl-20 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="10">
-        <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="120px">
+        <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="120px" @submit.native.prevent="onSubmit">
           <h3 class="pl-10">安全验证</h3>
           <el-form-item label="操作密码" prop="password">
             <el-input v-model="form.password" type="password" placeholder="请输入您的操作密码" />

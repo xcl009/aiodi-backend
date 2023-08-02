@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main" :class="{'is-home': key == '/home'}">
+  <section class="app-main" :class="{'is-home': key == '/home', 'is-market': key.indexOf('/market') > -1}">
     <Breadcrumb class="breadcrumb-container" v-if="key != '/home'" />
     <!-- <transition name="fade-transform" mode="out-in"> -->
     <!-- <router-view :key="key" /> -->

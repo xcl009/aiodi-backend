@@ -35,7 +35,8 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
-import { setRem, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent, dealPhone, getOsInfo, getBrowser, checkQueryRepeat } from './utils/index'
+import { setRem, checkDigit, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent, dealPhone, getOsInfo, getBrowser, checkQueryRepeat } from './utils/index'
+Vue.prototype.checkDigit = checkDigit
 Vue.prototype.parseTime = parseTime
 Vue.prototype.currentTime = currentTime
 Vue.prototype.pick = pick
@@ -96,7 +97,6 @@ Vue.prototype.checkAbility = function(keyArr, type = 1, deviceArr){
   }
   return val
 }
-
 // set ElementUI lang to EN
 Vue.use(ElementUI)
 

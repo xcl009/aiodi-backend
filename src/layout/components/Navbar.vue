@@ -31,6 +31,9 @@
           <span class="ml-10 text-white">我的</span>
         </div>
         <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item @click.native="setRows(3, 3)" v-if="!isSaas()">
+            <span>个人设置</span>
+          </el-dropdown-item>
           <router-link to="/user/index">
             <el-dropdown-item>个人信息</el-dropdown-item>
           </router-link>
@@ -63,11 +66,10 @@
       </div>
     </el-dialog> -->
 
-
     <el-drawer
       :title="dialogTitle[dialogType]"
       :visible.sync="drawerStatus"
-      :modal-append-to-body="false"
+      :append-to-body="true"
       >
       <template v-if="dialogType == 1">
         <div class="p-30 flex flex-wrap justify-around text-center">
@@ -81,7 +83,25 @@
         </div>
       </template>
       <template v-if="dialogType == 2">
-        <div class="pl-20 pr-20" v-html="updateDetails.updateDetails"></div>
+        <div class="pl-40 pr-40" v-html="updateDetails.updateDetails" style="width: 500px;"></div>
+      </template>
+      <template v-if="dialogType == 3">
+        <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
+          <el-form-item label="商户ID">
+            <el-input v-model="dform.storeId" placeholder="设备SN"></el-input>
+          </el-form-item>
+          <div class="flex">
+            <div>温馨提示：</div>
+            <div>设置默认商户后，设备未铺货时，用户租借订单取此商户的计费规则，只可设置自己的商户。<br>商户ID可在商户列表点击商户名称即可获得。</div>
+          </div>
+        </el-form>
+      </template>
+      <template v-if="[3].indexOf(dialogType) > -1">
+        <div style="height: 66px;"></div>
+        <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        </div>
       </template>
     </el-drawer>
   </div>
@@ -120,6 +140,7 @@ export default {
   },
   data() {
     return {
+      clickSubmit: false,
       updateWxxcx: false,
       updateAlixcx: false,
       token1: getToken('token1') || '',
@@ -138,8 +159,10 @@ export default {
       drawerStatus: false,
       dialogTitle: {
         1: '邀请二维码',
-        2: '系统更新明细'
+        2: '系统更新明细',
+        3: '默认商户'
       },
+      dform: {}
     }
   },
   mounted(){
@@ -185,7 +208,39 @@ export default {
             this.updateDetails.isNews = false
             localStorage.setItem(`readUpTime${this.agentInfo.id}`, this.updateDetails.updateTime)
             setToken(`readUpTime${this.agentInfo.id}`, this.updateDetails.updateTime)
+          }else if(dialogType == 3){
+            this.$get('iot-saas-basic/admin/settings/find', {
+              code: 'DEFAULT_STORE'
+            }).then(res => {
+              if(res && res.setting){
+                this.dform = {
+                  storeId: res.setting
+                }
+              }
+            })
           }
+          break
+      }
+    },
+
+    /**
+     * 弹窗确认
+     */
+    dialogConfirm() {
+      let curRow = this.curRow,
+        curIdx = this.curIdx,
+        params = JSON.parse(JSON.stringify(this.dform))
+      switch (this.dialogType) {
+        case 3:
+          this.$post('iot-saas-basic/admin/settings/saveStore', {
+            storeId: params.storeId
+          }).then(res => {
+            this.$message({
+              message: '复制成功',
+              type: 'success'
+            })
+            this.drawerStatus = false
+          })
           break
       }
     },

@@ -167,7 +167,7 @@ const util = {
   dealPhone: (tel, start = 3, end = 7, symbol = '****') => {
     if (!tel) return tel
     tel = '' + tel
-    return tel.substr(0, start) + symbol + tel.substring(end, tel.length -1)
+    return tel.substr(0, start) + symbol + tel.substring(end, tel.length)
   },
 
   // 获取操作系统信息
@@ -414,7 +414,7 @@ const util = {
 		if (!key || !Array.isArray(array)) return {}
 		let obj = {}
 		array.map(item => {
-			if(nkey && item[key] && item[nkey]){
+			if(nkey && item[nkey] && (item[key] || item[key] == 0) ){
 				obj[item[key]] = item[nkey]
 			} else if (item[key] != 'undefined' && item[key] != null) {
 				obj[item[key]] = item
@@ -614,7 +614,7 @@ const util = {
   /**
    * 默认计费
    */
-  defaultFee: () => {
+  defaultFee: (code = '') => {
     let laundryMode = [
       {
         title: "专业除菌消毒液",
@@ -659,6 +659,12 @@ const util = {
       storePayConfig: ['weixin', 'alipay'],
       weixinPayMode: {
         modeType: 'PACKAGE',
+        WMpayModeDetail: [
+          {
+            time: '46',
+            money: 2
+          }
+        ],
         payModeDetail: [
           {
             time: 60,
@@ -679,6 +685,12 @@ const util = {
       },
       alipayPayMode: {
         modeType: 'PACKAGE',
+        WMpayModeDetail: [
+          {
+            time: '46',
+            money: 2
+          }
+        ],
         payModeDetail: [
           {
             time: 60,
@@ -697,6 +709,10 @@ const util = {
           depositAmount: 99
         },
       }
+    }
+    if(code && obj.weixinPayMode[`${code}payModeDetail`]){
+      obj.weixinPayMode.payModeDetail = obj.weixinPayMode[`${code}payModeDetail`]
+      obj.alipayPayMode.payModeDetail = obj.alipayPayMode[`${code}payModeDetail`]
     }
     return obj
   },
@@ -726,6 +742,25 @@ const util = {
   checkQueryRepeat(key, idx, formKey){
     return Object.values(formKey).indexOf(key) == -1 || Object.values(formKey).indexOf(key) == idx - 1
   },
+
+  /**
+   * 数字输入校验
+   */
+  checkDigit(val, min=0, max=100, p=2){
+    let testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)")
+    if(p > 0) testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)|(^[0-9]{1,"+ max.toString().length +"}[\\.]{1}[0-9]{1,"+ p +"}$)")
+    if( val > max){
+      return `不能大于${max}`
+    } else if(val < min){
+      return `不能小于${min}`
+    } else if(val < min){
+      return `不能小于${min}`
+    }else if (testReg.test(val)) {
+      return ''
+    }else{
+      return `范围${min}-${max}${p > 0 ? '，小数点后'+p+'位' : '的整数'}`
+    }
+  }
 }
 
 export const param2Obj = util.param2Obj
@@ -765,3 +800,4 @@ export const accSub = util.accSub
 export const defaultFee = util.defaultFee
 export const dateSort = util.dateSort
 export const checkQueryRepeat = util.checkQueryRepeat
+export const checkDigit = util.checkDigit
