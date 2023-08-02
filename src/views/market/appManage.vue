@@ -1,45 +1,53 @@
 <template>
-  <div class="p-5">
-    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
-      <template v-slot:left>
-        <div class="pl-10 max-w filter-btn_box white-space">
-          <el-scrollbar>
-            <el-button size="medium" :type="!listQuery.serviceTypeCode ? 'primary' : ''"
-              :class="{'btn-body': listQuery.serviceTypeCode}"
-              @click="listQuery.serviceTypeCode = ''; toQuery(2)">全部服务</el-button>
-            <el-button size="medium" :type="listQuery.serviceTypeCode == item.code ? 'primary' : ''"
-              :class="{'btn-body': listQuery.serviceTypeCode != item.code}" v-for="item in tabs"
-              @click="listQuery.serviceTypeCode = item.code; toQuery(2)">{{ item.name }}</el-button>
-          </el-scrollbar>
+  <div>
+    <condition ref="condition" :clickSubmit="clickSubmit" :filterForm="false" @reset="reset" @query="toQuery">
+      <template v-slot:tabs>
+        <div class="mb-20 pt-10 pl-10 pr-10 flex align-center bg-white">
+          <div class="mr-10">服务类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.serviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部服务" :name="''" />
+            <el-tab-pane label="系统服务" name="SYSTEM" />
+            <el-tab-pane label="品类服务" name="CUSTOMIZE" />
+            <!-- <el-tab-pane label="主题皮肤" name="THEME" /> -->
+          </el-tabs>
         </div>
-      </template>
-      <template v-slot:defult>
-        <el-form-item label="设备类型">
-          <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
-            <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="服务名称">
-          <el-input v-model="form.serviceName" placeholder="服务名称" />
-        </el-form-item>
-      </template>
-      <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/market/addApp`})"><i class="el-icon-circle-plus-outline el-icon--left" />添加服务</el-button>
+        <div class="mb-20 pl-10 pr-10 flex align-center bg-white" v-if="myDeviceName">
+          <div class="mr-10">设备类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部设备" :name="'0'" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
+            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
+          </el-tabs>
+        </div>
+        <div class="mb-20 pl-10 pr-10 flex align-center bg-white">
+          <div class="mr-10">会员服务</div>
+          <el-tabs class="flex-1" v-model="listQuery.Type" @tab-click="toQuery()">
+            <el-tab-pane label="全部服务" name="-1" />
+            <el-tab-pane name="0">
+              <img class="vip-icon" :src="require('@/assets/market_vip.png')" width="51" slot="label">
+            </el-tab-pane>
+            <el-tab-pane name="2">
+              <img class="vip-icon" :src="require('@/assets/market_svip.png')" width="60" slot="label">
+            </el-tab-pane>
+          </el-tabs>
+        </div>
       </template>
     </condition>
 
-    <div class="load-box" v-infinite-scroll="loadPage">
-      <el-row :gutter="10">
+    <div class="pb-20 load-box" v-infinite-scroll="loadPage">
+      <div class="p-30 text-center bg-white" v-if="listTotal == 0">
+        服务持续更新中，请持续关注服务市场
+      </div>
+      <el-row :gutter="20">
         <el-col :sm="24" :md="12" :lg="8" :xl="6" v-for="item in list">
-          <div class="p-10 list-item cursor bg-white shadow-light">
+          <div class="p-20 list-item cursor bg-white">
             <el-image
               class="list-img"
               :src="item.url"
               fit="cover"></el-image>
-            <div class="mt-10 text-black fs-c1">
+            <div class="mt-15 text-black fs-c1">
               {{ item.name }}
             </div>
-            <div class="mt-10 fs-s2 text-cut_two">{{ item.brief }}</div>
+            <div class="mt-15 fs-s2 text-cut_two">{{ item.brief }}</div>
             <div class="mt-15 flex align-center">
               <template v-for="(sitem, idx) in item.priceSettings">
                 <div class="flex1" v-if="idx == 0">
@@ -53,10 +61,6 @@
           </div>
         </el-col>
       </el-row>
-    </div>
-
-    <div class="p-30 text-center bg-white" v-if="listTotal == 0">
-      服务持续更新中，请持续关注服务市场
     </div>
 
     <el-drawer
@@ -80,7 +84,7 @@
               </el-date-picker>
             </el-form-item>
             <el-form-item label="支付快活币">
-              <el-input v-model="dform.price" />
+              <el-input v-model="dform.khbPrice" />
               <div>支付快活币大0时，表示该记录显示为品牌正常支付，周期为月付。</div>
             </el-form-item>
           </el-form>
@@ -117,7 +121,10 @@
         listTotal: 0,
         listQuery: {
           page: 1,
-          size: 24
+          size: 50,
+          serviceTypeCode: '',
+          deviceTypeCode: '0',
+          Type: '-1'
         },
 
         brandId: this.$route.query.brandId || '',
@@ -151,6 +158,9 @@
       },
       agentInfo(){
         return this.$store.getters.agentInfo
+      },
+      myDeviceName() {
+        return this.$store.getters.myDeviceName
       },
       myDeviceId() {
         return this.$store.getters.myDeviceId
@@ -192,6 +202,11 @@
           page: this.listQuery.page - 1
         })
         if(params.serviceTypeCode == 0) delete params.serviceTypeCode
+        if(params.deviceTypeCode == 0 || params.serviceTypeCode == 'SYSTEM'){
+          delete params.deviceTypeCode
+          this.listQuery.deviceTypeCode = '0'
+        }
+        if(params.Type < 0) delete params.Type
         this.$get('iot-saas-basic/admin/service/market/findPage', params).then((res = {}) => {
           this.list = this.list.concat(res.rows || [])
           this.listLoading = false
@@ -262,6 +277,7 @@
             }
             this.$post('iot-saas-basic/admin/service/market/give', {
               priceCode: params.priceCode,
+              khbPrice: params.khbPrice || '',
               giveEndDatetime: params.giveEndDatetime + ' 23:59:59',
               serviceMarketId: this.curRow.id,
               brandId : this.brandId
@@ -283,26 +299,5 @@
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-row{
-    margin: 0 !important;
-  }
-  .list-item{
-    margin-top: 10px;
-    border-radius: 4px;
-    .list-img{
-      width: 44px;
-      height: 44px;
-      border-radius: 4px;
-      border: thin solid #f5f5f5;
-    }
-    .text-cut_two{
-      height: 48px;
-      -webkit-line-clamp: 3;
-      white-space: pre-line;
-    }
-  }
-  .load-box{
-    max-height: calc(100vh - 180px);
-    overflow-y: scroll;
-  }
+  @import './list.scss';
 </style>

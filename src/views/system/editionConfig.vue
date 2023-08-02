@@ -5,6 +5,7 @@
         <el-tabs class="mb-15 bg-white" :value="key" @tab-click="getInfo">
           <el-tab-pane label="小程序配置" name="systemConfig" />
           <el-tab-pane label="免押拍摄配置" name="freeVideoConfig" />
+          <el-tab-pane label="小程序钱包隐藏配置" name="xcxMoneyConfig" />
           <el-tab-pane label="更新明细" name="systemUpdateDetails" />
         </el-tabs>
 
@@ -40,6 +41,12 @@
             <h4>免押拍摄配置</h4>
             <el-form-item label="免押小程序APPID">
               <el-input v-model="form.appid" placeholder="小程序APPID" />
+            </el-form-item>
+          </template>
+          <template v-if="key == 'xcxMoneyConfig'">
+            <h4>小程序钱包隐藏配置</h4>
+            <el-form-item label="小程序APPID">
+              <el-input v-model="form.appid" placeholder="小程序APPID,多个用逗号隔开" />
             </el-form-item>
           </template>
           <template v-if="key == 'systemUpdateDetails'">

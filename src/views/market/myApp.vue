@@ -1,55 +1,69 @@
 <template>
-  <div class="p-5">
-    <condition ref="condition" :clickSubmit="clickSubmit" :defaultShowLength="2" @reset="reset" @query="toQuery">
-      <template v-slot:left>
-        <div class="pl-10 max-w filter-btn_box white-space">
-          <el-scrollbar>
-            <el-button size="medium" :type="!listQuery.serviceTypeCode ? 'primary' : ''"
-              :class="{'btn-body': listQuery.serviceTypeCode}"
-              @click="listQuery.serviceTypeCode = ''; toQuery(2)">全部服务</el-button>
-            <el-button size="medium" :type="listQuery.serviceTypeCode == item.code ? 'primary' : ''"
-              :class="{'btn-body': listQuery.serviceTypeCode != item.code}" v-for="item in tabs"
-              @click="listQuery.serviceTypeCode = item.code; toQuery(2)">{{ item.name }}</el-button>
-          </el-scrollbar>
+  <div>
+    <condition ref="condition" :clickSubmit="clickSubmit" :filterForm="false" @reset="reset" @query="toQuery">
+      <template v-slot:tabs>
+        <div class="mb-20 pt-10 pl-10 pr-10 flex align-center bg-white">
+          <div class="mr-10">服务类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.serviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部服务" :name="''" />
+            <el-tab-pane label="系统服务" name="SYSTEM" />
+            <el-tab-pane label="品类服务" name="CUSTOMIZE" />
+            <!-- <el-tab-pane label="主题皮肤" name="THEME" /> -->
+          </el-tabs>
         </div>
-      </template>
-      <template v-slot:defult>
-        <el-form-item label="设备类型">
-          <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
-            <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="服务名称">
-          <el-input v-model="form.serviceName" placeholder="服务名称" />
-        </el-form-item>
+        <div class="mb-20 pl-10 pr-10 flex align-center bg-white" v-if="myDeviceName">
+          <div class="mr-10">设备类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部设备" :name="'0'" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
+            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
+          </el-tabs>
+        </div>
+        <div class="mb-20 pl-10 pr-10 flex align-center bg-white">
+          <div class="mr-10">会员服务</div>
+          <el-tabs class="flex-1" v-model="listQuery.Type" @tab-click="toQuery()">
+            <el-tab-pane label="全部服务" name="-1" />
+            <el-tab-pane name="0">
+              <img class="vip-icon" :src="require('@/assets/market_vip.png')" width="51" slot="label">
+            </el-tab-pane>
+            <el-tab-pane name="2">
+              <img class="vip-icon" :src="require('@/assets/market_svip.png')" width="60" slot="label">
+            </el-tab-pane>
+          </el-tabs>
+        </div>
       </template>
     </condition>
 
-    <div v-infinite-scroll="loadPage" class="load-box">
-      <el-row :gutter="10">
+    <div v-infinite-scroll="loadPage" class="pb-20 load-box">
+      <div class="p-30 text-center bg-white text-primary cursor" @click="$router.push({path: `/market/appList`})" v-if="listTotal == 0">
+        暂未购买增值服务，去购买
+      </div>
+      <el-row :gutter="20">
         <el-col :sm="24" :md="12" :lg="8" :xl="6" v-for="item in list">
-          <div class="p-10 list-item cursor bg-white shadow-light" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})">
-            <el-image
-              class="list-img"
-              :src="item.serviceUrl"
-              fit="cover"></el-image>
-            <div class="mt-10 flex align-center">
-              <div class="text-black fs-c1">{{ item.serviceName }}</div>
-              <el-tag class="normal ml-5" size="mini" :class="{'expired' : item.orderStatusName == '已到期', 'is-expired' : item.orderStatusName == '即将到期'}">{{ item.orderStatusName }}</el-tag>
+          <div class="p-20 list-item cursor bg-white" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})">
+            <div class="flex align-start">
+              <el-image
+                class="list-img"
+                :src="item.serviceUrl"
+                fit="cover"></el-image>
+              <div class="flex1"></div>
+              <div class="flex align-center">
+                <span class="mr-5 fs-b5 text-green" :class="{'text-danger' : item.orderStatusName == '已到期', 'text-orange' : item.orderStatusName == '即将到期'}">•</span>
+                <span>{{ item.orderStatusName }}</span>
+              </div>
             </div>
-            <div class="mt-10 fs-s2 text-cut_two">{{ item.brief  || '暂无简介'}}</div>
+            <div class="mt-15 text-black fs-c1 text-cut">
+              {{ item.serviceName }}-{{ item.priceName }}
+            </div>
+            <div class="mt-15 fs-s2 text-cut_two">{{ item.brief  || '暂无简介'}}</div>
             <div class="mt-15 flex align-center">
               <div class="flex1">
-                到期时间：{{ item.expiresDatetime }}
+                {{ item.expiresDatetime }}到期
               </div>
-              <el-button type="primary" size="medium" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})" v-if="item.cycleTypeName != '永久'">{{ checkAbility(['BRAND_MEMBER'], 3) ? '去续用' : '去续费'}}</el-button>
+              <el-button type="primary" size="medium" plain @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})" v-if="item.cycleTypeName != '永久'">{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即续用' : '立即续费'}}</el-button>
             </div>
           </div>
         </el-col>
       </el-row>
-    </div>
-    <div class="p-30 text-center bg-white text-primary cursor" @click="$router.push({path: `/market/appList`})" v-if="listTotal == 0">
-      暂未购买增值服务，去购买
     </div>
   </div>
 </template>
@@ -59,7 +73,7 @@
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   export default {
-    name: 'appList',
+    name: 'myApp',
     components: {
       Pagination,
       condition
@@ -74,7 +88,10 @@
         listTotal: 0,
         listQuery: {
           page: 1,
-          size: 24
+          size: 24,
+          serviceTypeCode: '',
+          deviceTypeCode: '0',
+          Type: '-1'
         },
         checkFree: {}
       }
@@ -96,11 +113,14 @@
       myDeviceId() {
         return this.$store.getters.myDeviceId
       },
+      myDeviceName() {
+        return this.$store.getters.myDeviceName
+      },
     },
     mounted() {
-      this.$store.dispatch('api/getServiceType').then(res => {
-        this.tabs = res
-      })
+      // this.$store.dispatch('api/getServiceType').then(res => {
+      //   this.tabs = res
+      // })
     },
     methods: {
       /**
@@ -133,6 +153,11 @@
           page: this.listQuery.page - 1
         })
         if(params.serviceTypeCode == 0) delete params.serviceTypeCode
+        if(params.deviceTypeCode == 0 || params.serviceTypeCode == 'SYSTEM'){
+          delete params.deviceTypeCode
+          this.listQuery.deviceTypeCode = '0'
+        }
+        if(params.Type < 0) delete params.Type
         this.$get('iot-saas-basic/client/service/market/record/findPage', params).then((res = {}) => {
           this.list = this.list.concat(res.rows || [])
           this.listLoading = false
@@ -162,43 +187,5 @@
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-row{
-    margin: 0 !important;
-  }
-  .load-box{
-    max-height: calc(100vh - 120px);
-    overflow-y: scroll;
-  }
-  .list-item{
-    margin-top: 10px;
-    border-radius: 4px;
-    .list-img{
-      width: 44px;
-      height: 44px;
-      border-radius: 4px;
-      border: thin solid #f5f5f5;
-    }
-    .text-cut_two{
-      height: 32px;
-    }
-    /deep/ .el-rate__icon{
-      margin-right: 0;
-    }
-    .el-tag{
-      border: none;
-      &.normal{
-        background-color: rgba(7, 193, 96, 0.1);
-        color: #07C160;
-      }
-      &.is-expired{
-        background-color: rgba(255, 163, 44, 0.1);
-        color: #FFA32C;
-      }
-      &.expired{
-        background-color: #F2F3F5;
-        color: #86909C;
-      }
-    }
-  }
-
+  @import './list.scss';
 </style>

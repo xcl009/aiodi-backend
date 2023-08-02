@@ -1,63 +1,78 @@
 <template>
   <div>
-    <el-tabs class="mb-0 bg-white" v-model="listQuery.serviceTypeCode" type="card" @tab-click="toQuery">
-      <el-tab-pane label="全部服务" name=""></el-tab-pane>
-      <el-tab-pane label="系统服务" name="SYSTEM"></el-tab-pane>
-      <el-tab-pane label="品类服务" name="CUSTOMIZE"></el-tab-pane>
-      <!-- <el-tab-pane label="主题皮肤" name="THEME"></el-tab-pane> -->
-    </el-tabs>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" :filterForm="false" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName && listQuery.serviceTypeCode == 'CUSTOMIZE'">
-          <div class="mr-10">设备类型</div>
-          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
-            <el-tab-pane label="全部设备" :name="''" />
-            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+        <div class="mb-20 pt-10 pl-10 pr-10 flex align-center bg-white">
+          <div class="mr-10">服务类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.serviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部服务" :name="''" />
+            <el-tab-pane label="系统服务" name="SYSTEM" />
+            <el-tab-pane label="品类服务" name="CUSTOMIZE" />
+            <!-- <el-tab-pane label="主题皮肤" name="THEME" /> -->
           </el-tabs>
         </div>
-        <!-- <div class="mb-10 flex align-center bg-white">
-          <div class="mr-10">服务类型</div>
-          <el-tabs class="flex-1" v-model="listQuery.Type" @tab-click="toQuery()">
-            <el-tab-pane label="全部服务" name="" />
-            <el-tab-pane label="VIP服务" name="1" />
-            <el-tab-pane label="SVIP服务" name="2" />
+        <div class="mb-20 pl-10 pr-10 flex align-center bg-white" v-if="myDeviceName">
+          <div class="mr-10">设备类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部设备" :name="'0'" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
+            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
           </el-tabs>
-        </div> -->
-      </template>
-      <template v-slot:defult>
-        <el-form-item label="服务名称">
-          <el-input v-model="form.serviceName" placeholder="服务名称" />
-        </el-form-item>
+        </div>
+        <div class="mb-20 pl-10 pr-10 flex align-center bg-white">
+          <div class="mr-10">会员服务</div>
+          <el-tabs class="flex-1" v-model="listQuery.Type" @tab-click="toQuery()">
+            <el-tab-pane label="全部服务" name="-1" />
+            <el-tab-pane name="0">
+              <img class="vip-icon" :src="require('@/assets/market_vip.png')" width="51" slot="label">
+            </el-tab-pane>
+            <el-tab-pane name="2">
+              <img class="vip-icon" :src="require('@/assets/market_svip.png')" width="60" slot="label">
+            </el-tab-pane>
+          </el-tabs>
+        </div>
       </template>
     </condition>
 
-    <div class="load-box" v-infinite-scroll="loadPage">
+    <div class="pb-20 load-box" v-infinite-scroll="loadPage">
       <div class="p-30 text-center bg-white" v-if="listTotal == 0">
         服务持续更新中，请持续关注服务市场
       </div>
-      <el-row :gutter="10">
+      <el-row :gutter="20" class="fs-s2">
         <el-col :sm="24" :md="12" :lg="8" :xl="6" v-for="item in list">
-          <div class="p-10 list-item cursor bg-white shadow-light" @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})">
-            <el-image
-              class="list-img"
-              :src="item.url"
-              fit="cover"></el-image>
-            <div class="mt-10 flex align-center">
-              <div class="text-black fs-c1">{{ item.serviceName }}</div>
-              <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)" v-if="checkAbility(['BRAND_MEMBER'], 3)">会员免费</el-tag>
-              <el-tag class="ml-5" size="mini" color="rgba(7, 193, 96, 0.1)" v-else-if="item.serviceTypeCode != 'CATEGORY' && checkFree[item.serviceId] != 'YES'">0元试用</el-tag>
+          <div class="p-20 list-item cursor bg-white" @click="setRows(2, item, 1)">
+            <div class="flex align-start">
+              <el-image
+                class="list-img"
+                :src="item.url"
+                fit="cover"></el-image>
+              <div class="flex1"></div>
+              <div class="flex align-center" v-if="checkAbility(['BRAND_MEMBER'], 3)">
+                <span class="mr-5 fs-b5 text-green">•</span>
+                <span>会员免费</span>
+              </div>
+              <!-- <div class="flex align-center" v-else-if="item.serviceTypeCode != 'CATEGORY' && checkFree[item.serviceId] != 'YES'">
+                <span class="mr-5 fs-b5 text-green">•</span>
+                <span>0元试用</span>
+              </div> -->
             </div>
-            <div class="mt-10 fs-s2 text-cut_two">
+            <div class="mt-15 text-black fs-c1 text-cut">
+              {{ item.serviceName }}
+            </div>
+            <div class="mt-15 text-cut_two text-grey">
               {{ item.brief }}
+            </div>
+            <div class="mt-15 flex align-center">
+              <div class="mr-5 text-grey">热度</div>
+              <img :src="require('@/assets/market_hot.svg')" class="block" width="14" alt="" v-for="item in 3">
             </div>
             <div class="mt-15 flex align-center">
               <template v-if="checkAbility(['BRAND_MEMBER'], 3)">
                 <div class="flex1">
-                  <span class="mr-5 fs-b3 text-danger">￥0</span>
+                  <span class="mr-5 fs-b4 text-black">￥0</span>
                   <template v-for="(sitem, idx) in item.priceSettings">
                     <template v-if="idx == 0">
-                      <span class="text-grey text-line">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
-                      <span class="text-grey">{{ sitem.monthAmount > 0 ? `/月` : sitem.yearAmount > 0 ? `/年` : `/永久` }}</span>
+                      <span class="text-line">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
+                      <span>{{ sitem.monthAmount > 0 ? `/月` : sitem.yearAmount > 0 ? `/年` : `/永久` }}</span>
                     </template>
                   </template>
                 </div>
@@ -65,23 +80,159 @@
               <template v-else>
                 <template v-for="(sitem, idx) in item.priceSettings">
                   <div class="flex1" v-if="idx == 0">
-                    <span class="fs-b3 text-danger">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
-                    <span class="text-grey">{{ sitem.monthAmount > 0 ? `/月付` : sitem.yearAmount > 0 ? `/年付` : `/永久` }}</span>
+                    <span class="fs-b3 text-black">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ? `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
+                    <span>{{ sitem.monthAmount > 0 ? `/月付` : sitem.yearAmount > 0 ? `/年付` : `/永久` }}</span>
                   </div>
                 </template>
               </template>
               <template v-if="item.serviceTypeCode != 'CUSTOMIZE' || myDeviceId[item.deviceTypeCode]">
-                <el-button type="info" size="medium" v-if="checkAbility(arrayKeys(item.priceSettings, 'priceCode'), 4)">已选用</el-button>
-                <el-button type="primary" size="medium" v-else>{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即添加' : '立即购买'}}</el-button>
+                <el-button type="info" size="medium" class="bg-body" plain v-if="checkAbility(arrayKeys(item.priceSettings, 'priceCode'), 4)">已经选用</el-button>
+                <el-button type="primary" size="medium" plain v-else>{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即添加' : '立即购买'}}</el-button>
               </template>
               <template v-else>
-                <el-button type="info" size="medium">无{{ myDeviceId[item.deviceTypeCode] }}品类，不可选</el-button>
+                <el-button type="info" size="medium" class="bg-body" plain>无{{ myDeviceId[item.deviceTypeCode] }}品类，不可选</el-button>
               </template>
             </div>
           </div>
         </el-col>
       </el-row>
     </div>
+
+    <el-drawer
+      :title="dialogTitle[dialogType]"
+      :visible.sync="drawerStatus"
+      >
+      <template v-if="dialogType == 1">
+        <div class="flexv pl-20 pr-20 text-black">
+          <div class="mb-15">
+            服务详情
+          </div>
+          <div class="flex align-center mb-10">
+            <div class="mr-15 w-60 text-grey">服务名称</div>
+            <div>{{ info.name }}</div>
+          </div>
+          <div class="flex align-center mb-10" v-if="info.deviceType">
+            <div class="mr-15 w-60 text-grey">服务类别</div>
+            <div>{{ info.deviceType.name }}</div>
+          </div>
+          <div class="flex align-center mb-10">
+            <div class="mr-15 w-60 text-grey">服务等级</div>
+            <div>{{ info.type == 0 ? 'VIP' : 'SVIP' }}</div>
+          </div>
+          <div class="flex align-center mb-10">
+            <div class="mr-15 w-60 text-grey">服务价格</div>
+            <div class="flex align-center" v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
+              <div class="fs-b3 text-danger">￥0</div>
+              <div class="ml-10 fs-c1 text-black3 text-line" v-if="info.priceSettings">￥{{ info.priceSettings[dform.priceCode][cycleKey] || 0 }}</div>
+            </div>
+            <div class="fs-c1 text-danger" v-else-if="info.priceSettings">{{ info.priceSettings[dform.priceCode][cycleKey] || 0 }}</div>
+          </div>
+          <div class="flex align-center mb-10">
+            <div class="mr-15 w-60 text-grey">支付方式</div>
+            <div>快活币（余额：{{ money.happyCurrencyNum || 0 }}个）</div>
+          </div>
+          <div class="flex align-center mb-10">
+            <div class="mr-15 w-60 text-grey">服务周期</div>
+            <div v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
+              <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain">
+                {{ rests.expiresDatetime }}到期
+              </el-tag>
+            </div>
+            <div v-else-if="info.priceSettings && info.priceSettings[dform.priceCode]">
+              <template v-for="item in cycle">
+                <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-if="item.key == 'TRYOUT' && checkFree[id] != 'YES' && info.serviceTypeCode != 'CATEGORY'" :type="cycleKey == item.key ? '' : 'info'" @click="cycleKey = item.key; dform.cycle = item.code">
+                  {{ item.label }}
+                </el-tag>
+                <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" v-if="(info.priceSettings[dform.priceCode][item.key] > 0)" :type="cycleKey == item.key ? '' : 'info'" @click="cycleKey = item.key; dform.cycle = item.code">
+                  {{ item.label }}
+                </el-tag>
+              </template>
+            </div>
+          </div>
+          <div class="flex mb-10" v-if="info.priceSettings && Object.values(info.priceSettings).length > 0" style="width: 500px;">
+            <div class="mr-15 mt-5 w-60 text-grey">服务模式</div>
+            <div class="flex1 flex flex-wrap">
+              <template v-for="item in info.priceSettings">
+                <div class="mb-10">
+                  <el-tag class="mr-10 pl-15 pr-15 fs-s4 cursor" effect="plain" :type="dform.priceCode == item.priceCode ? '' : 'info'" @click="dform.priceCode = item.priceCode">
+                    {{ item.priceName }}{{ checkAbility([item.priceCode], 3) ? '（已选用)' : '' }}
+                  </el-tag>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="pt-20 l-t">
+            服务介绍
+          </div>
+          <div style="color: #4E5969;" v-html="info.description"></div>
+        </div>
+      </template>
+      <template v-if="[1].indexOf(dialogType) > -1">
+        <div style="height: 66px;"></div>
+        <div class="flex align-center justify-end p-15 mt-30 abs bfixed bg-white text-right l-t">
+          <template v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
+            <div class="mr-20 fs-b3 text-danger">￥0</div>
+          </template>
+          <template v-else-if="info.priceSettings">
+            <div class="mr-20 fs-b3 text-danger">{{ info.priceSettings[dform.priceCode][cycleKey] || 0 }}</div>
+          </template>
+          <el-button size="medium" type="primary" @click="setRows(1, curRow, 2)" :disabled="clickSubmit">{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即添加' : '立即购买'}}</el-button>
+        </div>
+      </template>
+      <template v-if="[0].indexOf(dialogType) > -1">
+        <div style="height: 66px;"></div>
+        <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        </div>
+      </template>
+    </el-drawer>
+
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="520px">
+      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+      <template v-if="dialogType == 2">
+        <div class="text-black">
+          <div class="flex align-center mb-10">
+            <div class="mr-20 w-60 text-grey">服务名称</div>
+            <div>{{ info.name }}</div>
+          </div>
+          <div class="flex align-center mb-10" v-if="info.priceSettings">
+            <div class="mr-20 w-60 text-grey">服务模式</div>
+            <div>{{ info.priceSettings[dform.priceCode].priceName }}</div>
+          </div>
+          <div class="flex align-center mb-10">
+            <div class="mr-20 w-60 text-grey">支付方式</div>
+            <div>快活币（余额：{{ money.happyCurrencyNum || 0 }}个）</div>
+          </div>
+          <div class="flex align-center mb-10">
+            <div class="mr-20 w-60 text-grey">实付金额</div>
+            <div class="flex align-center" v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
+              <div class="fs-b3 text-danger">￥0</div>
+              <div class="ml-10 fs-c1 text-black3 text-line" v-if="info.priceSettings">￥{{ info.priceSettings[dform.priceCode][cycleKey] || 0 }}</div>
+            </div>
+            <div class="fs-c1 text-danger" v-else-if="info.priceSettings">{{ info.priceSettings[dform.priceCode][cycleKey] || 0 }}</div>
+          </div>
+        </div>
+        <div class="mt-30 text-center">
+          <el-button size="medium" class="bg-body" @click="dialogStatus = false; dialogType = 1; drawerStatus = true">取消</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        </div>
+      </template>
+      <template v-if="dialogType == 3">
+        <div class="text-center fs-c1">
+          <div class="text-green" style="font-size: 48px;">
+            <i class="el-icon-success"></i>
+          </div>
+          <div class="mt-15 text-black">购买成功</div>
+          <div class="mt-5 text-grey">您现在可以正常使用此项服务</div>
+        </div>
+        <div class="mt-30 text-center">
+          <el-button size="medium" class="bg-body" @click="dialogStatus = false; $router.push({path: `/market`})">查看服务</el-button>
+          <el-button size="medium" type="primary" @click="dialogStatus = false">我知道了</el-button>
+        </div>
+      </template>
+
+    </el-dialog>
   </div>
 </template>
 
@@ -108,10 +259,48 @@
           page: 1,
           size: 50,
           serviceTypeCode: '',
-          deviceTypeCode: '',
-          //Type: ''
+          deviceTypeCode: '0',
+          Type: '-1'
         },
-        checkFree: {}
+        money: {},
+        checkFree: {},
+
+        // 弹出相关
+        dialogType: 1,
+        dialogStatus: false,
+        drawerStatus: false,
+        dialogTitle: {
+          1: '',
+          2: '确认信息',
+          3: '',
+        },
+        curRow: {},
+        curIdx: 0,
+        dform: {},
+        info: {},
+
+        cycle: [
+          // {
+          //   code: 'TRYOUT',
+          //   key: 'TRYOUT',
+          //   label: '免费试用七天'
+          // },
+          {
+            code: 'MONTH',
+            key: 'monthAmount',
+            label: '一个月'
+          },
+          {
+            code: 'YEAY',
+            key: 'yearAmount',
+            label: '一年'
+          },
+          {
+            code: 'PERMANENT',
+            key: 'permanentAmount',
+            label: '永久'
+          }
+        ],
       }
     },
     computed: {
@@ -127,6 +316,9 @@
       myDeviceId() {
         return this.$store.getters.myDeviceId
       },
+      rests() {
+        return this.$store.getters.rests
+      }
     },
     beforeRouteEnter(to, from, next) {
       to.meta.urlQuery = JSON.stringify(to.query)
@@ -157,7 +349,7 @@
       if (this.$route.meta.reload) {
         this.getList()
       } else if (this.urlQuery != this.$route.meta.urlQuery) {
-        if(!this.listQuery.deviceTypeCode && !this.form.serviceName){
+        if(this.listQuery.deviceTypeCode == 0 && !this.form.serviceName){
           this.listQuery.deviceTypeCode = Object.values(this.myDeviceName)[0]
           this.listQuery.serviceTypeCode = 'CUSTOMIZE'
         }
@@ -168,6 +360,9 @@
     mounted() {
       this.$store.dispatch('api/getServiceType').then(res => {
         this.tabs = res
+      })
+      this.$get('iot-saas-pay/api/pay/withdraw/balance').then(res => {
+        this.money = res || {}
       })
     },
     methods: {
@@ -201,8 +396,11 @@
           page: this.listQuery.page - 1
         })
         if(params.serviceTypeCode == 0) delete params.serviceTypeCode
-        if(params.deviceTypeCode == 0 || params.serviceTypeCode != 'CUSTOMIZE') delete params.deviceTypeCode
-        if(params.Type == 0) delete params.Type
+        if(params.deviceTypeCode == 0 || params.serviceTypeCode == 'SYSTEM'){
+          delete params.deviceTypeCode
+          this.listQuery.deviceTypeCode = '0'
+        }
+        if(params.Type < 0) delete params.Type
         this.$get('iot-saas-basic/client/service/market/findPage', params).then((res = {}) => {
           this.list = this.list.concat(res.rows || [])
           this.listLoading = false
@@ -210,7 +408,7 @@
           if(params.page == 0){
             this.listTotal = res.total || 0
           }
-          this.getNoFreeApp(arrayKeys(this.list, 'serviceId'))
+          //this.getNoFreeApp(arrayKeys(this.list, 'serviceId'))
           this.onLoadPage = false
         }).catch(() => {
           this.listLoading = false
@@ -239,37 +437,84 @@
           this.listQuery.page++
           this.getList()
         }
-      }
+      },
+
+      /**
+       * 操作行
+       * @param {Object} type 1 dialog类型  2 drawer类型
+       * @param {Object} row 选择当前数据
+       * @param {Object} dialogType dialog内容显示类型 1: '查看详情' 2：'确认购买'
+       * @param {Object} idx 当前数据所在位置
+       */
+      setRows(type, row, dialogType, idx) {
+        switch (type) {
+          case 1:
+              this.dialogType = dialogType
+              this.curRow = row
+              this.curIdx = idx
+              if(dialogType == 2){
+                this.drawerStatus = false
+              } else {
+                this.dform = {}
+              }
+              this.dialogStatus = true
+              break
+            case 2:
+              this.dialogType = dialogType
+              this.curRow = row
+              this.curIdx = idx
+              this.dform = {
+                cycle: 'MONTH',
+                priceCode: ''
+              }
+              if(dialogType == 1){
+                this.info = {}
+                this.$get(`iot-saas-basic/admin/service/market/${row.serviceId}`).then(res => {
+                  this.dialogTitle[1] = res.name
+                  this.dform.priceCode = res.priceSettings[0].priceCode
+                  res.priceSettings = arrayToObj(res.priceSettings, 'priceCode')
+                  for(var i in this.cycle){
+                    if(res.priceSettings[this.dform.priceCode][this.cycle[i].key] > 0){
+                      this.dform.cycle = this.cycle[i].code
+                      this.cycleKey = this.cycle[i].key
+                      break
+                    }
+                  }
+                  this.info = res
+                })
+              }
+              this.drawerStatus = true
+              break
+        }
+      },
+
+      /**
+       * 弹窗确认
+       */
+      dialogConfirm(row = {}) {
+        let curRow = this.curRow,
+          curIdx = this.curIdx,
+          params = JSON.parse(JSON.stringify(this.dform))
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        switch (this.dialogType) {
+          case 2:
+            params.payTypeCode = 'HAPPY_MONEY'
+            params.serviceId = curRow.serviceId
+            this.$post('iot-saas-basic/client/service/market/buy', params).then(res => {
+              this.dialogType = 3
+              this.clickSubmit = false
+              this.toQuery()
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+        }
+      },
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-row{
-    margin: 0 !important;
-  }
-  .list-item{
-    margin-top: 10px;
-    border-radius: 4px;
-    .list-img{
-      width: 44px;
-      height: 44px;
-      border-radius: 4px;
-      border: thin solid #f5f5f5;
-    }
-    .text-cut_two{
-      height: 32px;
-    }
-    /deep/ .el-rate__icon{
-      margin-right: 0;
-    }
-    .el-tag{
-      border: none;
-      color: #07C160;
-    }
-  }
-  .load-box{
-    height: calc(100vh - 180px);
-    overflow-y: scroll;
-  }
+  @import './list.scss';
 </style>

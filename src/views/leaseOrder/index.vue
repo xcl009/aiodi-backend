@@ -213,16 +213,19 @@
             <div class="mt-20 mb-15">
               基础信息
             </div>
-            <el-form-item label="设备数量" prop="deviceNum">
-              <el-input type="number" v-model="dform.deviceNum" placeholder="输入设备数量" />
+            <el-form-item label="设备数量" :error="ferror.deviceNum">
+              <el-input type="number" v-model="dform.deviceNum" placeholder="输入设备数量"
+              @input="(v) => (ferror.deviceNum = checkDigit(v, 1, 999999, 0))"/>
             </el-form-item>
-            <el-form-item label="总金额" prop="amountTotal">
-              <el-input type="number" v-model="dform.amountTotal" placeholder="请输入总金额">
+            <el-form-item label="总金额" :error="ferror.amountTotal">
+              <el-input type="number" v-model="dform.amountTotal" placeholder="请输入总金额"
+                @input="(v) => (ferror.amountTotal = checkDigit(v, 1, 9999999))">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="周期扣款" prop="deductionAmount">
-              <el-input type="number" v-model="dform.deductionAmount" placeholder="请输入扣款金额">
+            <el-form-item label="周期扣款" :error="ferror.deductionAmount">
+              <el-input type="number" v-model="dform.deductionAmount" placeholder="请输入扣款金额"
+              @input="(v) => (ferror.deductionAmount = checkDigit(v, 0.1, 9999))">
                 <el-select v-model="dform.deductionCycle" slot="prepend">
                   <el-option label="每天" :value="1"></el-option>
                   <el-option label="每周" :value="7"></el-option>
@@ -538,6 +541,7 @@
         curRow: {},
         curIdx: 0,
         dform: {},
+        ferror: {},
         showRow: {},
 
         /**
@@ -625,8 +629,8 @@
             trigger: 'blur'
           },
           {
-            pattern: /^([1-9][0-9]*|0)(\.[0-9]?[1-9])?$/,
-            message: '范围在1-9999999',
+            pattern: /(^[0-9]{1,6}$)|(^[0-9]{1,6}[\.]{1}[0-9]{1,2}$)/,
+            message: '范围在1-999999',
             trigger: 'blur'
           }],
           deviceNum: [{
@@ -635,7 +639,7 @@
               trigger: 'blur'
             },
             {
-              pattern: /^(?!00)(?:[0-9]{1,7}|9999999)$/,
+              pattern: /(^[0-9]{1,6}$)|(^[0-9]{1,6}[\.]{1}[0-9]{1,2}$)/,
               message: '范围在1-999999',
               trigger: 'blur'
           }],
@@ -645,8 +649,8 @@
             trigger: 'blur'
           },
           {
-            pattern: /^(?!00)(?:[0-9]{1,7}|9999999)$/,
-            message: '范围在1-999999',
+            pattern: /(^[0-9]{1,4}$)|(^[0-9]{1,4}[\.]{1}[0-9]{1,2}$)/,
+            message: '范围在1-9999',
             trigger: 'blur'
           }]
         }
@@ -867,6 +871,14 @@
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
+        let error = false
+        for(var i in this.ferror){
+          if(this.ferror[i]){
+            error = true
+            break
+          }
+        }
+        if(error) return
         if (this.clickSubmit) return
         this.clickSubmit = true
         switch (this.dialogType) {

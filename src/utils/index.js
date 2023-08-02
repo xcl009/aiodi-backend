@@ -742,6 +742,25 @@ const util = {
   checkQueryRepeat(key, idx, formKey){
     return Object.values(formKey).indexOf(key) == -1 || Object.values(formKey).indexOf(key) == idx - 1
   },
+
+  /**
+   * 数字输入校验
+   */
+  checkDigit(val, min=0, max=100, p=2){
+    let testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)")
+    if(p > 0) testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)|(^[0-9]{1,"+ max.toString().length +"}[\\.]{1}[0-9]{1,"+ p +"}$)")
+    if( val > max){
+      return `不能大于${max}`
+    } else if(val < min){
+      return `不能小于${min}`
+    } else if(val < min){
+      return `不能小于${min}`
+    }else if (testReg.test(val)) {
+      return ''
+    }else{
+      return `范围${min}-${max}${p > 0 ? '，小数点后'+p+'位' : '的整数'}`
+    }
+  }
 }
 
 export const param2Obj = util.param2Obj
@@ -781,3 +800,4 @@ export const accSub = util.accSub
 export const defaultFee = util.defaultFee
 export const dateSort = util.dateSort
 export const checkQueryRepeat = util.checkQueryRepeat
+export const checkDigit = util.checkDigit

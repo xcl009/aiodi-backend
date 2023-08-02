@@ -40,7 +40,7 @@
         </el-table-column>
         <el-table-column label="商户" min-width="190">
           <template slot-scope="scope">
-            <div>{{ scope.row.name || '--' }}</div>
+            <div class="cursor" @click="copyText(scope.row.id)">{{ scope.row.name || '--' }}</div>
             <div>{{ scope.row.address || '--' }}</div>
           </template>
         </el-table-column>
@@ -132,7 +132,7 @@
               <div class="flex flex-wrap">
                 <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
                 <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?storeId=${scope.row.id}`})">修改信息</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore}`})">修改信息</el-button>
                 <el-button type="primary" size="mini" @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-button>
                 <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
                 <el-dropdown trigger="click">
@@ -225,7 +225,7 @@
 <script>
   import qs from 'qs'
   import { getToken, setToken, removeToken } from '@/utils/auth'
-  import { arrayToObj } from '@/utils/index'
+  import { arrayToObj, copyText } from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import RelatedTemplate from '@/components/RelatedTemplate/'
@@ -253,6 +253,7 @@
     data() {
       return {
         clickSubmit: false,
+        copyText: copyText,
         catList: [],
         cityList: [],
         form: {},
@@ -377,7 +378,7 @@
       getList() {
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1,
-          //lowerStore: this.isSaas() ? true : this.lowerStore
+          lowerStore: this.isSaas() ? true : this.lowerStore
         })
         this.$get('iot-saas-basic/admin/store/findPage', params).then(async (res = {}) => {
           let list = res.rows || []

@@ -46,7 +46,7 @@
                 <el-input v-model="form.userNickName" placeholder="请填写联系人姓名" />
               </el-form-item>
               <el-form-item ref="userMobile" label="手机号码" prop="userMobile">
-                <el-input type="tel" v-model="form.userMobile" placeholder="此手机号码会作为登录账户" />
+                <el-input type="number" v-model="form.userMobile" placeholder="此手机号码会作为登录账户" />
               </el-form-item>
               <el-form-item v-if="!storeId" label="登录密码">
                 <el-input v-model="form.loginPassword" placeholder="请填写登录密码" />
@@ -95,33 +95,34 @@
                   </el-popover>
                 </el-form-item>
                 <template v-if="item.closeType == 3">
-                  <el-form-item label="承诺分成">
-                    <el-input type="number" v-model="item.promised" placeholder="最高不能超过100%">
+                  <el-form-item label="承诺分成" :error="ferror.promised">
+                    <el-input type="number" v-model="item.promised" placeholder="最高不能超过100%" @input="(v) => (ferror.promised = checkDigit(v))">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
-                  <el-form-item label="相对分成">
-                    <el-input type="number" v-model="item.relative" placeholder="最高不能超过100%">
+                  <el-form-item label="相对分成" :error="ferror.relative">
+                    <el-input type="number" v-model="item.relative" placeholder="最高不能超过100%" @input="(v) => (ferror.relative = checkDigit(v))">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
-                  <el-form-item label="每天前">
-                    <el-input type="number" v-model="item.promisedDeal" placeholder="0">
+                  <el-form-item label="每天前" :error="ferror.promisedDeal">
+                    <el-input type="number" v-model="item.promisedDeal" placeholder="0" @input="(v) => (ferror.promisedDeal = checkDigit(v))">
                       <template slot="append">单按承诺分成比例分润</template>
                     </el-input>
                   </el-form-item>
                 </template>
                 <template v-else-if="item.closeType == 2">
-                  <el-form-item label="相对分成">
-                    <el-input type="number" v-model="item.relative" placeholder="最高不能超过100%">
+                  <el-form-item label="相对分成" :error="ferror.relative">
+                    <el-input type="number" v-model="item.relative" placeholder="最高不能超过100%"
+                      @input="(v) => (ferror.relative = checkDigit(v))">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </template>
                 <template v-else>
-                  <el-form-item label="分成比例">
-                    <el-input class="input-with" type="number" v-model="item.live"
-                      :placeholder="`最高不能超过${myProfitRatio[item.deviceTypeCode]}%`">
+                  <el-form-item label="分成比例" :error="ferror.live">
+                    <el-input class="input-with" type="number" v-model="item.live" :placeholder="`最高不能超过${myProfitRatio[item.deviceTypeCode]}%`"
+                    @input="(v) => (ferror.live = checkDigit(v, 0, myProfitRatio[item.deviceTypeCode]))">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
@@ -139,8 +140,7 @@
                   <div>
                     <div class="mb-10 text-dfs text-bold text-black">
                       {{ name }}计费设置
-                      <span class="ml-10 text-primary cursor" v-if="xcx == 'alipay'"
-                        @click="item[`${xcx}PayMode`] = JSON.parse(JSON.stringify(item[`weixinPayMode`]))">一键同步微信的计费设置</span>
+                      <span class="ml-10 text-primary cursor" v-if="xcx == 'alipay'" @click="setAlipayMode(item)">一键同步微信的计费设置</span>
                     </div>
 
                     <el-form-item :label="`付费模式`">
@@ -204,41 +204,41 @@
                     </template>
 
                     <template v-else>
-                      <el-form-item label="免费时长" v-if="item.deviceTypeCode == 'PA'">
-                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.freeTime"
-                          placeholder="不填默认5分钟">
+                      <el-form-item label="免费时长" :error="ferror[`${item.deviceTypeCode}_${xcx}_freeTime`]" v-if="item.deviceTypeCode == 'PA'">
+                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.freeTime" placeholder="不填默认5分钟"
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_freeTime`] = checkDigit(v, 1, 1440, 0))">
                           <template slot="append">分钟</template>
                         </el-input>
                       </el-form-item>
-                      <el-form-item label="前">
+                      <el-form-item label="前" :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
                         <div class="flex">
                           <div class="flex1">
-                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingTime">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingTime" @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))">
                               <template slot="append">分钟</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1">
-                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount" @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1000000))">
                               <template slot="append">元</template>
                             </el-input>
                           </div>
                         </div>
                       </el-form-item>
-                      <el-form-item label="超过后">
+                      <el-form-item label="超过后" :error="ferror[`${item.deviceTypeCode}_${xcx}_overBillingUnit`]">
                         <div class="flex">
                           <div class="flex1">
-                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.overBillingUnit">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.overBillingUnit" @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_overBillingUnit`] = checkDigit(v, 0, 1440, 0))">
                               <template slot="append">分钟</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1">
-                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice" @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_overBillingUnit`] = checkDigit(v, 0, 1000000))">
                               <template slot="append">元</template>
                             </el-input>
                           </div>
                         </div>
                       </el-form-item>
-                      <el-form-item label="封顶">
+                      <el-form-item label="封顶" :error="ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`]">
                         <div class="flex">
                           <div>
                             <el-select v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
@@ -247,20 +247,20 @@
                             </el-select>
                           </div>
                           <div class="pl-10 flex1">
-                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice" @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`] = checkDigit(v, 0, 1000000))">
                               <template slot="append">元</template>
                             </el-input>
                           </div>
                         </div>
                       </el-form-item>
-                      <el-form-item label="总封顶">
-                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount">
+                      <el-form-item label="总封顶" :error="ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`]">
+                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount" @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`] = checkDigit(v, 0, 1000000))">
                           <template slot="append">元</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item label="押金"
-                        v-if="item[`${xcx}PayMode`].modeType == 'DEPOSIT' || item.deviceTypeCode == 'PA'">
-                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount">
+                        v-if="item[`${xcx}PayMode`].modeType == 'DEPOSIT' || item.deviceTypeCode == 'PA'" :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
+                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount" @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 1000000))">
                           <template slot="append">元</template>
                         </el-input>
                       </el-form-item>
@@ -308,14 +308,14 @@
         return myDevice
       },
       myDeviceId() {
-        return this.$store.getters.myDeviceId
+        return this.$store.getters.myDeviceId || {PA: '充电宝'}
       },
       siteInfo() {
         let siteInfo = this.$store.getters.siteInfo
         return siteInfo
       },
       myProfitRatio() {
-        return this.$store.getters.myProfitRatio
+        return this.$store.getters.myProfitRatio || { PA: 100 }
       }
     },
     data() {
@@ -354,6 +354,7 @@
         clickSubmit: false,
         storeId: this.$route.query.storeId || '',
         parentId: this.$route.query.parentId || '',
+        lowerStore: this.$route.query.lowerStore || false,
         catList: [],
         cityList: [],
         form: {
@@ -365,12 +366,12 @@
           lng: '',
           address: ''
         },
+        ferror: {},
         powerInfo: {},
 
         selDevice: [],
         deviceDataArr: [],
-        defaultDevice: defaultFee(),
-        subShop: false
+        defaultDevice: defaultFee()
       }
     },
     mounted() {
@@ -633,6 +634,14 @@
           })
           return
         }
+        let error = false
+        for(var i in this.ferror){
+          if(this.ferror[i]){
+            error = true
+            break
+          }
+        }
+        if(error) return
         this.$refs[formName].validate((valid, object) => {
           if (valid) {
             const params = JSON.parse(JSON.stringify(this.form))
@@ -718,7 +727,7 @@
                 message: '操作成功',
                 type: 'success'
               })
-              if (this.subShop) {
+              if (this.lowerStore) {
                 this.$router.push({
                   path: '/store/subStore'
                 })
@@ -773,6 +782,32 @@
        */
       getModeType(code) {
         return this.config.mode_way[code] ? this.config.mode_way[code] : this.config.mode_way.default
+      },
+
+      /**
+       * 一键同步微信计费
+       */
+      setAlipayMode(item){
+      	let errorMsg = false
+      	for(var i in this.ferror){
+      	  if(this.ferror[i] && i.indexOf('weixin') > -1){
+      			errorMsg = this.ferror[i]
+      	    break
+      	  }
+      	}
+      	if(errorMsg){
+          this.$message({
+            message: '您填写的数据有误，请先检查',
+            type: 'error'
+          })
+      		return
+      	}
+      	for(var i in this.ferror){
+      	  if(this.ferror[i] && i.indexOf('alipay') > -1){
+      			delete this.ferror[i]
+      	  }
+      	}
+      	item.alipayPayMode = JSON.parse(JSON.stringify(item.weixinPayMode))
       },
 
       /**

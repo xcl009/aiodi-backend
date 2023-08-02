@@ -30,7 +30,7 @@
         <template v-for="item in showColumn" v-if="item.val">
           <el-table-column label="品牌信息" width="150" v-if="item.key == 'name'">
             <template slot-scope="scope">
-              <div class="mb-5">{{ scope.row.name || '品牌名' }}</div>
+              <div class="mb-5 cursor" @click="copyText(scope.row.id)">{{ scope.row.name || '品牌名' }}</div>
               <el-tooltip class="item" effect="dark" :content="scope.row.brandUser.mobile" placement="top" v-if="scope.row.brandUser">
                 <div>{{ dealPhone(scope.row.brandUser.mobile) }}</div>
               </el-tooltip>
@@ -196,6 +196,7 @@
     },
     data() {
       return {
+        copyText: copyText,
         clickSubmit: false,
         sort_type: [{
             name: '综合排序',
