@@ -1,0 +1,55 @@
+/deep/ .filter-box{
+    border: 2px solid #FFF;
+    border-radius: 4px;
+    box-shadow: 0px 4px 10px 0px rgba(86, 139, 193, 0.10);
+    background: url('../../assets/market_bg.jpg') rgba(242,246,249,1) 100% 100% no-repeat;
+    background-size: contain;
+    .bg-white{
+      background: none;
+    }
+    .el-tabs--top .el-tabs__item.is-active{
+      background-color: #fff;
+    }
+  }
+  .vip-icon{
+    vertical-align: middle;
+  }
+  .load-box{
+    height: calc(100vh - 250px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+  .list-item{
+    margin-top: 20px;
+    border-radius: 4px;
+    .list-img{
+      width: 44px;
+      height: 44px;
+      border-radius: 4px;
+      border: thin solid #f5f5f5;
+    }
+    .fs-b5{
+      margin-bottom: 2px;
+    }
+    .text-cut_two{
+      height: 32px;
+    }
+    /deep/ .el-rate__icon{
+      margin-right: 0;
+    }
+    .el-tag{
+      border: none;
+      &.normal{
+        background-color: rgba(7, 193, 96, 0.1);
+        color: #07C160;
+      }
+      &.is-expired{
+        background-color: rgba(255, 163, 44, 0.1);
+        color: #FFA32C;
+      }
+      &.expired{
+        background-color: #F2F3F5;
+        color: #86909C;
+      }
+    }
+  }
