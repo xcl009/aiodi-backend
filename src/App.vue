@@ -16,14 +16,20 @@
 export default {
   name: 'App',
   created () {
-    
+    // this.$nextTick(() => {
+    //   this.devicePixelRatio = window.devicePixelRatio
+    //   if(this.devicePixelRatio){
+    //     window.addEventListener('resize', this.resizeFun)
+    //   }
+    // })
   },
   methods: {
     resizeFun () {
-      const devicePixelRatio = window.devicePixelRatio // 获取下载的缩放 125% -> 1.25    150% -> 1.5
-      if (devicePixelRatio > 1.5) {
+      const devicePixelRatio = window.devicePixelRatio
+      console.log(devicePixelRatio)
+      if (devicePixelRatio != this.devicePixelRatio) {
         const c = document.querySelector('body')
-        c.style.zoom = 1 / devicePixelRatio// 修改页面的缩放比例
+        c.style.zoom = this.devicePixelRatio / devicePixelRatio// 修改页面的缩放比例
       }
     }
   }

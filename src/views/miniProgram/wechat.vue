@@ -211,12 +211,17 @@
             this.dialogStatus = true
             break
           case 2:
+            if(this.clickSubmit) return
+            this.clickSubmit = true
             this.$post(`iot-saas-pay/wechat/${row.appId}/submit/audit`).then(res => {
               this.$message({
                 message: '操作成功',
                 type: 'success'
               })
               row.appAuditStatus = 2
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
             break
           case 3:
@@ -229,12 +234,17 @@
             })
             break
           case 4:
+            if(this.clickSubmit) return
+            this.clickSubmit = true
             this.$post(`iot-saas-pay/wechat/${row.appId}/push/release`).then(res => {
               this.$message({
                 message: '操作成功',
                 type: 'success'
               })
               row.appAuditStatus = 5
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
             break
           case 5:

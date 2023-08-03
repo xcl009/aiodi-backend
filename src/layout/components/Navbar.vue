@@ -88,11 +88,11 @@
       <template v-if="dialogType == 3">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
           <el-form-item label="商户ID">
-            <el-input v-model="dform.storeId" placeholder="设备SN"></el-input>
+            <el-input v-model="dform.storeId" placeholder="商户ID"></el-input>
           </el-form-item>
-          <div class="flex">
+          <div class="flex fs-c1" style="line-height: 1.8;">
             <div>温馨提示：</div>
-            <div>设置默认商户后，设备未铺货时，用户租借订单取此商户的计费规则，只可设置自己的商户。<br>商户ID可在商户列表点击商户名称即可获得。</div>
+            <div>设置默认商户后，设备未铺货时，用户租借订单取此商户的计费规则。<br><span class="text-danger">商户ID可在商户列表找到要设置的商户，点击商户名称即可获得。</span></div>
           </div>
         </el-form>
       </template>

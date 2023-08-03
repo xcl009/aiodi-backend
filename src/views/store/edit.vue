@@ -16,7 +16,7 @@
           <el-form-item ref="catId" label="行业分类" prop="catId">
             <el-cascader v-model="form.catId" :options="catList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <el-form-item ref="lng" label="定位地址" prop="lng">
+          <el-form-item ref="lng" label="定位地址" prop="lng" v-if="mapTrue">
             <maps v-if="form.lng" :center="{ lng: form.lng, lat: form.lat }" @locationOk="locationOk" :zooms="18" />
             <maps v-else @locationOk="locationOk" :zooms="18" />
           </el-form-item>
@@ -371,7 +371,10 @@
 
         selDevice: [],
         deviceDataArr: [],
-        defaultDevice: defaultFee()
+        defaultDevice: defaultFee(),
+
+        // 地图加载
+        mapTrue: false
       }
     },
     mounted() {
@@ -390,12 +393,14 @@
       } else {
         if (storeDefaultConfig) {
           if(storeDefaultConfig.lng){
-            this.$set(this.form, 'lat', storeDefaultConfig.lat)
-            this.$set(this.form, 'lng', storeDefaultConfig.lng)
+            let ns = qqMapTransBMap(storeDefaultConfig.lng, storeDefaultConfig.lat)
+            this.$set(this.form, 'lat', ns.lat)
+            this.$set(this.form, 'lng', ns.lng)
           }
           if(storeDefaultConfig.province){
             this.$set(this.form, 'province', [storeDefaultConfig.province, storeDefaultConfig.city, storeDefaultConfig.district])
           }
+          this.mapTrue = true
         }
         this.selDevice.push(Object.keys(this.myDeviceId)[0])
         this.getDefaultBilling(Object.keys(this.myDeviceId)[0]).then(info => {
@@ -614,6 +619,7 @@
           delete info.storePayConfig
           delete info.user
           this.form = info
+          this.mapTrue = true
         })
       },
 
