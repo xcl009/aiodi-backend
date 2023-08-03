@@ -400,8 +400,8 @@
           if(storeDefaultConfig.province){
             this.$set(this.form, 'province', [storeDefaultConfig.province, storeDefaultConfig.city, storeDefaultConfig.district])
           }
-          this.mapTrue = true
         }
+        this.mapTrue = true
         this.selDevice.push(Object.keys(this.myDeviceId)[0])
         this.getDefaultBilling(Object.keys(this.myDeviceId)[0]).then(info => {
           this.deviceDataArr.push(info)
