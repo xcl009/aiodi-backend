@@ -112,8 +112,8 @@
               </el-image>
             </div>
             <div class="flex align-center" v-else-if="scope.row.withdrawType == 3">
-              <el-avatar size="small" :src="scope.row.alipayHeadUrl || scope.row.userAvatar"></el-avatar>
-              <div class="pl-10">{{ scope.row.alipayNickname || scope.row.userNickName }}</div>
+              <el-avatar size="small" :src="scope.row.aliHeadUrl || scope.row.userAvatar"></el-avatar>
+              <div class="pl-10">{{ scope.row.aliNickname || scope.row.userNickName }}</div>
             </div>
             <div class="flex align-center" v-else>
               <el-avatar size="small" :src="scope.row.wechatHeadUrl || scope.row.userAvatar"></el-avatar>
