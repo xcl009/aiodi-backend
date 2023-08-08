@@ -922,7 +922,7 @@
           params.storeId = ids[0]
           params.agentId = ids[1]
         }
-        params.lowerAgent = this.lowerAgent || false
+        if(this.lowerAgent != 'ALL') params.lowerAgent = this.lowerAgent || false
         if (params.deviceTypeCode == 0) delete params.deviceTypeCode
         delete params.status
         this.$get(url, params).then(res => {
@@ -998,7 +998,7 @@
           params.orderNoEndSix = params.orderNo
           delete params.orderNo
         }
-        params.lowerAgent = this.lowerAgent || false
+        if(this.lowerAgent != 'ALL') params.lowerAgent = this.lowerAgent || false
         this.$get(url, params).then(res => {
           this.list = res.rows
           this.listLoading = false

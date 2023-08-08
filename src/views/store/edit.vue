@@ -66,20 +66,17 @@
 
               <template v-if="form.divisionMode != 2">
                 <el-form-item label="分成模式">
-                  <el-radio-group v-model="item.closeType">
+                  <el-radio-group v-model="item.closeType" @change="setCloseType">
                     <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType"
                       :disabled="!Ability[`${item.deviceTypeCode}_CLOSETYPE_${cti}`] && cti != 1">{{ ct }}{{ cti == 3 ? '(分成不一致)' : ''}}</el-radio-button>
                   </el-radio-group>
                   <el-popover placement="right" title="" width="400" trigger="hover">
                     <div>
                       <div class="mb-15 text-bold text-black">分成注释</div>
-
                       <div class="mb-5 text-black">真实分成</div>
                       真实分成：若真实分成设置为50%，则10元订单商户可分润10×50%=5元<br><br>
-
                       <div class="mb-5 text-black">相对分成</div>
                       相对分成：若相对分成设置为50%，您的分成为50%，则10元订单商户可分润10×50%×50%=2.5元<br><br>
-
                       <div>
                         <div class="mb-5 text-black">分摊(分成不一致)</div>
                         承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。</span><br>
@@ -206,7 +203,7 @@
                     <template v-else>
                       <el-form-item label="免费时长" :error="ferror[`${item.deviceTypeCode}_${xcx}_freeTime`]" v-if="item.deviceTypeCode == 'PA'">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.freeTime" placeholder="不填默认5分钟"
-                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_freeTime`] = checkDigit(v, 1, 1440, 0))">
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_freeTime`] = checkDigit(v, 1, 1440, 0, true))">
                           <template slot="append">分钟</template>
                         </el-input>
                       </el-form-item>
@@ -290,7 +287,7 @@
   import upload from '@/components/upload'
   import maps from '@/components/map'
   export default {
-    name: 'shopCreate',
+    name: 'addStore',
     components: {
       upload,
       maps
@@ -733,7 +730,7 @@
                 message: '操作成功',
                 type: 'success'
               })
-              if (this.lowerStore) {
+              if (this.lowerStore > 0) {
                 this.$router.push({
                   path: '/store/subStore'
                 })
@@ -749,6 +746,23 @@
 
           }
         })
+      },
+
+      /**
+       * @param {Object} type
+       */
+      setCloseType(type){
+        if(type == 1){
+          this.ferror.promised = ''
+          this.ferror.relative = ''
+          this.ferror.promisedDeal = ''
+        }else if(type == 2){
+          this.ferror.live = ''
+          this.ferror.promisedDeal = ''
+          this.ferror.promised = ''
+        }else{
+          this.ferror.live = ''
+        }
       },
 
       /**

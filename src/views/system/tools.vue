@@ -50,7 +50,7 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/bedSetting`})">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/bedSetting`})">设置</el-button>
             </div>
           </div>
         </el-col>
@@ -84,7 +84,7 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/depositRefund`})">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/depositRefund`})">设置</el-button>
             </div>
           </div>
         </el-col>
@@ -100,7 +100,7 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/freeQuotaConfig`})">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/freeQuotaConfig`})">设置</el-button>
             </div>
           </div>
         </el-col>
@@ -116,7 +116,7 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/billing`})">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/billing`})">设置</el-button>
             </div>
           </div>
         </el-col>
@@ -132,7 +132,7 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/store/steal`})">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/store/steal`})">设置</el-button>
             </div>
           </div>
         </el-col>
@@ -148,7 +148,7 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/orderOt`})">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/orderOt`})">设置</el-button>
             </div>
           </div>
         </el-col>
@@ -164,7 +164,7 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/system/cashSet`})">默认设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/system/cashSet`})">设置</el-button>
             </div>
           </div>
         </el-col>

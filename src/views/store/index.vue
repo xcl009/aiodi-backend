@@ -132,7 +132,7 @@
               <div class="flex flex-wrap">
                 <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
                 <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore}`})">修改信息</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore ? 1 : 0}`})">修改信息</el-button>
                 <el-button type="primary" size="mini" @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-button>
                 <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
                 <el-dropdown trigger="click">
@@ -312,7 +312,7 @@
     },
     beforeRouteEnter(to, from, next) {
       to.meta.urlQuery = JSON.stringify(to.query)
-      if (from.name == 'addStore') {
+      if (from.name == 'addStore' || from.name == 'editStore') {
         to.meta.reload = true
       } else {
         to.meta.reload = false

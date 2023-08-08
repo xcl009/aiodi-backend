@@ -32,7 +32,7 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/wait.svg')" width="54">
           <div class="flex1 ml-10">
-            <div class="mb-5">代扣金额</div>
+            <div class="mb-5">待扣金额</div>
             <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount || 0.00 }}</span>元</div>
           </div>
         </div>

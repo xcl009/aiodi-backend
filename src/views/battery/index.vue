@@ -61,7 +61,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.key == 'belongStatue'">
             <template slot-scope="scope">
-              {{ scope.row.belongStatue == 1 ? '' : '--' }}
+              {{ scope.row.initAgentId != scope.row.currentAgentId ? '流出' : '--' }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :width="150" v-else-if="item.key.indexOf('Time') > -1">
@@ -310,7 +310,7 @@
             key: 'terminalSn',
             val: true,
             name: '二维码',
-            width: 160,
+            width: 180,
           },
           {
             key: 'lastOverhaulId',

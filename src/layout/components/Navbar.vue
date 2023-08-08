@@ -18,7 +18,7 @@
           <el-badge is-dot :hidden="!updateDetails.isNews" class="news-dot">
             <i class="el-icon-bell fs-b2 text-white"></i>
           </el-badge>
-          <span class="ml-10 text-white">消息</span>
+          <span class="ml-10 text-white">更新明细</span>
         </div>
         <div class="pl-15 pr-15 menu-item flex align-center" @click="handleScreen">
           <i class="el-icon-full-screen fs-b2 text-white"></i>
@@ -87,13 +87,26 @@
       </template>
       <template v-if="dialogType == 3">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
+          <div class="mb-15 text-black">商户ID</div>
           <el-form-item label="商户ID">
             <el-input v-model="dform.storeId" placeholder="商户ID"></el-input>
+            <div class="mb-15 flex fs-c1" style="line-height: 1.8;">
+              <div>温馨提示：</div>
+              <div>设置默认商户后，设备未铺货时，用户租借订单取此商户的计费规则。<br><span class="text-danger">商户ID可在商户列表找到要设置的商户，点击商户名称即可获得。</span></div>
+            </div>
           </el-form-item>
-          <div class="flex fs-c1" style="line-height: 1.8;">
-            <div>温馨提示：</div>
-            <div>设置默认商户后，设备未铺货时，用户租借订单取此商户的计费规则。<br><span class="text-danger">商户ID可在商户列表找到要设置的商户，点击商户名称即可获得。</span></div>
-          </div>
+
+          <div class="mb-15 text-black">数据模拟</div>
+          <el-form-item label="翻倍状态">
+            <el-switch v-model="dform.active" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item label="翻倍倍数">
+            <el-input v-model="dform.multiple" placeholder="翻倍倍数"></el-input>
+            <div class="flex fs-c1" style="line-height: 1.8;">
+              <div>温馨提示：</div>
+              <div>翻倍状态开启后，首页、设备列表、订单列表的统计数据会在当前基础上乘以设置的倍数</div>
+            </div>
+          </el-form-item>
         </el-form>
       </template>
       <template v-if="[3].indexOf(dialogType) > -1">
@@ -213,9 +226,16 @@ export default {
               code: 'DEFAULT_STORE'
             }).then(res => {
               if(res && res.setting){
-                this.dform = {
-                  storeId: res.setting
-                }
+                this.$set(this.dform, 'storeId', res.setting)
+              }
+            })
+            this.$get('iot-saas-basic/admin/settings/find', {
+              code: 'DATA_MULTIPLE'
+            }).then(res => {
+              if(res && res.setting){
+                let info = JSON.parse(res.setting)
+                this.$set(this.dform, 'active', info.active)
+                this.$set(this.dform, 'multiple', info.multiple)
               }
             })
           }
@@ -235,8 +255,14 @@ export default {
           this.$post('iot-saas-basic/admin/settings/saveStore', {
             storeId: params.storeId
           }).then(res => {
+
+          })
+          this.$post('iot-saas-basic/admin/settings/saveMultiple', {
+            active: params.active || 0,
+            multiple: params.multiple || 0
+          }).then(res => {
             this.$message({
-              message: '复制成功',
+              message: '操作成功',
               type: 'success'
             })
             this.drawerStatus = false
