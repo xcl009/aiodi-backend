@@ -33,7 +33,7 @@
           <el-form-item label="微信支付分ID">
             <el-input v-model="form.serviceId"></el-input>
           </el-form-item>
-          <!-- <el-form-item label="最大分账比例">
+          <el-form-item label="最大分账比例">
             <el-input v-model="form.maxDividePercent">
               <template slot="append">%</template>
             </el-input>
@@ -42,7 +42,7 @@
             <el-input v-model="form.settlementCycle">
               <template slot="append">天</template>
             </el-input>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item label="支付证书(p12)">
             <div class="flex align-center">
               <upload uploadText="上传支付证书" :raw="true" @getFile="getCert"/>

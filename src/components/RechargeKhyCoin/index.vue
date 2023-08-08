@@ -69,7 +69,11 @@
       /**
        * 显示充值层
        */
-      show() {
+      show(val = 0) {
+        if(val > 0){
+          this.dform.amount = val
+          this.getPayCode()
+        }
         this.dialogStatus = true
       },
 

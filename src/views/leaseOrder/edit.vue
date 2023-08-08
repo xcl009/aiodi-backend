@@ -127,6 +127,13 @@
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
           if (valid) {
+            if(params.deductionAmount > params.amountTotal){
+              this.$message({
+                message: '周期扣款金额不可大于总金额',
+                type: 'error'
+              })
+              return
+            }
             if(this.orderId){
               url = `iot-saas-order/admin/order/device/rent/update/${this.orderId}`
             }

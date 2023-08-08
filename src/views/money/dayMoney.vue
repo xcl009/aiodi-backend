@@ -2,12 +2,15 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @query="getTime(form.date)" @reset="getTime">
       <template v-slot:tabs>
-        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="getLineChart()">
-          <el-tab-pane label="全部设备" :name="'0'" />
-          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
-        </el-tabs>
+        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
+          <div class="mr-10">设备类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部设备" :name="''" />
+            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+          </el-tabs>
+        </div>
       </template>
-      
+
       <template v-slot:defult>
         <el-form-item label="选择月份">
           <el-date-picker v-model="form.date" type="month" :picker-options="pickerOptionsEnd" range-separator="-"
@@ -79,6 +82,11 @@
     name: 'dayMoney',
     components: {
       condition
+    },
+    computed: {
+      myDeviceName() {
+        return this.$store.state.user.myDeviceName
+      },
     },
     data() {
       return {

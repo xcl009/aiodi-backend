@@ -59,7 +59,7 @@
               <div class="flex1">
                 {{ item.expiresDatetime }}到期
               </div>
-              <el-button type="primary" size="medium" plain @click="$router.push({path: `/market/buyApp?id=${item.serviceId}`})" v-if="item.cycleTypeName != '永久'">{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即续用' : '立即续费'}}</el-button>
+              <el-button type="primary" size="medium" plain v-if="item.cycleTypeName != '永久'">{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即续用' : '立即续费'}}</el-button>
             </div>
           </div>
         </el-col>
@@ -116,6 +116,9 @@
       myDeviceName() {
         return this.$store.getters.myDeviceName
       },
+      rests() {
+        return this.$store.getters.rests
+      }
     },
     mounted() {
       // this.$store.dispatch('api/getServiceType').then(res => {

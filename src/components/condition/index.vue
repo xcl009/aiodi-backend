@@ -255,6 +255,11 @@ export default {
       background: #F2F3F5;
       border-radius: 0;
     }
+    
+    /deep/ .el-input--suffix .el-input__inner{
+      padding-left: 30px;
+      padding-right: 10px;
+    }
 
     /deep/ .el-select__caret{
       line-height: 32px;

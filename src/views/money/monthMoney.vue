@@ -2,10 +2,13 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @query="getTime(form.date)" @reset="getTime">
       <template v-slot:tabs>
-        <el-tabs class="mb-15 bg-white" v-model="listQuery.deviceTypeCode" @tab-click="getLineChart()">
-          <el-tab-pane label="全部设备" :name="'0'" />
-          <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
-        </el-tabs>
+        <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
+          <div class="mr-10">设备类型</div>
+          <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+            <el-tab-pane label="全部设备" :name="''" />
+            <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" />
+          </el-tabs>
+        </div>
       </template>
 
       <template v-slot:defult>
@@ -170,17 +173,17 @@
             pros = []
           for (var i = this.selMon; i > 0; i--) {
             let mon = this.selYear + '-' + (i < 10 ? '0' + i : i)
-            groupDate.push(mon)
+            groupDate.unshift(mon)
             if (obj[mon] && obj[mon].countGroupDate == mon) {
-              amount.push(obj[mon].amount)
-              orderNumber.push(obj[mon].orderNumber)
-              doneOrderNumber.push(obj[mon].doneOrderNumber)
-              unitPrice.push(obj[mon].unitPrice)
+              amount.unshift(obj[mon].amount)
+              orderNumber.unshift(obj[mon].orderNumber)
+              doneOrderNumber.unshift(obj[mon].doneOrderNumber)
+              unitPrice.unshift(obj[mon].unitPrice)
             } else {
-              amount.push(0)
-              orderNumber.push(0)
-              doneOrderNumber.push(0)
-              unitPrice.push(0)
+              amount.unshift(0)
+              orderNumber.unshift(0)
+              doneOrderNumber.unshift(0)
+              unitPrice.unshift(0)
             }
           }
           this.tableList = res

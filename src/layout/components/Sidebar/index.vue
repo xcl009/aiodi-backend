@@ -87,7 +87,7 @@
             </div>
           </div>
           <div class="pb-30 mt-50 text-center">
-            <el-button type="primary" :disabled="clickSubmit" @click="$refs.rechargeCoin.show()" v-if="money.happyCurrencyNum < accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0))">去充值</el-button>
+            <el-button type="primary" :disabled="clickSubmit" @click="$refs.rechargeCoin.show(accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0)))" v-if="money.happyCurrencyNum < accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0))">去充值</el-button>
             <el-button type="primary" :disabled="clickSubmit" @click="dialogConfirm()" v-else>立即支付</el-button>
           </div>
           <div class="abs dialog-br"></div>

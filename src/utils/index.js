@@ -746,10 +746,12 @@ const util = {
   /**
    * 数字输入校验
    */
-  checkDigit(val, min=0, max=100, p=2){
+  checkDigit(val, min=0, max=100, p=2, isEmpty = false){
     let testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)")
     if(p > 0) testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)|(^[0-9]{1,"+ max.toString().length +"}[\\.]{1}[0-9]{1,"+ p +"}$)")
-    if( val > max){
+    if(isEmpty && val != 0 && !val){
+    	
+    }else if( val > max){
       return `不能大于${max}`
     } else if(val < min){
       return `不能小于${min}`

@@ -22,7 +22,7 @@
       </el-col>
       <el-col :span="24" class="rel">
         <div class="abs p-all flex justify-center">
-          <div class="o-v card-panel cursor" @click="Ability['order'] ? $router.push({path: `/order`}) : ''">
+          <div class="o-v card-panel cursor" @click="Ability['order'] ? $router.push({path: `/order/allOrder`}) : ''">
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
                 :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">总订单数</div>
@@ -1215,7 +1215,7 @@
           });
         }
         //(第二个参数可以设置你这个环形的高低程度)
-        let boxHeight = this.getHeight3D(series, 15); //通过传参设定3d饼/环的高度
+        let boxHeight = this.getHeight3D(series, 20); //通过传参设定3d饼/环的高度
         let option = {
           //图例组件
           legend: {
@@ -1299,7 +1299,7 @@
           return (b.pieData.value - a.pieData.value)
         })
         let h = height * 25 / series[0].pieData.value
-        return h > 100 ? 25 : h
+        return h > 50 ? 50 : h
       },
 
       // 生成扇形的曲面参数方程，用于 series-surface.parametricEquation
