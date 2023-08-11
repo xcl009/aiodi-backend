@@ -10,8 +10,9 @@
             <auth-code ref="authCode" slot="append" @authCode="getAuthCode"></auth-code>
           </el-input>
         </el-form-item> -->
-        <el-form-item label="旧密码">
-          <el-input v-model="form.oldPassword" show-password placeholder="未设置过可不填写"></el-input>
+        <el-form-item label="身份证号">
+          <el-input v-model="form.cardCode" placeholder="身份证号"></el-input>
+          <div class="text-danger">用于忘记密码时验证身份，请详细填写并牢记</div>
         </el-form-item>
         <el-form-item label="新密码" ref="newPassword" prop="newPassword">
           <el-input v-model="form.newPassword" show-password></el-input>

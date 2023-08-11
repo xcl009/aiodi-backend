@@ -74,7 +74,7 @@
                 <el-popover
                   trigger="hover"
                   >
-                  <div class="access-url" :id="`sn_${scope.row.deviceSn}`"></div>
+                  <div class="access-url" :ref="`sn_${scope.row.deviceSn}`" :id="`sn_${scope.row.deviceSn}`"></div>
                   <div class="flex" slot="reference">
                     <svg-icon icon-class="h_qrcode" @mouseover="deviceCode(scope.row.deviceSn, scope.row.content)"></svg-icon>
                   </div>
@@ -991,6 +991,7 @@
         this.clickSubmit = true
         this.listQuery.page = 1
         this.listQuery.size = 20
+        this.deviceCodeIds = {}
         this.getList()
         if(!this.isStore()){
           this.queryDeviceCount()
@@ -1384,13 +1385,11 @@
        */
       deviceCode(sn, url){
         let deviceCodeIds = this.deviceCodeIds || {}
-        console.log(deviceCodeIds)
         if(deviceCodeIds[sn]) return
-        deviceCodeIds[sn] = true
-        console.log(url)
-        this.deviceCodeIds = deviceCodeIds
+        deviceCodeIds[sn] = sn
+        this.$refs[`sn_${sn}`][0].innerHTML = ''
         this.$nextTick(()=>{
-          new QRCode('sn_' + sn, {
+          new QRCode(this.$refs[`sn_${sn}`][0], {
             width: 150,
             height: 150,
             text: url
@@ -1440,7 +1439,7 @@
             this.storeList.query.page = params.page + 2
           }
         })
-      },
+      }
     }
   }
 </script>

@@ -144,7 +144,7 @@
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">商户收益统计</div>
+            <div class="flex1 fs-b2">商户统计</div>
           </div>
           <el-table class="store-table text-white" :highlight-current-row="false"
             :header-row-style="{background:'none'}"
@@ -172,7 +172,7 @@
                 {{ scope.row.orderNumber || 0 }}
               </template>
             </el-table-column>
-            <el-table-column label="总金额" min-width="120">
+            <el-table-column label="交易额" min-width="120">
               <template slot-scope="scope">
                 {{ scope.row.amount || 0 }}
               </template>

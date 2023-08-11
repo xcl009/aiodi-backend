@@ -247,7 +247,7 @@ export default {
       }
     }
     /deep/ .el-input__inner{
-      padding-left: 10px;
+      padding: 0 10px;
       width: 135px;
       height: 32px !important;
       line-height: 32px;
@@ -255,8 +255,8 @@ export default {
       background: #F2F3F5;
       border-radius: 0;
     }
-    
-    /deep/ .el-input--suffix .el-input__inner{
+
+    /deep/ .el-date-editor--year .el-input__inner, .el-date-editor--month .el-input__inner{
       padding-left: 30px;
       padding-right: 10px;
     }
