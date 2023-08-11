@@ -256,7 +256,7 @@
                         </el-input>
                       </el-form-item>
                       <el-form-item label="押金"
-                        v-if="item[`${xcx}PayMode`].modeType == 'DEPOSIT' || item.deviceTypeCode == 'PA'" :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
+                        v-if="item[`${xcx}PayMode`].modeType == 'DEPOSIT' || item[`${xcx}PayMode`].modeType == 'DEPOSIT_AND_FREE'" :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount" @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 1000000))">
                           <template slot="append">元</template>
                         </el-input>
@@ -686,6 +686,10 @@
                     })
                     item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetail)
                   } else {
+                    if(item.alipayPayMode.payModeDetails.maxAmount > item.alipayPayMode.payModeDetails.depositAmount && (item.alipayPayMode.modeType == 'DEPOSIT' || item.alipayPayMode.modeType == 'DEPOSIT_AND_FREE')){
+                      error = `${this.myDeviceId[item.deviceTypeCode]}支付宝押金金额不可小于总封顶金额`
+                      break
+                    }
                     item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetails)
                   }
                 }
@@ -696,6 +700,10 @@
                     })
                     item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetail)
                   } else {
+                    if(item.weixinPayMode.payModeDetails.maxAmount > item.weixinPayMode.payModeDetails.depositAmount && (item.weixinPayMode.modeType == 'DEPOSIT' || item.weixinPayMode.modeType == 'DEPOSIT_AND_FREE')){
+                      error = `${this.myDeviceId[item.deviceTypeCode]}微信押金金额不可小于总封顶金额`
+                      break
+                    }
                     item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetails)
                   }
                 }
@@ -713,6 +721,13 @@
                 params.storeDivisionConfig.push(division)
               }
             }
+            if(error){
+              this.$message({
+                message: error,
+                type: 'error'
+              })
+              return
+            }
             this.clickSubmit = true
             this.$post(url, params).then(res => {
               if(!this.storeId){
@@ -724,7 +739,7 @@
                   city: params.city,
                   province: params.province
                 }))
-                this.setDefaultbilling(params.storeDivisionConfig)
+                this.setDefaultbilling()
               }
               this.$message({
                 message: '操作成功',
@@ -832,20 +847,19 @@
 
       /**
        * 提交设置默认计费
-       * @param {Object} storeDivisionConfig
        */
-      setDefaultbilling(storeDivisionConfig) {
-        let list = JSON.parse(JSON.stringify(storeDivisionConfig))
-        list.map(item => {
-          item.weixinPayMode.payModeDetail = JSON.parse(item.weixinPayMode.payModeDetail)
-          item.alipayPayMode.payModeDetail = JSON.parse(item.alipayPayMode.payModeDetail)
-          let params = {
-            deviceTypeCode: item.deviceTypeCode,
-            agentId: this.isBrand() ? 0 : this.agentInfo.agentId,
-            wechatJson: JSON.stringify(item.weixinPayMode),
-            alipayJson: JSON.stringify(item.alipayPayMode)
+      setDefaultbilling() {
+        let deviceDataArr = JSON.parse(JSON.stringify(this.deviceDataArr))
+        deviceDataArr.map(item => {
+          if(item.status == 1){
+            let params = {
+              deviceTypeCode: item.deviceTypeCode,
+              agentId: this.isBrand() ? 0 : this.agentInfo.agentId,
+              wechatJson: JSON.stringify(item.weixinPayMode),
+              alipayJson: JSON.stringify(item.alipayPayMode)
+            }
+            this.$post('iot-saas-basic/admin/billing/configs/save', params).then(res => {})
           }
-          this.$post('iot-saas-basic/admin/billing/configs/save', params).then(res => {})
         })
       }
     }

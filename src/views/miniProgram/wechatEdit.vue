@@ -104,7 +104,9 @@
             'apiv3Key',
             'apiclientCert',
             'apiclientKey',
-            'serviceId'
+            'serviceId',
+            'maxDividePercent',
+            'settlementCycle'
           ])
         })
       },

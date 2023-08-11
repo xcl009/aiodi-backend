@@ -52,6 +52,7 @@
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">查询表格</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</div>
+        <!-- <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">DD恢复</div> -->
         <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
@@ -228,6 +229,13 @@
           </el-table>
         </template>
         <template v-if="dialogType == 5">
+          <el-form class="custom-form pl-20 pr-20" label-width="auto">
+            <el-form-item label="订单号">
+              <el-input v-model="dform.orderNo"></el-input>
+            </el-form-item>
+          </el-form>
+        </template>
+        <template v-if="dialogType == 7">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
             <el-form-item label="订单号">
               <el-input v-model="dform.orderNo"></el-input>
@@ -789,6 +797,7 @@
           4: '订单使用用户',
           5: '免押待付款订单0元完结',
           6: '订单详情',
+          7: 'DD恢复',
         },
         curRow: {},
         curIdx: 0,
@@ -1300,6 +1309,27 @@
             }
             this.$post('iot-saas-order/admin/deposit/execute', {
               orderNoList: [params.orderNo]
+            }).then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 7:
+            if (!params.orderNo) {
+              this.$message({
+                message: '请输入订单号',
+                type: 'error'
+              })
+              return
+            }
+            this.$post('iot-saas-order/admin/order/lose/recover', {
+              orderNo: params.orderNo
             }).then(res => {
               this.$message({
                 message: '提交成功',

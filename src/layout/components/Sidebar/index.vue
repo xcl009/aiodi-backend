@@ -64,7 +64,7 @@
             <template v-for="item in myDevice">
               <div class="flex mt-10" v-if="!item.fatherCode">
                 <div class="flex1 text-grey">{{ item.name }}品类VIP</div>
-                <div class="text-danger">￥{{ item[dform.mkey] }}/{{ dform.cycle == 'PERMANENT' ? '永久' : dform.cycle == 'yearPrice' ? '季' : '月' }}</div>
+                <div class="text-danger">￥{{ item[dform.mkey] }}/{{ dform.cycle == 'PERMANENT' ? '永久' : dform.cycle == 'quarterPrice' ? '季' : '月' }}</div>
               </div>
             </template>
             <div class="mt-10 l-b-dashed" v-if="vipCoupon[dform.mkey] > 0"></div>
@@ -83,7 +83,7 @@
             </div>
             <div>
               <span class="text-grey">金额合计</span>
-              <span class="text-danger">￥<span class="fs-b3">{{ accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0)) }}</span></span>
+              <span class="text-danger">￥<span class="fs-b3">{{ accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0)) > 0 ? accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0)) : 0 }}</span></span>
             </div>
           </div>
           <div class="pb-30 mt-50 text-center">
@@ -169,11 +169,11 @@ export default {
           mkey: 'mthPrice',
           cycle: 'MONTH'
         },
-        // {
-        //   name: '季度VIP',
-        //   mkey: 'yearPrice',
-        //   cycle: 'YEAY'
-        // },
+        {
+          name: '季度VIP',
+          mkey: 'quarterPrice',
+          cycle: 'QUARTER'
+        },
         {
           name: '永久VIP',
           info: '一次买断，终身使用',
@@ -252,7 +252,8 @@ export default {
             if(res && res.setting){
               let coupon = JSON.parse(res.setting)
               coupon.mthPrice = coupon.amount
-              coupon.yearPrice = accMul(coupon.amount, 3)
+              coupon.quarterPrice = accMul(coupon.amount, 3)
+              coupon.yearPrice = accMul(coupon.amount, 12)
               this.vipCoupon = coupon
             }
           })
@@ -440,13 +441,13 @@ export default {
             position: absolute;
             left: 0;
             top: 1px;
-            width: 496px;
+            width: 275px;
             height: 60px;
             background: url('../../../assets/vip_yesbg.svg');
             z-index: -1;
           }
         }
-        /* &:nth-child(2){
+        &:nth-child(2){
           &.act{
             &::after{
               width: 335px;
@@ -454,8 +455,8 @@ export default {
               background: url('../../../assets/vip_yesbgc.svg');
             }
           }
-        } */
-        &:nth-child(2){
+        }
+        &:nth-child(3){
           &.act{
             &::after{
               left: inherit;
