@@ -305,7 +305,7 @@
               <div class="flex mb-10">
                 <div class="label-text">套餐:</div>
                 <div class="text-cut">
-                  <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode)" placement="top">
+                  <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
                     <span>{{ showFeeMode(curRow.feeType, curRow.feeMode) }}</span>
                   </el-tooltip>
                 </div>
@@ -463,7 +463,7 @@
                   <div class="flex mb-10">
                     <div class="label-text">套餐:</div>
                     <div class="text-cut">
-                      <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode)" placement="top">
+                      <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
                         <span>{{ showFeeMode(curRow.feeType, curRow.feeMode) }}</span>
                       </el-tooltip>
                     </div>

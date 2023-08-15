@@ -226,7 +226,7 @@
         unitPrice
       } = {}) {
         if (!groupDate) return
-        let legend = ['交易额', '订单量', '平均单量', '平均交易额'],
+        let legend = ['交易额', '总订单数', '完成单数', '平均交易额'],
           series = [{
               name: '交易额',
               type: 'line',
@@ -235,14 +235,14 @@
               animationEasing: 'cubicInOut',
             },
             {
-              name: '订单量',
+              name: '总订单数',
               type: 'line',
               data: orderNumber,
               animationDuration: 2800,
               animationEasing: 'quadraticOut'
             },
             {
-              name: '平均单量',
+              name: '完成单数',
               type: 'line',
               data: doneOrderNumber,
               animationDuration: 2800,

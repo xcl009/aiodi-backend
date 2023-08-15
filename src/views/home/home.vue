@@ -401,7 +401,9 @@
         formatSeconds,
         clickSubmit: false,
         totalStat: {},
-        form: {},
+        form: {
+          date: ''
+        },
         orderStat: {},
         deviceStat: {},
         userStat: {},
@@ -664,11 +666,13 @@
           this.selDay = this.getMonthLastDay(val)
           this.startDateStr = `${val}-01`
           this.endDateStr = `${val}-${this.selDay}`
+          this.day_type = -1
         }else{
           this.startDateStr = ''
           this.endDateStr = ''
+          this.day_type = 0
         }
-        this.getLineChart()
+        this.getLineChart(2)
       },
 
       /**
@@ -685,7 +689,7 @@
       /**
        * 近期数据对比
        */
-      getLineChart() {
+      getLineChart(type = 1) {
         let eTime = currentTime(),
           sTime = eTime - (6 * 86400),
           groupDate = [],
@@ -694,7 +698,15 @@
           doneOrderNumber = [],
           unitPrice = [],
           params = {}
-        if (this.day_type == 1) {
+        if(type == 1){
+          this.startDateStr = ''
+          this.endDateStr = ''
+          this.form.date = ''
+        }
+        if (this.startDateStr) {
+          sTime = unixTime(this.startDateStr)
+          eTime = unixTime(this.endDateStr)
+        }else if (this.day_type == 1) {
           sTime = DateUtil.getWeekStartDate()
           eTime = DateUtil.getWeekEndDate()
         } else if (this.day_type == 2) {
@@ -706,9 +718,6 @@
         } else if (this.day_type == 4) {
           sTime = DateUtil.getLastMonthStartDate()
           eTime = DateUtil.getLastMonthEndDate()
-        } else if (this.startDateStr) {
-          sTime = unixTime(this.startDateStr)
-          eTime = unixTime(this.endDateStr)
         }
         params = {
           brandID: this.brandId,
@@ -776,7 +785,7 @@
         unitPrice
       } = {}) {
         if (!groupDate) return
-        let legend = ['交易额', '订单量', '平均单量', '平均交易额'],
+        let legend = ['交易额', '总订单数', '完成单数', '平均交易额'],
           series = [{
               name: '交易额',
               type: 'line',
@@ -785,14 +794,14 @@
               animationEasing: 'cubicInOut',
             },
             {
-              name: '订单量',
+              name: '总订单数',
               type: 'line',
               data: orderNumber,
               animationDuration: 2800,
               animationEasing: 'quadraticOut'
             },
             {
-              name: '平均单量',
+              name: '完成单数',
               type: 'line',
               data: doneOrderNumber,
               animationDuration: 2800,
@@ -986,22 +995,26 @@
       getDeviceStat() {
         this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
           this.deviceStat = res
-          let deviceChartData = [], idx = 0, colors = ['#2A9F9F','#224278','#82A8C6','#9DA5B2','#82B869','#A01E57','#E1B44F','#D65C5C','#4C65B2']
+          let deviceChartData = {}, idx = 0, colors = ['#2A9F9F','#224278','#82A8C6','#9DA5B2','#82B869','#A01E57','#E1B44F','#D65C5C','#4C65B2']
           if (res.deviceTypeDetail) {
             for (var i in res.deviceTypeDetail) {
               if(this.myDeviceId[i.substr(0, 2)]){
-                deviceChartData.push({
+                deviceChartData[i.substr(0, 2)] = deviceChartData[i.substr(0, 2)] || {
+                  value: 0
+                }
+                deviceChartData[i.substr(0, 2)] = {
                   name: this.myDeviceId[i.substr(0, 2)],
-                  value: parseInt(res.deviceTypeDetail[i].deviceNumber),
+                  value: deviceChartData[i.substr(0, 2)].value + parseInt(res.deviceTypeDetail[i].deviceNumber),
                   itemStyle: {
                     color: colors[idx]
                   },
-                })
+                }
                 idx++
               }
             }
+            deviceChartData = Object.values(deviceChartData)
             if (deviceChartData.length > 0) {
-              this.deviceChartData = deviceChartData
+              this.deviceChartData = Object.values(deviceChartData)
             }
           }else{
             this.deviceChartData = [
