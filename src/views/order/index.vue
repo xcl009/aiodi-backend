@@ -51,6 +51,8 @@
     <div class="pl-10 pr-10 bg-white">
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">查询表格</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 9)" v-if="isSaas()">芝麻分扣款订单关闭</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 8)" v-if="isSaas()">预存押金退款</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</div>
         <!-- <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">DD恢复</div> -->
         <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
@@ -239,6 +241,22 @@
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
             <el-form-item label="订单号">
               <el-input v-model="dform.orderNo"></el-input>
+            </el-form-item>
+          </el-form>
+        </template>
+        <template v-if="dialogType == 8">
+          <el-form class="custom-form pl-20 pr-20" label-width="auto">
+            <el-form-item label="订单号">
+              <el-input v-model="dform.orderNo"></el-input>
+              <div class="mt-10 text-danger line-default">预存订单完结后押金显示已退款但用户未收到退款时，可尝试重新发起。</div>
+            </el-form-item>
+          </el-form>
+        </template>
+        <template v-if="dialogType == 9">
+          <el-form class="custom-form pl-20 pr-20" label-width="auto">
+            <el-form-item label="订单号">
+              <el-input v-model="dform.orderNo"></el-input>
+              <div class="mt-10 text-danger line-default">关闭芝麻免押订单发起的扣款失败的支付宝交易订单。</div>
             </el-form-item>
           </el-form>
         </template>
@@ -798,6 +816,8 @@
           5: '免押待付款订单0元完结',
           6: '订单详情',
           7: 'DD恢复',
+          8: '预存订单押金退款重试',
+          9: '芝麻分扣款订单关闭',
         },
         curRow: {},
         curIdx: 0,
@@ -1329,6 +1349,48 @@
               return
             }
             this.$post('iot-saas-order/admin/order/lose/recover', {
+              orderNo: params.orderNo
+            }).then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 8:
+            if (!params.orderNo) {
+              this.$message({
+                message: '请输入订单号',
+                type: 'error'
+              })
+              return
+            }
+            this.$post('iot-saas-order/admin/order/complete/refund', {
+              orderNo: params.orderNo
+            }).then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 9:
+            if (!params.orderNo) {
+              this.$message({
+                message: '请输入订单号',
+                type: 'error'
+              })
+              return
+            }
+            this.$post('iot-saas-pay/admin/pay/config/alipay/close', {
               orderNo: params.orderNo
             }).then(res => {
               this.$message({
