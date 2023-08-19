@@ -1180,20 +1180,8 @@
                 orderNo: row.orderNo
               }).then(res => {
                 this.$set(this.dform, 'orderFlow', res)
-                if (row.status.indexOf('O') > -1 && row.amount > 0) {
-                  this.$get('iot-saas-order/admin/order/detail/divide', {
-                    orderNo: row.orderNo
-                  }).then(res => {
-                    let amountPaidLose = 0
-                    if (res.divideList && res.divideList.length > 0) {
-                      res.divideList.map(item => {
-                        amountPaidLose = accAdd(amountPaidLose, item.loseAmount)
-                      })
-                    }
-                    this.$set(this.dform, 'orderDivide', res.divideList)
-                    this.$set(this.dform, 'amountPaid', res.amountPaid)
-                    this.$set(this.dform, 'amountPaidLose', amountPaidLose)
-                  })
+                if (row.status.indexOf('O') > -1 && row.amount > 0 && this.Ability['orderDivide']) {
+                  this.getDivide(row.orderNo)
                 }
               })
             }
@@ -1216,6 +1204,47 @@
             })
             break
         }
+      },
+
+      /**
+       * 获取分成记录
+       */
+      getDivide(orderNo){
+        this.$get('iot-saas-order/admin/order/detail/divide', {
+          orderNo: orderNo
+        }).then(res => {
+          let amountPaidLose = 0
+          if (res.divideList && res.divideList.length > 0) {
+            res.divideList.map(item => {
+              amountPaidLose = accAdd(amountPaidLose, item.loseAmount)
+            })
+          }
+          this.$set(this.dform, 'orderDivide', res.divideList)
+          this.$set(this.dform, 'amountPaid', res.amountPaid)
+          this.$set(this.dform, 'amountPaidLose', amountPaidLose)
+        }).catch(err => {
+          if(err.message.indexOf('订单未完成或者还未分成') > -1){
+            this.$alert('订单长时间未分成，可尝试手动发起分成', '温馨提示', {
+              confirmButtonText: '确定发起',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post(`iot-saas-order/admin/order/complete/divide`, {
+                    orderNo: orderNo
+                  }).then(res => {
+                    this.$message({
+                      message: '提交成功',
+                      type: 'success'
+                    })
+                    setTimeout(() => {
+                      this.getDivide(orderNo)
+                    }, 1500)
+                  })
+                }
+              }
+            })
+          }
+        })
       },
 
       /**
