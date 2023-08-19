@@ -15,7 +15,8 @@
         </el-form-item>
       </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" class="mr-10" @click="setRows(1, {}, 1)"><i class="el-icon-plus el-icon--left" />添加</el-button>
+        <el-button type="primary" size="small" @click="setRows(1, {}, 1)"><i class="el-icon-plus el-icon--left" />添加</el-button>
+        <!-- <el-button type="primary" size="small" class="mr-10" @click="setRows(1, {}, 3)">会员码</el-button> -->
       </template>
     </condition>
 
@@ -111,6 +112,31 @@
           </el-form-item>
         </el-form>
       </template>
+      <template v-if="dialogType == 3">
+        <el-form class="custom-form pl-20 pr-20" label-width="100px" label-position="left">
+          <el-form-item label="设备类型">
+            <el-radio-group v-model="dform.deviceTypeCode" class="pl-10">
+              <el-radio v-for="(item, name) in deviceTab" :label="name">{{ item }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="会员数量">
+            <el-input type="number" v-model="dform.people">
+              <span slot="append">人</span>
+            </el-input>
+            <div>数量必须大于已添加的会员数量，否则用户扫码无法添加成功</div>
+          </el-form-item>
+          <el-form-item label="免费时长">
+            <el-input type="number" v-model="dform.freeTime">
+              <span slot="append">小时</span>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="每天使用次数">
+            <el-input type="number" v-model="dform.freeTimes">
+              <span slot="append">次</span>
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfirm" :disabled="clickSubmit" v-if="dialogType != 1">确定</el-button>
@@ -155,7 +181,8 @@
         dialogStatus: false,
         dialogTitle: {
           1: '添加免费会员',
-          2: '修改会员时长'
+          2: '修改会员时长',
+          3: '会员码生成'
         },
         curRow: {},
         curIdx: 0,
@@ -265,6 +292,10 @@
                 freeTimes: row.freeTimes,
                 userId: row.userId
               }
+            }else if(dialogType == 3){
+              this.dform = {
+                deviceTypeCode: this.listQuery.deviceTypeCode
+              }
             }
             this.dialogStatus = true
             break
@@ -332,6 +363,9 @@
             }).catch(err => {
               this.clickSubmit = false
             })
+          break
+          case 3:
+            console.log(params)
           break
         }
       },

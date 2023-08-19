@@ -87,7 +87,7 @@
             {{ parseTime(scope.row.feedbackTime, '{m}-{d} {h}:{i}:{s}') }}
           </template>
         </el-table-column>
-        <el-table-column label="反馈内容" width="220">
+        <el-table-column label="反馈内容" min-width="250">
           <template slot-scope="scope">
             {{ scope.row.content || '--' }}
           </template>
@@ -102,7 +102,7 @@
             <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="回复" min-width="250">
+        <el-table-column label="回复" min-width="200">
           <template slot-scope="scope">
             {{ scope.row.reply || '--' }}
           </template>

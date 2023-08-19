@@ -52,6 +52,7 @@
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">查询表格</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 9)" v-if="isSaas()">芝麻分扣款订单关闭</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 10)" v-if="isSaas()">芝麻分订单撤销</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 8)" v-if="isSaas()">预存押金退款</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</div>
         <!-- <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">DD恢复</div> -->
@@ -230,33 +231,13 @@
             </el-table-column>
           </el-table>
         </template>
-        <template v-if="dialogType == 5">
+        <template v-if="[5,7,8,9,10].indexOf(dialogType) > -1">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
             <el-form-item label="订单号">
               <el-input v-model="dform.orderNo"></el-input>
-            </el-form-item>
-          </el-form>
-        </template>
-        <template v-if="dialogType == 7">
-          <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item label="订单号">
-              <el-input v-model="dform.orderNo"></el-input>
-            </el-form-item>
-          </el-form>
-        </template>
-        <template v-if="dialogType == 8">
-          <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item label="订单号">
-              <el-input v-model="dform.orderNo"></el-input>
-              <div class="mt-10 text-danger line-default">预存订单完结后押金显示已退款但用户未收到退款时，可尝试重新发起。</div>
-            </el-form-item>
-          </el-form>
-        </template>
-        <template v-if="dialogType == 9">
-          <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item label="订单号">
-              <el-input v-model="dform.orderNo"></el-input>
-              <div class="mt-10 text-danger line-default">关闭芝麻免押订单发起的扣款失败的支付宝交易订单。</div>
+              <div class="mt-10 text-danger line-default" v-if="dialogType == 8">预存订单完结后押金显示已退款但用户未收到退款时，可尝试重新发起。</div>
+              <div class="mt-10 text-danger line-default" v-else-if="dialogType == 9">关闭芝麻免押订单发起的扣款失败的支付宝交易订单。</div>
+              <div class="mt-10 text-danger line-default" v-else-if="dialogType == 10">只可撤销24小时内创建的芝麻分订单。</div>
             </el-form-item>
           </el-form>
         </template>
@@ -818,6 +799,7 @@
           7: 'DD恢复',
           8: '预存订单押金退款重试',
           9: '芝麻分扣款订单关闭',
+          10: '芝麻分订单撤销',
         },
         curRow: {},
         curIdx: 0,
@@ -1340,7 +1322,7 @@
               this.clickSubmit = false
             })
             break
-          case 7:
+          case 7: case 8: case 9: case 10:
             if (!params.orderNo) {
               this.$message({
                 message: '请输入订单号',
@@ -1348,49 +1330,14 @@
               })
               return
             }
-            this.$post('iot-saas-order/admin/order/lose/recover', {
-              orderNo: params.orderNo
-            }).then(res => {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              this.dialogStatus = false
-              this.clickSubmit = false
-            }).catch(err => {
-              this.clickSubmit = false
-            })
-            break
-          case 8:
-            if (!params.orderNo) {
-              this.$message({
-                message: '请输入订单号',
-                type: 'error'
-              })
-              return
+            let url = {
+              7: 'iot-saas-order/admin/order/lose/recover',
+              8: 'iot-saas-order/admin/order/complete/refund',
+              9: 'iot-saas-pay/admin/pay/config/alipay/close',
+              10: 'iot-saas-pay/admin/pay/config/alipay/cancel'
             }
-            this.$post('iot-saas-order/admin/order/complete/refund', {
-              orderNo: params.orderNo
-            }).then(res => {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              this.dialogStatus = false
-              this.clickSubmit = false
-            }).catch(err => {
-              this.clickSubmit = false
-            })
-            break
-          case 9:
-            if (!params.orderNo) {
-              this.$message({
-                message: '请输入订单号',
-                type: 'error'
-              })
-              return
-            }
-            this.$post('iot-saas-pay/admin/pay/config/alipay/close', {
+            console.log(url[this.dialogType])
+            this.$post(url[this.dialogType], {
               orderNo: params.orderNo
             }).then(res => {
               this.$message({
