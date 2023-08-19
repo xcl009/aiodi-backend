@@ -184,7 +184,7 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['RENT_LIMIT'], 3)">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
