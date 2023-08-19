@@ -75,7 +75,7 @@
         type: Object,
         default (){
           return {
-            fileType: 'userAvatar'
+            fileType: 'storePhoto'
           }
         }
       }
