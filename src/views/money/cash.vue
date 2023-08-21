@@ -163,16 +163,36 @@
                 val: item.type
               })
           	})
-          	let isCash = false
+          	let isCash = false, days = res.timeLimit && res.timeLimit.days ? res.timeLimit.days : [], cutDay = ''
           	switch(res.timeLimit.type){
           		case 'DAY':
-          		let timeLimit = res.timeLimit.timeLimit, cutDay = this.parseTime(this.currentTime(), '{y}-{m}-{d}')
-          		for(var i in timeLimit){
-          			if(unixTime(`${cutDay} ${timeLimit[i].startTime}`) < this.currentTime() && unixTime(`${cutDay} ${timeLimit[i].endTime}`) > this.currentTime()){
-          				isCash = true
-          				break
+          			let timeLimit = res.timeLimit.timeLimit
+          			cutDay = parseTime(currentTime(), '{y}-{m}-{d}')
+          			for(var i in timeLimit){
+          				if(unixTime(`${cutDay} ${timeLimit[i].startTime}`) < currentTime() && unixTime(`${cutDay} ${timeLimit[i].endTime}`) > currentTime()){
+          					isCash = true
+          					break
+          				}
           			}
-          		}
+          		break
+          		case 'WEEK':
+          			cutDay = new Date().getDay()
+          			cutDay = cutDay == 0 ? 7 : cutDay
+          			for(var i in days){
+          				if(days[i] == cutDay){
+          					isCash = true
+          					break
+          				}
+          			}
+          		break
+          		case 'MONTH':
+          			cutDay = new Date().getDate()
+          			for(var i in days){
+          				if(days[i] == cutDay){
+          					isCash = true
+          					break
+          				}
+          			}
           		break
           	}
             if(!isCash){

@@ -1224,8 +1224,9 @@
           this.$set(this.dform, 'amountPaidLose', amountPaidLose)
         }).catch(err => {
           if(err.message.indexOf('订单未完成或者还未分成') > -1){
-            this.$alert('订单长时间未分成，可尝试手动发起分成', '温馨提示', {
-              confirmButtonText: '确定发起',
+            this.$alert('订单长时间未分成时，可尝试手动发起分成', '温馨提示', {
+              confirmButtonText: '立即分成',
+              showCancelButton: true,
               center: true,
               callback: action => {
                 if (action == 'confirm') {
@@ -1238,7 +1239,7 @@
                     })
                     setTimeout(() => {
                       this.getDivide(orderNo)
-                    }, 1500)
+                    }, 4000)
                   })
                 }
               }
