@@ -324,8 +324,6 @@ export default {
         delete params.guideTarget
       }
       this.$get(url, params).then(res => {
-        res.rows = res.rows.concat(res.rows)
-        res.rows = res.rows.concat(res.rows)
         this.list = res.rows
         this.clickSubmit = false
         if (params.page == 0) {
