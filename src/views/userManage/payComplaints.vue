@@ -3,9 +3,9 @@
     <condition ref="condition" :clickSubmit="clickSubmit" :resetStatus="false" @query="toQuery">
       <template v-slot:defult>
         <el-form-item label="小程序">
-        <el-select v-model="form.appId" placeholder="小程序" @change="toQuery()">
-          <el-option :label="item.appName" :value="item.appId" v-for="(item, key) in wechatList" />
-        </el-select>
+					<el-select v-model="form.appId" placeholder="小程序" @change="toQuery()">
+						<el-option :label="item.appName" :value="item.appId" v-for="(item, key) in wechatList" />
+					</el-select>
         </el-form-item>
         <el-form-item label="日期筛选">
         <el-date-picker

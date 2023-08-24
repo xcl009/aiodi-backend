@@ -16,7 +16,7 @@
       </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" @click="setRows(1, {}, 1)"><i class="el-icon-plus el-icon--left" />添加</el-button>
-        <!-- <el-button type="primary" size="small" class="mr-10" @click="setRows(1, {}, 3)">会员码</el-button> -->
+        <el-button type="primary" size="small" class="mr-10" @click="setRows(1, {}, 3)" v-if="isBrand()">会员码</el-button>
       </template>
     </condition>
 
@@ -114,16 +114,21 @@
       </template>
       <template v-if="dialogType == 3">
         <el-form class="custom-form pl-20 pr-20" label-width="100px" label-position="left">
+          <el-form-item label="小程序" v-if="wechatList.length > 1">
+            <el-select v-model="dform.appId" placeholder="小程序" @change="toQuery()">
+              <el-option :label="item.appName" :value="item.appId" v-for="(item, key) in wechatList" />
+            </el-select>
+          </el-form-item>
           <el-form-item label="设备类型">
             <el-radio-group v-model="dform.deviceTypeCode" class="pl-10">
               <el-radio v-for="(item, name) in deviceTab" :label="name">{{ item }}</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="会员数量">
-            <el-input type="number" v-model="dform.people">
+            <el-input type="number" v-model="dform.userNumber">
               <span slot="append">人</span>
             </el-input>
-            <div>数量必须大于已添加的会员数量，否则用户扫码无法添加成功</div>
+            <div class="pt-5 line-default">数量必须大于已添加的会员数量，否则用户扫码无法添加成功，<span class="text-danger">会员码7天自动过期</span></div>
           </el-form-item>
           <el-form-item label="免费时长">
             <el-input type="number" v-model="dform.freeTime">
@@ -137,9 +142,16 @@
           </el-form-item>
         </el-form>
       </template>
+      <template v-if="dialogType == 4">
+        <div class="text-center">
+          <img :src="codeImg" width="150px" height="150px" alt="" @click="saveImg">
+          <div class="mt-20">点击图片保存或右键保存小程序码，发给商户，<span class="text-danger">会员码7天自动过期</span></div>
+        </div>
+      </template>
       <div class="mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm" :disabled="clickSubmit" v-if="dialogType != 1">确定</el-button>
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false" v-if="dialogType != 4">取消</el-button>
+        <el-button size="medium" type="primary" @click="dialogStatus = false" v-if="dialogType == 4">知道了</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm" :disabled="clickSubmit" v-else-if="dialogType != 1">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -182,12 +194,14 @@
         dialogTitle: {
           1: '添加免费会员',
           2: '修改会员时长',
-          3: '会员码生成'
+          3: '会员码生成',
+          4: '会员码'
         },
         curRow: {},
         curIdx: 0,
         dform: {},
-
+        codeImg: '',
+        wechatList: [],
         userList: [],
         searchStatus: false
       }
@@ -202,8 +216,25 @@
       this.listQuery.deviceTypeCode = Object.keys(deviceTab)[0]
       this.deviceTab = deviceTab
       this.toQuery()
+      if(this.isBrand()){
+        this.getWechatList()
+      }
     },
     methods: {
+      /**
+       * 获取列表
+       */
+      getWechatList() {
+        this.$get('iot-saas-pay/admin/pay/config/wechat/list', {
+          page: 0,
+          size: 20
+        }).then((res = {}) => {
+          if(res.rows && res.rows.length > 0){
+            this.wechatList = res.rows
+          }
+        })
+      },
+
       /**
        * 搜索查询
        */
@@ -293,7 +324,15 @@
                 userId: row.userId
               }
             }else if(dialogType == 3){
+              if(this.wechatList.length == 0){
+                this.$message({
+                  message: '小程序未配置',
+                  type: 'success'
+                })
+                return
+              }
               this.dform = {
+                appId: this.wechatList[0].appId,
                 deviceTypeCode: this.listQuery.deviceTypeCode
               }
             }
@@ -365,10 +404,60 @@
             })
           break
           case 3:
-            console.log(params)
+            params.storeId = this.listQuery.storeId
+            params.freeTime = parseFloat(params.freeTime) * 60
+            if(isNaN(params.userNumber) || params.userNumber <= 0){
+              this.$message({
+                type: 'error',
+                message: '会员数量异常'
+              })
+              return
+            }else if(isNaN(params.freeTime) || params.freeTime <= 0){
+              this.$message({
+                type: 'error',
+                message: '免费时长异常'
+              })
+              return
+            }else if(isNaN(params.freeTimes) || params.freeTimes <= 0){
+              this.$message({
+                type: 'error',
+                message: '免费次数异常'
+              })
+              return
+            }else if(!params.appId){
+              this.$message({
+                type: 'error',
+                message: '未检测到小程序配置，不可添加'
+              })
+              return
+            }
+            this.$post('iot-saas-order/admin/free/quota/user/secene', params).then(res => {
+              this.$post('iot-saas-pay/wechat/user/vipCode', {
+                sence: res,
+                appId: params.appId
+              }).then(codeRes => {
+                this.codeImg = `data:image/jpg;base64,${codeRes}`
+                this.dialogType = 4
+                this.clickSubmit = false
+              }).catch(err => {
+                this.clickSubmit = false
+              })
+            }).catch(err => {
+              this.clickSubmit = false
+            })
           break
         }
       },
+
+      /**
+       * 保存会员码
+       */
+      saveImg(){
+        const a = document.createElement('a')
+        a.href = this.codeImg
+        a.setAttribute('download', '会员码.png')
+        a.click()
+      }
     }
   }
 </script>

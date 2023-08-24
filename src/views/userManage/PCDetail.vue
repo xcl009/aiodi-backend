@@ -17,7 +17,7 @@
         <template v-for="item in info.complaint_order_info">
           <el-col :xs="{span: 24}" :sm="{span: 12}">
             <div class="mb-10">交易单号：{{ item.transaction_id }}</div>
-            <div class="mb-10">商户单号：{{ item.out_trade_no }}</div>
+            <div class="mb-10 cursor" @click="copyText(item.out_trade_no)">商户单号：{{ item.out_trade_no }} <span>复制</span></div>
           </el-col>
           <el-col :xs="{span: 24}" :sm="{span: 12}">
             <div class="mb-10">订单金额：￥{{ item.amount / 100 }}</div>
@@ -95,6 +95,7 @@
 
 <script>
   import upload from '@/components/upload/'
+  import { copyText } from '@/utils/index'
   export default {
     name: 'PCDetail',
     components: {
@@ -103,6 +104,7 @@
     data() {
       return {
         clickSubmit: false,
+        copyText: copyText,
         complaintId: this.$route.query.complaintId,
         appId: this.$route.query.appId,
         info: {},

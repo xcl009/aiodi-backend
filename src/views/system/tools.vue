@@ -200,6 +200,38 @@
             </div>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['NEAR_STORE'], 3)">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="mall"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">附近商户展示设置</div>
+                <div class="mt-5 fs-s3 text-gray">配置附近商户是否展示</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'NEAR_STORE' }, 3)">设置</el-button>
+            </div>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['STORE_MONEY_SET'], 3)">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="mall"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">商户收益明细、月(日)统计设置</div>
+                <div class="mt-5 fs-s3 text-gray">配置商户收益明细、月(日)统计相关设置</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'STORE_MONEY_SET' }, 4)">设置</el-button>
+            </div>
+          </div>
+        </el-col>
         <el-col :span="24" class="pb-20 cursor">
           <div>更多功能开发中，请持续关注</div>
         </el-col>
@@ -227,6 +259,26 @@
           </el-form-item>
         </el-form>
       </template>
+      <template v-if="dialogType == 3">
+        <div class="text-center">
+          <el-switch v-model="dform.nearStore" :active-value="1" :inactive-value="0" />
+          <div class="mt-15">开启表示展示附近商户</div>
+        </div>
+      </template>
+      <template v-if="dialogType == 4">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" label-position="left" :model="dform">
+          <el-form-item label="收益明细">
+            <el-switch v-model="dform.checkIncome" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item label="月日统计">
+            <el-switch v-model="dform.checkMouthStat" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item label="月日统计简化">
+            <el-switch v-model="dform.checkMouthStatSp" :active-value="1" :inactive-value="0" />
+            <span class="ml-10 fs-s3">开启表示只展示日期和收益额</span>
+          </el-form-item>
+        </el-form>
+      </template>
       <div class="pb-20 mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
@@ -248,7 +300,9 @@
         dialogStatus: false,
         dialogTitle: {
           1: '用户登录授权手机号',
-          2: '免押订单租借次数限制'
+          2: '免押订单租借次数限制',
+          3: '附近商户展示设置',
+          4: '全站商户设置',
         },
         curRow: {},
         curIdx: 0,
@@ -301,22 +355,37 @@
             this.dialogType = dialogType
             this.curRow = row
             this.curIdx = idx
-            if(dialogType == 1 || dialogType == 2){
+            if([1, 2, 3, 4].indexOf(dialogType) > -1){
               this.$get('iot-saas-basic/admin/settings/find', {
                 code: row.code
               }).then(res => {
                 if(res && res.code){
                   this.dform = JSON.parse(res.setting)
                 } else {
-                  if(dialogType == 1){
-                    this.dform = {
-                      wx_phone: 0,
-                      //ali_phone: 0
-                    }
-                  } else {
-                    this.dform = {
-                      RENT_LIMIT: 3
-                    }
+                  switch (dialogType) {
+                    case 1:
+                      this.dform = {
+                        wx_phone: 0,
+                        //ali_phone: 0
+                      }
+                    break
+                    case 2:
+                      this.dform = {
+                        RENT_LIMIT: 3
+                      }
+                    break
+                    case 3:
+                      this.dform = {
+                        nearStore: 1
+                      }
+                    break
+                    case 4:
+                      this.dform = {
+                        checkIncome: 1,
+                        checkMouthStat: 1,
+                        checkMouthStatSp: 0
+                      }
+                    break
                   }
                 }
               })
@@ -338,7 +407,7 @@
         if(this.clickSubmit) return
         this.clickSubmit = true
         switch (this.dialogType) {
-          case 1: case 2:
+          case 1: case 2: case 3: case 4:
             this.$post('iot-saas-basic/admin/settings/save', {
               code: curRow.code,
               setting: JSON.stringify(params)
