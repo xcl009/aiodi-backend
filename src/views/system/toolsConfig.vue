@@ -24,6 +24,11 @@
           </div>
         </h4>
         <el-form class="custom-form" label-width="100px" label-position="left">
+          <el-form-item label="小程序" v-if="wechatList.length > 1">
+            <el-select v-model="form.wechatAppid" placeholder="小程序" @change="toQuery()">
+              <el-option :label="item.appName" :value="item.appId" v-for="(item, key) in wechatList" />
+            </el-select>
+          </el-form-item>
           <el-form-item label="状态">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
@@ -157,6 +162,7 @@
           SUPPLIER: '供应商',
           CUSTOM: '自定义',
         },
+        wechatList: [],
 
         // 弹出相关
         dialogType: 1,
@@ -185,8 +191,28 @@
       if(['DIVIDE_ACCOUNTS', 'DEPOSIT_PRPR'].indexOf(this.code) > -1){
         this.getInfo()
       }
+      if(['DIVIDE_ACCOUNTS'].indexOf(this.code) > -1){
+        this.getWechatList()
+      }
     },
     methods: {
+      /**
+       * 获取列表
+       */
+      getWechatList() {
+        this.$get('iot-saas-pay/admin/pay/config/wechat/list', {
+          page: 0,
+          size: 20
+        }).then((res = {}) => {
+          if(res.rows && res.rows.length > 0){
+            this.wechatList = res.rows || []
+            this.form.wechatAppid = res.rows[0].appId
+            this.toQuery(1)
+          }
+        })
+      },
+
+
       /**
        * 获取详情
        */

@@ -502,6 +502,8 @@
             params.payTypeCode = 'HAPPY_MONEY'
             params.serviceId = curRow.serviceId
             this.$post('iot-saas-basic/client/service/market/buy', params).then(res => {
+              this.$store.dispatch('user/getInfo')
+              this.$root.$emit('getBalance')
               this.dialogType = 3
               this.clickSubmit = false
               this.toQuery()

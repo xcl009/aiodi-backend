@@ -124,7 +124,7 @@
                 <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3">(￥{{ scope.row.orderAmount }})</span>  </div>
               </template>
             </el-table-column>
-            <el-table-column label="时间" width="150" v-if="item.val && item.key == 'chargeStartTime'">
+            <el-table-column label="时间" width="160" v-if="item.val && item.key == 'chargeStartTime'">
               <template slot-scope="scope">
                 <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
                 <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
@@ -1231,7 +1231,7 @@
               callback: action => {
                 if (action == 'confirm') {
                   this.$post(`iot-saas-order/admin/order/complete/divide`, {
-                    orderNo: orderNo
+                    orderNos: [orderNo]
                   }).then(res => {
                     this.$message({
                       message: '提交成功',
