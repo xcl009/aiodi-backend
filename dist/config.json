@@ -47,7 +47,8 @@
     "VM": "pagesA/pages/butler/index",
     "BD": "pagesA/pages/butler/index",
     "VG": "pagesA/pages/butler/index",
-    "AV": "pagesA/pages/butler/index"
+    "AV": "pagesA/pages/butler/index",
+    "SM": "pagesA/pages/washing/index"
   },
   "roomDevice": {
     "BD": "震动大床房",
