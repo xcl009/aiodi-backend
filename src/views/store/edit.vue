@@ -148,7 +148,7 @@
                       <el-popover placement="right" title="" trigger="hover"
                         v-if="getModeType(item.deviceTypeCode)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode)['DEPOSIT']">
                         <div>
-                          需了解和设置免押或预存？<el-link type="primary" :underline="false"
+                          需了解和设置免押或余额？<el-link type="primary" :underline="false"
                             @click="$router.push({path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=计费模式`})">点此去了解</el-link>
                         </div>
                         <el-link type="danger" :underline="false" slot="reference"

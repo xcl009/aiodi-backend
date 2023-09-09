@@ -569,11 +569,14 @@ const util = {
   /**
    * 套餐显示
    */
-  showFeeMode: (type, mode, stype = 1) => {
+  showFeeMode: (type, mode, stype = 1, deviceTypeCode = '') => {
   	if(!mode) return ''
   	type = type || 1
   	mode = JSON.parse(mode)
   	if (type == 1) {
+      if(deviceTypeCode && deviceTypeCode.indexOf('WM') > -1){
+        return `${window.config.washing_package[mode.time].title}(${mode.money}元)`
+      }
   		return mode.time >= 60 ? `${mode.time / 60 }小时${mode.money}元` : `${mode.time}分钟${mode.money}元`
   	} else {
 			let fee = `前${mode.startingTime}分钟${mode.startingAmount}元，超则${mode.overBillingUnit}分钟/${mode.unitPrice}元`
@@ -594,7 +597,7 @@ const util = {
   	let obj = {
   		"1": "套餐",
   		"2": "免押",
-  		"3": "预存"
+  		"3": "余额"
   	}
   	return obj[type] || ''
   },
@@ -750,7 +753,7 @@ const util = {
     let testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)")
     if(p > 0) testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)|(^[0-9]{1,"+ max.toString().length +"}[\\.]{1}[0-9]{1,"+ p +"}$)")
     if(isEmpty && val != 0 && !val){
-    	
+
     }else if( val > max){
       return `不能大于${max}`
     } else if(val < min){

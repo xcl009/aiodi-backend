@@ -20,7 +20,7 @@
         </div>
         <div class="mb-20 pl-10 pr-10 flex align-center bg-white">
           <div class="mr-10">会员服务</div>
-          <el-tabs class="flex-1" v-model="listQuery.Type" @tab-click="toQuery()">
+          <el-tabs class="flex-1" v-model="listQuery.type" @tab-click="toQuery()">
             <el-tab-pane label="全部服务" name="-1" />
             <el-tab-pane name="0">
               <img class="vip-icon" :src="require('@/assets/market_vip.png')" width="51" slot="label">
@@ -91,7 +91,7 @@
           size: 24,
           serviceTypeCode: '',
           deviceTypeCode: '0',
-          Type: '-1'
+          type: '-1'
         },
         checkFree: {}
       }
@@ -160,7 +160,7 @@
           delete params.deviceTypeCode
           this.listQuery.deviceTypeCode = '0'
         }
-        if(params.Type < 0) delete params.Type
+        if(params.type < 0) delete params.type
         this.$get('iot-saas-basic/client/service/market/record/findPage', params).then((res = {}) => {
           this.list = this.list.concat(res.rows || [])
           this.listLoading = false

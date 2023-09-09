@@ -12,7 +12,7 @@
             <el-input v-model="form.title" placeholder="输入广告名称" />
           </el-form-item>
           <el-form-item label="图片" class="up-img">
-            <upload v-model="form.logoUrl" ratio="4:2" />
+            <upload v-model="form.logoUrl" ratio="2:1" />
           </el-form-item>
           <el-form-item label="时间">
             <div class="flex align-center">

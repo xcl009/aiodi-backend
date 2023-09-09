@@ -207,8 +207,8 @@
                 <svg-icon icon-class="mall"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">附近商户展示设置</div>
-                <div class="mt-5 fs-s3 text-gray">配置附近商户是否展示</div>
+                <div class="fs-b1">地图图标及附近商户展示设置</div>
+                <div class="mt-5 fs-s3 text-gray">配置地图展示图标和附近商户是否展示状态</div>
               </div>
             </div>
             <div class="text-right">
@@ -238,35 +238,46 @@
       </el-row>
     </div>
 
-    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :close-on-click-modal="false" width="560px">
-      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+    <el-drawer
+      :title="dialogTitle[dialogType]"
+      :visible.sync="drawerStatus"
+      :wrapperClosable="false"
+      >
       <template v-if="dialogType == 1">
-        <el-form class="custom-form pl-20 pr-20" label-width="auto" label-position="left" :model="dform">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
           <el-form-item label="微信">
             <el-switch v-model="dform.wx_phone" :active-value="1" :inactive-value="0" />
-            <span class="ml-10 fs-s3">开启表示微信用户登录需授权手机号码</span>
+            <div class="line-default fs-s3">开启表示微信用户登录需授权手机号码</div>
           </el-form-item>
           <!-- <el-form-item label="支付宝">
             <el-switch v-model="dform.ali_phone" :active-value="1" :inactive-value="0" />
-            <span class="ml-10 fs-s3">开启表示支付宝用户登录需授权手机号码（须获得获取会员手机号权限，否则用户无法正常登录）</span>
+            <div class="line-default fs-s3">开启表示支付宝用户登录需授权手机号码（须获得获取会员手机号权限，否则用户无法正常登录）</div>
           </el-form-item> -->
         </el-form>
       </template>
       <template v-if="dialogType == 2">
-        <el-form class="custom-form pl-20 pr-20" label-width="auto" label-position="left" :model="dform">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
           <el-form-item label="可借次数">
             <el-input v-model="dform.RENT_LIMIT" type="number"><template slot="append">单</template></el-input>
           </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 3">
-        <div class="text-center">
-          <el-switch v-model="dform.nearStore" :active-value="1" :inactive-value="0" />
-          <div class="mt-15">开启表示展示附近商户</div>
-        </div>
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
+          <el-form-item :label="`${name}图标`" v-for="(name, code) in myDeviceId">
+            <div class="flex align-center">
+              <upload v-model="dform[`${code}_icon`]" ratio="1:1"/>
+              <div class="mb-30 pl-15 text-primary cursor" v-if="dform[`${code}_icon`] && Object.keys(myDeviceId).length > 1" @click="copyIcon(dform[`${code}_icon`], code)">一键同步</div>
+            </div>
+          </el-form-item>
+          <el-form-item label="展示状态">
+            <el-switch v-model="dform.nearStore" :active-value="1" :inactive-value="0" />
+            <div class="line-default fs-s3">开启表示展示附近商户入口，且点击地图点位可显示商户信息</div>
+          </el-form-item>
+        </el-form>
       </template>
       <template v-if="dialogType == 4">
-        <el-form class="custom-form pl-20 pr-20" label-width="auto" label-position="left" :model="dform">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
           <el-form-item label="收益明细">
             <el-switch v-model="dform.checkIncome" :active-value="1" :inactive-value="0" />
           </el-form-item>
@@ -275,21 +286,26 @@
           </el-form-item>
           <el-form-item label="月日统计简化">
             <el-switch v-model="dform.checkMouthStatSp" :active-value="1" :inactive-value="0" />
-            <span class="ml-10 fs-s3">开启表示只展示日期和收益额</span>
+            <div class="line-default fs-s3">开启表示只展示日期和收益额</div>
           </el-form-item>
         </el-form>
       </template>
-      <div class="pb-20 mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+
+      <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
+        <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+  import upload from '@/components/upload'
   export default {
     name: 'systemTools',
+    components: {
+      upload
+    },
     data() {
       return {
         clickSubmit: false,
@@ -297,11 +313,11 @@
 
         // 弹出相关
         dialogType: 1,
-        dialogStatus: false,
+        drawerStatus: false,
         dialogTitle: {
           1: '用户登录授权手机号',
           2: '免押订单租借次数限制',
-          3: '附近商户展示设置',
+          3: '地图图标及附近商户展示设置',
           4: '全站商户设置',
         },
         curRow: {},
@@ -392,7 +408,7 @@
             } else {
               this.dform = {}
             }
-            this.dialogStatus = true
+            this.drawerStatus = true
             break
         }
       },
@@ -408,6 +424,7 @@
         this.clickSubmit = true
         switch (this.dialogType) {
           case 1: case 2: case 3: case 4:
+            this.clickSubmit = false
             this.$post('iot-saas-basic/admin/settings/save', {
               code: curRow.code,
               setting: JSON.stringify(params)
@@ -416,12 +433,23 @@
                 message: '提交成功',
                 type: 'success'
               })
-              this.dialogStatus = false
+              this.drawerStatus = false
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
             })
             break
+        }
+      },
+
+      /**
+       * 同步设备icon
+       */
+      copyIcon(url, code){
+        for (var i in this.myDeviceId){
+          if(i != code){
+            this.$set(this.dform, `${i}_icon`, url)
+          }
         }
       }
     }

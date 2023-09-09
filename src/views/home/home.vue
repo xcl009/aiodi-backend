@@ -1295,7 +1295,7 @@
               rotateSensitivity: 1, //设置为0无法旋转
               zoomSensitivity: 0, //设置为0无法缩放
               panSensitivity: 1, //设置为0无法平移
-              autoRotate: true //自动旋转
+              autoRotate: false //自动旋转
             }
           },
           series: series

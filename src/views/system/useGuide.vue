@@ -99,7 +99,7 @@
       </div>
     </div>
 
-    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus">
+    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
       <template v-if="dialogType == 1">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
           <el-form-item label="指南对象">
@@ -195,7 +195,6 @@ export default {
       listLoading: true,
       listTotal: 0,
       listQuery: {
-        haveBind: this.$route.query.haveBind || '',
         page: 1,
         size: 20
       },

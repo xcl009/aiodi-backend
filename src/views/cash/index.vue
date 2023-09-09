@@ -133,7 +133,10 @@
         </el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
-            <div class="el-link el-link--success">{{ statusObj[scope.row.status] }}</div>
+            <div class="el-link el-link--success">
+              <span>{{ statusObj[scope.row.status] }}</span>
+              <span class="ml-5" @click="setRows(2, scope.row)">查询</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="备注" width="170">
@@ -367,6 +370,13 @@
             this.curRow = row
             this.curIdx = idx
             this.dialogStatus = true
+            break
+          case 2:
+            this.$post('iot-saas-pay/admin/pay/withdraw/check', {
+              id: row.id
+            }).then(res => {
+              this.getList()
+            })
             break
         }
       },
