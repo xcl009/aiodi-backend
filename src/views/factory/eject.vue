@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <BarScan ref="qrcode" @ok="getResult" @err="geterror"></BarScan>
-    <div class="box flex justify-center align-center">
+    <div class="box flex justify-center align-center" v-show="scanBtn">
       <el-button class="mb-20" type="primary" size="medium" @click="toScan">扫码弹出</el-button>
     </div>
     <el-drawer
@@ -62,6 +62,7 @@
     data() {
       return {
         result: '',
+        scanBtn: true,
         drawerStatus: false,
         clickSubmit: false,
         list: [],
@@ -75,17 +76,20 @@
     },
     methods: {
       toScan(){
+        this.scanBtn = false
         this.$refs.qrcode.getCameras()
       },
 
       getResult(result) {
-        console.log('result====', result)
+        alert(result)
         this.deviceSn = this.getQuery(result)
+        this.scanBtn = true
         this.getInfo()
       },
 
       geterror(e) {
         this.scancode = false
+        this.scanBtn = true
         this.$message({
           message: e,
           type: 'error'

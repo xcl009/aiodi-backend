@@ -49,12 +49,14 @@
               },
             },
             (decodedText, decodedResult) => {
-              this.$emit("ok", decodedText)
+              this.$emit('ok', decodedText)
+              this.stop()
               this.show = false
             }
           )
           .catch((err) => {
-            this.$emit("err", err)
+            this.$emit('err', err)
+            this.stop()
             this.show = false
           })
       },
