@@ -10,17 +10,20 @@
       :wrapperClosable="false"
       >
       <div class="pl-15 pr-15">
-        <el-popconfirm
-          class="pop"
-          cancel-button-type=""
-          icon="el-icon-info"
-          icon-color="#FF7D00"
-          title="确定要全部弹出吗？"
-          @onConfirm="allEject()"
-          v-if="factoryCode == 'WS' || factoryCode == 'TP'"
-        >
-          <el-button class="mb-15" type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ? '弹出中' : '全部弹出'}} </el-button>
-        </el-popconfirm>
+        <div class="mb-15">
+          <el-button class="mr-15" type="primary" size="medium" @click="getInfo()">刷新</el-button>
+          <el-popconfirm
+            class="pop"
+            cancel-button-type=""
+            icon="el-icon-info"
+            icon-color="#FF7D00"
+            title="确定要全部弹出吗？"
+            @onConfirm="allEject()"
+            v-if="factoryCode == 'WS' || factoryCode == 'TP'"
+          >
+            <el-button type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ? '弹出中' : '全部弹出'}} </el-button>
+          </el-popconfirm>
+        </div>
         <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row>
           <el-table-column label="位置" width="50">
             <template slot-scope="scope">
@@ -40,7 +43,7 @@
               <view v-if="scope.row.onlineStatus == 0">无数据包</view>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="50">
+          <el-table-column label="操作" width="60">
             <template slot-scope="scope">
               <div class="flex flex-wrap operate">
                 <el-button type="text" :disabled="scope.row.distribute" @click="singleEject(scope.row)">{{ scope.row.onlineStatus == 2 ? '弹出中' : '弹出' }}</el-button>
@@ -81,10 +84,11 @@
       },
 
       getResult(result) {
-        alert(result)
-        this.deviceSn = this.getQuery(result)
+        if(result){
+          this.deviceSn = this.getQuery(result)
+          this.getInfo()
+        }
         this.scanBtn = true
-        this.getInfo()
       },
 
       geterror(e) {

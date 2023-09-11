@@ -1,13 +1,14 @@
 <template>
   <div class="fixed p-all qrcode" v-if="show">
     <div id="reader"></div>
+    <div class="text-white text-center" style="margin-top: 330px;" @click="stop(); show = false; $emit('ok', '')">取消</div>
   </div>
 </template>
 
 <script>
   import {
     Html5Qrcode
-  } from "html5-qrcode";
+  } from "html5-qrcode"
   export default {
     data() {
       return {
