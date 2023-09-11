@@ -28,6 +28,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/factoryEject',
+    component: () => import('@/views/factory/eject'),
+    hidden: true
+  },
+  {
     path: '/user',
     component: Layout,
     redirect: '/user/index',

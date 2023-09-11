@@ -47,7 +47,8 @@
     "VM": "pagesA/pages/butler/index",
     "BD": "pagesA/pages/butler/index",
     "VG": "pagesA/pages/butler/index",
-    "AV": "pagesA/pages/butler/index"
+    "AV": "pagesA/pages/butler/index",
+    "SM": "pagesA/pages/washing/index"
   },
   "roomDevice": {
     "BD": "震动大床房",
@@ -65,7 +66,7 @@
   "THEME": {
     "1022449265681321985": "MONKEYBOOS"
   },
-  "day_unit": [15,360,480,600,720,840,900,960,1080,1200,1320,1440],
+  "day_unit": [300,360,480,600,720,840,900,960,1080,1200,1320,1440],
   "plan_time": [30,60,120,180,240,300,360,420,480,540,600,660,720,1440],
   "washing_package": {
     "46": {
