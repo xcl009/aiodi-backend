@@ -23,12 +23,12 @@
     "default": {
       "套餐": "PACKAGE",
       "免押": "DEPOSIT_FREE",
-      "预存": "DEPOSIT"
+      "余额": "DEPOSIT"
     },
     "PA": {
       "免押": "DEPOSIT_FREE",
-      "免押+预存": "DEPOSIT_AND_FREE",
-      "预存": "DEPOSIT"
+      "免押+余额": "DEPOSIT_AND_FREE",
+      "余额": "DEPOSIT"
     },
     "WM": {
       "套餐": "PACKAGE"

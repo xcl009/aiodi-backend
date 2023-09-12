@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/brandReg', '/login', '/regist'] // no redirect whitelist
+const whiteList = ['/brandReg', '/login', '/regist', '/factoryEject'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar

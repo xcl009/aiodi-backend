@@ -114,6 +114,7 @@ let startApp = function () {
     // 基础地址
     Vue.prototype.BASE_URL = res.data.BASE_URL
     Vue.prototype.config = res.data
+    window.config = res.data
     new Vue({
       el: '#app',
       router,

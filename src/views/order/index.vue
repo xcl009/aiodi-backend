@@ -53,9 +53,10 @@
         <div class="flex1 fs-c1 text-black">查询表格</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 9)" v-if="isSaas()">芝麻分扣款订单关闭</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 10)" v-if="isSaas()">芝麻分订单撤销</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 8)" v-if="isSaas()">预存押金退款</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 8)" v-if="isSaas()">押金退款</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</div>
-        <!-- <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">DD恢复</div> -->
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">DD恢复</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 11)" v-if="isSaas()">微信退款重试</div>
         <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
@@ -137,7 +138,7 @@
             </el-table-column> -->
             <el-table-column label="套餐" width="150" v-if="item.val && item.key == 'feeMode'">
               <template slot-scope="scope">
-                {{ showFeeMode(scope.row.feeType, scope.row.feeMode)}}
+                <div>{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode)}}</div>
               </template>
             </el-table-column>
             <el-table-column label="收益(元)" width="75" v-if="item.val && item.key == 'amount'">
@@ -231,11 +232,11 @@
             </el-table-column>
           </el-table>
         </template>
-        <template v-if="[5,7,8,9,10].indexOf(dialogType) > -1">
+        <template v-if="[5,7,8,9,10,11].indexOf(dialogType) > -1">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
             <el-form-item label="订单号">
               <el-input v-model="dform.orderNo"></el-input>
-              <div class="mt-10 text-danger line-default" v-if="dialogType == 8">预存订单完结后押金显示已退款但用户未收到退款时，可尝试重新发起。</div>
+              <div class="mt-10 text-danger line-default" v-if="dialogType == 8">余额订单完结后押金显示已退款但用户未收到退款时，可尝试重新发起。</div>
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 9">关闭芝麻免押订单发起的扣款失败的支付宝交易订单。</div>
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 10">只可撤销24小时内创建的芝麻分订单。</div>
             </el-form-item>
@@ -305,7 +306,7 @@
                 <div class="label-text">套餐:</div>
                 <div class="text-cut">
                   <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
-                    <span>{{ showFeeMode(curRow.feeType, curRow.feeMode) }}</span>
+                    <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode)}}</span>
                   </el-tooltip>
                 </div>
               </div>
@@ -463,7 +464,7 @@
                     <div class="label-text">套餐:</div>
                     <div class="text-cut">
                       <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
-                        <span>{{ showFeeMode(curRow.feeType, curRow.feeMode) }}</span>
+                        <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode) }}</span>
                       </el-tooltip>
                     </div>
                   </div>
@@ -797,9 +798,10 @@
           5: '免押待付款订单0元完结',
           6: '订单详情',
           7: 'DD恢复',
-          8: '预存订单押金退款重试',
+          8: '余额订单押金退款重试',
           9: '芝麻分扣款订单关闭',
           10: '芝麻分订单撤销',
+          11: '微信订单退款重试',
         },
         curRow: {},
         curIdx: 0,
@@ -932,6 +934,7 @@
           let ids = params.storeId.split('&')
           params.storeId = ids[0]
           params.agentId = ids[1]
+          params.brandId = ids[2]
         }
         if(this.lowerAgent != 'ALL') params.lowerAgent = this.lowerAgent || false
         if (params.deviceTypeCode == 0) delete params.deviceTypeCode
@@ -994,6 +997,7 @@
           let ids = params.storeId.split('&')
           params.storeId = ids[0]
           params.agentId = ids[1]
+          params.brandId = ids[2]
         }
         if (params.status == 0) delete params.status
         if (params.deviceTypeCode == 0) delete params.deviceTypeCode
@@ -1352,7 +1356,7 @@
               this.clickSubmit = false
             })
             break
-          case 7: case 8: case 9: case 10:
+          case 7: case 8: case 9: case 10: case 11:
             if (!params.orderNo) {
               this.$message({
                 message: '请输入订单号',
@@ -1364,7 +1368,8 @@
               7: 'iot-saas-order/admin/order/lose/recover',
               8: 'iot-saas-order/admin/order/complete/refund',
               9: 'iot-saas-pay/admin/pay/config/alipay/close',
-              10: 'iot-saas-pay/admin/pay/config/alipay/cancel'
+              10: 'iot-saas-pay/admin/pay/config/alipay/cancel',
+              11: 'iot-saas-pay/wechat/order/refund'
             }
             console.log(url[this.dialogType])
             this.$post(url[this.dialogType], {

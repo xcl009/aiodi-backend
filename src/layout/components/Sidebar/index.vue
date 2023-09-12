@@ -259,6 +259,9 @@ export default {
           })
         } else {
           this.dialogTitle[1] = 'VIP开通'
+          this.vipInfo = {
+            status: 2
+          }
           this.getVipService(2)
         }
       })

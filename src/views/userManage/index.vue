@@ -9,6 +9,9 @@
             <el-option label="支付宝" value="alipay" />
           </el-select>
         </el-form-item>
+        <el-form-item label="用户ID">
+          <el-input placeholder="用户ID后八位" v-model="form.idLastNine" />
+        </el-form-item>
         <el-form-item label="用户昵称">
           <el-input placeholder="用户昵称" v-model="form.nickname" />
         </el-form-item>

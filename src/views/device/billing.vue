@@ -19,7 +19,7 @@
                   width="400"
                   trigger="hover">
                   <div>
-                    需了解和设置预存+免押？<el-link type="primary" :underline="false">点此去购买</el-link>
+                    需了解和设置余额+免押？<el-link type="primary" :underline="false">点此去购买</el-link>
                   </div>
                   <el-link type="danger" :underline="false" slot="reference" class="ml-10 el-icon-question fs-c1"></el-link>
                 </el-popover>
@@ -40,7 +40,7 @@
                 </div>
               </el-form-item>
 
-              <el-form-item :label="`预存免押默认`"></el-form-item>
+              <el-form-item :label="`余额免押默认`"></el-form-item>
               <el-form-item label="前">
                 <div class="flex">
                   <div class="flex1">

@@ -144,7 +144,7 @@
         loading: false,
         passwordType: 'password',
         redirect: undefined,
-        
+
         gid: this.$route.params.gid || getToken('brandId') || '',
         THEME: ''
       }
@@ -203,8 +203,13 @@
             this.loading = true
             if(this.gid) this.loginForm.brandId = this.gid
             this.$store.dispatch('user/login', this.loginForm).then(res => {
-              location.href = this.redirect || '/home'
-              this.loading = false
+              if(res.userType == 'factory'){
+                location.href = this.redirect || '/factory/eject'
+                this.loading = false
+              }else{
+                location.href = this.redirect || '/home'
+                this.loading = false
+              }
             }).catch(() => {
               this.loading = false
             })
