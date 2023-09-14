@@ -32,6 +32,9 @@
                             </el-option>
                         </el-select>
                     </el-form-item> -->
+                    <el-form-item label="商品详情">
+                        <tinymce v-model="form.description" :height="300" />
+                    </el-form-item>
                     <el-form-item label="详细介绍" prop="productRemark">
                         <div v-for="(item, index) in form.productRemark" class="flex_j mark_box">
                             <el-input v-model="item.text" placeholder="例如：保修年限" />
@@ -39,7 +42,7 @@
                             <div class="m_l_a right_add" @click="addmarkChange()" v-if="index == 0">
                                 新增
                             </div>
-                            <div class="m_l_a right_add delete" @click="deleteChange(index,1)" v-if="index > 0">
+                            <div class="m_l_a right_add delete" @click="deleteChange(index, 1)" v-if="index > 0">
                                 删除
                             </div>
                         </div>
@@ -53,7 +56,7 @@
                             <div class="m_l_a right_add" @click="addsizeChange()" v-if="index == 0">
                                 新增
                             </div>
-                            <div class="m_l_a right_add delete" @click="deleteChange(index,2)" v-if="index > 0">
+                            <div class="m_l_a right_add delete" @click="deleteChange(index, 2)" v-if="index > 0">
                                 删除
                             </div>
                         </div>
@@ -70,12 +73,16 @@
 <script>
 import upload from '@/components/upload'
 import { pickKeys } from '@/utils/index'
+import Tinymce from '@/components/Tinymce/'
 export default {
     components: {
-        upload
+        upload,
+        Tinymce
     },
     data() {
         return {
+            //      tinymceDescID: `app_desc_${currentTime()}`,
+            // tinymceFulID: `app_ful_${currentTime()}`,
             clickSubmit: false,
             form: {
                 deviceTypeCode: '',
@@ -130,21 +137,21 @@ export default {
         this.getplantList();
         this.getbrandList();
         let id = this.$route.query.id;
-        if(id) this.getList(id);
+        if (id) this.getList(id);
     },
     methods: {
-        deleteChange(index,type){
-            if(type == 2){
-                this.form.productStandardList.splice(index,1);
-            }else{
-                this.form.productRemark.splice(index,1);
+        deleteChange(index, type) {
+            if (type == 2) {
+                this.form.productStandardList.splice(index, 1);
+            } else {
+                this.form.productRemark.splice(index, 1);
             }
-            
+
         },
-        
+
         // 获取详情数据
-        getList(id){
-            this.$get(`iot-saas-order/admin/product/detail/${id}`, {id:id}).then(res => {
+        getList(id) {
+            this.$get(`iot-saas-order/admin/product/detail/${id}`, { id: id }).then(res => {
                 this.form = res;
                 this.form.productRemark = JSON.parse(this.form.productRemark);
             }).catch(() => {
@@ -305,7 +312,8 @@ export default {
     flex-shrink: 0;
     color: #165DFF;
 }
-.delete{
+
+.delete {
     color: #e54d42;
 }
 </style>
