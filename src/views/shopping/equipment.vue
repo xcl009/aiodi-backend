@@ -148,13 +148,19 @@ export default {
                         numArr.push(res.price);
                     }
                 })
+                
                 let sortArr = numArr.sort((a, b) => a - b);
-                return `￥${sortArr[0]}-${sortArr[sortArr.length - 1]}/${type ? '规格' : '台'}`
+                let text ='';
+                arr.forEach(res=>{
+                    if(res.price == `${sortArr[sortArr.length - 1]}`){
+                          text = res.number.substr(arr[0].number.length - 1,1);
+                    }
+                })
+                return `￥${sortArr[0]}-${sortArr[sortArr.length - 1]}/${text}`
             } else {
                
-                return `￥${arr[0].price}/${type ? '规格' : '台'}`
+                return `￥${arr[0].price}/${arr[0].number.substr(arr[0].number.length - 1,1)}`
             }
-
 
         },
         // 下架

@@ -1087,6 +1087,10 @@ div:focus {
 	display: flex;
 	align-items: center;
 }
+.flex_b{
+display: flex;
+align-items: end;
+}
 
 .flex_c {
 	display: flex;
@@ -1119,4 +1123,8 @@ div:focus {
 }
 .m_l_a{
   margin-left: auto;
+}
+.m_lr_10{
+  margin-left: 10px;
+  margin-right: 10px;
 }

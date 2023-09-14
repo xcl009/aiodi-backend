@@ -39,16 +39,22 @@
                             <div class="m_l_a right_add" @click="addmarkChange()" v-if="index == 0">
                                 新增
                             </div>
+                            <div class="m_l_a right_add delete" @click="deleteChange(index,1)" v-if="index > 0">
+                                删除
+                            </div>
                         </div>
                     </el-form-item>
                     <el-form-item label="设备规格及价格" prop="productStandardList">
                         <div v-for="(item, index) in form.productStandardList" class="flex_j mark_box">
                             <el-input v-model="item.number" placeholder="请输入" />
-                            <span> {{ form.deviceTypeCode == 'PL'? '条':'口' }}</span>
+                            <span> </span>
                             <el-input v-model="item.price" placeholder="请输入" class="ml-10" />
                             <span>元/台</span>
                             <div class="m_l_a right_add" @click="addsizeChange()" v-if="index == 0">
                                 新增
+                            </div>
+                            <div class="m_l_a right_add delete" @click="deleteChange(index,2)" v-if="index > 0">
+                                删除
                             </div>
                         </div>
                     </el-form-item>
@@ -127,6 +133,14 @@ export default {
         if(id) this.getList(id);
     },
     methods: {
+        deleteChange(index,type){
+            if(type == 2){
+                this.form.productStandardList.splice(index,1);
+            }else{
+                this.form.productRemark.splice(index,1);
+            }
+            
+        },
         
         // 获取详情数据
         getList(id){
@@ -290,6 +304,9 @@ export default {
     margin-left: 10px;
     flex-shrink: 0;
     color: #165DFF;
+}
+.delete{
+    color: #e54d42;
 }
 </style>
     

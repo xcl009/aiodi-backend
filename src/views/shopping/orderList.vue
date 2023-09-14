@@ -147,7 +147,7 @@
                                 </el-table-column>
                                 <el-table-column label="规格" align="center">
                                     <template slot-scope="scope">
-                                        {{ scope.row.number }} {{ curRow.deviceTypeCode == 'PL' ? '条':'台'}}
+                                        {{ scope.row.number }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="单价(元)" align="center">

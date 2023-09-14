@@ -9,14 +9,14 @@
                         <el-tab-pane :label="index" :name="'' + item + ''" v-for="(item, index) in myDeviceName" />
                     </el-tabs>
                 </div>
-                <div class="mb-10 flex align-center bg-white" >
+                <div class="mb-10 flex align-center bg-white">
                     <div class="mr-10">按出货量</div>
                     <el-tabs class="flex-1" v-model="listQuery.order" @tab-click="toQuery()">
                         <el-tab-pane label="默认" :name="''" />
                         <el-tab-pane :label="item.title" :name="item.type" v-for="(item, index) in shipmenList" />
                     </el-tabs>
                 </div>
-                <div class="mb-10 flex align-center bg-white" >
+                <div class="mb-10 flex align-center bg-white">
                     <div class="mr-10">按 价 格</div>
                     <el-tabs class="flex-1" v-model="listQuery.sort" @tab-click="toQuery()">
                         <el-tab-pane label="默认" :name="''" />
@@ -141,8 +141,8 @@
                             <div class="gg_width">选择规格</div>
                             <div>
                                 <el-radio-group v-model="radio1" @input="radioChange">
-                                    <el-radio-button :label="`${item.number}${curRow.deviceTypeCode == 'PL' ? '条' : '台'}`"
-                                        va v-for="(item, index) in curRow.productStandardList"></el-radio-button>
+                                    <el-radio-button :label="`${item.number}`" va
+                                        v-for="(item, index) in curRow.productStandardList"></el-radio-button>
                                 </el-radio-group>
                             </div>
                         </div>
@@ -169,9 +169,9 @@
             <template v-if="[1].indexOf(dialogType) > -1">
                 <div style="height: 66px;"></div>
                 <div class="p-15 mt-30 abs bfixed bg-white flex_j l-t">
-                    <div class="flex_j">
-                        合计{{ queryList.productNumber }}件 <div class="pl-15 flex_j">
-                            <span>总金额</span> <span class="red_color fs-b3 text-bold">{{ (parseInt(queryList.productNumber) *
+                    <div class="flex_b">
+                        合计{{ queryList.productNumber }}件 <div class="pl-15 flex_b">
+                            <span>总金额</span> <span class="red_color fs-b3 text-bold m_lr_10">{{ (parseInt(queryList.productNumber) *
                                 parseFloat(queryList.productStandardDTO.price)).toFixed(2) }}</span>元
                         </div>
                     </div>
@@ -191,8 +191,9 @@
                         <div>{{ myDeviceId[curRow.deviceTypeCode] }}</div>
                     </el-form-item>
                     <el-form-item label="规格">
-                        <div>{{ queryList.productStandardDTO.number }}{{ curRow.deviceTypeCode == 'PL' ? '条' : '台' }} {{
-                            myDeviceId[curRow.deviceTypeCode] }}×{{ queryList.productNumber }}台</div>
+                        <div>{{ queryList.productStandardDTO.number }} {{
+                            myDeviceId[curRow.deviceTypeCode] }}×{{ queryList.productNumber }}台
+                        </div>
                     </el-form-item>
                     <el-form-item label="支付方式">
                         <div>线下支付</div>
@@ -396,7 +397,7 @@ export default {
         },
         radioChange(e) {
             this.curRow.productStandardList.forEach(res => {
-                if (`${res.number}${this.curRow.deviceTypeCode == 'PL' ? '条' : '台'}` == e) {
+                if (`${res.number}` == e) {
                     let obj = {
                         number: res.number,
                         price: res.price,
@@ -511,7 +512,7 @@ export default {
                     this.queryList.productId = row.id;
                     this.queryList.productStandardDTO.price = row.productStandardList[0].price;
                     this.queryList.productStandardDTO.number = row.productStandardList[0].number;
-                    this.radio1 = `${row.productStandardList[0].number}${this.curRow.deviceTypeCode == 'PL' ? '条' : '台'}`;
+                    this.radio1 = `${row.productStandardList[0].number}`;
                     this.dialogType = dialogType;
                     this.dialogTitle[1] = `${this.myDeviceId[row.deviceTypeCode]}选购`;
                     this.drawerStatus = true
