@@ -1078,3 +1078,45 @@ div:focus {
 .el-drawer__container::-webkit-scrollbar{
   display: none;
 }
+
+.flex {
+	display: flex;
+}
+
+.flex_j {
+	display: flex;
+	align-items: center;
+}
+
+.flex_c {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.flex_s {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flex_s_w {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+}
+.flex_s_w_na {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.flex_w {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.m_l_a{
+  margin-left: auto;
+}
