@@ -86,7 +86,7 @@
                             </div>
                             <div class="mt-15  text-cut_two flex_j">
                                 <img src="@/assets/gongchang-fill.svg" /> {{ item.factoryName }} <div class="sub">|</div>
-                                {{ numFormatting(item.soldQuantity) }}+出货量
+                                {{ numFormatting(item.soldQuantity) || 0 }}+出货量
                             </div>
                             <div class="mt-15 flex align-center">
                                 <template>
@@ -162,6 +162,10 @@
                                 <el-input-number v-model="item.productNumber" :min="0" :max="9999999"></el-input-number>
                             </div>
                         </div> -->
+                    </div>
+
+                    <div class="mt-20">
+                        <div v-html="curRow.productDetail"></div>
                     </div>
                 </div>
 

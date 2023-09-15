@@ -33,7 +33,7 @@
                         </el-select>
                     </el-form-item> -->
                     <el-form-item label="商品详情">
-                        <tinymce v-model="form.description" :height="300" />
+                        <tinymce ref="rContent" v-model="form.productDetail" :height="300" />
                     </el-form-item>
                     <el-form-item label="详细介绍" prop="productRemark">
                         <div v-for="(item, index) in form.productRemark" class="flex_j mark_box">
@@ -72,7 +72,7 @@
     
 <script>
 import upload from '@/components/upload'
-import { pickKeys } from '@/utils/index'
+import { pickKeys,currentTime } from '@/utils/index'
 import Tinymce from '@/components/Tinymce/'
 export default {
     components: {
@@ -81,8 +81,8 @@ export default {
     },
     data() {
         return {
-            //      tinymceDescID: `app_desc_${currentTime()}`,
-            // tinymceFulID: `app_ful_${currentTime()}`,
+            tinymceDescID: `app_desc_${currentTime()}`,
+            tinymceFulID: `app_ful_${currentTime()}`,
             clickSubmit: false,
             form: {
                 deviceTypeCode: '',
@@ -98,6 +98,7 @@ export default {
                     number: '',
                     price: '',
                 }],
+                productDetail:'',
             },
             rules: {
                 deviceTypeCode: [
@@ -152,8 +153,19 @@ export default {
         // 获取详情数据
         getList(id) {
             this.$get(`iot-saas-order/admin/product/detail/${id}`, { id: id }).then(res => {
-                this.form = res;
+                this.form = res;   
+                this.form.productUrlList = res.productUrlList.join(',');
+                this.plantList.forEach(list=>{
+                    console.log(list.id,res.factoryCode)
+                    if(list.factoryCode == res.factoryCode){
+                        this.form.factoryId = list.name;
+                    }
+                })            
                 this.form.productRemark = JSON.parse(this.form.productRemark);
+                this.$nextTick(()=>{
+                    this.$refs['rContent'].setContent(this.form.productDetail);  
+                })
+                                      
             }).catch(() => {
             })
         },
@@ -194,8 +206,8 @@ export default {
                 if (valid) {
                     if (params.id > 0) {
                         url = `iot-saas-order/admin/product/update/${params.id}`
-                        params.factoryId = params.id;
-                        params.productUrlList = params.productUrlList.join(',')
+                        // params.factoryId = params.id;
+                        // params.productUrlList = params.productUrlList.join(',')
                     }
                     this.$post(url, params).then(res => {
                         this.$message({
