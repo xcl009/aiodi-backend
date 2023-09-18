@@ -204,7 +204,7 @@
             if(this.gid) this.loginForm.brandId = this.gid
             this.$store.dispatch('user/login', this.loginForm).then(res => {
               if(res.userType == 'factory'){
-                location.href = this.redirect || '/factoryEject'
+                location.href = '/factoryEject'
                 this.loading = false
               }else{
                 location.href = this.redirect || '/home'

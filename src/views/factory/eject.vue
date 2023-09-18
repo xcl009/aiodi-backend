@@ -1,8 +1,12 @@
 <template>
   <div class="content">
     <BarScan ref="qrcode" @ok="getResult" @err="geterror"></BarScan>
-    <div class="box flex justify-center align-center" v-show="scanBtn">
-      <el-button class="mb-20" type="primary" size="medium" @click="toScan">扫码弹出</el-button>
+    <div class="box flex flex justify-center align-center" v-show="scanBtn">
+      <div>
+        <el-button class="mb-20" type="primary" @click="toScan" style="width: 160px; height: 80px;">设备绑定</el-button><br>
+        <el-button class="mb-20" type="primary" @click="toScan" style="width: 160px; height: 80px;">扫码弹出</el-button><br>
+        <el-button class="mb-20" type="info" @click="logout" style="width: 160px;">退出登录</el-button>
+      </div>
     </div>
     <el-drawer
       title="设备弹出"
@@ -211,7 +215,14 @@
       	}).catch(err => {
           this.clickSubmit = false
       	})
-      }
+      },
+
+      async logout() {
+        let url = ''
+        url = `/login`
+        await this.$store.dispatch('user/logout')
+        location.href = url
+      },
     }
   }
 </script>
