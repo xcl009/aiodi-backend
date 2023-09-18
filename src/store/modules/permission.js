@@ -45,7 +45,11 @@ export function filterAsyncRouter(asyncRouterMap) {
       if (route.component === 'Layout') {
         route.component = Layout
       } else {
-        route.component = _import(route.component) // 导入组件
+        try {
+          route.component = _import(route.component) // 导入组件
+        }catch (error) {
+          route.component = Layout
+        }
       }
     }
     if (route.children && route.children.length) {

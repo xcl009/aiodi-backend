@@ -122,7 +122,7 @@
             </el-table-column>
             <el-table-column label="支付类型" width="100" v-if="item.val && item.key == 'PayType'">
               <template slot-scope="scope">
-                <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3">(￥{{ scope.row.orderAmount }})</span>  </div>
+                <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3 && isBrand()">(￥{{ scope.row.orderAmount }})</span>  </div>
               </template>
             </el-table-column>
             <el-table-column label="时间" width="160" v-if="item.val && item.key == 'chargeStartTime'">
@@ -895,6 +895,11 @@
         ]
       }
     },
+    created(){
+      if (localStorage.getItem('formKey_order')) {
+        this.formKey = JSON.parse(localStorage.getItem('formKey_order'))
+      }
+    },
     mounted() {
       let query = this.$route.query
       this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceSn', 'sourceType', 'userId']
@@ -912,6 +917,9 @@
         })
       }
       this.toQuery()
+    },
+    beforeDestroy(){
+      localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
     },
     methods: {
       /**

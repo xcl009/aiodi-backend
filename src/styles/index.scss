@@ -898,7 +898,7 @@ div:focus {
     padding: 6px 8px;
   }
   .el-button--text{
-    padding: 0;
+    padding: 2px 0;
   }
   .el-button--danger.is-plain{
     background: rgba(255, 84, 84, 0.1);
@@ -1050,7 +1050,8 @@ div:focus {
 }
 .el-drawer{
   padding-bottom: 66px;
-  max-width: 80%;
+  max-width: 90%;
+  min-width: 350px;
   width: auto !important;
   .el-input-group__prepend{
     width: 100px;

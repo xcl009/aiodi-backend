@@ -28,115 +28,138 @@
     </template>
 
     <div class="pl-10 pr-10 bg-white" :class="{'pt-15': isStore()}">
+      <div class="flex align-center pt-15 mb-15 l-t">
+        <div class="flex1 fs-c1 text-black">查询表格</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">铺解记录</div>
+        <table-column-set storageKey="storeTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
+      </div>
+
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
         <el-table-column label="品牌" width="150" prop="brandName" v-if="isSaas()"></el-table-column>
-        <el-table-column label="门头照" width="60">
-          <template slot-scope="scope">
-            <el-link>
-              <el-avatar class="block" shape="square" :size="35" :src="scope.row.avatar || agentInfo.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
-            </el-link>
-          </template>
-        </el-table-column>
-        <el-table-column label="商户" min-width="190">
-          <template slot-scope="scope">
-            <div class="cursor" @click="copyText(scope.row.id)">{{ scope.row.name || '--' }}</div>
-            <div>{{ scope.row.address || '--' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="交易额(元)" width="120">
-          <template slot-scope="scope">
-            {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="总收益(元)" width="120">
-          <template slot-scope="scope">
-            {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="可提现(元)" width="120">
-          <template slot-scope="scope">
-            {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
-          </template>
-        </el-table-column>
-        <!-- <el-table-column label="订单量" width="140">
-          <template slot-scope="scope">
-            <div class="inline" v-if="isSaas()">
-              <div class="cursor" @click="$router.push({path: `/order?storeId=${scope.row.id}&agentId=${scope.row.agentId}&brandId=${scope.row.brandId}`})">订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}</div>
-              <div class="cursor" @click="$router.push({path: `/device?storeId=${scope.row.id}&agentId=${scope.row.agentId}&brandId=${scope.row.brandId}`})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
-            </div>
-            <div class="inline" v-else>
-              <div class="cursor" @click="$router.push({path: (lowerStore ? `/order/subOrder?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/order?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">订单量：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}</div>
-              <div class="cursor" @click="$router.push({path: (lowerStore ? `/device/subDevice?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/device?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})">设备数：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}</div>
-            </div>
-          </template>
-        </el-table-column> -->
-        <el-table-column label="上级代理" width="120" v-if="lowerStore">
-          <template slot-scope="scope">
-            <div>{{ supUser[scope.row.agentId] ? supUser[scope.row.agentId].name : '' }}</div>
-            <div>{{ supUser[scope.row.agentId] ? dealPhone(supUser[scope.row.agentId].mobile) : '' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="分润人" width="180" v-if="!isStore()">
-          <template slot-scope="scope">
-            <div v-if="scope.row.user">{{ scope.row.user.nickname || '' }}</div>
-            <div v-if="scope.row.user && scope.row.user.mobile.length == 11">
-              <el-tooltip class="item" effect="dark" :content="scope.row.user.mobile" placement="top" v-if="isSaas()">
-                <div>{{ dealPhone(scope.row.user.mobile) }}</div>
-              </el-tooltip>
-              <div v-else>{{ scope.row.user.mobile }}</div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="设备统计" width="300" v-if="!isStore()">
-          <template slot-scope="scope">
-            <div class="row-device_stat">
-              <template v-for="(item, index) in scope.row.storeDivisionConfig">
-                <div class="flex line-1 item" v-if="index < 2">
-                  <div class="w-80 l-r">{{ myDeviceId[item.deviceTypeCode] }}</div>
-                  <div class="w-80 pl-10 l-r">{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : 0 }}{{ item.deviceTypeCode == 'PL' ? '条' : '台' }}</div>
-                  <div class="flex1 pl-10"><span v-if="scope.row.divisionMode == 1"><span v-if="isStore()">{{ item.promised || item.live }}</span><span v-else>{{ item.live || item.promised }}</span>%({{ config.closeType[item.closeType] }})</span><span v-else>不分成</span></div>
+        <template v-for="item in showColumn">
+          <el-table-column :label="item.name" min-width="120" v-if="item.val && item.key == 'name'">
+            <template slot-scope="scope">
+              <div class="flex align-center">
+                <el-avatar class="block" :size="40" :src="scope.row.avatar || agentInfo.avatar" fit="fill" icon="el-icon-picture-outline"></el-avatar>
+                <div class="ml-10 cursor text-cut_two" @click="copyText(scope.row.id)">{{ scope.row.name || '--' }}</div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="180" v-else-if="item.val && item.key == 'device'">
+            <template slot-scope="scope">
+              <div class="row-device_stat">
+                <template v-for="(item, index) in scope.row.storeDivisionConfig">
+                  <div v-if="index < 2">
+                    {{ myDeviceId[item.deviceTypeCode] }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : 0 }}
+                  </div>
+                </template>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'amount'">
+            <template slot-scope="scope">
+              {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'amountDivide'">
+            <template slot-scope="scope">
+              {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'balance'">
+            <template slot-scope="scope">
+              {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'order'">
+            <template slot-scope="scope">
+              <div class="text-primary cursor">
+                <div @click="$router.push({path: `/order?storeId=${scope.row.id}&agentId=${scope.row.agentId}&brandId=${scope.row.brandId}`})" v-if="isSaas()">
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}
                 </div>
-              </template>
+                <div @click="$router.push({path: (lowerStore ? `/order/subOrder?storeId=${scope.row.id}&agentId=${scope.row.agentId}` : `/order?storeId=${scope.row.id}&agentId=${scope.row.agentId}`)})" v-else>
+                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="180" v-else-if="item.val && item.key == 'user'">
+            <template slot-scope="scope">
+              <div v-if="scope.row.user">{{ scope.row.user.nickname || '' }}</div>
+              <div v-if="scope.row.user && scope.row.user.mobile.length == 11">
+                <el-tooltip class="item" effect="dark" :content="scope.row.user.mobile" placement="top" v-if="isSaas()">
+                  <div>{{ dealPhone(scope.row.user.mobile) }}</div>
+                </el-tooltip>
+                <div v-else>{{ scope.row.user.mobile }}</div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="280" v-else-if="item.val && item.key == 'deviceDivision'">
+            <template slot-scope="scope">
+              <div class="row-device_stat">
+                <template v-for="(item, index) in scope.row.storeDivisionConfig">
+                  <div class="flex line-1 item" v-if="index < 2">
+                    <div>{{ myDeviceId[item.deviceTypeCode] }}：</div>
+                    <div>
+                      <span v-if="scope.row.divisionMode == 1">
+                        <span v-if="isStore()">{{ item.promised || item.live }}%</span>
+                        <span v-else-if="item.closeType == 3">承诺{{ item.promised }}%，相对{{ item.relative }}%({{ config.closeType[item.closeType] }})</span>
+                        <span v-else>{{ item.live }}%({{ config.closeType[item.closeType] }})</span>
+                      </span>
+                      <span v-else>不分成</span>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="180" v-else-if="item.val && item.key == 'province'">
+            <template slot-scope="scope">
+              {{ scope.row.province }}
+              {{ scope.row.city }}
+              {{ scope.row.district }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'catId'">
+            <template slot-scope="scope">
+              {{ cateObj[scope.row.catId] ? cateObj[scope.row.catId].catName : '--' }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'supUser'">
+            <template slot-scope="scope">
+              <div>{{ supUser[scope.row.agentId] ? supUser[scope.row.agentId].name : '' }}</div>
+              <div>{{ supUser[scope.row.agentId] ? dealPhone(supUser[scope.row.agentId].mobile) : '' }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" v-else-if="item.val" :prop="item.key"></el-table-column>
+        </template>
+
+        <el-table-column label="操作" width="150" :fixed="device == 'desktop' ? 'right' : false" v-if="isStore()">
+          <template slot-scope="scope">
+            <div class="flex flex-wrap operate">
+              <el-button type="text" @click="setRows(2, scope.row)" v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">切换到此商户</el-button>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="城市区域" min-width="150">
+
+        <el-table-column label="操作" width="235" :fixed="device == 'desktop' ? 'right' : false" v-else>
           <template slot-scope="scope">
-            {{ scope.row.province }}
-            {{ scope.row.city }}
-            {{ scope.row.district }}
-          </template>
-        </el-table-column>
-        <el-table-column label="行业分类" width="90">
-          <template slot-scope="scope">
-            {{ cateObj[scope.row.catId] ? cateObj[scope.row.catId].catName : '--' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="190" :fixed="device == 'desktop' ? 'right' : false" v-if="isStore()">
-          <template slot-scope="scope">
-            <template>
-              <el-button type="primary" size="mini" @click="setRows(2, scope.row)" v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">切换到此商户</el-button>
-            </template>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false" v-else>
-          <template slot-scope="scope">
-            <template v-if="isSaas()">
-              <el-button type="primary" size="mini" @click="toLogin(scope.row)">商户管理</el-button>
-            </template>
-            <template v-else-if="form.deviceSns">
-              <el-button type="primary" size="mini" @click="bindStore(scope.row)">铺货</el-button>
-            </template>
-            <template v-else>
-              <div class="flex flex-wrap">
-                <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1, scope.$index)">设备绑定</el-button>
-                <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore ? 1 : 0}`})">修改信息</el-button>
-                <el-button type="primary" size="mini" @click.native="setRows(1, scope.row, 3, scope.$index)">删除商户</el-button>
-                <el-button type="primary" size="mini" @click="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
+            <div class="flex flex-wrap operate">
+              <template v-if="isSaas()">
+                <el-button type="text" @click="toLogin(scope.row)">商户管理</el-button>
+              </template>
+              <template v-else-if="form.deviceSns">
+                <el-button type="text" @click="bindStore(scope.row)">铺货</el-button>
+              </template>
+              <template v-else>
+                <el-button type="text" @click="setRows(3, scope.row, 1, scope.$index)">设备绑定</el-button>
+                <el-button type="text" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
+                <el-button type="text" @click="$router.push({path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore ? 1 : 0}`})">编辑商户</el-button>
+                <el-button type="text" @click.native="setRows(1, scope.row, 3, scope.$index)"><span class="text-danger">删除商户</span></el-button>
+                <el-button type="text" @click="$router.push({path: `/store/addStore?parentId=${scope.row.id}`})" v-if="scope.row.parentId == '0'">添加分店</el-button>
                 <el-dropdown trigger="click">
-                  <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                  <el-button type="text">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                   <el-dropdown-menu slot="dropdown">
                     <template v-if="checkAbility(['VM'], 2, scope.row.storeDivisionConfig)">
                       <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">售货机运营模式</el-dropdown-item>
@@ -149,16 +172,19 @@
                     <el-dropdown-item @click.native="$router.push({path: `/store/membership?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">会员卡</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">DD设置</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">免费名额</el-dropdown-item>
-                    <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(3, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
                     <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 5)">重置登录密码</el-dropdown-item> -->
                     <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DEPOSIT_PRPR`})" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">概率押金</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DIVIDE_ACCOUNTS`})" v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.storeDivisionConfig)">微信分账</el-dropdown-item>
-                    <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 6)" v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(3, cashStat[scope.row.id], 6)" v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
+                    <template v-if="checkAbility(['WF'], 2, scope.row.storeDivisionConfig)">
+                      <el-dropdown-item @click.native="setRows(3, scope.row, 7)">共享WIFI</el-dropdown-item>
+                    </template>
                     <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-              </div>
-            </template>
+              </template>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -171,30 +197,10 @@
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="454px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
-      <template v-if="dialogType == 1">
-        <el-form class="custom-form">
-          <el-input v-model="dform.deviceSns" placeholder="设备编号与编号之间用英文逗号隔开" type="textarea" :rows="5" />
-        </el-form>
-      </template>
       <template v-if="dialogType == 3">
         <div class="text-center">
           <div class="text-black">确定删除此商户吗？</div>
           <div class="mt-10 pl-40 pr-40 text-danger text-left">注：若该商户下存在设备，则无法删除。需由该设备的归属代理去回收，无法跨级回收。</div>
-        </div>
-      </template>
-      <template v-if="dialogType == 4">
-        <div class="text-center">
-          <div class="pb-20">
-            <selectSearch :type="5" :emitRow="true" name="name" placeholder="输入代理名称搜索" @change="getAgent"></selectSearch>
-          </div>
-          <div class="pb-20" v-if="agentRow.id">
-            <span>名称：{{ agentRow.name }}</span>
-            <span class="ml-10">电话：{{ agentRow.mobile }}</span>
-          </div>
-          <div class="flex justify-center align-center" v-if="!agentRow.id && lowerStore">
-            <div class="mr-10">分配给自己</div>
-            <el-switch v-model="dform.allotMe" />
-          </div>
         </div>
       </template>
       <template v-if="dialogType == 5">
@@ -203,18 +209,73 @@
           <div class="mt-10 pl-40 pr-40 text-danger">注：重置后登录密码为123456</div>
         </div>
       </template>
-      <template v-if="dialogType == 6">
-        <el-form class="custom-form pl-20 pr-20" label-width="auto" @submit.native.prevent="dialogConfirm()">
-          <el-form-item>
-            <el-input type="number" v-model="dform.frozenBalance" placeholder="请输入冻结金额"></el-input>
-          </el-form-item>
-        </el-form>
-      </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
+
+    <el-drawer
+      :title="dialogTitle[dialogType]"
+      :visible.sync="drawerStatus"
+      >
+      <template v-if="dialogType == 1">
+        <el-form class="pl-20 pr-20 custom-form">
+          <el-form-item label="设备编号">
+            <el-input v-model="dform.deviceSns" placeholder="设备编号与编号之间用英文逗号隔开" type="textarea" :rows="5"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="dialogType == 4">
+        <el-form class="pl-20 pr-20 custom-form">
+          <el-form-item label="代理名称">
+            <selectSearch :type="5" :emitRow="true" name="name" placeholder="输入代理名称搜索" @change="getAgent"></selectSearch>
+          </el-form-item>
+          <el-form-item>
+            <div class="pb-20" v-if="agentRow.id">
+              <span>名称：{{ agentRow.name }}</span>
+              <span class="ml-10">电话：{{ agentRow.mobile }}</span>
+            </div>
+            <div class="flex justify-center align-center" v-if="!agentRow.id && lowerStore">
+              <div class="mr-10">分配给自己</div>
+              <el-switch v-model="dform.allotMe" />
+            </div>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="dialogType == 6">
+        <el-form class="pl-20 pr-20 custom-form" @submit.native.prevent="dialogConfirm()">
+          <el-form-item label="冻结金额">
+            <el-input type="number" v-model="dform.frozenBalance" placeholder="请输入冻结金额"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="dialogType == 7">
+        <el-form class="pl-20 pr-20 custom-form" @submit.native.prevent v-if="dform.content">
+          <el-form-item v-for="(item, index) in dform.content">
+            <div class="flex align-center">
+              <el-input v-model="item.roomNumber" placeholder="房间号(选填)"></el-input>
+              <el-input class="ml-10" v-model="item.name" placeholder="WIFI账号"></el-input>
+              <el-input class="ml-10" v-model="item.password" placeholder="WIFI密码"></el-input>
+              <div class="pl-10" @click="dform.content.push({})" v-if="index == 0">
+                <i class="fs-b1 text-primary el-icon-circle-plus cursor"></i>
+              </div>
+              <div class="pl-10" @click="dform.content.splice(index, 1)" v-if="index > 0">
+                <i class="fs-b1 text-danger el-icon-remove cursor" ></i>
+              </div>
+            </div>
+          </el-form-item>
+          <div class="mt-15 text-gray text-left">温馨提示：用户进入房间扫描设备，优先查询该房间号绑定的WIFI，未查询到时则会展示房间号为空的WIFI</div>
+        </el-form>
+      </template>
+      <template v-if="[1,4,6,7].indexOf(dialogType) > -1">
+        <div style="height: 66px;"></div>
+        <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        </div>
+      </template>
+    </el-drawer>
 
     <relatedTemplate ref="relatedTemplates"></relatedTemplate>
     <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN"></AssignAbility>
@@ -233,11 +294,13 @@
   import AssignAbility from '@/components/AssignAbility/'
   import ImportData from '@/components/ImportData/'
   import selectSearch from '@/components/condition/selectSearch'
+  import TableColumnSet from '@/components/TableColumnSet/index'
   export default {
     name: 'subShop',
     components: {
       Pagination,
       condition,
+      TableColumnSet,
       RelatedTemplate,
       VendorMode,
       AssignAbility,
@@ -275,6 +338,7 @@
         // 弹出相关
         dialogType: 1,
         dialogStatus: false,
+        drawerStatus: false,
         dialogTitle: {
           1: '设备绑定',
           2: '',
@@ -282,12 +346,87 @@
           4: '分配商户',
           5: '重置密码',
           6: '冻结金额',
+          7: '共享WIFI',
         },
         curRow: {},
         curIdx: 0,
         dform: {},
 
-        agentRow: {} //分配代理选择的代理信息
+        agentRow: {},//分配代理选择的代理信息
+
+        /**
+         * 列的配置化对象，存储配置信息
+         */
+        showColumn: [],
+        defaultColumn: [
+          {
+            key: 'name',
+            val: true,
+            name: '门头照'
+          },
+          {
+            key: 'address',
+            val: true,
+            name: '商户地址'
+          },
+          {
+            key: 'device',
+            val: true,
+            name: '设备'
+          },
+          {
+            key: 'amount',
+            val: true,
+            name: '交易额(元)'
+          },
+          {
+            key: 'amountDivide',
+            val: true,
+            name: '总收益(元)'
+          },
+          {
+            key: 'balance',
+            val: true,
+            name: '可提现(元)'
+          },
+          {
+            key: 'order',
+            val: true,
+            name: '订单量'
+          },
+          // {
+          //   key: 'order',
+          //   val: true,
+          //   name: '客单价(元)'
+          // },
+          {
+            key: 'user',
+            val: true,
+            name: '分润人'
+          },
+          {
+            key: 'supUser',
+            val: this.lowerStore,
+            hidden: !this.lowerStore,
+            name: '上级代理'
+          },
+          {
+            key: 'deviceDivision',
+            val: !this.isStore(),
+            hidden: this.isStore(),
+            name: '分成方式'
+          },
+          {
+            key: 'province',
+            val: true,
+            name: '城市区域'
+          },
+          {
+            key: 'catId',
+            val: true,
+            name: '行业分类'
+          }
+        ],
       }
     },
     computed: {
@@ -582,7 +721,7 @@
           if(this.deviceIds){
             history.back()
           } else {
-            this.dialogStatus = false
+            this.drawerStatus = false
           }
         })
       },
@@ -596,7 +735,7 @@
        */
       setRows(type, row, dialogType, idx) {
         switch (type) {
-          case 1:
+          case 1: case 3:
             this.dialogType = dialogType
             this.curRow = row
             this.curIdx = idx
@@ -605,8 +744,33 @@
               this.dform = {
                 frozenBalance: row.frozenBalance
               }
+            }else if(dialogType == 7){
+              this.$get('iot-saas-basic/store/function/List', {
+                storeId: row.id
+              }).then(res => {
+                for(var i in res){
+                  if(res[i].functionType == 'WIFI'){
+                    this.isWifi = true
+                    this.dform = {
+                      functionType: 'WIFI',
+                      content: res[i].functionContent ? JSON.parse(res[i].functionContent) : [{}]
+                    }
+                    break
+                  }
+                }
+                if(!this.isWifi){
+                  this.dform = {
+                    functionType: 'WIFI',
+                    content: [{}]
+                  }
+                }
+              })
             }
-            this.dialogStatus = true
+            if(type == 1){
+              this.dialogStatus = true
+            } else {
+              this.drawerStatus = true
+            }
             break
           case 2:
             this.$alert('确定切换到该商户？', '切换商户', {
@@ -720,6 +884,20 @@
               this.clickSubmit = false
             })
             break
+          case 7:
+            params.content = JSON.stringify(params.content)
+            params.storeId = curRow.id
+            this.$post('iot-saas-basic/store/admin/function/update', params).then(res => {
+              this.$message({
+                type: 'success',
+                message: '操作成功'
+              })
+              this.drawerStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
         }
       },
 
@@ -774,6 +952,16 @@
       .w-80{
         width: 80px;
       }
+    }
+  }
+  .operate{
+    /deep/ .el-button--text{
+      &:nth-child(4){
+        margin-left: 0;
+      }
+    }
+    .el-dropdown{
+      margin-left: 10px;
     }
   }
 </style>
