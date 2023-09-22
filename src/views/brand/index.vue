@@ -122,6 +122,7 @@
                   <el-dropdown-item @click.native="setRow(4, scope.row)">设备统计数量</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(5, scope.row)">代理层级缓存</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(6, scope.row)">租借中订单缓存</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 3)">跳转小程序</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
                 </el-dropdown-menu>
@@ -167,7 +168,26 @@
           </div>
         </div>
       </template>
-      <template v-if="[1].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 3">
+        <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()" v-if="dform.jumpDetail && dform.jumpDetail.wx">
+          <h4>微信</h4>
+          <template v-for="item in curRow.brandDeviceType">
+            <el-form-item :label="item.name">
+              <el-input v-model="dform.jumpDetail.wx[`${item.code}`]" placeholder="跳转小程序appid"></el-input>
+            </el-form-item>
+          </template>
+          <h4>支付宝</h4>
+          <template v-for="item in curRow.brandDeviceType">
+            <el-form-item :label="item.name">
+              <el-input v-model="dform.jumpDetail.ali[`${item.code}`]" placeholder="跳转小程序appid"></el-input>
+            </el-form-item>
+          </template>
+          <el-form-item>
+            <div class="text-danger" style="width: 400px; max-width: 100%;">温馨提示：设置跳转小程序appid后，非该小程序扫码进入租借页会提示跳转到对应的小程序，小程序必须在系统内已绑定。</div>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1,3].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
@@ -289,7 +309,8 @@
         drawerStatus: false,
         dialogTitle: {
           1: '赠送抵扣券',
-          2: '合同管理'
+          2: '合同管理',
+          3: '跳转小程序'
         },
         curRow: {},
         curIdx: 0,
@@ -424,7 +445,6 @@
             this.curRow = row
             this.curIdx = idx
             this.dform = {}
-            this.drawerStatus = true
             if(dialogType == 2){
               this.$get('iot-saas-basic/admin/platform/getFileInfo', {
                 bussinessId: row.id,
@@ -446,7 +466,31 @@
                   }
                 }
               })
+            }else if(dialogType == 3){
+              this.$get('iot-saas-basic/admin/settings/find', {
+                brandId: row.id,
+                code: 'BRAND_JUMP_MINI'
+              }).then(res => {
+                if(res && res.setting){
+                  let info = JSON.parse(res.setting)
+                  console.log(info)
+                  this.dform = {
+                    jumpDetail: {
+                      wx: JSON.parse(info.wx),
+                      ali: JSON.parse(info.ali),
+                    }
+                  }
+                }else{
+                  this.dform = {
+                    jumpDetail: {
+                      wx: {},
+                      ali: {}
+                    }
+                  }
+                }
+              })
             }
+            this.drawerStatus = true
             break
         }
       },
@@ -587,6 +631,21 @@
           case 1:
             params.brandId = curRow.id
             this.$post('iot-saas-basic/admin/settings/saveCoupon', params).then(res => {
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.drawerStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 3:
+            params.brandId = curRow.id
+            if(params.jumpDetail.wx) params.jumpDetail.wx = JSON.stringify(params.jumpDetail.wx)
+            if(params.jumpDetail.ali) params.jumpDetail.ali = JSON.stringify(params.jumpDetail.ali)
+            this.$post('iot-saas-basic/admin/settings/saveJump', params).then(res => {
               this.$message({
                 message: '操作成功',
                 type: 'success'

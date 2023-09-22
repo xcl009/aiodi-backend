@@ -24,19 +24,6 @@
           <i class="el-icon-full-screen fs-b2 text-white"></i>
           <span class="ml-10 text-white">全屏</span>
         </div>
-        <el-dropdown class="mr-10 hover-effect" trigger="click">
-          <div class="pl-15 pr-15 menu-item flex align-center">
-            <svg-icon icon-class="head_user" class="head_user text-white"></svg-icon>
-            <span class="ml-10 text-white">语言选择</span>
-          </div>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
-              <span>中文版本</span>
-            </el-dropdown-item>
-            <el-dropdown-item @click.native="waitOnLine">英文版本</el-dropdown-item>
-            <el-dropdown-item @click.native="waitOnLine">其他语言版本(待添加)</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
       </template>
       <el-dropdown class="mr-10 hover-effect" trigger="click">
         <div class="pl-15 pr-15 menu-item flex align-center">
@@ -50,6 +37,20 @@
           <router-link to="/user/index">
             <el-dropdown-item>个人信息</el-dropdown-item>
           </router-link>
+          <el-dropdown-item>
+            <div class="rel">
+              <el-dropdown trigger="click" placement="top-start">
+                <div>语言选择</div>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <span>中文版本</span>
+                  </el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine">英文版本</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine">其他语言版本(待添加)</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+          </el-dropdown-item>
           <router-link to="/user/lpwd">
             <el-dropdown-item>登录密码</el-dropdown-item>
           </router-link>
@@ -386,7 +387,7 @@ export default {
       }
       screenfull.toggle()
     },
-    
+
     waitOnLine(){
       this.$message({
         message: '即将上线',
