@@ -3,10 +3,12 @@
     <div class="custom">
       <div class="pl-10 pt-10 pr-10 pb-5">
         <draggable group="task" :list="showColumn">
-          <div class="flex align-center pt-5 pb-5" v-for="(item, key) in showColumn" :key="item.key">
-            <img :src="require('@/assets/table_sort.svg')" slot="reference" class="mr-10 block grab" width="16" alt="">
-            <el-checkbox class="block mr-0" v-model="item.val">{{ item.name }}</el-checkbox>
-          </div>
+          <template v-for="(item, key) in showColumn">
+            <div class="flex align-center pt-5 pb-5" v-if="!item.hidden">
+              <img :src="require('@/assets/table_sort.svg')" slot="reference" class="mr-10 block grab" width="16" alt="">
+              <el-checkbox class="block mr-0" v-model="item.val">{{ item.name }}</el-checkbox>
+            </div>
+          </template>
         </draggable>
       </div>
       <div class="p-10 flex justify-around l-t">

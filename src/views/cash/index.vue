@@ -135,7 +135,7 @@
           <template slot-scope="scope">
             <div class="el-link el-link--success">
               <span>{{ statusObj[scope.row.status] }}</span>
-              <!-- <span class="ml-5" @click="setRows(2, scope.row)">查询</span> -->
+              <span class="ml-5" @click="setRows(2, scope.row)">查询</span>
             </div>
           </template>
         </el-table-column>

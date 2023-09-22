@@ -92,7 +92,7 @@ export default {
         type: 'array'
       })
       this.percentage = 100
-      if (!this.end || this.wi == 0) {
+      if (end || this.wi == 0) {
         try {
           FileSaver.saveAs(new Blob([wbout], {
             type: 'application/octet-stream'
@@ -101,7 +101,7 @@ export default {
             message: '导出成功',
             type: 'success'
           })
-          if(this.wi == 0 && !this.end){
+          if(this.wi == 0 && !end){
             setTimeout(()=>{
               this.percentage = 0
               this.wbout = []
@@ -110,7 +110,7 @@ export default {
           } else {
             setTimeout(() => {
               this.excel = false
-              location.reload()
+              cbk()
             }, 1000)
           }
         } catch (e) {

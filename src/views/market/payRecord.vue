@@ -1,6 +1,6 @@
 <template>
   <div>
-		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
 		  <template v-slot:defult>
         <el-form-item label="付费类型">
           <el-select placeholder="付费类型" v-model="listQuery.priceInd" @change="toQuery()">
@@ -105,17 +105,21 @@
         />
       </div>
     </div>
+
+    <xlsx ref="toXlsx" fileName="服务续费记录"></xlsx>
   </div>
 </template>
 
 <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
+  import xlsx from '@/components/xlsx/'
   export default {
     name: 'payRecord',
     components: {
       Pagination,
-      condition
+      condition,
+      xlsx
     },
     data() {
       return {
@@ -213,18 +217,43 @@
           page: this.listQuery.page - 1
         })
         this.$get('iot-saas-basic/admin/service/market/record/findPage', params).then(res => {
-          this.listLoading = false
-          this.list = res ? res.rows : []
-          this.clickSubmit = false
-          if(params.page == 0){
-            this.listTotal = res ? res.total : 0
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 65
+          if (this.outStatus) {
+            this.list = res ? res.rows : []
+            let end = false
+            if (params.size > this.list.length) end = true
+            this.$nextTick(() => {
+              this.$refs['toXlsx'].saveTableXlsx(end, () => {
+                if(end){
+                  this.outStatus = false
+                  this.toQuery()
+                }
+              })
+            })
+          } else {
+            this.listLoading = false
+            this.list = res ? res.rows : []
+            this.clickSubmit = false
+            if(params.page == 0){
+              this.listTotal = res ? res.total : 0
+              this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 65
+            }
           }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
         })
-      }
+      },
+
+      /**
+       * 导出
+       */
+      saveXlsx() {
+        this.outStatus = true
+        this.listLoading = true
+        this.listQuery.size = 100
+        this.list = []
+        this.getList()
+      },
 	  }
   }
 </script>
