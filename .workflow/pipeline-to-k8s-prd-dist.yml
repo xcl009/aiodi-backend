@@ -19,7 +19,7 @@ stages:
         displayName: 镜像构建
         type: cert
         certificate: 2b668000-2536-013c-2afd-6ed46db8d222
-        tag: ${GITEE_PIPELINE_BUILD_NUMBER}
+        tag: cloud-iot-saas/brand-vue:prd-${GITEE_PIPELINE_BUILD_NUMBER}
         dockerfile: ./Dockerfile
         context: ''
         artifacts: []
