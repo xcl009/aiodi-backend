@@ -50,6 +50,7 @@ stages:
           PORT: '80'
           POD_REQUESTS_MEM: 512Mi
           POD_LIMITS_MEM: 512Mi
+          POD_REPLICAS: 1
         notify: []
         strategy:
           retry: '0'
