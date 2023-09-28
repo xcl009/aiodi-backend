@@ -48,7 +48,7 @@
               <el-button type="primary" size="mini" @click="setRows(4, scope.row, 1)" v-if="scope.row.appAuditStatus == 3">发布代码</el-button>
               <el-button type="primary" size="mini" @click="setRows(5, scope.row)">隐私设置</el-button>
               <el-button type="primary" size="mini" @click="$router.push({path: `/system/wechatEdit?app_id=${scope.row.appId}`})" v-if="isBrand()">修改信息</el-button>
-              <!-- <el-button type="primary" size="mini" @click="setRows(6, scope.row, 1)">刷新token</el-button> -->
+              <el-button type="primary" size="mini" @click="setRows(6, scope.row, 1)" v-if="isSaas()">刷新token</el-button>
             </div>
             <!-- <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 1)">服务域名</div>
             <div class="inline pl-10 pr-10 cursor text-primary" @click="setRows(1, scope.row, 2)">业务域名</div> -->

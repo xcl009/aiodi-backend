@@ -8,7 +8,7 @@
         icon-color="#FF7D00"
         title="确定要全部弹出吗？"
         @onConfirm="allEject()"
-        v-if="factoryCode == 'WS' || factoryCode == 'TP'"
+        v-if="factoryCode == 'WS' || factoryCode == 'TP' || factoryCode == 'ZD'"
       >
         <el-button class="mb-15" type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ? '弹出中' : '全部弹出'}} </el-button>
       </el-popconfirm>
