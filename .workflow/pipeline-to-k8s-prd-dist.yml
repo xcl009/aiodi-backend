@@ -51,6 +51,7 @@ stages:
           POD_REQUESTS_MEM: 512Mi
           POD_LIMITS_MEM: 512Mi
           POD_REPLICAS: 1
+          DOMAIN_NAME: saas.svc.wuxiangyunlian.cn
         notify: []
         strategy:
           retry: '0'
