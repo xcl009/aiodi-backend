@@ -1,3 +1,3 @@
-FROM caddy:2.7.4-alpine
+FROM nginx:latest
 
-COPY ./dist /usr/share/caddy
+COPY ./dist /usr/share/nginx/html

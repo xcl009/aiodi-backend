@@ -7,6 +7,7 @@
 # ${POD_REQUESTS_MEM} pod请求内存，通常跟${POD_LIMITS_MEM}一致，示例：1024Mi
 # ${POD_LIMITS_MEM} pod最大内存，示例：1024Mi
 # ${POD_REPLICAS} pod数量
+# ${DOMAIN_NAME} 本服务访问地址:saas.wuxiangyunlian.cn
 
 apiVersion: apps/v1
 kind: Deployment
@@ -29,6 +30,9 @@ spec:
         - name: ${PROJECT_REPO_NAME}
           image: ${GITEE_DOCKER_IMAGE}
           imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-vol
           resources:
             requests:
               memory: "${POD_REQUESTS_MEM}"
@@ -41,6 +45,14 @@ spec:
       imagePullSecrets:
         - name: hw-swr
       restartPolicy: Always
+      volumes:
+        - configMap:
+            name: ${DOMAIN_NAME}-conf
+            items:
+              - key: nginx-conf
+                path: wuxiangyunlian-cn.conf
+          name: nginx-vol
+
 ---
 apiVersion: v1
 kind: Service
@@ -53,3 +65,37 @@ spec:
     - name: http    #统一成http
       port: ${PORT}
       targetPort: ${PORT}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${DOMAIN_NAME}-conf
+data:
+  nginx-conf: |
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name ${DOMAIN_NAME};
+      index index.html index.htm index.php;
+
+      location ~* /.+ {
+        index index.html index.htm index.php;
+        try_files $uri $uri/ /index.html;
+      }
+
+
+      location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
+        expires 30d;
+        access_log off;
+      }
+      location ~ .*\.(js|css)?$ {
+        expires 7d;
+        access_log off;
+      }
+      location ~ /(\.user\.ini|\.ht|\.git|\.svn|\.project|LICENSE|README\.md) {
+        deny all;
+      }
+      location /.well-known {
+        allow all;
+      }
+    }
