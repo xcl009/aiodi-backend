@@ -135,12 +135,12 @@
           <template slot-scope="scope">
             <div class="el-link el-link--success">
               <span>{{ statusObj[scope.row.status] }}</span>
-              <span class="ml-5" @click="setRows(2, scope.row)">查询</span>
+              <span class="ml-5" @click="setRows(2, scope.row)" v-if="[1, 3].indexOf(scope.row.withdrawType) > $alert">查询</span>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="备注" width="170">
-          <template slot-scope="scope">{{ scope.row.remark }}</template>
+          <template slot-scope="scope"><span class="text-danger">{{ scope.row.remark }}</span></template>
         </el-table-column>
         <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">

@@ -5,7 +5,7 @@
         <h4>绑定小程序</h4>
         <div class="pt-20 mb-20 flex fs-c1">
           <span>请先将小程序授权给我们，才能给您发布代码，</span>
-          <el-link class="fs-c1" :href="`${baseURL}openAuth/index.html`" target="_blank" type="primary">点我进行授权</el-link>
+          <el-link class="fs-c1" :href="config.wx_auth_url" target="_blank" type="primary">点我进行授权</el-link>
           <span>，请勾选全部权限，否则授权无效噢！</span>
         </div>
         <el-form ref="form" :model="form" label-position="left" label-width="210px">

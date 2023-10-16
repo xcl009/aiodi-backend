@@ -754,11 +754,11 @@ const util = {
     if(p > 0) testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)|(^[0-9]{1,"+ max.toString().length +"}[\\.]{1}[0-9]{1,"+ p +"}$)")
     if(isEmpty && val != 0 && !val){
 
-    }else if( val > max){
+    }else if(parseFloat(val) > parseFloat(max)){
       return `不能大于${max}`
-    } else if(val < min){
+    } else if(parseFloat(val) < parseFloat(min)){
       return `不能小于${min}`
-    } else if(val < min){
+    } else if(parseFloat(val) < parseFloat(min)){
       return `不能小于${min}`
     }else if (testReg.test(val)) {
       return ''

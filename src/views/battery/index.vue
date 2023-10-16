@@ -231,10 +231,21 @@
         showColumn: [],
         defaultColumn: [
           {
+            key: 'terminalSn',
+            val: true,
+            name: '设备二维码',
+            width: 180,
+          },
+          {
             key: 'terminalId',
             val: true,
             name: '宝SN',
             width: 150
+          },
+          {
+            key: 'onlineStatue',
+            val: true,
+            name: '状态'
           },
           {
             key: 'factoryName',
@@ -306,26 +317,16 @@
             val: true,
             name: '归属状态'
           },
-          {
-            key: 'terminalSn',
-            val: true,
-            name: '二维码',
-            width: 180,
-          },
-          {
-            key: 'lastOverhaulId',
-            val: true,
-            name: '最近检修人'
-          },
+          // {
+          //   key: 'lastOverhaulId',
+          //   val: true,
+          //   name: '最近检修人',
+          //   width: 200
+          // },
           {
             key: 'lastOverhaulTime',
             val: true,
             name: '最近检修时间'
-          },
-          {
-            key: 'onlineStatue',
-            val: true,
-            name: '状态'
           }
         ]
       }
@@ -445,7 +446,6 @@
       singleEject(row){
         if(this.clickSubmit) return
         this.clickSubmit = true
-        row.onlineStatus = 2
         this.$get('iot-saas-device/admin/device/singlePopup', {
           deviceSn: row.terminalSn,
       		terminalId: row.terminalId
@@ -455,9 +455,6 @@
             type: 'success'
           })
           this.clickSubmit = false
-          setTimeout(() => {
-          	this.getBattery()
-          }, 8000)
         }).catch(() => {
           this.clickSubmit = false
         })

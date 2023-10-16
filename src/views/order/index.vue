@@ -51,12 +51,15 @@
     <div class="pl-10 pr-10 bg-white">
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">查询表格</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(5, {})" v-if="isSaas()">刷新扣款失败订单数</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(6, {})" v-if="isSaas()">刷新租借中订单数</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 9)" v-if="isSaas()">芝麻分扣款订单关闭</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 10)" v-if="isSaas()">芝麻分订单撤销</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 8)" v-if="isSaas()">押金退款</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">DD恢复</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 11)" v-if="isSaas()">微信退款重试</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 12)" v-if="isSaas()">免押订单查询</div>
         <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
@@ -163,7 +166,8 @@
                 <div class="remark-box">
                   <el-link type="danger" v-if="scope.row.freeTime > 0">
                     <span v-if="scope.row.freeUser == 1">免费名额：{{ parseInt(scope.row.freeTime) / 60 }}小时</span>
-                    <span v-else>{{ scope.row.freeTime == 600000 ? '会员卡订单' : `会员卡免费${scope.row.freeTime}分钟` }}</span>
+                    <span v-else-if="scope.row.freeUser == 3">暂停计费：{{ parseInt(scope.row.freeTime) / 60 }}小时</span>
+                    <span v-else-if="scope.row.freeUser > 3">{{ scope.row.freeTime == 600000 ? '会员卡订单' : `会员卡免费${scope.row.freeTime}分钟` }}</span>
                   </el-link>
                   <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
                 </div>
@@ -184,7 +188,7 @@
             <template slot-scope="scope">
               <div class="flex flex-wrap operate">
                 <div class="text-primary" @click="setRows(3, scope.row, 6)">订单详情</div>
-                <div class="text-danger" @click="setRows(3, scope.row, 1)" v-if="Ability['orderFinish'] && scope.row.status == 'R'">结束订单</div>
+                <div class="text-danger" @click="setRows(3, scope.row, 1)" v-if="(Ability['orderFinish'] || isSaas()) && scope.row.status == 'R'">结束订单</div>
                 <div class="text-grey" @click="setRows(3, scope.row, 2)" v-if="Ability['orderRefund'] && (scope.row.status.indexOf('G') > -1) && scope.row.amount > 0">订单退款</div>
               </div>
             </template>
@@ -239,6 +243,22 @@
               <div class="mt-10 text-danger line-default" v-if="dialogType == 8">余额订单完结后押金显示已退款但用户未收到退款时，可尝试重新发起。</div>
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 9">关闭芝麻免押订单发起的扣款失败的支付宝交易订单。</div>
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 10">只可撤销24小时内创建的芝麻分订单。</div>
+            </el-form-item>
+          </el-form>
+        </template>
+        <template v-if="[12,13].indexOf(dialogType) > -1">
+          <el-form class="custom-form pl-20 pr-20" label-width="auto">
+            <el-form-item label="订单号">
+              <el-input v-model="dform.orderNo"></el-input>
+            </el-form-item>
+            <el-form-item label="来源">
+              <el-input v-model="dform.payType" placeholder="微信免押：2，支付宝免押：3"></el-input>
+            </el-form-item>
+            <el-form-item label="结果" v-if="dform.results">
+              {{ dform.results }}
+            </el-form-item>
+            <el-form-item label="操作" v-if="dform.results">
+              <el-button size="medium" type="primary" @click="dialogType = 13; dialogConfirm()" :disabled="clickSubmit">执行免押后续</el-button>
             </el-form-item>
           </el-form>
         </template>
@@ -511,7 +531,7 @@
                     <div>
                       <template v-if="curRow.freeTime > 0">
                         <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ parseInt(curRow.freeTime) / 60 }}小时</span>
-                        <span class="mr-5" v-else>{{ scope.freeTime == 600000 ? '会员卡订单' : `会员卡免费${curRow.freeTime}分钟` }}</span>
+                        <span class="mr-5" v-else>{{ curRow.freeTime == 600000 ? '会员卡订单' : `会员卡免费${curRow.freeTime}分钟` }}</span>
                       </template>
                       <span>{{ curRow.remark ? curRow.remark: curRow.freeTime ? '' : '--' }}</span>
                     </div>
@@ -802,6 +822,8 @@
           9: '芝麻分扣款订单关闭',
           10: '芝麻分订单撤销',
           11: '微信订单退款重试',
+          12: '免押订单查询',
+          13: '免押订单执行后续',
         },
         curRow: {},
         curIdx: 0,
@@ -919,7 +941,7 @@
       this.toQuery()
 
       // this.$post('iot-saas-pay/admin/deposit/queryByOrderNo', {
-      //   orderNo: 'ZJPA2023092811375222455690526'
+      //   orderNo: 'ZJPA2023092922462368749140460'
       // }).then(res => {
 
       // })
@@ -1181,16 +1203,18 @@
               this.$get('iot-saas-order/admin/order/detail', {
               	orderNo: row.orderNo
               }).then(res => {
-              	if(res.devicePopupRecordFeignOutFeign && res.status != 'R'){
+              	if(res.devicePopupRecordFeignOutFeign){
                   this.$set(this.curRow, 'terminalId', res.devicePopupRecordFeignOutFeign.terminalId)
-                  this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn)
-                  if(res.devicePopupRecordFeignOutFeign.afterStoreId){
-                    this.$post('iot-saas-order/api/order/getDeductions', {
-                      deductionType: 0,
-                      deductionIds: [res.devicePopupRecordFeignOutFeign.afterStoreId]
-                    }).then(res => {
-                      this.$set(this.curRow, 'returnStore', res[0])
-                    })
+                  if(res.status != 'R'){
+                    this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn)
+                    if(res.devicePopupRecordFeignOutFeign.afterStoreId){
+                      this.$post('iot-saas-order/api/order/getDeductions', {
+                        deductionType: 0,
+                        deductionIds: [res.devicePopupRecordFeignOutFeign.afterStoreId]
+                      }).then(res => {
+                        this.$set(this.curRow, 'returnStore', res[0])
+                      })
+                    }
                   }
               	}
               })
@@ -1218,6 +1242,38 @@
                   message: '宝还未归还，未查询到归还记录',
                   type: 'error'
                 })
+              }
+            })
+            break
+          case 5:
+            this.$alert('确定刷新扣款失败订单数量统计吗？', '设备统计刷新', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$get('iot-saas-order/admin/order/count/initWaitPayOrderCount').then(res => {
+                    this.$message({
+                      message: '刷新成功',
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
+            break
+          case 6:
+            this.$alert('确定刷新租借中订单数量统计吗？', '租借订单数量', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$get('iot-saas-order/admin/order/count/initRentingOrderCount').then(res => {
+                    this.$message({
+                      message: '刷新成功',
+                      type: 'success'
+                    })
+                  })
+                }
               }
             })
             break
@@ -1385,7 +1441,6 @@
               10: 'iot-saas-pay/admin/pay/config/alipay/cancel',
               11: 'iot-saas-pay/wechat/order/refund'
             }
-            console.log(url[this.dialogType])
             this.$post(url[this.dialogType], {
               orderNo: params.orderNo
             }).then(res => {
@@ -1396,6 +1451,53 @@
               this.dialogStatus = false
               this.clickSubmit = false
             }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 12: case 13:
+            if (!params.orderNo) {
+              this.$message({
+                message: '请输入订单号',
+                type: 'error'
+              })
+              return
+            }
+            let urls = {
+              12: {
+                2: 'iot-saas-pay/admin/deposit/queryByOrderNo',
+                3: 'iot-saas-pay/admin/deposit/alipay/queryByOrderNo',
+              },
+              13: {
+                2: 'iot-saas-pay/admin/deposit/queryByOrderNoAndFixOrder',
+                3: 'iot-saas-pay/admin/deposit/alipay/depositPayComplete',
+              }
+            }
+            if(!urls[this.dialogType][params.payType]){
+              this.$message({
+                message: '该订单不非免押订单',
+                type: 'success'
+              })
+              this.clickSubmit = false
+              return
+            }
+            this.$post(urls[this.dialogType][params.payType], {
+              orderNo: params.orderNo
+            }).then(res => {
+              if(this.dialogType == 12){
+                this.$set(this.dform, 'results', res)
+                this.clickSubmit = false
+              } else {
+                this.$message({
+                  message: '提交成功',
+                  type: 'success'
+                })
+                this.dialogStatus = false
+                this.clickSubmit = false
+              }
+            }).catch(err => {
+              if(this.dialogType == 13){
+                this.dialogType == 12
+              }
               this.clickSubmit = false
             })
             break

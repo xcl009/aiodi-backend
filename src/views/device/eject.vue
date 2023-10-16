@@ -8,7 +8,6 @@
         icon-color="#FF7D00"
         title="确定要全部弹出吗？"
         @onConfirm="allEject()"
-        v-if="factoryCode == 'WS' || factoryCode == 'TP' || factoryCode == 'ZD'"
       >
         <el-button class="mb-15" type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ? '弹出中' : '全部弹出'}} </el-button>
       </el-popconfirm>
@@ -126,10 +125,7 @@
         if(this.clickSubmit) return
         this.clickSubmit = true
         row.onlineStatus = 2
-        this.$get('iot-saas-device/admin/device/singlePopup', {
-          deviceSn: this.deviceSn,
-					slot: row.slot
-        }).then((res = {}) => {
+        this.singleEjects(row.slot).then(() => {
           this.$message({
             message: '指令已发送',
             type: 'success'
@@ -137,9 +133,38 @@
           this.clickSubmit = false
           setTimeout(() => {
           	this.getBattery()
-          }, 8000)
+          }, 6000)
         }).catch(() => {
           this.clickSubmit = false
+        })
+      },
+
+      /**
+       * 单弹
+       */
+      singleEjects(slot, type = 1){
+        return new Promise((resolve, reject) => {
+          this.$get('iot-saas-device/admin/device/singlePopup', {
+            deviceSn: this.deviceSn,
+          	slot: (type == 1 ? slot : this.list[slot].slot)
+          }).then((res = {}) => {
+            if(type == 2){
+              if(slot < this.list.length - 1){
+                setTimeout(() => {
+                  this.singleEjects(slot+1, 2)
+                }, 4000)
+              } else {
+                setTimeout(() => {
+                  this.getBattery()
+                  this.allEjectStatus = false
+                }, 2000)
+              }
+            }else{
+              resolve()
+            }
+          }).catch(err => {
+            reject()
+          })
         })
       },
 
@@ -150,20 +175,31 @@
         if(this.clickSubmit) return
         this.clickSubmit = true
         this.allEjectStatus = true
-      	this.$get('iot-saas-device/admin/device/batchPopup', {
-      		deviceSn: this.deviceSn
-      	}).then((res = {}) => {
-          this.$message({
-            message: '指令已发送',
-            type: 'success'
-          })
-      		setTimeout(() => {
-      			this.getBattery()
-            this.allEjectStatus = false
-      		}, 10000)
-      	}).catch(err => {
-          this.clickSubmit = false
-      	})
+        switch(this.factoryCode){
+          case 'WS': case 'TP':  case 'ZD':
+            this.$get('iot-saas-device/admin/device/batchPopup', {
+              deviceSn: this.deviceSn
+            }).then((res = {}) => {
+              this.$message({
+                message: '指令已发送',
+                type: 'success'
+              })
+              setTimeout(() => {
+                this.getBattery()
+                this.allEjectStatus = false
+              }, 10000)
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+          break
+          case 'HY': case 'XC': case 'DD':
+            this.$message({
+              message: '指令已发送',
+              type: 'success'
+            })
+            this.singleEjects(0, 2)
+          break
+        }
       }
     }
   }

@@ -23,7 +23,7 @@
       <div class="mb-15">
         温馨提示：扫二维码进入小程序需要登录微信、支付宝小程序添加普通二维码跳转小程序规则。添加方法：<a class="text-blue" href="https://developers.weixin.qq.com/miniprogram/introduction/qrcode.html#%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B" target="_blank">微信</a>、<a class="text-blue" href="https://opendocs.alipay.com/mini/operation/vzd5v0" target="_blank">支付宝</a>。需要上传校验文件时，下载文件后点击下面上传校验文件。
       </div>
-      <upload uploadText="上传校验文件" accept=".txt,.html" :raw="true" @getFile="getFile"/>
+      <upload uploadText="上传校验文件" accept=".txt,.html" :upObj="upObj"/>
     </div>
   </div>
 </template>
@@ -39,6 +39,9 @@
     },
     data() {
       return {
+        upObj: {
+          fileType: 'wxAliCheck'
+        },
         list: [
           {
             name: '首页',
