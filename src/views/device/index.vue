@@ -44,6 +44,7 @@
     <div class="pl-10 pr-10 bg-white">
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">查询表格</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(4, {})" v-if="isSaas()">刷新设备数量统计</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">铺解记录</div>
         <table-column-set storageKey="deviceTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
       </div>
@@ -1175,6 +1176,22 @@
             } else if(dialogType == 10){
               if(this.storeList.list.length == 0) this.getStoreList()
             }
+            break
+          case 4:
+            this.$alert('确定刷新设备统计数量统计信息吗？', '设备统计刷新', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$get('iot-saas-device/admin/device/count/init').then(res => {
+                    this.$message({
+                      message: '刷新成功',
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
             break
         }
       },

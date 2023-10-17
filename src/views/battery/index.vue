@@ -56,7 +56,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.key == 'onlineStatue'">
             <template slot-scope="scope">
-              {{ scope.row.onlineStatue == 0 ? '在槽' : '--' }}
+              {{ scope.row.ext ? '在槽' : '--' }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.key == 'belongStatue'">
@@ -82,7 +82,7 @@
                 title="确定弹出该充电宝吗？"
                 @onConfirm="singleEject(scope.row)"
               >
-                <el-button type="text" :disabled="scope.row.onlineStatue != 0" slot="reference">弹出</el-button>
+                <el-button type="text" :disabled="!scope.row.ext" slot="reference">弹出</el-button>
               </el-popconfirm>
             </div>
           </template>
@@ -231,10 +231,21 @@
         showColumn: [],
         defaultColumn: [
           {
+            key: 'terminalSn',
+            val: true,
+            name: '设备二维码',
+            width: 180,
+          },
+          {
             key: 'terminalId',
             val: true,
             name: '宝SN',
             width: 150
+          },
+          {
+            key: 'onlineStatue',
+            val: true,
+            name: '状态'
           },
           {
             key: 'factoryName',
@@ -306,26 +317,16 @@
             val: true,
             name: '归属状态'
           },
-          {
-            key: 'terminalSn',
-            val: true,
-            name: '二维码',
-            width: 180,
-          },
-          {
-            key: 'lastOverhaulId',
-            val: true,
-            name: '最近检修人'
-          },
+          // {
+          //   key: 'lastOverhaulId',
+          //   val: true,
+          //   name: '最近检修人',
+          //   width: 200
+          // },
           {
             key: 'lastOverhaulTime',
             val: true,
             name: '最近检修时间'
-          },
-          {
-            key: 'onlineStatue',
-            val: true,
-            name: '状态'
           }
         ]
       }
@@ -393,6 +394,19 @@
           this.listLoading = false
           this.clickSubmit = false
           let list = res.rows || []
+          if(list.length > 0){
+            let ids = this.arrayKeys(list, 'terminalId')
+            await this.getOtherData('iot-saas-device/admin/device/stocks/ext/findPage', {
+							devicePowerIds: ids.join(','),
+						}).then(extRes => {
+              if(extRes && extRes.rows.length > 0){
+              	let extObj = arrayToObj(extRes.rows, 'terminalId')
+              	list.map(item => {
+              		return item.ext = extObj[item.terminalId] ? extObj[item.terminalId] : ''
+              	})
+              }
+            })
+          }
           this.list = list
           if(params.page == 0){
             this.listTotal = res.total
@@ -445,19 +459,16 @@
       singleEject(row){
         if(this.clickSubmit) return
         this.clickSubmit = true
-        row.onlineStatus = 2
         this.$get('iot-saas-device/admin/device/singlePopup', {
           deviceSn: row.terminalSn,
-      		terminalId: row.terminalId
+          slot: row.ext.slot
         }).then((res = {}) => {
           this.$message({
             message: '指令已发送',
             type: 'success'
           })
+          row.ext = ''
           this.clickSubmit = false
-          setTimeout(() => {
-          	this.getBattery()
-          }, 8000)
         }).catch(() => {
           this.clickSubmit = false
         })

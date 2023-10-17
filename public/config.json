@@ -1,6 +1,6 @@
 {
   "project_names": "物享云联",
-  "BASE_URL": "https://api.svc.wuxiangyunlian.cn/",
+  "BASE_URL": "https://api.saas.wuxiangyunlian.cn/",
   "CODE_URL": "http://code.saas.wuxiangyunlian.cn/",
   "baidu_map_ak": "S6AzfAvWgf3o64xueWzebqTd2Eyr3Fot",
   "baidu_statistics": "var _hmt = _hmt || []; (function() { var hm = document.createElement('script'); hm.src = 'https://hm.baidu.com/hm.js?a0e7eb33d7402b459976e556af7b143c';var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(hm, s)})()",
@@ -48,7 +48,9 @@
     "BD": "pagesA/pages/butler/index",
     "VG": "pagesA/pages/butler/index",
     "AV": "pagesA/pages/butler/index",
-    "SM": "pagesA/pages/washing/index"
+    "SM": "pagesA/pages/washing/index",
+    "WF": "pagesA/pages/wifi/wifiNew",
+    "WM": "pagesA/pages/washing/index"
   },
   "roomDevice": {
     "BD": "震动大床房",
@@ -87,5 +89,6 @@
     }
   },
   "bed_order_time": [1,2,3,4,5,6,8,9,10,11,12,24],
+  "wx_auth_url": "http://authorize.saas.wuxiangyunlian.cn/index.html",
   "ali_auth_url": "https://openauth.alipay.com/oauth2/appToAppBatchAuth.htm?app_id=2021003186692733&application_type=TINYAPP&redirect_uri=https%3A%2F%2Fapi.saas.wuxiangyunlian.cn%2Fiot-saas-pay%2Fopen%2Falipay%2Fauth%2Fcallback"
 }

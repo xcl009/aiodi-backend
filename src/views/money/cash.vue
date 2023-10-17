@@ -167,9 +167,9 @@
           	switch(res.timeLimit.type){
           		case 'DAY':
           			let timeLimit = res.timeLimit.timeLimit
-          			cutDay = parseTime(currentTime(), '{y}-{m}-{d}')
+          			cutDay = this.parseTime(this.currentTime(), '{y}-{m}-{d}')
           			for(var i in timeLimit){
-          				if(unixTime(`${cutDay} ${timeLimit[i].startTime}`) < currentTime() && unixTime(`${cutDay} ${timeLimit[i].endTime}`) > currentTime()){
+          				if(unixTime(`${cutDay} ${timeLimit[i].startTime}`) < this.currentTime() && unixTime(`${cutDay} ${timeLimit[i].endTime}`) > this.currentTime()){
           					isCash = true
           					break
           				}

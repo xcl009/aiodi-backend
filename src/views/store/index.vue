@@ -148,6 +148,7 @@
             <div class="flex flex-wrap operate">
               <template v-if="isSaas()">
                 <el-button type="text" @click="toLogin(scope.row)">商户管理</el-button>
+                <el-button type="text" @click="setRows(6, scope.row)">重置登录密码</el-button>
               </template>
               <template v-else-if="form.deviceSns">
                 <el-button type="text" @click="bindStore(scope.row)">铺货</el-button>
@@ -788,6 +789,25 @@
                     setTimeout(() => {
                       location.href = '/'
                     }, 1500)
+                  })
+                }
+              }
+            })
+            break
+          case 6:
+            this.$alert('确定重置该商户账号的登录密码吗？', '重置登录密码', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-user/admin/user/password/reset', {
+                    userId: row.userId,
+                    password: '123456'
+                  }).then(res => {
+                    this.$message({
+                      message: '重置成功',
+                      type: 'success'
+                    })
                   })
                 }
               }

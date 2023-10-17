@@ -119,10 +119,8 @@
                   <el-dropdown-item @click.native="toLogin(scope.row)">品牌管理</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 1)">VIP开通抵扣券</el-dropdown-item>
                   <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(4, scope.row)">设备统计数量</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(5, scope.row)">代理层级缓存</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(6, scope.row)">租借中订单缓存</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3)">跳转小程序</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(6, scope.row)">重置登录密码</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
                 </el-dropdown-menu>
@@ -497,7 +495,7 @@
 
       /**
        * 操作行
-       * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长 4 设备统计数量  5 代理层级缓存  6 租借订单数刷新
+       * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长 4 设备统计数量  5 代理层级缓存  6 重置登录密码
        * @param {Object} row
        * @param {Object} index
        */
@@ -561,24 +559,6 @@
               }
             })
             break
-          case 4:
-            this.$alert('确定刷新该品牌设备数量统计信息吗？', '统计刷新', {
-              confirmButtonText: '确定',
-              center: true,
-              callback: action => {
-                if (action == 'confirm') {
-                  this.$get('iot-saas-device/admin/device/count/init', {
-                    brandId: row.id
-                  }).then(res => {
-                    this.$message({
-                      message: '刷新成功',
-                      type: 'success'
-                    })
-                  })
-                }
-              }
-            })
-            break
           case 5:
             this.$alert('确定刷新该品牌代理层级关系吗？', '层级刷新', {
               confirmButtonText: '确定',
@@ -598,16 +578,17 @@
             })
             break
           case 6:
-            this.$alert('确定刷新该品牌租借中订单数量统计吗？', '租借订单数量', {
+            this.$alert('确定重置该品牌账号的登录密码吗？', '重置登录密码', {
               confirmButtonText: '确定',
               center: true,
               callback: action => {
                 if (action == 'confirm') {
-                  this.$get('iot-saas-order/admin/order/count/initRentingOrderCount', {
-                    brandId: row.id
+                  this.$post('iot-saas-user/admin/user/password/reset', {
+                    userId: row.userId,
+                    password: '123456'
                   }).then(res => {
                     this.$message({
-                      message: '刷新成功',
+                      message: '重置成功',
                       type: 'success'
                     })
                   })
