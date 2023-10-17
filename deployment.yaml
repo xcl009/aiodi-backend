@@ -1,0 +1,102 @@
+# prd、stg、dev环境外网访问单独申请
+# 以下环境变量由pipeline中“k8s部署”步骤指定
+# ${GITEE_DOCKER_IMAGE} 镜像名，由pipeline Docker构建过程生成
+# ${PROJECT_REPO_NAME} 代码仓库名
+# ${PORT} 服务端口，无特殊情况，统一为80；非80端口情况下，需要修改Dockerfile中EXPOSE端口
+# ${K8S_ENV} 运行环境prd、dev、stg
+# ${POD_REQUESTS_MEM} pod请求内存，通常跟${POD_LIMITS_MEM}一致，示例：1024Mi
+# ${POD_LIMITS_MEM} pod最大内存，示例：1024Mi
+# ${POD_REPLICAS} pod数量
+# ${DOMAIN_NAME} 本服务访问地址:saas.wuxiangyunlian.cn
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${PROJECT_REPO_NAME}
+  labels:
+    app: ${PROJECT_REPO_NAME}
+spec:
+  replicas: ${POD_REPLICAS}
+  selector:
+    matchLabels:
+      app: ${PROJECT_REPO_NAME}
+  template:
+    metadata:
+      name: ${PROJECT_REPO_NAME}
+      labels:
+        app: ${PROJECT_REPO_NAME}
+    spec:
+      containers:
+        - name: ${PROJECT_REPO_NAME}
+          image: ${GITEE_DOCKER_IMAGE}
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-vol
+          resources:
+            requests:
+              memory: "${POD_REQUESTS_MEM}"
+              # cpu: "500m"
+            limits:
+              memory: "${POD_LIMITS_MEM}"
+              # cpu: "1000m"
+          ports:
+            - containerPort: ${PORT}
+      imagePullSecrets:
+        - name: hw-swr
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            name: ${DOMAIN_NAME}-conf
+            items:
+              - key: nginx-conf
+                path: wuxiangyunlian-cn.conf
+          name: nginx-vol
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${PROJECT_REPO_NAME}-svc
+spec:
+  selector:
+    app: ${PROJECT_REPO_NAME}
+  ports:
+    - name: http    #统一成http
+      port: ${PORT}
+      targetPort: ${PORT}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${DOMAIN_NAME}-conf
+data:
+  nginx-conf: |
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name ${DOMAIN_NAME};
+      root /usr/share/nginx/html/;
+      index index.html index.htm index.php;
+
+      location ~* /.+ {
+        index index.html index.htm index.php;
+        try_files $uri $uri/ /index.html;
+      }
+
+
+      location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
+        expires 30d;
+        access_log off;
+      }
+      location ~ .*\.(js|css)?$ {
+        expires 7d;
+        access_log off;
+      }
+      location ~ /(\.user\.ini|\.ht|\.git|\.svn|\.project|LICENSE|README\.md) {
+        deny all;
+      }
+      location /.well-known {
+        allow all;
+      }
+    }
