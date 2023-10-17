@@ -56,7 +56,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.key == 'onlineStatue'">
             <template slot-scope="scope">
-              {{ scope.row.onlineStatue == 0 ? '在槽' : '--' }}
+              {{ scope.row.ext ? '在槽' : '--' }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.key == 'belongStatue'">
@@ -82,7 +82,7 @@
                 title="确定弹出该充电宝吗？"
                 @onConfirm="singleEject(scope.row)"
               >
-                <el-button type="text" :disabled="scope.row.onlineStatue != 0" slot="reference">弹出</el-button>
+                <el-button type="text" :disabled="!scope.row.ext" slot="reference">弹出</el-button>
               </el-popconfirm>
             </div>
           </template>
@@ -394,6 +394,19 @@
           this.listLoading = false
           this.clickSubmit = false
           let list = res.rows || []
+          if(list.length > 0){
+            let ids = this.arrayKeys(list, 'terminalId')
+            await this.getOtherData('iot-saas-device/admin/device/stocks/ext/findPage', {
+							devicePowerIds: ids.join(','),
+						}).then(extRes => {
+              if(extRes && extRes.rows.length > 0){
+              	let extObj = arrayToObj(extRes.rows, 'terminalId')
+              	list.map(item => {
+              		return item.ext = extObj[item.terminalId] ? extObj[item.terminalId] : ''
+              	})
+              }
+            })
+          }
           this.list = list
           if(params.page == 0){
             this.listTotal = res.total
@@ -448,12 +461,13 @@
         this.clickSubmit = true
         this.$get('iot-saas-device/admin/device/singlePopup', {
           deviceSn: row.terminalSn,
-      		terminalId: row.terminalId
+          slot: row.ext.slot
         }).then((res = {}) => {
           this.$message({
             message: '指令已发送',
             type: 'success'
           })
+          row.ext = ''
           this.clickSubmit = false
         }).catch(() => {
           this.clickSubmit = false

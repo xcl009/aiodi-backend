@@ -97,7 +97,13 @@
             <div class="flex flex-wrap">
               <el-button type="primary" size="mini" @click="$router.push({path: `/order?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">订单列表</el-button>
               <el-button type="primary" size="mini" @click="$router.push({path: `/store?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">商户列表</el-button>
-              <el-button type="primary" size="mini" @click="toLogin(scope.row)">代理管理</el-button>
+              <el-dropdown trigger="click">
+                <el-button type="primary" size="mini">更多<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native="toLogin(scope.row)">代理管理</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(6, scope.row)">重置登录密码</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </div>
           </template>
         </el-table-column>
@@ -284,6 +290,38 @@
         }).then(res => {
           this.brandUser = res
         })
+      },
+
+      /**
+       * 操作行
+       * @param {Object} type 6 重置登录密码
+       * @param {Object} row
+       * @param {Object} index
+       */
+      setRow(type, row, index) {
+        switch (type) {
+          case 1:
+
+          case 6:
+            this.$alert('确定重置该品牌账号的登录密码吗？', '重置登录密码', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-user/admin/user/password/reset', {
+                    userId: row.userId,
+                    password: '123456'
+                  }).then(res => {
+                    this.$message({
+                      message: '重置成功',
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
+            break
+        }
       },
 
       /**
