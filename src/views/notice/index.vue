@@ -59,7 +59,7 @@
                     </el-form-item>
                     <el-form-item label="用户类型">
                         <el-select v-model="dform.type">
-                            <el-option :label="`${t.title}`" :value="t.type" v-for="t in identity"></el-option>
+                            <el-option :label="`${t.title}`" :value="t.type" v-for="(t,index) in identity" :key="index"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="状态">
@@ -309,7 +309,7 @@ export default {
             }
             params[params.type] = 1;
             delete params.type;
-            params.setTimeout = parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
+            params.createTime = parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
             this.$post(url, params).then(res => {
                 this.$message({
                     message: '操作成功',
