@@ -58,7 +58,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="用户类型">
-                        <el-select v-model="dform.type">
+                        <el-select v-model="dform.type" @change="change">
                             <el-option :label="`${t.title}`" :value="t.type" v-for="(t,index) in identity" :key="index"></el-option>
                         </el-select>
                     </el-form-item>
@@ -172,17 +172,14 @@ export default {
     mounted() {
         this.getList();
         this.init();
-        // this.queryKey = ['brandId', 'storeId', 'agentId', 'deviceIds', 'sourceType']
-        // for (var i in this.queryKey) {
-        //     if (query[this.queryKey[i]]) {
-        //         this.form[this.queryKey[i]] = query[this.queryKey[i]]
-        //     } else {
-        //         delete this.form[this.queryKey[i]]
-        //     }
-        // }
 
     },
     methods: {
+        // 用户类型选择
+        change(e){
+            this.dform.type = e;
+            this.$forceUpdate();
+        },
         /**
         * 获取公告类型
         */
@@ -204,6 +201,7 @@ export default {
             this.dform = Object.assign({}, row)
             if(index == 2){
                 this.dform.type = row.brandId == '1' ? 'brandId' : row.storeId == '1' ? 'storeId' : row.agentId == '1' ? 'agentId' : '';
+                console.log(this.dform.type,'this.dform.type')
             }
         },
 
