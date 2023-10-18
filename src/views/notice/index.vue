@@ -309,7 +309,6 @@ export default {
             }
             params[params.type] = 1;
             delete params.type;
-            params.createTime = parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
             this.$post(url, params).then(res => {
                 this.$message({
                     message: '操作成功',
