@@ -13,18 +13,12 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="只分商户直属上级">
-            <div class="flex align-center">
-              <el-switch v-model="form.onlySuperior" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示超时订单扣除{{ form.deviceCost }}元成本后，剩余金额只分给该商户的直属上级</span>
-            </div>
-          </el-form-item>
-
-          <el-form-item label="只分一级代理">
-            <div class="flex align-center">
-              <el-switch v-model="form.onlySuperior" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示超时订单扣除{{ form.deviceCost }}元成本后，剩余金额只分给一级代理（无代理则分给您）</span>
-            </div>
+          <el-form-item :label="`剩余金额分成`">
+            <el-radio-group v-model="form.onlySuperior" size="medium">
+              <el-radio-button :label="idx" v-for="(item, idx) in ['正常分成','只分上级','只分一级代理']">{{ item }}</el-radio-button>
+            </el-radio-group>
+            <div class="mt-10 line-six fs-s3">选择<span class="text-danger">只分上级</span>表示超时订单扣除{{ form.deviceCost }}元成本后，剩余金额只分给该商户的直属上级</div>
+            <div class="mt-5 line-six fs-s3">选择<span class="text-danger">只分一级代理</span>表示超时订单扣除{{ form.deviceCost }}元成本后，剩余金额只分给一级代理（无代理则分给您）</div>
           </el-form-item>
 
           <el-form-item class="mt-10">

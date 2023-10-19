@@ -32,7 +32,7 @@
                 </el-form-item>
             </template>
             <template v-slot:endButton>
-                <el-button type="primary" size="small" @click="$router.push({ path: `/shopping/shopOrderEdit` })"><i
+                <el-button type="primary" size="small" @click="$router.push({ path: `/shopping/productEdit` })"><i
                         class="el-icon-circle-plus-outline el-icon--left" />新增设备</el-button>
             </template>
         </condition>
@@ -66,7 +66,7 @@
                                     </div>
                                 </template>
                                 <el-button type="primary" size="medium"
-                                    @click="$router.push({ path: `/shopping/shopOrderEdit?id=${item.id}` })">立即修改</el-button>
+                                    @click="$router.push({ path: `/shopping/productEdit?id=${item.id}` })">立即修改</el-button>
                             </div>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
         </div>
     </div>
 </template>
-  
+
 <script>
 import Pagination from '@/components/Pagination'
 import condition from '@/components/condition/'
@@ -148,7 +148,7 @@ export default {
                         numArr.push(res.price);
                     }
                 })
-                
+
                 let sortArr = numArr.sort((a, b) => a - b);
                 let text ='';
                 arr.forEach(res=>{
@@ -158,7 +158,7 @@ export default {
                 })
                 return `￥${sortArr[0]}-${sortArr[sortArr.length - 1]}/${text}`
             } else {
-               
+
                 return `￥${arr[0].price}/${arr[0].number.substr(arr[0].number.length - 1,1)}`
             }
 
@@ -271,8 +271,7 @@ export default {
     }
 }
 </script>
-  
+
 <style lang="scss" scoped>
 @import './list.scss';
 </style>
-  

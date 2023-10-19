@@ -48,149 +48,161 @@
     </el-row>
   </div>
 </template>
-  
-<script>
- import upload from '@/components/upload'
-import { pickKeys } from '@/utils/index'
-export default {
-  components: {
-    upload
-  },
-  data() {
-    return {
-      clickSubmit: false,
-      form: {
-        deviceTypeCode: [],
-        name: '',
-        keyword: '',
-        province: '',
-        description: '',
-        price: 1,
-        stockAlarmValue: 1,
-        stock: 1,
-        statusCode: 'ENABLE',
-        pictures:''
-      },
-      rules: {
-        deviceTypeCode: [
-          { required: true, message: '请填写关联设备类型', trigger: 'blur' }
-        ],
-        name: [
-          { required: true, message: '输入设备名称', trigger: 'blur' }
-        ],
-        province: [
-          { required: true, message: '请选择工厂所在城市', trigger: 'blur' }
-        ],
-        price: [
-          { required: true, message: '请输入价格', trigger: 'blur' }
-        ]
-      },
-      cityList: []
-    }
-  },
-  computed: {
-    myDeviceId() {
-      return this.$store.getters.myDeviceId
-    },
-  },
-  mounted() {
-    let info = this.$route.params.info
-    if (info) {
-      info.deviceTypeCodes = []
-      info.deviceTypeList.map(item => {
-        info.deviceTypeCodes.push(item.deviceTypeCode)
-      })
-      info.province = [info.province, info.city, info.district]
-      this.form = pickKeys(info, Object.keys(this.form))
-    }
-    this.getCity()
-  },
-  methods: {
-    /**
-     * 提交
-     * @param {Object} formName
-     */
-    onSubmit(formName) {
-      let params = JSON.parse(JSON.stringify(this.form)), url = 'iot-saas-device/shop/goods/save'
-      if (Array.isArray(params.province) && params.province.length > 0) {
-        params.district = params.province[2]
-        params.city = params.province[1]
-        params.province = params.province[0]
-      }
-      this.clickSubmit = true
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          if (params.id > 0) {
-            params.factoryId = params.id
-            url = 'iot-saas-device/shop/goods/edit'
-          }
-          this.$post(url, params).then(res => {
-            this.$message({
-              message: '提交成功',
-              type: 'success'
-            })
-            this.$router.push({
-              path: '/factory/factory'
-            })
-          }).catch(err => {
-            setTimeout(() => {
-              this.clickSubmit = false
-            }, 1000)
-          })
-        } else {
-          this.clickSubmit = false
-        }
-      })
-    },
 
-    /**
-     * 获取城市
-     */
-    getCity() {
-      this.$store.dispatch('api/getRegions').then(res => {
-        let list = {}, areaId = ''
-        res.map(item => {
-          if (item.level == 1) {
-            list[item.tag] = {
-              value: item.title,
-              label: item.title,
-              children: {}
-            }
-          } else if (item.level == 2) {
-            let tag = item.tag.substring(0, 3)
-            list[tag].children[item.tag] = {
-              value: item.title,
-              label: item.title,
-              children: []
-            }
-          } else if (item.level == 3) {
-            areaId = areaId || item.tag
-            let tag1 = item.tag.substring(0, 3), tag2 = item.tag.substring(0, 6)
-            list[tag1].children[tag2].children.push({
-              value: item.title,
-              label: item.title
-            })
-          }
-        })
-        list = Object.values(list)
-        list.map(item => {
-          if (JSON.stringify(item.children) == '{}') {
-            item.children = []
-          } else {
-            item.children = Object.values(item.children)
-          }
-          return item
-        })
-        this.cityList = list
-      })
+<script>
+  import upload from '@/components/upload'
+  import {
+    pickKeys
+  } from '@/utils/index'
+  export default {
+    components: {
+      upload
     },
+    data() {
+      return {
+        clickSubmit: false,
+        form: {
+          deviceTypeCode: [],
+          name: '',
+          keyword: '',
+          province: '',
+          description: '',
+          price: 1,
+          stockAlarmValue: 1,
+          stock: 1,
+          statusCode: 'ENABLE',
+          pictures: ''
+        },
+        rules: {
+          deviceTypeCode: [{
+            required: true,
+            message: '请填写关联设备类型',
+            trigger: 'blur'
+          }],
+          name: [{
+            required: true,
+            message: '输入设备名称',
+            trigger: 'blur'
+          }],
+          province: [{
+            required: true,
+            message: '请选择工厂所在城市',
+            trigger: 'blur'
+          }],
+          price: [{
+            required: true,
+            message: '请输入价格',
+            trigger: 'blur'
+          }]
+        },
+        cityList: []
+      }
+    },
+    computed: {
+      myDeviceId() {
+        return this.$store.getters.myDeviceId
+      },
+    },
+    mounted() {
+      let info = this.$route.params.info
+      if (info) {
+        info.deviceTypeCodes = []
+        info.deviceTypeList.map(item => {
+          info.deviceTypeCodes.push(item.deviceTypeCode)
+        })
+        info.province = [info.province, info.city, info.district]
+        this.form = pickKeys(info, Object.keys(this.form))
+      }
+      this.getCity()
+    },
+    methods: {
+      /**
+       * 提交
+       * @param {Object} formName
+       */
+      onSubmit(formName) {
+        let params = JSON.parse(JSON.stringify(this.form)),
+          url = 'iot-saas-device/shop/goods/save'
+        if (Array.isArray(params.province) && params.province.length > 0) {
+          params.district = params.province[2]
+          params.city = params.province[1]
+          params.province = params.province[0]
+        }
+        this.clickSubmit = true
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            if (params.id > 0) {
+              params.factoryId = params.id
+              url = 'iot-saas-device/shop/goods/edit'
+            }
+            this.$post(url, params).then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.$router.push({
+                path: '/factory/factory'
+              })
+            }).catch(err => {
+              setTimeout(() => {
+                this.clickSubmit = false
+              }, 1000)
+            })
+          } else {
+            this.clickSubmit = false
+          }
+        })
+      },
+
+      /**
+       * 获取城市
+       */
+      getCity() {
+        this.$store.dispatch('api/getRegions').then(res => {
+          let list = {},
+            areaId = ''
+          res.map(item => {
+            if (item.level == 1) {
+              list[item.tag] = {
+                value: item.title,
+                label: item.title,
+                children: {}
+              }
+            } else if (item.level == 2) {
+              let tag = item.tag.substring(0, 3)
+              list[tag].children[item.tag] = {
+                value: item.title,
+                label: item.title,
+                children: []
+              }
+            } else if (item.level == 3) {
+              areaId = areaId || item.tag
+              let tag1 = item.tag.substring(0, 3),
+                tag2 = item.tag.substring(0, 6)
+              list[tag1].children[tag2].children.push({
+                value: item.title,
+                label: item.title
+              })
+            }
+          })
+          list = Object.values(list)
+          list.map(item => {
+            if (JSON.stringify(item.children) == '{}') {
+              item.children = []
+            } else {
+              item.children = Object.values(item.children)
+            }
+            return item
+          })
+          this.cityList = list
+        })
+      },
+    }
   }
-}
 </script>
-  
+
 <style scoped>
-.el-radio {
-  margin-top: 10px;
-}
+  .el-radio {
+    margin-top: 10px;
+  }
 </style>
-  

@@ -35,7 +35,7 @@
             <view v-if="scope.row.onlineStatus == 0">无数据包</view>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" v-if="checkAbility(['eject'], 3)">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-popconfirm
@@ -46,7 +46,17 @@
                 title="确定要弹出此口吗？"
                 @onConfirm="singleEject(scope.row)"
               >
-                <el-button type="text" :disabled="scope.row.distribute" slot="reference">{{ scope.row.onlineStatus == 2 ? '弹出中' : '弹出' }}</el-button>
+                <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? '弹出中' : '弹出' }}</el-button>
+              </el-popconfirm>
+              <el-popconfirm
+                class="pop"
+                cancel-button-type=""
+                icon="el-icon-info"
+                icon-color="#FF7D00"
+                :title="`${scope.row.stats == 2 ? '解锁后用户可租借该充电宝' : '锁定后用户不可租借该充电宝'}`"
+                @onConfirm="lockChange(scope.row)"
+              >
+                <el-button type="text" :disabled="[0,2].indexOf(scope.row.stats) == -1" slot="reference">{{ scope.row.stats == 2 ? '解锁' : '锁定'}}</el-button>
               </el-popconfirm>
             </div>
           </template>
@@ -116,6 +126,27 @@
           this.clickSubmit = false
           this.listLoading = false
         })
+      },
+
+      /**
+       * 充电宝锁定、解锁
+       * @param {Object} row
+       */
+      lockChange(row){
+      	let url = 'iot-saas-device/admin/device/stocks/ext/stockLock'
+      	if(row.stats == 2){
+      		url = 'iot-saas-device/admin/device/stocks/ext/stockUnlock'
+      	}
+      	this.$post(url, {
+      		devicePowerIds: [row.terminalId]
+      	}).then(res => {
+          this.$message({
+            message: '提交成功',
+            type: 'success'
+          })
+      		row.stats = row.stats == 2 ? 0 : 2
+          console.log(row.stats)
+      	})
       },
 
       /**
