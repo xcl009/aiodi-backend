@@ -98,8 +98,15 @@
             <el-input type="number" v-model="form.durationTime">
               <template slot="append">天</template>
             </el-input>
-            <div>
-              用户在初次下单租借{{ form.durationTime || 0 }}天后再次租借时会重新计算概率
+            <div v-if="form.isNewUser != 1">
+              用户在下单租借{{ form.durationTime || 0 }}天后再次租借会重新计算概率
+            </div>
+          </el-form-item>
+          
+          <el-form-item label="针对新用户">
+            <div class="flex align-center">
+              <el-switch v-model="form.isNewUser" :active-value="1" :inactive-value="0" />
+              <span class="ml-10 fs-s3">开启表示{{ form.durationTime }}天内未下过单的用户才会计算概率</span>
             </div>
           </el-form-item>
 
@@ -233,7 +240,8 @@
                 durationTime: 7,
                 walletBalance: 90,
                 orderNumber: 0,
-                freeNumber: 0
+                freeNumber: 0,
+                isNewUser: 0
               }
             } else {
               res.durationTime = parseInt(res.durationTime) / 1440
