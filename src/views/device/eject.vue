@@ -35,7 +35,7 @@
             <view v-if="scope.row.onlineStatus == 0">无数据包</view>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" v-if="checkAbility(['eject'], 3)">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-popconfirm
