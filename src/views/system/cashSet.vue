@@ -134,7 +134,7 @@
                     </el-input>
                   </div>
                 </el-form-item>
-                <template v-if="item.type == 1 || item.type == 3">
+                <template v-if="[1,3].indexOf(parseInt(item.type)) > -1">
                 <el-form-item label="需审核金额" >
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.needApprovalAmount" class="flex1 mr-10">
@@ -142,9 +142,9 @@
                     </el-input>
                   </div>
                 </el-form-item>
-                <el-form-item label="采用订单退款" v-if="false">
+                <el-form-item label="采用订单退款" v-if="userType == 'user' && [1,3].indexOf(parseInt(item.type)) > -1">
                   <div class="flex align-center">
-                    <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
+                    <el-switch v-model="item.orderRefundInd" :active-value="true" :inactive-value="false" />
                     <span class="ml-10 fs-s3">开启表示用户从钱包提现，以订单退款的方式给用户返还提现金额</span>
                   </div>
                 </el-form-item>
@@ -235,7 +235,8 @@
               handlingFee: 0,
               minAmount: 0,
               maxAmount: 999999,
-              needApprovalAmount: 0
+              needApprovalAmount: 0,
+              orderRefundInd: false
             })
           }
         })
@@ -290,7 +291,8 @@
                   handlingFee: 0,
                   minAmount: 0,
                   maxAmount: 999999,
-                  needApprovalAmount: 0
+                  needApprovalAmount: 0,
+                  orderRefundInd: false
                 },
                 {
                   status: 1,
@@ -299,7 +301,8 @@
                   handlingFee: 0,
                   minAmount: 0,
                   maxAmount: 999999,
-                  needApprovalAmount: 0
+                  needApprovalAmount: 0,
+                  orderRefundInd: false
                 }
               ]
             }
