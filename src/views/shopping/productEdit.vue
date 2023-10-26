@@ -49,10 +49,17 @@
           </el-form-item>
           <el-form-item label="设备规格及价格" prop="productStandardList">
             <div v-for="(item, index) in form.productStandardList" class="flex_j mark_box">
-              <el-input v-model="item.number" placeholder="请输入" />
-              <span> </span>
-              <el-input v-model="item.price" placeholder="请输入" class="ml-10" />
+              <el-input v-model="item.number" placeholder="请输入规格名称"/>
+              <el-input v-model="item.price" placeholder="请输入价格" class="ml-10" />
               <span>元/台</span>
+              <span>最低购买</span>
+              <el-input v-model="item.min" placeholder="最低购买数量" class="ml-10" />
+              <span>台，最高购买</span>
+              <el-input v-model="item.max" placeholder="最高购买数量" class="ml-10" />
+              <span>台</span>
+              <el-input v-model="item.positionQty" placeholder="充电宝口数" class="ml-10" v-if="['PA'].indexOf(form.deviceTypeCode) > -1" />
+              <el-input v-model="item.positionQty" placeholder="仓口数" class="ml-10" v-if="['VM'].indexOf(form.deviceTypeCode) > -1" />
+              <el-input v-model="item.merchandiseQty" placeholder="单口商品数" class="ml-10" v-if="['VM'].indexOf(form.deviceTypeCode) > -1" />
               <div class="m_l_a right_add" @click="addsizeChange()" v-if="index == 0">
                 新增
               </div>

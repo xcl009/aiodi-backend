@@ -110,9 +110,9 @@
           <div class="mb-15 fs-a1 text-bold ">设备详情</div>
           <div class="border_bottom">
             <div class="flex_j">
-              <div class="details_img">
-                <el-image :preview-src-list="[curRow.productUrlList]" class="shop_img"
-                  :src="curRow.productUrlList"></el-image>
+              <div class="details_img" v-if="curRow.productUrlList">
+                <el-image :preview-src-list="curRow.productUrlList" class="shop_img"
+                  :src="curRow.productUrlList[0]"></el-image>
               </div>
               <div class="details_list ">
                 <div class="flex_j">
@@ -135,35 +135,25 @@
             <div class="flex_j">
               <div class="gg_width">价格</div>
               <div>
-                ￥{{ queryList.productStandardDTO.price }}
+                ￥{{ curRow.productStandardList[dform.stand].price }}
               </div>
             </div>
             <div class="flex_j mt-20">
               <div class="gg_width">选择规格</div>
               <div>
-                <el-radio-group v-model="radio1" @input="radioChange">
-                  <el-radio-button :label="`${item.number}`" va
-                    v-for="(item, index) in curRow.productStandardList"></el-radio-button>
+                <el-radio-group v-model="dform.stand" @change="setNumber">
+                  <el-radio-button :label="idx" v-for="(item, idx) in curRow.productStandardList">{{ item.number }}</el-radio-button>
                 </el-radio-group>
               </div>
             </div>
             <div class="flex_j mt-20">
               <div class="gg_width">购买数量</div>
               <div>
-                <el-input-number v-model="queryList.productNumber" :min="0" :max="9999999"></el-input-number>
+                <el-input-number v-model="dform.productNumber" :min="0" :max="9999999"
+                  @input="changeNumber"></el-input-number>
               </div>
             </div>
-
-            <!-- <div class="flex_s mt-15 border_bottom_de" v-for="(item, index) in curRow.productStandardList"
-                            :key="index">
-                            <div>{{ item.number }}口</div>
-                            <div>{{ item.price }}元</div>
-                            <div>
-                                <el-input-number v-model="item.productNumber" :min="0" :max="9999999"></el-input-number>
-                            </div>
-                        </div> -->
           </div>
-
           <div class="mt-20">
             <div v-html="curRow.productDetail"></div>
           </div>
@@ -174,9 +164,9 @@
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white flex_j l-t">
           <div class="flex_b">
-            合计{{ queryList.productNumber }}件 <div class="pl-15 flex_b">
-              <span>总金额</span> <span class="red_color fs-b3 text-bold m_lr_10">{{ (parseInt(queryList.productNumber) *
-                                parseFloat(queryList.productStandardDTO.price)).toFixed(2) }}</span>元
+            合计{{ dform.productNumber }}件 <div class="pl-15 flex_b">
+              <span>总金额</span> <span
+                class="red_color fs-b3 text-bold m_lr_10">{{ (parseInt(dform.productNumber) * parseFloat(curRow.productStandardList[dform.stand].price)).toFixed(2) }}</span>元
             </div>
           </div>
           <div class="m_l_a">
@@ -194,22 +184,19 @@
             <div>{{ myDeviceId[curRow.deviceTypeCode] }}</div>
           </el-form-item>
           <el-form-item label="规格">
-            <div>{{ queryList.productStandardDTO.number }} {{
-                            myDeviceId[curRow.deviceTypeCode] }}×{{ queryList.productNumber }}台
-            </div>
+            {{ curRow.productStandardList[dform.stand].number }}{{ myDeviceId[curRow.deviceTypeCode] }} X {{ dform.productNumber }}
           </el-form-item>
           <el-form-item label="支付方式">
             <div>线下支付</div>
           </el-form-item>
           <el-form-item label="实付金额">
-            <div class="red_color fs-b3">{{ (parseInt(queryList.productNumber) *
-                            parseFloat(queryList.productStandardDTO.price)).toFixed(2) }}元</div>
+            <div class="red_color fs-b3">
+              {{ (parseInt(dform.productNumber) * parseFloat(curRow.productStandardList[dform.stand].price)).toFixed(2) }}元
+            </div>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer flex_c">
-          <el-button type="primary" @click="onSubmit(2)" :disabled="clickSubmit_type">{{ clickSubmit_type ? '提交中'
-                        :
-                        '确认支付' }}</el-button>
+          <el-button type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ clickSubmit ? '提交中' : '确认支付' }}</el-button>
         </div>
       </div>
       <div v-if="dialogType == 3">
@@ -224,9 +211,9 @@
         </div>
         <div slot="footer" class="dialog-footer flex_c mt-15">
           <el-button @click="gobackChange()">查看订单</el-button>
-          <el-button type="primary" @click="dialogStatus = false" :disabled="clickSubmit_type">{{ clickSubmit_type
-                        ? '提交中' :
-                        '我知道了' }}</el-button>
+          <el-button type="primary" @click="dialogStatus = false" :disabled="clickSubmit">
+            {{ clickSubmit ? '提交中' : '我知道了' }}
+          </el-button>
         </div>
       </div>
     </el-dialog>
@@ -249,9 +236,6 @@
     },
     data() {
       return {
-        radio1: '',
-        clickSubmit_type: false,
-        dialogStatus: false,
         form: {},
         formKey: {
           sel1: 'orderNo',
@@ -259,7 +243,6 @@
         },
         clickSubmit: false,
         tabs: [],
-        form: {},
         list: [],
         listLoading: false,
         listTotal: 0,
@@ -267,34 +250,19 @@
           page: 1,
           size: 50,
           status: "1",
-          deviceTypeCode: '0',
-
+          deviceTypeCode: '0'
         },
-
-        brandId: this.$route.query.brandId || '',
 
         // 弹出相关
         dialogType: 0,
         drawerStatus: false,
+        dialogStatus: false,
         dialogTitle: {
-          1: '',
-          2: '',
+          1: ''
         },
         curRow: {},
         curIdx: 0,
         dform: {},
-        num: 0,
-        purchaseParameter: {
-
-        },
-        queryList: {
-          productId: '',
-          productNumber: 0,
-          productStandardDTO: {
-            number: '',
-            price: '',
-          }
-        },
         orderNo: '',
         shipmenList: [{
           title: '由高到低',
@@ -332,27 +300,6 @@
         this.tabs = res
       })
     },
-    // watch: {
-    //     curRow: {
-    //         deep: true,//true为进行深度监听,false为不进行深度监听
-    //         immediate: true,
-    //         handler(newVal) {
-    //             let num = 0;
-    //             let amount = 0;
-    //             if (newVal.productStandardList) {
-    //                 newVal.productStandardList.forEach(res => {
-    //                     num += res.productNumber;
-    //                     amount += res.productNumber * res.price
-    //                 })
-    //             }
-    //             this.numbers = num;
-    //             this.amount = amount.toFixed(2);
-
-    //         }
-    //     }
-    // },
-
-
     methods: {
       // 数字格式化
       numFormatting(number) {
@@ -394,18 +341,6 @@
           }
         })
       },
-      radioChange(e) {
-        this.curRow.productStandardList.forEach(res => {
-          if (`${res.number}` == e) {
-            let obj = {
-              number: res.number,
-              price: res.price,
-            }
-            this.queryList.productNumber = res.productNumber;
-            this.queryList.productStandardDTO = obj;
-          }
-        })
-      },
       minPrice(arr) {
         let numArr = [];
         arr.forEach(res => {
@@ -416,18 +351,42 @@
         let sortArr = numArr.sort((a, b) => a - b);
         return sortArr[0];
       },
-      // 支付事件
-      onSubmit(type) {
-        switch (type) {
-          case 2:
-            this.$post('iot-saas-order/admin/product/sold', this.queryList).then((res = {}) => {
-              this.dialogType = 3;
-              this.orderNo = res;
-            }).catch(() => {})
-            //
-        }
-        console.log('调起支付')
+
+      /**
+       * 选择规格设置数量
+       */
+      setNumber(idx){
+        if(this.curRow.productStandardList[idx].min) this.dform.productNumber = this.curRow.productStandardList[idx].min
       },
+
+      /**
+       * 设备数量输入变化
+       * @param {Object} e
+       */
+      changeNumber(val) {
+        if(val > 0){
+          clearTimeout(this.changeNumTimeout)
+          this.changeNumTimeout = setTimeout(() => {
+            let item = {}
+            for (var i = 0; i < this.curRow.productStandardList.length; i++) {
+              item = this.curRow.productStandardList[i]
+              if (item.min && item.max) {
+                if (val >= item.min && val < item.max) {
+                  this.dform.stand = i
+                  break
+                }
+              }else if(item.max && val < item.max) {
+                this.dform.stand = i
+                break
+              }else if(item.min && val >= item.min) {
+                this.dform.stand = i
+                break
+              }
+            }
+          }, 500)
+        }
+      },
+
       /**
        * 搜索查询
        */
@@ -466,11 +425,6 @@
         if (params.sort == 0) delete params.sort;
         if (params.Type < 0) delete params.Type
         this.$get('iot-saas-order/admin/product/findPage', params).then((res = {}) => {
-          res.rows.forEach((list, index) => {
-            list.productStandardList.forEach((list1, index1) => {
-              res.rows[index].productStandardList[index1].productNumber = 0;
-            })
-          })
           this.list = this.list.concat(res.rows || [])
           this.listLoading = false
           this.clickSubmit = false
@@ -499,22 +453,26 @@
        * 操作
        * @param {Object} type 1 dialog类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '赠送服务'
+       * @param {Object} dialogType dialog内容显示类型 1: '购买商品'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
-        this.curRow = row;
         switch (type) {
           case 1:
-            this.queryList.productNumber = 0;
-            this.queryList.productId = row.id;
-            this.queryList.productStandardDTO.price = row.productStandardList[0].price;
-            this.queryList.productStandardDTO.number = row.productStandardList[0].number;
-            this.radio1 = `${row.productStandardList[0].number}`;
-            this.dialogType = dialogType;
-            this.dialogTitle[1] = `${this.myDeviceId[row.deviceTypeCode]}选购`;
+            this.stand = 0
+            this.curRow = row
+            this.dform = {}
+            if (dialogType == 1) {
+              this.dform = {
+                stand: 0,
+                productNumber: 1,
+                productId: row.id
+              }
+            }
+            this.dialogType = dialogType
+            this.dialogTitle[1] = `${this.myDeviceId[row.deviceTypeCode]}选购`
             this.drawerStatus = true
-            this.clickSubmit = false;
+            this.clickSubmit = false
             break
         }
       },
@@ -530,16 +488,26 @@
         this.clickSubmit = true
         switch (this.dialogType) {
           case 1:
-            if (this.queryList.productNumber == 0) {
-              this.clickSubmit = false;
-              this.$message.error('请选购商品');
-              return;
+            if (params.productNumber <= 0) {
+              this.clickSubmit = false
+              this.$message.error('商品数量必须大于0')
+              return
             }
-            this.clickSubmit = false;
-            this.drawerStatus = false;
-            this.dialogType = 2;
-            this.dialogStatus = true;
-
+            this.clickSubmit = false
+            this.drawerStatus = false
+            this.dialogType = 2
+            this.dialogStatus = true
+            break
+          case 2:
+            params.productStandardDTO = curRow.productStandardList[params.stand]
+            this.$post('iot-saas-order/admin/product/sold', params).then((res = {}) => {
+              this.dialogType = 3
+              this.orderNo = res
+              this.clickSubmit = false
+            }).catch(() => {
+              this.clickSubmit = false
+            })
+            break
         }
       }
     }

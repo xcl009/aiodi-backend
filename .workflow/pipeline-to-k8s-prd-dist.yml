@@ -1,0 +1,57 @@
+version: '1.0'
+name: pipeline-to-k8s-prd-dist
+displayName: pipeline-to-k8s-prd-dist
+triggers:
+  trigger: manual
+  push:
+    branches:
+      prefix:
+        - ''
+stages:
+  - name: stage-dockerbuild
+    displayName: 镜像构建
+    strategy: naturally
+    trigger: auto
+    executor: []
+    steps:
+      - step: build@docker
+        name: build_docker
+        displayName: 镜像构建
+        type: cert
+        certificate: 2b668000-2536-013c-2afd-6ed46db8d222
+        tag: cloud-iot-saas/brand-vue:prd-${GITEE_PIPELINE_BUILD_NUMBER}
+        dockerfile: ./Dockerfile
+        context: ''
+        artifacts: []
+        isCache: true
+        parameter: {}
+        notify: []
+        strategy:
+          retry: '0'
+  - name: stage-deploytok8s
+    displayName: k8s部署
+    strategy: naturally
+    trigger: auto
+    executor: []
+    steps:
+      - step: deploy@k8s
+        name: deploy_k8s
+        displayName: K8S部署
+        version: v1.16.4
+        certificate: 03bc4f10-2538-013c-2bc4-1e1417bcb4ed
+        namespace: prd
+        yaml: ./deployment.yaml
+        isReplace: false
+        skiptls: false
+        params:
+          GITEE_DOCKER_IMAGE: ${GITEE_DOCKER_IMAGE}
+          PROJECT_REPO_NAME: iot-saas-brand-vue
+          K8S_ENV: prd
+          PORT: '80'
+          POD_REQUESTS_MEM: 512Mi
+          POD_LIMITS_MEM: 512Mi
+          POD_REPLICAS: 1
+          DOMAIN_NAME: saas.wuxiangyunlian.cn
+        notify: []
+        strategy:
+          retry: '0'

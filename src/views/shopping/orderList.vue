@@ -95,8 +95,11 @@
           <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <div class="flex flex-wrap operate">
-                <div class="text-primary" @click="setRows(3, scope.row, 6)">详情</div>
-                <div class="text-primary">下载二维码</div>
+                <div class="text-primary" @click="setRows(3, scope.row, 1)">详情</div>
+                <template v-if="scope.row.status > 0">
+                  <div class="text-primary" @click="exportAll(scope.row)" v-if="scope.row.orderBatch">下载二维码</div>
+                  <div class="text-primary" @click="setRows(3, scope.row, 2)" v-else>生成二维码</div>
+                </template>
               </div>
             </template>
           </el-table-column>
@@ -108,8 +111,7 @@
       </div>
 
       <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
-
-        <template v-if="dialogType == 6">
+        <template v-if="dialogType == 1">
           <div class="pl-20 pr-20 text-black">
             <div class="mb-15">用户信息</div>
             <div class="flex align-center pb-20 l-b">
@@ -138,7 +140,7 @@
                 </div>
               </div>
             </template>
-            <template>
+            <template v-if="curRow.productStandardDTO">
               <div class="mt-20 mb-15">订单信息</div>
               <el-table border :data="curRow.productStandardDTO" class="custom">
                 <el-table-column label="设备类型" align="center">
@@ -158,7 +160,7 @@
                 </el-table-column>
                 <el-table-column label="数量" align="center">
                   <template slot-scope="scope">
-                    {{curRow.productNumber}}
+                    {{ curRow.productNumber }}
                   </template>
                 </el-table-column>
                 <el-table-column label="总金额(元)" align="center">
@@ -170,6 +172,7 @@
             </template>
           </div>
         </template>
+
       </el-drawer>
     </div>
   </div>
@@ -181,9 +184,6 @@
   import selectSearch from '@/components/condition/selectSearch'
   import TableColumnSet from '@/components/TableColumnSet/index'
   import {
-    dealPhone,
-    showFeeMode,
-    showFeeName,
     parseTime,
     unixTime,
     accAdd,
@@ -232,9 +232,6 @@
     },
     data() {
       return {
-        dealPhone: dealPhone,
-        showFeeMode: showFeeMode,
-        showFeeName: showFeeName,
         accSub: accSub,
         clickSubmit: false,
         pickerOptionsEnd: {
@@ -307,7 +304,8 @@
         dialogStatus: false,
         drawerStatus: false,
         dialogTitle: {
-          6: '订单详情',
+          1: '订单详情',
+          2: '二维码生成'
         },
         curRow: {},
         curIdx: 0,
@@ -431,12 +429,101 @@
         })
       },
 
+      /**
+       * 点击提交按钮
+       */
+      createCode(row) {
+        let params = {
+          deviceTypeCode: row.deviceTypeCode,
+          number: row.productNumber,
+          factoryCode: row.factoryCode,
+          windosNumber: 8,
+          positionQty: 2,
+          merchandiseQty: 1
+        }
+        this.clickSubmit = true
+        this.$refs['form'].validate((valid, object) => {
+          if (valid) {
+            this.loadObj = this.$loading({
+              lock: true,
+              text: '生成中，请耐心等待',
+              spinner: 'el-icon-loading'
+            })
+            this.$post('iot-saas-device/admin/qrcode', params).then(res => {
+              row.orderBatch = res.batch
+              this.$post('iot-saas-order/admin/product/order/batch', {
+                orderNo: row.orderNo,
+                orderBatch: res.batch
+              }).then(res => {
+
+              })
+              this.$message({
+                message: '操作完成',
+                type: 'success'
+              })
+              this.loadObj.close()
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+              this.loadObj.close()
+            })
+          } else {
+            this.clickSubmit = false
+          }
+        })
+      },
+
+      /**
+       * 导出单次生成的二维码记录
+       * @param {Object} row
+       */
+      exportAll(row){
+        this.$alert('确定导出该次生成的二维码吗？', '二维码导出', {
+          confirmButtonText: '确定',
+          callback: action => {
+            if (action == 'confirm') {
+              this.loadObj = this.$loading({
+                lock: true,
+                text: '正在打包导出',
+                spinner: 'el-icon-loading'
+              })
+              this.$export(`iot-saas-device/admin/qrcode/exportAll?batchNumber=${row.batchNumber}`).then(res => {
+                const blob = new Blob([res])
+                const fileName = `二维码列表(${this.parseTime(row.createTime)}).xlsx`
+                if ('download' in document.createElement('a')) {
+                  const elink = document.createElement('a')
+                  elink.download = fileName
+                  elink.style.display = 'none'
+                  elink.href = URL.createObjectURL(blob)
+                  document.body.appendChild(elink)
+                  elink.click()
+                  URL.revokeObjectURL(elink.href)
+                  document.body.removeChild(elink)
+                } else {
+                  navigator.msSaveBlob(blob, fileName)
+                }
+                this.loadObj.close()
+                this.$message({
+                  message: '操作成功',
+                  type: 'success'
+                })
+              }).catch(err => {
+                this.loadObj.close()
+                this.$message({
+                  message: '导出失败',
+                  type: 'error'
+                })
+              })
+            }
+          }
+        })
+      },
 
       /**
        * 操作商户
-       * @param {Object} type 1 dialog类型 2 查询宝归还状态 3 drawer类型
+       * @param {Object} type 1 dialog类型  3 drawer类型
        * @param {Object} row 选择当前数据
-       * @param {Object} dialogType dialog内容显示类型 1: '结束订单' 2: '订单退款' 3: '取消订单' 4: '查看订单使用人数'
+       * @param {Object} dialogType dialog内容显示类型 1: '订单详情' 2: '生成二维码'
        * @param {Object} idx 当前数据所在位置
        */
       setRows(type, row, dialogType, idx) {
@@ -444,14 +531,17 @@
           case 3:
             this.dialogType = dialogType
             this.curIdx = idx
+            if(dialogType != 1) this.curRow = row
             this.drawerStatus = true
             this.dform = {}
-            this.$get(`iot-saas-order/admin/product/order/detail/${row.id}`, {
-              id: row.id
-            }).then(res => {
-              this.curRow = res
-              this.curRow.productStandardDTO = [this.curRow.productStandardDTO]
-            })
+            if(dialogType == 1){
+              this.$get(`iot-saas-order/admin/product/order/detail/${row.id}`, {
+                id: row.id
+              }).then(res => {
+                res.productStandardDTO = [res.productStandardDTO]
+                this.curRow = res
+              })
+            }
             break
         }
       },

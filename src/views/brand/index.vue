@@ -120,6 +120,7 @@
                   <el-dropdown-item @click.native="setRows(1, scope.row, 1)">VIP开通抵扣券</el-dropdown-item>
                   <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3)">跳转小程序</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(5, scope.row)">代理层级缓存</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(6, scope.row)">重置登录密码</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
