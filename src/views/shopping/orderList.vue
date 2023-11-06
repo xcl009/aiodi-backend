@@ -96,7 +96,7 @@
             <template slot-scope="scope">
               <div class="flex flex-wrap operate">
                 <div class="text-primary" @click="setRows(3, scope.row, 1)">详情</div>
-                <template v-if="scope.row.status > 0">
+                <template>
                   <div class="text-primary" @click="exportAll(scope.row)" v-if="scope.row.orderBatch">下载二维码</div>
                   <div class="text-primary" @click="setRows(3, scope.row, 2)" v-else>生成二维码</div>
                 </template>

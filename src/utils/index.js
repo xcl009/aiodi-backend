@@ -507,6 +507,8 @@ const util = {
    **/
   accSub: (arg1, arg2) => {
     var r1, r2, m, n;
+    arg1 = arg1 || 0;
+    arg2 = arg2 || 0;
     try {
         r1 = arg1.toString().split(".")[1].length;
     }
