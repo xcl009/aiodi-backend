@@ -58,6 +58,17 @@
               >
                 <el-button type="text" :disabled="[0,2].indexOf(scope.row.stats) == -1" slot="reference">{{ scope.row.stats == 2 ? '解锁' : '锁定'}}</el-button>
               </el-popconfirm>
+              <el-popconfirm
+                class="pop"
+                cancel-button-type=""
+                icon="el-icon-info"
+                icon-color="#FF7D00"
+                title="确定要弹出此宝吗？"
+                @onConfirm="singleEject(scope.row, 3)"
+                v-if="scope.row.terminalId"
+              >
+                <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? '弹出中' : '弹宝' }}</el-button>
+              </el-popconfirm>
             </div>
           </template>
         </el-table-column>
@@ -152,11 +163,11 @@
       /**
        * 单弹
        */
-      singleEject(row){
+      singleEject(row, type = 1){
         if(this.clickSubmit) return
         this.clickSubmit = true
         row.onlineStatus = 2
-        this.singleEjects(row.slot).then(() => {
+        this.singleEjects(type == 3 ? row.terminalId : row.slot, type).then(() => {
           this.$message({
             message: '指令已发送',
             type: 'success'
@@ -175,14 +186,21 @@
        */
       singleEjects(slot, type = 1){
         return new Promise((resolve, reject) => {
-          this.$get('iot-saas-device/admin/device/singlePopup', {
-            deviceSn: this.deviceSn,
-          	slot: (type == 1 ? slot : this.list[slot].slot)
-          }).then((res = {}) => {
+          let params = {
+            deviceSn: this.deviceSn
+          }
+          if(type == 3){
+            params.terminalId = slot
+          }else if(type == 2){
+            params.slot = this.list[slot].slot
+          }else if(type == 1){
+            params.slot = slot
+          }
+          this.$get('iot-saas-device/admin/device/singlePopup', params).then((res = {}) => {
             if(type == 2){
               if(slot < this.list.length - 1){
                 setTimeout(() => {
-                  this.singleEjects(slot+1, 2)
+                  this.singleEjects(slot + 1, 2)
                 }, 4000)
               } else {
                 setTimeout(() => {

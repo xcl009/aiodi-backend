@@ -298,6 +298,7 @@
         return agentInfo
       },
       Ability() {
+        console.log(this.$store.getters.Ability)
         return this.$store.getters.Ability
       },
       myDevice() {

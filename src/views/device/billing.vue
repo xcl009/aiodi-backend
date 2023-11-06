@@ -177,6 +177,7 @@
           wechatJson: JSON.stringify(billing.weixinPayMode),
           alipayJson: JSON.stringify(billing.alipayPayMode)
         }
+        
         this.clickSubmit = true
         this.$post(url, params).then(res => {
           if(this.refresh == 1){
@@ -190,6 +191,7 @@
                 modeType: billing.alipayPayMode.modeType
               }
             }
+            if(params1.agentId == 0) delete params1.agentId
             if(billing.weixinPayMode.modeType == 'PACKAGE'){
               billing.weixinPayMode.payModeDetail.map((packItem, packI) => {
                 return packItem.tag = packI + 1

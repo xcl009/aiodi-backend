@@ -281,7 +281,8 @@
                     endTime: '23:59'
                   }
                 ],
-                days: [{val: 1}]
+                days: [{val: 1}],
+                weeks: [{val: 1}]
               },
               supportType: [
                 {
