@@ -288,7 +288,23 @@
           terminalSn: {
             title: '二维码',
             type: 'input'
-          }
+          },
+          // initStoreName: {
+          //   title: '初始商户',
+          //   type: 'input'
+          // },
+          // currentStoreName: {
+          //   title: '当前商户',
+          //   type: 'input'
+          // },
+          // initAgentName: {
+          //   title: '初始代理',
+          //   type: 'input'
+          // },
+          // currentAgentName: {
+          //   title: '当前代理',
+          //   type: 'input'
+          // },
         },
         formKey: {
           sel1: 'terminalId',
