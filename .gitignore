@@ -5,6 +5,9 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 tests/**/coverage/
+buildprod.bat
+buildstage.bat
+run.bat
 
 # Editor directories and files
 .idea
