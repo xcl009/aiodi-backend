@@ -1,6 +1,6 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
       <template v-slot:tabs>
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">提现状态</div>
@@ -24,17 +24,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="代理姓名" v-if="userType == 1" >
-          <el-input v-model="form.name" placeholder="代理姓名"/>
+          <selectSearch v-model="form.agentIds" :type="5" name="name" placeholder="代理姓名" @change="toQuery()"></selectSearch>
         </el-form-item>
         <el-form-item label="商户名称" v-if="userType == 2" >
-          <el-input v-model="form.storeName" placeholder="商户名称"/>
+          <selectSearch v-model="form.storeIds" :type="3" name="name" placeholder="商户名称" @change="toQuery()"></selectSearch>
         </el-form-item>
         <el-form-item label="用户昵称" v-if="userType == 3" >
-          <el-input v-model="form.nickName" placeholder="用户昵称"/>
+          <selectSearch v-model="form.nickName" :type="1" name="idLastNine" placeholder="用户昵称" @change="toQuery()"></selectSearch>
         </el-form-item>
-        <el-form-item label="手机号码">
+       <!-- <el-form-item label="手机号码">
           <el-input v-model="form.mobile" placeholder="手机号码" />
-        </el-form-item>
+        </el-form-item> -->
       </template>
     </condition>
 
@@ -178,12 +178,16 @@
         <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
       </div>
     </el-dialog>
+    
+    <xlsx ref="toXlsx" fileName="提现记录"></xlsx>
   </div>
 </template>
 
 <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
+  import selectSearch from '@/components/condition/selectSearch'
+  import xlsx from '@/components/xlsx/'
   import {
     accSub,
     copyText
@@ -192,7 +196,9 @@
     name: 'agentWithdraw',
     components: {
       Pagination,
-      condition
+      condition,
+      selectSearch,
+      xlsx
     },
     props: {
       userType: {
@@ -325,18 +331,45 @@
           params.endTime = params.date[1] + ' 23:59:59'
           delete params.date
         }
-        this.$get('iot-saas-pay/admin/pay/withdraw/list', params).then(res => {
+        this.$get('iot-saas-pay/admin/pay/withdraw/list', params).then((res = {}) => {
           this.list = res.rows || []
-          this.listLoading = false
-          this.clickSubmit = false
-          if (params.page == 0) {
-            this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+          if (this.outStatus) {
+            let end = false
+            if (params.size > this.list.length) end = true
+            this.$nextTick(() => {
+              this.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size),  () => {
+                if(end){
+                  this.outStatus = false
+                  this.toQuery()
+                }else{
+                  this.listQuery.page += 1
+                  this.getList()
+                }
+              })
+            })
+          }else{
+            this.listLoading = false
+            this.clickSubmit = false
+            if (params.page == 0) {
+              this.listTotal = res.total
+              this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+            }
           }
         }).catch(() => {
           this.listLoading = false
           this.clickSubmit = false
         })
+      },
+      
+      /**
+       * 导出
+       */
+      saveXlsx() {
+        this.outStatus = true
+        this.listLoading = true
+        this.listQuery.size = 100
+        this.list = []
+        this.getList()
       },
 
       /**

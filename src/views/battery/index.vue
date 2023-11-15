@@ -1,8 +1,64 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <el-row :gutter="20" type="flex" class="flex-wrap mb-15 fs-s2 text-nowrap">
+      <el-col :span="24" :md="5">
+        <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
+          <img :src="require('@/assets/lease/total.svg')" width="54">
+          <div class="flex1 ml-10">
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.orderNumber || 0 }}</span>笔</div>
+            <div class="mt-5">品牌名下电池数</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="24" :md="5">
+        <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
+          <img :src="require('@/assets/lease/device.svg')" width="54">
+          <div class="flex1 ml-10">
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceNumber || 0.00 }}</span>台</div>
+            <div class="mt-5">在槽电池数</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="24" :md="5">
+        <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
+          <img :src="require('@/assets/lease/ok.svg')" width="54">
+          <div class="flex1 ml-10">
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.payAmount || 0.00 }}</span>元</div>
+            <div class="mt-5">租借中电池数</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="24" :md="5">
+        <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
+          <img :src="require('@/assets/lease/wait.svg')" width="54">
+          <div class="flex1 ml-10">
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount || 0.00 }}</span>元</div>
+            <div class="mt-5">弹出检修数</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="24" :md="5">
+        <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
+          <img :src="require('@/assets/lease/wait.svg')" width="54">
+          <div class="flex1 ml-10">
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount || 0.00 }}</span>元</div>
+            <div class="mt-5">异常电池数</div>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
+      <template v-slot:tabs>
+        <div class="mb-10 flex align-center bg-white">
+          <div class="mr-10">设备状态</div>
+          <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
+            <el-tab-pane :label="`${item.title}`" :name="''+item.value+''" v-for="item in orderTab" />
+          </el-tabs>
+        </div>
+      </template>
       <template v-slot:defult>
-        <el-form-item v-for="item in 1">
+        <el-form-item v-for="item in 2">
           <div class="flex combined">
             <el-select v-model="formKey[`sel${item}`]" placeholder="请选择">
               <template v-for="(q, key) in queryObj">
@@ -10,7 +66,7 @@
               </template>
             </el-select>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
+              <el-input :placeholder="`请输入${queryObj[formKey[`sel${item}`]].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
               <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"
@@ -39,7 +95,7 @@
         <table-column-set storageKey="leaseOrderTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
-      <el-table class="custom" id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
+      <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
         <template v-for="item in showColumn" v-if="item.val">
           <el-table-column :label="item.name" min-width="140" v-if="item.key == 'name'">
             <template slot-scope="scope">
@@ -54,9 +110,12 @@
               {{ scope.row.warningStatue == 1 ? '预警' : '正常' }}
             </template>
           </el-table-column>
-          <el-table-column :label="item.name" width="90" v-else-if="item.key == 'onlineStatue'">
+          <el-table-column :label="item.name" width="150" v-else-if="item.key == 'onlineStatue'">
             <template slot-scope="scope">
-              {{ scope.row.ext ? '在槽' : '--' }}
+              <div class="flex align-center">
+                <el-button :type="onlineStatus[scope.row.onlineStatue] ? onlineStatus[scope.row.onlineStatue].type : ''" circle class="mr-5 btn-status_circle"></el-button>
+                <span>{{ onlineStatus[scope.row.onlineStatue] ? onlineStatus[scope.row.onlineStatue].desc : '--' }}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.key == 'belongStatue'">
@@ -116,6 +175,8 @@
         </div>
       </template>
     </el-drawer>
+
+    <xlsx ref="toXlsx" fileName="充电宝记录"></xlsx>
   </div>
 </template>
 
@@ -124,6 +185,7 @@
   import condition from '@/components/condition/'
   import selectSearch from '@/components/condition/selectSearch'
   import TableColumnSet from '@/components/TableColumnSet/index'
+  import xlsx from '@/components/xlsx/'
   import {
     arrayToObj
   } from '@/utils/index'
@@ -134,7 +196,8 @@
       condition,
       selectSearch,
       TableColumnSet,
-      Pagination
+      Pagination,
+      xlsx
     },
     computed: {
       myDeviceName(){
@@ -154,6 +217,69 @@
     data() {
       return {
         clickSubmit: false,
+        onlineStatus: [
+          {
+            type: 'primary',
+            desc: '在槽',
+          },
+          {
+            type: 'success',
+            desc: '租借中',
+          },
+          {
+            type: 'warning',
+            desc: '检修弹出',
+          },
+          {
+            type: 'warning',
+            desc: '租借弹出中',
+          },
+          {
+            type: 'warning',
+            desc: '检修弹出中',
+          },
+          {
+            type: 'danger',
+            desc: '异常不在槽',
+          }
+        ],
+        orderTab: [
+          {
+            value: 0,
+            title: '全部',
+            nkey: 'orderNumber'
+          },
+          {
+            value: 'warningStatue,1',
+            title: '预警检修',
+            nkey: 'warningStatue'
+          },
+          {
+            value: 'warningStatue,0',
+            title: '未预警检修',
+            nkey: 'todayNumber'
+          },
+          {
+            value: 'onlineStatue,0',
+            title: '当前在槽',
+            nkey: 'doneNumber'
+          },
+          {
+            value: 'onlineStatue,1',
+            title: '租借中',
+            nkey: 'expiredNumber'
+          },
+          {
+            value: 'onlineStatue,2',
+            title: '弹出检修',
+            nkey: 'rentFailedNumber'
+          },
+          {
+            value: 'onlineStatue,5',
+            title: '异常不在槽',
+            nkey: 'payFailedNumber'
+          }
+        ],
         queryObj: {
           terminalId: {
             title: '宝SN',
@@ -162,24 +288,11 @@
           terminalSn: {
             title: '二维码',
             type: 'input'
-          },
-          /* initAgentName: {
-            title: '初始代理名称',
-            type: 'input'
-          },
-          initStoreName: {
-            title: '初始商户名称',
-            type: 'input'
-          },
-          onlineStatue: {
-            title: '状态',
-            type: 'select',
-            selectArr: {0: '在槽', 1: '不在槽'}
-          } */
+          }
         },
         formKey: {
           sel1: 'terminalId',
-          //sel2: 'terminalSn'
+          sel2: 'terminalSn'
         },
         form: {},
         tableMaxH: '250',
@@ -189,10 +302,9 @@
         listQuery: {
           page: 1,
           size: 20,
-          status: '-1'
+          status: 0
         },
         totalStat: {},
-        orderStat: {},
         pickerOptionsEnd: {
           disabledDate: (time) => {
             let timeOptionRange = this.timeOptionRange
@@ -242,11 +354,7 @@
             name: '宝SN',
             width: 150
           },
-          {
-            key: 'onlineStatue',
-            val: true,
-            name: '状态'
-          },
+
           {
             key: 'factoryName',
             val: true,
@@ -292,30 +400,35 @@
             key: 'initAgentName',
             val: true,
             name: '初始代理',
-            width: 200
+            width: 150
           },
           {
             key: 'currentAgentName',
             val: true,
             name: '当前代理',
-            width: 200
+            width: 150
           },
           {
             key: 'initStoreName',
             val: true,
             name: '初始商户',
-            width: 200
+            width: 150
           },
           {
             key: 'currentStoreName',
             val: true,
             name: '当前商户',
-            width: 200
+            width: 150
           },
           {
             key: 'belongStatue',
             val: true,
             name: '归属状态'
+          },
+          {
+            key: 'onlineStatue',
+            val: true,
+            name: '状态'
           },
           // {
           //   key: 'lastOverhaulId',
@@ -381,8 +494,13 @@
           params.endTime = params.date[1] + ' 23:59:59'
           delete params.date
         }
-        if (params.status < 0) delete params.status
-        if (params.deviceTypeCode == 0) delete params.deviceTypeCode
+        if (params.status <= 0){
+          delete params.status
+        }else{
+          let status = params.status.split(',')
+          params[status[0]] = status[1]
+          delete params.status
+        }
         for(var i in params){
           if(i.indexOf('deductionId') > -1 && params[i]){
             let v = params[i]
@@ -391,8 +509,6 @@
           }
         }
         this.$get('iot-saas-device/admin/device/stock/findPage', params).then(async (res = {}) => {
-          this.listLoading = false
-          this.clickSubmit = false
           let list = res.rows || []
           if(list.length > 0){
             let ids = this.arrayKeys(list, 'terminalId')
@@ -408,14 +524,43 @@
             })
           }
           this.list = list
-          if(params.page == 0){
-            this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.table_box.$el.offsetTop - 60
+          if (this.outStatus) {
+            let end = false
+            if (params.size > this.list.length) end = true
+            this.$nextTick(() => {
+              this.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size),  () => {
+                if(end){
+                  this.outStatus = false
+                  this.toQuery()
+                }else{
+                  this.listQuery.page += 1
+                  this.getList()
+                }
+              })
+            })
+          }else{
+            this.listLoading = false
+            this.clickSubmit = false
+            if(params.page == 0){
+              this.listTotal = res.total
+              this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+            }
           }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
         })
+      },
+
+      /**
+       * 导出
+       */
+      saveXlsx() {
+        this.outStatus = true
+        this.listLoading = true
+        this.listQuery.size = 100
+        this.list = []
+        this.getList()
       },
 
       /**
@@ -478,5 +623,9 @@
 </script>
 
 <style lang="scss" scoped>
-
+  @media only screen and (min-width: 992px){
+    /deep/ .el-col-md-5{
+      width: 20%;
+    }
+  }
 </style>

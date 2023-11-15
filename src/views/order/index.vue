@@ -1,6 +1,6 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
       <template v-slot:tabs>
         <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
           <div class="mr-10">设备类型</div>
@@ -26,7 +26,7 @@
               </template>
             </el-select>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
+              <el-input :placeholder="`请输入${queryObj[formKey[`sel${item}`]].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
               <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"
@@ -613,6 +613,8 @@
         </template>
       </el-drawer>
     </div>
+
+    <xlsx ref="toXlsx" fileName="订单记录"></xlsx>
   </div>
 </template>
 
@@ -621,6 +623,7 @@
   import condition from '@/components/condition/'
   import selectSearch from '@/components/condition/selectSearch'
   import TableColumnSet from '@/components/TableColumnSet/index'
+  import xlsx from '@/components/xlsx/'
   import {
     dealPhone,
     showFeeMode,
@@ -637,7 +640,8 @@
       TableColumnSet,
       Pagination,
       condition,
-      selectSearch
+      selectSearch,
+      xlsx
     },
     props: {
       lowerAgent: {
@@ -782,6 +786,10 @@
           },
           deviceSn: {
             title: '设备二维码',
+            type: 'input'
+          },
+          terminalId: {
+            title: '充电宝SN',
             type: 'input'
           },
           transactionNo: {
@@ -940,12 +948,6 @@
         })
       }
       this.toQuery()
-
-      // this.$post('iot-saas-pay/admin/deposit/queryByOrderNo', {
-      //   orderNo: 'ZJPA2023092922462368749140460'
-      // }).then(res => {
-
-      // })
     },
     beforeDestroy(){
       localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
@@ -1052,12 +1054,29 @@
         }
         if(this.lowerAgent != 'ALL') params.lowerAgent = this.lowerAgent || false
         this.$get(url, params).then(res => {
-          this.list = res.rows
-          this.listLoading = false
-          this.clickSubmit = false
-          this.listTotal = res.total
-          if (params.page == 0) {
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 55
+          if (this.outStatus) {
+            this.list = res ? res.rows : []
+            let end = false
+            if (params.size > this.list.length) end = true
+            this.$nextTick(() => {
+              this.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size),  () => {
+                if(end){
+                  this.outStatus = false
+                  this.toQuery()
+                }else{
+                  this.listQuery.page += 1
+                  this.getList()
+                }
+              })
+            })
+          } else {
+            this.list = res ? res.rows : []
+            this.listLoading = false
+            this.clickSubmit = false
+            if (params.page == 0) {
+              this.listTotal = res.total
+              this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 55
+            }
           }
         }).catch(() => {
           this.listLoading = false
@@ -1321,6 +1340,17 @@
             })
           }
         })
+      },
+
+      /**
+       * 导出
+       */
+      saveXlsx() {
+        this.outStatus = true
+        this.listLoading = true
+        this.listQuery.size = 100
+        this.list = []
+        this.getList()
       },
 
       /**

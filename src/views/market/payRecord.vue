@@ -222,10 +222,13 @@
             let end = false
             if (params.size > this.list.length) end = true
             this.$nextTick(() => {
-              this.$refs['toXlsx'].saveTableXlsx(end, () => {
+              this.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size), () => {
                 if(end){
                   this.outStatus = false
                   this.toQuery()
+                }else{
+                  this.listQuery.page += 1
+                  this.getList()
                 }
               })
             })

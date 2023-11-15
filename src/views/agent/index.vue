@@ -110,6 +110,7 @@
                   <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR`})" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">概率押金</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DIVIDE_ACCOUNTS`})" v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">微信分账</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)" v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">重置登录密码</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({path: `/market/appList`})" v-if="isBrand()">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -391,6 +392,25 @@
                 frozenBalance: row.frozenBalance
               }
             }
+            break
+          case 6:
+            this.$alert('确定重置该代理账号的登录密码吗？', '重置登录密码', {
+              confirmButtonText: '确定',
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-user/admin/user/password/reset', {
+                    userId: row.userId,
+                    password: '123456'
+                  }).then(res => {
+                    this.$message({
+                      message: '重置成功',
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
             break
         }
       },

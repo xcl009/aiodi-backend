@@ -241,19 +241,23 @@ export default {
       width: initial;
       height: 32px;
     }
-    /deep/ .combined .el-select{
-      &:first-child{
-        border-right: 1px solid #E5E6EB;
-      }
-    }
     /deep/ .el-input__inner{
       padding: 0 10px;
       width: 135px;
       height: 32px !important;
       line-height: 32px;
-      border: 1px solid #F2F3F5;
-      background: #F2F3F5;
+      border: 1px solid #E5E6EB;
+      //background: #F2F3F5;
       border-radius: 0;
+    }
+    /deep/ .combined .el-select{
+      &:first-child{
+        .el-input__inner{
+          background: #F2F3F5;
+          border-right: none;
+        }
+        //border-right: 1px solid #E5E6EB;
+      }
     }
 
     /deep/ .el-date-editor--year .el-input__inner, .el-date-editor--month .el-input__inner{
@@ -282,7 +286,7 @@ export default {
 
     }
     /deep/ .el-range-input{
-      background: #F2F3F5;
+      //background: #F2F3F5;
     }
   }
   .set-box{

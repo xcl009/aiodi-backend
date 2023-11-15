@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="!isStore()">
-      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
         <template v-slot:defult>
           <el-form-item label="品牌名称" v-if="isSaas()">
             <selectSearch v-model="form.brandId" :type="6" name="name" placeholder="请输入品牌名称" @change="toQuery()"></selectSearch>
@@ -174,10 +174,10 @@
                     <el-dropdown-item @click.native="$router.push({path: `/store/steal?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">DD设置</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId`})" v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">免费名额</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, scope.row, 4, scope.$index)" v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
-                    <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 5)">重置登录密码</el-dropdown-item> -->
                     <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DEPOSIT_PRPR`})" v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">概率押金</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DIVIDE_ACCOUNTS`})" v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.storeDivisionConfig)">微信分账</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, cashStat[scope.row.id], 6)" v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">重置登录密码</el-dropdown-item>
                     <template v-if="checkAbility(['WF'], 2, scope.row.storeDivisionConfig)">
                       <el-dropdown-item @click.native="setRows(3, scope.row, 7)">共享WIFI</el-dropdown-item>
                     </template>
@@ -281,6 +281,7 @@
     <relatedTemplate ref="relatedTemplates"></relatedTemplate>
     <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN"></AssignAbility>
     <VendorMode ref="VendorModes" v-if="myDeviceId['VM'] && !isSaas()"></VendorMode>
+    <xlsx ref="toXlsx" fileName="商户记录"></xlsx>
   </div>
 </template>
 
@@ -296,6 +297,7 @@
   import ImportData from '@/components/ImportData/'
   import selectSearch from '@/components/condition/selectSearch'
   import TableColumnSet from '@/components/TableColumnSet/index'
+  import xlsx from '@/components/xlsx/'
   export default {
     name: 'subShop',
     components: {
@@ -306,7 +308,8 @@
       VendorMode,
       AssignAbility,
       ImportData,
-      selectSearch
+      selectSearch,
+      xlsx
     },
     props: {
       lowerStore: {
@@ -542,17 +545,33 @@
             }
           }
           this.list = list
-          this.listLoading = false
-          this.clickSubmit = false
-          if (params.page == 0) {
-            this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
-          }
           this.queryCash(this.arrayKeys(res.rows, 'id'))
           this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
           this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))
           if(this.lowerStore) this.getSupUser(this.arrayKeys(res.rows, 'userId'))
           this.getStoreCate(this.arrayKeys(res.rows, 'catId'))
+          if (this.outStatus) {
+            let end = false
+            if (params.size > this.list.length) end = true
+            this.$nextTick(() => {
+              this.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size),  () => {
+                if(end){
+                  this.outStatus = false
+                  this.toQuery()
+                }else{
+                  this.listQuery.page += 1
+                  this.getList()
+                }
+              })
+            })
+          }else{
+            this.listLoading = false
+            this.clickSubmit = false
+            if (params.page == 0) {
+              this.listTotal = res.total
+              this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+            }
+          }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
@@ -700,6 +719,17 @@
           })
           this.cityList = list
         })
+      },
+
+      /**
+       * 导出
+       */
+      saveXlsx() {
+        this.outStatus = true
+        this.listLoading = true
+        this.listQuery.size = 100
+        this.list = []
+        this.getList()
       },
 
       /**

@@ -42,7 +42,7 @@ export default {
     /**
      * 导出数据到表格
      */
-    saveTableXlsx(end, cbk) {
+    saveTableXlsx(end, pages, cbk) {
       this.excel = true
       let fix = document.querySelector('.el-table__fixed-right')
       let xlsxParam = { raw: true }
@@ -58,6 +58,7 @@ export default {
       } else {
         this.wi++
         if (!end) {
+          this.percentage = this.percentage < 96 ? (100 / pages) * this.wi : 96
           setTimeout(()=>{
             cbk()
           }, 200)
@@ -77,7 +78,7 @@ export default {
             if (n != 1 && n != 'ref') {
               let k = s.substring(0, 1)
               n = s.substring(1)
-              no = ((parseInt(i) * this.listQuery.size) + parseInt(n))
+              no = ((parseInt(i) * 100) + parseInt(n))
               sheet1[k + no] = sheet1[s]
             }
             delete sheet1[s]

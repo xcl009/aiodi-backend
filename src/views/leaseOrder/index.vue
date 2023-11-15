@@ -65,7 +65,7 @@
               </template>
             </el-select>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`"
+              <el-input :placeholder="`请输入${queryObj[formKey[`sel${item}`]].title}`"
                 v-model="form[formKey[`sel${item}`]]"></el-input>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">

@@ -523,7 +523,7 @@ const util = {
     }
     m = Math.pow(10, Math.max(r1, r2)); //last modify by deeka //动态控制精度长度
     n = (r1 >= r2) ? r1 : r2;
-    return ((arg1 * m - arg2 * m) / m).toFixed(n);
+    return parseFloat(((arg1 * m - arg2 * m) / m).toFixed(n));
   },
 
   /**

@@ -8,7 +8,7 @@
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">留存押金总额</div>
-            <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.allAmount || 0 }}</span>元</div>
+            <div><span class="mr-5 fs-b3 text-bold">{{ accSub(totalStat.allAmount, totalStat.amount) || 0 }}</span>元</div>
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">总笔数</div>
@@ -67,7 +67,7 @@
               </template>
             </el-select>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`"
+              <el-input :placeholder="`请输入${queryObj[formKey[`sel${item}`]].title}`"
                 v-model="form[formKey[`sel${item}`]]"></el-input>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
@@ -117,17 +117,17 @@
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'lAmount'">
             <template slot-scope="scope">
-              {{ accSub(scope.row.depositAmount, scope.row.depositAmount.amount) }}
+              {{ accSub(scope.row.depositAmount, scope.row.amount) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'rStatus'">
             <template slot-scope="scope">
-              {{ scope.row.depositAmount != scope.row.depositAmount.amount ? '已退款' : '未退款' }}
+              {{ scope.row.amountEnable != accSub(scope.row.depositAmount, scope.row.amount) ? '已退款' : '未退款' }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'rAmount'">
             <template slot-scope="scope">
-              {{ accSub(scope.row.depositAmount, scope.row.depositAmount.amountEnable) }}
+              {{ accSub(accSub(scope.row.depositAmount, scope.row.amount), scope.row.amountEnable) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || 120" v-else></el-table-column>

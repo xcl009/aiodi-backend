@@ -74,6 +74,14 @@
             <el-button class="mt-5" type="danger" size="mini" icon="el-icon-minus" v-if="form.notCloseRule.timeRules.length > 1 && index > 0"
               @click="form.notCloseRule.timeRules.splice(index, 1)"></el-button>
           </div>
+          <div class="flex">
+            <el-form-item label="扣款延时：">
+              <el-input type="number" v-model="form.kkDay">
+                <template slot="append">天</template>
+              </el-input>
+              <div>扣款延时时长大于0表示延时归还免押订单到期结束后即时计算订单金额分润给代理、商户且订单显示已正常完结，但实际扣用户的钱是在{{ form.kkDay || 0 }}天之后开始执行。温馨提示：若最终订单未能扣到钱，您将损失分给代理和商户的钱。<br></div>
+            </el-form-item>
+          </div>
         </template>
 
         <template v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">

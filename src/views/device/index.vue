@@ -1,6 +1,6 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
       <template v-slot:tabs>
         <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
           <div class="mr-10">设备类型</div>
@@ -26,7 +26,7 @@
               </template>
             </el-select>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-              <el-input :placeholder="`请输入${queryObj[formKey.sel1].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
+              <el-input :placeholder="`请输入${queryObj[formKey[`sel${item}`]].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
               <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"></selectSearch>
@@ -561,6 +561,8 @@
         </div>
       </template>
     </el-drawer>
+
+    <xlsx ref="toXlsx" fileName="设备记录"></xlsx>
   </div>
 </template>
 
@@ -569,8 +571,9 @@
   import condition from '@/components/condition/'
   import selectSearch from '@/components/condition/selectSearch'
   import TableColumnSet from '@/components/TableColumnSet/index'
+  import xlsx from '@/components/xlsx/'
   import QRCode from 'qrcodejs2'
-  import { unixTime, formatSeconds, currentTime } from '@/utils/index'
+  import { unixTime, formatSeconds, currentTime, accSub} from '@/utils/index'
   export default {
     name: 'device',
     components: {
@@ -578,6 +581,7 @@
       Pagination,
       condition,
       selectSearch,
+      xlsx
     },
     props: {
       lowerDevice: {
@@ -898,52 +902,68 @@
           params.groupIds = this.agentInfo.brandId
         } else if(this.isSaas()){
           url = 'iot-saas-device/admin/device/count/queryByUser'
-          if(this.deviceCount.deviceNumber != undefined){
-            if(params.deviceTypeCode){
-              this.deviceCount = {
-                deviceNumber: 0,
-                bindStoreNumber: 0,
-                noBindStoreNumber: 0
-              }
-              for(var i in this.deviceCountes.deviceTypeDetail){
-                let item = this.deviceCountes.deviceTypeDetail[i]
-                if(i.indexOf(params.deviceTypeCode) > -1){
+        }
+        if(this.deviceCountes){
+          if(params.deviceTypeCode){
+            this.deviceCount = {
+              deviceNumber: 0,
+              bindStoreNumber: 0,
+              noBindStoreNumber: 0
+            }
+            for(var i in this.deviceCountes.deviceTypeDetail){
+              let item = this.deviceCountes.deviceTypeDetail[i]
+              if(i.indexOf(params.deviceTypeCode) > -1){
+                if(this.isSaas()){
                   this.deviceCount.deviceNumber += parseInt(item.deviceNumber)
                   this.deviceCount.bindStoreNumber += parseInt(item.bindStoreNumber)
-                  this.deviceCount.noBindStoreNumber += parseInt( item.deviceNumber ) - parseInt( item.bindStoreNumber )
+                  this.deviceCount.noBindStoreNumber += accSub(item.deviceNumber, item.bindStoreNumber)
+                }else if(this.lowerDevice){
+                  this.deviceCount.deviceNumber += parseInt(item.lowerDeviceNumber)
+                  this.deviceCount.bindStoreNumber += parseInt(item.lowerBindStoreNumber)
+                  this.deviceCount.noBindStoreNumber += accSub(item.lowerDeviceNumber, item.lowerBindStoreNumber)
+                }else{
+                  this.deviceCount.deviceNumber += accSub(item.deviceNumber, item.lowerDeviceNumber)
+                  this.deviceCount.bindStoreNumber += accSub(item.bindStoreNumber, item.lowerDeviceNumber)
+                  this.deviceCount.noBindStoreNumber += accSub(accSub(item.deviceNumber, item.lowerDeviceNumber), accSub(item.bindStoreNumber, item.lowerBindStoreNumber))
                 }
               }
-            } else {
+            }
+          } else {
+            if(this.isSaas()){
               this.deviceCount = {
                 deviceNumber: this.deviceCountes.deviceNumber,
                 bindStoreNumber: this.deviceCountes.bindStoreNumber,
                 noBindStoreNumber: this.deviceCountes.noBindStoreNumber
               }
+            }else if(this.lowerDevice){
+              this.deviceCount = {
+                deviceNumber: this.deviceCountes.lowerDeviceNumber,
+                bindStoreNumber: this.deviceCountes.lowerBindStoreNumber,
+                noBindStoreNumber: accSub(this.deviceCountes.lowerDeviceNumber, this.deviceCountes.lowerBindStoreNumber)
+              }
+            }else{
+              this.deviceCount = {
+                deviceNumber: accSub(this.deviceCountes.deviceNumber, this.deviceCountes.lowerDeviceNumber),
+                bindStoreNumber: accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerDeviceNumber),
+                noBindStoreNumber: accSub(accSub(this.deviceCountes.deviceNumber, this.deviceCountes.lowerDeviceNumber), accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerBindStoreNumber))
+              }
             }
-            return
           }
+          return
         }
-        this.$get(url, params).then(res => {
+        this.$get(url, params).then((res = {}) => {
+          let info = res[params.groupIds] || res
           if(res[params.groupIds]){
-            res = res[params.groupIds]
+            res[params.groupIds].noBindStoreNumber = accSub(res[params.groupIds].deviceNumber, res[params.groupIds].bindStoreNumber)
+            let deviceCountes = JSON.parse(JSON.stringify(res[params.groupIds]))
+            deviceCountes.deviceTypeDetail = res[params.groupIds].deviceCountVOMap
+            delete deviceCountes.deviceCountVOMap
+            this.deviceCountes = deviceCountes
+            this.queryDeviceCount()
           } else {
-            res.noBindStoreNumber = parseInt( res.deviceNumber ) - parseInt( res.bindStoreNumber )
+            res.noBindStoreNumber = accSub(res.deviceNumber, res.bindStoreNumber)
             this.deviceCountes = JSON.parse(JSON.stringify(res))
             this.deviceCount = res
-            return
-          }
-          if(this.lowerDevice){
-            this.deviceCount = {
-              deviceNumber: res.lowerDeviceNumber,
-              bindStoreNumber: res.lowerBindStoreNumber,
-              noBindStoreNumber: parseInt(res.lowerDeviceNumber) -  parseInt(res.lowerBindStoreNumber)
-            }
-          } else {
-            this.deviceCount = {
-              deviceNumber: parseInt(res.deviceNumber) -  parseInt(res.lowerDeviceNumber),
-              bindStoreNumber: parseInt(res.bindStoreNumber) -  parseInt(res.lowerBindStoreNumber),
-              noBindStoreNumber: (parseInt(res.deviceNumber) -  parseInt(res.lowerDeviceNumber)) - (parseInt(res.bindStoreNumber) -  parseInt(res.lowerBindStoreNumber))
-            }
           }
         })
       },
@@ -1030,13 +1050,7 @@
         if(params.deviceTypeCode == 0) delete params.deviceTypeCode
         this.$get('iot-saas-device/admin/device/findPage', params).then((res = {}) => {
           this.list = res.rows || []
-          this.listLoading = false
-          this.clickSubmit = false
-          if (params.page == 0) {
-            this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
-          }
-          this.queryOrderCount(this.arrayKeys(res.rows, 'deviceSn'))
+          this.queryOrderCount(this.arrayKeys(this.list, 'deviceSn'))
           if(this.Ability['RELATION_DEVICE'] && this.list.length > 0){
             let fatherSn = []
             this.list.map(item => {
@@ -1048,6 +1062,29 @@
               this.queryByFatherDeviceSn(fatherSn)
             }
           }
+          if (this.outStatus) {
+            let end = false
+            if (params.size > this.list.length) end = true
+            this.$nextTick(() => {
+              this.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size),  () => {
+                if(end){
+                  this.outStatus = false
+                  this.toQuery()
+                }else{
+                  this.listQuery.page += 1
+                  this.getList()
+                }
+              })
+            })
+          } else {
+            this.listLoading = false
+            this.clickSubmit = false
+            if (params.page == 0) {
+              this.listTotal = res.total
+              this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+            }
+          }
+
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
@@ -1083,6 +1120,17 @@
         }).then(res => {
           this.fatherSn = res
         })
+      },
+
+      /**
+       * 导出
+       */
+      saveXlsx() {
+        this.outStatus = true
+        this.listLoading = true
+        this.listQuery.size = 100
+        this.list = []
+        this.getList()
       },
 
       /**

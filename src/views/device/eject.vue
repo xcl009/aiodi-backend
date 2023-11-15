@@ -65,7 +65,7 @@
                 icon-color="#FF7D00"
                 title="确定要弹出此宝吗？"
                 @onConfirm="singleEject(scope.row, 3)"
-                v-if="scope.row.terminalId"
+                v-if="scope.row.terminalId && isBrand()"
               >
                 <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? '弹出中' : '弹宝' }}</el-button>
               </el-popconfirm>
@@ -225,7 +225,7 @@
         this.clickSubmit = true
         this.allEjectStatus = true
         switch(this.factoryCode){
-          case 'WS': case 'TP':  case 'ZD':
+          case 'WS': case 'TP': case 'ZD':
             this.$get('iot-saas-device/admin/device/batchPopup', {
               deviceSn: this.deviceSn
             }).then((res = {}) => {
@@ -241,7 +241,7 @@
               this.clickSubmit = false
             })
           break
-          case 'HY': case 'XC': case 'DD':
+          case 'HY': case 'XC': case 'DD': case 'OT':
             this.$message({
               message: '指令已发送',
               type: 'success'

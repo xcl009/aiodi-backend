@@ -38,7 +38,7 @@
     </div>
 
     <div class="pl-5 bg-white">
-      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
         <template v-slot:defult>
           <el-form-item label="钱包类型">
             <el-select v-model="form.capitalType" placeholder="钱包类型" @change="toQuery()">
@@ -113,6 +113,7 @@
     </el-dialog>
 
     <recharge-khy-coin ref="rechargeCoin"></recharge-khy-coin>
+    <xlsx ref="toXlsx" fileName="收益记录"></xlsx>
   </div>
 </template>
 
@@ -120,12 +121,14 @@
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import RechargeKhyCoin from '@/components/RechargeKhyCoin/'
+  import xlsx from '@/components/xlsx/'
   export default {
     name: 'income',
     components: {
       Pagination,
       condition,
-      RechargeKhyCoin
+      RechargeKhyCoin,
+      xlsx
     },
     computed: {
       agentInfo() {
@@ -223,19 +226,46 @@
           params.endTime = params.date[1]
           delete params.date
         }
-        this.$get('iot-saas-pay/api/pay/tradeLog/list', params).then(res => {
-          this.list = res.rows
-          this.listLoading = false
-          this.clickSubmit = false
-          if (params.page == 0) {
-            this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+        this.$get('iot-saas-pay/api/pay/tradeLog/list', params).then((res = {}) => {
+          this.list = res.rows || []
+          if (this.outStatus) {
+            let end = false
+            if (params.size > this.list.length) end = true
+            this.$nextTick(() => {
+              this.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size),  () => {
+                if(end){
+                  this.outStatus = false
+                  this.toQuery()
+                }else{
+                  this.listQuery.page += 1
+                  this.getList()
+                }
+              })
+            })
+          }else{
+            this.listLoading = false
+            this.clickSubmit = false
+            if (params.page == 0) {
+              this.listTotal = res.total
+              this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+            }
           }
         }).catch(() => {
           this.clickSubmit = false
           this.listLoading = false
         })
-      }
+      },
+
+      /**
+       * 导出
+       */
+      saveXlsx() {
+        this.outStatus = true
+        this.listLoading = true
+        this.listQuery.size = 100
+        this.list = []
+        this.getList()
+      },
     }
   }
 </script>
