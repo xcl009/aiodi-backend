@@ -306,23 +306,23 @@
         <div class="flexv pl-20 pr-20 text-black" style="height: 100%;">
           <div class="mb-20 pb-5 l-b">
             <condition :clickSubmit="clickSubmit" :unfoldShow="false" pdClass="p-0"
-              @reset="agentList.query = { page: 1, size: 20 }; getAgentList(2)" @query="getAgentList(2)">
+              @reset="storeList.query = { page: 1, size: 20 }; getStoreList(2)" @query="getStoreList(2)">
               <template v-slot:defult>
                 <el-form-item label="代理姓名">
-                  <el-input placeholder="请输入代理姓名" v-model="agentList.query.name"></el-input>
+                  <el-input placeholder="请输入代理姓名" v-model="storeList.query.name"></el-input>
                 </el-form-item>
                 <el-form-item label="手机号">
-                  <el-input placeholder="请输入手机号" type="tel" v-model="agentList.query.mobile"></el-input>
+                  <el-input placeholder="请输入手机号" type="tel" v-model="storeList.query.mobile"></el-input>
                 </el-form-item>
               </template>
             </condition>
           </div>
-          <template v-if="agentList.newly && agentList.newly.length > 0">
+          <template v-if="storeList.newly && storeList.newly.length > 0">
             <div class="mb-15">
               最近分配
             </div>
             <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
-              <template v-for="item in agentList.newly">
+              <template v-for="item in storeList.newly">
                 <el-col :xs="24" :md="12" class="pb-15 custom">
                   <div class="p-15 item radius-5">
                     <div class="flex">
@@ -330,7 +330,7 @@
                         <div class="text-black">{{ item.name }}</div>
                         <div class="mt-5 text-gray">{{ item.mobile }}</div>
                       </div>
-                      <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">分配给Ta</el-button>
+                      <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">分配给Ta</el-button>
                     </div>
                     <div class="mt-5" v-if="item.agentDeviceType">
                       <span class="text-gray">设备类型</span>
@@ -349,12 +349,13 @@
           <div class="mb-10 flex align-center">
             查询结果
           </div>
-          <div v-infinite-scroll="getAgentList" infinite-scroll-distance="1" class="flex1 pt-5" style="overflow-y: auto;">
+          <div v-infinite-scroll="getStoreList" infinite-scroll-distance="1" class=" pt-5"
+            style="overflow-y: auto;max-width:900px;">
             <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
-              <template v-for="item in agentList.list">
-                <el-col :xs="24" :md="12" class="pb-15 custom">
+              <template v-for="item in storeList.list">
+                <el-col :xs="24" :md="12" class="pb-15 custom-form">
                   <el-card class="box-card">
-                    <div class="p-15 item radius-5">
+                    <div class="p-15 item radius-5 flexv">
                       <div class="flex">
                         <div class="flex1 flex_j">
                           <div>
@@ -365,14 +366,21 @@
                             <div class="mt-5 text-gray color">{{ item.mobile }}</div>
                           </div>
                         </div>
-                        <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">分配给Ta</el-button>
+
                       </div>
-                      <div class="" v-if="item.agentDeviceType">
-                        <span class="" v-for="d in item.agentDeviceType">{{ d.name }} {{ d.profitRatio }}</span>
+                      <div class="mt-20" v-if="item.agentDeviceType">
+                        <span class="color1 " :class="i > 0 ? 'ml-30' : ''" v-for="(d, i) in item.agentDeviceType"
+                          :key="i"><span class="color">{{ d.name }} </span>{{
+                            d.profitRatio }}</span>
                       </div>
-                      <div class="mt-5">
-                        <span class="text-gray">运营区域</span>
-                        <span class="ml-5">{{ item.province }}{{ item.city }}{{ item.district }}</span>
+                      <div class="flex_j">
+                        <div class="mt-5">
+                          <span class="text-gray color">运营区域</span>
+                          <span class="ml-5">{{ item.province }}{{ item.city }}{{ item.district }}</span>
+                        </div>
+                        <div class="m_l_a">
+                          <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">分配给Ta</el-button>
+                        </div>
                       </div>
                     </div>
                   </el-card>
@@ -380,9 +388,58 @@
               </template>
             </el-row>
           </div>
+          <div class="bottom pt-15 pb-15">
+            <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">分配给自己</el-button>
+          </div>
         </div>
       </template>
-      <template v-if="[1, 4, 6, 7].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 9">
+        <div class="flexv pl-20 pr-20 text-black">
+          <div class="mb-15 fw6">代理接收方</div>
+          <div class="flex align-center pb-20 l-b">
+            <img :src="checkList.avatar || agentInfo.avatar" class="userimg" width="56" alt="">
+            <div class="pl-20">
+              <div class="flex">
+                <div class="label-text">代理名称:</div>
+                <div>{{ checkList.name }}</div>
+                <div class="ml-50 label-text">联系方式:</div>
+                <div>{{ checkList.mobile }}</div>
+              </div>
+              <div class="flex mt-10">
+                <div class="label-text">设备类型:</div>
+                <div> <span class="ml-5" v-for="d in checkList.agentDeviceType">{{ d.name }}</span></div>
+                <div class="ml-50 label-text">运营区域:</div>
+                <div>{{ checkList.province }}{{ checkList.city }}{{ checkList.district }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-15 fw6">代理数据变更</div>
+
+          <div class="mt-30">
+            <div class="flex">
+              <div class="title color2">
+                可提现金额保留
+              </div>
+              <div class="ml-30">
+                <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="2" />
+                <div class=" fs-s3 color mt-5">开启表示保留代理可提现金额。关闭表示清空当前代理的可提现金额</div>
+              </div>
+            </div>
+            <div class="flex mt-20">
+              <div class="title color2">
+                分成比例说明
+              </div>
+              <div class="ml-30">
+                <div class=" fs-s3 color mt-5">1.1 真实分成情况：</br>若当前代理原始的真实分成大于选中代理自身的分成，划拨后，当前代理的分成比例，默认</br>取代理自身所有的分成比例
+                </div>
+                <div class="fs-s3 color mt-20">1.2 真实分成情况：</br>若当前代理原始的真实分成小于选中代理自身的分成，划拨后，当前代理的分成比例，默认</br>保留代理原始的分成比例
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-if="[1, 4, 6, 7, 9].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
@@ -563,6 +620,7 @@ export default {
         list: [],
         newly: []
       },
+      checkList: {},
     }
   },
   computed: {
@@ -615,24 +673,29 @@ export default {
 
   },
   methods: {
+    // 分配事件
+    allocation(type, item, dialogType) {
+      this.checkList = item;
+      this.dialogType = dialogType;
+    },
     /**
        * 获取代理
        */
-    getAgentList(type = 1) {
-      let params = JSON.parse(JSON.stringify(this.agentList.query))
+    getStoreList(type = 1) {
+      let params = JSON.parse(JSON.stringify(this.storeList.query))
       if (type == 2) {
         params.page = 1
-        this.agentList.list = []
+        this.storeList.list = []
       }
       params.page--
       params.lowerAgent = false
       if (this.onLoadAgent && type == 1) return
       this.onLoadAgent = true
-      this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
-        this.agentList.list = this.agentList.list.concat(res.rows || [])
+      this.$get('iot-saas-basic/admin/store/findPage', params).then(res => {
+        this.storeList.list = this.storeList.list.concat(res.rows || [])
         if (parseInt((parseInt(res.total) / params.size)) > params.page) {
           this.onLoadAgent = false
-          this.agentList.query.page = params.page + 2
+          this.storeList.query.page = params.page + 2
         }
       })
     },
@@ -918,7 +981,6 @@ export default {
      * @param {Object} idx 当前商户所在位置
      */
     setRows(type, row, dialogType, idx) {
-      console.log('row', row)
       switch (type) {
         case 1: case 3:
           this.dialogType = dialogType
@@ -1003,7 +1065,6 @@ export default {
           this.curRow = row
           this.curIdx = idx
           this.drawerStatus = true
-          console.log(this.dialogType, 'dialogType')
       }
     },
 
@@ -1124,11 +1185,11 @@ export default {
               message: '操作成功',
               type: 'success'
             })
-            let newlyAgent = JSON.parse(JSON.stringify(this.agentList.newly))
+            let newlyAgent = JSON.parse(JSON.stringify(this.storeList.newly))
             if (newlyAgent.length > 2) newlyAgent.pop()
             if (this.arrayKeys(newlyAgent, 'id').indexOf(row.id) == -1) newlyAgent.unshift(row)
             localStorage.setItem(`newly_agent_${this.agentInfo.id}`, JSON.stringify(newlyAgent))
-            this.agentList.newly = newlyAgent
+            this.storeList.newly = newlyAgent
             this.clickSubmit = false
           }).catch(err => {
             this.clickSubmit = false
@@ -1205,14 +1266,39 @@ export default {
 }
 
 .userimg {
-  width: 46px;
-  height: 46px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
 }
-.color{
+
+.color {
   color: #86909C;
 }
-.color1{
+
+.color1 {
   color: #1D2129;
 }
-</style>
+
+.color2 {
+  color: #4E5969;
+}
+
+.flexv {
+  position: relative;
+
+  .bottom {
+    position: absolute;
+    width: 96%;
+    bottom: 0;
+    border-top: 1px solid var(--color-border-2, #E5E6EB);
+    background: #FFF;
+  }
+}
+
+.fw6 {
+  font-weight: 600;
+}
+
+.title {
+  min-width: 120px;
+}</style>
