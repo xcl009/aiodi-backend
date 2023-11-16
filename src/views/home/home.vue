@@ -645,18 +645,24 @@ export default {
       })
     },
 
-    /**
+     /**
      * 商户统计
      */
     queryDeviceUseCount() {
       let endDateStr = new Date().getFullYear() + 1;
-      this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', {
+      let params = {
         size: 6,
         page: 0,
-        startDateStr: '2022',
+        startDateStr: "2011",
         endDateStr,
-      }).then(res => {
-        this.storeList = res && res.rows.length > 0 ? res.rows : this.storeLists
+      }    
+      if(this.isBrand()){
+        params.brandId = this.agentInfo.brandId;
+      } else if(this.isAgent()){
+        params.agentId = this.agentInfo.agentId;
+      }
+      this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(res => {
+        this.storeList = res && res.length > 0 ? res : this.storeLists
       })
     },
 
