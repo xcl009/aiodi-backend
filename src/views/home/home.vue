@@ -150,7 +150,7 @@
           <div class="flex align-center">
             <div class="line"></div>
             <div class="flex1 fs-b2">商户统计</div>
-            <div class="addRight fs-b2" @click="$router.push({ path: `/store/storeList` })">更多</div>
+            <div class="cursor" @click="$router.push({ path: `/store/storeList` })">更多</div>
           </div>
           <el-table class="store-table text-white" :highlight-current-row="false" :header-row-style="{ background: 'none' }"
             :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
@@ -653,10 +653,10 @@ export default {
       this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', {
         size: 6,
         page: 0,
-        startDateStr: "2011",
+        startDateStr: '2022',
         endDateStr,
       }).then(res => {
-        this.storeList = res && res.length > 0 ? res : this.storeLists
+        this.storeList = res && res.rows.length > 0 ? res.rows : this.storeLists
       })
     },
 
