@@ -335,7 +335,7 @@ export default {
             }
 
             this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(async (res = {}) => {
-                let list = res || []
+                let list = res.rows || []
                 this.list = list
                 this.listLoading = false
                 this.clickSubmit = false
