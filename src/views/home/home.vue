@@ -662,7 +662,7 @@ export default {
         params.agentId = this.agentInfo.agentId;
       }
       this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(res => {
-        this.storeList = res && res.length > 0 ? res : this.storeLists
+        this.storeList = res && res.rows.length > 0 ? res.rows : this.storeLists
       })
     },
 
