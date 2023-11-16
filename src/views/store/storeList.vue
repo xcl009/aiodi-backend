@@ -333,6 +333,11 @@ export default {
                 }
                 delete params.dates;
             }
+            if (this.isBrand()) {
+                params.brandId = this.agentInfo.brandId;
+            } else if (this.isAgent()) {
+                params.agentId = this.agentInfo.agentId;
+            }
 
             this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(async (res = {}) => {
                 let list = res.rows || []
