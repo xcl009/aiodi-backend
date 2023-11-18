@@ -944,7 +944,7 @@
             }else{
               this.deviceCount = {
                 deviceNumber: accSub(this.deviceCountes.deviceNumber, this.deviceCountes.lowerDeviceNumber),
-                bindStoreNumber: accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerDeviceNumber),
+                bindStoreNumber: accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerBindStoreNumber),
                 noBindStoreNumber: accSub(accSub(this.deviceCountes.deviceNumber, this.deviceCountes.lowerDeviceNumber), accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerBindStoreNumber))
               }
             }
@@ -952,7 +952,6 @@
           return
         }
         this.$get(url, params).then((res = {}) => {
-          let info = res[params.groupIds] || res
           if(res[params.groupIds]){
             res[params.groupIds].noBindStoreNumber = accSub(res[params.groupIds].deviceNumber, res[params.groupIds].bindStoreNumber)
             let deviceCountes = JSON.parse(JSON.stringify(res[params.groupIds]))
