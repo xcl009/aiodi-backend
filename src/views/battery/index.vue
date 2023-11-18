@@ -5,7 +5,7 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/total.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.orderNumber || 0 }}</span>个</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ listTotal || 0 }}</span>个</div>
             <div class="mt-5">品牌名下电池数</div>
           </div>
         </div>
@@ -14,7 +14,7 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/device.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceNumber || 0.00 }}</span>个</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeStatusCounts || 0 }}</span>个</div>
             <div class="mt-5">在槽电池数</div>
           </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/ok.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.payAmount || 0.00 }}</span>个</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeLendingStatusCounts || 0 }}</span>个</div>
             <div class="mt-5">租借中电池数</div>
           </div>
         </div>
@@ -32,7 +32,7 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/wait.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount || 0.00 }}</span>个</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifePopupStatusCounts || 0 }}</span>个</div>
             <div class="mt-5">弹出检修数</div>
           </div>
         </div>
@@ -41,7 +41,7 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/wait.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount || 0.00 }}</span>个</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeExceptionStatusCounts || 0 }}</span>个</div>
             <div class="mt-5">异常不在槽电池数</div>
           </div>
         </div>
@@ -270,6 +270,11 @@
             nkey: 'expiredNumber'
           },
           {
+            value: 'onlineStatue,3',
+            title: '租借弹出中',
+            nkey: 'expiredNumber'
+          },
+          {
             value: 'onlineStatue,2',
             title: '弹出检修',
             nkey: 'rentFailedNumber'
@@ -462,8 +467,20 @@
     },
     mounted(options) {
       this.toQuery()
+      this.getStat()
     },
     methods: {
+      /**
+       * 获取可提现金额
+       */
+      getStat(){
+        this.$get('iot-saas-device/admin/device/stock/countsByBrandId', {
+          brandId: this.agentInfo.brandId
+        }).then(res => {
+          this.totalStat = res || {}
+        })
+      },
+
       /**
        * 搜索查询
        */
