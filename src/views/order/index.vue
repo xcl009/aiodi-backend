@@ -1231,6 +1231,7 @@ export default {
           } else if (dialogType == 2) {
             this.$set(this.dform, 'refundType', '0')
             if (row.amountEnable && row.amountEnable > 0) {
+              this.Constant.RefundType[3] = '余额退款';
               this.editObj.refundType = '3';
             }
 
