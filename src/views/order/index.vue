@@ -537,7 +537,7 @@
                   <div class="flex">
                     <div class="label-text">备注:</div>
                     <div>
-                      <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ? '消耗电量' : '租借时电量' }} :{{ curRow.afterLevel || curRow.level }}%</span>
+                      <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ? '消耗电量' : '租借时电量' }}({{ curRow.afterLevel || curRow.level }}%)</span>
                       <template v-if="curRow.freeTime > 0">
                         <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ parseInt(curRow.freeTime) / 60 }}小时</span>
                         <span class="mr-5" v-else-if="curRow.freeUser == 3">暂停计费：{{ parseInt(curRow.freeTime) / 60
@@ -545,7 +545,7 @@
                         <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime == 600000 ? '会员卡订单' :
                           `会员卡免费${curRow.freeTime}分钟` }}</span>
                       </template>
-                      <span>{{ curRow.remark ? curRow.remark : curRow.freeTime ? '' : '--' }}</span>
+                      <span>{{ curRow.remark ? curRow.remark : curRow.freeTime || '' }}</span>
                     </div>
                   </div>
                 </div>
@@ -1245,7 +1245,7 @@ export default {
                   this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn)
                   if (res.devicePopupRecordFeignOutFeign.afterStoreId) {
                     if(res.devicePopupRecordFeignOutFeign.afterLevel > 0) {
-                      this.$set(this.curRow, 'afterLevel', accSub(res.devicePopupRecordFeignOutFeign.afterLevel, res.devicePopupRecordFeignOutFeign.level))
+                      this.$set(this.curRow, 'afterLevel', accSub(res.devicePopupRecordFeignOutFeign.level, res.devicePopupRecordFeignOutFeign.afterLevel))
                     } else if(res.devicePopupRecordFeignOutFeign.level){
                       this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
                     }
