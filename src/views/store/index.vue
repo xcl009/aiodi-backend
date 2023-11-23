@@ -380,7 +380,8 @@
           },
           {
             key: 'amount',
-            val: true,
+            val: !this.isStore(),
+            hidden: this.isStore(),
             name: '交易额(元)'
           },
           {
@@ -395,7 +396,8 @@
           },
           {
             key: 'order',
-            val: true,
+            val: this.checkAbility(['order'], 3),
+            hidden: !this.checkAbility(['order'], 3),
             name: '订单量'
           },
           // {

@@ -33,46 +33,48 @@
       </el-row>
     </div>
 
-    <div class="pt-10 pl-10 pr-10 bg-white">
-      <div class="mt-10 pb-10 pl-10 fs-c1 text-black">收支概况</div>
-    </div>
+    <div v-if="!isStore() || storeMoneySetInfo.checkIncome == 1">
+      <div class="pt-10 pl-10 pr-10 bg-white">
+        <div class="mt-10 pb-10 pl-10 fs-c1 text-black">收支概况</div>
+      </div>
 
-    <div class="pl-5 bg-white">
-      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
-        <template v-slot:defult>
-          <el-form-item label="钱包类型">
-            <el-select v-model="form.capitalType" placeholder="钱包类型" @change="toQuery()">
-              <el-option label="普通钱包" value="RMB" />
-              <el-option label="快活币钱包" value="KHB" />
-            </el-select>
-          </el-form-item>
-        </template>
-      </condition>
-    </div>
+      <div class="pl-5 bg-white">
+        <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
+          <template v-slot:defult>
+            <el-form-item label="钱包类型">
+              <el-select v-model="form.capitalType" placeholder="钱包类型" @change="toQuery()">
+                <el-option label="普通钱包" value="RMB" />
+                <el-option label="快活币钱包" value="KHB" />
+              </el-select>
+            </el-form-item>
+          </template>
+        </condition>
+      </div>
 
-    <div class="pt-10 pl-20 pr-20 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        :max-height="tableMaxH" element-loading-text="Loading">
-        <el-table-column label="名称">
-          <template slot-scope="scope">
-            {{ scope.row.tradeName}}
-          </template>
-        </el-table-column>
-        <el-table-column label="时间">
-          <template slot-scope="scope">
-            <span>{{ scope.row.tradeTime }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="金额">
-          <template slot-scope="scope">
-            <el-link :type="scope.row.amount > 0 ? 'primary' : 'danger'">{{ scope.row.amount || "0.00" }}</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="pt-10 pl-20 pr-20 bg-white">
+        <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+          :max-height="tableMaxH" element-loading-text="Loading">
+          <el-table-column label="名称">
+            <template slot-scope="scope">
+              {{ scope.row.tradeName}}
+            </template>
+          </el-table-column>
+          <el-table-column label="时间">
+            <template slot-scope="scope">
+              <span>{{ scope.row.tradeTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="金额">
+            <template slot-scope="scope">
+              <el-link :type="scope.row.amount > 0 ? 'primary' : 'danger'">{{ scope.row.amount || "0.00" }}</el-link>
+            </template>
+          </el-table-column>
+        </el-table>
 
-      <div class="flex justify-center">
-        <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
-          :total="parseInt(listTotal)" @pagination="getList" />
+        <div class="flex justify-center">
+          <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
+            :total="parseInt(listTotal)" @pagination="getList" />
+        </div>
       </div>
     </div>
 
@@ -136,6 +138,9 @@
       },
       Ability() {
         return this.$store.getters.Ability
+      },
+      myDevice(){
+        return this.$store.getters.myDevice
       }
     },
     data() {
@@ -171,14 +176,42 @@
         listQuery: {
           page: 1,
           size: 20
-        }
+        },
+        storeMoneySetInfo: {}
       }
     },
     mounted(options) {
+      if(this.isStore()){
+        this.getSettingsFind()
+      } else {
+        this.toQuery()
+      }
       this.getBalance()
-      this.toQuery()
     },
     methods: {
+      /**
+       * 获取商户相关配置
+       */
+      getSettingsFind() {
+      	this.$request.get('iot-saas-basic/open/settings/find', {
+      		code: 'STORE_MONEY_SET'
+      	}).then(res => {
+      		if (res && res.code) {
+      			this.storeMoneySetInfo = JSON.parse(res.setting)
+      		} else {
+      			this.storeMoneySetInfo = {
+      				checkIncome: 1,
+      				checkMouthStat: 1,
+      				checkMouthStatSp: 0
+      			}
+      		}
+          console.log(this.myDevice)
+          if(this.storeMoneySetInfo.checkIncome == 1){
+            this.toQuery()
+          }
+      	})
+      },
+
       /**
        * 获取可提现金额
        */

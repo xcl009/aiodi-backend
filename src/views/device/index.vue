@@ -58,17 +58,12 @@
           </template>
         </el-table-column>
         <template v-for="item in showColumn">
-          <el-table-column label="设备类型" width="80" v-if="item.val && item.key == 'userNickName'">
+          <el-table-column label="设备类型" width="80" v-if="item.val && item.key == 'deviceType'">
             <template slot-scope="scope">
               {{ scope.row.deviceType.name || '密码线' }}
             </template>
           </el-table-column>
-          <el-table-column label="设备SN" width="130" v-if="item.val && item.key == 'factorySn'">
-            <template slot-scope="scope">
-              {{ scope.row.factorySn || "--" }}
-            </template>
-          </el-table-column>
-          <el-table-column label="二维码" width="240" v-if="item.val && item.key == 'deviceSn'">
+          <el-table-column label="二维码" width="240" v-else-if="item.val && item.key == 'deviceSn'">
             <template slot-scope="scope">
               <div class="flex align-center">
                 <span class="mr-10">{{ scope.row.deviceSn || "--" }}</span>
@@ -83,7 +78,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="总口数/可借" width="100" v-if="myDeviceId['PA'] && item.val && item.key == 'tenantNumber'">
+          <el-table-column label="总口数/可借" width="100" v-else-if="item.val && item.key == 'tenantNumber'">
             <template slot-scope="scope">
               <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
                 {{ parseInt(scope.row.tenantNumber) + parseInt(scope.row.restoreNumber) }} / {{ scope.row.tenantNumber }}
@@ -91,22 +86,22 @@
               <div v-else>--</div>
             </template>
           </el-table-column>
-          <el-table-column label="设备属性" width="120" v-if="item.val && item.key == 'deviceFactory'">
+          <el-table-column label="设备属性" width="120" v-else-if="item.val && item.key == 'deviceFactory'">
             <template slot-scope="scope">
               {{ scope.row.deviceFactory ? scope.row.deviceFactory.name : '--' }}
             </template>
           </el-table-column>
-          <el-table-column label="状态" width="100" v-if="item.val && item.key == 'distribute'">
+          <el-table-column label="状态" width="100" v-else-if="item.val && item.key == 'distribute'">
             <template slot-scope="scope">
               <div>{{ scope.row.distribute ? "已铺货" : "未铺货" }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="铺货时间" width="150" v-if="item.val && item.key == 'bindStoreTime'">
+          <el-table-column label="铺货时间" width="150" v-else-if="item.val && item.key == 'bindStoreTime'">
             <template slot-scope="scope">
               <div>{{ scope.row.distribute && scope.row.bindStoreTime ? parseTime(scope.row.bindStoreTime) : '--' }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="商户名称" min-width="200" v-if="item.val && item.key == 'store'">
+          <el-table-column label="商户名称" min-width="200" v-else-if="item.val && item.key == 'store'">
             <template slot-scope="scope">
               <div v-if="scope.row.store">
                 <div class="text-cut_two">{{ scope.row.store.name }}</div>
@@ -114,7 +109,7 @@
               <div v-else>--</div>
             </template>
           </el-table-column>
-          <el-table-column label="在线状态" width="95" v-if="item.val && item.key == 'onlineStatus'">
+          <el-table-column label="在线状态" width="95" v-else-if="item.val && item.key == 'onlineStatus'">
             <template slot-scope="scope">
               <div v-if="scope.row.onlineStatus && checkAbility(['PA', 'VG', 'AV', 'BD'], 2, [scope.row.deviceType])">
                 <el-popover
@@ -128,14 +123,14 @@
               <div v-else>--</div>
             </template>
           </el-table-column>
-          <el-table-column label="位置备注" width="100" v-if="item.val && item.key == 'place'">
+          <el-table-column label="位置备注" width="100" v-else-if="item.val && item.key == 'place'">
             <template slot-scope="scope">
               <div class="cursor text-primary text-cut" @click="setRows(1, scope.row, 3)">
                 {{ scope.row.place || '--' }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="订单数" width="240" v-if="Ability['order'] && item.val && item.key == 'order'">
+          <el-table-column label="订单数" width="240" v-else-if="item.val && item.key == 'order'">
             <template slot-scope="scope">
               <div class="flex">
                 <div class="flex1">微信：{{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].wx : 0 }}</div>
@@ -143,11 +138,12 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="交易额(元)" width="90" v-if="item.val && item.key == 'amount'">
+          <el-table-column label="交易额(元)" width="90" v-else-if="item.val && item.key == 'amount'">
             <template slot-scope="scope">
               {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00' }}
             </template>
           </el-table-column>
+          <el-table-column :label="item.name" :prop="item.key" :width="item.width || 120" v-else-if="item.val"></el-table-column>
         </template>
 
         <!-- 商户 -->
@@ -767,7 +763,8 @@
           {
             key: 'factorySn',
             val: false,
-            name: '设备SN码'
+            name: '设备SN码',
+            width: 130
           },
           {
             key: 'deviceSn',
@@ -776,7 +773,8 @@
           },
           {
             key: 'tenantNumber',
-            val: true,
+            val: this.checkAbility(['PA']),
+            hidden: !this.checkAbility(['PA']),
             name: '可借|可还'
           },
           {
@@ -811,13 +809,30 @@
           },
           {
             key: 'order',
-            val: true,
+            val: this.checkAbility(['order'], 3),
+            hidden: !this.checkAbility(['order'], 3),
             name: '订单数'
           },
           {
             key: 'amount',
-            val: true,
+            val: !this.isStore(),
+            hidden: !this.isStore(),
             name: '交易额(元)'
+          },
+          {
+            key: 'trafficCardId',
+            val: false,
+            name: '流量卡号'
+          },
+          {
+            key: 'signalStrength',
+            val: false,
+            name: '信号值'
+          },
+          {
+            key: 'voice',
+            val: false,
+            name: '音量'
           }
         ],
 

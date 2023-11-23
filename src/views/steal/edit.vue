@@ -6,16 +6,6 @@
       </el-tabs>
 
       <el-form ref="form" label-width="auto">
-        <h4 class="mb-20 mt-10">DD状态</h4>
-        <div class="flex">
-          <el-form-item label="是否开启：">
-            <div class="flex align-center">
-              <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：<span v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">时间段隐藏漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">比例漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_TIMELIMIT`]">分成时长限制></span><span v-if="Ability[`${deviceTypeCode}_DD_TIME`]">时间扣减></span><span v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">免押待支付</span></span>
-            </div>
-          </el-form-item>
-        </div>
-
         <template v-if="Ability[`${deviceTypeCode}_DD_END`]">
           <h4 class="flex mb-20 mt-10">
             <div>延时归还</div>
@@ -76,13 +66,23 @@
           </div>
           <div class="flex">
             <el-form-item label="扣款延时：">
-              <el-input type="number" v-model="form.kkDay">
-                <template slot="append">天</template>
+              <el-input type="number" v-model="form.notCloseRule.delayTimes">
+                <template slot="append">分钟</template>
               </el-input>
-              <div>扣款延时时长大于0表示延时归还免押订单到期结束后即时计算订单金额分润给代理、商户且订单显示已正常完结，但实际扣用户的钱是在{{ form.kkDay || 0 }}天之后开始执行。温馨提示：若最终订单未能扣到钱，您将损失分给代理和商户的钱。<br></div>
+              <div>延时时长大于0表示免押订单结束时正常分润完结，但实际扣用户的钱是在{{ form.notCloseRule.delayTimes || 0 }}分钟之后开始执行。<br>温馨提示：若最终订单未能扣到钱，您将损失分给代理和商户的钱。<br></div>
             </el-form-item>
           </div>
         </template>
+
+        <h4 class="mb-20 mt-10">DD状态</h4>
+        <div class="flex">
+          <el-form-item label="是否开启：">
+            <div class="flex align-center">
+              <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
+              <span class="ml-10 fs-s3">开启表示开启DD，以下规则才会生效，DD优先顺序：<span v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">时间段隐藏漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_RATIO`]">比例漏单></span><span v-if="Ability[`${deviceTypeCode}_DD_TIMELIMIT`]">分成时长限制></span><span v-if="Ability[`${deviceTypeCode}_DD_TIME`]">时间扣减></span><span v-if="Ability[`${deviceTypeCode}_DD_FAIL`]">免押待支付</span></span>
+            </div>
+          </el-form-item>
+        </div>
 
         <template v-if="Ability[`${deviceTypeCode}_DD_HIDE`]">
           <h4 class="flex mb-20 mt-10">
@@ -354,6 +354,13 @@
        */
       onSubmit() {
         let params = JSON.parse(JSON.stringify(this.form))
+        if(params.notCloseRule.delayTimes > 0 && params.notCloseRule.delayTimes < 6){
+          this.$message({
+            message: '扣款延时时长必须大于5分钟',
+            type: 'error'
+          })
+          return
+        }
         if(this.userKey && this.id) params[this.userKey] = this.id
         params.deviceTypeCode = this.deviceTypeCode
         this.$post(`iot-saas-basic/admin/loseorderconfig/v1/update`, params).then(res => {

@@ -102,7 +102,7 @@
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
-                  <el-form-item label="每天前" :error="ferror.promisedDeal">
+                  <el-form-item label="每天结束前" :error="ferror.promisedDeal">
                     <el-input type="number" v-model="item.promisedDeal" placeholder="0" @input="(v) => (ferror.promisedDeal = checkDigit(v))">
                       <template slot="append">单按承诺分成比例分润</template>
                     </el-input>

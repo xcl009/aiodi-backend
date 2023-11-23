@@ -413,7 +413,7 @@
               <el-form-item label="退回方式:">
                 <el-radio-group v-model="dform.refundType">
                   <el-radio :label="key" v-for="(item, key) in Constant.RefundType"
-                    v-if="(key == 2 && curRow.feeType == 2 && curRow.payType < 3) || (key != 2)">{{ item }}</el-radio>
+                    v-if="(key == 3 && curRow.amountEnable > 0) || (key != 3)">{{ item }}</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="退款金额:">
@@ -537,6 +537,7 @@
                   <div class="flex">
                     <div class="label-text">备注:</div>
                     <div>
+                      <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ? '消耗电量' : '租借时电量' }} :{{ curRow.afterLevel || curRow.level }}%</span>
                       <template v-if="curRow.freeTime > 0">
                         <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ parseInt(curRow.freeTime) / 60 }}小时</span>
                         <span class="mr-5" v-else-if="curRow.freeUser == 3">暂停计费：{{ parseInt(curRow.freeTime) / 60
@@ -1242,12 +1243,19 @@ export default {
                 if (res.status != 'R') {
                   this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn)
                   if (res.devicePopupRecordFeignOutFeign.afterStoreId) {
+                    if(res.devicePopupRecordFeignOutFeign.afterLevel > 0) {
+                      this.$set(this.curRow, 'afterLevel', accSub(res.devicePopupRecordFeignOutFeign.afterLevel, res.devicePopupRecordFeignOutFeign.level))
+                    } else if(res.devicePopupRecordFeignOutFeign.level){
+                      this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
+                    }
                     this.$post('iot-saas-order/api/order/getDeductions', {
                       deductionType: 0,
                       deductionIds: [res.devicePopupRecordFeignOutFeign.afterStoreId]
                     }).then(res => {
                       this.$set(this.curRow, 'returnStore', res[0])
                     })
+                  }else if(res.devicePopupRecordFeignOutFeign.level){
+                    this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
                   }
                 }
               }

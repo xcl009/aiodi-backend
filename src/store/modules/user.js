@@ -279,6 +279,7 @@ const actions = {
       getConstant().then(res => {
         getWdConstant().then(wdres => {
           let allObj = Object.assign(res, wdres)
+          delete allObj.RefundType[2]
           commit('SET_CONSTANT', allObj)
           resolve(allObj)
         })
