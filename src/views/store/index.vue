@@ -159,7 +159,6 @@
           <template slot-scope="scope">
 
             <div class="flex flex-wrap operate">
-              <el-dropdown-item @click.native="setRows(8, scope.row, 8)">分配商户</el-dropdown-item>
               <template v-if="isSaas()">
                 <el-button type="text" @click="toLogin(scope.row)">商户管理</el-button>
                 <el-button type="text" @click="setRows(6, scope.row)">重置登录密码</el-button>
@@ -190,6 +189,8 @@
                       <el-dropdown-item
                         @click.native="$router.push({ path: `/device/bedSetting?id=${scope.row.id}&userKey=storeId` })">主题房设置</el-dropdown-item>
                     </template>
+                    <el-dropdown-item @click.native="setRows(8, scope.row, 8)"
+                      v-if="isBrand()">分配商户</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({ path: `/device/bedStat?id=${scope.row.id}` })"
                       v-if="isBrand() && checkAbility(['BD', 'VG'], 2, scope.row.storeDivisionConfig)">在线统计</el-dropdown-item>
                     <el-dropdown-item
@@ -306,23 +307,23 @@
         <div class="flexv pl-20 pr-20 text-black" style="height: 100%;">
           <div class="mb-20 pb-5 l-b">
             <condition :clickSubmit="clickSubmit" :unfoldShow="false" pdClass="p-0"
-              @reset="storeList.query = { page: 1, size: 20 }; getStoreList(2)" @query="getStoreList(2)">
+              @reset="agentList.query = { page: 1, size: 20 }; getAgentList(2)" @query="getAgentList(2)">
               <template v-slot:defult>
                 <el-form-item label="代理姓名">
-                  <el-input placeholder="请输入代理姓名" v-model="storeList.query.name"></el-input>
+                  <el-input placeholder="请输入代理姓名" v-model="agentList.query.name"></el-input>
                 </el-form-item>
                 <el-form-item label="手机号">
-                  <el-input placeholder="请输入手机号" type="tel" v-model="storeList.query.mobile"></el-input>
+                  <el-input placeholder="请输入手机号" type="tel" v-model="agentList.query.mobile"></el-input>
                 </el-form-item>
               </template>
             </condition>
           </div>
-          <template v-if="storeList.newly && storeList.newly.length > 0">
+          <template v-if="agentList.newly && agentList.newly.length > 0">
             <div class="mb-15">
               最近分配
             </div>
             <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
-              <template v-for="item in storeList.newly">
+              <template v-for="item in agentList.newly">
                 <el-col :xs="24" :md="12" class="pb-15 custom">
                   <div class="p-15 item radius-5">
                     <div class="flex">
@@ -349,10 +350,10 @@
           <div class="mb-10 flex align-center">
             查询结果
           </div>
-          <div v-infinite-scroll="getStoreList" infinite-scroll-distance="1" class=" pt-5"
-            style="overflow-y: auto;max-width:900px;">
-            <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
-              <template v-for="item in storeList.list">
+          <div v-infinite-scroll="getAgentList" infinite-scroll-distance="1" class=" pt-5"
+            style="overflow-y: auto;width:1000px;">
+            <el-row type="flex" :gutter="20" class="flex-wrap agent-list pb-50">
+              <template v-for="item in agentList.list">
                 <el-col :xs="24" :md="12" class="pb-15 custom-form">
                   <el-card class="box-card">
                     <div class="p-15 item radius-5 flexv">
@@ -388,24 +389,28 @@
               </template>
             </el-row>
           </div>
-          <div class="bottom pt-15 pb-15">
-            <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">分配给自己</el-button>
+          <div class="bottom pt-15 pb-15" v-if="curRow.parentId != 0">
+            <el-button type="primary" plain size="mini" @click="allocation(2,{},9)">分配给自己</el-button>
           </div>
         </div>
       </template>
       <template v-if="dialogType == 9">
         <div class="flexv pl-20 pr-20 text-black">
-          <div class="mb-15 fw6">代理接收方</div>
+          <div class="mb-15 fw6">商户接收方</div>
           <div class="flex align-center pb-20 l-b">
             <img :src="checkList.avatar || agentInfo.avatar" class="userimg" width="56" alt="">
-            <div class="pl-20">
-              <div class="flex">
+            <div class="pl-20" >
+              <div class="flex" v-if="checkList.id == 0">
+                <div class="label-text">品牌商名称:</div>
+                <div>{{ checkList.name }}</div>
+              </div>
+              <div class="flex" v-if="checkList.id != 0">
                 <div class="label-text">代理名称:</div>
                 <div>{{ checkList.name }}</div>
                 <div class="ml-50 label-text">联系方式:</div>
                 <div>{{ checkList.mobile }}</div>
               </div>
-              <div class="flex mt-10">
+              <div class="flex mt-10" v-if="checkList.id != 0">
                 <div class="label-text">设备类型:</div>
                 <div> <span class="ml-5" v-for="d in checkList.agentDeviceType">{{ d.name }}</span></div>
                 <div class="ml-50 label-text">运营区域:</div>
@@ -413,7 +418,7 @@
               </div>
             </div>
           </div>
-          <div class="mt-15 fw6">代理数据变更</div>
+          <div class="mt-15 fw6">商户数据变更</div>
 
           <div class="mt-30">
             <div class="flex">
@@ -421,8 +426,17 @@
                 可提现金额保留
               </div>
               <div class="ml-30">
-                <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="2" />
-                <div class=" fs-s3 color mt-5">开启表示保留代理可提现金额。关闭表示清空当前代理的可提现金额</div>
+                <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="0" />
+                <div class=" fs-s3 color mt-5">开启表示保留商户可提现金额。关闭表示清空当前商户的可提现金额</div>
+              </div>
+            </div>
+            <div class="flex mt-20">
+              <div class="title color2">
+                是否设备直接解绑
+              </div>
+              <div class="ml-30">
+                <el-switch v-model="checkList.isBand" :active-value="1" :inactive-value="0" />
+                <div class=" fs-s3 color mt-5">开启表示只解绑商户，归属在原代理名下。关闭表示绑定到新代理名下</div>
               </div>
             </div>
             <div class="flex mt-20">
@@ -433,6 +447,8 @@
                 <div class=" fs-s3 color mt-5">1.1 真实分成情况：</br>若当前代理原始的真实分成大于选中代理自身的分成，划拨后，当前代理的分成比例，默认</br>取代理自身所有的分成比例
                 </div>
                 <div class="fs-s3 color mt-20">1.2 真实分成情况：</br>若当前代理原始的真实分成小于选中代理自身的分成，划拨后，当前代理的分成比例，默认</br>保留代理原始的分成比例
+                </div>
+                <div class="fs-s3 color mt-20">2.1 分成不一致情况:</br>划拨后，当前商户的分成比例，默认保留商户原始的分成比例
                 </div>
               </div>
             </div>
@@ -521,7 +537,7 @@ export default {
         5: '重置密码',
         6: '冻结金额',
         7: '共享WIFI',
-        8: '分配商户',
+        8: '分配代理',
       },
       curRow: {},
       curIdx: 0,
@@ -612,7 +628,7 @@ export default {
         newly: []
       },
       // 商户
-      storeList: {
+      agentList: {
         query: {
           page: 1,
           size: 20
@@ -666,6 +682,8 @@ export default {
       this.getList()
     } else if (this.urlQuery != this.$route.meta.urlQuery) {
       this.toQuery()
+    }else{
+      this.toQuery()
     }
     this.urlQuery = this.$route.meta.urlQuery
   },
@@ -676,26 +694,30 @@ export default {
     // 分配事件
     allocation(type, item, dialogType) {
       this.checkList = item;
+      if(type == 2){
+        this.checkList['name'] = this.agentInfo.nickname;
+        this.checkList.mobile = this.agentInfo.mobile;
+        this.checkList['id'] = 0;
+      }
       this.dialogType = dialogType;
     },
     /**
        * 获取代理
        */
-    getStoreList(type = 1) {
-      let params = JSON.parse(JSON.stringify(this.storeList.query))
+    getAgentList(type = 1) {
+      let params = JSON.parse(JSON.stringify(this.agentList.query))
       if (type == 2) {
         params.page = 1
-        this.storeList.list = []
+        this.agentList.list = []
       }
       params.page--
-      params.lowerAgent = false
       if (this.onLoadAgent && type == 1) return
       this.onLoadAgent = true
-      this.$get('iot-saas-basic/admin/store/findPage', params).then(res => {
-        this.storeList.list = this.storeList.list.concat(res.rows || [])
+      this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
+        this.agentList.list = this.agentList.list.concat(res.rows || [])
         if (parseInt((parseInt(res.total) / params.size)) > params.page) {
           this.onLoadAgent = false
-          this.storeList.query.page = params.page + 2
+          this.agentList.query.page = params.page + 2
         }
       })
     },
@@ -1185,12 +1207,30 @@ export default {
               message: '操作成功',
               type: 'success'
             })
-            let newlyAgent = JSON.parse(JSON.stringify(this.storeList.newly))
+            let newlyAgent = JSON.parse(JSON.stringify(this.agentList.newly))
             if (newlyAgent.length > 2) newlyAgent.pop()
             if (this.arrayKeys(newlyAgent, 'id').indexOf(row.id) == -1) newlyAgent.unshift(row)
             localStorage.setItem(`newly_agent_${this.agentInfo.id}`, JSON.stringify(newlyAgent))
-            this.storeList.newly = newlyAgent
+            this.agentList.newly = newlyAgent
             this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 9:
+          this.$post('iot-saas-basic/admin/brand/giveStore', {
+            storeId: curRow.id,
+            targetAgentId: this.checkList.id,
+            giveType: 1,
+            isApprove: this.checkList.enable,
+            isBand: this.checkList.isBand
+          }).then(res => {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.getList();
+            this.drawerStatus = false;
           }).catch(err => {
             this.clickSubmit = false
           })
@@ -1301,4 +1341,5 @@ export default {
 
 .title {
   min-width: 120px;
-}</style>
+}
+</style>

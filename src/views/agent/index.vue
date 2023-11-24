@@ -90,7 +90,6 @@
               <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
             </template>
             <template v-else>
-              <el-dropdown-item @click.native="setRows(8, scope.row, 8)">分配代理</el-dropdown-item>
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/store?agentId=${scope.row.id}` })">商户列表</el-button>
               <el-button type="primary" size="mini"
@@ -98,6 +97,7 @@
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/agent/addAgent?agentId=${scope.row.id}` })"
                 v-if="Ability['addAgent']">修改信息</el-button>
+              <!-- <el-button type="primary" size="mini" @click.native="setRows(8, scope.row, 8)">分配代理</el-button> -->
               <el-dropdown trigger="click">
                 <el-button type="primary" size="mini">更多<i
                     class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
@@ -119,6 +119,10 @@
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/device/billing?agentId=${scope.row.id}` })">默认计费设置</el-dropdown-item>
                   </template>
+                  <el-dropdown-item
+                  @click.native="setRows(8, scope.row, 8)"
+                    v-if="isBrand()">分配代理</el-dropdown-item>
+
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=agentId` })"
                     v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
@@ -237,10 +241,10 @@
             查询结果
           </div>
           <div v-infinite-scroll="getAgentList" infinite-scroll-distance="1" class=" pt-5"
-            style="overflow-y: auto;max-width:900px;">
-            <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
+            style="overflow-y: auto;width:1000px;">
+            <el-row type="flex" :gutter="20" class="flex-wrap agent-list pb-50">
               <template v-for="item in agentList.list">
-                <el-col :xs="24" :md="12" class="pb-15 custom-form">
+                <el-col :xs="24" :md="12" class="pb-15 custom-form" v-if="item.isShow = true">
                   <el-card class="box-card">
                     <div class="p-15 item radius-5 flexv">
                       <div class="flex">
@@ -275,24 +279,24 @@
               </template>
             </el-row>
           </div>
-          <div class="bottom pt-15 pb-15">
-            <el-button type="primary" plain size="mini" @click="dialogConfirm(item)">分配给自己</el-button>
+          <div class="bottom pt-15 pb-15" v-if="curRow.parentId != 0">
+            <el-button type="primary" plain size="mini" @click="allocation(2, {}, 9)">分配给自己</el-button>
           </div>
         </div>
       </template>
       <template v-if="dialogType == 9">
         <div class="flexv pl-20 pr-20 text-black">
-          <div class="mb-15 fw6">代理接收方</div>
+          <div class="mb-15 fw6">商户接收方</div>
           <div class="flex align-center pb-20 l-b">
             <img :src="checkList.avatar || agentInfo.avatar" class="userimg" width="56" alt="">
             <div class="pl-20">
               <div class="flex">
-                <div class="label-text">代理名称:</div>
+                <div class="label-text">{{ checkList.id != 0 ? '代理名称' : '品牌商名称' }}:</div>
                 <div>{{ checkList.name }}</div>
                 <div class="ml-50 label-text">联系方式:</div>
                 <div>{{ checkList.mobile }}</div>
               </div>
-              <div class="flex mt-10">
+              <div class="flex mt-10" v-if="curRow.id != 0">
                 <div class="label-text">设备类型:</div>
                 <div> <span class="ml-5" v-for="d in checkList.agentDeviceType">{{ d.name }}</span></div>
                 <div class="ml-50 label-text">运营区域:</div>
@@ -308,7 +312,7 @@
                 可提现金额保留
               </div>
               <div class="ml-30">
-                <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="2" />
+                <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="0" />
                 <div class=" fs-s3 color mt-5">开启表示保留代理可提现金额。关闭表示清空当前代理的可提现金额</div>
               </div>
             </div>
@@ -409,7 +413,7 @@ export default {
         newly: []
       },
       // 商户
-      storeList: {
+      agentList: {
         query: {
           page: 1,
           size: 20
@@ -439,6 +443,8 @@ export default {
     } else if (!this.list || this.list.length == 0) {
       this.listQuery.lowerAgent = this.lowerAgent
       this.toQuery(1)
+    }else{
+      this.toQuery()
     }
   },
   computed: {
@@ -461,26 +467,27 @@ export default {
       return this.$store.getters.Ability
     }
   },
-  mounted() {
-
-  },
   methods: {
     // 分配事件
     allocation(type, item, dialogType) {
       this.checkList = item;
+      if (type == 2) {
+        this.checkList['name'] = this.agentInfo.nickname;
+        this.checkList['mobile'] = this.agentInfo.mobile;
+        this.checkList['id'] = 0;
+      }
       this.dialogType = dialogType;
     },
     /**
     * 获取代理
     */
-    getAgentList(type = 1) {
+    getAgentList(type = 1,form,item) {
       let params = JSON.parse(JSON.stringify(this.agentList.query))
       if (type == 2) {
         params.page = 1
         this.agentList.list = []
       }
       params.page--
-      params.lowerAgent = false
       if (this.onLoadAgent && type == 1) return
       this.onLoadAgent = true
       this.$get('iot-saas-basic/admin/agent/findPage', params).then(res => {
@@ -488,6 +495,13 @@ export default {
         if (parseInt((parseInt(res.total) / params.size)) > params.page) {
           this.onLoadAgent = false
           this.agentList.query.page = params.page + 2
+        }
+        if(form){
+          this.agentList.list.forEach((res, index) => {
+            if (res.id == item.id) {
+              this.agentList.list.splice(index,1)
+            }
+          })
         }
       })
     },
@@ -594,6 +608,7 @@ export default {
      * @param {Object} idx 当前行所在位置
      */
     setRows(type, row, dialogType, idx) {
+      this.getAgentList(2,true,row);
       switch (type) {
         case 1:
           this.dialogType = dialogType
@@ -617,6 +632,7 @@ export default {
                   userId: row.userId,
                   password: '123456'
                 }).then(res => {
+
                   this.$message({
                     message: '重置成功',
                     type: 'success'
@@ -631,6 +647,8 @@ export default {
           this.curRow = row
           this.curIdx = idx
           this.drawerStatus = true
+          
+
       }
     },
 
@@ -713,6 +731,23 @@ export default {
             })
             curRow.frozenBalance = params.frozenBalance
             this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 9:
+          this.$post('iot-saas-basic/admin/brand/giveAgent', {
+            agentId: curRow.id,
+            targetAgentId: this.checkList.id,
+            giveType: 2,
+            isApprove: this.checkList.enable,
+          }).then(res => {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.getList();
+            this.drawerStatus = false;
           }).catch(err => {
             this.clickSubmit = false
           })
