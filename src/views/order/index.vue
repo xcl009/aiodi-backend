@@ -257,6 +257,9 @@
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 9">关闭芝麻免押订单发起的扣款失败的支付宝交易订单。</div>
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 10">只可撤销24小时内创建的芝麻分订单。</div>
             </el-form-item>
+            <el-form-item label="免押订单" v-if="dialogType == 11">
+              <el-switch v-model="dform.isDeposit" />
+            </el-form-item>
           </el-form>
         </template>
         <template v-if="[12, 13].indexOf(dialogType) > -1">
@@ -1504,9 +1507,7 @@ export default {
             10: 'iot-saas-pay/admin/pay/config/alipay/cancel',
             11: 'iot-saas-pay/wechat/order/refund'
           }
-          this.$post(url[this.dialogType], {
-            orderNo: params.orderNo
-          }).then(res => {
+          this.$post(url[this.dialogType], params).then(res => {
             this.$message({
               message: '提交成功',
               type: 'success'
