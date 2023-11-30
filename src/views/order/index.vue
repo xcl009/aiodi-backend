@@ -427,6 +427,10 @@
               </el-form-item>
               <el-form-item label="退款原因:">
                 <el-input v-model="dform.reason" placeholder="非必填，若填写将展示在用户退款信息中"></el-input>
+                <div class="flex mt-10 line-six text-danger">
+                  <div>温馨提示：</div>
+                  <div><span v-if="isBrand()">原路退回及余额退款时需保证您的{{ curRow.sourceType == 1 ? '微信支付商户-基本账户' : '支付宝账户' }}余额充足，否则用户无法收到退款金额<br></span>提交退款申请5秒后点击订单详情-订单流程中可查看退款结果</div>
+                </div>
               </el-form-item>
             </el-form>
           </div>
@@ -516,8 +520,9 @@
                     <div>{{ curRow.storeName }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">宝SN:</div>
-                    <div>{{ curRow.terminalId || '--' }}</div>
+                    <div class="label-text" v-if="curRow.deviceType.indexOf('充电宝') > -1">宝SN:</div>
+                    <div class="label-text" v-else>其他:</div>
+                    <div class="cursor" @click="curRow.terminalId && isBrand() ? $router.push({path: `/device/battery?terminalId=${curRow.terminalId}`}) : ''">{{ curRow.terminalId || '--' }}</div>
                   </div>
                   <div class="flex" v-if="curRow.returnStore">
                     <div class="label-text">归还商户:</div>
@@ -1433,10 +1438,10 @@ export default {
           params.orderNo = this.curRow.orderNo
           this.$post('iot-saas-order/admin/order/refund', params).then(res => {
             this.$message({
-              message: '订单退款成功',
+              message: '退款处理中',
               type: 'success'
             })
-            curRow.status = 'OTD'
+            curRow.status = 'OHD'
             curRow.amountRefund = params.amount
             this.drawerStatus = false
             this.clickSubmit = false

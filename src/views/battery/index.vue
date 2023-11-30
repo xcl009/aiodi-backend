@@ -315,7 +315,9 @@
           sel1: 'terminalId',
           sel2: 'terminalSn'
         },
-        form: {},
+        form: {
+          terminalId: this.$route.query.terminalId || '',
+        },
         tableMaxH: '250',
         list: [],
         listLoading: true,
