@@ -152,7 +152,8 @@
             <div class="flex1 fs-b2">商户统计</div>
             <div class="cursor" @click="$router.push({ path: `/store/storeList` })">更多</div>
           </div>
-          <el-table class="store-table text-white" :highlight-current-row="false" :header-row-style="{ background: 'none' }"
+          <el-table class="store-table text-white" :highlight-current-row="false"
+            :header-row-style="{ background: 'none' }"
             :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
             :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="storeList"
             style="background:none">
@@ -235,7 +236,8 @@
           <el-table ref="orderTable" class="order-table text-white" height="460px" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
             :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
-            :row-style="{ background: '#0D2749' }" :cell-style="{ border: 'none' }" :data="orderList" style="background:none">
+            :row-style="{ background: '#0D2749' }" :cell-style="{ border: 'none' }" :data="orderList"
+            style="background:none">
             <el-table-column label="序号" width="60">
               <template slot-scope="scope">
                 <div class="fs-c1 text-bold idx text-center" :class="'idx_' + scope.$index % 3">{{ scope.$index + 1 }}
@@ -645,9 +647,9 @@ export default {
       })
     },
 
-     /**
-     * 商户统计
-     */
+    /**
+    * 商户统计
+    */
     queryDeviceUseCount() {
       let endDateStr = new Date().getFullYear() + 1;
       let params = {
@@ -655,10 +657,10 @@ export default {
         page: 0,
         startDateStr: "2011",
         endDateStr,
-      }    
-      if(this.isBrand()){
+      }
+      if (this.isBrand()) {
         params.brandId = this.agentInfo.brandId;
-      } else if(this.isAgent()){
+      } else if (this.isAgent()) {
         params.agentId = this.agentInfo.agentId;
       }
       this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(res => {
