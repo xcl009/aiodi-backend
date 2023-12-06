@@ -773,8 +773,8 @@
           },
           {
             key: 'tenantNumber',
-            val: this.checkAbility(['PA']),
-            hidden: !this.checkAbility(['PA']),
+            val: this.checkAbility(['PA'], 2),
+            hidden: !this.checkAbility(['PA'], 2),
             name: '可借|可还'
           },
           {
@@ -809,14 +809,14 @@
           },
           {
             key: 'order',
-            val: this.checkAbility(['order'], 3),
-            hidden: !this.checkAbility(['order'], 3),
+            val: this.isBrand() || this.isSaas(),
+            hidden: !this.isBrand() && !this.isSaas(),
             name: '订单数'
           },
           {
             key: 'amount',
-            val: !this.isStore(),
-            hidden: !this.isStore(),
+            val: this.isBrand() || this.isSaas(),
+            hidden: !this.isBrand() && !this.isSaas(),
             name: '交易额(元)'
           },
           {

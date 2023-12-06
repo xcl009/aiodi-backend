@@ -122,12 +122,11 @@
                   <el-dropdown-item
                   @click.native="setRows(8, scope.row, 8)"
                     v-if="isBrand()">分配代理</el-dropdown-item>
-
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=agentId` })"
                     v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)"
-                    v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item>
+                  <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)"
+                    v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item> -->
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR` })"
                     v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">概率押金</el-dropdown-item>
@@ -192,7 +191,6 @@
     </el-dialog>
 
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus">
-
       <template v-if="dialogType == 8">
         <div class="flexv pl-20 pr-20 text-black" style="height: 100%;">
           <div class="mb-20 pb-5 l-b">
@@ -647,7 +645,7 @@ export default {
           this.curRow = row
           this.curIdx = idx
           this.drawerStatus = true
-          
+
 
       }
     },

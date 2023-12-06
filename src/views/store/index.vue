@@ -52,11 +52,15 @@
           </el-table-column>
           <el-table-column :label="item.name" width="180" v-else-if="item.val && item.key == 'device'">
             <template slot-scope="scope">
-              <div class="row-device_stat">
+              <div class="row-device_stat" v-if="deviceCount[scope.row.id]">
+                <template v-for="(item, i) in deviceCount[scope.row.id].deviceCountVOMap">
+                  {{ myDeviceId[i.substr(0, 2)] }}：{{ item.deviceNumber }}
+                </template>
+              </div>
+              <div class="row-device_stat" v-else>
                 <template v-for="(item, index) in scope.row.storeDivisionConfig">
                   <div v-if="index < 2">
-                    {{ myDeviceId[item.deviceTypeCode] }}：{{ deviceCount[scope.row.id] ?
-                      deviceCount[scope.row.id].deviceNumber : 0 }}
+                    {{ myDeviceId[item.deviceTypeCode] }}：0
                   </div>
                 </template>
               </div>
@@ -202,8 +206,8 @@
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId` })"
                       v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">免费名额</el-dropdown-item>
-                    <el-dropdown-item @click.native="setRows(3, scope.row, 4, scope.$index)"
-                      v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item>
+                    <!-- <el-dropdown-item @click.native="setRows(3, scope.row, 4, scope.$index)"
+                      v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item> -->
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DEPOSIT_PRPR` })"
                       v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">概率押金</el-dropdown-item>
@@ -423,20 +427,20 @@
           <div class="mt-30">
             <div class="flex">
               <div class="title color2">
-                可提现金额保留
+                可提现金额清空
               </div>
               <div class="ml-30">
                 <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="0" />
-                <div class=" fs-s3 color mt-5">开启表示保留商户可提现金额。关闭表示清空当前商户的可提现金额</div>
+                <div class=" fs-s3 color mt-5">开启表示清空商户可提现金额。关闭表示保留当前商户的可提现金额</div>
               </div>
             </div>
             <div class="flex mt-20">
               <div class="title color2">
-                是否设备直接解绑
+                设备是否解绑商户
               </div>
               <div class="ml-30">
                 <el-switch v-model="checkList.isBand" :active-value="1" :inactive-value="0" />
-                <div class=" fs-s3 color mt-5">开启表示只解绑商户，归属在原代理名下。关闭表示绑定到新代理名下</div>
+                <div class="fs-s3 color mt-5">开启表示设备解绑商户，设备归属在原代理名下。关闭表示设备绑定到新代理名下</div>
               </div>
             </div>
             <div class="flex mt-20">
@@ -1081,7 +1085,6 @@ export default {
             }
           })
           break
-
         case 8:
           this.dialogType = dialogType
           this.curRow = row

@@ -262,6 +262,7 @@
 
         <el-form-item class="mt-10">
           <el-button type="primary" @click="onSubmit">立即提交</el-button>
+          <el-button type="info" @click="delRule" v-if="form.id">删除</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -369,7 +370,32 @@
             type: 'success'
           })
         })
-      }
+      },
+
+      /**
+       * 删除DD规则
+       */
+      delRule() {
+        this.$alert('确定删除该DD规则吗？', '删除DD规则', {
+          confirmButtonText: '确定',
+          center: true,
+          callback: action => {
+            if (action == 'confirm') {
+              this.$post('iot-saas-basic/admin/loseorderconfig/v1/delete', {
+                deviceTypeCode: this.deviceTypeCode,
+                agentId: this.form.agentId,
+                storeId: this.form.storeId
+              }).then(res => {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.$router.back()
+              })
+            }
+          }
+        })
+      },
     }
   }
 </script>
