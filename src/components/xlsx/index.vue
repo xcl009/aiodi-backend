@@ -58,7 +58,7 @@ export default {
       } else {
         this.wi++
         if (!end) {
-          this.percentage = this.percentage < 96 ? (100 / pages) * this.wi : 96
+          this.percentage = this.percentage < 96 ? parseFloat(((100 / pages) * this.wi).toFixed(2)) : 96
           setTimeout(()=>{
             cbk()
           }, 200)

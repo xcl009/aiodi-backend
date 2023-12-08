@@ -232,6 +232,22 @@
             </div>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && myDeviceId['PA']">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="mall"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">延时归还订单用户端展示状态</div>
+                <div class="mt-5 fs-s3 text-gray">配置延时归还订单在延时时间段内用户端订单展示状态</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'ORDER_CLOSE_TIME' }, 5)">设置</el-button>
+            </div>
+          </div>
+        </el-col>
         <el-col :span="24" class="pb-20 cursor">
           <div>更多功能开发中，请持续关注</div>
         </el-col>
@@ -290,6 +306,14 @@
           </el-form-item>
         </el-form>
       </template>
+      <template v-if="dialogType == 5">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
+          <el-form-item label="显示已完成">
+            <el-switch v-model="dform.closeTimeComplete" :active-value="1" :inactive-value="0" />
+            <div class="line-default fs-s3">开启表示延时归还订单在延时时间段内用户查看订单状态展示为已完成</div>
+          </el-form-item>
+        </el-form>
+      </template>
 
       <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
         <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
@@ -319,6 +343,7 @@
           2: '免押订单租借次数限制',
           3: '地图图标及附近商户展示设置',
           4: '全站商户设置',
+          5: '延时归还订单状态设置',
         },
         curRow: {},
         curIdx: 0,
@@ -371,7 +396,7 @@
             this.dialogType = dialogType
             this.curRow = row
             this.curIdx = idx
-            if([1, 2, 3, 4].indexOf(dialogType) > -1){
+            if([1, 2, 3, 4, 5].indexOf(dialogType) > -1){
               this.$get('iot-saas-basic/admin/settings/find', {
                 code: row.code
               }).then(res => {
@@ -402,6 +427,11 @@
                         checkMouthStatSp: 0
                       }
                     break
+                    case 5:
+                      this.dform = {
+                        closeTimeComplete: 0
+                      }
+                    break
                   }
                 }
               })
@@ -423,7 +453,7 @@
         if(this.clickSubmit) return
         this.clickSubmit = true
         switch (this.dialogType) {
-          case 1: case 2: case 3: case 4:
+          case 1: case 2: case 3: case 4: case 5:
             this.clickSubmit = false
             this.$post('iot-saas-basic/admin/settings/save', {
               code: curRow.code,

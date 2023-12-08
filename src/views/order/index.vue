@@ -175,7 +175,7 @@
                 <div class="remark-box">
                   <el-link type="danger" v-if="scope.row.freeTime > 0">
                     <span v-if="scope.row.freeUser == 1">免费名额：{{ (parseInt(scope.row.freeTime) / 60).toFixed(1) }}小时</span>
-                    <span v-else-if="scope.row.freeUser == 3">暂停计费：{{ parseInt(scope.row.freeTime) / 60 }}小时</span>
+                    <span v-else-if="scope.row.freeUser == 3">暂停计费：{{ parseFloat((parseInt(scope.row.freeTime) / 60).toFixed(2)) }}小时</span>
                     <span v-else-if="scope.row.freeUser > 3">{{ scope.row.freeTime == 600000 ? '会员卡订单' :
                       `会员卡免费${scope.row.freeTime}分钟` }}</span>
                   </el-link>

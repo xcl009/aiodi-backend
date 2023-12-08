@@ -810,7 +810,7 @@ export default {
           this.listLoading = false
           this.clickSubmit = false
           if (params.page == 0) {
-            this.listTotal = res.total
+            this.listTotal = parseInt(res.total)
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
         }
