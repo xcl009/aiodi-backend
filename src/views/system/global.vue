@@ -67,7 +67,7 @@
                 title="确定删除该字典吗？"
                 @onConfirm="setRows(2, scope.row, 1, scope.$index)"
               >
-                <el-button type="text" class="text-danger"slot="reference">删除</el-button>
+                <el-button type="text" class="text-danger" slot="reference">删除</el-button>
               </el-popconfirm>
             </div>
           </template>
@@ -238,7 +238,7 @@
       }
     },
     mounted() {
-
+      this.getConfig()
     },
     methods: {
       /**

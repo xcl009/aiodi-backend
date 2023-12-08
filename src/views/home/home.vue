@@ -14,7 +14,7 @@
           <div class="o-v card-panel cursor" @click="$router.push({ path: `/money/monthMoney` })">
             <div class="flex align-center fs-b5 baby-blue">￥<count-to :start-val="0"
                 :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" /></div>
-            <div class="mt-5 fs-c1 text-white">总交易额</div>
+            <div class="mt-5 fs-c1 text-white">{{ $t('home.transactionAmount') }}</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')"></el-image>
           </div>
         </div>
@@ -25,7 +25,7 @@
           <div class="o-v card-panel cursor" @click="Ability['order'] ? $router.push({ path: `/order/allOrder` }) : ''">
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">总订单数</div>
+            <div class="mt-5 fs-c1 text-white">{{ $t('home.allOrderNum') }}</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/order.svg')"></el-image>
           </div>
         </div>
@@ -36,7 +36,7 @@
           <div class="o-v card-panel cursor" @click="$router.push({ path: isSaas() ? `/device` : `/device` })">
             <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">总设备数</div>
+            <div class="mt-5 fs-c1 text-white">{{ $t('home.allDevicesNum') }}</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/device.svg')"></el-image>
           </div>
         </div>
@@ -47,7 +47,7 @@
           <div class="o-v card-panel cursor">
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">总代理数</div>
+            <div class="mt-5 fs-c1 text-white">{{ $t('home.allAgentNum') }}</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')"></el-image>
           </div>
         </div>
@@ -58,7 +58,7 @@
           <div class="o-v card-panel cursor">
             <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">总商户数</div>
+            <div class="mt-5 fs-c1 text-white">{{ $t('home.allStoreNum') }}</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/store.svg')"></el-image>
           </div>
         </div>
@@ -78,13 +78,13 @@
           <div class="p-20 item-box">
             <div class="mb-20 flex align-center">
               <div class="line"></div>
-              <div class="flex1"><span class="fs-b2">{{ itme }}</span><span class="ml-5">点击房间号即可创建订单</span></div>
+              <div class="flex1"><span class="fs-b2">{{ itme }}</span><span class="ml-5">{{ $t('home.createOrder') }}</span></div>
             </div>
             <div class="o-v cursor">
               <div class="flex align-center flex-wrap room-box text-center fs-b2">
                 <div class="pt-15 pb-15 item" v-for="sitem in roomList[key]" @click="setRows(1, sitem, 6)">
                   <div>{{ sitem.place || sitem.deviceSn }}</div>
-                  <div class="fs-s3">房间号</div>
+                  <div class="fs-s3">{{ $t('home.room') }}</div>
                 </div>
               </div>
             </div>
@@ -98,7 +98,7 @@
         <div class="p-20 item-box">
           <div class="mb-20 flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">交易数据对比</div>
+            <div class="flex1 fs-b2">{{ $t('home.contrast') }}</div>
             <div class="flex btn-box cursor">
               <div class="btn" :class="{ 'act': contrast_type == index }" v-for="(item, index) in contrast_arr"
                 @click="contrast_type = index; $refs.contrastCarusel.setActiveItem(index)">{{ item }}</div>
@@ -108,12 +108,12 @@
             <el-carousel-item v-for="(item, index) in contrast_arr" :interval="5000" :initial-index="contrast_type">
               <div class="flex">
                 <div class="label">
-                  <div>今日</div>
-                  <div>昨日</div>
-                  <div>本周</div>
-                  <div>上周</div>
-                  <div>本月</div>
-                  <div>上月</div>
+                  <div>{{ $t('public.today') }}</div>
+                  <div>{{ $t('public.yesterday') }}</div>
+                  <div>{{ $t('public.thisWeek') }}</div>
+                  <div>{{ $t('public.lastWeek') }}</div>
+                  <div>{{ $t('public.thisMonth') }}</div>
+                  <div>{{ $t('public.lastMonth') }}</div>
                 </div>
                 <div class="flex1">
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
@@ -126,8 +126,8 @@
                 <div class="label">
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
                     <div>
-                      {{ index == 0 ? querHistogram[key].amount + '元' : index == 1 ? querHistogram[key].orderNumber + '单'
-                        : querHistogram[key].unitPrice + '元' }}
+                      {{ index == 0 ? querHistogram[key].amount + `${$t('public.element')}` : index == 1 ? querHistogram[key].orderNumber + `${$t('public.one')}`
+                        : querHistogram[key].unitPrice + `${$t('public.element')}` }}
                     </div>
                   </template>
                 </div>
@@ -140,7 +140,7 @@
         <div class="p-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">设备数量统计</div>
+            <div class="flex1 fs-b2">{{ $t('home.statisticsNum') }}</div>
           </div>
           <div class="chart-device" ref="chart_device" style="height: 300px;"></div>
         </div>
@@ -149,53 +149,53 @@
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">商户统计</div>
-            <div class="cursor" @click="$router.push({ path: `/store/storeList` })">更多</div>
+            <div class="flex1 fs-b2">{{ $t('home.storeStatistics') }}</div>
+            <div class="cursor" @click="$router.push({ path: `/store/storeList` })">{{ $t('public.add') }}</div>
           </div>
           <el-table class="store-table text-white" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
             :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
             :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="storeList"
             style="background:none">
-            <el-table-column label="排名" width="70">
+            <el-table-column :label="$t('home.ranking')" width="70">
               <template slot-scope="scope">
                 <span class="fs-c1 text-bold"
                   :class="{ 'y-yellow': scope.$index == 0, 'baby-blue': scope.$index == 2, 'text-primary': scope.$index == 1 }">NO.{{
                     scope.$index + 1 }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="商户名称" min-width="90">
+            <el-table-column :label="$t('home.storeName')" min-width="90">
               <template slot-scope="scope">
                 <span class="y-yellow">{{ scope.row.storeName.substring(0, 2) }}**</span>
               </template>
             </el-table-column>
-            <el-table-column label="订单量" min-width="90">
+            <el-table-column :label="$t('home.orderNum')" min-width="90">
               <template slot-scope="scope">
                 {{ scope.row.orderNumber || 0 }}
               </template>
             </el-table-column>
-            <el-table-column label="交易额" min-width="120">
+            <el-table-column :label="$t('public.aTurnover')" min-width="120">
               <template slot-scope="scope">
                 {{ scope.row.amount || 0 }}
               </template>
             </el-table-column>
-            <el-table-column label="收益" min-width="90">
+            <el-table-column :label="$t('public.income')" min-width="90">
               <template slot-scope="scope">
                 {{ scope.row.amountDivide || 0 }}
               </template>
             </el-table-column>
-            <el-table-column label="扣押总数" min-width="120" v-if="isSaas() || isBrand()">
+            <el-table-column :label="$t('home.seizuresNum')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
                 {{ scope.row.amountDeposit || 0 }}
               </template>
             </el-table-column>
-            <el-table-column label="留存押金总额" min-width="120" v-if="isSaas() || isBrand()">
+            <el-table-column :label="$t('home.seizuresNum')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
                 {{ scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) -
                   Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0 }}
               </template>
             </el-table-column>
-            <el-table-column label="留存押金未退总额" min-width="160" v-if="isSaas() || isBrand()">
+            <el-table-column :label="$t('home.seizuresNum')" min-width="160" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
                 {{ scope.row.amountUnrefund || 0 }}
               </template>
@@ -208,7 +208,7 @@
           <div @click="$router.push({ path: `/hotelTools` })">
             <div class="flex align-center">
               <div class="line"></div>
-              <div class="flex1 fs-b2">酒店功能区</div>
+              <div class="flex1 fs-b2">{{ $t('home.functionalArea') }}</div>
             </div>
             <el-carousel height="80px" direction="vertical" arrow="never">
               <el-carousel-item v-for="item in tool">
@@ -231,55 +231,55 @@
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">订单数据明细</div>
+            <div class="flex1 fs-b2">{{ $t('home.orderNumDetails') }}</div>
           </div>
           <el-table ref="orderTable" class="order-table text-white" height="460px" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
             :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
             :row-style="{ background: '#0D2749' }" :cell-style="{ border: 'none' }" :data="orderList"
             style="background:none">
-            <el-table-column label="序号" width="60">
+            <el-table-column :label="`${$t('home.serialNumber')}`" width="60">
               <template slot-scope="scope">
                 <div class="fs-c1 text-bold idx text-center" :class="'idx_' + scope.$index % 3">{{ scope.$index + 1 }}
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="商户" width="80">
+            <el-table-column :label="`${$t('public.store')}`" width="80">
               <template slot-scope="scope">
                 <span>{{ scope.row.storeName.substring(0, 1) }}***</span>
               </template>
             </el-table-column>
-            <el-table-column label="用户" width="80">
+            <el-table-column :label="`${$t('public.user')}`" width="80">
               <template slot-scope="scope">
                 {{ scope.row.userNickName ? scope.row.userNickName.substring(0, 1) : '' }}**
               </template>
             </el-table-column>
-            <el-table-column label="设备品类" width="100">
+            <el-table-column :label="`${$t('home.equipmentCategory')}`" width="100">
               <template slot-scope="scope">
                 {{ scope.row.deviceType }}
               </template>
             </el-table-column>
-            <el-table-column label="来源" width="80">
+            <el-table-column :label="`${$t('home.source')}`" width="80">
               <template slot-scope="scope">
-                {{ scope.row.sourceType == 2 ? '支付宝' : '微信' }}
+                {{ scope.row.sourceType == 2 ? $t('payType.zfb') : $t('payType.wx') }}
               </template>
             </el-table-column>
-            <el-table-column label="开始时间" width="160">
+            <el-table-column :label="`${$t('public.statrtTime')}`" width="160">
               <template slot-scope="scope">
                 {{ scope.row.chargeStartTime || "--" }}
               </template>
             </el-table-column>
-            <el-table-column label="结束时间" width="160">
+            <el-table-column :label="`${$t('public.endTime')}`" width="160">
               <template slot-scope="scope">
                 {{ scope.row.chargeEndTime || "--" }}
               </template>
             </el-table-column>
-            <el-table-column label="金额">
+            <el-table-column :label="`${$t('public.amount')}`">
               <template slot-scope="scope">
                 ￥{{ scope.row.amount }}
               </template>
             </el-table-column>
-            <el-table-column label="状态">
+            <el-table-column :label="`${$t('public.status')}`">
               <template slot-scope="scope">
                 {{ Constant.OrderStatus ? Constant.OrderStatus[scope.row.status] : "--" }}
               </template>
@@ -291,14 +291,14 @@
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">近期数据比较</div>
+            <div class="flex1 fs-b2">{{$t('home.comparison')}}</div>
             <div class="flex btn-box cursor">
               <div class="btn" :class="{ 'act': day_type == index }" v-for="(item, index) in day_type_arr"
                 @click="day_type = index; getLineChart()">{{ item }}</div>
             </div>
             <div class="ml-15 box-grey">
               <el-date-picker class="range-day" type="month" size="small" v-model="form.date"
-                :picker-options="pickerOptionsEnd" range-separator="-" placeholder="选择月份" value-format="yyyy-MM"
+                :picker-options="pickerOptionsEnd" range-separator="-" :placeholder="$t('home.selectMonth')" value-format="yyyy-MM"
                 @change="getTime">
               </el-date-picker>
             </div>
@@ -322,30 +322,30 @@
       <template v-if="dialogType == 6">
         <div class="text-center">
           <div class="flex align-center justify-center">
-            <div>订单可使用时长：</div>
-            <el-select v-model="dform.duration" placeholder="免费时长">
-              <el-option :label="`${item}小时`" :value="item" v-for="item in config.bed_order_time" />
+            <div>{{ $t('home.orderUsableduration') }}</div>
+            <el-select v-model="dform.duration" :placeholder="`${$t('public.freeTime')}`">
+              <el-option :label="`${item}${$t('public.huor')}`" :value="item" v-for="item in config.bed_order_time" />
             </el-select>
           </div>
-          <div class="mt-15 fs-s3">注：提交后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
+          <div class="mt-15 fs-s3">{{ $t('home.after') }}{{ dform.duration }}{{ $t('home.startupSettings') }}</div>
 
           <div class="mt-30 text-black">
-            <div class="cursor">当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span
-                class="ml-20 text-primary cursor" @click="$router.push({ path: `/money` })">快活币充值</span></div>
-            <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">订单计费规则未配置，暂不可下单</div>
+            <div class="cursor">{{ $t('home.residueKhb') }}<span class="text-primary">{{ money.happyCurrencyNum }}</span><span
+                class="ml-20 text-primary cursor" @click="$router.push({ path: `/money` })">{{ $t('home.khbRecharge') }}</span></div>
+            <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">{{ $t('home.notConfigured') }}</div>
             <div class="mt-15"
               v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">
-              剩余赠送免费时间：{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays
+              {{ $t('home.giveFreeTime') }}{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays
                 * 86400) - currentTime()) }}
             </div>
-            <div class="mt-15" v-else>创建订单将会扣除快活币：<span class="text-danger">{{
+            <div class="mt-15" v-else>{{ $t('home.deductKhb') }}<span class="text-danger">{{
               createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
           </div>
         </div>
       </template>
       <div class="mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -459,22 +459,22 @@ export default {
       ],
       deviceChartData: [],
 
-      day_type_arr: ['近7天', '本周', '上周', '本月', '上月'],
+      day_type_arr: [this.$t('public.sevenDays'), this.$t('public.thisWeek'), this.$t('public.lastWeek'), this.$t('public.thisMonth'), this.$t('public.lastMonth')],
       day_type: 0,
-      contrast_arr: ['交易额', '订单量', '客单价'],
+      contrast_arr: [this.$t('public.aTurnover'), this.$t('home.orderNum'), this.$t('public.unitPrice')],
       contrast_type: 0,
 
       tool: [{
-        title: '连接WIFI',
-        desc: '设置WIFI账号密码，客人扫一扫一键连接wifi',
+        title: this.$t('home.contWifi'),
+        desc: this.$t('home.wifiText'),
       },
       {
-        title: '联系前台',
-        desc: '设置多个前台电话，客人扫一扫一键联系前台',
+        title: this.$t('home.contactReception'),
+        desc: this.$t('home.receptionText'),
       },
       {
-        title: '投诉建议',
-        desc: '开启投诉建议，随时随地接收客人反馈信息，快速响应处理',
+        title: this.$t('home.suggestions'),
+        desc: this.$t('home.suggestionsText'),
       }
       ],
 
@@ -493,7 +493,7 @@ export default {
       dialogStatus: false,
       dialogStatus111: true,
       dialogTitle: {
-        6: '创建订单'
+        6: this.$t('home.suggestionsText')
       },
       curRow: {},
       curIdx: 0,
@@ -509,7 +509,7 @@ export default {
       storeLists: [
         {
           ranking: 1,
-          storeName: '春生饭店',
+          storeName: this.$t('home.hotelName'),
           deviceNum: 16,
           orderNum: 1506,
           orderAmount: '￥11,235.00',
@@ -518,7 +518,7 @@ export default {
         },
         {
           ranking: 2,
-          storeName: '夏生饭店',
+          storeName: this.$t('home.hotelName1'),
           deviceNum: 13,
           orderNum: 1100,
           orderAmount: '￥10,345.00',
@@ -527,7 +527,7 @@ export default {
         },
         {
           ranking: 3,
-          storeName: '秋生饭店',
+          storeName: this.$t('home.hotelName2'),
           deviceNum: 11,
           orderNum: 920,
           orderAmount: '￥9,345.00',
@@ -536,7 +536,7 @@ export default {
         },
         {
           ranking: 4,
-          storeName: '冬生饭店',
+          storeName: this.$t('home.hotelName3'),
           deviceNum: 8,
           orderNum: 956,
           orderAmount: '￥9125.00',
@@ -545,7 +545,7 @@ export default {
         },
         {
           ranking: 5,
-          storeName: '早生饭店',
+          storeName: this.$t('home.hotelName4'),
           deviceNum: 6,
           orderNum: 812,
           orderAmount: '￥7562.00',
@@ -554,7 +554,7 @@ export default {
         },
         {
           ranking: 6,
-          storeName: '晚生饭店',
+          storeName: this.$t('home.hotelName5'),
           deviceNum: 6,
           orderNum: 806,
           orderAmount: '￥7245.00',
@@ -811,30 +811,30 @@ export default {
       unitPrice
     } = {}) {
       if (!groupDate) return
-      let legend = ['交易额', '总订单数', '完成单数', '平均交易额'],
+      let legend = [this.$t('public.aTurnover'), this.$t('home.allOrderNum'), this.$t('home.successNum'), this.$t('home.averageATurnover')],
         series = [{
-          name: '交易额',
+          name: this.$t('public.aTurnover'),
           type: 'line',
           data: amount,
           animationDuration: 2800,
           animationEasing: 'cubicInOut',
         },
         {
-          name: '总订单数',
+          name: this.$t('home.allOrderNum'),
           type: 'line',
           data: orderNumber,
           animationDuration: 2800,
           animationEasing: 'quadraticOut'
         },
         {
-          name: '完成单数',
+          name: this.$t('home.successNum'),
           type: 'line',
           data: doneOrderNumber,
           animationDuration: 2800,
           animationEasing: 'quadraticOut'
         },
         {
-          name: '平均交易额',
+          name: this.$t('home.averageATurnover'),
           type: 'line',
           data: unitPrice,
           animationDuration: 2800,
@@ -950,6 +950,7 @@ export default {
      * 弹窗确认
      */
     dialogConfirm() {
+      let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.dform))
@@ -960,7 +961,7 @@ export default {
           params.duration = params.duration * 60
           this.$post('iot-saas-order/admin/order/create', params).then(res => {
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.dialogStatus = false

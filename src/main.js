@@ -4,6 +4,10 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import VueI18n from 'vue-i18n'
+import i18n from './lang'
+ 
+Vue.use(VueI18n)
 
 import '@/styles/index.scss' // global css
 import '@icon-park/vue/styles/index.css'
@@ -119,6 +123,7 @@ let startApp = function () {
       el: '#app',
       router,
       store,
+      i18n,
       render: h => h(App)
     })
 

@@ -5,8 +5,8 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/total.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ listTotal || 0 }}</span>个</div>
-            <div class="mt-5">品牌名下电池数</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ listTotal || 0 }}</span>{{ $t('public.individual') }}</div>
+            <div class="mt-5">{{ $t('battery.batteryCount') }}</div>
           </div>
         </div>
       </el-col>
@@ -14,8 +14,8 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/device.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeStatusCounts || 0 }}</span>个</div>
-            <div class="mt-5">在槽电池数</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeStatusCounts || 0 }}</span>{{ $t('public.individual') }}</div>
+            <div class="mt-5">{{ $t('battery.theSlotBatteryCount') }}</div>
           </div>
         </div>
       </el-col>
@@ -23,8 +23,8 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/ok.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeLendingStatusCounts || 0 }}</span>个</div>
-            <div class="mt-5">租借中电池数</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeLendingStatusCounts || 0 }}</span>{{ $t('public.individual') }}</div>
+            <div class="mt-5">{{ $t('battery.underLeaseBatteryCount') }}</div>
           </div>
         </div>
       </el-col>
@@ -32,8 +32,8 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/wait.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifePopupStatusCounts || 0 }}</span>个</div>
-            <div class="mt-5">弹出检修数</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifePopupStatusCounts || 0 }}</span>{{ $t('public.individual') }}</div>
+            <div class="mt-5">{{ $t('battery.popUpBatteryCount') }}</div>
           </div>
         </div>
       </el-col>
@@ -41,8 +41,8 @@
         <div class="flex align-center pl-15 pr-15 pt-10 pb-10 bg-white radius-5">
           <img :src="require('@/assets/lease/wait.svg')" width="54">
           <div class="flex1 ml-10">
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeExceptionStatusCounts || 0 }}</span>个</div>
-            <div class="mt-5">异常不在槽电池数</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.deviceStockLifeExceptionStatusCounts || 0 }}</span>{{ $t('public.individual') }}</div>
+            <div class="mt-5">{{ $t('battery.abnormalBatteryCount') }}</div>
           </div>
         </div>
       </el-col>
@@ -51,7 +51,7 @@
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
       <template v-slot:tabs>
         <div class="mb-10 flex align-center bg-white">
-          <div class="mr-10">设备状态</div>
+          <div class="mr-10">{{ $t('public.deviceStatus') }}</div>
           <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
             <el-tab-pane :label="`${item.title}`" :name="''+item.value+''" v-for="item in orderTab" />
           </el-tabs>
@@ -60,13 +60,13 @@
       <template v-slot:defult>
         <el-form-item v-for="item in 2">
           <div class="flex combined">
-            <el-select v-model="formKey[`sel${item}`]" placeholder="请选择">
+            <el-select v-model="formKey[`sel${item}`]" :placeholder="$t('public.pleaseSelect')">
               <template v-for="(q, key) in queryObj">
                 <el-option :label="q.title" :value="key" v-if="checkQueryRepeat(key, item, formKey)"></el-option>
               </template>
             </el-select>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-              <el-input :placeholder="`请输入${queryObj[formKey[`sel${item}`]].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
+              <el-input :placeholder="`${$t('public.enter')}${queryObj[formKey[`sel${item}`]].title}`" v-model="form[formKey[`sel${item}`]]"></el-input>
             </template>
             <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
               <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType" :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel'+item]].title}`" @change="toQuery()"
@@ -90,8 +90,8 @@
 
     <div class="pl-10 pr-10 bg-white">
       <div class="flex align-center pt-15 mb-15 l-t">
-        <div class="flex1 fs-c1 text-black">查询表格</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 1)">创建订单</div>
+        <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 1)">{{ $t('public.createOrderText') }}</div>
         <table-column-set storageKey="leaseOrderTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
@@ -100,14 +100,14 @@
           <el-table-column :label="item.name" min-width="140" v-if="item.key == 'name'">
             <template slot-scope="scope">
               <div class="flex align-center">
-                <div :class="`role-label fs-s2 ` + (scope.row.createType == 1 ? 'agent' : '')">{{ scope.row.createType == 1 ? '代' : '商' }}</div>
+                <div :class="`role-label fs-s2 ` + (scope.row.createType == 1 ? 'agent' : '')">{{ scope.row.createType == 1 ?  $t('public.take')  : $t('public.discuss') }}</div>
                 <div class="pl-5 flex1">{{ scope.row.name }}</div>
               </div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="150" v-else-if="item.key == 'warningStatue'">
             <template slot-scope="scope">
-              {{ scope.row.warningStatue == 1 ? '预警' : '正常' }}
+              {{ scope.row.warningStatue == 1 ?  $t('public.earlyWarning') : $t('public.normal') }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="150" v-else-if="item.key == 'onlineStatue'">
@@ -120,7 +120,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.key == 'belongStatue'">
             <template slot-scope="scope">
-              {{ scope.row.initAgentId != scope.row.currentAgentId ? '流出' : '--' }}
+              {{ scope.row.initAgentId != scope.row.currentAgentId ? $t('public.outflow') : '--' }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :width="150" v-else-if="item.key.indexOf('Time') > -1">
@@ -130,7 +130,7 @@
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || 110" v-else></el-table-column>
         </template>
-        <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-popconfirm
@@ -138,10 +138,10 @@
                 cancel-button-type=""
                 icon="el-icon-info"
                 icon-color="#FF7D00"
-                title="确定弹出该充电宝吗？"
+                :title="$t('battery.toPopUp')"
                 @onConfirm="singleEject(scope.row)"
               >
-                <el-button type="text" :disabled="!scope.row.ext" slot="reference">弹出</el-button>
+                <el-button type="text" :disabled="!scope.row.ext" slot="reference">{{ $t('public.eject') }}</el-button>
               </el-popconfirm>
             </div>
           </template>
@@ -170,13 +170,13 @@
       <template v-if="[1, 3].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
-          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
         </div>
       </template>
     </el-drawer>
 
-    <xlsx ref="toXlsx" fileName="充电宝记录"></xlsx>
+    <xlsx ref="toXlsx" :fileName="$t('battery.cdbList')"></xlsx>
   </div>
 </template>
 
@@ -220,78 +220,78 @@
         onlineStatus: [
           {
             type: 'primary',
-            desc: '在槽',
+            desc: this.$t('public.inTheSlot'),
           },
           {
             type: 'success',
-            desc: '租借中',
+            desc: this.$t('public.underLease'),
           },
           {
             type: 'warning',
-            desc: '检修弹出',
+            desc: this.$t('public.maintenancePopup'),
           },
           {
             type: 'warning',
-            desc: '租借弹出中',
+            desc: this.$t('public.leasingPopup'),
           },
           {
             type: 'warning',
-            desc: '检修弹出中',
+            desc: this.$t('public.inProgress'),
           },
           {
             type: 'danger',
-            desc: '异常不在槽',
+            desc: this.$t('public.abnormalNotInSlot'),
           }
         ],
         orderTab: [
           {
             value: 0,
-            title: '全部',
+            title: this.$t('public.all'),
             nkey: 'orderNumber'
           },
           {
             value: 'warningStatue,1',
-            title: '预警检修',
+            title: this.$t('public.earlyWarning'),
             nkey: 'warningStatue'
           },
           {
             value: 'warningStatue,0',
-            title: '未预警检修',
+            title: this.$t('public.unannouncedMaintenance'),
             nkey: 'todayNumber'
           },
           {
             value: 'onlineStatue,0',
-            title: '当前在槽',
+            title: this.$t('public.currentlyInSlot'),
             nkey: 'doneNumber'
           },
           {
             value: 'onlineStatue,1',
-            title: '租借中',
+            title: this.$t('public.underLease'),
             nkey: 'expiredNumber'
           },
           {
             value: 'onlineStatue,3',
-            title: '租借弹出中',
+            title: this.$t('public.leasingPopup'),
             nkey: 'expiredNumber'
           },
           {
             value: 'onlineStatue,2',
-            title: '弹出检修',
+            title: this.$t('battery.popUpMaintenance'),
             nkey: 'rentFailedNumber'
           },
           {
             value: 'onlineStatue,5',
-            title: '异常不在槽',
+            title: this.$t('public.abnormalNotInSlot'),
             nkey: 'payFailedNumber'
           }
         ],
         queryObj: {
           terminalId: {
-            title: '宝SN',
+            title: this.$t('public.sn'),
             type: 'input'
           },
           terminalSn: {
-            title: '二维码',
+            title: this.$t('public.code'),
             type: 'input'
           },
           // initStoreName: {
@@ -366,20 +366,20 @@
           {
             key: 'terminalSn',
             val: true,
-            name: '设备二维码',
+            name: this.$t('public.deviceCode'),
             width: 180,
           },
           {
             key: 'terminalId',
             val: true,
-            name: '宝SN',
+            name: this.$t('public.sn'),
             width: 150
           },
 
           {
             key: 'factoryName',
             val: true,
-            name: '所属工厂'
+            name: this.$t('battery.factory')
           },
           // {
           //   key: 'deviceTypeCode',
@@ -389,67 +389,67 @@
           {
             key: 'lendCountTotal',
             val: true,
-            name: '租借次数'
+            name: this.$t('battery.numberOfRentals')
           },
           {
             key: 'lendAmountTotal',
             val: true,
-            name: '累计金额'
+            name: this.$t('battery.accumulatedAmount')
           },
           {
             key: 'lendDurationTotal',
             val: true,
-            name: '使用时长'
+            name: this.$t('battery.usageDuration')
           },
           {
             key: 'lendDurationAvg',
             val: true,
-            name: '近10次使用时长',
+            name: this.$t('battery.lendDurationAvg'),
             width: 130
           },
           {
             key: 'deviceDamageIndex',
             val: true,
-            name: '损坏指数'
+            name: this.$t('battery.deviceDamageIndex')
           },
           {
             key: 'warningStatue',
             val: true,
-            name: '预警状态'
+            name: this.$t('battery.warningStatue')
           },
           {
             key: 'initAgentName',
             val: true,
-            name: '初始代理',
+            name: this.$t('battery.initAgentName'),
             width: 150
           },
           {
             key: 'currentAgentName',
             val: true,
-            name: '当前代理',
+            name: this.$t('battery.currentAgentName'),
             width: 150
           },
           {
             key: 'initStoreName',
             val: true,
-            name: '初始商户',
+            name: this.$t('battery.initStoreName'),
             width: 150
           },
           {
             key: 'currentStoreName',
             val: true,
-            name: '当前商户',
+            name: this.$t('battery.currentStoreName'),
             width: 150
           },
           {
             key: 'belongStatue',
             val: true,
-            name: '归属状态'
+            name: this.$t('battery.belongStatue')
           },
           {
             key: 'onlineStatue',
             val: true,
-            name: '状态'
+            name: this.$t('battery.status')
           },
           // {
           //   key: 'lastOverhaulId',
@@ -460,7 +460,7 @@
           {
             key: 'lastOverhaulTime',
             val: true,
-            name: '最近检修时间'
+            name: this.$t('battery.lastOverhaulTime')
           }
         ]
       }
@@ -642,7 +642,7 @@
           slot: row.ext.slot
         }).then((res = {}) => {
           this.$message({
-            message: '指令已发送',
+            message: this.$t('public.commandSent'),
             type: 'success'
           })
           row.ext = ''
