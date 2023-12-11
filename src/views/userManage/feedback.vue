@@ -12,28 +12,28 @@
       </template>
 
       <template v-slot:defult>
-        <el-form-item label="手机号码">
-          <el-input placeholder="用户手机号码" v-model="form.mobile" />
+        <el-form-item :label="$t('public.phone')">
+          <el-input :placeholder="$t('userManage.userPhone')" v-model="form.mobile" />
         </el-form-item>
-        <el-form-item label="设备SN">
-          <el-input placeholder="设备SN" v-model="form.deviceSn" />
+        <el-form-item :label="$t('public.deviceSn')">
+          <el-input :placeholder="$t('public.deviceSn')" v-model="form.deviceSn" />
         </el-form-item>
-        <el-form-item label="商户名称" v-if="!isStore()">
-          <el-input placeholder="商户名称" v-model="form.storeName" />
+        <el-form-item :label="$t('public.storeName')" v-if="!isStore()">
+          <el-input :placeholder="$t('public.storeName')" v-model="form.storeName" />
         </el-form-item>
-        <el-form-item label="反馈对象" v-if="!isStore()">
-          <el-select placeholder="反馈对象" v-model="form.feedbackType" @change="toQuery()">
+        <el-form-item :label="$t('userManage.feedbackRecipient')" v-if="!isStore()">
+          <el-select :placeholder="$t('userManage.feedbackRecipient')" v-model="form.feedbackType" @change="toQuery()">
             <el-option :label="item" :value="index" v-for="(item, index) in feedbackType" />
           </el-select>
         </el-form-item>
-        <el-form-item label="设备类型">
-          <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
+        <el-form-item :label="$t('public.deviceType')">
+          <el-select :placeholder="$t('public.deviceType')" v-model="form.deviceTypeCode" @change="toQuery()">
             <el-option :label="index" :value="item" v-for="(item, index) in myDeviceName" />
           </el-select>
         </el-form-item>
-        <el-form-item label="反馈日期">
+        <el-form-item :label="$t('userManage.feedbackDate')">
           <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange" range-separator="-"
-            value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期"
+            value-format="yyyy-MM-dd HH:mm:ss" :start-placeholder="$t('public.statrtDate')" :end-placeholder="$t('public.endDate')"
             :picker-options="pickerOptionsEnd" @change="toQuery()">
           </el-date-picker>
         </el-form-item>
@@ -43,38 +43,38 @@
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading" highlight-current-row>
-        <el-table-column label="身份" width="80">
+        <el-table-column :label="$t('public.identity')" width="80">
           <template slot-scope="scope">
             <div>{{ getRoleName(scope.row.userType) }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="用户昵称" width="120">
+        <el-table-column :label="$t('public.userNickName')" width="120">
           <template slot-scope="scope">
             <div class="flex align-center">
               <div class="flex1 ml-5">{{ scope.row.nickname }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="联系电话" width="120">
+        <el-table-column :label="$t('userManage.telephone')" width="120">
           <template slot-scope="scope">
             {{ scope.row.mobile || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="商户" width="200" v-if="form.feedbackType == 'store'">
+        <el-table-column :label="$t('public.store')" width="200" v-if="form.feedbackType == 'store'">
           <template slot-scope="scope">
             <div>{{ scope.row.storeName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="问题类型" width="110">
+        <el-table-column :label="$t('userManage.questionType')" width="110">
           <template slot-scope="scope">
             <div>{{ scope.row.issueType }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="设备二维码" width="100">
+        <el-table-column :label="$t('public.deviceCode')" width="100">
           <template slot-scope="scope">
             <div>{{ scope.row.deviceSn || '--' }}</div>
             <a class="text-blue" v-if="scope.row.orderNo" :href="`/order/order?orderNo=${scope.row.orderNo}`"
-              target="_blank">查看订单</a>
+              target="_blank">{{ $t('userManage.viewOrder') }}</a>
           </template>
         </el-table-column>
         <!-- <el-table-column label="设备类型" width="100">
@@ -82,17 +82,17 @@
             {{ myDeviceId[scope.row.deviceTypeCode] }}
           </template>
         </el-table-column> -->
-        <el-table-column label="反馈时间" width="120">
+        <el-table-column :label="$t('userManage.feedbackTime')" width="120">
           <template slot-scope="scope">
             {{ parseTime(scope.row.feedbackTime, '{m}-{d} {h}:{i}:{s}') }}
           </template>
         </el-table-column>
-        <el-table-column label="反馈内容" min-width="250">
+        <el-table-column :label="$t('userManage.feedbackContet')" min-width="250">
           <template slot-scope="scope">
             {{ scope.row.content || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="截图" width="190">
+        <el-table-column :label="$t('userManage.screenshot')" width="190">
           <template slot-scope="scope">
             <div class="flex flex-wrap" v-if="scope.row.errorImages">
               <el-image class="mr-5" v-for="item in scope.row.errorImages.split(',')" style="width: 50px; height: 50px"
@@ -102,7 +102,7 @@
             <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="回复" min-width="200">
+        <el-table-column :label="$t('userManage.reply')" min-width="200">
           <template slot-scope="scope">
             {{ scope.row.reply || '--' }}
           </template>
@@ -112,15 +112,15 @@
             {{ scope.row.remark }}
           </template>
         </el-table-column> -->
-        <el-table-column label="状态" width="100">
+        <el-table-column :label="$t('public.status')" width="100">
           <template slot-scope="scope">
             <el-button class="ml-0" :type="scope.row.state == 1 ? 'success' : 'danger'" size="mini"
-              plain>{{ statusObj[scope.row.state] || '未处理' }}</el-button>
+              plain>{{ statusObj[scope.row.state] || $t('userManage.untreated') }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">查看详情</el-button>
+            <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">{{ $t('public.detail') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -134,21 +134,21 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <el-form label-width="auto" class="custom-form">
-          <el-form-item label="反馈内容">
+          <el-form-item :label="$t('userManage.feedbackContet')">
             <div>{{ curRow.content }}</div>
           </el-form-item>
-          <el-form-item label="错误截图" v-if="dform.errorImages && dform.errorImages.length > 0">
+          <el-form-item :label="$t('userManage.errorScreenshot')" v-if="dform.errorImages && dform.errorImages.length > 0">
             <el-image class="mr-5" v-for="item in dform.errorImages" style="width: 50px; height: 50px" :src="item"
               :preview-src-list="dform.errorImages"></el-image>
           </el-form-item>
-          <el-form-item label="后台回复">
-            <el-input v-model="dform.reply" type="textarea" :rows="4" placeholder="请输入回复内容"></el-input>
+          <el-form-item :label="$t('userManage.backendReply')">
+            <el-input v-model="dform.reply" type="textarea" :rows="4" :placeholder="$t('userManage.replyText')"></el-input>
           </el-form-item>
         </el-form>
       </template>
       <div class="mt-30 text-center" v-if="curRow.state == 0">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -172,28 +172,28 @@
         clickSubmit: false,
         dealStatus: [{
             value: '',
-            title: '全部',
+            title: this.$t('public.all'),
             nkey: 'totalCount'
           },
           {
             value: '0',
-            title: '未处理',
+            title: this.$t('userManage.untreated'),
             nkey: 'processCount'
           },
           {
             value: '1',
-            title: '已处理',
+            title: this.$t('userManage.processed'),
             nkey: 'finishedCount'
           }
         ],
 
         feedbackType: {
-          brand: '平台问题',
-          store: '商户问题'
+          brand: this.$t('userManage.platformIssues'),
+          store: this.$t('userManage.merchantIssues'),
         },
         statusObj: {
-          0: '未处理',
-          1: '已处理'
+          0: this.$t('userManage.untreated'),
+          1: this.$t('userManage.processed')
         },
 
         pickerOptionsEnd: {
@@ -234,7 +234,7 @@
         dialogType: 1,
         dialogStatus: false,
         dialogTitle: {
-          1: '反馈详情'
+          1: this.$t('userManage.feedbackDetails')
         },
         curRow: {},
         curIdx: 0,
@@ -383,6 +383,7 @@
        * 弹窗确认
        */
       dialogConfirm() {
+        let that = this;
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
@@ -393,7 +394,7 @@
               this.$post('iot-saas-basic/admin/feedback/updateById', params).then(res => {
                 this.$message({
                   type: 'success',
-                  message: '操作成功'
+                  message: that.$t('public.operationSuccessful')
                 })
                 this.curRow.state = params.state
                 this.curRow.reply = params.reply

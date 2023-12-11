@@ -2,13 +2,13 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="toQuery(2)" @query="toQuery">
       <template v-slot:defult>
-        <el-form-item label="工厂名称">
-          <el-input v-model="form.name" placeholder="工厂名称" />
+        <el-form-item :label="$t('factory.factoryName')">
+          <el-input v-model="form.name" :placeholder="$t('factory.factoryName')" />
         </el-form-item>
       </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" @click="$router.push({path: `/factory/addFactory`})"><i
-            class="el-icon-circle-plus-outline el-icon--left" />添加工厂</el-button>
+            class="el-icon-circle-plus-outline el-icon--left" />{{ $t('factory.addFactory') }}</el-button>
       </template>
     </condition>
 
@@ -16,49 +16,49 @@
       <div class="bg-white">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH"
           element-loading-text="Loading" highlight-current-row>
-          <el-table-column label="工厂名称">
+          <el-table-column :label="$t('factory.factoryName')">
             <template slot-scope="scope">
               {{ scope.row.name }}
             </template>
           </el-table-column>
-          <el-table-column label="地址">
+          <el-table-column :label="$t('public.address')">
             <template slot-scope="scope">
               {{ scope.row.address }}
             </template>
           </el-table-column>
-          <el-table-column label="联系人">
+          <el-table-column :label="$t('public.contacts')">
             <template slot-scope="scope">
               <div>{{ scope.row.contacts }}</div>
               <div>{{ scope.row.mobile }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="简介">
+          <el-table-column :label="$t('public.briefIntroduction')">
             <template slot-scope="scope">
               {{ scope.row.briefIntroduction }}
             </template>
           </el-table-column>
-          <el-table-column label="推荐贴牌数">
+          <el-table-column :label="$t('factory.brandNum')">
             <template slot-scope="scope">
               {{ scope.row.brandNum || 0 }}
             </template>
           </el-table-column>
-          <el-table-column label="分润快活币">
+          <el-table-column :label="$t('factory.brandNum')">
             <template slot-scope="scope">
               {{ scope.row.money || '0.00' }}
             </template>
           </el-table-column>
-          <el-table-column label="设备类型">
+          <el-table-column :label="$t('public.deviceType')">
             <template slot-scope="scope">
               <template v-for="item in scope.row.deviceTypeList">
                 <span>{{ item.deviceTypeName }}</span>
               </template>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
+          <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <div class="flex flex-wrap">
-                <el-button type="primary" size="mini" @click="$router.push({name: 'addFactory', params: { info: scope.row }})">修改信息</el-button>
-                <el-button type="primary" size="mini" @click="toLogin(scope.row)">一键登录</el-button>
+                <el-button type="primary" size="mini" @click="$router.push({name: 'addFactory', params: { info: scope.row }})">{{ $t('public.modifyingInformation') }}</el-button>
+                <el-button type="primary" size="mini" @click="toLogin(scope.row)">{{ $t('factory.oneClickLogin') }}</el-button>
                 <!-- <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">主题设置</el-button> -->
               </div>
             </template>
@@ -77,23 +77,23 @@
               </el-image>
             </template>
           </el-table-column>
-          <el-table-column label="主题名称">
+          <el-table-column :label="$t('factory.topicName')">
             <template slot-scope="scope">
               {{ scope.row.name }}
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column :label="$t('public.operate')">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" round plain
-                @click="bindUI({son_id: curRow.aid, code: scope.row.code})" v-if="dform.code != scope.row.code">绑定TA
+                @click="bindUI({son_id: curRow.aid, code: scope.row.code})" v-if="dform.code != scope.row.code">{{ $t('factory.bindTa') }}
               </el-button>
             </template>
           </el-table-column>
         </el-table>
       </template>
       <div class="mt-30 text-center" v-if="dialogType != 1">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -124,7 +124,7 @@
         dialogType: 1,
         dialogStatus: false,
         dialogTitle: {
-          1: '主题设置'
+          1: this.$t('factory.themeSettings')
         },
         curRow: {},
         curIdx: 0,

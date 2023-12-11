@@ -2,27 +2,27 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-form-item label="用户来源">
-          <el-select placeholder="用户来源" v-model="form.userType" @change="toQuery()">
-            <el-option label="全部" value="" />
-            <el-option label="微信" value="wechat" />
-            <el-option label="支付宝" value="alipay" />
+        <el-form-item :label="$t('userManage.userSource')">
+          <el-select :placeholder="$t('userManage.userSource')" v-model="form.userType" @change="toQuery()">
+            <el-option :label="$t('public.all')" value="" />
+            <el-option :label="$t('payType.wx')" value="wechat" />
+            <el-option :label="$t('payType.zfb')" value="alipay" />
           </el-select>
         </el-form-item>
-        <el-form-item label="用户ID">
-          <el-input placeholder="用户ID后八位" v-model="form.idLastNine" />
+        <el-form-item :label="$t('public.userId')">
+          <el-input :placeholder="$t('userManage.idText')" v-model="form.idLastNine" />
         </el-form-item>
-        <el-form-item label="用户昵称">
-          <el-input placeholder="用户昵称" v-model="form.nickname" />
+        <el-form-item :label="$t('public.userNickName')">
+          <el-input :placeholder="$t('public.userNickName')" v-model="form.nickname" />
         </el-form-item>
-        <el-form-item label="手机号码">
-          <el-input placeholder="手机号码" v-model="form.mobile" />
+        <el-form-item :label="$t('public.phone')">
+          <el-input :placeholder="$t('public.phone')" v-model="form.mobile" />
         </el-form-item>
-        <el-form-item label="用户状态">
-          <el-select placeholder="用户状态" v-model="form.status" @change="toQuery()">
-            <el-option label="全部" value="" />
-            <el-option label="正常" value="0" />
-            <el-option label="已拉黑" value="1" />
+        <el-form-item :label="$t('userManage.userStatus')">
+          <el-select :placeholder="$t('userManage.userStatus')" v-model="form.status" @change="toQuery()">
+            <el-option :label="$t('public.all')" value="" />
+            <el-option :label="$t('public.normal')" value="0" />
+            <el-option :label="$t('userManage.blackened')" value="1" />
           </el-select>
         </el-form-item>
       </template>
@@ -30,51 +30,51 @@
 
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" highlight-current-row>
-        <el-table-column label="头像" width="60">
+        <el-table-column :label="$t('public.img')" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column label="昵称" width="160">
+        <el-table-column :label="$t('public.nickname')" width="160">
           <template slot-scope="scope">
-            <el-link class="cursor">{{ scope.row.nickname || '无昵称' }}</el-link>
+            <el-link class="cursor">{{ scope.row.nickname || $t('userManage.noNickname') }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="手机号码">
+        <el-table-column :label="$t('public.phone')">
           <template slot-scope="scope">
             <div>{{ dealPhone(scope.row.mobile) }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="来源">
+        <el-table-column :label="$t('home.source')">
           <template slot-scope="scope">
-            {{ scope.row.userType == 'wechat' ? '微信' : '支付宝' }}
+            {{ scope.row.userType == 'wechat' ? $t('payType.wx') : $t('payType.zfb') }}
           </template>
         </el-table-column>
-        <el-table-column label="租借次数">
+        <el-table-column :label="$t('public.numberOfRentals')">
           <template slot-scope="scope">
             {{ scope.row.loanNumber || '0' }}
           </template>
         </el-table-column>
-        <el-table-column label="消费总金额">
+        <el-table-column :label="$t('userManage.totalAmount')">
           <template slot-scope="scope">
             {{ scope.row.totalConsumption || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="钱包余额" v-if="isSaas() || isBrand()">
+        <el-table-column :label="$t('public.walletBalance')" v-if="isSaas() || isBrand()">
           <template slot-scope="scope">
             {{ scope.row.accountBalance || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column label="注册日期" width="150">
+        <el-table-column :label="$t('userManage.registrationDate')" width="150">
           <template slot-scope="scope">
             {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="165" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
-              <el-button type="primary" size="mini" @click="$router.push({path: `/order?userId=${scope.row.id}`})">订单记录</el-button>
-              <el-button :type="scope.row.status == 1 ? 'danger' : ''" size="mini" @click="setBlack(scope.row)">{{ scope.row.status == 1 ? '恢复' : '拉黑' }}</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/order?userId=${scope.row.id}`})">{{ $t('public.orderList') }}</el-button>
+              <el-button :type="scope.row.status == 1 ? 'danger' : ''" size="mini" @click="setBlack(scope.row)">{{ scope.row.status == 1 ? $t('userManage.restore') : $t('userManage.block') }}</el-button>
             </div>
           </template>
         </el-table-column>
@@ -201,13 +201,14 @@
        * 拉黑 或 移除黑名单
        */
       setBlack(row) {
+        let that = this;
         row.status = row.status == 1 ? 0 : 1
         this.$post('iot-saas-user/api/user/updateStatus', {
           userId: row.id,
           status: row.status
         }).then(res => {
           this.$message({
-            message: '设置成功',
+            message: that.$t('public.setSuccess'),
             type: 'success'
           })
         })
@@ -217,16 +218,17 @@
        * 充值
        */
       recharge(row, type = 1) {
-        this.$prompt('请输入充值金额', type == 1 ? '余额充值' : '储值卡充值', {
-          confirmButtonText: '确定充值',
-          cancelButtonText: '取消',
-          inputPlaceholder: '正数为加，负数为减',
+        let that = this;
+        this.$prompt(that.$t('userManage.rechargeTitle'), type == 1 ? that.$t('userManage.rechargeType') : that.$t('userManage.rechargeType1'), {
+          confirmButtonText: that.$t('userManage.confirmRecharge'),
+          cancelButtonText: that.$t('public.cancel'),
+          inputPlaceholder: that.$t('userManage.rechargeText'),
           inputType: 'text',
           beforeClose: (action, instance, done) => {
             if (action == 'confirm') {
               this.loadObj = this.$loading({
                 lock: true,
-                text: '正在充值',
+                text: that.$t('userManage.recharging'),
                 spinner: 'el-icon-loading'
               })
               const value = instance.inputValue
@@ -237,7 +239,7 @@
               }).then(res => {
                 this.loadObj.close()
                 this.$message({
-                  message: '操作成功',
+                  message: that.$t('public.operationSuccessful'),
                   type: 'success'
                 })
                 this.toQuery()
@@ -254,16 +256,17 @@
        * 设置会员
        */
       setUserMember(){
+        let that = this;
         let params = this.memberObj
         this.loadObj = this.$loading({
           lock: true,
-          text: '提交中~~',
+          text: `${that.$t('public.submitting')}~~`,
           spinner: 'el-icon-loading'
         })
         this.$post('agentapi/card/save_user_member_card_info', params).then(res => {
           this.loadObj.close()
           this.$message({
-            message: '操作成功',
+            message: that.$t('public.operationSuccessful'),
             type: 'success'
           })
           this.memberDialog = false

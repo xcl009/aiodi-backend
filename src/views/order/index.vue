@@ -325,7 +325,7 @@
                 <div>{{ curRow.orderNo }}</div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('home.storeName')}}:</div>
+                <div class="label-text">{{$t('public.storeName')}}:</div>
                 <div>{{ curRow.storeName }}</div>
               </div>
               <div class="flex mb-10">
@@ -803,7 +803,7 @@ export default {
           sType: 1
         },
         storeId: {
-          title: this.$t('home.storeName'),
+          title: this.$t('public.storeName'),
           type: 'selectSearch',
           name: 'name',
           sType: 3
@@ -890,7 +890,7 @@ export default {
         {
           key: 'storeName',
           val: true,
-          name: this.$t('home.storeName')
+          name: this.$t('public.storeName')
         },
         {
           key: 'sourceType',

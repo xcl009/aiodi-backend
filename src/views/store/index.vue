@@ -15,8 +15,8 @@
               <el-option :label="$t('public.unpacked')" value="2" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('home.storeName')">
-            <el-input v-model="form.name" :placeholder="$t('home.storeName')" />
+          <el-form-item :label="$t('public.storeName')">
+            <el-input v-model="form.name" :placeholder="$t('public.storeName')" />
           </el-form-item>
           <el-form-item :label="$t('public.phone')">
             <el-input v-model="form.mobile" :placeholder="$t('public.phone')" />
@@ -578,7 +578,7 @@ export default {
         {
           key: 'balance',
           val: true,
-          name: `${this.$t('public.withdrawable')}(${this.$t('public.element')})`
+          name: `${this.$t('store.withdrawable')}(${this.$t('public.element')})`
         },
         {
           key: 'order',
@@ -599,23 +599,23 @@ export default {
           key: 'supUser',
           val: this.lowerStore,
           hidden: !this.lowerStore,
-          name: '上级代理'
+          name: this.$t('public.superiorAgent')
         },
         {
           key: 'deviceDivision',
           val: !this.isStore(),
           hidden: this.isStore(),
-          name: '分成方式'
+          name: this.$t('public.analysisMode')
         },
         {
           key: 'province',
           val: true,
-          name: '城市区域'
+          name: this.$t('store.cityRegion')
         },
         {
           key: 'catId',
           val: true,
-          name: '行业分类'
+          name: this.$t('store.industry')
         }
       ],
       // 代理
@@ -974,6 +974,7 @@ export default {
      * 铺货
      */
     bindStore(row) {
+      let that = this;
       let url = 'iot-saas-device/admin/device/bindStore', params = {
         storeId: row.id
       }
@@ -985,7 +986,7 @@ export default {
       this.$post(url, params).then((res) => {
         this.$message({
           type: 'success',
-          message: '铺货成功'
+          message: that.$t('store.successDistribution')
         })
         if (this.deviceIds) {
           history.back()
@@ -1003,6 +1004,7 @@ export default {
      * @param {Object} idx 当前商户所在位置
      */
     setRows(type, row, dialogType, idx) {
+      let that = this;
       switch (type) {
         case 1: case 3:
           this.dialogType = dialogType
@@ -1042,8 +1044,8 @@ export default {
           }
           break
         case 2:
-          this.$alert('确定切换到该商户？', '切换商户', {
-            confirmButtonText: '确定',
+          this.$alert(that.$t('store.switchStore'), that.$t('store.switchStoreText'), {
+            confirmButtonText: that.$t('public.confirm'),
             callback: action => {
               if (action == 'confirm') {
                 this.$post('iot-saas-user/store/login', {
@@ -1051,7 +1053,7 @@ export default {
                 }).then(res => {
                   setToken(res.loginToken.accessToken)
                   this.$message({
-                    message: '切换成功',
+                    message: that.$t('store.switchSuccess'),
                     type: 'success'
                   })
                   setTimeout(() => {
@@ -1063,8 +1065,8 @@ export default {
           })
           break
         case 6:
-          this.$alert('确定重置该商户账号的登录密码吗？', '重置登录密码', {
-            confirmButtonText: '确定',
+          this.$alert(that.$t('store.resettingLoginPassword'), that.$t('store.resettingLoginPasswordText'), {
+            confirmButtonText: that.$t('public.confirm'),
             center: true,
             callback: action => {
               if (action == 'confirm') {
@@ -1073,7 +1075,7 @@ export default {
                   password: '123456'
                 }).then(res => {
                   this.$message({
-                    message: '重置成功',
+                    message: that.$t('public.resetSuccess'),
                     type: 'success'
                   })
                 })
@@ -1094,6 +1096,7 @@ export default {
      * 弹窗确认
      */
     dialogConfirm(row) {
+      let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.dform))
@@ -1118,7 +1121,7 @@ export default {
             storeId: curRow.id
           }).then(res => {
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.dialogStatus = false
@@ -1134,7 +1137,7 @@ export default {
           }
           if (!agentId) {
             this.$message({
-              message: '请选择分配对象',
+              message: that.$t('store.pleaseSelectObjet'),
               type: 'error'
             })
             return
@@ -1144,7 +1147,7 @@ export default {
             agentId: agentId
           }).then(res => {
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.dialogStatus = false
@@ -1157,7 +1160,7 @@ export default {
             password: '123456'
           }).then(res => {
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
           })
@@ -1169,7 +1172,7 @@ export default {
           }).then(res => {
             this.dialogStatus = false
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             curRow.frozenBalance = params.frozenBalance
@@ -1184,7 +1187,7 @@ export default {
           this.$post('iot-saas-basic/store/admin/function/update', params).then(res => {
             this.$message({
               type: 'success',
-              message: '操作成功'
+              message: that.$t('public.operationSuccessful')
             })
             this.drawerStatus = false
             this.clickSubmit = false
@@ -1204,7 +1207,7 @@ export default {
               this.getList()
             }
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             let newlyAgent = JSON.parse(JSON.stringify(this.agentList.newly))
@@ -1226,7 +1229,7 @@ export default {
             isBand: this.checkList.isBand
           }).then(res => {
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.getList();
@@ -1250,9 +1253,10 @@ export default {
      * @param {Object} row
      */
     toLogin(row) {
+      let that = this;
       this.loadObj = this.$loading({
         lock: true,
-        text: '正在登录',
+        text: that.$t('public.loggingIn'),
         spinner: 'el-icon-loading'
       })
       this.$post('iot-saas-user/admin/login', {

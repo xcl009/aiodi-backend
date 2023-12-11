@@ -389,7 +389,7 @@
           {
             key: 'lendCountTotal',
             val: true,
-            name: this.$t('battery.numberOfRentals')
+            name: this.$t('public.numberOfRentals')
           },
           {
             key: 'lendAmountTotal',

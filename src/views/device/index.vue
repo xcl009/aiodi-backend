@@ -101,7 +101,7 @@
               <div>{{ scope.row.distribute && scope.row.bindStoreTime ? parseTime(scope.row.bindStoreTime) : '--' }}</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('home.storeName')" min-width="200" v-else-if="item.val && item.key == 'store'">
+          <el-table-column :label="$t('public.storeName')" min-width="200" v-else-if="item.val && item.key == 'store'">
             <template slot-scope="scope">
               <div v-if="scope.row.store">
                 <div class="text-cut_two">{{ scope.row.store.name }}</div>
@@ -475,7 +475,7 @@
           <div class="mb-20 pb-5 l-b">
             <condition :clickSubmit="clickSubmit" :unfoldShow="false" pdClass="p-0" @reset="storeList.query={page: 1, size: 20}; getStoreList(2)" @query="getStoreList(2)" >
               <template v-slot:defult>
-                <el-form-item :label="$t('home.storeName')">
+                <el-form-item :label="$t('public.storeName')">
                   <el-input :placeholder="$t('device.pleaseStoreName')" v-model="storeList.query.name"></el-input>
                 </el-form-item>
                 <el-form-item :label="$t('public.phone')">
@@ -668,7 +668,7 @@
             ]
           },
           storeId: {
-            title: this.$t('home.storeName'),
+            title: this.$t('public.storeName'),
             type: 'selectSearch',
             name: 'name',
             sType: 3
@@ -795,7 +795,7 @@
           {
             key: 'store',
             val: true,
-            name: this.$t('home.storeName')
+            name: this.$t('public.storeName')
           },
           {
             key: 'place',

@@ -164,7 +164,7 @@
                     scope.$index + 1 }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('home.storeName')" min-width="90">
+            <el-table-column :label="$t('public.storeName')" min-width="90">
               <template slot-scope="scope">
                 <span class="y-yellow">{{ scope.row.storeName.substring(0, 2) }}**</span>
               </template>
