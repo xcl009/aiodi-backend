@@ -37,7 +37,7 @@
         </el-table-column>
         <el-table-column :label="$t('public.nickname')" width="160">
           <template slot-scope="scope">
-            <el-link class="cursor">{{ scope.row.nickname || $t('userManage.noNickname') }}</el-link>
+            <el-link class="cursor">{{ scope.row.nickname || $t('public.noNickname') }}</el-link>
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.phone')">

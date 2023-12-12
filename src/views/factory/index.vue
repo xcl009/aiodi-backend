@@ -230,9 +230,10 @@
        * @param {Object} row
        */
       toLogin(row) {
+        let that = this;
         this.loadObj = this.$loading({
           lock: true,
-          text: '正在登录',
+          text: that.$t('public.loggingIn'),
           spinner: 'el-icon-loading'
         })
         this.$post('agentapi/login/pretend_team_login', {

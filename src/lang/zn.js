@@ -111,6 +111,7 @@ export default {
         dividendPerson: '分润人',
         contactInformation: '联系方式',
         creationTime: '创建时间',
+        expirationTime:'到期时间',
         spreadToTa: '铺给Ta',
         bound: '已绑',
         unbound: '未绑',
@@ -173,12 +174,26 @@ export default {
         fullName: '姓名',
         address: '地址',
         contacts: '联系人',
-        briefIntroduction: '简介'
+        briefIntroduction: '简介',
+        moenyType:'钱包类型',
+        selectDate:'日期筛选',
+        noNickname: '无昵称',
+        payType:'支付方式',
+        other:'其他',
+        serviceType:'服务类型',
+        specifications:'规格',
     },
     payType: {
         zfb: '支付宝',
         wx: '微信',
-        balance: '余额'
+        balance: '余额',
+        regularWallet:'普通钱包',
+        khbMoeny:'快活币钱包',
+        khb:'快活币',
+        payKhb:'支付快活币',
+        monthlyPayment:'月付',
+        annualPayment:'年付',
+        permanent:'永久'
     },
     home: {
         transactionAmount: '总交易额',
@@ -433,7 +448,6 @@ export default {
         userStatus: '用户状态',
         blackened: '已拉黑',
         block: '拉黑',
-        noNickname: '无昵称',
         totalAmount: '消费总金额',
         registrationDate: '注册日期',
         restore: '恢复',
@@ -525,5 +539,19 @@ export default {
         topicName: '主题名称',
         bindTa: '绑定TA',
         themeSettings: '主题设置',
+    },
+    moeny:{
+        rechargeTime:'充值时间',
+        rechargeAmount:'充值金额',
+        actualReceipt:'实际到账',
+    },
+    market:{
+        paymentType:'付费类型',
+        cycleType:'周期类型',
+        serverName:'服务名称',
+        cycle:'周期',
+        renewalFrequency:'续期次数',
+        membershipRenewal:'会员续用',
+        serviceRenewalRecords:'服务续费记录',
     }
 };

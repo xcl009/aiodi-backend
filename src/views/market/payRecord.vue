@@ -2,33 +2,33 @@
   <div>
 		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
 		  <template v-slot:defult>
-        <el-form-item label="付费类型">
-          <el-select placeholder="付费类型" v-model="listQuery.priceInd" @change="toQuery()">
-            <el-option label="全部" :value="''" />
-            <el-option label="快活币" :value="1" />
-            <el-option label="其他" :value="0" />
+        <el-form-item :label="$t('market.paymentType')">
+          <el-select :placeholder="$t('market.paymentType')" v-model="listQuery.priceInd" @change="toQuery()">
+            <el-option :label="$t('public.all')" :value="''" />
+            <el-option :label="$t('payType.khb')" :value="1" />
+            <el-option :label="$t('public.other')" :value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="服务类型">
-          <el-select placeholder="服务类型" v-model="form.serviceTypeCode" @change="toQuery()">
+        <el-form-item :label="$t('public.serviceType')">
+          <el-select :placeholder="$t('public.serviceType')" v-model="form.serviceTypeCode" @change="toQuery()">
             <el-option v-for="item in tabs" :label="item.name" :value="''+item.code" />
           </el-select>
         </el-form-item>
-        <el-form-item label="设备类型">
-          <el-select placeholder="设备类型" v-model="form.deviceTypeCode" @change="toQuery()">
+        <el-form-item :label="$t('public.deviceType')">
+          <el-select :placeholder="$t('public.deviceType')" v-model="form.deviceTypeCode" @change="toQuery()">
             <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="周期类型">
-          <el-select placeholder="周期类型" v-model="form.cycleType" @change="toQuery()">
+        <el-form-item :label="$t('market.cycleType')">
+          <el-select :placeholder="$t('market.cycleType')" v-model="form.cycleType" @change="toQuery()">
             <el-option v-for="item in cycleType" :label="item.name" :value="''+item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="服务名称">
-          <el-input placeholder="服务名称" v-model="form.serviceName" />
+        <el-form-item :label="$t('market.serverName')">
+          <el-input :placeholder="$t('market.serverName')" v-model="form.serviceName" />
         </el-form-item>
-        <el-form-item label="品牌名称">
-          <el-input placeholder="品牌名称" v-model="form.brandName" />
+        <el-form-item :label="$t('public.brandName')">
+          <el-input :placeholder="$t('public.brandName')" v-model="form.brandName" />
         </el-form-item>
 		  </template>
 		</condition>
@@ -36,61 +36,61 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
         highlight-current-row :max-height="tableMaxH">
-        <el-table-column label="品牌" min-width="120">
+        <el-table-column :label="$t('public.brand')" min-width="120">
           <template slot-scope="scope">
             {{ scope.row.brandName || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="服务类型">
+        <el-table-column :label="$t('public.serviceType')">
           <template slot-scope="scope">
             {{ scope.row.serviceTypeName || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="设备类型">
+        <el-table-column :label="$t('public.deviceType')">
           <template slot-scope="scope">
             {{ scope.row.deviceTypeName || '' }}
           </template>
         </el-table-column>
-        <el-table-column label="服务名称" min-width="200">
+        <el-table-column :label="$t('market.serverName')" min-width="200">
           <template slot-scope="scope">
             {{ scope.row.serviceName || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="规格" width="200">
+        <el-table-column :label="$t('public.specifications')" width="200">
           <template slot-scope="scope">
             {{ scope.row.priceCodeName || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="周期">
+        <el-table-column :label="$t('market.cycle')">
           <template slot-scope="scope">
             {{ scope.row.cycleTypeName || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="支付快活币" width="120">
+        <el-table-column :label="$t('payType.payKhb')" width="120">
           <template slot-scope="scope">
             <span>{{ scope.row.payAmount || 0.00 }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" width="170">
+        <el-table-column :label="$t('public.creationTime')" width="170">
           <template slot-scope="scope">
             {{ scope.row.buyDatetime || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="到期时间" width="170">
+        <el-table-column :label="$t('public.expirationTime')" width="170">
           <template slot-scope="scope">
             {{ scope.row.expiresDatetime || '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="续期次数" width="150">
+        <el-table-column :label="$t('market.renewalFrequency')" width="150">
           <template slot-scope="scope">
             {{ scope.row.recordNumber || 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="备注" width="190">
+        <el-table-column :label="$t('public.remark')" width="190">
           <template slot-scope="scope">
             <div>
               <span v-if="scope.row.payAmount > 0"></span>
-              <span class="text-danger" v-else-if="scope.row.cycleTypeName != '系统赠送' && scope.row.cycleTypeName != '免费试用'">会员续用</span>
+              <span class="text-danger" v-else-if="scope.row.cycleTypeName != '系统赠送' && scope.row.cycleTypeName != '免费试用'">{{ $t('market.membershipRenewal') }}</span>
             </div>
             <div>{{ scope.row.remark }}</div>
           </template>
@@ -106,7 +106,7 @@
       </div>
     </div>
 
-    <xlsx ref="toXlsx" fileName="服务续费记录"></xlsx>
+    <xlsx ref="toXlsx" :fileName="$t('market.serviceRenewalRecords')"></xlsx>
   </div>
 </template>
 
@@ -127,15 +127,15 @@
         tabs: [],
         cycleType: [
           {
-            name: '月付',
+            name: this.$t('payType.monthlyPayment'),
             value: 'MONTH'
           },
           {
-            name: '年付',
+            name: this.$t('payType.annualPayment'),
             value: 'YEAR'
           },
           {
-            name: '永久',
+            name: this.$t('payType.permanent'),
             value: 'ALL'
           }
         ],

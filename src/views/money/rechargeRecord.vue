@@ -3,21 +3,21 @@
     <div class="bg-white">
       <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
         <template v-slot:defult>
-          <el-form-item label="钱包类型">
-            <el-select v-model="form.capitalType" placeholder="钱包类型" @change="toQuery()">
-              <el-option label="普通钱包" :value="1" />
-              <el-option label="快活币钱包" :value="2" />
+          <el-form-item :label="$t('public.moenyType')">
+            <el-select v-model="form.capitalType" :placeholder="$t('public.moenyType')" @change="toQuery()">
+              <el-option :label="$t('payType.regularWallet')" :value="1" />
+              <el-option :label="$t('payType.khbMoeny')" :value="2" />
             </el-select>
           </el-form-item>
-          <el-form-item label="日期筛选">
+          <el-form-item :label="$t('public.khbMoeny')">
           <el-date-picker
             class="range-day flex align-center"
               v-model="form.date"
               type="datetimerange"
               range-separator="-"
               value-format="yyyy-MM-dd HH:mm:ss"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :start-placeholder="$t('public.statrtDate')"
+              :end-placeholder="$t('public.endDate')"
               :picker-options="pickerOptionsEnd"
               @change="toQuery()">
             </el-date-picker>
@@ -29,39 +29,39 @@
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" show-summary
         :max-height="tableMaxH" element-loading-text="Loading">
-        <el-table-column label="头像" width="60">
+        <el-table-column :label="$t('public.img')" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column label="用户" width="160">
+        <el-table-column :label="$t('public.user')" width="160">
           <template slot-scope="scope">
-            <el-link class="cursor">{{ scope.row.nickname || '无昵称' }}</el-link>
+            <el-link class="cursor">{{ scope.row.nickname || $t('public.noNickname') }}</el-link>
             <div>{{ scope.row.mobile || '' }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="钱包类型">
+        <el-table-column :label="$t('public.moenyType')">
           <template slot-scope="scope">
-            <span>{{ scope.row.happyCurrencyNum > 0 ? '快活币钱包' : '普通钱包' }}</span>
+            <span>{{ scope.row.happyCurrencyNum > 0 ? $t('payType.khbMoeny') : $t('payType.regularWallet') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="充值时间">
+        <el-table-column :label="$t('moeny.rechargeTime')">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="支付方式" width="100">
+        <el-table-column :label="$t('public.payType')" width="100">
           <template slot-scope="scope">
-            <span>{{ scope.row.pay_type == 2 ? '支付宝' : '微信'}}</span>
+            <span>{{ scope.row.pay_type == 2 ? $t('payType.zfb') : $t('payType.wx')}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="充值金额" prop="amount" sortable></el-table-column>
-        <el-table-column label="实际到账">
+        <el-table-column :label="$t('moeny.rechargeAmount')" prop="amount" sortable></el-table-column>
+        <el-table-column :label="$t('moeny.actualReceipt')">
           <template slot-scope="scope">
             <span>{{ scope.row.actualAmount || scope.row.happyCurrencyNum || 0 }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="备注">
+        <el-table-column :label="$t('public.remark')">
           <template slot-scope="scope">
             <span>{{ scope.row.remark }}</span>
           </template>
