@@ -3,15 +3,15 @@
         <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
             <template v-slot:tabs>
                 <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
-                    <div class="mr-10">设备类型</div>
+                    <div class="mr-10">{{ $t('public.deviceType') }}</div>
                     <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
-                        <el-tab-pane label="全部设备" :name="''" />
+                        <el-tab-pane :label="$t('public.allDevice')" :name="''" />
                         <el-tab-pane :label="index" :name="'' + item + ''" v-for="(item, index) in myDeviceName"
                             :key="index" />
                     </el-tabs>
                 </div>
                 <div class="mb-10 flex align-center bg-white">
-                    <div class="mr-10">订单状态</div>
+                    <div class="mr-10">{{ $t('public.orderType') }}</div>
                     <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
                         <el-tab-pane :label="`${item.title}`" :name="'' + item.value + ''"
                             v-for="(item, index ) in orderTab" :key="index" />
@@ -23,14 +23,14 @@
             <template v-slot:defult>
                 <el-form-item v-for="(item, index) in 1" :key="index">
                     <div class="flex combined">
-                        <el-select v-model="formKey[`sel${item}`]" placeholder="请选择">
+                        <el-select v-model="formKey[`sel${item}`]" :placeholder="$t('public.pleaseSelect')">
                             <template v-for="(q, key) in queryObj">
                                 <el-option :label="q.title" :value="key"
                                     v-if="checkQueryRepeat(key, item, formKey)"></el-option>
                             </template>
                         </el-select>
                         <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-                            <el-input :placeholder="`请输入${queryObj[formKey[`sel${item}`]].title}`"
+                            <el-input :placeholder="`${$t('public.enter')}${queryObj[formKey[`sel${item}`]].title}`"
                                 v-model="form[formKey[`sel${item}`]]"></el-input>
                         </template>
                         <template
@@ -52,7 +52,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange"
-                        range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期"
+                        range-separator="-" value-format="yyyy-MM-dd" :start-placeholder="$t('public.statrtDate')" :end-placeholder="$t('public.endDate')"
                         :picker-options="pickerOptionsEnd" @change="toQuery()">
                     </el-date-picker>
                 </el-form-item>
@@ -61,7 +61,7 @@
 
         <div class="pl-10 pr-10 bg-white">
             <div class="flex align-center pt-15 mb-15 l-t">
-                <div class="flex1 fs-c1 text-black">查询表格</div>
+                <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
                 <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn"
                     :defaultColumn="defaultColumn"></table-column-set>
             </div>
@@ -69,65 +69,65 @@
             <div v-if="showColumn.length > 0">
                 <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
                     :max-height="tableMaxH" element-loading-text="Loading">
-                    <el-table-column label="品牌" width="150" prop="brandName" v-if="isSaas()"></el-table-column>
+                    <el-table-column :label="$t('public.brand')" width="150" prop="brandName" v-if="isSaas()"></el-table-column>
 
                     <template v-for="item in showColumn">
-                        <el-table-column label="订单编号" width="140" v-if="item.val && item.key == 'orderNo'">
+                        <el-table-column :label="$t('public.orderNum')" width="140" v-if="item.val && item.key == 'orderNo'">
                             <template slot-scope="scope">
                                 {{ scope.row.orderNo || '--' }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="订单金额" v-if="item.val && item.key == 'productStandardDTO'">
+                        <el-table-column :label="$t('public.orderNum')" v-if="item.val && item.key == 'productStandardDTO'">
                             <template slot-scope="scope">
                                 {{ parseFloat(scope.row.productStandardDTO.price) * scope.row.productNumber }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="设备类型" v-if="item.val && item.key == 'deviceTypeCode'">
+                        <el-table-column :label="$t('public.deviceType')" v-if="item.val && item.key == 'deviceTypeCode'">
                             <template slot-scope="scope">
                                 {{ myDeviceId[scope.row.deviceTypeCode] }}
                             </template>
                         </el-table-column>
 
-                        <el-table-column label="支付状态" v-if="item.val && item.key == 'payStatus'">
+                        <el-table-column :label="$t('payType.payStatus')" v-if="item.val && item.key == 'payStatus'">
                             <template slot-scope="scope">
                                 {{ payStatusText[scope.row.payStatus] }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="订单状态" v-if="item.val && item.key == 'status'">
+                        <el-table-column :label="$t('public.orderType')" v-if="item.val && item.key == 'status'">
                             <template slot-scope="scope">
-                                <el-link type="danger" v-if="scope.row.status == 0">待支付</el-link>
-                                <el-link type="primary" v-if="scope.row.status == 1">生产中</el-link>
-                                <el-link type="warning" v-if="scope.row.status == 2">待收货</el-link>
-                                <el-link type="success" v-if="scope.row.status == 3">已收货</el-link>
+                                <el-link type="danger" v-if="scope.row.status == 0">{{ $t('public.toBePaid') }}</el-link>
+                                <el-link type="primary" v-if="scope.row.status == 1">{{ $t('public.inProduction') }}</el-link>
+                                <el-link type="warning" v-if="scope.row.status == 2">{{ $t('public.toBeReceived') }}</el-link>
+                                <el-link type="success" v-if="scope.row.status == 3">{{ $t('public.receivedGoods') }}</el-link>
                             </template>
                         </el-table-column>
-                        <el-table-column label="下单时间" v-if="item.val && item.key == 'orderTime'">
+                        <el-table-column :label="$t('public.orderTime')" v-if="item.val && item.key == 'orderTime'">
                             <template slot-scope="scope">
                                 {{ parseTime(scope.row.orderTime) || '--' }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="支付时间" v-if="item.val && item.key == 'orderTime'">
+                        <el-table-column :label="$t('public.payTime')" v-if="item.val && item.key == 'orderTime'">
                             <template slot-scope="scope">
                                 {{ parseTime(scope.row.payTime) || '--' }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="收货时间" v-if="item.val && item.key == 'orderTime'">
+                        <el-table-column :label="$t('public.deliveryTime')" v-if="item.val && item.key == 'orderTime'">
                             <template slot-scope="scope">
                                 {{ parseTime(scope.row.receivedTime) || '--' }}
                             </template>
                         </el-table-column>
 
                     </template>
-                    <el-table-column label="操作" width="200" :fixed="device == 'desktop' ? 'right' : false">
+                    <el-table-column :label="$t('public.operate')" width="200" :fixed="device == 'desktop' ? 'right' : false">
                         <template slot-scope="scope">
                             <div class="flex flex-wrap operate">
-                                <el-button type="primary" size="mini" @click="setRows(1, scope.row, 4)">详情</el-button>
+                                <el-button type="primary" size="mini" @click="setRows(1, scope.row, 4)">{{ $t('public.particulars') }}</el-button>
                                 <el-button type="warning" size="mini" v-if="scope.row.status == 0"
-                                    @click="setRows(1, scope.row, 1)">确认线下收款</el-button>
+                                    @click="setRows(1, scope.row, 1)">{{ $t('shopping.confirmOfflinePayment') }}</el-button>
                                 <el-button type="primary" size="mini" v-if="scope.row.status == 1"
-                                    @click="setRows(1, scope.row, 2)">确认发货</el-button>
+                                    @click="setRows(1, scope.row, 2)">{{ $t('shopping.confirmShipment') }}</el-button>
                                 <el-button type="success" size="mini" v-if="scope.row.status == 2"
-                                    @click="setRows(1, scope.row, 3)">确认交货</el-button>
+                                    @click="setRows(1, scope.row, 3)">{{ $t('shopping.confirmDelivery') }}</el-button>
                             </div>
                         </template>
                     </el-table-column>
@@ -142,27 +142,27 @@
 
                 <template v-if="dialogType == 4">
                     <div class="pl-20 pr-20 text-black">
-                        <div class="mb-15">用户信息</div>
+                        <div class="mb-15">{{ $t('public.userInfo') }}</div>
                         <div class="flex align-center pb-20 l-b">
                             <img :src="curRow.userAvatar || agentInfo.avatar" class="round" width="56" alt="">
                             <div class="pl-20">
                                 <div class="flex">
-                                    <div class="label-text">设备类型:</div>
+                                    <div class="label-text">{{ $t('public.deviceType') }}:</div>
                                     <div> {{ myDeviceId[curRow.deviceTypeCode] }}</div>
-                                    <div class="ml-10 label-text">支付类型:</div>
+                                    <div class="ml-10 label-text">{{ $t('public.payType') }}:</div>
                                     <div>{{ payStatusText[curRow.payStatus] }}</div>
-                                    <div class="ml-10 label-text">下单时间:</div>
+                                    <div class="ml-10 label-text">{{ $t('public.orderTime') }}:</div>
                                     <div>{{ parseTime(curRow.orderTime) || '--' }}</div>
                                 </div>
                             </div>
                         </div>
                         <template v-if="!isStore()">
-                            <div class="mt-20 mb-15">订单流程</div>
+                            <div class="mt-20 mb-15">{{ $t('order.orderProcess') }}</div>
                             <div class="flex pb-20 timeline-box white-space text-center l-b">
                                 <div class="rel pt-30 timeline-item el-icon-"
                                     v-for="(item, index) in curRow.productOrderFlows">
                                     <div class="pl-10 pr-10">
-                                        <el-tooltip :content="statusText[item.status] || '无'" placement="top">
+                                        <el-tooltip :content="statusText[item.status] || $t('public.notHave')" placement="top">
                                             <div class="text-cut">{{ statusText[item.status] }}</div>
                                         </el-tooltip>
                                         <div class="mt-10 fs-s2 text-gray">{{ parseTime(item.createTime) }}</div>
@@ -171,29 +171,29 @@
                             </div>
                         </template>
                         <template>
-                            <div class="mt-20 mb-15">订单信息</div>
+                            <div class="mt-20 mb-15">{{ $t('public.orderInformation') }}</div>
                             <el-table border :data="curRow.productStandardDTO" class="custom">
-                                <el-table-column label="设备类型" align="center">
+                                <el-table-column :label="$t('public.deviceType')" align="center">
                                     <template slot-scope="scope">
                                         {{ myDeviceId[curRow.deviceTypeCode] }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="规格" align="center">
+                                <el-table-column :label="$t('public.specifications')" align="center">
                                     <template slot-scope="scope">
                                         {{ scope.row.number }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="单价(元)" align="center">
+                                <el-table-column :label="`${$t('public.unitPrice')}(${$t('public.element')})`" align="center">
                                     <template slot-scope="scope">
-                                        {{ scope.row.price }}元
+                                        {{ scope.row.price }}{{ $t('public.element') }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="数量" align="center">
+                                <el-table-column :label="$t('public.number')" align="center">
                                     <template slot-scope="scope">
                                         {{ curRow.productNumber }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="总金额(元)" align="center">
+                                <el-table-column :label="`${$t('public.totalAmount')}(${$t('public.element')})`" align="center">
                                     <template slot-scope="scope">
                                         <span class="red_color">{{ curRow.productPrice }}</span>
                                     </template>
@@ -217,29 +217,29 @@
                                 </div>
                             </div>
                             <div class="ml-30">
-                                <div class="text-bold fs-b1">订单信息</div>
-                                <div class="mt-10">设备类型： {{ myDeviceId[curRow.deviceTypeCode] }}</div>
-                                <div class="mt-10">设备金额： {{ curRow.productPrice }}</div>
-                                <div class="mt-10">下单时间： {{ parseTime(curRow.orderTime) }}</div>
-                                <div class="mt-10" v-if="curRow.payTime">线下支付时间 {{ parseTime(curRow.payTime) }}</div>
+                                <div class="text-bold fs-b1">{{ $t('public.orderInformation') }}</div>
+                                <div class="mt-10">{{ $t('public.deviceType') }}： {{ myDeviceId[curRow.deviceTypeCode] }}</div>
+                                <div class="mt-10">{{ $t('public.equipmentAmount') }}： {{ curRow.productPrice }}</div>
+                                <div class="mt-10">{{ $t('public.orderTime') }}： {{ parseTime(curRow.orderTime) }}</div>
+                                <div class="mt-10" v-if="curRow.payTime">{{ $t('shopping.offlinePaymentTime') }} {{ parseTime(curRow.payTime) }}</div>
                             </div>
                         </div>
                         <div class="mt-30 flex_c">
                             <div>
-                                {{ dialogTitle[dialogType] }}时间:
+                                {{ dialogTitle[dialogType] }}{{ $t('public.time') }}:
                             </div>
                             <div class="ml-30">
                                 <el-date-picker value-format="yyyy-MM-dd hh:mm:ss" v-model="form.dateTime" type="datetime"
-                                    placeholder="选择日期时间">
+                                    :placeholder="$t('shopping.selectDateTime')">
                                 </el-date-picker>
                             </div>
                         </div>
                     </div>
                 </template>
                 <div class="mt-30 text-center">
-                    <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
+                    <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
                     <el-button size="medium" type="primary" @click="dialogConfirm(dialogType)"
-                        :disabled="clickSubmit">确定</el-button>
+                        :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
                 </div>
             </el-dialog>
         </div>
@@ -330,27 +330,27 @@ export default {
             },
             orderTab: [{
                 value: 'all',
-                title: '全部',
+                title: this.$t('public.all'),
                 nkey: 'orderNumber'
             },
             {
                 value: '0',
-                title: '待支付',
+                title: this.$t('public.toBePaid'),
                 nkey: 'rentingNumber'
             },
             {
                 value: '1',
-                title: '生产中',
+                title: this.$t('public.inProduction'),
                 nkey: 'todayNumber'
             },
             {
                 value: '2',
-                title: '待收货',
+                title: this.$t('public.toBeReceived'),
                 nkey: 'doneNumber'
             },
             {
                 value: '3',
-                title: '已收货',
+                title: this.$t('public.receivedGoods'),
                 nkey: 'expiredNumber'
             },
             ],
@@ -372,12 +372,12 @@ export default {
 
             queryObj: {
                 orderNo: {
-                    title: '订单号',
+                    title: this.$t('public.orderNo'),
                     type: 'input',
                     name: 'brandName',
                 },
                 idLastNine: {
-                    title: '品牌商名称',
+                    title: this.$t('public.brandNames'),
                     type: 'input',
                     name: 'brandName',
                     sType: 1
@@ -396,10 +396,10 @@ export default {
             dialogStatus: false,
             drawerStatus: false,
             dialogTitle: {
-                1: '确定线下收款',
-                2: '确定发货',
-                3: '确认交货',
-                4: '详情'
+                1: this.$t('shopping.confirmOfflinePayment'),
+                2: this.$t('shopping.confirmShipment'),
+                3: this.$t('shopping.confirmDelivery'),
+                4: this.$t('public.particulars')
             },
             curRow: {},
             curIdx: 0,
@@ -413,47 +413,47 @@ export default {
                 {
                     key: 'orderNo',
                     val: true,
-                    name: '订单编号'
+                    name: this.$t('public.orderNum')
                 },
                 {
                     key: 'productStandardDTO',
                     val: true,
-                    name: '订单金额(元)'
+                    name: `${this.$t('public.orderMoeny')}(${this.$t('public.element')})`
                 },
                 {
                     key: 'deviceTypeCode',
                     val: true,
-                    name: '设备类型'
+                    name: this.$t('public.deviceType')
                 },
                 {
                     key: 'payStatus',
                     val: true,
-                    name: '支付状态'
+                    name: this.$t('payType.payStatus')
                 },
 
                 {
                     key: 'status',
                     val: true,
-                    name: '订单状态'
+                    name: this.$t('public.orderType')
                 },
                 {
                     key: 'orderTime',
                     val: true,
-                    name: '下单时间'
+                    name: this.$t('public.orderTime')
                 },
                 {
                     key: 'payTime',
                     val: true,
-                    name: '支付时间'
+                    name: this.$t('public.payTime')
                 },
                 {
                     key: 'receivedTime',
                     val: true,
-                    name: '收货时间'
+                    name: this.$t('public.deliveryTime')
                 },
             ],
-            payStatusText: ['未支付', '已支付', '已线下支付'],
-            statusText: ['待支付', '生产中', '待收货', '已收货'],
+            payStatusText: [this.$t('public.unpaid'), this.$t('public.paid'), this.$t('public.offlinePayment')],
+            statusText: [this.$t('public.toBePaid'), this.$t('public.inProduction'), this.$t('public.toBeReceived'), this.$t('public.receivedGoods')],
         }
     },
     mounted() {
@@ -577,9 +577,10 @@ export default {
          * 弹窗确认
          */
         dialogConfirm(type) {
+            let that = this;
             if (!this.form.dateTime) {
                 this.$message({
-                    message: '时间不能为空',
+                    message: that.$t('shopping.timeCannotBeEmpty'),
                     type: 'error'
                 })
                 return;
@@ -602,7 +603,7 @@ export default {
                 dateTime: this.form.dateTime
             }).then(res => {
                 this.$message({
-                    message: '确认成功 ',
+                    message: that.$t('public.confirmedSuccess'),
                     type: 'success'
                 })
                 this.dialogStatus = false;

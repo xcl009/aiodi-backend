@@ -3,24 +3,24 @@
     <div class="p-15 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" highlight-current-row>
-        <el-table-column label="类型">
+        <el-table-column :label="$t('public.type')">
           <template slot-scope="scope">
             <div>{{ scope.row.advertTypeName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="数量">
+        <el-table-column :label="$t('public.number')">
           <template slot-scope="scope">
             <div>{{ scope.row.number }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column :label="$t('public.operate')">
           <template slot-scope="scope">
             <template>
               <router-link :to="`/advert/posterList?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&advertTypeName=${scope.row.advertTypeName}`">
-                <el-button type="primary" size="mini">广告管理</el-button>
+                <el-button type="primary" size="mini">{{ $t('public.advertisingSettings') }}</el-button>
               </router-link>
               <router-link :to="`/advert/posterPosition?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&advertTypeName=${scope.row.advertTypeName}`" v-if="isSaas()">
-                <el-button type="primary" size="mini">位置管理</el-button>
+                <el-button type="primary" size="mini">{{ $t('public.addressSettings') }}</el-button>
               </router-link>
             </template>
           </template>
@@ -73,6 +73,7 @@
        * 设置子级广告权限
        */
       setPer(row){
+        let that = this;
         let agree = row.son_has == 1 ? 0 : 1
         this.$post('agentapi/switch_ad_position', {
           son_id: this.son_id,
@@ -80,7 +81,7 @@
           agree: agree
         }).then(res => {
           this.$message({
-            message: '设置成功',
+            message: that.$t('public.setSuccess'),
             type: 'success'
           })
           row.son_has = agree

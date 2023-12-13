@@ -3,42 +3,43 @@
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
         <div class="mb-10 flex align-center bg-white">
-          <div class="mr-10">对象类型</div>
+          <div class="mr-10">{{ $t('system.guideTarget') }}</div>
           <el-tabs class="flex-1" v-model="form.guideTarget" @tab-click="toQuery()">
-            <el-tab-pane label="全部" name="0" />
+            <el-tab-pane :label="$t('public.all')" name="0" />
             <el-tab-pane :label="item.typeName" :name="item.userType" v-for="(item, index) in dataList" :key="index" />
           </el-tabs>
         </div>
         <div class="mb-10 flex align-center bg-white">
-          <div class="mr-10">指南类型</div>
+          <div class="mr-10">{{ $t('system.guideType') }}</div>
           <el-tabs class="flex-1" v-model="form.guideType" @tab-click="toQuery()">
-            <el-tab-pane label="全部" name="0" />
+            <el-tab-pane :label="$t('public.all')" name="0" />
             <el-tab-pane :label="item.title" :name="item.value" v-for="item in tabs" />
           </el-tabs>
         </div>
         <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
-          <div class="mr-10">设备类型</div>
+          <div class="mr-10">{{ $t('public.deviceType') }}</div>
           <el-tabs class="flex-1" v-model="form.deviceTypeCode" @tab-click="toQuery()">
-            <el-tab-pane label="全部" name="0" />
+            <el-tab-pane :label="$t('public.all')" name="0" />
             <el-tab-pane :label="index" :name="'' + item + ''" v-for="(item, index) in myDeviceName" />
           </el-tabs>
         </div>
       </template>
 
       <template v-slot:defult>
-        <el-form-item label="指南标题">
+        <el-form-item :label="$t('public.guideTitle')">
           <el-input v-model="form.guideTitle" />
         </el-form-item>
       </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="setRows(3, {}, 1)"><i
-            class="el-icon-plus el-icon--left" />添加指南</el-button>
+            class="el-icon-plus el-icon--left" />{{ $t('public.addGuide') }}</el-button>
       </template>
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
-        <el-table-column label="对象" width="150">
+      <el-table ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row
+        :max-height="tableMaxH">
+        <el-table-column :label="$t('public.object')" width="150">
           <template slot-scope="scope">
             <div>{{ scope.row.guideTargetName || '--' }}</div>
           </template>
@@ -48,46 +49,47 @@
             <el-avatar shape="square" :size="35" fit="cover" :src="scope.row.guideIcon"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column label="类型" width="100">
+        <el-table-column :label="$t('public.type')" width="100">
           <template slot-scope="scope">
             <div v-for="(item, index) in tabs" :key="index">
               <div v-if="item.value == scope.row.guideType">{{ item.title }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="设备" width="100">
+        <el-table-column :label="$t('public.device')" width="100">
           <template slot-scope="scope">
-              <div v-for="(item,index ) in myDevice" :key="index">
-                  <div v-if="item.code == scope.row.deviceTypeCode">{{ item.name }}</div>
-              </div>
+            <div v-for="(item, index ) in myDevice" :key="index">
+              <div v-if="item.code == scope.row.deviceTypeCode">{{ item.name }}</div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="标题" width="220">
+        <el-table-column :label="$t('public.title')" width="220">
           <template slot-scope="scope">
             <div>{{ scope.row.guideTitle }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="描述" show-overflow-tooltip>
+        <el-table-column :label="$t('system.guideContent')" show-overflow-tooltip>
           <template slot-scope="scope">
             <div>{{ scope.row.guideContent }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="其他描述" show-overflow-tooltip>
+        <el-table-column :label="$t('system.guideDesc')" show-overflow-tooltip>
           <template slot-scope="scope">
             <div>{{ scope.row.guideDesc }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="订单状态" width="100">
+        <el-table-column :label="$t('public.orderType')" width="100">
           <template slot-scope="scope">
             {{ orderStatus[scope.row.refundStatus] || '' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="140">
+        <el-table-column :label="$t('public.operate')" width="140">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <template v-if="isSaas()">
-                <el-button type="text" @click="showDialog(scope.row)">编辑</el-button>
-                <el-button type="text" class="text-danger" @click="del(scope.row, scope.$index)">删除</el-button>
+                <el-button type="text" @click="showDialog(scope.row)">{{ $t('public.edit') }}</el-button>
+                <el-button type="text" class="text-danger" @click="del(scope.row, scope.$index)">{{ $t('public.delete')
+                }}</el-button>
               </template>
             </div>
           </template>
@@ -102,36 +104,38 @@
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
       <template v-if="dialogType == 1">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
-          <el-form-item label="指南对象">
+          <el-form-item :label="$t('system.guideObject')">
             <el-select v-model="dform.guideTarget">
-              <el-option :label="`${item.typeName}`" :value="item.userType" v-for="(item,index) in dataList" :key="index"></el-option>
+              <el-option :label="`${item.typeName}`" :value="item.userType" v-for="(item, index) in dataList"
+                :key="index"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="指南图标" class="up-img">
+          <el-form-item :label="$t('system.guideIcon')" class="up-img">
             <upload v-model="dform.guideIcon" />
           </el-form-item>
-          <el-form-item label="指南类型">
+          <el-form-item :label="$t('system.guideType')">
             <el-select v-model="dform.guideType">
               <el-option :label="`${t.title}`" :value="t.value" v-for="t in tabs"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="指南设备">
+          <el-form-item :label="$t('system.guideDevice')">
             <el-select v-model="dform.deviceTypeCode">
               <el-option :label="key" :value="item" v-for="(item, key) in myDeviceName"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="订单状态">
+          <el-form-item :label="$t('public.orderType')">
             <el-select v-model="dform.refundStatus">
               <el-option :label="v" :value="k" v-for="(v, k) in orderStatus"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="指南标题">
-            <el-input v-model="dform.guideTitle" placeholder="指南标题" style="width: 600px;"></el-input>
+          <el-form-item :label="$t('system.guideTitle')">
+            <el-input v-model="dform.guideTitle" :placeholder="$t('system.guideTitle')" style="width: 600px;"></el-input>
           </el-form-item>
-          <el-form-item label="指南内容">
-            <el-input v-model="dform.guideContent" placeholder="请输入指南内容" type="textarea" :rows="4" />
+          <el-form-item :label="$t('system.guideContent')">
+            <el-input v-model="dform.guideContent" :placeholder="$t('system.guideContentText')" type="textarea"
+              :rows="4" />
           </el-form-item>
-          <el-form-item label="其他描述">
+          <el-form-item :label="$t('system.guideDesc')">
             <el-input v-model="dform.guideDesc" type="textarea" :rows="4" />
           </el-form-item>
         </el-form>
@@ -139,8 +143,9 @@
       <template v-if="[1].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
-          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+          }}</el-button>
         </div>
       </template>
     </el-drawer>
@@ -166,28 +171,28 @@ export default {
       tabs: [
         {
           value: '1',
-          title: '使用'
+          title: this.$t('public.use')
         },
         {
           value: '2',
-          title: '支付'
+          title: this.$t('public.payment')
         },
         {
           value: '3',
-          title: '归还'
+          title: this.$t('public.return')
         },
         {
           value: '4',
-          title: '退款'
+          title: this.$t('public.refund')
         }
       ],
       orderStatus: {
-        U: '待付款',
-        R: '租借中',
-        F: '租借失败',
-        O: '已完成',
-        W: '免押待付款',
-        D: '已退款'
+        U: this.$t('public.obligation'),
+        R: this.$t('public.underLease'),
+        F: this.$t('public.leaseFailed'),
+        O: this.$t('public.completed'),
+        W: this.$t('system.noDepositToBePaid'),
+        D: this.$t('public.refunded')
       },
       form: {},
       list: [],
@@ -204,13 +209,13 @@ export default {
       dialogStatus: false,
       drawerStatus: false,
       dialogTitle: {
-        1: '添加指南'
+        1: this.$t('system.addGuide')
       },
       curRow: {},
       curIdx: 0,
       dform: {},
       // 指南对象数组
-      dataList:[],
+      dataList: [],
     }
   },
   computed: {
@@ -244,15 +249,15 @@ export default {
     /**
     * 获取指南对象数据
     */
-   init(){
-    let url = 'iot-saas-basic/admin/guide/config/findTypes';
-    this.$get(url, {}).then(res => {
-      this.dataList = res;
-      this.listLoading = false;
+    init() {
+      let url = 'iot-saas-basic/admin/guide/config/findTypes';
+      this.$get(url, {}).then(res => {
+        this.dataList = res;
+        this.listLoading = false;
       }).catch(() => {
         this.listLoading = false
       })
-   },
+    },
     /**
     * 显示dialog
     */
@@ -265,8 +270,9 @@ export default {
      * 删除问题指南
      */
     del(row) {
-      this.$alert('确定删除此问题指南吗？', '问题指南', {
-        confirmButtonText: '确定',
+      let that = this;
+      this.$alert(that.$t('system.message'), that.$t('system.guidemessage'), {
+        confirmButtonText: that.$t('public.confirm'),
         center: true,
         callback: action => {
           if (action == 'confirm') {
@@ -275,7 +281,7 @@ export default {
               status: 0
             }).then(res => {
               this.$message({
-                message: '删除成功',
+                message: that.$t('public.deleteSuccess'),
                 type: 'success'
               })
               this.getList();
@@ -360,6 +366,7 @@ export default {
      * 弹窗确认
      */
     dialogConfirm(row = {}) {
+      let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.dform))
@@ -368,34 +375,34 @@ export default {
       }
       switch (this.dialogType) {
         case 1:
-        if (!params.guideTarget) {
+          if (!params.guideTarget) {
             this.$message({
-              message: '请选择对象',
+              message: that.$t('system.pleaseSelectObject'),
               type: 'error'
             })
             return
-          }else if (!params.guideType) {
+          } else if (!params.guideType) {
             this.$message({
-              message: '请选择指南类型',
+              message: that.$t('system.pleaseSelectGuideType'),
               type: 'error'
             })
             return
           } else if (!params.guideTitle) {
             this.$message({
-              message: '请输入标题',
+              message: that.$t('system.pleaseTitle'),
               type: 'error'
             })
             return
           } else if (!params.guideContent) {
             this.$message({
-              message: '请输入指南内容',
+              message: that.$t('system.guideContentText'),
               type: 'error'
             })
             return
           }
           this.$post('iot-saas-basic/admin/guide/config/save', params).then(res => {
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.toQuery();

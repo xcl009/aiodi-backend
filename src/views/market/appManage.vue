@@ -56,7 +56,7 @@
                 </div>
               </template>
               <el-button type="primary" size="medium" @click="$router.push({path: `/market/addApp?id=${item.id}`})">{{ $t('public.modifyNow') }}</el-button>
-              <el-button type="danger" @click="setRows(1, item, 1)" v-if="brandId">{{ $t('brand.giftService') }}</el-button>
+              <el-button type="danger" @click="setRows(1, item, 1)" v-if="brandId">{{ $t('public.giftService') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -70,22 +70,22 @@
       <template v-if="dialogType == 1">
         <div class="flex justify-center">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item label="套餐" v-if="curRow.priceSettings">
+            <el-form-item :label="$t('public.package')" v-if="curRow.priceSettings">
               <el-radio-group v-model="dform.priceCode">
                 <el-radio-button :label="item.priceCode" v-for="(item, key) in curRow.priceSettings">{{ item.priceName }}</el-radio-button>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="结束时间">
+            <el-form-item :label="$t('public.endTime')">
               <el-date-picker
                 v-model="dform.giveEndDatetime"
                 type="date"
                 value-format="yyyy-MM-dd"
-                placeholder="请选择结束时间">
+                :placeholder="$t('order.returnTimeText')">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="支付快活币">
+            <el-form-item :label="$t('payType.payKhb')">
               <el-input v-model="dform.khbPrice" />
-              <div>支付快活币大0时，表示该记录显示为品牌正常支付，周期为月付。</div>
+              <div>{{ $t('market.khbText') }}</div>
             </el-form-item>
           </el-form>
         </div>
@@ -93,8 +93,8 @@
       <template v-if="[1].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
-          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
         </div>
       </template>
     </el-drawer>
@@ -133,7 +133,7 @@
         dialogType: 1,
         drawerStatus: false,
         dialogTitle: {
-          1: '赠送服务'
+          1: this.$t('public.giftService')
         },
         curRow: {},
         curIdx: 0,
@@ -261,6 +261,7 @@
        * 弹窗确认
        */
       dialogConfirm() {
+        let that = this;
         let curRow = this.curRow,
           curIdx = this.curIdx,
           params = JSON.parse(JSON.stringify(this.dform))
@@ -270,7 +271,7 @@
           case 1:
             if(!params.giveEndDatetime){
               this.$message({
-                message: '请选择赠送服务结束时间',
+                message: that.$t('market.message'),
                 type: 'error'
               })
               return
@@ -283,7 +284,7 @@
               brandId : this.brandId
             }).then(res => {
               this.$message({
-                message: '操作成功',
+                message: that.$t('market.operationSuccessful'),
                 type: 'success'
               })
               this.drawerStatus = false

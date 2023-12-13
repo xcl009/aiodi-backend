@@ -2,41 +2,44 @@
     <div>
         <div class="pb-20 pt-20">
             <el-button type="primary" size="small" class="mr-10" @click="setRows(3, {}, 1)"><i
-                    class="el-icon-plus el-icon--left" />添加公告</el-button>
+                    class="el-icon-plus el-icon--left" />{{ $t('notice.addNotice') }}</el-button>
         </div>
 
         <div class="pl-10 pr-10 bg-white">
             <el-table ref="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading"
                 highlight-current-row :max-height="tableMaxH">
-                <el-table-column label="公告类型" show-overflow-tooltip>
+                <el-table-column :label="$t('notice.noticeType')" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <div>{{ scope.row.noticeTypeVO.typeName || '--' }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column label="用户类型" show-overflow-tooltip>
+                <el-table-column :label="$t('notice.userType')" show-overflow-tooltip>
                     <template slot-scope="scope">
-                        <div>{{ scope.row.brandId == '1' ? '品牌商' : scope.row.storeId == '1' ? '商户' : scope.row.agentId ==
-                            '1' ? '代理' : '' }}</div>
+                        <div>{{ scope.row.brandId == '1' ? $t('public.brand') : scope.row.storeId == '1' ?
+                            $t('public.store') : scope.row.agentId ==
+                                '1' ? $t('public.agent') : '' }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column label="状态" show-overflow-tooltip>
+                <el-table-column :label="$t('public.status')" show-overflow-tooltip>
                     <template slot-scope="scope">
-                        <el-link :underline="false" type="success" v-if="scope.row.status == 1">开启</el-link>
-                        <el-link :underline="false" type="info" v-else>关闭</el-link>
+                        <el-link :underline="false" type="success" v-if="scope.row.status == 1">{{ $t('public.open')
+                        }}</el-link>
+                        <el-link :underline="false" type="info" v-else>{{ $t('public.close') }}</el-link>
                     </template>
                 </el-table-column>
-                <el-table-column label="公告内容" show-overflow-tooltip>
+                <el-table-column :label="$t('notice.noticeContent')" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <div>{{ scope.row.recodeContent }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="140">
+                <el-table-column :label="$t('public.operate')" width="140">
                     <template slot-scope="scope">
                         <div class="flex flex-wrap operate">
                             <template v-if="isSaas()">
-                                <el-button type="text" @click="showDialog(scope.row, {}, 2)">编辑</el-button>
-                                <el-button type="text" class="text-danger"
-                                    @click="del(scope.row, scope.$index)">删除</el-button>
+                                <el-button type="text" @click="showDialog(scope.row, {}, 2)">{{ $t('public.edit')
+                                }}</el-button>
+                                <el-button type="text" class="text-danger" @click="del(scope.row, scope.$index)">{{
+                                    $t('public.delete') }}</el-button>
                             </template>
                         </div>
                     </template>
@@ -51,33 +54,37 @@
         <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false" size="40%">
             <template>
                 <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
-                    <el-form-item label="公告类型">
+                    <el-form-item :label="$t('notice.noticeType')">
                         <el-select v-model="dform.typeCode">
                             <el-option :label="`${item.typeName}`" :value="item.typeCode" v-for="(item, index) in dataList"
                                 :key="index"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="用户类型">
+                    <el-form-item :label="$t('notice.userType')">
                         <el-select v-model="dform.type" @change="change">
-                            <el-option :label="`${t.title}`" :value="t.type" v-for="(t,index) in identity" :key="index"></el-option>
+                            <el-option :label="`${t.title}`" :value="t.type" v-for="(t, index) in identity"
+                                :key="index"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="状态">
+                    <el-form-item :label="$t('public.status')">
                         <el-radio-group v-model="dform.status">
-                            <el-radio :label="1">开启</el-radio>
-                            <el-radio :label="2">关闭</el-radio>
+                            <el-radio :label="1">{{ $t('public.open') }}</el-radio>
+                            <el-radio :label="2">{{ $t('public.close') }}</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="公告内容">
-                        <el-input v-model="dform.recodeContent" placeholder="请输入公告内容" type="textarea" :rows="4" />
+                    <el-form-item :label="$t('notice.noticeContent')">
+                        <el-input v-model="dform.recodeContent" :placeholder="$t('notice.noticeContentText')"
+                            type="textarea" :rows="4" />
                     </el-form-item>
                 </el-form>
             </template>
             <template>
                 <div style="height: 66px;"></div>
                 <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
-                    <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
-                    <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+                    <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel')
+                    }}</el-button>
+                    <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{
+                        $t('public.confirm') }}</el-button>
                 </div>
             </template>
         </el-drawer>
@@ -104,15 +111,15 @@ export default {
         return {
             identity: [
                 {
-                    title: '品牌商',
+                    title: this.$t('public.brand'),
                     type: 'brandId',
                 },
                 {
-                    title: '商户',
+                    title: this.$t('public.store'),
                     type: 'storeId',
                 },
                 {
-                    title: '代理',
+                    title: this.$t('public.agent'),
                     type: 'agentId',
                 }
             ],
@@ -134,8 +141,8 @@ export default {
             dialogStatus: false,
             drawerStatus: false,
             dialogTitle: {
-                1: '添加公告',
-                2: '编辑公告'
+                1: this.$t('notice.addNotice'),
+                2: this.$t('notice.editNotice')
             },
             curRow: {},
             curIdx: 0,
@@ -176,7 +183,7 @@ export default {
     },
     methods: {
         // 用户类型选择
-        change(e){
+        change(e) {
             this.dform.type = e;
             this.$forceUpdate();
         },
@@ -199,9 +206,8 @@ export default {
             this.dialogType = index;
             this.drawerStatus = true
             this.dform = Object.assign({}, row)
-            if(index == 2){
+            if (index == 2) {
                 this.dform.type = row.brandId == '1' ? 'brandId' : row.storeId == '1' ? 'storeId' : row.agentId == '1' ? 'agentId' : '';
-                console.log(this.dform.type,'this.dform.type')
             }
         },
 
@@ -209,8 +215,9 @@ export default {
          * 删除问题指南
          */
         del(row) {
-            this.$alert('确定删除此公告吗？', '公告', {
-                confirmButtonText: '确定',
+            let that = this;
+            this.$alert(that.$t('notice.message'), that.$t('notice.notice'), {
+                confirmButtonText: that.$t('notice.notice'),
                 center: true,
                 callback: action => {
                     if (action == 'confirm') {
@@ -218,7 +225,7 @@ export default {
                             id: row.id,
                         }).then(res => {
                             this.$message({
-                                message: '删除成功',
+                                message: that.$t('public.deleteSuccess'),
                                 type: 'success'
                             })
                             this.getList();
@@ -274,7 +281,7 @@ export default {
                     this.curIdx = idx
                     this.drawerStatus = true
                     this.dform = {
-                        status : 1
+                        status: 1
                     }
                     break
             }
@@ -284,6 +291,7 @@ export default {
          * 弹窗确认
          */
         dialogConfirm(row = {}) {
+            let that = this;
             let url = this.dialogType == 1 ? 'iot-saas-basic/admin/notice/record/save' : 'iot-saas-basic/admin/notice/record/edit';
             let curRow = this.curRow,
                 curIdx = this.curIdx,
@@ -294,13 +302,13 @@ export default {
 
             if (!params.recodeContent) {
                 this.$message({
-                    message: '请输入公告内容',
+                    message: that.$t('notice.noticeContentText'),
                     type: 'error'
                 })
                 return
             } else if (!params.type) {
                 this.$message({
-                    message: '请选择用户类型',
+                    message: that.$t('notice.pleaseUserType'),
                     type: 'error'
                 })
                 return
@@ -309,7 +317,7 @@ export default {
             delete params.type;
             this.$post(url, params).then(res => {
                 this.$message({
-                    message: '操作成功',
+                    message: that.$t('public.operationSuccessful'),
                     type: 'success'
                 })
                 this.getList();
@@ -325,9 +333,7 @@ export default {
 }
 </script>
   
-<style lang="scss" scoped>
-/deep/.el-drawer {
+<style lang="scss" scoped>/deep/.el-drawer {
     min-width: 500px !important;
-}
-</style>
+}</style>
   

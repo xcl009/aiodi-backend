@@ -3,19 +3,19 @@
     <div class="p-15 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" highlight-current-row>
-        <el-table-column label="类型">
+        <el-table-column :label="$t('public.type')">
           <template slot-scope="scope">
             <div>{{ scope.row.advertTypeName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="数量">
+        <el-table-column :label="$t('public.number')">
           <template slot-scope="scope">
             <div>{{ scope.row.number }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column :label="$t('public.operate')">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="$router.push({path: `/advert/weChatList?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&advertTypeName=${scope.row.advertTypeName}`})">广告设置</el-button>
+            <el-button type="primary" size="mini" @click="$router.push({path: `/advert/weChatList?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&advertTypeName=${scope.row.advertTypeName}`})">{{ $t('public.advertisingSettings') }}</el-button>
           </template>
         </el-table-column>
       </el-table>

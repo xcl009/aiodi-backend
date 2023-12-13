@@ -123,7 +123,7 @@
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2)">{{ $t('brand.contractManagement')
               }}</el-button>
               <el-button type="primary" size="mini"
-                @click="$router.push({ path: `/market/appManage?brandId=${scope.row.id}` })">{{ $t('brand.giftService')
+                @click="$router.push({ path: `/market/appManage?brandId=${scope.row.id}` })">{{ $t('public.giftService')
                 }}</el-button>
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/brand/addBrand?brandId=${scope.row.id}` })">{{

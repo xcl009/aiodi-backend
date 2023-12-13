@@ -3,63 +3,63 @@
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="14" :xl="12">
         <el-tabs class="mb-15 bg-white" :value="key" @tab-click="getInfo">
-          <el-tab-pane label="小程序配置" name="systemConfig" />
-          <el-tab-pane label="免押拍摄配置" name="freeVideoConfig" />
-          <el-tab-pane label="小程序钱包隐藏配置" name="xcxMoneyConfig" />
-          <el-tab-pane label="更新明细" name="systemUpdateDetails" />
+          <el-tab-pane :label="$t('system.miniProgramConfiguration')" name="systemConfig" />
+          <el-tab-pane :label="$t('system.shootingConfiguration')" name="freeVideoConfig" />
+          <el-tab-pane :label="$t('system.hideConfiguration')" name="xcxMoneyConfig" />
+          <el-tab-pane :label="$t('system.updateDetails')" name="systemUpdateDetails" />
         </el-tabs>
 
         <el-form ref="form" :model="form" label-width="130px" label-position="left">
           <template v-if="key == 'systemConfig'">
-            <h4>小程序配置</h4>
-            <el-form-item label="微信模板ID">
-              <el-input v-model="form.wechatLatestTemplateId" placeholder="微信模板ID" />
+            <h4>{{ $t('system.miniProgramConfiguration') }}</h4>
+            <el-form-item :label="$t('system.wxId')">
+              <el-input v-model="form.wechatLatestTemplateId" :placeholder="$t('system.wxId')" />
             </el-form-item>
-            <el-form-item label="模板版本">
-              <el-input v-model="form.wechatLatestVersion" placeholder="模板版本" />
+            <el-form-item :label="$t('system.wechatLatestVersion')">
+              <el-input v-model="form.wechatLatestVersion" :placeholder="$t('system.wechatLatestVersion')" />
             </el-form-item>
-            <el-form-item label="版本描述">
-              <el-input v-model="form.wechatLatestVersionDescription" placeholder="版本描述" type="textarea" rows="4" />
+            <el-form-item :label="$t('system.wechatLatestVersionDescription')">
+              <el-input v-model="form.wechatLatestVersionDescription" :placeholder="$t('system.wechatLatestVersionDescription')" type="textarea" rows="4" />
             </el-form-item>
-            <el-form-item label="授权回调域名">
-              <el-input v-model="form.wechatAuthCallbackUrl" placeholder="授权回调域名" />
+            <el-form-item :label="$t('system.wechatAuthCallbackUrl')">
+              <el-input v-model="form.wechatAuthCallbackUrl" :placeholder="$t('system.wechatAuthCallbackUrl')" />
             </el-form-item>
-            <el-form-item label="服务域名">
-              <el-input v-model="form.service" placeholder="服务域名" type="textarea" rows="4" />
+            <el-form-item :label="$t('system.service')">
+              <el-input v-model="form.service" :placeholder="$t('system.service')" type="textarea" rows="4" />
             </el-form-item>
-            <el-form-item label="业务域名">
-              <el-input v-model="form.business" placeholder="业务域名" type="textarea" rows="4" />
+            <el-form-item :label="$t('system.business')">
+              <el-input v-model="form.business" :placeholder="$t('system.business')" type="textarea" rows="4" />
             </el-form-item>
-            <el-form-item label="隐私保护">
-              <el-input v-model="form.wechatPrivacySettingList" placeholder="隐私保护" type="textarea" rows="4" />
+            <el-form-item :label="$t('system.wechatPrivacySettingList')">
+              <el-input v-model="form.wechatPrivacySettingList" :placeholder="$t('system.wechatPrivacySettingList')" type="textarea" rows="4" />
             </el-form-item>
-            <el-form-item label="支付宝模板版本">
-              <el-input v-model="form.alipayLatestTemplateVersion" placeholder="支付宝模板版本号" />
+            <el-form-item :label="$t('system.alipayLatestTemplateVersion')">
+              <el-input v-model="form.alipayLatestTemplateVersion" :placeholder="$t('system.alipayLatestTemplateVersion')" />
             </el-form-item>
           </template>
           <template v-if="key == 'freeVideoConfig'">
-            <h4>免押拍摄配置</h4>
-            <el-form-item label="免押小程序APPID">
-              <el-input v-model="form.appid" placeholder="小程序APPID" />
+            <h4>{{ $t('system.appidTitle') }}</h4>
+            <el-form-item :label="$t('system.freeOfChargeAppid')">
+              <el-input v-model="form.appid" :placeholder="$t('system.appid')" />
             </el-form-item>
           </template>
           <template v-if="key == 'xcxMoneyConfig'">
-            <h4>小程序钱包隐藏配置</h4>
-            <el-form-item label="小程序APPID">
-              <el-input v-model="form.appid" placeholder="小程序APPID,多个用逗号隔开" />
+            <h4>{{ $t('system.xcxMoneyConfig') }}</h4>
+            <el-form-item :label="$t('system.appid')">
+              <el-input v-model="form.appid" :placeholder="$t('system.appidText')" />
             </el-form-item>
           </template>
           <template v-if="key == 'systemUpdateDetails'">
-            <h4>更新明细</h4>
-            <el-form-item label="最近时间">
+            <h4>{{ $t('system.updateDetails') }}</h4>
+            <el-form-item :label="$t('system.recentTime')">
               <el-date-picker type="datetime" v-model="form.updateTime" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
             </el-form-item>
-            <el-form-item label="更新内容">
+            <el-form-item :label="$t('system.updateDetails')">
               <tinymce v-model="form.updateDetails" :height="600" />
             </el-form-item>
           </template>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
+            <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submit') }}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -105,6 +105,7 @@
        * 提交添加
        */
       onSubmit() {
+        let that = this;
         let params = {}, url = 'iot-saas-pay/admin/pay/system/config'
         params.valueJson = JSON.stringify(this.form)
         params.key = this.key
@@ -113,7 +114,7 @@
           if (valid) {
             this.$post(url, params).then(res => {
               this.$message({
-                message: '操作成功',
+                message: that.$t('public.operationSuccessful'),
                 type: 'success'
               })
             }).catch( err => {

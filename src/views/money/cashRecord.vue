@@ -2,37 +2,37 @@
   <div>
     <div class="pl-10 pr-10 bg-white">
       <el-table id="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row>
-        <el-table-column label="订单号">
+        <el-table-column :label="$t('public.orderNo')">
           <template slot-scope="scope">
             {{ scope.row.id}}
           </template>
         </el-table-column>
-        <el-table-column label="提现时间">
+        <el-table-column :label="$t('public.withdrawalTime')">
           <template slot-scope="scope">
             <span>{{ scope.row.createTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="提现金额">
+        <el-table-column :label="$t('public.withdrawalAmount')">
           <template slot-scope="scope">
             <div class="el-link">{{ scope.row.amount }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="手续费">
+        <el-table-column :label="$t('public.commission')">
           <template slot-scope="scope">
             <div class="el-link">{{ scope.row.fee }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="到账金额">
+        <el-table-column :label="$t('moeny.receivedAmount')">
           <template slot-scope="scope">
             <div class="el-link el-link--primary">{{ scope.row.amountReceived}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="状态">
+        <el-table-column :label="$t('public.status')">
           <template slot-scope="scope">
             <div class="el-link">{{ statusObj[scope.row.status] }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="真实姓名">
+        <el-table-column :label="$t('public.name')">
           <template slot-scope="scope">
             <div class="el-link">{{ scope.row.userName || '--' }}</div>
           </template>
