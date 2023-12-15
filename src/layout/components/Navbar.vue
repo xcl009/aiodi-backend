@@ -5,12 +5,12 @@
     </div>
     <div class="flex1 title-box text-center text-white">
       <div>
-        <div class="cn">{{ agentInfo.nickname }}管理后台</div>
+        <div class="cn">{{ agentInfo.nickname }}{{ $t('layout.admins') }}</div>
       </div>
     </div>
     <div class="abs right-menu flex align-center">
       <template v-if="device != 'mobile'">
-      <!-- <div class="pl-30 pr-30 flex align-center text-primary cursor l-r" v-if="isBrand()" @click="getJoinCode">
+        <!-- <div class="pl-30 pr-30 flex align-center text-primary cursor l-r" v-if="isBrand()" @click="getJoinCode">
         <svg-icon icon-class="head_link" class="mr-10 head_new"></svg-icon>
         邀请链接获取
       </div> -->
@@ -18,50 +18,50 @@
           <el-badge is-dot :hidden="!updateDetails.isNews" class="news-dot">
             <i class="el-icon-bell fs-b2 text-white"></i>
           </el-badge>
-          <span class="ml-10 text-white">更新明细</span>
+          <span class="ml-10 text-white">{{ $t('system.updateDetails') }}</span>
         </div>
         <div class="pl-15 pr-15 menu-item flex align-center" @click="handleScreen">
           <i class="el-icon-full-screen fs-b2 text-white"></i>
-          <span class="ml-10 text-white">全屏</span>
+          <span class="ml-10 text-white">{{ $t('layout.fullScreen') }}</span>
         </div>
       </template>
       <el-dropdown class="mr-10 hover-effect" trigger="click">
         <div class="pl-15 pr-15 menu-item flex align-center">
           <svg-icon icon-class="head_user" class="head_user text-white"></svg-icon>
-          <span class="ml-10 text-white">我的</span>
+          <span class="ml-10 text-white">{{ $t('layout.me') }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="setRows(3, 3)" v-if="!isSaas()">
-            <span>个人设置</span>
+            <span>{{ $t('layout.personalSettings') }}</span>
           </el-dropdown-item>
           <router-link to="/user/index">
-            <el-dropdown-item>个人信息</el-dropdown-item>
+            <el-dropdown-item>{{ $t('layout.userinfo') }}</el-dropdown-item>
           </router-link>
           <el-dropdown-item>
             <div class="rel">
               <el-dropdown trigger="click" placement="top-start">
-                <div>语言选择</div>
+                <div>{{ $t('layout.langSelect') }}</div>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>
-                    <span>中文版本</span>
+                    <span>{{ $t('layout.chineseVersion') }}</span>
                   </el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine">英文版本</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine">其他语言版本(待添加)</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine">{{ $t('layout.englishVersion') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine">{{ $t('layout.otherLang') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
           </el-dropdown-item>
           <router-link to="/user/lpwd">
-            <el-dropdown-item>登录密码</el-dropdown-item>
+            <el-dropdown-item>{{ $t('public.loginPassword') }}</el-dropdown-item>
           </router-link>
           <router-link to="/user/opwd">
-            <el-dropdown-item>操作密码</el-dropdown-item>
+            <el-dropdown-item>{{ $t('public.operationPassword') }}</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="toAdmin()" v-if="token1">
-            <span>返回总后台</span>
+            <span>{{ $t('layout.returnAdmin') }}</span>
           </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout" v-else>
-            <span>退出登录</span>
+            <span>{{ $t('layout.logOff') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -80,11 +80,7 @@
       </div>
     </el-dialog> -->
 
-    <el-drawer
-      :title="dialogTitle[dialogType]"
-      :visible.sync="drawerStatus"
-      :append-to-body="true"
-      >
+    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :append-to-body="true">
       <template v-if="dialogType == 1">
         <div class="p-30 flex flex-wrap justify-around text-center">
           <div class="p-10 qrcode-box">
@@ -92,8 +88,8 @@
           </div>
         </div>
         <div class="pb-30 pt-20 text-center">
-          <el-button type="primary" @click="copyText()" class="mr-30">复制链接</el-button>
-          <el-button type="primary" @click="saveQrcode()">下载二维码</el-button>
+          <el-button type="primary" @click="copyText()" class="mr-30">{{ $t('layout.copyLink') }}</el-button>
+          <el-button type="primary" @click="saveQrcode()">{{ $t('layout.downloadCode') }}</el-button>
         </div>
       </template>
       <template v-if="dialogType == 2">
@@ -101,24 +97,24 @@
       </template>
       <template v-if="dialogType == 3">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
-          <div class="mb-15 text-black">商户ID</div>
-          <el-form-item label="商户ID">
-            <el-input v-model="dform.storeId" placeholder="商户ID"></el-input>
+          <div class="mb-15 text-black">{{ $t('layout.storeId') }}</div>
+          <el-form-item :label="$t('layout.storeId')">
+            <el-input v-model="dform.storeId" :placeholder="$t('layout.storeId')"></el-input>
             <div class="mb-15 flex fs-c1" style="line-height: 1.8;">
-              <div>温馨提示：</div>
-              <div>设置默认商户后，设备未铺货时，用户租借订单取此商户的计费规则。<br><span class="text-danger">商户ID可在商户列表找到要设置的商户，点击商户名称即可获得。</span></div>
+              <div>{{ $t('public.tips') }}：</div>
+              <div>{{ $t('layout.text') }}<br><span class="text-danger">{{ $t('layout.text1') }}</span></div>
             </div>
           </el-form-item>
 
-          <div class="mb-15 text-black">数据模拟</div>
-          <el-form-item label="翻倍状态">
+          <div class="mb-15 text-black">{{ $t('layout.dataSimulation') }}</div>
+          <el-form-item :label="$t('layout.doublingState')">
             <el-switch v-model="dform.active" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item label="翻倍倍数">
-            <el-input v-model="dform.multiple" placeholder="翻倍倍数"></el-input>
+          <el-form-item :label="$t('layout.doublingMultiple')">
+            <el-input v-model="dform.multiple" :placeholder="$t('layout.doublingMultiple')"></el-input>
             <div class="flex fs-c1" style="line-height: 1.8;">
-              <div>温馨提示：</div>
-              <div>翻倍状态开启后，首页、设备列表、订单列表的统计数据会在当前基础上乘以设置的倍数</div>
+              <div>{{ $t('public.tips') }}：</div>
+              <div>{{ $t('layout.text2') }}</div>
             </div>
           </el-form-item>
         </el-form>
@@ -126,8 +122,9 @@
       <template v-if="[3].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
-          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+          }}</el-button>
         </div>
       </template>
     </el-drawer>
@@ -154,14 +151,14 @@ export default {
       'avatar',
       'name'
     ]),
-    agentInfo(){
+    agentInfo() {
       let agentInfo = this.$store.state.user.agentInfo
       return agentInfo
     },
-    device(){
+    device() {
       return this.$store.state.app.device
     },
-    siteInfo(){
+    siteInfo() {
       return siteInfo
     }
   },
@@ -185,15 +182,15 @@ export default {
       dialogStatus: false,
       drawerStatus: false,
       dialogTitle: {
-        1: '邀请二维码',
-        2: '系统更新明细',
-        3: '默认商户'
+        1: this.$t('layout.invitationCode'),
+        2: this.$t('layout.systemUpdateDetails'),
+        3: this.$t('layout.defaultStore')
       },
       dform: {}
     }
   },
-  mounted(){
-    if(this.isBrand()) this.getConfigs()
+  mounted() {
+    if (this.isBrand()) this.getConfigs()
   },
   methods: {
     toggleSideBar() {
@@ -207,9 +204,9 @@ export default {
       this.$get('iot-saas-pay/open/pay/system/config', {
         key: 'systemUpdateDetails'
       }).then(res => {
-        if(res && res.valueJson){
+        if (res && res.valueJson) {
           let valueJson = JSON.parse(res.valueJson), readUpTime = localStorage.getItem(`readUpTime${this.agentInfo.id}`)
-          if(readUpTime != valueJson.updateTime && this.currentTime() - unixTime(valueJson.updateTime) < 30 * 86400){
+          if (readUpTime != valueJson.updateTime && this.currentTime() - unixTime(valueJson.updateTime) < 30 * 86400) {
             valueJson.isNews = true
           }
           this.updateDetails = valueJson
@@ -231,22 +228,22 @@ export default {
         case 3:
           this.dialogType = dialogType
           this.drawerStatus = true
-          if(dialogType == 2){
+          if (dialogType == 2) {
             this.updateDetails.isNews = false
             localStorage.setItem(`readUpTime${this.agentInfo.id}`, this.updateDetails.updateTime)
             setToken(`readUpTime${this.agentInfo.id}`, this.updateDetails.updateTime)
-          }else if(dialogType == 3){
+          } else if (dialogType == 3) {
             this.$get('iot-saas-basic/admin/settings/find', {
               code: 'DEFAULT_STORE'
             }).then(res => {
-              if(res && res.setting){
+              if (res && res.setting) {
                 this.$set(this.dform, 'storeId', res.setting)
               }
             })
             this.$get('iot-saas-basic/admin/settings/find', {
               code: 'DATA_MULTIPLE'
             }).then(res => {
-              if(res && res.setting){
+              if (res && res.setting) {
                 let info = JSON.parse(res.setting)
                 this.$set(this.dform, 'active', info.active)
                 this.$set(this.dform, 'multiple', info.multiple)
@@ -261,6 +258,7 @@ export default {
      * 弹窗确认
      */
     dialogConfirm() {
+      let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.dform))
@@ -276,7 +274,7 @@ export default {
             multiple: params.multiple || 0
           }).then(res => {
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.drawerStatus = false
@@ -295,8 +293,8 @@ export default {
         wx_status: 1
       }).then(res => {
         let list = res.list
-        for(var i = 0; i < list.length; i++){
-          if(list[i].mini_info.latest_code != template_id || list[i].mini_info.option_status != 6){
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].mini_info.latest_code != template_id || list[i].mini_info.option_status != 6) {
             this.updateWxxcx = true
             break
           }
@@ -312,8 +310,8 @@ export default {
         page: 1
       }).then(res => {
         let list = res.list
-        for(var i = 0; i < list.length; i++){
-          if((list[i].app_name.indexOf('模版') == -1) && (list[i].templateInfo.template_version != template_version || list[i].templateInfo.status != 'RELEASE')){
+        for (var i = 0; i < list.length; i++) {
+          if ((list[i].app_name.indexOf('模版') == -1) && (list[i].templateInfo.template_version != template_version || list[i].templateInfo.status != 'RELEASE')) {
             this.updateAlixcx = true
             break
           }
@@ -331,10 +329,10 @@ export default {
     /**
      * 返回总后台
      */
-    toAdmin(){
+    toAdmin() {
       setToken(this.token1)
       removeToken('token1')
-      setTimeout(()=>{
+      setTimeout(() => {
         location.href = '/home'
       }, 100)
     },
@@ -342,9 +340,9 @@ export default {
     /**
      * 获取邀请链接地址
      */
-    getJoinCode(){
+    getJoinCode() {
       this.inviteDialog = true
-      if(this.active_url) {
+      if (this.active_url) {
         return
       }
       this.$post('iot-saas-basic/admin/brand/buildInvitationCode', {
@@ -358,7 +356,7 @@ export default {
     /**
      * 设置二维码
      */
-    alertLink(code){
+    alertLink(code) {
       let gid = this.agentInfo.brandId
       let url = `${location.origin}/brandReg/${gid}/${code}`
       this.inviteUrl = url
@@ -373,10 +371,10 @@ export default {
     /**
      * 复制链接
      */
-    copyText(){
+    copyText() {
       copyText(this.inviteUrl)
       this.$message({
-        message: '复制成功',
+        message: this.$t('public.copySuccess'),
         type: 'success'
       })
     },
@@ -388,9 +386,9 @@ export default {
       screenfull.toggle()
     },
 
-    waitOnLine(){
+    waitOnLine() {
       this.$message({
-        message: '即将上线',
+        message: this.$t('public.comingSoon'),
         type: 'info'
       })
     }
@@ -406,38 +404,45 @@ export default {
   background-color: #01183A;
   z-index: 2;
 
-  .title-box{
+  .title-box {
     height: 65px;
     background-image: url('../../assets/head_bg.svg');
     background-size: auto 100%;
     background-position: center;
-    .cn{
+
+    .cn {
       margin-top: 12px;
       font-size: 25px;
     }
   }
+
   .right-menu {
     right: 0;
     top: 0;
     height: 100%;
     line-height: 36px;
+
     &:focus {
       outline: none;
     }
-    .menu-item{
+
+    .menu-item {
       height: 60px;
       position: relative;
       cursor: pointer;
+
       .el-icon-caret-bottom {
         cursor: pointer;
         position: absolute;
         top: 22px;
         font-size: 12px;
       }
+
       svg.head_new {
         width: 17px;
         height: 17px;
       }
+
       svg.head_user {
         width: 20px;
         height: 20px;
@@ -445,13 +450,13 @@ export default {
     }
   }
 
-  /deep/ .news-dot{
-    .is-dot{
+  /deep/ .news-dot {
+    .is-dot {
       top: 8px;
     }
   }
 }
-.el-dropdown-menu{
+
+.el-dropdown-menu {
   top: 35px !important;
-}
-</style>
+}</style>

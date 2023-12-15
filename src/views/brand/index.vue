@@ -23,7 +23,7 @@
 
     <div class="pl-10 pr-10 bg-white">
       <div class="flex align-center pt-15 mb-15 l-t">
-        <div class="flex1 fs-c1 text-black">{{ $t('brand.enquiryForm') }}</div>
+        <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
         <table-column-set storageKey="brandTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
       </div>

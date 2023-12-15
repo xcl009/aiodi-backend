@@ -10,19 +10,19 @@
             <auth-code ref="authCode" slot="append" @authCode="getAuthCode"></auth-code>
           </el-input>
         </el-form-item> -->
-        <el-form-item label="身份证号">
-          <el-input v-model="form.cardCode" placeholder="身份证号"></el-input>
-          <div class="text-danger">用于忘记密码时验证身份，请详细填写并牢记</div>
+        <el-form-item :label="$t('public.id')">
+          <el-input v-model="form.cardCode" :placeholder="$t('public.id')"></el-input>
+          <div class="text-danger">{{ $t('user.idText') }}</div>
         </el-form-item>
-        <el-form-item label="新密码" ref="newPassword" prop="newPassword">
+        <el-form-item :label="$t('public.newPassword')" ref="newPassword" prop="newPassword">
           <el-input v-model="form.newPassword" show-password></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" ref="repeatNewPassword" prop="repeatNewPassword">
+        <el-form-item :label="$t('public.confirmPassword')" ref="repeatNewPassword" prop="repeatNewPassword">
           <el-input v-model="form.repeatNewPassword" show-password></el-input>
         </el-form-item>
         <el-form-item class="text-center">
-          <el-button type="primary" size="medium" :disabled="clickSubmit" @click="onSubmit()">保存信息</el-button>
-          <el-button size="medium" class="btn-body" @click="$router.go(-1)">取消</el-button>
+          <el-button type="primary" size="medium" :disabled="clickSubmit" @click="onSubmit()">{{ $t('public.saveInfo') }}</el-button>
+          <el-button size="medium" class="btn-body" @click="$router.go(-1)">{{ $t('public.cancel') }}</el-button>
         </el-form-item>
        </el-form>
     </el-col>
@@ -42,23 +42,23 @@
           newPassword: [
             {
               required: true,
-              message: '请填写新操作密码',
+              message: this.$t('user.message5'),
               trigger: 'blur'
             },
           ],
           repeatNewPassword: [
             {
               required: true,
-              message: '请再次填写新操作密码',
+              message: this.$t('user.message6'),
               trigger: 'blur'
             },
             {
               required: true,
               validator: (rule, value, callback) => {
                 if (value === '') {
-                  callback(new Error('请再次输入密码'))
+                  callback(new Error(this.$t('user.message3')))
                 } else if (value !== this.form.newPassword) {
-                  callback(new Error('两次输入密码不一致!'))
+                  callback(new Error(this.$t('user.message4')))
                 } else {
                   callback()
                 }
@@ -84,13 +84,14 @@
        * 提交保存
        */
       onSubmit(formName = 'form') {
+        let that = this;
         this.clickSubmit = true
         this.$refs[formName].validate((valid, object) => {
           if (valid) {
             const params = JSON.parse(JSON.stringify(this.form))
             this.$post('iot-saas-user/admin/user/twoPassword/update', params).then(res => {
               this.$message({
-                message: '操作成功',
+                message: that.$t('public.operationSuccessful'),
                 type: 'success'
               })
               this.$router.back()

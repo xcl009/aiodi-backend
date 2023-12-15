@@ -5,12 +5,12 @@
         <el-form-item class="text-center">
           <upload v-model="form.avatar" :upObj="{fileType: 'userAvatar'}"/>
         </el-form-item>
-        <el-form-item label="姓名">
+        <el-form-item :label="$t('public.fullName')">
           <el-input v-model="form.nickname"></el-input>
         </el-form-item>
         <el-form-item class="text-center">
-          <el-button type="primary" size="medium" :disabled="clickSubmit" @click="editUser()">保存信息</el-button>
-          <el-button size="medium" class="btn-body" @click="$router.go(-1)">取消</el-button>
+          <el-button type="primary" size="medium" :disabled="clickSubmit" @click="editUser()">{{ $t('public.saveInfo') }}</el-button>
+          <el-button size="medium" class="btn-body" @click="$router.go(-1)">{{ $t('public.cancel') }}</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -47,10 +47,11 @@
        * 修改用户信息
        */
       editUser() {
+        let that = this;
         this.clickSubmit = true
         this.$post('iot-saas-user/user/info/update', this.form).then(res => {
           this.$message({
-            message: '修改成功',
+            message: that.$t('public.editSuccess'),
             type: 'success'
           })
           this.clickSubmit = false

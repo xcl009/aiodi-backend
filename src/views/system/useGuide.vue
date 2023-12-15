@@ -26,13 +26,13 @@
       </template>
 
       <template v-slot:defult>
-        <el-form-item :label="$t('public.guideTitle')">
+        <el-form-item :label="$t('system.guideTitle')">
           <el-input v-model="form.guideTitle" />
         </el-form-item>
       </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="setRows(3, {}, 1)"><i
-            class="el-icon-plus el-icon--left" />{{ $t('public.addGuide') }}</el-button>
+            class="el-icon-plus el-icon--left" />{{ $t('system.addGuide') }}</el-button>
       </template>
     </condition>
 

@@ -206,7 +206,7 @@
                       v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">{{ $t('public.assignToAgent') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DEPOSIT_PRPR` })"
-                      v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">{{ $t('store.probabilityDeposit') }}</el-dropdown-item>
+                      v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">{{ $t('public.probabilityDeposit') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DIVIDE_ACCOUNTS` })"
                       v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.storeDivisionConfig)">{{ $t('public.weChatAccountSplitting') }}</el-dropdown-item>
@@ -214,7 +214,7 @@
                       v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
                     <template v-if="checkAbility(['WF'], 2, scope.row.storeDivisionConfig)">
-                      <el-dropdown-item @click.native="setRows(3, scope.row, 7)">{{ $t('public.sharedWIFI') }}</el-dropdown-item>
+                      <el-dropdown-item @click.native="setRows(3, scope.row, 7)">{{ $t('store.sharedWIFI') }}</el-dropdown-item>
                     </template>
                     <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
                       v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
@@ -615,7 +615,7 @@ export default {
         {
           key: 'catId',
           val: true,
-          name: this.$t('store.industry')
+          name: this.$t('public.industry')
         }
       ],
       // 代理

@@ -3,25 +3,25 @@
     <condition ref="condition" :clickSubmit="clickSubmit" :filterForm="false" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
         <div class="mb-20 pt-10 pl-10 pr-10 flex align-center bg-white">
-          <div class="mr-10">服务类型</div>
+          <div class="mr-10">{{ $t('public.serviceType') }}</div>
           <el-tabs class="flex-1" v-model="listQuery.serviceTypeCode" @tab-click="toQuery()">
-            <el-tab-pane label="全部服务" :name="''" />
-            <el-tab-pane label="系统服务" name="SYSTEM" />
-            <el-tab-pane label="品类服务" name="CUSTOMIZE" />
+            <el-tab-pane :label="$t('public.allServer')" :name="''" />
+            <el-tab-pane :label="$t('public.services')" name="SYSTEM" />
+            <el-tab-pane :label="$t('public.categoryServices')" name="CUSTOMIZE" />
             <!-- <el-tab-pane label="主题皮肤" name="THEME" /> -->
           </el-tabs>
         </div>
         <div class="mb-20 pl-10 pr-10 flex align-center bg-white" v-if="myDeviceName">
-          <div class="mr-10">设备类型</div>
+          <div class="mr-10">{{ $t('public.deviceType') }}</div>
           <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
-            <el-tab-pane label="全部设备" :name="'0'" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
+            <el-tab-pane :label="$t('public.allDevice')" :name="'0'" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
             <el-tab-pane :label="index" :name="''+item+''" v-for="(item, index) in myDeviceName" :disabled="listQuery.serviceTypeCode == 'SYSTEM'"/>
           </el-tabs>
         </div>
         <div class="mb-20 pl-10 pr-10 flex align-center bg-white">
-          <div class="mr-10">会员服务</div>
+          <div class="mr-10">{{ $t('public.service') }}</div>
           <el-tabs class="flex-1" v-model="listQuery.type" @tab-click="toQuery()">
-            <el-tab-pane label="全部服务" name="-1" />
+            <el-tab-pane :label="$t('public.allServer')" name="-1" />
             <el-tab-pane name="0">
               <img class="vip-icon" :src="require('@/assets/market_vip.png')" width="51" slot="label">
             </el-tab-pane>
@@ -35,7 +35,7 @@
 
     <div v-infinite-scroll="loadPage" class="pb-20 load-box">
       <div class="p-30 text-center bg-white text-primary cursor" @click="$router.push({path: `/market/appList`})" v-if="listTotal == 0">
-        暂未购买增值服务，去购买
+        {{ $t('market.text') }}
       </div>
       <el-row :gutter="20">
         <el-col :sm="24" :md="12" :lg="8" :xl="6" v-for="item in list">
@@ -54,12 +54,12 @@
             <div class="mt-15 text-black fs-c1 text-cut">
               {{ item.serviceName }}-{{ item.priceName }}
             </div>
-            <div class="mt-15 fs-s2 text-cut_two">{{ item.brief  || '暂无简介'}}</div>
+            <div class="mt-15 fs-s2 text-cut_two">{{ item.brief  || $t('market.zw')}}</div>
             <div class="mt-15 flex align-center">
               <div class="flex1">
-                {{ item.expiresDatetime }}到期
+                {{ item.expiresDatetime }}{{ $t('public.becomeDue') }}
               </div>
-              <el-button type="primary" size="medium" plain v-if="item.cycleTypeName != '永久'">{{ checkAbility(['BRAND_MEMBER'], 3) ? '立即续用' : '立即续费'}}</el-button>
+              <el-button type="primary" size="medium" plain v-if="item.cycleTypeName != '永久'">{{ checkAbility(['BRAND_MEMBER'], 3) ? $t('market.continueImmediately') : $t('market.renewImmediately')}}</el-button>
             </div>
           </div>
         </el-col>

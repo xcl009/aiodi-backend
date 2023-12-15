@@ -9,7 +9,7 @@
               <el-option :label="$t('payType.khbMoeny')" :value="2" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('public.khbMoeny')">
+          <el-form-item :label="$t('payType.khbMoeny')">
           <el-date-picker
             class="range-day flex align-center"
               v-model="form.date"
