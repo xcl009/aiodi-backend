@@ -7,69 +7,69 @@
       <template v-if="checkAbility([`${deviceTypeCode}_DEPOSIT_PRPR`], 3)">
         <el-form ref="form" label-position="left" label-width="auto">
           <h4 class="flex mb-20 mt-10">
-            <div>概率押金</div>
+            <div>{{ $t('public.probabilityDeposit') }}</div>
             <div class="ml-5">
-              <el-popover placement="top-start" title="温馨提示" width="450" trigger="hover">
+              <el-popover placement="top-start" :title="$t('public.tips')" width="450" trigger="hover">
                 <div>
-                  设置后用户下单有一定概率提示免押失败，需缴纳押金才可租借
+                  {{ $t('steal.text19') }}
                 </div>
                 <svg-icon icon-class="doubt" slot="reference"></svg-icon>
               </el-popover>
             </div>
           </h4>
 
-          <el-form-item label="是否开启">
+          <el-form-item :label="$t('steal.isItEnabled')">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
-              <span class="ml-10 fs-s3">开启表示设置有效，设置后5分钟内生效</span>
+              <span class="ml-10 fs-s3"> {{ $t('system.text3') }}</span>
             </div>
           </el-form-item>
 
           <div class="flex">
-            <el-form-item label="每">
+            <el-form-item :label="$t('public.every')">
               <el-input type="number" v-model="form.orderNumber">
-                <template slot="append">人</template>
+                <template slot="append">{{ $t('public.people') }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="押">
+            <el-form-item :label="$t('public.every')">
               <el-input type="number" v-model="form.freeNumber">
-                <template slot="append">人</template>
+                <template slot="append">{{ $t('public.people') }}</template>
               </el-input>
             </el-form-item>
           </div>
 
-          <el-form-item label="时间">
+          <el-form-item :label="$t('public.time')">
             <el-input type="number" v-model="form.durationTime">
-              <template slot="append">天</template>
+              <template slot="append">{{ $t('public.day') }}</template>
             </el-input>
             <div v-if="form.isNewUser != 1">
-              用户在下单租借{{ form.durationTime || 0 }}天后再次租借会重新计算概率
+              {{ $t('system.orderForLeasing') }}{{ form.durationTime || 0 }}{{ $t('system.calculateProbability') }}
             </div>
           </el-form-item>
 
-          <el-form-item label="针对新用户">
+          <el-form-item :label="$t('public.targetingNewUsers')">
             <div class="flex align-center">
               <el-switch v-model="form.isNewUser" :active-value="1" :inactive-value="0" />
-              <span class="ml-10 fs-s3">开启表示{{ form.durationTime }}天内未下过单的用户才会计算概率</span>
+              <span class="ml-10 fs-s3">{{ $t('system.openRepresentation') }}{{ form.durationTime }}{{ $t('system.noOrderPlaced') }}</span>
             </div>
           </el-form-item>
 
-          <el-form-item label="钱包余额">
+          <el-form-item :label="$t('public.walletBalance')">
             <el-input type="number" v-model="form.walletBalance">
-              <template slot="append">元</template>
+              <template slot="append">{{ $t('public.element') }}</template>
             </el-input>
             <div>
-              用户钱包余额大于等于{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}元时无需进行概率押金计算，直接免押租借
+              {{ $t('system.userMoeny') }}{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}{{ $t('system.freeOfChargeLease') }}
             </div>
           </el-form-item>
 
           <el-form-item class="mt-10">
-            <el-button type="primary" @click="onSubmit">立即提交</el-button>
+            <el-button type="primary" @click="onSubmit">{{ $t('public.submitNow') }}</el-button>
           </el-form-item>
         </el-form>
       </template>
       <template v-else>
-        <div class="pb-20 cursor" @click="$router.push({path: `/market/appList`})">暂未购买此功能服务，<span class="text-primary">去购买</span></div>
+        <div class="pb-20 cursor" @click="$router.push({path: `/market/appList`})">{{ $t('public.zwPurchase') }}，<span class="text-primary">{{ $t('public.goBuy') }}</span></div>
       </template>
     </el-col>
   </el-row>
@@ -132,13 +132,14 @@
        * 提交保存
        */
       onSubmit() {
+        let that = this;
         let params = JSON.parse(JSON.stringify(this.form))
         params.deviceTypeCode = this.deviceTypeCode
         params.durationTime = parseInt(params.durationTime) * 1440
         if(this.userKey && this.id) params[this.userKey] = this.id
         this.$post(`iot-saas-basic/admin/probabilityDeposit/v1/update`, params).then(res => {
           this.$message({
-            message: '操作成功',
+            message: that.$t('public.operationSuccessful'),
             type: 'success'
           })
         })

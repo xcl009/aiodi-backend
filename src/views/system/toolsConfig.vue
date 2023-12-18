@@ -79,7 +79,8 @@
                 <template slot="append">{{ $t('public.people') }}</template>
               </el-input>
               <div>
-                {{ $t('public.every') }}{{ form.orderNumber || 0 }}{{ $t('system.peopleplaceOrders') }}，{{ form.freeNumber }}{{ $t('system.forRenting') }}
+                {{ $t('public.every') }}{{ form.orderNumber || 0 }}{{ $t('system.peopleplaceOrders') }}，{{ form.freeNumber
+                }}{{ $t('system.forRenting') }}
               </div>
             </el-form-item>
             <el-form-item :label="$t('public.giveAsSecurity')">
@@ -101,7 +102,8 @@
           <el-form-item :label="$t('public.targetingNewUsers')">
             <div class="flex align-center">
               <el-switch v-model="form.isNewUser" :active-value="1" :inactive-value="0" />
-              <span class="ml-10 fs-s3">{{ $t('system.openRepresentation') }}{{ form.durationTime }}{{ $t('system.noOrderPlaced') }}</span>
+              <span class="ml-10 fs-s3">{{ $t('system.openRepresentation') }}{{ form.durationTime }}{{
+                $t('system.noOrderPlaced') }}</span>
             </div>
           </el-form-item>
 
@@ -110,7 +112,8 @@
               <template slot="append">{{ $t('public.element') }}</template>
             </el-input>
             <div>
-              {{ $t('system.userMoeny') }}{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}{{ $t('system.freeOfChargeLease') }}
+              {{ $t('system.userMoeny') }}{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}{{
+                $t('system.freeOfChargeLease') }}
             </div>
           </el-form-item>
 
@@ -134,7 +137,8 @@
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm" :disabled="clickSubmit">{{ $t('public.confirm')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -263,6 +267,7 @@ export default {
      * 提交保存
      */
     onSubmit() {
+      let that = this;
       let params = JSON.parse(JSON.stringify(this.form)), url = 'iot-saas-basic/admin/orderdivideWXconfig/v1/save'
       if (this.userKey && this.id) params[this.userKey] = this.id
       params.deviceTypeCode = this.deviceTypeCode
@@ -277,7 +282,7 @@ export default {
       }
       this.$post(url, params).then(res => {
         this.$message({
-          message: '设置成功',
+          message: that.$t('public.setSuccess'),
           type: 'success'
         })
       })
@@ -321,6 +326,7 @@ export default {
      * 弹窗确认
      */
     dialogConfirm() {
+      let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.form))
@@ -333,7 +339,7 @@ export default {
             setting: JSON.stringify(params)
           }).then(res => {
             this.$message({
-              message: '提交成功',
+              message: that.$t('public.submittedSuccess'),
               type: 'success'
             })
             this.dialogStatus = false
@@ -353,5 +359,4 @@ export default {
   height: 50px;
   line-height: 50px;
   font-size: 16px;
-}
-</style>
+}</style>
