@@ -103,46 +103,48 @@
               <template slot="append">{{ $t('public.few') }}</template>
             </el-input>
           </el-form-item>
-          <el-form-item label="押金模式">
+          <el-form-item :label="$t('membership.depositMode')">
             <el-switch v-model="dform.cardModul" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <template v-if="dform.cardModul == 1">
-            <el-form-item label="卡押金">
+            <el-form-item :label="$t('membership.cardDeposit')">
               <el-input type="number" v-model="dform.depositAmount">
                 <template slot="append">
-                  <el-popover placement="top" title="温馨提示" width="250" trigger="hover"
-                    content="押金大于0时表示会员卡为押金模式,用户购买卡需缴纳押金,租借时无需缴纳押金">
-                    <span slot="reference">元<i class="el-icon-question text-primary"></i></span>
+                  <el-popover placement="top" :title="$t('public.tips')" width="250" trigger="hover"
+                    :content="$t('membership.text')">
+                    <span slot="reference">{{ $t('public.element') }}<i class="el-icon-question text-primary"></i></span>
                   </el-popover>
                 </template>
               </el-input>
             </el-form-item>
-            <el-form-item label="不退押金时长">
+            <el-form-item :label="$t('membership.overTime')">
               <el-input type="number" v-model="dform.overTime">
-                <template slot="append">小时</template>
+                <template slot="append">{{ $t('public.huor') }}</template>
               </el-input>
             </el-form-item>
           </template>
 
           <template v-if="dform.cardModul == 0">
-            <el-form-item label="不限时长">
+            <el-form-item :label="$t('membership.unlimitedDuration')">
               <el-switch v-model="dform.freeTimeType" :active-value="1" :inactive-value="0" />
             </el-form-item>
-            <el-form-item label="单次免费时长" ref="freeTime" prop="freeTime" v-if="dform.freeTimeType == 0">
+            <el-form-item :label="$t('membership.freeTime')" ref="freeTime" prop="freeTime"
+              v-if="dform.freeTimeType == 0">
               <el-input type="number" v-model="dform.freeTime">
-                <template slot="append">小时</template>
+                <template slot="append">{{ $t('public.huor') }}</template>
               </el-input>
             </el-form-item>
           </template>
 
-          <el-form-item label="卡状态">
+          <el-form-item :label="$t('membership.cardStatus')">
             <el-switch v-model="dform.ableState" :active-value="1" :inactive-value="2" />
           </el-form-item>
         </el-form>
       </template>
       <div class="pb-20 mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -176,15 +178,15 @@ export default {
         page: 1,
         size: 20
       },
-      CardType: [{ name: '次卡', val: 1 }, { name: '周期卡', val: 2 }, { name: '无限次卡', val: 3 }],
-      Cycle: [{ name: '天', val: 1 }, { name: '周', val: 7 }, { name: '月', val: 30 }],
+      CardType: [{ name: this.$t('membership.type'), val: 1 }, { name: this.$t('membership.type1'), val: 2 }, { name: this.$t('membership.type2'), val: 3 }],
+      Cycle: [{ name: this.$t('public.day'), val: 1 }, { name: this.$t('public.circumference'), val: 7 }, { name: this.$t('public.theMoon'), val: 30 }],
       form: {},
 
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
       dialogTitle: {
-        1: '添加会员卡'
+        1: this.$t('membership.addMembershipCard')
       },
       curRow: {},
       curIdx: 0,
@@ -193,32 +195,32 @@ export default {
       cardRules: {
         serviceName: [{
           required: true,
-          message: '请填写卡名称',
+          message: this.$t('membership.message'),
           trigger: 'blur'
         }],
         amount: [{
           required: true,
-          message: '请填写卡金额',
+          message: this.$t('membership.message1'),
           trigger: 'blur'
         }],
         availableDay: [{
           required: true,
-          message: '请填写卡金额',
+          message: this.$t('membership.message1'),
           trigger: 'blur'
         }],
         countCycle: [{
           required: true,
-          message: '请填写计次周期',
+          message: this.$t('membership.message2'),
           trigger: 'blur'
         }],
         cycleFreeTimes: [{
           required: true,
-          message: '请填写免费次数',
+          message: this.$t('membership.message3'),
           trigger: 'blur'
         }],
         freeTime: [{
           required: true,
-          message: '请填写单次免费时长',
+          message: this.$t('membership.message4'),
           trigger: 'blur'
         }]
       },
@@ -273,7 +275,7 @@ export default {
           this.list = res
         } else {
           this.list.push({
-            serviceName: '优惠月卡',
+            serviceName: this.$t('membership.message'),
             amount: '9.9',
             availableDay: 30,
             countCycle: 30,
@@ -299,6 +301,7 @@ export default {
      * @param {Object} idx 当前数据所在位置
      */
     setRows(type, row, dialogType, idx) {
+      let that = this;
       switch (type) {
         case 1:
           this.dialogType = dialogType
@@ -330,8 +333,8 @@ export default {
           this.dialogStatus = true
           break
         case 2:
-          this.$confirm('确定删除此会员卡吗？', '删除会员卡', {
-            confirmButtonText: '确定',
+          this.$confirm(that.$t('membership.message5'), that.$t('membership.message6'), {
+            confirmButtonText: that.$t('public.confirm'),
             center: true,
             callback: action => {
               if (action == 'confirm') {
@@ -339,7 +342,7 @@ export default {
                   id: row.id
                 }).then(res => {
                   this.$message({
-                    message: '删除成功',
+                    message: that.$t('public.deleteSuccess'),
                     type: 'success'
                   })
                   this.list.splice(dialogType, 1)
@@ -355,6 +358,7 @@ export default {
      * 弹窗确认
      */
     dialogConfirm() {
+      let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.dform))
@@ -386,7 +390,7 @@ export default {
               this.clickSubmit = false
               this.$post('iot-saas-basic/brand/goods/v1/save', params).then(res => {
                 this.$message({
-                  message: '设置成功',
+                  message: that.$t('public.setSuccess'),
                   type: 'success'
                 })
                 this.dialogStatus = false
@@ -404,6 +408,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">/deep/ .el-dialog__body {
+<style scoped lang="scss">
+/deep/ .el-dialog__body {
   padding: 10px;
 }</style>

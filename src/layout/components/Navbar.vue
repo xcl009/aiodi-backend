@@ -42,11 +42,11 @@
               <el-dropdown trigger="click" placement="top-start">
                 <div>{{ $t('layout.langSelect') }}</div>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>
+                  <el-dropdown-item  @click.native="waitOnLine('zn')">
                     <span>{{ $t('layout.chineseVersion') }}</span>
                   </el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine">{{ $t('layout.englishVersion') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine">{{ $t('layout.otherLang') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('cp')">{{ $t('layout.chineseVersion1') }}</el-dropdown-item>
+                  <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -386,10 +386,11 @@ export default {
       screenfull.toggle()
     },
 
-    waitOnLine() {
+    waitOnLine(e) {
+      this.$i18n.locale = e;
       this.$message({
-        message: this.$t('public.comingSoon'),
-        type: 'info'
+        message: this.$t('store.switchSuccess'),
+        type: 'success'
       })
     }
   }

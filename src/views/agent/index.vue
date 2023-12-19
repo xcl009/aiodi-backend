@@ -2,80 +2,88 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-form-item label="代理名称">
-          <el-input v-model="form.name" placeholder="代理名称" />
+        <el-form-item :label="$t('public.agentNickNames')">
+          <el-input v-model="form.name" :placeholder="$t('public.agentNickNames')" />
         </el-form-item>
-        <el-form-item label="手机号码">
-          <el-input type="tel" v-model="form.mobile" placeholder="手机号码" />
+        <el-form-item :label="$t('public.phone')">
+          <el-input type="tel" v-model="form.mobile" :placeholder="t('public.phone')" />
         </el-form-item>
       </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="$router.push({ path: `/agent/addAgent` })"
-          v-if="!lowerAgent && Ability['addAgent']"><i class="el-icon-plus el-icon--left" />添加代理</el-button>
-        <import-data :type="2" uploadText="导入代理" v-if="isBrand()"></import-data>
+          v-if="!lowerAgent && Ability['addAgent']"><i class="el-icon-plus el-icon--left" />{{ $t('agent.addAgent')
+          }}</el-button>
+        <import-data :type="2" :uploadText="$t('agent.importAgent')" v-if="isBrand()"></import-data>
       </template>
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" :max-height="tableMaxH">
-        <el-table-column label="代理信息" width="130">
+        <el-table-column :label="$t('agent.agentInfo')" width="130">
           <template slot-scope="scope">
-            <div class="mb-5">{{ scope.row.name || '姓名' }}</div>
-            <div>{{ scope.row.mobile || '手机号码' }}</div>
+            <div class="mb-5">{{ scope.row.name || $t('public.fullName') }}</div>
+            <div>{{ scope.row.mobile || $t('public.phone') }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="上级代理" width="130" v-if="lowerAgent">
+        <el-table-column :label="$t('public.superiorAgent')" width="130" v-if="lowerAgent">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.parentName }}</div>
             <div>{{ scope.row.parentMobile }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="品类">
+        <el-table-column :label="$t('brand.category')">
           <template slot-scope="scope">
             <div class="cursor" v-for="item in scope.row.agentDeviceType">
               {{ item.name }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="设备数">
+        <el-table-column :label="$t('brand.numberOfDevices')">
           <template slot-scope="scope">
             <div class="cursor inline text-left" @click="$router.push({ path: `/device?agentId=${scope.row.id}` })">
-              <div>全部：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) -
+              <div>{{ $t('public.all') }}：{{ deviceCount[scope.row.id] ?
+                parseFloat(deviceCount[scope.row.id].deviceNumber)
+                -
                 parseFloat(deviceCount[scope.row.id].lowerDeviceNumber) : '0' }}</div>
-              <div>已铺货：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) -
+              <div>{{ $t('public.shipped') }}：{{ deviceCount[scope.row.id] ?
+                parseFloat(deviceCount[scope.row.id].bindStoreNumber) -
                 parseFloat(deviceCount[scope.row.id].lowerBindStoreNumber) : '0' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="订单数" width="120">
+        <el-table-column :label="$t('public.orderNum')" width="120">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <div>微信：<el-link type="primary" @click="$router.push({ path: `/order?agentId=${scope.row.id}` })">
+              <div>{{ $t('payType.wx') }}：<el-link type="primary"
+                  @click="$router.push({ path: `/order?agentId=${scope.row.id}` })">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
                 </el-link>
               </div>
-              <div>支付宝：<el-link type="primary" @click="$router.push({ path: `/order?agentId=${scope.row.id}` })">
+              <div>{{ $t('payType.zfb') }}：<el-link type="primary"
+                  @click="$router.push({ path: `/order?agentId=${scope.row.id}` })">
                   {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
                 </el-link>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="金额(元)" width="150">
+        <el-table-column :label="`${$t('public.amount')}(${$t('public.element')})`" width="150">
           <template slot-scope="scope">
             <div class="inline">
-              <div>交易额：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
-              <div>总收益：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}</div>
+              <div>{{ $t('public.aTurnover') }}：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
+              </div>
+              <div>{{ $t('public.totalRevenue') }}：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide :
+                '0.00' }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="可提现金额(元)" width="120">
+        <el-table-column :label="`${$t('brand.withdrawableAmount')}(${$t('public.element')})`" width="120">
           <template slot-scope="scope">
             <span class="cursor text-blue">{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="分润比例">
+        <el-table-column :label="$t('brand.dividendRatio')">
           <template slot-scope="scope">
             <div class="inline text-left">
               <div v-for="item in scope.row.agentDeviceType">
@@ -84,61 +92,68 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.operate')" width="245" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <template v-if="deviceSns">
-              <el-button type="primary" size="mini" @click="bindAgent(scope.row)">分配给Ta</el-button>
+              <el-button type="primary" size="mini" @click="bindAgent(scope.row)">{{ $t('public.assignToTa')
+              }}</el-button>
             </template>
             <template v-else>
+              <el-button type="primary" size="mini" @click="$router.push({ path: `/store?agentId=${scope.row.id}` })">{{
+                $t('brand.storeList') }}</el-button>
+              <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">{{
+                $t('public.permissionSettings') }}</el-button>
               <el-button type="primary" size="mini"
-                @click="$router.push({ path: `/store?agentId=${scope.row.id}` })">商户列表</el-button>
-              <el-button type="primary" size="mini"
-                @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
-              <el-button type="primary" size="mini"
-                @click="$router.push({ path: `/agent/addAgent?agentId=${scope.row.id}` })"
-                v-if="Ability['addAgent']">修改信息</el-button>
+                @click="$router.push({ path: `/agent/addAgent?agentId=${scope.row.id}` })" v-if="Ability['addAgent']">{{
+                  $t('public.modifyingInformation') }}</el-button>
               <!-- <el-button type="primary" size="mini" @click.native="setRows(8, scope.row, 8)">分配代理</el-button> -->
               <el-dropdown trigger="click">
-                <el-button type="primary" size="mini">更多<i
+                <el-button type="primary" size="mini">{{ $t('public.add') }}<i
                     class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 2, scope.$index)">删除代理</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 2, scope.$index)">{{ $t('agent.deleteAgent')
+                  }}</el-dropdown-item>
                   <template v-for="item in scope.row.agentDeviceType">
                     <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)"
-                      v-if="item.code == 'VM'">售货机</el-dropdown-item>
+                      v-if="item.code == 'VM'">{{ $t('agent.vendingMachine') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/device/bedSetting?id=${scope.row.id}&userKey=agentId` })"
-                      v-if="item.code == 'BD' && isBrand()">按摩床设置</el-dropdown-item>
+                      v-if="item.code == 'BD' && isBrand()">{{ $t('agent.setMassageTable') }}</el-dropdown-item>
                   </template>
                   <template
                     v-if="checkAbility(['_DEPOSIT_DELAY', '_DEPOSIT_MP'], 1, scope.row.agentDeviceType) && isBrand()">
                     <el-dropdown-item
-                      @click.native="$router.push({ path: `/device/depositRefund?id=${scope.row.id}&userKey=agentId` })">押金退回设置</el-dropdown-item>
+                      @click.native="$router.push({ path: `/device/depositRefund?id=${scope.row.id}&userKey=agentId` })">{{
+                        $t('agent.returnSettings') }}</el-dropdown-item>
                   </template>
                   <template v-if="checkAbility(['_BILLING'], 1, scope.row.agentDeviceType) && isBrand()">
-                    <el-dropdown-item
-                      @click.native="$router.push({ path: `/device/billing?agentId=${scope.row.id}` })">默认计费设置</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({ path: `/device/billing?agentId=${scope.row.id}` })">{{
+                      $t('agent.setBilling') }}</el-dropdown-item>
                   </template>
-                  <el-dropdown-item
-                  @click.native="setRows(8, scope.row, 8)"
-                    v-if="isBrand()">分配代理</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(8, scope.row, 8)" v-if="isBrand()">{{ $t('store.assignAgents')
+                  }}</el-dropdown-item>
 
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=agentId` })"
-                    v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
+                    v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">{{
+                      $t('store.DDSettings') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)"
-                    v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item>
+                    v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">{{
+                      $t('public.assignToAgent') }}</el-dropdown-item>
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR` })"
-                    v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">概率押金</el-dropdown-item>
+                    v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">{{
+                      $t('public.probabilityDeposit') }}</el-dropdown-item>
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DIVIDE_ACCOUNTS` })"
-                    v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">微信分账</el-dropdown-item>
+                    v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">{{
+                      $t('public.weChatAccountSplitting') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"
-                    v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">重置登录密码</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
-                    v-if="isBrand()">更多应用</el-dropdown-item>
+                    v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">{{
+                    $t('store.resettingLoginPasswordText') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })" v-if="isBrand()">{{
+                    $t('public.moreApplications') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -159,21 +174,23 @@
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">
-          <div class="text-black">确定删除此代理吗？</div>
-          <div class="mt-10 pl-40 pr-40 text-danger text-left line-default">注：若该代理下存在设备，则无法删除。需解绑回收设备。</div>
+          <div class="text-black">{{ $t('agent.text') }}</div>
+          <div class="mt-10 pl-40 pr-40 text-danger text-left line-default">{{ $t('agent.text1') }}</div>
         </div>
       </template>
       <template v-if="dialogType == 4">
         <div class="text-center">
           <div class="pb-20">
-            <selectSearch :type="5" :emitRow="true" name="name" placeholder="输入代理名称搜索" @change="getAgent"></selectSearch>
+            <selectSearch :type="5" :emitRow="true" name="name" :placeholder="$t('store.agentNameSerach')"
+              @change="getAgent"></selectSearch>
           </div>
           <div class="pb-20" v-if="agentRow.id">
-            <span>名称：{{ agentRow.name }}</span>
-            <span class="ml-10">电话：{{ agentRow.mobile }}</span>
+            <span>
+              {{ $t('public.name') }}：{{ agentRow.name }}</span>
+            <span class="ml-10">{{ $t('public.telephone') }}：{{ agentRow.mobile }}</span>
           </div>
           <div class="flex justify-center align-center" v-if="!agentRow.id && lowerAgent">
-            <div class="mr-10">分配给自己</div>
+            <div class="mr-10">{{ $t('public.assignToOneself') }}</div>
             <el-switch v-model="dform.allotMe" />
           </div>
         </div>
@@ -181,13 +198,14 @@
       <template v-if="dialogType == 5">
         <el-form class="custom-form pl-20 pr-20" label-width="auto" @submit.native.prevent="dialogConfirm()">
           <el-form-item>
-            <el-input type="number" v-model="dform.frozenBalance" placeholder="请输入冻结金额"></el-input>
+            <el-input type="number" v-model="dform.frozenBalance" :placeholder="$t('store.frozenBalanceText')"></el-input>
           </el-form-item>
         </el-form>
       </template>
       <div class="mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+        <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+        }}</el-button>
       </div>
     </el-dialog>
 
@@ -199,18 +217,18 @@
             <condition :clickSubmit="clickSubmit" :unfoldShow="false" pdClass="p-0"
               @reset="agentList.query = { page: 1, size: 20 }; getAgentList(2)" @query="getAgentList(2)">
               <template v-slot:defult>
-                <el-form-item label="代理姓名">
-                  <el-input placeholder="请输入代理姓名" v-model="agentList.query.name"></el-input>
+                <el-form-item :label="$t('public.agentName')">
+                  <el-input :placeholder="$t('public.agentNameText')" v-model="agentList.query.name"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号">
-                  <el-input placeholder="请输入手机号" type="tel" v-model="agentList.query.mobile"></el-input>
+                <el-form-item :label="$t('public.phone')">
+                  <el-input :placeholder="$t('public.phoneText')" type="tel" v-model="agentList.query.mobile"></el-input>
                 </el-form-item>
               </template>
             </condition>
           </div>
           <template v-if="agentList.newly && agentList.newly.length > 0">
             <div class="mb-15">
-              最近分配
+              {{ $t('public.recentlyAllocated') }}
             </div>
             <el-row type="flex" :gutter="20" class="flex-wrap agent-list">
               <template v-for="item in agentList.newly">
@@ -221,14 +239,15 @@
                         <div class="text-black">{{ item.name }}</div>
                         <div class="mt-5 text-gray">{{ item.mobile }}</div>
                       </div>
-                      <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">分配给Ta</el-button>
+                      <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{
+                        $t('public.assignToTa') }}</el-button>
                     </div>
                     <div class="mt-5" v-if="item.agentDeviceType">
-                      <span class="text-gray">设备类型</span>
+                      <span class="text-gray">{{ $t('public.deviceType') }}</span>
                       <span class="ml-5" v-for="d in item.agentDeviceType">{{ d.name }}</span>
                     </div>
                     <div class="mt-5">
-                      <span class="text-gray">运营区域</span>
+                      <span class="text-gray">{{ $t('public.operatingArea') }}</span>
                       <span class="ml-5">{{ item.province }}{{ item.city }}{{ item.district }}</span>
                     </div>
                   </div>
@@ -238,7 +257,7 @@
           </template>
 
           <div class="mb-10 flex align-center">
-            查询结果
+            {{ $t('public.queryResults') }}
           </div>
           <div v-infinite-scroll="getAgentList" infinite-scroll-distance="1" class=" pt-5"
             style="overflow-y: auto;width:1000px;">
@@ -266,11 +285,12 @@
                       </div>
                       <div class="flex_j">
                         <div class="mt-5">
-                          <span class="text-gray color">运营区域</span>
+                          <span class="text-gray color">{{ $t('public.operatingArea') }}</span>
                           <span class="ml-5">{{ item.province }}{{ item.city }}{{ item.district }}</span>
                         </div>
                         <div class="m_l_a">
-                          <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">分配给Ta</el-button>
+                          <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{
+                            $t('public.assignToTa') }}</el-button>
                         </div>
                       </div>
                     </div>
@@ -280,50 +300,54 @@
             </el-row>
           </div>
           <div class="bottom pt-15 pb-15" v-if="curRow.parentId != 0">
-            <el-button type="primary" plain size="mini" @click="allocation(2, {}, 9)">分配给自己</el-button>
+            <el-button type="primary" plain size="mini" @click="allocation(2, {}, 9)">{{ $t('public.assignToOneself')
+            }}</el-button>
           </div>
         </div>
       </template>
       <template v-if="dialogType == 9">
         <div class="flexv pl-20 pr-20 text-black">
-          <div class="mb-15 fw6">商户接收方</div>
+          <div class="mb-15 fw6">{{ $t('store.merchantRecipient') }}</div>
           <div class="flex align-center pb-20 l-b">
             <img :src="checkList.avatar || agentInfo.avatar" class="userimg" width="56" alt="">
             <div class="pl-20">
               <div class="flex">
-                <div class="label-text">{{ checkList.id != 0 ? '代理名称' : '品牌商名称' }}:</div>
+                <div class="label-text">{{ checkList.id != 0 ? $t('public.agentNickNames') : $t('public.brandNames') }}:
+                </div>
                 <div>{{ checkList.name }}</div>
-                <div class="ml-50 label-text">联系方式:</div>
+                <div class="ml-50 label-text">{{ $t('public.contactInformation') }}:</div>
                 <div>{{ checkList.mobile }}</div>
               </div>
               <div class="flex mt-10" v-if="curRow.id != 0">
-                <div class="label-text">设备类型:</div>
+                <div class="label-text">{{ $t('public.deviceType') }}:</div>
                 <div> <span class="ml-5" v-for="d in checkList.agentDeviceType">{{ d.name }}</span></div>
-                <div class="ml-50 label-text">运营区域:</div>
+                <div class="ml-50 label-text">{{ $t('public.operatingArea') }}:</div>
                 <div>{{ checkList.province }}{{ checkList.city }}{{ checkList.district }}</div>
               </div>
             </div>
           </div>
-          <div class="mt-15 fw6">代理数据变更</div>
+          <div class="mt-15 fw6">{{ $t('agent.agentData') }}</div>
 
           <div class="mt-30">
             <div class="flex">
               <div class="title color2">
-                可提现金额保留
+                {{ $t('agent.amountReserved') }}
               </div>
               <div class="ml-30">
                 <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="0" />
-                <div class=" fs-s3 color mt-5">开启表示保留代理可提现金额。关闭表示清空当前代理的可提现金额</div>
+                <div class=" fs-s3 color mt-5">{{ $t('agent.text') }}</div>
               </div>
             </div>
             <div class="flex mt-20">
               <div class="title color2">
-                分成比例说明
+                {{ $t('store.message3') }}
               </div>
               <div class="ml-30">
-                <div class=" fs-s3 color mt-5">1.1 真实分成情况：</br>若当前代理原始的真实分成大于选中代理自身的分成，划拨后，当前代理的分成比例，默认</br>取代理自身所有的分成比例
+                <div class=" fs-s3 color mt-5">{{ $t('agent.text1') }}</br>{{ $t('agent.text2') }}</br>{{
+                  $t('agent.text3') }}
                 </div>
-                <div class="fs-s3 color mt-20">1.2 真实分成情况：</br>若当前代理原始的真实分成小于选中代理自身的分成，划拨后，当前代理的分成比例，默认</br>保留代理原始的分成比例
+                <div class="fs-s3 color mt-20">{{ $t('agent.text4') }}</br>{{ $t('agent.text5') }}</br>{{
+                  $t('agent.text6') }}
                 </div>
               </div>
             </div>
@@ -333,8 +357,9 @@
       <template v-if="[9].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
-          <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+          }}</el-button>
         </div>
       </template>
     </el-drawer>
@@ -390,12 +415,12 @@ export default {
       dialogStatus: false,
       dialogTitle: {
         1: '',
-        2: '删除代理',
+        2: this.$t('public.deleteAgent'),
         3: '',
-        4: '分配商户',
-        5: '冻结金额',
-        8: '分配代理',
-        9: '分配代理'
+        4: this.$t('store.assignMerchants'),
+        5: this.$t('public.freezeAmount'),
+        8: this.$t('store.assignAgents'),
+        9: this.$t('store.assignAgents')
       },
       curRow: {},
       curIdx: 0,
@@ -443,7 +468,7 @@ export default {
     } else if (!this.list || this.list.length == 0) {
       this.listQuery.lowerAgent = this.lowerAgent
       this.toQuery(1)
-    }else{
+    } else {
       this.toQuery()
     }
   },
@@ -481,7 +506,7 @@ export default {
     /**
     * 获取代理
     */
-    getAgentList(type = 1,form,item) {
+    getAgentList(type = 1, form, item) {
       let params = JSON.parse(JSON.stringify(this.agentList.query))
       if (type == 2) {
         params.page = 1
@@ -496,10 +521,10 @@ export default {
           this.onLoadAgent = false
           this.agentList.query.page = params.page + 2
         }
-        if(form){
+        if (form) {
           this.agentList.list.forEach((res, index) => {
             if (res.id == item.id) {
-              this.agentList.list.splice(index,1)
+              this.agentList.list.splice(index, 1)
             }
           })
         }
@@ -608,7 +633,8 @@ export default {
      * @param {Object} idx 当前行所在位置
      */
     setRows(type, row, dialogType, idx) {
-      this.getAgentList(2,true,row);
+      let that = this;
+      this.getAgentList(2, true, row);
       switch (type) {
         case 1:
           this.dialogType = dialogType
@@ -623,8 +649,8 @@ export default {
           }
           break
         case 6:
-          this.$alert('确定重置该代理账号的登录密码吗？', '重置登录密码', {
-            confirmButtonText: '确定',
+          this.$alert(that.$t('agent.message'), that.$t('public.setLoginPassword'), {
+            confirmButtonText: that.$t('public.confirm'),
             center: true,
             callback: action => {
               if (action == 'confirm') {
@@ -634,7 +660,7 @@ export default {
                 }).then(res => {
 
                   this.$message({
-                    message: '重置成功',
+                    message: that.$t('public.resetSuccess'),
                     type: 'success'
                   })
                 })
@@ -647,7 +673,7 @@ export default {
           this.curRow = row
           this.curIdx = idx
           this.drawerStatus = true
-          
+
 
       }
     },
@@ -656,6 +682,7 @@ export default {
      * 弹窗确认
      */
     dialogConfirm() {
+      let that = this;
       if (this.clickSubmit) return
       this.clickSubmit = true
       let curRow = this.curRow,
@@ -666,7 +693,7 @@ export default {
           this.$put('').then(res => {
             this.$message({
               type: 'success',
-              message: '设置成功'
+              message: that.$t('public.setSuccess')
             })
             this.dialogStatus = false
             this.clickSubmit = false
@@ -680,7 +707,7 @@ export default {
           }).then(res => {
             this.dialogStatus = false
             this.$message({
-              message: '删除成功',
+              message: that.$t('public.deleteSuccess'),
               type: 'success'
             })
             this.list.splice(curIdx, 1)
@@ -698,7 +725,7 @@ export default {
           }
           if (!agentId) {
             this.$message({
-              message: '请选择分配对象',
+              message: that.$t('store.pleaseSelectObjet'),
               type: 'error'
             })
             this.clickSubmit = false
@@ -709,7 +736,7 @@ export default {
             fatherAgentId: agentId
           }).then(res => {
             this.$message({
-              message: '分配成功',
+              message: that.$t('agent.message1'),
               type: 'success'
             })
             this.dialogStatus = false
@@ -726,7 +753,7 @@ export default {
           }).then(res => {
             this.dialogStatus = false
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             curRow.frozenBalance = params.frozenBalance
@@ -743,7 +770,7 @@ export default {
             isApprove: this.checkList.enable,
           }).then(res => {
             this.$message({
-              message: '操作成功',
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.getList();
@@ -766,9 +793,10 @@ export default {
      * 分配设备
      */
     bindAgent(row) {
+      let that = this;
       this.loadObj = this.$loading({
         lock: true,
-        text: '正在分配',
+        text: that.$t('agent.assigning'),
         spinner: 'el-icon-loading'
       })
       this.$post('iot-saas-device/admin/device/bindAgent', {
@@ -777,7 +805,7 @@ export default {
       }).then(res => {
         this.loadObj.close()
         this.$message({
-          message: '分配成功',
+          message: that.$t('agent.message1'),
           type: 'success'
         })
         history.back()
