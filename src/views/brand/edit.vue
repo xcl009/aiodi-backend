@@ -10,7 +10,7 @@
           <el-form-item :label="$t('public.brandName')" prop="name">
             <el-input v-model="form.name" :placeholder="$t('store.pleaseBrandName')" />
           </el-form-item>
-          <el-form-item :label="$t('public.brandCode')" prop="code" v-if="!brandId">
+          <el-form-item :label="$t('brand.brandCode')" prop="code" v-if="!brandId">
             <el-input v-model="form.code" :placeholder="$t('brand.brandCodeText')" />
           </el-form-item>
           <el-form-item :label="$t('public.phone')" prop="mobile">

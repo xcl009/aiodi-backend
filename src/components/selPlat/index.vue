@@ -1,8 +1,8 @@
 <template>
-  <el-form-item label="全部品牌:">
+  <el-form-item :label="`${$t('components.allBrand')}:`">
     <el-select v-model="listQuery.search_agent_id" @change="$emit('change')">
-      <el-option label="全部" value="0" />
-      <el-option v-for="item in platList" :label="item.mini_name" :value="item.agent_id" v-if="item.mini_name"/>
+      <el-option :label="$t('public.all')" value="0" />
+      <el-option v-for="item in platList" :label="item.mini_name" :value="item.agent_id" v-if="item.mini_name" />
     </el-select>
   </el-form-item>
 </template>
@@ -16,12 +16,12 @@ export default {
       default: {}
     }
   },
-  data(){
+  data() {
     return {
       platList: []
     }
   },
-  created(){
+  created() {
     this.getPlatList()
   },
   methods: {
@@ -34,6 +34,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

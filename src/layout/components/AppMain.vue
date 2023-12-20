@@ -14,6 +14,7 @@
 <script>
   import Breadcrumb from '@/components/Breadcrumb'
   export default {
+    props:{},
     name: 'AppMain',
     components: {
       Breadcrumb

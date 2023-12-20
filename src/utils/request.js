@@ -10,26 +10,27 @@ import store from '@/store'
 import {
   getToken
 } from '@/utils/auth'
+import i18n from '../lang'
 
 const windowScreen = `${window.screen.width} * ${window.screen.height}`
 
 let pending = []; //声明一个数组用于存储每个ajax请求的取消函数和ajax标识
 let cancelToken = axios.CancelToken; //初始化取消请求的构造函数
 let removePending = (flagUrl, f) => {
-	if (pending.indexOf(flagUrl) !== -1) {
-		if (f) {
+  if (pending.indexOf(flagUrl) !== -1) {
+    if (f) {
       Message({
-        message: '按钮点击太频繁',
+        message: i18n.t('lang.message'),
         type: 'error'
       })
-		} else {
-			pending.splice(pending.indexOf(flagUrl), 1)
-		}
-	} else {
-		if (f) {
-			pending.push(flagUrl)
-		}
-	}
+    } else {
+      pending.splice(pending.indexOf(flagUrl), 1)
+    }
+  } else {
+    if (f) {
+      pending.push(flagUrl)
+    }
+  }
 }
 
 // create an axios instance
@@ -64,11 +65,11 @@ service.interceptors.request.use(
       config.headers['model'] = ''
       config.headers['screen'] = windowScreen
     }
-    if(config.url.indexOf('http') == -1){
+    if (config.url.indexOf('http') == -1) {
       config.baseURL = Vue.prototype.BASE_URL
     }
-    if(config.method == 'get'){
-      config.paramsSerializer = function(params){
+    if (config.method == 'get') {
+      config.paramsSerializer = function (params) {
         return qs.stringify(params, { arrayFormat: 'repeat' })
       }
     }
@@ -96,45 +97,45 @@ service.interceptors.response.use(
         // } else {
         //   return Promise.resolve(res.data)
         // }
-      break
+        break
       default:
         Message.closeAll(res.data.code)
-        if(['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1){
+        if (['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1) {
           Message({
-            message: res.data.message || '网络卡住了，请刷新',
+            message: res.data.message || i18n.t('lang.message1'),
             type: 'error'
           })
-          setTimeout(()=>{
+          setTimeout(() => {
             location.href = '/login'
           }, 1500)
         } else {
           Message({
-            message: res.data.message || '网络卡住了，请刷新',
+            message: res.data.message || i18n.t('lang.message1'),
             type: 'error'
           })
           return Promise.reject(res.data)
         }
-      break
+        break
     }
   },
   (error) => {
     Message.closeAll()
-    if(error.response){
+    if (error.response) {
       let res = error.response.data
-      if(['19876', 19876].indexOf(res.code) > -1){
+      if (['19876', 19876].indexOf(res.code) > -1) {
         router.push({
           path: '/user/checkPwd'
         })
-      }else if(res.message){
+      } else if (res.message) {
         Message({
           message: res.message,
           type: 'error'
         })
       }
     }
-    if(error.response){
+    if (error.response) {
       return Promise.reject(error.response.data)
-    }else{
+    } else {
       return Promise.reject(error)
     }
   }

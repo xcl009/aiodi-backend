@@ -1,7 +1,7 @@
 import {
   Message
 } from 'element-ui'
-
+import i18n from '../lang'
 const util = {
   /**
    * @param {string} url
@@ -15,10 +15,10 @@ const util = {
     return JSON.parse(
       '{"' +
       decodeURIComponent(search)
-      .replace(/"/g, '\\"')
-      .replace(/&/g, '","')
-      .replace(/=/g, '":"')
-      .replace(/\+/g, ' ') +
+        .replace(/"/g, '\\"')
+        .replace(/&/g, '","')
+        .replace(/=/g, '":"')
+        .replace(/\+/g, ' ') +
       '"}'
     )
   },
@@ -61,7 +61,7 @@ const util = {
     document.execCommand("copy")
     document.body.removeChild(aux)
     Message({
-      message: '复制成功',
+      message: i18n.t('public.copySuccess'),
       type: 'success'
     })
   },
@@ -178,23 +178,23 @@ const util = {
     console.log(userAgent)
     if (userAgent.indexOf('win') > -1) {
       name = 'Windows';
-    if (userAgent.indexOf('windows nt 5.0') > -1) {
+      if (userAgent.indexOf('windows nt 5.0') > -1) {
         version = 'Windows 2000';
-    } else if (userAgent.indexOf('windows nt 5.1') > -1 || userAgent.indexOf('windows nt 5.2') > -1) {
+      } else if (userAgent.indexOf('windows nt 5.1') > -1 || userAgent.indexOf('windows nt 5.2') > -1) {
         version = 'Windows XP';
-    } else if (userAgent.indexOf('windows nt 6.0') > -1) {
+      } else if (userAgent.indexOf('windows nt 6.0') > -1) {
         version = 'Windows Vista';
-    } else if (userAgent.indexOf('windows nt 6.1') > -1 || userAgent.indexOf('windows 7') > -1) {
+      } else if (userAgent.indexOf('windows nt 6.1') > -1 || userAgent.indexOf('windows 7') > -1) {
         version = 'Windows 7';
-    } else if (userAgent.indexOf('windows nt 6.2') > -1 || userAgent.indexOf('windows 8') > -1) {
+      } else if (userAgent.indexOf('windows nt 6.2') > -1 || userAgent.indexOf('windows 8') > -1) {
         version = 'Windows 8';
-    } else if (userAgent.indexOf('windows nt 6.3') > -1) {
+      } else if (userAgent.indexOf('windows nt 6.3') > -1) {
         version = 'Windows 8.1';
-    } else if (userAgent.indexOf('windows nt 6.2') > -1 || userAgent.indexOf('windows nt 10.0') > -1) {
+      } else if (userAgent.indexOf('windows nt 6.2') > -1 || userAgent.indexOf('windows nt 10.0') > -1) {
         version = 'Windows 10';
-    } else {
+      } else {
         version = 'Unknown';
-    }
+      }
     } else if (userAgent.indexOf('iphone') > -1) {
       name = 'iPhone';
     } else if (userAgent.indexOf('mac') > -1) {
@@ -204,9 +204,9 @@ const util = {
     } else if (userAgent.indexOf('linux') > -1) {
       if (userAgent.indexOf('android') > -1) {
         name = 'Android';
-    } else {
+      } else {
         name = 'Linux';
-    }
+      }
     } else {
       name = 'Unknown';
     }
@@ -222,26 +222,26 @@ const util = {
     var isEdge = userAgent.indexOf("Edge") > -1; //判断是否IE的Edge浏览器
     var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
     var isSafari = userAgent.indexOf("Safari") > -1
-    && userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
+      && userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
     var isChrome = userAgent.indexOf("Chrome") > -1
-    && userAgent.indexOf("Safari") > -1; //判断Chrome浏览器
+      && userAgent.indexOf("Safari") > -1; //判断Chrome浏览器
 
     if (isIE) {
       var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
       reIE.test(userAgent);
       var fIEVersion = parseFloat(RegExp["$1"]);
       if (fIEVersion == 7) {
-          return "IE7";
+        return "IE7";
       } else if (fIEVersion == 8) {
-          return "IE8";
+        return "IE8";
       } else if (fIEVersion == 9) {
-          return "IE9";
+        return "IE9";
       } else if (fIEVersion == 10) {
-          return "IE10";
-      } else if(isIE11){ // IE 11中userAgent已经不包含'msie'所以用'msie'不能判断IE 11
-      return "IE11";
-      }  else {
-          return "IE";
+        return "IE10";
+      } else if (isIE11) { // IE 11中userAgent已经不包含'msie'所以用'msie'不能判断IE 11
+        return "IE11";
+      } else {
+        return "IE";
       }//IE版本过低
     }
     if (isOpera) {
@@ -263,165 +263,165 @@ const util = {
   },
 
   /**
-	 * Parse the time to string
-	 * @param {(Object|string|number)} time
-	 * @param {string} cFormat
-	 * @returns {string | null}
-	 */
-	parseTime: (time, cFormat) => {
-		if (arguments.length === 0) {
-			return null;
-		} else if (!time) {
-			return '--';
-		}
+   * Parse the time to string
+   * @param {(Object|string|number)} time
+   * @param {string} cFormat
+   * @returns {string | null}
+   */
+  parseTime: (time, cFormat) => {
+    if (arguments.length === 0) {
+      return null;
+    } else if (!time) {
+      return '--';
+    }
 
-		const format = cFormat || '{y}-{m}-{d} {h}:{i}';
-		let date;
+    const format = cFormat || '{y}-{m}-{d} {h}:{i}';
+    let date;
 
-		if (typeof time === 'object') {
-			date = time;
-		} else {
-			if (typeof time === 'string' && /^[0-9]+$/.test(time)) {
-				time = parseInt(time);
-			}
+    if (typeof time === 'object') {
+      date = time;
+    } else {
+      if (typeof time === 'string' && /^[0-9]+$/.test(time)) {
+        time = parseInt(time);
+      }
 
-			if (typeof time === 'number' && time.toString().length === 10) {
-				time = time * 1000;
-			}
+      if (typeof time === 'number' && time.toString().length === 10) {
+        time = time * 1000;
+      }
 
-			date = new Date(time);
-		}
+      date = new Date(time);
+    }
 
-		const formatObj = {
-			y: date.getFullYear(),
-			m: date.getMonth() + 1,
-			d: date.getDate(),
-			h: date.getHours(),
-			i: date.getMinutes(),
-			s: date.getSeconds(),
-			a: date.getDay()
-		};
-		const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
-			const value = formatObj[key]; // Note: getDay() returns 0 on Sunday
+    const formatObj = {
+      y: date.getFullYear(),
+      m: date.getMonth() + 1,
+      d: date.getDate(),
+      h: date.getHours(),
+      i: date.getMinutes(),
+      s: date.getSeconds(),
+      a: date.getDay()
+    };
+    const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
+      const value = formatObj[key]; // Note: getDay() returns 0 on Sunday
 
-			if (key === 'a') {
-				return ['日', '一', '二', '三', '四', '五', '六'][value];
-			}
+      if (key === 'a') {
+        return [i18n.t('public.sunday'), i18n.t('public.one'), i18n.t('public.two'), i18n.t('public.three'), i18n.t('public.four'), i18n.t('public.five'), i18n.t('public.six')][value];
+      }
 
-			return value.toString().padStart(2, '0');
-		});
-		return time_str;
-	},
+      return value.toString().padStart(2, '0');
+    });
+    return time_str;
+  },
 
-	/**
-	 * 日期转时间戳
-	 * @param  datetime
-	 * @return {[unix]}
-	 */
-	unixTime: (date) => {
-    if(!date) return
-		var curDate = new Date(date)
-		return parseInt(curDate.getTime() / 1000);
-	},
+  /**
+   * 日期转时间戳
+   * @param  datetime
+   * @return {[unix]}
+   */
+  unixTime: (date) => {
+    if (!date) return
+    var curDate = new Date(date)
+    return parseInt(curDate.getTime() / 1000);
+  },
 
-	/**
-	 * 千分位逗号去除
-	 */
-	delComma: (num) => {
-    if(!num) return 0
-		return parseFloat(num.toString().replace(/,/g, ''))
-	},
+  /**
+   * 千分位逗号去除
+   */
+  delComma: (num) => {
+    if (!num) return 0
+    return parseFloat(num.toString().replace(/,/g, ''))
+  },
 
-	/**
-	 * 计算百分比
-	 */
-	countPer: (num, total) => {
-		num = parseFloat(num.toString().replace(/[^\d\.-]/g, ''));
+  /**
+   * 计算百分比
+   */
+  countPer: (num, total) => {
+    num = parseFloat(num.toString().replace(/[^\d\.-]/g, ''));
 
-		if (typeof total === 'string') {
-			total = total.trim().toString();
+    if (typeof total === 'string') {
+      total = total.trim().toString();
 
-			if (total.length == 0) {
-				total = 0;
-			} else {
-				total = util.delComma(total);
-			}
-		}
+      if (total.length == 0) {
+        total = 0;
+      } else {
+        total = util.delComma(total);
+      }
+    }
 
-		if (isNaN(num) || isNaN(total)) return 0;
-		return total <= 0 ? 0 : Math.round(num / total * 10000) / 100.00;
-	},
+    if (isNaN(num) || isNaN(total)) return 0;
+    return total <= 0 ? 0 : Math.round(num / total * 10000) / 100.00;
+  },
 
-	/**
-	 * 获取当前时间
-	 */
-	currentTime: () => {
-		return Date.parse(new Date()) / 1000;
-	},
+  /**
+   * 获取当前时间
+   */
+  currentTime: () => {
+    return Date.parse(new Date()) / 1000;
+  },
 
-	/**
-	 ** 秒 转 天-时-分-秒
-	 **/
-	formatSeconds: (value, cFormat = 'd-h-m-s', type = 1) => {
+  /**
+   ** 秒 转 天-时-分-秒
+   **/
+  formatSeconds: (value, cFormat = 'd-h-m-s', type = 1) => {
     var theTime = parseInt(value),
       middle = 0,
       hour = 0,
       day = 0,
       result = ''
-		if (theTime > 60) {
-			middle = parseInt(theTime / 60)
-			theTime = parseInt(theTime % 60)
-			if (middle > 60) {
-				hour = parseInt(middle / 60)
-				middle = parseInt(middle % 60)
+    if (theTime > 60) {
+      middle = parseInt(theTime / 60)
+      theTime = parseInt(theTime % 60)
+      if (middle > 60) {
+        hour = parseInt(middle / 60)
+        middle = parseInt(middle % 60)
         if (hour > 24) {
           day = parseInt(hour / 24)
           hour = parseInt(hour / 24)
         }
-			}
-		}
-    if(cFormat.indexOf('s') > -1 && (theTime > 0 || type == 2)){
-      result = '' + parseInt(theTime) + '秒'
+      }
     }
-    if(cFormat.indexOf('m') > -1 && (middle > 0 || type == 2)){
-      result = '' + parseInt(middle) + '分' + result
+    if (cFormat.indexOf('s') > -1 && (theTime > 0 || type == 2)) {
+      result = '' + parseInt(theTime) + i18n.t('public.second')
     }
-    if(cFormat.indexOf('h') > -1 && (hour > 0 || type == 2)){
-      result = '' + parseInt(hour) + '时' + result
+    if (cFormat.indexOf('m') > -1 && (middle > 0 || type == 2)) {
+      result = '' + parseInt(middle) + i18n.t('public.branch') + result
     }
-    if(cFormat.indexOf('d') > -1 && (day > 0 || type == 2)){
-      result = '' + parseInt(day) + '天' + result
+    if (cFormat.indexOf('h') > -1 && (hour > 0 || type == 2)) {
+      result = '' + parseInt(hour) + i18n.t('public.times') + result
     }
-		return result
-	},
+    if (cFormat.indexOf('d') > -1 && (day > 0 || type == 2)) {
+      result = '' + parseInt(day) + i18n.t('public.day') + result
+    }
+    return result
+  },
 
-	/**
-	 * 提取二维数组指定key
-	 */
-	arrayKeys: (array = [], key = '') => {
-		if (!key) return []
-		let arr = []
-		array.map(item => {
-			arr.push(item[key])
-		})
-		return arr
-	},
+  /**
+   * 提取二维数组指定key
+   */
+  arrayKeys: (array = [], key = '') => {
+    if (!key) return []
+    let arr = []
+    array.map(item => {
+      arr.push(item[key])
+    })
+    return arr
+  },
 
-	/**
-	 * 数组指定key转对象
-	 */
-	arrayToObj: (array = [], key = '', nkey = '') => {
-		if (!key || !Array.isArray(array)) return {}
-		let obj = {}
-		array.map(item => {
-			if(nkey && item[nkey] && (item[key] || item[key] == 0) ){
-				obj[item[key]] = item[nkey]
-			} else if (item[key] != 'undefined' && item[key] != null) {
-				obj[item[key]] = item
-			}
-		})
-		return obj
-	},
+  /**
+   * 数组指定key转对象
+   */
+  arrayToObj: (array = [], key = '', nkey = '') => {
+    if (!key || !Array.isArray(array)) return {}
+    let obj = {}
+    array.map(item => {
+      if (nkey && item[nkey] && (item[key] || item[key] == 0)) {
+        obj[item[key]] = item[nkey]
+      } else if (item[key] != 'undefined' && item[key] != null) {
+        obj[item[key]] = item
+      }
+    })
+    return obj
+  },
 
   /**
    * 取对象的指定属性
@@ -444,63 +444,63 @@ const util = {
     return arr.reduce((iter, val) => (val in obj && (iter[val] = obj[val]), iter), {});
   },
 
-	/**
-	 * 校验字符是否存在于数组中
-	 */
-	isBe: (arr, str) => {
-		if (!arr) return false
-		return arr.indexOf(str) > -1 || arr.indexOf(str.toString()) > -1
-	},
+  /**
+   * 校验字符是否存在于数组中
+   */
+  isBe: (arr, str) => {
+    if (!arr) return false
+    return arr.indexOf(str) > -1 || arr.indexOf(str.toString()) > -1
+  },
 
-	/**
-	 * 浮点数加法
-	 */
-	accAdd: (arg1, arg2) => {
-		var r1, r2, m, c;
-		try {
-			r1 = arg1.toString().split(".")[1].length
-		} catch (e) {
-			r1 = 0
-		}
-		try {
-			r2 = arg2.toString().split(".")[1].length
-		} catch (e) {
-			r2 = 0
-		}
+  /**
+   * 浮点数加法
+   */
+  accAdd: (arg1, arg2) => {
+    var r1, r2, m, c;
+    try {
+      r1 = arg1.toString().split(".")[1].length
+    } catch (e) {
+      r1 = 0
+    }
+    try {
+      r2 = arg2.toString().split(".")[1].length
+    } catch (e) {
+      r2 = 0
+    }
 
-		c = Math.abs(r1 - r2);
-		m = Math.pow(10, Math.max(r1, r2))
-		if (c > 0) {
-			var cm = Math.pow(10, c);
-			if (r1 > r2) {
-				arg1 = Number(arg1.toString().replace(".", ""));
-				arg2 = Number(arg2.toString().replace(".", "")) * cm;
-			} else {
-				arg1 = Number(arg1.toString().replace(".", "")) * cm;
-				arg2 = Number(arg2.toString().replace(".", ""));
-			}
-		} else {
-			arg1 = Number(arg1.toString().replace(".", ""));
-			arg2 = Number(arg2.toString().replace(".", ""));
-		}
-		return (arg1 + arg2) / m
-	},
+    c = Math.abs(r1 - r2);
+    m = Math.pow(10, Math.max(r1, r2))
+    if (c > 0) {
+      var cm = Math.pow(10, c);
+      if (r1 > r2) {
+        arg1 = Number(arg1.toString().replace(".", ""));
+        arg2 = Number(arg2.toString().replace(".", "")) * cm;
+      } else {
+        arg1 = Number(arg1.toString().replace(".", "")) * cm;
+        arg2 = Number(arg2.toString().replace(".", ""));
+      }
+    } else {
+      arg1 = Number(arg1.toString().replace(".", ""));
+      arg2 = Number(arg2.toString().replace(".", ""));
+    }
+    return (arg1 + arg2) / m
+  },
 
-	/**
-	 * 浮点数乘法
-	 */
-	accMul: (arg1, arg2) => {
-		var c = 0,
-			d = arg1.toString(),
-			e = arg2.toString();
-		try {
-			c += d.split(".")[1].length;
-		} catch (f) {}
-		try {
-			c += e.split(".")[1].length;
-		} catch (f) {}
-		return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
-	},
+  /**
+   * 浮点数乘法
+   */
+  accMul: (arg1, arg2) => {
+    var c = 0,
+      d = arg1.toString(),
+      e = arg2.toString();
+    try {
+      c += d.split(".")[1].length;
+    } catch (f) { }
+    try {
+      c += e.split(".")[1].length;
+    } catch (f) { }
+    return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
+  },
 
   /**
    ** 浮点数减法
@@ -510,16 +510,16 @@ const util = {
     arg1 = arg1 || 0;
     arg2 = arg2 || 0;
     try {
-        r1 = arg1.toString().split(".")[1].length;
+      r1 = arg1.toString().split(".")[1].length;
     }
     catch (e) {
-        r1 = 0;
+      r1 = 0;
     }
     try {
-        r2 = arg2.toString().split(".")[1].length;
+      r2 = arg2.toString().split(".")[1].length;
     }
     catch (e) {
-        r2 = 0;
+      r2 = 0;
     }
     m = Math.pow(10, Math.max(r1, r2)); //last modify by deeka //动态控制精度长度
     n = (r1 >= r2) ? r1 : r2;
@@ -530,90 +530,90 @@ const util = {
    * 校验当前用户是否为SAAS
    */
   isSaas: () => {
-  	return agentInfo.userType == 'admin'
+    return agentInfo.userType == 'admin'
   },
 
   /**
    * 校验当前用户是否为品牌商
    */
   isBrand: () => {
-  	return agentInfo.userType == 'brand'
+    return agentInfo.userType == 'brand'
   },
 
   /**
    * 校验当前用户是否为商户
    */
   isStore: () => {
-  	return agentInfo.userType == 'store'
+    return agentInfo.userType == 'store'
   },
 
   /**
    * 校验当前用户是否为代理商
    */
   isAgent: () => {
-  	return agentInfo.userType == 'agent'
+    return agentInfo.userType == 'agent'
   },
 
   /**
    * 获取角色名
    */
   getRoleName: (type) => {
-  	let roleName = {
-  		brand: '总后台',
-  		store: '商户',
-  		agent: '代理商',
-  		wechat: '微信用户',
-  		alipay: '支付宝用户'
-  	}
-  	return roleName[type] || ''
+    let roleName = {
+      brand: i18n.t('rolesName.brand'),
+      store: i18n.t('rolesName.store'),
+      agent: i18n.t('rolesName.agent'),
+      wechat: i18n.t('rolesName.wechat'),
+      alipay: i18n.t('rolesName.alipay')
+    }
+    return roleName[type] || ''
   },
 
   /**
    * 套餐显示
    */
   showFeeMode: (type, mode, stype = 1, deviceTypeCode = '') => {
-  	if(!mode) return ''
-  	type = type || 1
-  	mode = JSON.parse(mode)
-  	if (type == 1) {
-      if(deviceTypeCode && deviceTypeCode.indexOf('WM') > -1){
-        return `${window.config.washing_package[mode.time].title}(${mode.money}元)`
+    if (!mode) return ''
+    type = type || 1
+    mode = JSON.parse(mode)
+    if (type == 1) {
+      if (deviceTypeCode && deviceTypeCode.indexOf('WM') > -1) {
+        return `${window.config.washing_package[mode.time].title}(${mode.money}${i18n.t('public.element')})`
       }
-  		return mode.time >= 60 ? `${mode.time / 60 }小时${mode.money}元` : `${mode.time}分钟${mode.money}元`
-  	} else {
-			let fee = `前${mode.startingTime}分钟${mode.startingAmount}元，超则${mode.overBillingUnit}分钟/${mode.unitPrice}元`
-			if(mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice){
-				fee = `${mode.startingTime}分钟${mode.startingAmount}元`
-			}
-			if(stype == 2){
-				fee = fee + `${mode.maxBillingTimeUnit == 1440 ? '，每天封顶' + (mode.maxBillingTimePrice || 19.9) + '元' : '，' + mode.maxBillingTimeUnit + '分钟封顶' + mode.maxBillingTimePrice + '元' }，总封顶${mode.maxAmount}元`
-			}
-			return fee
-		}
+      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${mode.money}${i18n.t('public.element')}` : `${mode.time}${i18n.t('public.minute')}${mode.money}${i18n.t('public.element')}`
+    } else {
+      let fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${i18n.t('public.element')}，${i18n.t('public.superrule')}${mode.overBillingUnit}${i18n.t('public.minute')}/${mode.unitPrice}${i18n.t('public.element')}`
+      if (mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice) {
+        fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${i18n.t('public.element')}`
+      }
+      if (stype == 2) {
+        fee = fee + `${mode.maxBillingTimeUnit == 1440 ? `，${i18n.t('public.dailyCap')}` + (mode.maxBillingTimePrice || 19.9) + `${i18n.t('public.element')}` : '，' + mode.maxBillingTimeUnit + `${i18n.t('public.minCap')}` + mode.maxBillingTimePrice + `${i18n.t('public.element')}`}，${i18n.t('public.totalCapping')}${mode.maxAmount}${i18n.t('public.element')}`
+      }
+      return fee
+    }
   },
 
   /**
    * 套餐名称显示
    */
   showFeeName: (type) => {
-  	let obj = {
-  		"1": "套餐",
-  		"2": "免押",
-  		"3": "余额"
-  	}
-  	return obj[type] || ''
+    let obj = {
+      "1": i18n.t('public.package'),
+      "2": i18n.t('public.freeOfCharge'),
+      "3": i18n.t('payType.balance')
+    }
+    return obj[type] || ''
   },
 
   /**
    * 分成显示
    */
   divideType: (type) => {
-  	let obj = {
-  		"1": "真实分成",
-  		"2": "相对分成",
-  		"3": "分成不一致"
-  	}
-  	return obj[type] || ''
+    let obj = {
+      "1": i18n.t('store.text'),
+      "2": i18n.t('store.text2'),
+      "3": i18n.t('store.inconsistentDivision')
+    }
+    return obj[type] || ''
   },
 
   /**
@@ -622,7 +622,7 @@ const util = {
   defaultFee: (code = '') => {
     let laundryMode = [
       {
-        title: "专业除菌消毒液",
+        title: i18n.t('lang.text'),
         tag: 1,
         package: [
           {
@@ -640,7 +640,7 @@ const util = {
         ]
       },
       {
-        title: "浓缩香薰洗衣液",
+        title: i18n.t('lang.text1'),
         tag: 2,
         package: [
           {
@@ -715,7 +715,7 @@ const util = {
         },
       }
     }
-    if(code && obj.weixinPayMode[`${code}payModeDetail`]){
+    if (code && obj.weixinPayMode[`${code}payModeDetail`]) {
       obj.weixinPayMode.payModeDetail = obj.weixinPayMode[`${code}payModeDetail`]
       obj.alipayPayMode.payModeDetail = obj.alipayPayMode[`${code}payModeDetail`]
     }
@@ -726,12 +726,12 @@ const util = {
    * 日期排序
    */
   dateSort: (property, bol = false) => {
-    return function(a, b){
+    return function (a, b) {
       let value1 = a[property], value2 = b[property]
-      if(bol){
+      if (bol) {
         // 升序
         return Date.parse(value1) - Date.parse(value2)
-      }else{
+      } else {
         //降序
         return Date.parse(value2) - Date.parse(value1)
       }
@@ -744,28 +744,28 @@ const util = {
    * @param {Object} idx
    * @param {Object} formKey
    */
-  checkQueryRepeat(key, idx, formKey){
+  checkQueryRepeat(key, idx, formKey) {
     return Object.values(formKey).indexOf(key) == -1 || Object.values(formKey).indexOf(key) == idx - 1
   },
 
   /**
    * 数字输入校验
    */
-  checkDigit(val, min=0, max=100, p=2, isEmpty = false){
-    let testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)")
-    if(p > 0) testReg = new RegExp("(^[0-9]{1,"+ max.toString().length +"}$)|(^[0-9]{1,"+ max.toString().length +"}[\\.]{1}[0-9]{1,"+ p +"}$)")
-    if(isEmpty && val != 0 && !val){
+  checkDigit(val, min = 0, max = 100, p = 2, isEmpty = false) {
+    let testReg = new RegExp("(^[0-9]{1," + max.toString().length + "}$)")
+    if (p > 0) testReg = new RegExp("(^[0-9]{1," + max.toString().length + "}$)|(^[0-9]{1," + max.toString().length + "}[\\.]{1}[0-9]{1," + p + "}$)")
+    if (isEmpty && val != 0 && !val) {
 
-    }else if(parseFloat(val) > parseFloat(max)){
-      return `不能大于${max}`
-    } else if(parseFloat(val) < parseFloat(min)){
-      return `不能小于${min}`
-    } else if(parseFloat(val) < parseFloat(min)){
-      return `不能小于${min}`
-    }else if (testReg.test(val)) {
+    } else if (parseFloat(val) > parseFloat(max)) {
+      return `${i18n.t('lang.cannotBeGreaterThan')}${max}`
+    } else if (parseFloat(val) < parseFloat(min)) {
+      return `${i18n.t('lang.cannotBeLessThan')}${min}`
+    } else if (parseFloat(val) < parseFloat(min)) {
+      return `${i18n.t('lang.cannotBeLessThan')}${min}`
+    } else if (testReg.test(val)) {
       return ''
-    }else{
-      return `范围${min}-${max}${p > 0 ? '，小数点后'+p+'位' : '的整数'}`
+    } else {
+      return `${i18n.t('lang.range')}${min}-${max}${p > 0 ? `，${i18n.t('lang.afterDecimalPoint')}` + p + `${i18n.t('lang.position')}` : `${i18n.t('lang.integerOf')}`}`
     }
   }
 }

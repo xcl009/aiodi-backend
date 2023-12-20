@@ -6,7 +6,7 @@
           <el-input v-model="form.name" :placeholder="$t('brand.brandName')" />
         </el-form-item>
         <el-form-item :label="$t('public.phone')">
-          <el-input v-model="form.mobile" :placeholder="$t('brand.phone')" />
+          <el-input v-model="form.mobile" :placeholder="$t('public.phone')" />
         </el-form-item>
         <el-form-item :label="$t('public.status')">
           <el-select :placeholder="$t('public.status')" v-model="form.status" @change="toQuery()">

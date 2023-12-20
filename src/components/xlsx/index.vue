@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-dialog :visible.sync="excel" :close-on-click-modal="false" :close-on-press-escape="false" title="导出加载进度"
-      width="240px">
+    <el-dialog :visible.sync="excel" :close-on-click-modal="false" :close-on-press-escape="false"
+      :title="$t('components.loadingProgress')" width="240px">
       <div class="text-center">
         <el-progress type="circle" :percentage="percentage"></el-progress>
       </div>
@@ -27,7 +27,7 @@ export default {
   computed: {
 
   },
-  data(){
+  data() {
     return {
       excel: false,
       percentage: 0,
@@ -43,6 +43,7 @@ export default {
      * 导出数据到表格
      */
     saveTableXlsx(end, pages, cbk) {
+      let that = this;
       this.excel = true
       let fix = document.querySelector('.el-table__fixed-right')
       let xlsxParam = { raw: true }
@@ -53,13 +54,13 @@ export default {
       } else {
         this.wbout[this.wi] = XLSX.utils.table_to_book(document.querySelector(`#${this.table_id}`), xlsxParam)
       }
-      if(this.wi == 49 && !end){
+      if (this.wi == 49 && !end) {
         this.wi = 0
       } else {
         this.wi++
         if (!end) {
           this.percentage = this.percentage < 96 ? (100 / pages) * this.wi : 96
-          setTimeout(()=>{
+          setTimeout(() => {
             cbk()
           }, 200)
           return
@@ -99,11 +100,11 @@ export default {
             type: 'application/octet-stream'
           }), `${this.fileName}.xlsx`)
           this.$message({
-            message: '导出成功',
+            message: that.$t('public.exportSuccess'),
             type: 'success'
           })
-          if(this.wi == 0 && !end){
-            setTimeout(()=>{
+          if (this.wi == 0 && !end) {
+            setTimeout(() => {
               this.percentage = 0
               this.wbout = []
               cbk()
@@ -124,6 +125,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

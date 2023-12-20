@@ -434,8 +434,8 @@
                   <span slot="append">{{$t('public.element')}}</span>
                 </el-input>
               </el-form-item>
-              <el-form-item :label="`${$t('public.reasonForRefund')}:`">
-                <el-input v-model="dform.reason" :placeholder="`${$t('public.reasonForRefund')}`"></el-input>
+              <el-form-item :label="`${$t('order.reasonForRefund')}:`">
+                <el-input v-model="dform.reason" :placeholder="`${$t('order.reasonForRefund')}`"></el-input>
               </el-form-item>
             </el-form>
           </div>

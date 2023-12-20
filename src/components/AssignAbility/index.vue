@@ -1,95 +1,97 @@
 <template>
-  <el-dialog :visible.sync="dialogStatus" :show-close="false" :modal-append-to-body="false" width="600px" :center="true"  title="权限设置">
+  <el-dialog :visible.sync="dialogStatus" :show-close="false" :modal-append-to-body="false" width="600px" :center="true"
+    :title="$t('public.permissionSettings')">
     <div class="text-center" v-if="dform.menus">
       <template v-for="item in agentInfo.AssignAbility">
-        <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != noFlag">{{ item.name }}</el-checkbox>
+        <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != noFlag">{{ item.name
+        }}</el-checkbox>
       </template>
     </div>
     <div class="mt-30 text-center">
-      <el-button size="medium" class="bg-body" @click="dialogStatus = false">取消</el-button>
-      <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
+      <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
+      <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+      }}</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-  export default {
-    name: 'VendorMode',
-    data() {
-      return {
-        clickSubmit: false,
-        dialogStatus: false,
-        dform: {}
-      }
+export default {
+  name: 'VendorMode',
+  data() {
+    return {
+      clickSubmit: false,
+      dialogStatus: false,
+      dform: {}
+    }
+  },
+  props: {
+    noFlag: {
+      type: String,
+      default: 'STORE_ASSIGN'
+    }
+  },
+  computed: {
+    agentInfo() {
+      return this.$store.getters.agentInfo
     },
-    props: {
-      noFlag: {
-        type: String,
-        default: 'STORE_ASSIGN'
-      }
-    },
-    computed: {
-      agentInfo(){
-        return this.$store.getters.agentInfo
-      },
-      Ability() {
-        return this.$store.getters.Ability
-      }
-    },
-    mounted() {
-      
-    },
-    methods: {
-      /**
-       * 获取下级权限
-       */
-      getAuthMenu(childId){
-        this.dialogStatus = true
-        this.$get('iot-saas-user/auth/menu', {
-          childId: childId
-        }).then(res => {
-          let menus = {}
-          if(res && res.length > 0){
-            res = res || []
-            res.map(item => {
-              menus[item.id] = true
-              if(item.childrenAuthList && item.childrenAuthList.length > 0){
-                item.childrenAuthList.map(sitem => {
-                  menus[sitem.id] = true
-                })
-              }
-            })
-          }
-          this.$set(this.dform, 'menus', menus)
-        })
-        this.$set(this.dform, 'childUserId', childId)
-      },
+    Ability() {
+      return this.$store.getters.Ability
+    }
+  },
+  mounted() {
 
-      /**
-       * 弹窗确认
-       */
-      dialogConfirm() {
-        if(this.clickSubmit) return
-        this.clickSubmit = true
-        let menus = [], params = JSON.parse(JSON.stringify(this.dform))
-        for(var i in params.menus){
-          if(params.menus[i]) menus.push(i)
-        }
-        params.menus = menus
-        this.$put('iot-saas-user/auth/childMenu', params).then(res => {
-          this.$message({
-            type: 'success',
-            message: '操作成功'
+  },
+  methods: {
+    /**
+     * 获取下级权限
+     */
+    getAuthMenu(childId) {
+      this.dialogStatus = true
+      this.$get('iot-saas-user/auth/menu', {
+        childId: childId
+      }).then(res => {
+        let menus = {}
+        if (res && res.length > 0) {
+          res = res || []
+          res.map(item => {
+            menus[item.id] = true
+            if (item.childrenAuthList && item.childrenAuthList.length > 0) {
+              item.childrenAuthList.map(sitem => {
+                menus[sitem.id] = true
+              })
+            }
           })
-          this.dialogStatus = false
-          this.clickSubmit = false
-        }).catch(err => {
-          this.clickSubmit = false
-        })
+        }
+        this.$set(this.dform, 'menus', menus)
+      })
+      this.$set(this.dform, 'childUserId', childId)
+    },
+
+    /**
+     * 弹窗确认
+     */
+    dialogConfirm() {
+      let that = this;
+      if (this.clickSubmit) return
+      this.clickSubmit = true
+      let menus = [], params = JSON.parse(JSON.stringify(this.dform))
+      for (var i in params.menus) {
+        if (params.menus[i]) menus.push(i)
       }
+      params.menus = menus
+      this.$put('iot-saas-user/auth/childMenu', params).then(res => {
+        this.$message({
+          type: 'success',
+          message: that.$t('public.operationSuccessful')
+        })
+        this.dialogStatus = false
+        this.clickSubmit = false
+      }).catch(err => {
+        this.clickSubmit = false
+      })
     }
   }
+}
 </script>
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

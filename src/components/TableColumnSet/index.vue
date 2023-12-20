@@ -12,8 +12,8 @@
         </draggable>
       </div>
       <div class="p-10 flex justify-around l-t">
-        <el-button type="info" size="mini" plain @click="setColumn(2)">重置</el-button>
-        <el-button type="primary" size="mini" @click="setColumn(1)">确定</el-button>
+        <el-button type="info" size="mini" plain @click="setColumn(2)">{{ $t('public.resetting') }}</el-button>
+        <el-button type="primary" size="mini" @click="setColumn(1)">{{ $t('public.confirm') }}</el-button>
       </div>
     </div>
     <i class="ml-20 block el-icon-s-tools text-primary fs-c1" slot="reference"></i>
@@ -21,72 +21,72 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
-  export default {
-    components: {
-      draggable
-    },
-    props: {
-      showColumn: {
-        type: Array,
-        default () {
-          return []
-        }
-      },
-      storageKey: {
-        type: String,
-        val: ''
-      },
-      defaultColumn: {
-        type: Array,
-        default () {
-          return []
-        }
+import draggable from 'vuedraggable'
+export default {
+  components: {
+    draggable
+  },
+  props: {
+    showColumn: {
+      type: Array,
+      default() {
+        return []
       }
     },
-    data() {
-      return {
-        popoversStatus: false
-      }
+    storageKey: {
+      type: String,
+      val: ''
     },
-    mounted() {
-      if (localStorage.getItem(this.storageKey)) {
-        let showColumn = JSON.parse(localStorage.getItem(this.storageKey))
-        this.$emit('update:showColumn', this.arrayUnique(showColumn.concat(this.defaultColumn), 'key'))
-      } else {
-        this.$emit('update:showColumn', this.defaultColumn)
-      }
-    },
-    methods: {
-      /**
-       * 数组指定键值去重
-       * @param {Object} prop
-       * @param {Object} arr
-       */
-      arrayUnique(arr, prop) {
-        return arr.filter((element, index, self) => {
-          return self.findIndex(el => el[prop] === element[prop]) === index
-        })
-      },
-
-      /**
-       * 设置表格表头
-       */
-      setColumn(type = 1) {
-        if (type == 1) {
-          localStorage.setItem(this.storageKey, JSON.stringify(this.showColumn))
-        } else {
-          localStorage.removeItem(this.storageKey)
-          this.$emit('update:showColumn', this.defaultColumn)
-        }
-        this.popoversStatus = false
+    defaultColumn: {
+      type: Array,
+      default() {
+        return []
       }
     }
+  },
+  data() {
+    return {
+      popoversStatus: false
+    }
+  },
+  mounted() {
+    if (localStorage.getItem(this.storageKey)) {
+      let showColumn = JSON.parse(localStorage.getItem(this.storageKey))
+      this.$emit('update:showColumn', this.arrayUnique(showColumn.concat(this.defaultColumn), 'key'))
+    } else {
+      this.$emit('update:showColumn', this.defaultColumn)
+    }
+  },
+  methods: {
+    /**
+     * 数组指定键值去重
+     * @param {Object} prop
+     * @param {Object} arr
+     */
+    arrayUnique(arr, prop) {
+      return arr.filter((element, index, self) => {
+        return self.findIndex(el => el[prop] === element[prop]) === index
+      })
+    },
+
+    /**
+     * 设置表格表头
+     */
+    setColumn(type = 1) {
+      if (type == 1) {
+        localStorage.setItem(this.storageKey, JSON.stringify(this.showColumn))
+      } else {
+        localStorage.removeItem(this.storageKey)
+        this.$emit('update:showColumn', this.defaultColumn)
+      }
+      this.popoversStatus = false
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .grab{
-    cursor: grab
-  }
+.grab {
+  cursor: grab
+}
 </style>

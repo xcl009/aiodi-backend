@@ -44,7 +44,7 @@
               <template slot="append">{{ $t('public.element') }}/{{ $t('public.year') }}</template>
             </el-input>
             <el-input type="number" v-model="item.permanentAmount" class="mr-10">
-              <template slot="append">{{ $t('public.element') }}/{{ $t('patType.permanent') }}</template>
+              <template slot="append">{{ $t('public.element') }}/{{ $t('payType.permanent') }}</template>
             </el-input>
             <el-button type="text" size="small" v-if="index == 0" @click="form.priceSettings.push({})">{{ $t('public.add')
             }}</el-button>

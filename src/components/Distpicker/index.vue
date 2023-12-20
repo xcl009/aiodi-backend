@@ -3,26 +3,20 @@
     <template v-if="type != 'mobile'">
       <select @change="getCities" v-model="currentProvince" :disabled="disabled || provinceDisabled">
         <option :value="placeholders.province">{{ placeholders.province }}</option>
-        <option v-for="(item, index) in provinces"
-                :value="item"
-                :key="index">
+        <option v-for="(item, index) in provinces" :value="item" :key="index">
           {{ item }}
         </option>
       </select>
       <template v-if="!onlyProvince">
         <select @change="getAreas" v-model="currentCity" :disabled="disabled || cityDisabled">
           <option :value="placeholders.city">{{ placeholders.city }}</option>
-          <option v-for="(item, index) in cities"
-                  :value="item"
-                  :key="index">
+          <option v-for="(item, index) in cities" :value="item" :key="index">
             {{ item }}
           </option>
         </select>
         <select v-if="!hideArea" v-model="currentArea" :disabled="disabled || areaDisabled">
           <option :value="placeholders.area">{{ placeholders.area }}</option>
-          <option v-for="(item, index) in areas "
-                  :value="item"
-                  :key="index">
+          <option v-for="(item, index) in areas " :value="item" :key="index">
             {{ item }}
           </option>
         </select>
@@ -31,36 +25,33 @@
     <template v-else>
       <div :class="addressHeader">
         <ul>
-          <li :class="{'active': tab === 1}" @click="resetProvince">{{ currentProvince && !staticPlaceholder ? currentProvince : placeholders.province }}</li>
+          <li :class="{ 'active': tab === 1 }" @click="resetProvince">{{ currentProvince && !staticPlaceholder ?
+            currentProvince : placeholders.province }}</li>
           <template v-if="!onlyProvince">
-            <li v-if="showCityTab" :class="{'active': tab === 2}" @click="resetCity">{{  currentCity && !staticPlaceholder ? currentCity : placeholders.city }}</li>
-            <li v-if="showAreaTab && !hideArea" :class="{'active': tab === 3}">{{ currentArea && !staticPlaceholder ? currentArea : placeholders.area }}</li>
+            <li v-if="showCityTab" :class="{ 'active': tab === 2 }" @click="resetCity">{{ currentCity && !staticPlaceholder
+              ? currentCity : placeholders.city }}</li>
+            <li v-if="showAreaTab && !hideArea" :class="{ 'active': tab === 3 }">{{ currentArea && !staticPlaceholder ?
+              currentArea : placeholders.area }}</li>
           </template>
         </ul>
       </div>
       <div :class="addressContainer">
         <ul v-if="tab === 1">
-          <li v-for="(item, index) in provinces"
-              :class="{'active': item === currentProvince}"
-              @click="chooseProvince(item)"
-              :key="index">
+          <li v-for="(item, index) in provinces" :class="{ 'active': item === currentProvince }"
+            @click="chooseProvince(item)" :key="index">
             {{ item }}
           </li>
         </ul>
         <template v-if="!onlyProvince">
           <ul v-if="tab === 2">
-            <li v-for="(item, index) in cities"
-                :class="{'active': item === currentCity}"
-                @click="chooseCity(item)"
-                :key="index">
+            <li v-for="(item, index) in cities" :class="{ 'active': item === currentCity }" @click="chooseCity(item)"
+              :key="index">
               {{ item }}
             </li>
           </ul>
           <ul v-if="tab === 3 && !hideArea">
-            <li v-for="(item, index) in areas"
-                :class="{'active': item === currentArea}"
-                @click="chooseArea(item)"
-                :key="index">
+            <li v-for="(item, index) in areas" :class="{ 'active': item === currentArea }" @click="chooseArea(item)"
+              :key="index">
               {{ item }}
             </li>
           </ul>
@@ -89,9 +80,9 @@ export default {
       type: Object,
       default() {
         return {
-          province: '选择省',
-          city: '选择市',
-          area: '选择区',
+          province: this.$t('components.selectProvince'),
+          city: this.$t('components.selectCity'),
+          area: this.$t('components.selectionArea'),
         }
       }
     },
@@ -258,9 +249,9 @@ export default {
     getAreaCodeByPreCode(name, preCode) {
       let codes = []
 
-      for(let x in DISTRICTS) {
-        for(let y in DISTRICTS[x]) {
-          if(name === DISTRICTS[x][y]) {
+      for (let x in DISTRICTS) {
+        for (let y in DISTRICTS[x]) {
+          if (name === DISTRICTS[x][y]) {
             codes.push(y)
           }
         }
@@ -280,9 +271,9 @@ export default {
       }
     },
     getAreaCode(name, check = '') {
-      for(let x in DISTRICTS) {
-        for(let y in DISTRICTS[x]) {
-          if(name === DISTRICTS[x][y]) {
+      for (let x in DISTRICTS) {
+        for (let y in DISTRICTS[x]) {
+          if (name === DISTRICTS[x][y]) {
             if (check.length > 0) {
               let code = this.getAreaCodeByPreCode(check, y.slice(0, 2))
 
@@ -299,9 +290,9 @@ export default {
       }
     },
     getCodeValue(code) {
-      for(let x in DISTRICTS) {
-        for(let y in DISTRICTS[x]) {
-          if(code === parseInt(y)) {
+      for (let x in DISTRICTS) {
+        for (let y in DISTRICTS[x]) {
+          if (code === parseInt(y)) {
             return DISTRICTS[x][y]
           }
         }
@@ -311,14 +302,14 @@ export default {
       return DISTRICTS[code] || []
     },
     determineValue(currentValue, placeholderValue, check = '') {
-      if(currentValue === placeholderValue) {
+      if (currentValue === placeholderValue) {
         return []
       } else {
         return this.getDistricts(this.getAreaCode(currentValue, check))
       }
     },
     determineType(value) {
-      if(typeof value === 'number') {
+      if (typeof value === 'number') {
         return this.getCodeValue(value)
       }
 
@@ -334,6 +325,7 @@ export default {
 <style lang="scss">
 .distpicker-address-wrapper {
   color: #9caebf;
+
   select {
     padding: 0 8px;
     height: 32px;
@@ -343,11 +335,12 @@ export default {
     background-clip: padding-box;
     border: none;
     border-radius: 2px;
-    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+
     option {
       font-weight: normal;
       display: block;
@@ -356,6 +349,7 @@ export default {
       padding: 0px 2px 1px;
     }
   }
+
   ul {
     margin: 0;
     padding: 0;
@@ -364,6 +358,7 @@ export default {
       list-style: none;
     }
   }
+
   .address-header {
     background-color: #fff;
 
@@ -383,6 +378,7 @@ export default {
       }
     }
   }
+
   .address-container {
     background-color: #fff;
 
@@ -401,7 +397,8 @@ export default {
     }
   }
 }
-.disabled-color{
-    background: #f8f8f8;
+
+.disabled-color {
+  background: #f8f8f8;
 }
 </style>

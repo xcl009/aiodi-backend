@@ -5,22 +5,26 @@
       <div class="flex" id="filterContent">
         <slot name="left"></slot>
         <div class="flex1" v-if="defaultShowLength > 0"></div>
-        <div id="filterBox" class="flex flex-wrap filterBox" :class="{'fold': defaultShowLength == 0 && unfoldStatus, 'flex1': defaultShowLength == 0}">
+        <div id="filterBox" class="flex flex-wrap filterBox"
+          :class="{ 'fold': defaultShowLength == 0 && unfoldStatus, 'flex1': defaultShowLength == 0 }">
           <slot name="defult"></slot>
           <div id="setBox" class="flex align-center set-box pl-20 pr-10 line-1">
             <el-button native-type="submit" :disabled="clickSubmit" class="icon-search" type="primary" size="small">
-              <i class="mr-5 el-icon-search fs-s2"/><span class="fs-s3">查询</span>
+              <i class="mr-5 el-icon-search fs-s2" /><span class="fs-s3">{{ $t('public.query') }}</span>
             </el-button>
             <el-button class="icon-search icon-refresh" size="small" v-if="resetStatus" @click="reset()">
-              <i class="mr-5 el-icon-refresh fs-s2"/><span class="fs-s3">重置</span>
+              <i class="mr-5 el-icon-refresh fs-s2" /><span class="fs-s3">{{ $t('public.resetting') }}</span>
             </el-button>
-            <el-tooltip class="item" effect="dark" content="选择开始时间和结束时间,点击查询后即可导出该时间段内的记录" placement="top" v-if="device != 'mobile' && exportStatus">
+            <el-tooltip class="item" effect="dark" :content="$t('components.text')" placement="top"
+              v-if="device != 'mobile' && exportStatus">
               <el-button class="icon-search icon-refresh" size="small" @click="saveXlsx()">
-                <i class="mr-5 el-icon-download fs-s2"/><span class="fs-s3">导出</span>
+                <i class="mr-5 el-icon-download fs-s2" /><span class="fs-s3">{{ $t('public.export') }}</span>
               </el-button>
             </el-tooltip>
-            <span class="ml-10 fs-s4 text-primary cursor" v-if="unfoldShow && (child_i == -1 || child_i > 0)" @click="unfoldStatus = !unfoldStatus; controlChildren(2)">
-              {{ unfoldStatus ? '收起' : '更多' }}<i class="el-icon--right" v-bind:class="{'el-icon-arrow-down': !unfoldStatus, 'el-icon-arrow-up' : unfoldStatus}"></i>
+            <span class="ml-10 fs-s4 text-primary cursor" v-if="unfoldShow && (child_i == -1 || child_i > 0)"
+              @click="unfoldStatus = !unfoldStatus; controlChildren(2)">
+              {{ unfoldStatus ? $t('components.retract') : $t('public.add') }}<i class="el-icon--right"
+                v-bind:class="{ 'el-icon-arrow-down': !unfoldStatus, 'el-icon-arrow-up': unfoldStatus }"></i>
             </span>
           </div>
         </div>
@@ -32,11 +36,12 @@
         </div>
         <div class="flex justify-center align-center">
           <el-button native-type="submit" :disabled="clickSubmit" size="medium" type="primary">
-            搜索
+            {{ $t('public.searchFor') }}
           </el-button>
-          <span class="pl-10 pr-10 text-six cursor" v-if="resetStatus" @click="reset()">重置</span>
+          <span class="pl-10 pr-10 text-six cursor" v-if="resetStatus" @click="reset()">{{ $t('public.resetting')
+          }}</span>
           <span class="fs-s4 text-primary cursor" @click="unfoldStatus = !unfoldStatus">
-            收起<i class="el-icon--right el-icon-arrow-up"></i>
+            {{ $t('components.retract') }}<i class="el-icon--right el-icon-arrow-up"></i>
           </span>
         </div>
       </div>
@@ -81,7 +86,7 @@ export default {
       return this.$store.state.app.device
     }
   },
-  data(){
+  data() {
     return {
       unfoldStatus: false,
       child_i: -1
@@ -89,28 +94,28 @@ export default {
   },
   mounted() {
     let that = this
-    that.$nextTick(()=>{
-      if(that.filterForm) that.controlChildren()
+    that.$nextTick(() => {
+      if (that.filterForm) that.controlChildren()
     })
   },
   methods: {
     /**
      * 控制子元素是否显示
      */
-    controlChildren(type = 1){
+    controlChildren(type = 1) {
       let filterBox = document.getElementById('filterBox'),
         child = filterBox.children,
         box_width = document.getElementById('filterBox').clientWidth,
         end_width = document.getElementById('setBox').clientWidth,
         child_width = 0, cidx = 0
-      if(type == 2){
-        if(this.defaultShowLength > 0) return
-        for(var i in child){
-          if(parseInt(child[i].clientWidth) >= 0 && i != child.length -1){
-            if(this.unfoldStatus){
+      if (type == 2) {
+        if (this.defaultShowLength > 0) return
+        for (var i in child) {
+          if (parseInt(child[i].clientWidth) >= 0 && i != child.length - 1) {
+            if (this.unfoldStatus) {
               child[i].style.display = '';
             } else {
-              if(parseInt(i) >= this.child_i){
+              if (parseInt(i) >= this.child_i) {
                 child[i].style.display = 'none'
               }
             }
@@ -118,17 +123,17 @@ export default {
         }
       } else {
         box_width = box_width - end_width
-        for(var i in child){
-          if(parseInt(child[i].clientWidth) > 0 && i != child.length -1){
+        for (var i in child) {
+          if (parseInt(child[i].clientWidth) > 0 && i != child.length - 1) {
             cidx++
             child_width += child[i].clientWidth + 1
-            if(this.defaultShowLength > 0){
-              if(this.defaultShowLength < cidx || (box_width < child_width && i != 0)){
-                if(this.child_i == -1) this.child_i = i
+            if (this.defaultShowLength > 0) {
+              if (this.defaultShowLength < cidx || (box_width < child_width && i != 0)) {
+                if (this.child_i == -1) this.child_i = i
                 child[i].style.display = 'none'
               }
-            }else if(box_width < child_width && i != 0){
-              if(this.child_i == -1) this.child_i = i
+            } else if (box_width < child_width && i != 0) {
+              if (this.child_i == -1) this.child_i = i
               child[i].style.display = 'none'
             }
           }
@@ -141,28 +146,28 @@ export default {
     /**
      * 重置参数
      */
-    reset(){
+    reset() {
       this.$emit('reset')
     },
 
     /**
      * 确认查询
      */
-    saveXlsx(){
+    saveXlsx() {
       this.$emit('saveXlsx')
     },
 
     /**
      * 查询
      */
-    query(){
+    query() {
       this.$emit('query')
     },
 
     /**
      * 隐藏更多
      */
-    hide(){
+    hide() {
       this.unfoldStatus = false
     }
   }
@@ -170,158 +175,191 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .filter-box{
-    padding-bottom: 1px;
-    /deep/ .el-tabs--top{
-      .el-tabs__item{
-        height: 28px;
-        margin: 0 6px;
-        padding: 0 12px;
-        line-height: 28px;
-      }
-      .el-tabs__item.is-active {
-        background-color: #F2F3F5;
-        border-radius: 100px;
-        font-weight: 550;
-        color: var(--olive);
-      }
-      .el-tabs__nav-wrap::after{
-        background: none;
-      }
-      .el-tabs__nav-next, .el-tabs__nav-prev{
-        line-height: 28px;
-      }
-      .el-tabs__active-bar{
-        display: none;
-      }
+.filter-box {
+  padding-bottom: 1px;
+
+  /deep/ .el-tabs--top {
+    .el-tabs__item {
+      height: 28px;
+      margin: 0 6px;
+      padding: 0 12px;
+      line-height: 28px;
+    }
+
+    .el-tabs__item.is-active {
+      background-color: #F2F3F5;
+      border-radius: 100px;
+      font-weight: 550;
+      color: var(--olive);
+    }
+
+    .el-tabs__nav-wrap::after {
+      background: none;
+    }
+
+    .el-tabs__nav-next,
+    .el-tabs__nav-prev {
+      line-height: 28px;
+    }
+
+    .el-tabs__active-bar {
+      display: none;
     }
   }
-  .filterBox{
-    max-height: 42.667px;
-    transition: max-height 0.5s linear;
-    /deep/ .el-form-item{
-      padding-right: 20px;
-      display: flex;
-      .el-form-item__label-wrap{
-        margin-left: 0 !important;
-        float: initial;
-      }
-      .el-form-item__label{
+}
 
-        padding-right: 10px;
-        //min-width: 64px;
-        font-weight: 500;
-        font-size: 13px;
-      }
-    }
-    &.fold{
-      max-height: 400px;
-      /deep/ > div.el-form-item {
-        &:last-child {
-          margin-right: -15px;
-        }
-      }
-      .el-form-item{
-        & + .set-box{
-          margin-left: 0;
-        }
-      }
-    }
-    /deep/ .el-form-item::last-child {
-      margin-right: -15px;
-    }
-    /deep/ .el-form-item__content{
+.filterBox {
+  max-height: 42.667px;
+  transition: max-height 0.5s linear;
+
+  /deep/ .el-form-item {
+    padding-right: 20px;
+    display: flex;
+
+    .el-form-item__label-wrap {
       margin-left: 0 !important;
-      height: 32px;
-    }
-    /deep/ > div:not(.set-box) {
-      margin-bottom: 10px;
-    }
-    /deep/ .el-input{
-      width: initial;
-      height: 32px;
-    }
-    /deep/ .el-input__inner{
-      padding: 0 10px;
-      width: 135px;
-      height: 32px !important;
-      line-height: 32px;
-      border: 1px solid #E5E6EB;
-      //background: #F2F3F5;
-      border-radius: 0;
-    }
-    /deep/ .combined .el-select{
-      &:first-child{
-        .el-input__inner{
-          background: #F2F3F5;
-          border-right: none;
-        }
-        //border-right: 1px solid #E5E6EB;
-      }
+      float: initial;
     }
 
-    /deep/ .el-date-editor--year .el-input__inner, .el-date-editor--month .el-input__inner{
-      padding-left: 30px;
+    .el-form-item__label {
+
       padding-right: 10px;
-    }
-
-    /deep/ .el-select__caret{
-      line-height: 32px;
-    }
-    /deep/ .el-input__suffix, /deep/ .el-input__icon{
-      line-height: 32px;
-    }
-    /deep/ .el-cascader{
-      height: 32px;
-      .el-input__inner{
-        vertical-align: super
-      }
-    }
-    /deep/ .el-icon-arrow-down{
-      line-height: 32px;
-    }
-    /deep/ .el-input__inner.range-day{
-      width: 300px;
-      padding: 0 0 0 10px;
-
-    }
-    /deep/ .el-range-input{
-      //background: #F2F3F5;
+      //min-width: 64px;
+      font-weight: 500;
+      font-size: 13px;
     }
   }
-  .set-box{
-    border-left: 1px solid #E5E6EB;
+
+  &.fold {
+    max-height: 400px;
+
+    /deep/>div.el-form-item {
+      &:last-child {
+        margin-right: -15px;
+      }
+    }
+
+    .el-form-item {
+      &+.set-box {
+        margin-left: 0;
+      }
+    }
+  }
+
+  /deep/ .el-form-item::last-child {
+    margin-right: -15px;
+  }
+
+  /deep/ .el-form-item__content {
+    margin-left: 0 !important;
+    height: 32px;
+  }
+
+  /deep/>div:not(.set-box) {
     margin-bottom: 10px;
   }
-  .icon-download{
+
+  /deep/ .el-input {
+    width: initial;
+    height: 32px;
+  }
+
+  /deep/ .el-input__inner {
     padding: 0 10px;
-    height: 32px;
-  }
-  .icon-search{
-    padding: 0 16px;
-    // width: 32px;
-    // height: 32px;
-    // border-radius: 0 2px 2px 0;
-    &.icon-refresh{
-      background-color: var(--greyLight);
-      border-color: var(--greyLight);
-    }
-  }
-  /deep/ .el-tabs__header {
-    margin-bottom: 0;
-  }
-  /deep/ .el-button--small{
-    height: 32px;
+    width: 135px;
+    height: 32px !important;
+    line-height: 32px;
+    border: 1px solid #E5E6EB;
+    //background: #F2F3F5;
+    border-radius: 0;
   }
 
-  .filter-popup{
-    width: 100%;
-    z-index: 99;
-    box-shadow: 0 2px 4px rgba(0,0,0,.1);
-    .filterBox{
-      max-height: 999px;
-      justify-content: start;
+  /deep/ .combined .el-select {
+    &:first-child {
+      .el-input__inner {
+        background: #F2F3F5;
+        border-right: none;
+      }
+
+      //border-right: 1px solid #E5E6EB;
     }
   }
 
-</style>
+  /deep/ .el-date-editor--year .el-input__inner,
+  .el-date-editor--month .el-input__inner {
+    padding-left: 30px;
+    padding-right: 10px;
+  }
+
+  /deep/ .el-select__caret {
+    line-height: 32px;
+  }
+
+  /deep/ .el-input__suffix,
+  /deep/ .el-input__icon {
+    line-height: 32px;
+  }
+
+  /deep/ .el-cascader {
+    height: 32px;
+
+    .el-input__inner {
+      vertical-align: super
+    }
+  }
+
+  /deep/ .el-icon-arrow-down {
+    line-height: 32px;
+  }
+
+  /deep/ .el-input__inner.range-day {
+    width: 300px;
+    padding: 0 0 0 10px;
+
+  }
+
+  /deep/ .el-range-input {
+    //background: #F2F3F5;
+  }
+}
+
+.set-box {
+  border-left: 1px solid #E5E6EB;
+  margin-bottom: 10px;
+}
+
+.icon-download {
+  padding: 0 10px;
+  height: 32px;
+}
+
+.icon-search {
+  padding: 0 16px;
+
+  // width: 32px;
+  // height: 32px;
+  // border-radius: 0 2px 2px 0;
+  &.icon-refresh {
+    background-color: var(--greyLight);
+    border-color: var(--greyLight);
+  }
+}
+
+/deep/ .el-tabs__header {
+  margin-bottom: 0;
+}
+
+/deep/ .el-button--small {
+  height: 32px;
+}
+
+.filter-popup {
+  width: 100%;
+  z-index: 99;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+
+  .filterBox {
+    max-height: 999px;
+    justify-content: start;
+  }
+}</style>
