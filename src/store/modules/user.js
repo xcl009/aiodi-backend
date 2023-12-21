@@ -3,7 +3,7 @@ import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getS
 import { arrayToObj } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-
+import i18n from '../lang'
 const getDefaultState = () => {
   return {
     token: getToken(),
@@ -91,16 +91,16 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(data => {
-        if(data.userType){
-          if(data.brandId){
+        if (data.userType) {
+          if (data.brandId) {
             setToken(data.brandId, 'brandId')
           }
-          getAuthMenu({ifTreeStructure: true}).then(res => {
+          getAuthMenu({ ifTreeStructure: true }).then(res => {
             let menu = [], AssignAbility = [], Ability = {}
             res = res || []
             res.map(item => {
               Ability[item.label] = true
-              if(item.displayFlag != 'CANNOT_ASSIGN'){
+              if (item.displayFlag != 'CANNOT_ASSIGN') {
                 AssignAbility.push({
                   id: item.id,
                   parentId: item.parentId,
@@ -109,10 +109,10 @@ const actions = {
                 })
               }
               let childMenu = []
-              if(item.childrenAuthList && item.childrenAuthList.length > 0){
+              if (item.childrenAuthList && item.childrenAuthList.length > 0) {
                 item.childrenAuthList.map(sitem => {
                   Ability[sitem.label] = true
-                  if(sitem.displayFlag != 'CANNOT_ASSIGN'){
+                  if (sitem.displayFlag != 'CANNOT_ASSIGN') {
                     AssignAbility.push({
                       id: sitem.id,
                       parentId: sitem.parentId,
@@ -120,7 +120,7 @@ const actions = {
                       name: sitem.name
                     })
                   }
-                  if(sitem.menuType == 'MENU' && sitem.url){
+                  if (sitem.menuType == 'MENU' && sitem.url) {
                     let smenu = JSON.parse(sitem.url)
                     childMenu.push({
                       path: smenu.path,
@@ -138,7 +138,7 @@ const actions = {
                   }
                 })
               }
-              if(item.menuType == 'MENU' && item.url){
+              if (item.menuType == 'MENU' && item.url) {
                 let fmenu = JSON.parse(item.url)
                 menu.push({
                   component: 'Layout',
@@ -180,21 +180,21 @@ const actions = {
       }).then(data => {
         data = data || {}
         commit('SET_SITEINFO', data)
-        if(data.appName){
+        if (data.appName) {
           var icon_link = document.createElement('link')
-              icon_link.type = 'image/x-icon'
-              icon_link.rel = 'shortcut icon'
-              icon_link.href = data.appLogo
+          icon_link.type = 'image/x-icon'
+          icon_link.rel = 'shortcut icon'
+          icon_link.href = data.appLogo
           document.getElementsByTagName('head')[0].appendChild(icon_link)
-          document.title = `${data.appName}-管理后台`;
+          document.title = `${data.appName}-${i18n.t('layout.admins')}`;
         }
-        data.time_unit = data.fund_fee_time_unit == 0 ? '分钟' : '小时'
+        data.time_unit = data.fund_fee_time_unit == 0 ? `${i18n.t('public.minute')}` : `${i18n.t('public.huor')}`
         data.withdrawType = {
-          1: "微信提现",
-          2: "微信收款码",
-          3: "支付宝提现",
-          4: "支付宝收款码",
-          5: "银行卡"
+          1: i18n.t('payType.wxWithdrawal'),
+          2: i18n.t('payType.wxCode'),
+          3: i18n.t('payType.zfbWithdrawal'),
+          4: i18n.t('payType.zfbCode'),
+          5: i18n.t('payType.card')
         }
         Vue.prototype.SITE_INFO = data
         resolve(data)
@@ -225,12 +225,12 @@ const actions = {
   // 获取当前代理设备类型
   getMyDevice({ commit, state }) {
     return new Promise((resolve, reject) => {
-      if(Vue.prototype.isSaas()){
+      if (Vue.prototype.isSaas()) {
         getSaasDevice().then(res => {
           let myDeviceName = {}, myDeviceId = {}, myDevice = [], myProfitRatio = {}
-          for(var i in res){
+          for (var i in res) {
             let d = res[i]
-            if(!d.fatherCode){
+            if (!d.fatherCode) {
               myDeviceName[d.name] = d.code
               myDeviceId[d.code] = d.name
               myProfitRatio[d.code] = 100
@@ -250,9 +250,9 @@ const actions = {
       } else {
         getMyDevice().then(res => {
           let myDeviceName = {}, myDeviceId = {}, myDevice = [], myProfitRatio = {}
-          for(var i in res){
+          for (var i in res) {
             let d = res[i]
-            if(!d.fatherCode){
+            if (!d.fatherCode) {
               myDeviceName[d.name] = d.deviceTypeCode
               myDeviceId[d.deviceTypeCode] = d.name
               myProfitRatio[d.deviceTypeCode] = d.profitRatio
