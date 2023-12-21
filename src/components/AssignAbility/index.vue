@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="dialogStatus" :show-close="false" :modal-append-to-body="false" width="600px" :center="true"  title="权限设置">
-    <div class="text-center" v-if="dform.menus">
+    <div class="flex flex-wrap" v-if="dform.menus">
       <template v-for="item in agentInfo.AssignAbility">
         <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != noFlag">{{ item.name }}</el-checkbox>
       </template>
@@ -37,7 +37,7 @@
       }
     },
     mounted() {
-      
+
     },
     methods: {
       /**

@@ -78,7 +78,12 @@
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'balance'">
             <template slot-scope="scope">
-              {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+              <div class="text-primary cursor" @click="setRows(3, scope.row, 10)" v-if="checkAbility(['WD_MODIFY'], 3)">
+                {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+              </div>
+              <div class="cursor" v-else>
+                {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+              </div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'order'">
@@ -154,7 +159,6 @@
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(2, scope.row)"
                 v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">切换到此商户</el-button>
-
             </div>
           </template>
         </el-table-column>
@@ -459,7 +463,36 @@
           </div>
         </div>
       </template>
-      <template v-if="[1, 4, 6, 7, 9].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 10">
+        <el-form class="pl-20 pr-20 custom-form" @submit.native.prevent="dialogConfirm()">
+          <el-form-item label="修改金额" v-if="isBrand()">
+            <el-switch
+              v-model="dform.deduction"
+              active-text="扣减"
+              inactive-text="增加" />
+            <el-input type="number" v-model="dform.amount" placeholder="请输入修改金额"></el-input>
+          </el-form-item>
+          <el-form-item label="扣减金额" v-if="isAgent()">
+            <el-input type="number" v-model="dform.amount" placeholder="请输入扣减金额"></el-input>
+          </el-form-item>
+          <el-form-item label="备注信息">
+            <el-input type="text" v-model="dform.remark" placeholder="请输入备注信息"></el-input>
+          </el-form-item>
+          <el-form-item label="记录状态" v-if="isBrand()">
+            <el-switch v-model="dform.visible"/>
+            <div class="fs-s3 color mt-5 line-1">
+              关闭表示下级无法看到本次修改记录且下级查看收益明细列表将无法查看到记录余额和收益总额
+              <el-popover placement="right" title="" trigger="hover">
+                <div>
+                  <img :src="require('@/assets/income.png')" width="300">
+                </div>
+                <el-link type="danger" :underline="false" slot="reference" class="el-icon-question fs-c1"></el-link>
+              </el-popover>
+            </div>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1, 4, 6, 7, 9, 10].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
@@ -542,6 +575,7 @@ export default {
         6: '冻结金额',
         7: '共享WIFI',
         8: '分配代理',
+        10: '修改下级可提现金额',
       },
       curRow: {},
       curIdx: 0,
@@ -1038,6 +1072,11 @@ export default {
                 }
               }
             })
+          } else if (dialogType == 10) {
+            this.dform = {
+              deduction: this.isAgent(),
+              visible: true
+            }
           }
           if (type == 1) {
             this.dialogStatus = true
@@ -1228,6 +1267,26 @@ export default {
             isApprove: this.checkList.enable,
             isBand: this.checkList.isBand
           }).then(res => {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.getList();
+            this.drawerStatus = false;
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 10:
+          if (isNaN(params.amount)) {
+            this.$message({
+              message: '请输入正确的金额',
+              type: 'error'
+            })
+            return
+          }
+          params.ownerId = curRow.id
+          this.$post('iot-saas-pay/admin/pay/withdraw/saasUpdateBlance', params).then(res => {
             this.$message({
               message: '操作成功',
               type: 'success'

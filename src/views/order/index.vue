@@ -54,20 +54,21 @@
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <div class="flex align-center pt-15 mb-15 l-t">
-        <div class="flex1 fs-c1 text-black">查询表格</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(5, {})" v-if="isSaas()">刷新扣款失败订单数</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(6, {})" v-if="isSaas()">刷新租借中订单数</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 9)" v-if="isSaas()">芝麻分扣款订单关闭</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 10)" v-if="isSaas()">芝麻分订单撤销</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 8)" v-if="isSaas()">押金退款</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单
+      <div class="flex align-center flex-wrap pt-10 mb-15 l-t">
+        <div class="mt-5 fs-c1 text-black">查询表格</div>
+        <div class="flex1 justify-end flex flex-wrap">
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(5, {})" v-if="isSaas()">刷新扣款失败订单数</div>
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(6, {})" v-if="isSaas()">刷新租借中订单数</div>
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(1, {}, 9)" v-if="isSaas()">芝麻分扣款订单关闭</div>
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(1, {}, 10)" v-if="isSaas()">芝麻分订单撤销</div>
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(1, {}, 8)" v-if="isSaas()">押金退款</div>
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="isSaas() || isBrand()">取消支付分订单</div>
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">DD恢复</div>
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(1, {}, 11)" v-if="isSaas()">微信退款重试</div>
+          <div class="mt-5 ml-20 text-primary cursor line-1" @click="setRows(1, {}, 12)" v-if="isSaas()">免押订单查询</div>
+          <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn"
+            :defaultColumn="defaultColumn" class="mt-5"></table-column-set>
         </div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">DD恢复</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 11)" v-if="isSaas()">微信退款重试</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 12)" v-if="isSaas()">免押订单查询</div>
-        <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn"
-          :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
       <div v-if="showColumn.length > 0">
@@ -174,8 +175,8 @@
               <template slot-scope="scope">
                 <div class="remark-box">
                   <el-link type="danger" v-if="scope.row.freeTime > 0">
-                    <span v-if="scope.row.freeUser == 1">免费名额：{{ (parseInt(scope.row.freeTime) / 60).toFixed(1) }}小时</span>
-                    <span v-else-if="scope.row.freeUser == 3">暂停计费：{{ parseFloat((parseInt(scope.row.freeTime) / 60).toFixed(2)) }}小时</span>
+                    <span v-if="scope.row.freeUser == 1">免费名额：{{ scope.row.freeTime }}分钟</span>
+                    <span v-else-if="scope.row.freeUser == 3">暂停计费：{{ scope.row.freeTime / 60 }}小时</span>
                     <span v-else-if="scope.row.freeUser > 3">{{ scope.row.freeTime == 600000 ? '会员卡订单' :
                       `会员卡免费${scope.row.freeTime}分钟` }}</span>
                   </el-link>
@@ -547,7 +548,7 @@
                     <div>
                       <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ? '消耗电量' : '租借时电量' }}({{ curRow.afterLevel || curRow.level }}%)</span>
                       <template v-if="curRow.freeTime > 0">
-                        <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ parseInt(curRow.freeTime) / 60 }}小时</span>
+                        <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ curRow.freeTime }}分钟</span>
                         <span class="mr-5" v-else-if="curRow.freeUser == 3">暂停计费：{{ parseInt(curRow.freeTime) / 60
                         }}小时</span>
                         <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime == 600000 ? '会员卡订单' :

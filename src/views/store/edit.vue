@@ -80,7 +80,7 @@
                       <div>
                         <div class="mb-5 text-black">分摊(分成不一致)</div>
                         承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。</span><br>
-                        相对分成：若自身的分成为50%，设置相对分成为50%，则10元订单商户可分润10×50%×50%=2.5元。注：每天从第2笔订单开始就按照相对分成比例分润。<br>
+                        相对分成：若自身的分成为50%，设置相对分成为50%，则10元订单商户可分润10×50%×50%=2.5元。注：每天从第{{ item.promisedDeal ? parseInt(item.promisedDeal) + 1 : 1 }}笔完结的订单开始就按照相对分成比例分润。<br>
                         温馨提示：分成模式设置为分摊(分成不一致)时，记得关闭商户查看订单权限噢！
                       </div>
                       <div class="mt-20">需了解或设置其他分成模式？<el-link type="primary" :underline="false"
@@ -102,9 +102,9 @@
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
-                  <el-form-item label="每天结束前" :error="ferror.promisedDeal">
+                  <el-form-item label="每天前" :error="ferror.promisedDeal">
                     <el-input type="number" v-model="item.promisedDeal" placeholder="0" @input="(v) => (ferror.promisedDeal = checkDigit(v))">
-                      <template slot="append">单按承诺分成比例分润</template>
+                      <template slot="append">笔完结的订单按承诺分成比例分润</template>
                     </el-input>
                   </el-form-item>
                 </template>
