@@ -3,7 +3,7 @@ import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getS
 import { arrayToObj } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-import i18n from '../lang'
+import i18n from '../../lang'
 const getDefaultState = () => {
   return {
     token: getToken(),
