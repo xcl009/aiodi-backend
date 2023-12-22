@@ -393,36 +393,6 @@ import {
   arrayToObj
 } from '@/utils/index'
 
-const orderStatus = [{
-  value: '-1',
-  title: this.$t('public.all'),
-  nkey: 'orderNumber'
-},
-{
-  value: '0',
-  title: this.$t('public.notStarted'),
-  nkey: 'noNumber',
-  type: 'warning'
-},
-{
-  value: '1',
-  title: this.$t('public.progress'),
-  nkey: 'rentingNumber',
-  type: 'danger'
-},
-{
-  value: '2',
-  title: this.$t('public.completed'),
-  nkey: 'okNumber',
-  type: 'success'
-},
-{
-  value: '9',
-  title: this.$t('public.canceled'),
-  nkey: 'doneNumber',
-  type: 'info'
-}
-]
 export default {
   name: 'leaseOrder',
   components: {
@@ -509,8 +479,68 @@ export default {
       },
       totalStat: {},
       orderStat: {},
-      orderTabs: orderStatus,
-      orderTab: arrayToObj(orderStatus, 'value'),
+      orderTabs: [
+        {
+          value: '-1',
+          title: this.$t('public.all') || '',
+          nkey: 'orderNumber'
+        },
+        {
+          value: '0',
+          title: this.$t('public.notStarted') || '',
+          nkey: 'noNumber',
+          type: 'warning'
+        },
+        {
+          value: '1',
+          title: this.$t('public.progress') || '',
+          nkey: 'rentingNumber',
+          type: 'danger'
+        },
+        {
+          value: '2',
+          title: this.$t('public.completed') || '',
+          nkey: 'okNumber',
+          type: 'success'
+        },
+        {
+          value: '9',
+          title: this.$t('public.canceled') || '',
+          nkey: 'doneNumber',
+          type: 'info'
+        }
+      ],
+      orderTab: arrayToObj([
+        {
+          value: '-1',
+          title: this.$t('public.all') || '',
+          nkey: 'orderNumber'
+        },
+        {
+          value: '0',
+          title: this.$t('public.notStarted') || '',
+          nkey: 'noNumber',
+          type: 'warning'
+        },
+        {
+          value: '1',
+          title: this.$t('public.progress') || '',
+          nkey: 'rentingNumber',
+          type: 'danger'
+        },
+        {
+          value: '2',
+          title: this.$t('public.completed') || '',
+          nkey: 'okNumber',
+          type: 'success'
+        },
+        {
+          value: '9',
+          title: this.$t('public.canceled') || '',
+          nkey: 'doneNumber',
+          type: 'info'
+        }
+      ], 'value'),
       pickerOptionsEnd: {
         disabledDate: (time) => {
           let timeOptionRange = this.timeOptionRange
@@ -995,4 +1025,5 @@ export default {
 
 .max-select.l-r {
   border-right: solid #E5E6EB 1px;
-}</style>
+}
+</style>
