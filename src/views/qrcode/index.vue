@@ -24,7 +24,7 @@
           $t('qrcode.generatedRecords') }}</el-button>
         <el-button size="medium" type="primary" :disabled="selSnArr.length == 0" @click="downloadImg()">{{
           $t('qrcode.batchDownload') }}</el-button>
-        <import-data name="files" btnSize="medium" class="ml-10"></import-data>
+        <import-data name="files" :uploadText="$t('components.importDevice')" btnSize="medium" class="ml-10"></import-data>
       </div>
       <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading"
         highlight-current-row :max-height="tableMaxH" @selection-change="selSb">

@@ -19,7 +19,7 @@ export default {
 
     uploadText: {
       type: String,
-      default: this.$t('components.importDevice')
+      default: ''
     },
 
     name: {
