@@ -150,7 +150,7 @@
           <div class="flex align-center">
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.storeStatistics') }}</div>
-            <div class="cursor" @click="$router.push({ path: `/store/storeList` })">{{ $t('public.add') }}</div>
+            <div class="cursor" @click="$router.push({ path: `/store/storeList` })">{{ $t('public.adds') }}</div>
           </div>
           <el-table class="store-table text-white" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"

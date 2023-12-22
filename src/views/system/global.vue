@@ -2,18 +2,18 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:tabs>
-        <div class="mb-10 flex align-center bg-white">
+        <!-- <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">{{ $t('system.langType') }}</div>
-          <el-tabs class="flex-1" v-model="form.lan" @tab-click="toQuery()">
+          <el-tabs class="flex-1" v-model="form.lanType" @tab-click="toQuery()">
             <el-tab-pane :label="$t('public.all')" name="0" />
-            <el-tab-pane :label="item.value" :name="item.code" v-for="(item, index) in dists" />
+            <el-tab-pane :label="item" :name="index" v-for="(item, index) in dists" />
           </el-tabs>
-        </div>
+        </div> -->
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">{{ $t('system.module') }}</div>
-          <el-tabs class="flex-1" v-model="form.module" @tab-click="toQuery()">
+          <el-tabs class="flex-1" v-model="form.sysModel" @tab-click="toQuery()">
             <el-tab-pane :label="$t('public.all')" name="0" />
-            <el-tab-pane :label="item.value" :name="item.code" v-for="item in modules" />
+            <el-tab-pane :label="item" :name="item" v-for="item in modules" />
           </el-tabs>
         </div>
       </template>
@@ -21,6 +21,12 @@
       <template v-slot:defult>
         <el-form-item :label="$t('system.key')">
           <el-input v-model="form.key" />
+        </el-form-item>
+        <el-form-item :label="$t('system.languageContent')">
+          <el-input v-model="form.lanValue" />
+        </el-form-item>
+        <el-form-item :label="$t('system.languageEncoding')">
+          <el-input v-model="form.lanLable" />
         </el-form-item>
       </template>
       <template v-slot:endButton>
@@ -41,17 +47,17 @@
         <template v-for="item in showColumn" v-if="item.val">
           <el-table-column :label="item.name" v-if="item.key == 'type'">
             <template slot-scope="scope">
-              {{ types[scope.row.type].value }}
+              <!-- 123123 -->
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'lan'">
             <template slot-scope="scope">
-              {{ dists[scope.row.lan].value }}
+              <!-- {{ dists[scope.row.lan].value }} -->
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'module'">
             <template slot-scope="scope">
-              {{ modules[scope.row.module].value }}
+              <!-- {{ modules[scope.row.module].value }} -->
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || ''" v-else></el-table-column>
@@ -59,7 +65,7 @@
         <el-table-column :label="$t('public.operate')" width="110">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <el-button type="text" @click="setRows(3, scope.row, 2)">{{ $t('public.edit') }}</el-button>
+              <el-button type="text" @click="setRows(3, scope.row, 2,scope.$index)">{{ $t('public.edit') }}</el-button>
               <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('system.deleteDictionary')" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
                 <el-button type="text" class="text-danger" slot="reference">{{ $t('public.delete') }}</el-button>
@@ -77,34 +83,32 @@
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
       <template v-if="dialogType == 1 || dialogType == 2">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
-          <el-form-item :label="$t('system.type')">
+          <!-- <el-form-item :label="$t('system.type')">
             <el-select v-model="dform.type">
-              <el-option :label="`${item.value}`" :value="item.code" :key="index"
-                v-for="(item, index) in types"></el-option>
+              <el-option :label="`${item}`" :value="item" :key="index" v-for="(item, index) in types"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item :label="$t('system.langType')">
-            <el-select v-model="dform.lan">
-              <el-option :label="`${item.value}`" :value="item.code" :key="index"
-                v-for="(item, index) in dists"></el-option>
+            <el-select v-model="dform.lanTypeName">
+              <el-option :label="`${item}`" :value="item" :key="index" v-for="(item, index) in dists"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('system.module')">
-            <el-select v-model="dform.module">
-              <el-option :label="item.value" :value="item.code" :key="index" v-for="(item, index) in modules" />
+            <el-select v-model="dform.sysMod">
+              <el-option :label="item" :value="item" :key="index" v-for="(item, index) in modules" />
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('system.languageTags')">
             <el-input v-model="dform.lab" :placeholder="$t('system.languageTags')"></el-input>
           </el-form-item>
-          <el-form-item :label="$t('system.languageEncoding')">
-            <el-input v-model="dform.code" placeholder="$t('system.languageEncoding')"></el-input>
+          <el-form-item :label="$t('leaseOrder.agentPhones')">
+            <el-input v-model="dform.contextCode" :placeholder="$t('leaseOrder.agentPhones')"></el-input>
           </el-form-item>
-          <el-form-item :label="$t('system.key')">
-            <el-input v-model="dform.keyes" :placeholder="$t('system.key')"></el-input>
+          <el-form-item :label="$t('system.languageEncoding')">
+            <el-input v-model="dform.lanLable" :placeholder="$t('system.languageEncoding')"></el-input>
           </el-form-item>
           <el-form-item :label="$t('system.languageContent')">
-            <el-input v-model="dform.val" :placeholder="$t('public.content')" style="width: 600px;"></el-input>
+            <el-input v-model="dform.lanValue" :placeholder="$t('public.content')" style="width: 600px;"></el-input>
           </el-form-item>
           <el-form-item :label="$t('system.memo')">
             <el-input v-model="dform.remark" :placeholder="$t('system.memo')" type="textarea" :rows="4" />
@@ -153,8 +157,19 @@ export default {
       },
 
       types: {},
-      dists: {}, // 语言
-      modules: {}, // 模块
+      dists: {
+        1: 'zh_CN',
+        2: 'zh_HK',
+        3: 'zh_TW',
+        4: 'en_US'
+      }, // 语言
+      modules: {
+        1: 'USER',
+        2: 'BASIC',
+        3: 'ORDER',
+        4: 'PAY',
+        5: 'DEVICE'
+      }, // 模块
 
       // 弹出相关
       dialogType: 1,
@@ -173,44 +188,44 @@ export default {
       showColumn: [],
       defaultColumn: [
         {
-          key: 'type',
+          key: 'lanLable',
           val: true,
           name: this.$t('public.type')
         },
         {
-          key: 'lan',
+          key: 'lanTypeName',
           val: true,
           name: this.$t('system.langType')
         },
         {
-          key: 'lab',
+          key: 'contextCode',
           val: true,
-          name: this.$t('system.tag')
+          name: this.$t('leaseOrder.agentPhones')
         },
+        // {
+        //   key: 'code',
+        //   val: true,
+        //   name: 'code'
+        // },
+        // {
+        //   key: 'keyes',
+        //   val: true,
+        //   name: this.$t('system.identifying')
+        // },
         {
-          key: 'code',
-          val: true,
-          name: 'code'
-        },
-        {
-          key: 'keyes',
-          val: true,
-          name: this.$t('system.identifying')
-        },
-        {
-          key: 'val',
+          key: 'lanValue',
           val: true,
           name: this.$t('public.content')
         },
         {
-          key: 'module',
+          key: 'sysMod',
           val: true,
           name: this.$t('system.module')
         },
         {
           key: 'remark',
           val: true,
-          name: this.$t('public.module')
+          name: this.$t('public.remark')
         }
       ]
     }
@@ -236,7 +251,7 @@ export default {
     }
   },
   mounted() {
-    this.getConfig()
+    this.getList()
   },
   methods: {
     /**
@@ -280,20 +295,22 @@ export default {
     },
 
     /**
-     * 获取问题指南列表
+     * 国际化列表数据
      */
     getList() {
-      let url = 'iot-saas-basic/admin/internation/config/findPage'
+      let url = 'iot-saas-basic/admin/lan/query'
       var params = Object.assign({}, this.form, this.listQuery, {
         page: this.listQuery.page - 1
       })
-      if (params.lan == 0) {
-        delete params.lan
+      // if (params.lanType == 0) {
+      //   delete params.lanType
+      // } else {
+      //   params.lanType = parseFloat(params.lanType)
+      // }
+      if (params.sysModel == 0) {
+        delete params.sysModel
       }
-      if (params.module == 0) {
-        delete params.module
-      }
-      this.$get(url, params).then(res => {
+      this.$post(url, params).then(res => {
         this.list = res.rows
         this.listLoading = false
         this.clickSubmit = false
@@ -320,7 +337,7 @@ export default {
 
           break
         case 2:
-          this.$post('iot-saas-basic/admin/internation/config/delete', {
+          this.$post('iot-saas-basic/admin/lan/del', {
             id: row.id
           }).then(res => {
             this.$message({
@@ -337,7 +354,7 @@ export default {
           this.drawerStatus = true
           this.dform = {}
           if (dialogType == 2) {
-            this.dform = row
+            this.dform = JSON.parse(JSON.stringify(row))
           }
           break
       }
@@ -353,9 +370,16 @@ export default {
         params = JSON.parse(JSON.stringify(this.dform))
       switch (this.dialogType) {
         case 1: case 2:
-          let url = 'iot-saas-basic/admin/internation/config/save'
+          let url = 'iot-saas-basic/admin/lan/save'
           if (this.dialogType == 2) {
-            url = 'iot-saas-basic/admin/internation/config/update'
+            url = 'iot-saas-basic/admin/lan/update'
+          } else {
+            for (const key in this.dists) {
+              if (this.dists[key] == params.lanTypeName) {
+                params.lanType = key;
+              }
+            }
+
           }
           this.$post(url, params).then(res => {
             this.$message({
@@ -363,7 +387,8 @@ export default {
               type: 'success'
             })
             if (this.dialogType == 2) {
-              curRow = params
+              this.list[curIdx] = params;
+              // console.log(this.curRow,'curRow')
             } else {
               this.toQuery()
             }

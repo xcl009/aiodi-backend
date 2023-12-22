@@ -9,7 +9,7 @@ export default {
         lastMonth: '上月',
         element: '元',
         one: '单',
-        add: '更多',
+        adds: '更多',
         store: '商户',
         user: '用户',
         statrtTime: '开始时间',
