@@ -5,21 +5,21 @@
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">{{ $t('system.guideTarget') }}</div>
           <el-tabs class="flex-1" v-model="form.guideTarget" @tab-click="toQuery()">
-            <el-tab-pane :label="$t('public.all')" name="0" />
+            <el-tab-pane :label="$t('public.all')" :name="''" />
             <el-tab-pane :label="item.typeName" :name="item.userType" v-for="(item, index) in dataList" :key="index" />
           </el-tabs>
         </div>
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">{{ $t('system.guideType') }}</div>
           <el-tabs class="flex-1" v-model="form.guideType" @tab-click="toQuery()">
-            <el-tab-pane :label="$t('public.all')" name="0" />
+            <el-tab-pane :label="$t('public.all')" :name="''" />
             <el-tab-pane :label="item.title" :name="item.value" v-for="item in tabs" />
           </el-tabs>
         </div>
         <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
           <div class="mr-10">{{ $t('public.deviceType') }}</div>
           <el-tabs class="flex-1" v-model="form.deviceTypeCode" @tab-click="toQuery()">
-            <el-tab-pane :label="$t('public.all')" name="0" />
+            <el-tab-pane :label="$t('public.all')" :name="''" />
             <el-tab-pane :label="index" :name="'' + item + ''" v-for="(item, index) in myDeviceName" />
           </el-tabs>
         </div>
@@ -319,14 +319,17 @@ export default {
       var params = Object.assign({}, this.form, this.listQuery, {
         page: this.listQuery.page - 1
       })
-      if (params.deviceTypeCode == 0) {
+      if (!params.deviceTypeCode || params.deviceTypeCode == 0) {
         delete params.deviceTypeCode
+        this.form.deviceTypeCode = '0';
       }
-      if (params.guideType == 0) {
+      if (!params.guideType || params.guideType == 0) {
         delete params.guideType
+        this.form.guideType = '0';
       }
-      if (params.guideTarget == 0) {
+      if (!params.guideTarget || params.guideTarget == 0) {
         delete params.guideTarget
+        this.form.guideTarget = '0';
       }
       this.$get(url, params).then(res => {
         this.list = res.rows

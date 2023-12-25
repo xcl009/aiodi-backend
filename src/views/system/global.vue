@@ -12,7 +12,7 @@
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">{{ $t('system.module') }}</div>
           <el-tabs class="flex-1" v-model="form.sysModel" @tab-click="toQuery()">
-            <el-tab-pane :label="$t('public.all')" name="0" />
+            <el-tab-pane :label="$t('public.all')" :name="''" />
             <el-tab-pane :label="item" :name="item" v-for="item in modules" />
           </el-tabs>
         </div>
@@ -292,6 +292,7 @@ export default {
       this.listQuery.page = 1
       this.listQuery.size = 20
       this.getList()
+      console.log(this.form,'this.form')
     },
 
     /**
@@ -302,13 +303,9 @@ export default {
       var params = Object.assign({}, this.form, this.listQuery, {
         page: this.listQuery.page - 1
       })
-      // if (params.lanType == 0) {
-      //   delete params.lanType
-      // } else {
-      //   params.lanType = parseFloat(params.lanType)
-      // }
-      if (params.sysModel == 0) {
+      if (!params.sysModel || params.sysModel == 0) {
         delete params.sysModel
+        this.form.sysModel = '0';
       }
       this.$post(url, params).then(res => {
         this.list = res.rows
