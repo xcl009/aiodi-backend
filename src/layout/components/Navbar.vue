@@ -387,6 +387,7 @@ export default {
     },
 
     waitOnLine(e) {
+      localStorage.setItem('lang',e)
       this.$i18n.locale = e;
       this.$message({
         message: this.$t('store.switchSuccess'),
