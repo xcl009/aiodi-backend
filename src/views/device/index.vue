@@ -12,7 +12,7 @@
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">设备状态</div>
           <el-tabs class="flex-1" v-model="listQuery.haveBind" @tab-click="toQuery()">
-            <el-tab-pane :label="`${item.title }(${deviceCount[item.nkey] || onLineCount[item.nkey] || 0})`" :name="''+item.value+''" v-for="item in haveBind" />
+            <el-tab-pane :label="`${item.title }(${deviceCount[item.nkey] || 0})`" :name="''+item.value+''" v-for="item in haveBind" />
           </el-tabs>
         </div>
       </template>
@@ -617,27 +617,27 @@
           {
             value: 0,
             title: '全部',
-            nkey: 'deviceNumber'
+            nkey: 'SUM'
           },
           {
             value: true,
             title: '已绑',
-            nkey: 'bindStoreNumber'
+            nkey: 'BIND'
           },
           {
             value: false,
             title: '未绑',
-            nkey: 'noBindStoreNumber'
+            nkey: 'UNBIND'
           },
           {
             value: 'ONLINE',
             title: '在线',
-            nkey: 'onlineCount'
+            nkey: 'ONLINE'
           },
           {
             value: 'OFFLINE',
             title: '离线',
-            nkey: 'offlineCount'
+            nkey: 'OFFLINE'
           }
         ],
         queryObj: {
@@ -700,7 +700,6 @@
         },
         orderCount: {},
         deviceCount: {},
-        onLineCount: {},
         fatherSn: {},
 
         selSnArr: [],
@@ -896,106 +895,7 @@
           this.money = res || {}
         })
       },
-
-      /**
-       * 设备数量统计查询
-       */
-      queryDeviceCount(){
-        let params = {}, url = 'iot-saas-device/admin/device/count/queryGroupCount'
-        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
-        if(this.form.agentId){
-          params.countType = 'AGENT'
-          params.groupIds = this.form.agentId
-        }else if(this.form.brandId){
-          params.countType = 'BRAND'
-          params.groupIds = this.form.brandId
-        } else if(this.isAgent()){
-          params.countType = 'AGENT'
-          params.groupIds = this.agentInfo.agentId
-        } else if(this.isBrand()){
-          params.countType = 'BRAND'
-          params.groupIds = this.agentInfo.brandId
-        } else if(this.isSaas()){
-          url = 'iot-saas-device/admin/device/count/queryByUser'
-        }
-        if(this.deviceCountes){
-          if(params.deviceTypeCode){
-            this.deviceCount = {
-              deviceNumber: 0,
-              bindStoreNumber: 0,
-              noBindStoreNumber: 0
-            }
-            for(var i in this.deviceCountes.deviceTypeDetail){
-              let item = this.deviceCountes.deviceTypeDetail[i]
-              if(i.indexOf(params.deviceTypeCode) > -1){
-                if(this.isSaas()){
-                  this.deviceCount.deviceNumber += parseInt(item.deviceNumber)
-                  this.deviceCount.bindStoreNumber += parseInt(item.bindStoreNumber)
-                  this.deviceCount.noBindStoreNumber += accSub(item.deviceNumber, item.bindStoreNumber)
-                }else if(this.lowerDevice){
-                  this.deviceCount.deviceNumber += parseInt(item.lowerDeviceNumber)
-                  this.deviceCount.bindStoreNumber += parseInt(item.lowerBindStoreNumber)
-                  this.deviceCount.noBindStoreNumber += accSub(item.lowerDeviceNumber, item.lowerBindStoreNumber)
-                }else{
-                  this.deviceCount.deviceNumber += accSub(item.deviceNumber, item.lowerDeviceNumber)
-                  this.deviceCount.bindStoreNumber += accSub(item.bindStoreNumber, item.lowerDeviceNumber)
-                  this.deviceCount.noBindStoreNumber += accSub(accSub(item.deviceNumber, item.lowerDeviceNumber), accSub(item.bindStoreNumber, item.lowerBindStoreNumber))
-                }
-              }
-            }
-          } else {
-            if(this.isSaas()){
-              this.deviceCount = {
-                deviceNumber: this.deviceCountes.deviceNumber,
-                bindStoreNumber: this.deviceCountes.bindStoreNumber,
-                noBindStoreNumber: this.deviceCountes.noBindStoreNumber
-              }
-            }else if(this.lowerDevice){
-              this.deviceCount = {
-                deviceNumber: this.deviceCountes.lowerDeviceNumber,
-                bindStoreNumber: this.deviceCountes.lowerBindStoreNumber,
-                noBindStoreNumber: accSub(this.deviceCountes.lowerDeviceNumber, this.deviceCountes.lowerBindStoreNumber)
-              }
-            }else{
-              this.deviceCount = {
-                deviceNumber: accSub(this.deviceCountes.deviceNumber, this.deviceCountes.lowerDeviceNumber),
-                bindStoreNumber: accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerBindStoreNumber),
-                noBindStoreNumber: accSub(accSub(this.deviceCountes.deviceNumber, this.deviceCountes.lowerDeviceNumber), accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerBindStoreNumber))
-              }
-            }
-          }
-          return
-        }
-        this.$get(url, params).then((res = {}) => {
-          if(res[params.groupIds]){
-            res[params.groupIds].noBindStoreNumber = accSub(res[params.groupIds].deviceNumber, res[params.groupIds].bindStoreNumber)
-            let deviceCountes = JSON.parse(JSON.stringify(res[params.groupIds]))
-            deviceCountes.deviceTypeDetail = res[params.groupIds].deviceCountVOMap
-            delete deviceCountes.deviceCountVOMap
-            this.deviceCountes = deviceCountes
-            this.queryDeviceCount()
-          } else {
-            res.noBindStoreNumber = accSub(res.deviceNumber, res.bindStoreNumber)
-            this.deviceCountes = JSON.parse(JSON.stringify(res))
-            this.deviceCount = res
-          }
-        })
-      },
-
-      /**
-       * 在线设备数量统计
-       */
-      onlineDevice(){
-        let params = {
-          statisticsType: this.isSaas() ? 'ALL' : this.lowerDevice ? 'CHILDREN' : 'OWNER'
-        }
-        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
-        this.$get('iot-saas-device/deviceOnline/statistics', params).then((res = {}) => {
-          this.$set(this.onLineCount, 'onlineCount', res.onlineCount || 0)
-          this.$set(this.onLineCount, 'offlineCount', res.offlineCount || 0)
-        })
-      },
-
+      
       /**
        * 校验是否可选
        */
@@ -1028,10 +928,6 @@
         this.listQuery.size = 20
         this.deviceCodeIds = {}
         this.getList()
-        if(!this.isStore()){
-          this.queryDeviceCount()
-          this.onlineDevice()
-        }
       },
 
       /**
@@ -1042,10 +938,6 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
-        if(!this.isStore()){
-          this.queryDeviceCount()
-          this.onlineDevice()
-        }
       },
 
       /**
@@ -1096,6 +988,7 @@
             if (params.page == 0) {
               this.listTotal = res.total
               this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+              this.deviceCount = res.ext || {}
             }
           }
 

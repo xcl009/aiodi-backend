@@ -894,7 +894,7 @@ export default {
         this.deviceCount = {}
         return
       }
-      this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+      this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
         countType: 'STORE',
         groupIds: ids.join(',')
       }).then(res => {

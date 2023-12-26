@@ -41,7 +41,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="到账账户" v-show="form.withdrawType == 3">
-            <div class="flex align-center" v-if="bindAlipayInfo.alipayOpenid">
+            <div class="flex align-center" v-if="bindAlipayInfo.aliUserId">
               <el-avatar size="medium" :src="bindAlipayInfo.avatar"></el-avatar>
               <div class="ml-10">{{ bindAlipayInfo.nickname }}</div>
             </div>

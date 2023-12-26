@@ -41,10 +41,8 @@
         <el-table-column label="设备数">
           <template slot-scope="scope">
             <div class="cursor inline text-left" @click="$router.push({ path: `/device?agentId=${scope.row.id}` })">
-              <div>全部：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) -
-                parseFloat(deviceCount[scope.row.id].lowerDeviceNumber) : '0' }}</div>
-              <div>已铺货：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) -
-                parseFloat(deviceCount[scope.row.id].lowerBindStoreNumber) : '0' }}</div>
+              <div>全部：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) : 0}}</div>
+              <div>已铺货：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) : 0 }}</div>
             </div>
           </template>
         </el-table-column>
@@ -590,7 +588,7 @@ export default {
         this.deviceCount = {}
         return
       }
-      this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+      this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
         countType: 'AGENT',
         groupIds: ids.join(',')
       }).then(res => {

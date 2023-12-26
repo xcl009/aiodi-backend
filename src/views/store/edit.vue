@@ -76,7 +76,7 @@
                       <div class="mb-5 text-black">真实分成</div>
                       真实分成：若真实分成设置为50%，则10元订单商户可分润10×50%=5元<br><br>
                       <div class="mb-5 text-black">相对分成</div>
-                      相对分成：若相对分成设置为50%，您的分成为50%，则10元订单商户可分润10×50%×50%=2.5元<br><br>
+                      摊销分成：若设置商户分成80%，摊销分成30%，则10元订单商户可分润10×50%=5元。摊销金额：10×30%=3元，归商户上级所有<br><br>
                       <div>
                         <div class="mb-5 text-black">分摊(分成不一致)</div>
                         承诺分成：商户后台显示此分成比例。<span>若您的分成为50%，设置承诺分成为90%，则10元订单商户可分润10×50%×90%=4.5元。</span><br>
@@ -109,9 +109,15 @@
                   </el-form-item>
                 </template>
                 <template v-else-if="item.closeType == 2">
-                  <el-form-item label="相对分成" :error="ferror.relative">
-                    <el-input type="number" v-model="item.relative" placeholder="最高不能超过100%"
-                      @input="(v) => (ferror.relative = checkDigit(v))">
+                  <el-form-item label="真实分成" :error="ferror.live">
+                    <el-input type="number" v-model="item.live" :placeholder="`最高不能超过${myProfitRatio[item.deviceTypeCode]}%`"
+                      @input="(v) => (ferror.live = checkDigit(v))">
+                      <template slot="append">%</template>
+                    </el-input>
+                  </el-form-item>
+                  <el-form-item label="摊销分成" :error="ferror.relative">
+                    <el-input type="number" v-model="item.relative" :placeholder="`最高不能超过${item.live || 100}%`"
+                      @input="(v) => (ferror.relative = checkDigit(v, 0, item.live))">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
@@ -773,7 +779,6 @@
           this.ferror.relative = ''
           this.ferror.promisedDeal = ''
         }else if(type == 2){
-          this.ferror.live = ''
           this.ferror.promisedDeal = ''
           this.ferror.promised = ''
         }else{

@@ -180,6 +180,8 @@
         curRow: {},
         curIdx: 0,
         dform: {},
+        
+        wechatAppid: '',
       }
     },
     computed: {
@@ -213,7 +215,7 @@
         }).then((res = {}) => {
           if(res.rows && res.rows.length > 0){
             this.wechatList = res.rows || []
-            this.form.wechatAppid = res.rows[0].appId
+            this.wechatAppid = res.rows[res.rows.length - 1].appId
             this.toQuery(1)
           }
         })
@@ -271,6 +273,7 @@
         params.deviceTypeCode = this.deviceTypeCode
         if(this.code == 'DIVIDE_ACCOUNTS'){
           params.brandId = this.agentInfo.brandId
+          params.wechatAppid = this.wechatAppid
           if(params.id){
             url = 'iot-saas-basic/admin/orderdivideWXconfig/v1/update'
           }

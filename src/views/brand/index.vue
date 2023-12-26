@@ -422,7 +422,7 @@
           this.deviceCount = {}
           return
         }
-        this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+        this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
           countType: 'BRAND',
           groupIds: ids.join(',')
         }).then(res => {
