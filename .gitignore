@@ -16,3 +16,4 @@ run.bat
 *.ntvs*
 *.njsproj
 *.sln
+*.history
