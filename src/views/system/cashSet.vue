@@ -148,6 +148,12 @@
                     <span class="ml-10 fs-s3">开启表示用户从钱包提现，以订单退款的方式给用户返还提现金额</span>
                   </div>
                 </el-form-item>
+                <el-form-item label="绑定手机号码" v-if="[1].indexOf(parseInt(item.type)) > -1 && userType != 'user'">
+                  <div class="flex align-center">
+                    <el-switch v-model="mobileWithdraw.isAllowWithdraw" :active-value="0" :inactive-value="1" />
+                    <span class="ml-10 fs-s3">开启表示提现到微信时绑定的微信必须需授权绑定手机号码，提现列表会展示该号码，便于区分提现到账微信。</span>
+                  </div>
+                </el-form-item>
                 </template>
               </template>
             </template>
@@ -204,6 +210,9 @@
         form: {
           supportType: [],
           timeLimit: {}
+        },
+        mobileWithdraw: {
+          isAllowWithdraw: 0
         }
       }
     },
@@ -309,6 +318,14 @@
             }
           }
         })
+        this.$get('iot-saas-basic/admin/settings/find', {
+          code: 'BRAND_ALLOW_MOBILE_WITHDRAW'
+        }).then(res => {
+          if(res && res.code){
+            this.mobileWithdraw = JSON.parse(res.setting)
+            this.oldMobileWithdraw = JSON.parse(res.setting)
+          }
+        })
       },
 
       onSubmit() {
@@ -329,6 +346,12 @@
         }
         this.clickSubmit = true
         this.$post(url, params).then(res => {
+          if(!this.oldMobileWithdraw || this.oldMobileWithdraw.isAllowWithdraw != this.mobileWithdraw.isAllowWithdraw){
+            this.$post('iot-saas-basic/admin/settings/save', {
+              code: 'BRAND_ALLOW_MOBILE_WITHDRAW',
+              setting: JSON.stringify(this.mobileWithdraw)
+            })
+          }
           this.clickSubmit = false
           this.$message({
             message: '提交成功',

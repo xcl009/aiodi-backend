@@ -204,6 +204,9 @@
                 <div class="text-grey" @click="setRows(3, scope.row, 2)"
                   v-if="Ability['orderRefund'] && (scope.row.status.indexOf('G') > -1) && (scope.row.amount > 0 || scope.row.amountEnable > 0)">
                   订单退款</div>
+                <div class="text-grey" @click="setRows(7, scope.row, 1)"
+                  v-if="(scope.row.status.indexOf('W') > -1) && (scope.row.payType == 4)">
+                  发起扣款</div>
               </div>
             </template>
           </el-table-column>
@@ -549,12 +552,11 @@
                       <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ? '消耗电量' : '租借时电量' }}({{ curRow.afterLevel || curRow.level }}%)</span>
                       <template v-if="curRow.freeTime > 0">
                         <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ curRow.freeTime }}分钟</span>
-                        <span class="mr-5" v-else-if="curRow.freeUser == 3">暂停计费：{{ parseInt(curRow.freeTime) / 60
-                        }}小时</span>
+                        <span class="mr-5" v-else-if="curRow.freeUser == 3">暂停计费：{{ curRow.freeTime }}分钟</span>
                         <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime == 600000 ? '会员卡订单' :
                           `会员卡免费${curRow.freeTime}分钟` }}</span>
                       </template>
-                      <span>{{ curRow.remark ? curRow.remark : curRow.freeTime || '' }}</span>
+                      <span>{{ curRow.remark || '' }}</span>
                     </div>
                   </div>
                 </div>
@@ -1327,6 +1329,19 @@ export default {
                 })
               }
             }
+          })
+          break
+        case 7:
+          this.$post('iot-saas-pay/open/alipay/depositPayComplete', {
+            orderNo: row.orderNo
+          }).then(res => {
+            this.$message({
+              message: '提交成功',
+              type: 'success'
+            })
+            setTimeout(() => {
+            	this.getList()
+            }, 1000)
           })
           break
       }
