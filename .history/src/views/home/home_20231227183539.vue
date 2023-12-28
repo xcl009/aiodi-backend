@@ -248,7 +248,7 @@
                   <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
-              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
+              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
                 @saveXlsx="saveXlsx">
                 <template v-slot:defult>
                   <el-form-item v-for="item in 1">
@@ -300,8 +300,8 @@
                   </el-form-item>
                 </template>
               </condition>
-              <!-- <table-column-set storageKey="storeTableColumn" :showColumn.sync="showColumn"
-            :defaultColumn="defaultColumn"></table-column-set> -->
+              <table-column-set storageKey="storeTableColumn" :showColumn.sync="showColumn"
+            :defaultColumn="defaultColumn"></table-column-set>
             </div>
 
             <el-table class="store-table text-white" :highlight-current-row="false"
@@ -771,6 +771,7 @@ export default {
       listLoading: true,
       tableMaxH: '250',
       isadd: false,
+      outStatus: false,
       copyText: copyText,
     }
   },

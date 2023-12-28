@@ -1,6 +1,5 @@
 <template>
   <div class="rel pb-20 home-box mb-20">
-
     <el-image class="abs quadrangle tl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle tr" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle bl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
@@ -248,7 +247,7 @@
                   <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
-              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
+              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
                 @saveXlsx="saveXlsx">
                 <template v-slot:defult>
                   <el-form-item v-for="item in 1">
@@ -544,7 +543,7 @@ echarts.use([
   CanvasRenderer,
   LabelLayout,
   LineChart,
-  GridComponent,
+  GridComponent
 ])
 
 export default {
@@ -771,6 +770,7 @@ export default {
       listLoading: true,
       tableMaxH: '250',
       isadd: false,
+      outStatus: false,
       copyText: copyText,
     }
   },
@@ -796,9 +796,6 @@ export default {
     rests() {
       return this.$store.getters.rests
     }
-  },
-  activated() {
-    this.getList()
   },
   mounted() {
     this.getList()

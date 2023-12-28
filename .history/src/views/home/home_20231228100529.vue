@@ -248,8 +248,8 @@
                   <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
-              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
-                @saveXlsx="saveXlsx">
+              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
+                >
                 <template v-slot:defult>
                   <el-form-item v-for="item in 1">
                     <div class="flex combined">
@@ -771,6 +771,7 @@ export default {
       listLoading: true,
       tableMaxH: '250',
       isadd: false,
+      outStatus: false,
       copyText: copyText,
     }
   },

@@ -1,6 +1,5 @@
 <template>
   <div class="rel pb-20 home-box mb-20">
-
     <el-image class="abs quadrangle tl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle tr" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle bl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
@@ -79,8 +78,7 @@
           <div class="p-20 item-box">
             <div class="mb-20 flex align-center">
               <div class="line"></div>
-              <div class="flex1"><span class="fs-b2">{{ itme }}</span><span class="ml-5">{{ $t('home.createOrder')
-              }}</span></div>
+              <div class="flex1"><span class="fs-b2">{{ itme }}</span><span class="ml-5">{{ $t('home.createOrder') }}</span></div>
             </div>
             <div class="o-v cursor">
               <div class="flex align-center flex-wrap room-box text-center fs-b2">
@@ -95,8 +93,7 @@
       </template>
     </el-row>
 
-    <el-row :gutter="20" type="flex" class="two-box  location flex-wrap mt-20 pl-20 pr-20 text-white"
-      v-show="!isStoreType">
+    <el-row :gutter="20" type="flex" class="two-box flex-wrap mt-20 pl-20 pr-20 text-white">
       <el-col :sm="24" :lg="(checkHotel() && isStore()) || !isStore() ? 8 : 12">
         <div class="p-20 item-box">
           <div class="mb-20 flex align-center">
@@ -129,8 +126,7 @@
                 <div class="label">
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
                     <div>
-                      {{ index == 0 ? querHistogram[key].amount + `${$t('public.element')}` : index == 1 ?
-                        querHistogram[key].orderNumber + `${$t('public.one')}`
+                      {{ index == 0 ? querHistogram[key].amount + `${$t('public.element')}` : index == 1 ? querHistogram[key].orderNumber + `${$t('public.one')}`
                         : querHistogram[key].unitPrice + `${$t('public.element')}` }}
                     </div>
                   </template>
@@ -146,18 +142,15 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.statisticsNum') }}</div>
           </div>
-          <div class="chart-device" ref="chart_device" style="height: 330px;"></div>
+          <div class="chart-device" ref="chart_device" style="height: 300px;"></div>
         </div>
       </el-col>
-
       <el-col :sm="24" :lg="8" v-if="!isStore()">
-
-        <div class="pl-20 pr-20 pt-20 item-box ">
+        <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.storeStatistics') }}</div>
-            <div class="cursor flex_c" style="color:rgba(255, 255, 255, 0.80);" @click="isCheckChange(true)"><img
-                :src="require('@/assets/home/unfild.svg')" class="mr-10" /> {{ $t('public.adds') }}</div>
+            <div class="cursor" @click="$router.push({ path: `/store/storeList` })">{{ $t('public.adds') }}</div>
           </div>
           <el-table class="store-table text-white" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
@@ -233,138 +226,7 @@
       </el-col>
     </el-row>
 
-
-    <div class="butCheck" v-show="isStoreType" :class="isadd ? 'isadd storeBox' : ''">
-      <transition name="fade" mode="out-in">
-        <el-row v-show="isadd">
-          <div class="pl-10 pr-10 " :class="{ 'pt-15': isStore() }">
-            <div class=" align-center pt-15 mb-15">
-              <div class="flex fs-c1 text-white">
-                <div class="flex pl-10">
-                  <div class="line"></div>
-                  <div>{{ $t('home.storeStatistics') }}</div>
-                </div>
-                <div class="m_l_a mr-20 cursor" style="color:rgba(255, 255, 255, 0.80);" @click="isStoreType = false">
-                  <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
-                </div>
-              </div>
-              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
-                @saveXlsx="saveXlsx">
-                <template v-slot:defult>
-                  <el-form-item v-for="item in 1">
-                    <div class="flex combined">
-                      <el-select v-model="formKey[`sel${item}`]" :placeholder="$t('public.pleaseSelect')">
-                        <template v-for="(q, key) in queryObj">
-                          <el-option :label="q.title" :value="key"
-                            v-if="checkQueryRepeat(key, item, formKey)"></el-option>
-                        </template>
-                      </el-select>
-                      <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-                        <el-input :placeholder="`${$t('public.enter')}${queryObj[formKey[`sel${item}`]].title}`"
-                          v-model="form[formKey[`sel${item}`]]"></el-input>
-                      </template>
-                      <template
-                        v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
-                        <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType"
-                          :name="queryObj[formKey[`sel${item}`]].name"
-                          :placeholder="`${queryObj[formKey['sel' + item]].title}`" @change="toQuery()">
-                        </selectSearch>
-                      </template>
-                      <template
-                        v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
-                        <el-select v-model="form[formKey[`sel${item}`]]"
-                          :placeholder="`${queryObj[formKey['sel' + item]].title}`" clearable @change="toQuery()">
-                          <el-option :label="item.label" :value="item.value"
-                            v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
-                        </el-select>
-                      </template>
-                    </div>
-                  </el-form-item>
-                  <el-form-item>
-                    <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange"
-                      range-separator="-" value-format="yyyy-MM-dd" :start-placeholder="$t('public.statrtDate')"
-                      :end-placeholder="$t('public.endDate')" :picker-options="pickerOptionsEnd" @change="toQuery()">
-                    </el-date-picker>
-                  </el-form-item>
-                  <el-form-item>
-                    <el-radio-group v-model="form.dates" @input="toQuery(1)">
-                      <el-radio-button label="0">{{ $t('public.today') }}</el-radio-button>
-                      <el-radio-button label="-1">{{ $t('public.yesterday') }}</el-radio-button>
-                      <el-radio-button label="3">{{ $t('public.thisWeek') }}</el-radio-button>
-                      <el-radio-button label="4">{{ $t('public.lastWeek') }}</el-radio-button>
-                      <el-radio-button label="5">{{ $t('public.thisMonth') }}</el-radio-button>
-                      <el-radio-button label="6">{{ $t('public.lastMonth') }}</el-radio-button>
-                      <el-radio-button label="7">{{ $t('public.thisYear') }}</el-radio-button>
-                      <el-radio-button label="8">{{ $t('public.lastYear') }}</el-radio-button>
-                    </el-radio-group>
-                  </el-form-item>
-                </template>
-              </condition>
-              <!-- <table-column-set storageKey="storeTableColumn" :showColumn.sync="showColumn"
-            :defaultColumn="defaultColumn"></table-column-set> -->
-            </div>
-
-            <el-table class="store-table text-white" :highlight-current-row="false"
-              :header-row-style="{ background: 'none' }"
-              :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
-              :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="list"
-              style="background:none">
-              <el-table-column :label="$t('home.ranking')" width="120">
-                <template slot-scope="scope">
-                  <span class="fs-c1 text-bold"
-                    :class="{ 'y-yellow': scope.$index == 0, 'baby-blue': scope.$index == 2, 'text-primary': scope.$index == 1 }">NO.{{
-                      scope.$index + 1 }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('public.storeName')" min-width="90">
-                <template slot-scope="scope">
-                  <span class="y-yellow">{{ scope.row.storeName.substring(0, 2) }}**</span>
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('home.orderNum')" min-width="90">
-                <template slot-scope="scope">
-                  {{ scope.row.orderNumber || 0 }}
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('public.aTurnover')" min-width="120">
-                <template slot-scope="scope">
-                  {{ scope.row.amount || 0 }}
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('public.income')" min-width="90">
-                <template slot-scope="scope">
-                  {{ scope.row.amountDivide || 0 }}
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('home.seizuresNum')" min-width="120" v-if="isSaas() || isBrand()">
-                <template slot-scope="scope">
-                  {{ scope.row.amountDeposit || 0 }}
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('home.alldeposit')" min-width="120" v-if="isSaas() || isBrand()">
-                <template slot-scope="scope">
-                  {{ scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) -
-                    Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0 }}
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('home.allRefunded')" min-width="160" v-if="isSaas() || isBrand()">
-                <template slot-scope="scope">
-                  {{ scope.row.amountUnrefund || 0 }}
-                </template>
-              </el-table-column>
-            </el-table>
-
-            <div class="flex justify-center">
-              <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
-                @pagination="getList" />
-            </div>
-          </div>
-        </el-row>
-      </transition>
-    </div>
-
-    <el-row :gutter="20" type="flex" class="three-box mt-20 pl-20 pr-20 text-white"
-      v-show="Ability['order'] && !isStoreType">
+    <el-row :gutter="20" type="flex" class="three-box mt-20 pl-20 pr-20 text-white" v-if="Ability['order']">
       <el-col :sm="24" :lg="12">
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
@@ -429,15 +291,15 @@
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">{{ $t('home.comparison') }}</div>
+            <div class="flex1 fs-b2">{{$t('home.comparison')}}</div>
             <div class="flex btn-box cursor">
               <div class="btn" :class="{ 'act': day_type == index }" v-for="(item, index) in day_type_arr"
                 @click="day_type = index; getLineChart()">{{ item }}</div>
             </div>
             <div class="ml-15 box-grey">
               <el-date-picker class="range-day" type="month" size="small" v-model="form.date"
-                :picker-options="pickerOptionsEnd" range-separator="-" :placeholder="$t('home.selectMonth')"
-                value-format="yyyy-MM" @change="getTime">
+                :picker-options="pickerOptionsEnd" range-separator="-" :placeholder="$t('home.selectMonth')" value-format="yyyy-MM"
+                @change="getTime">
               </el-date-picker>
             </div>
           </div>
@@ -468,14 +330,12 @@
           <div class="mt-15 fs-s3">{{ $t('home.after') }}{{ dform.duration }}{{ $t('home.startupSettings') }}</div>
 
           <div class="mt-30 text-black">
-            <div class="cursor">{{ $t('home.residueKhb') }}<span class="text-primary">{{ money.happyCurrencyNum
-            }}</span><span class="ml-20 text-primary cursor" @click="$router.push({ path: `/money` })">{{
-  $t('home.khbRecharge') }}</span></div>
+            <div class="cursor">{{ $t('home.residueKhb') }}<span class="text-primary">{{ money.happyCurrencyNum }}</span><span
+                class="ml-20 text-primary cursor" @click="$router.push({ path: `/money` })">{{ $t('home.khbRecharge') }}</span></div>
             <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">{{ $t('home.notConfigured') }}</div>
             <div class="mt-15"
               v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">
-              {{ $t('home.giveFreeTime') }}{{ formatSeconds((unixTime(curRow.bindStoreTime) +
-                createOrderConfig[dform.deviceTypeCode].giftDays
+              {{ $t('home.giveFreeTime') }}{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays
                 * 86400) - currentTime()) }}
             </div>
             <div class="mt-15" v-else>{{ $t('home.deductKhb') }}<span class="text-danger">{{
@@ -485,11 +345,9 @@
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
-        }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
       </div>
     </el-dialog>
-    <xlsx ref="toXlsx" :fileName="$t('home.storeList')"></xlsx>
   </div>
 </template>
 
@@ -502,11 +360,11 @@ import {
   unixTime,
   formatSeconds,
   accAdd,
-  accMul,
-  copyText
+  accMul
 } from '@/utils/index'
 import DateUtil from '@/utils/date'
 import CountTo from 'vue-count-to'
+
 import {
   Finance,
   TransactionOrder,
@@ -531,11 +389,6 @@ import {
   CanvasRenderer
 } from 'echarts/renderers'
 import 'echarts-gl'
-import Pagination from '@/components/Pagination'
-import condition from '@/components/condition/'
-import TableColumnSet from '@/components/TableColumnSet/index'
-import selectSearch from '@/components/condition/selectSearch'
-import xlsx from '@/components/xlsx/'
 
 echarts.use([
   TooltipComponent,
@@ -544,22 +397,18 @@ echarts.use([
   CanvasRenderer,
   LabelLayout,
   LineChart,
-  GridComponent,
+  GridComponent
 ])
 
 export default {
   name: 'home',
   components: {
-    TableColumnSet,
     CountTo,
-    condition,
-    Pagination,
+
     Finance,
     TransactionOrder,
     Peoples,
-    Server,
-    selectSearch,
-    xlsx
+    Server
   },
   data() {
     return {
@@ -712,66 +561,7 @@ export default {
           deviceOnline: 5,
           deviceOffline: 1
         }
-      ],
-      /**
-             * 列的配置化对象，存储配置信息
-             */
-      showColumn: [],
-      defaultColumn: [
-        {
-          key: 'orderNumber',
-          val: true,
-          name: this.$t('home.orderNum')
-        },
-        {
-          key: 'amount',
-          val: true,
-          name: this.$t('public.aTurnover')
-        },
-        {
-          key: 'amountDivide',
-          val: true,
-          name: this.$t('public.income')
-        },
-        {
-          key: 'amountDeposit',
-          val: true,
-          name: this.$t('home.seizuresNum')
-        },
-        {
-          key: 'active',
-          val: true,
-          name: this.$t('home.alldeposit')
-        },
-        {
-          key: 'amountUnrefund',
-          val: true,
-          name: this.$t('home.allRefunded')
-        },
-      ],
-      // 是否显示商户统计数据
-      isStoreType: false,
-      formKey: {
-        sel1: 'storeId',
-      },
-      queryObj: {
-        storeId: {
-          title: this.$t('public.storeName'),
-          type: 'selectSearch',
-          name: 'name',
-          sType: 3
-        },
-      },
-      listQuery: {
-        page: 1,
-        size: 20
-      },
-      listTotal: 0,
-      list: [],
-      listLoading: true,
-      tableMaxH: '250',
-      isadd: false,
-      copyText: copyText,
+      ]
     }
   },
   computed: {
@@ -797,11 +587,7 @@ export default {
       return this.$store.getters.rests
     }
   },
-  activated() {
-    this.getList()
-  },
   mounted() {
-    this.getList()
     this.getOrderStat()
     this.getQuerHistogram()
     this.getLineChart()
@@ -823,138 +609,6 @@ export default {
     }
   },
   methods: {
-    isCheckChange(type) {
-      if (type) {
-        this.isadd = type;
-      }
-      this.isStoreType = type;
-    },
-    /**
-         * 导出
-         */
-    saveXlsx() {
-      this.outStatus = true
-      this.listLoading = true
-      this.listQuery.size = 100
-      this.list = []
-      this.getList()
-    },
-    /**
-         * 搜索查询
-         */
-    toQuery(type) {
-      if (this.clickSubmit) return
-      this.clickSubmit = true
-      this.listQuery.page = 1
-      this.listQuery.size = 20
-      if (type == 1) {
-        if (this.form.dates) {
-          this.form.date = '';
-        }
-      }
-      if (this.form.date) {
-        this.form.dates = '';
-      }
-      this.getList()
-    },
-
-    /**
-     * 重置查询
-     */
-    reset() {
-      this.form = {}
-      this.listQuery.page = 1
-      this.listQuery.size = 20
-      this.getList()
-    },
-    /**
-     * 获取列表
-     */
-    getList() {
-      let that = this;
-      let endDateStr = new Date().getFullYear() + 1;
-      var params = Object.assign({}, this.form, this.listQuery, {
-        page: this.listQuery.page - 1,
-        startDateStr: "2011",
-        endDateStr,
-      })
-      if (params.date) {
-        params.startDateStr = params.date[0];
-        params.endDateStr = params.date[1];
-        delete params.date;
-      }
-      if (params.dates || params.dates == '0') {
-        if (params.dates || params.dates) {
-          params.startDateStr = DateUtil.getDate(params.dates, 2).start;
-          params.endDateStr = DateUtil.getDate(params.dates, 2).end;
-        }
-        if (params.dates == '3') {
-          params.startDateStr = DateUtil.getMonday("s", 0, 2);
-          params.endDateStr = DateUtil.getMonday("e", 0, 2);
-        }
-        if (params.dates == '4') {
-          params.startDateStr = DateUtil.getMonday("s", -1, 2);
-          params.endDateStr = DateUtil.getMonday("e", -1, 2);
-        }
-        if (params.dates == '5') {
-          params.startDateStr = DateUtil.getMonth("s", 0, 2);
-          params.endDateStr = DateUtil.getMonth("e", 0, 2);
-        }
-        if (params.dates == '6') {
-          params.startDateStr = DateUtil.getMonth("s", -1, 2);
-          params.endDateStr = DateUtil.getMonth("e", -1, 2);
-
-        }
-        if (params.dates == '7') {
-          params.startDateStr = DateUtil.getYear("s", 0, 2);
-          params.endDateStr = DateUtil.getYear("e", 0, 2);
-
-        }
-        if (params.dates == '8') {
-          params.startDateStr = DateUtil.getYear("s", -1, 2);
-          params.endDateStr = DateUtil.getYear("e", -1, 2);
-        }
-        delete params.dates;
-      }
-      if (this.isBrand()) {
-        params.brandId = this.agentInfo.brandId;
-      } else if (this.isAgent()) {
-        params.agentId = this.agentInfo.agentId;
-      }
-
-      this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(async (res = {}) => {
-        let list = res.rows || []
-        that.list = list
-        that.listLoading = false
-        that.clickSubmit = false
-        if (that.outStatus) {
-          let end = false
-          if (params.size > that.list.length) end = true
-          that.$nextTick(() => {
-            that.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size), () => {
-              if (end) {
-                that.outStatus = false
-                that.toQuery()
-              } else {
-                that.listQuery.page += 1
-                that.getList()
-              }
-            })
-          })
-        } else {
-          that.listLoading = false
-          that.clickSubmit = false
-          if (params.page == 0) {
-            that.listTotal = res.total
-            that.tableMaxH = window.innerHeight - that.$refs.list_table.$el.offsetTop - 60
-          }
-        }
-      }).catch(() => {
-        that.clickSubmit = false
-        that.listLoading = false
-      })
-    },
-
     /**
      * 总统计
      */
@@ -1293,8 +947,8 @@ export default {
     },
 
     /**
-       * 弹窗确认
-       */
+     * 弹窗确认
+     */
     dialogConfirm() {
       let that = this;
       let curRow = this.curRow,
@@ -1606,7 +1260,7 @@ export default {
         //图例组件
         legend: {
           show: true,
-          bottom: 0,
+          bottom: 10,
           data: legendData,
           //图例列表的布局朝向。
           orient: 'horizontal',
@@ -2175,153 +1829,5 @@ export default {
 
 .addRight {
   margin-left: auto;
-}
-
-.filter-box {
-  background-color: transparent;
-}
-
-/deep/.el-input__inner {
-  background: rgba(17, 102, 177, 0.1) !important;
-  border: 1px solid #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/deep/.el-range-input {
-  background: rgba(17, 102, 177, 0.1) !important;
-}
-
-/deep/.el-button--primary,
-/deep/.icon-search.icon-refresh {
-  background-color: rgba(17, 102, 177, 0.1) !important;
-  border-color: #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/deep/.el-radio-button__inner {
-  background-color: rgba(17, 102, 177, 0.1) !important;
-  border: 1px solid #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/deep/.butCheck {
-  border: 2px solid #1166B1;
-  margin: 20px;
-
-  .line {
-    margin-right: 8px;
-    width: 5px;
-    height: 20px;
-    background: #1CB9FB;
-  }
-
-}
-
-/deep/.is-active {
-  background-color: rgba(17, 102, 177, 0.10) !important;
-  box-shadow: 0px 0px 12px 0px #1166B1 inset !important;
-}
-
-/deep/.el-pagination__total {
-  color: rgba(255, 255, 255, 0.80) !important;
-}
-
-// .storeBox {
-//   animation: bounce 5s reverse;
-// }
-.fade-enter-active {
-  animation: bounce 3s reverse;
-}
-
-.fade-leave-active {
-  animation: bounce 3s reverse;
-}
-
-.fade-enter,
-.fade-leave-active {
-  transform: translateX(10px);
-  opacity: 0;
-}
-
-.fade-enter,
-.fade-leave-active {
-  opacity: 0
-}
-
-.location {
-  position: relative;
-
-  .isadd {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 999;
-  }
-}
-
-/* 模块上下浮动动画 module-move */
-@keyframes bounce {
-
-  //   from {width:150px;margin:0 auto;}
-  // to {width:2250px;margin:0 auto;}
-  // 0% {
-  //   width: 100%;
-  //   // transform-origin: 500px 500px;
-  // }
-
-  // 10% {
-  //   width: 90%;
-  //   // transform-origin: 600px 600px;
-  // }
-
-  // 20% {
-  //   width: 80%;
-  //   // transform-origin: 700px 700px;
-  // }
-
-  // 30% {
-  //   width: 70%;
-  //   // transform-origin: 800px 800px;
-  // }
-
-  // 40% {
-  //   width: 60%;
-  //   // transform-origin: 900px 900px;
-  // }
-
-  // 50% {
-  //   width: 50%;
-  //   // transform-origin: 1000px 1000px;
-  // }
-
-  // 60% {
-  //   width: 40%;
-  //   // transform-origin: 1100px 1100px;
-  // }
-
-  // 70% {
-  //   width: 30%;
-  //   // transform-origin: 1200px 1200px;
-  // }
-
-  // 80% {
-  //   width: 30%;
-  //   // transform-origin: 1300px 1300px;
-  // }
-
-  // 90% {
-  //   width: 30%;
-  //   // transform-origin: 1400px 1400px;
-  // }
-
-  // 100% {
-  //   width: 30%;/
-  //   // transform-origin: 1500px 1500px;
-  // }
-
-}
-
-/deep/.filterBox {
-  max-height: 100% !important;
 }
 </style>

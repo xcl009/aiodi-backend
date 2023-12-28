@@ -1,6 +1,5 @@
 <template>
   <div class="rel pb-20 home-box mb-20">
-
     <el-image class="abs quadrangle tl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle tr" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle bl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
@@ -146,7 +145,7 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.statisticsNum') }}</div>
           </div>
-          <div class="chart-device" ref="chart_device" style="height: 330px;"></div>
+          <div class="chart-device" ref="chart_device" style="height: 300px;"></div>
         </div>
       </el-col>
 
@@ -248,7 +247,7 @@
                   <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
-              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
+              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
                 @saveXlsx="saveXlsx">
                 <template v-slot:defult>
                   <el-form-item v-for="item in 1">
@@ -494,6 +493,7 @@
 </template>
 
 <script>
+import qs from 'qs'
 import {
   arrayToObj,
   delComma,
@@ -502,11 +502,11 @@ import {
   unixTime,
   formatSeconds,
   accAdd,
-  accMul,
-  copyText
+  accMul
 } from '@/utils/index'
 import DateUtil from '@/utils/date'
 import CountTo from 'vue-count-to'
+
 import {
   Finance,
   TransactionOrder,
@@ -544,7 +544,7 @@ echarts.use([
   CanvasRenderer,
   LabelLayout,
   LineChart,
-  GridComponent,
+  GridComponent
 ])
 
 export default {
@@ -771,7 +771,7 @@ export default {
       listLoading: true,
       tableMaxH: '250',
       isadd: false,
-      copyText: copyText,
+      outStatus: false
     }
   },
   computed: {
@@ -796,9 +796,6 @@ export default {
     rests() {
       return this.$store.getters.rests
     }
-  },
-  activated() {
-    this.getList()
   },
   mounted() {
     this.getList()
@@ -924,13 +921,15 @@ export default {
 
       this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(async (res = {}) => {
         let list = res.rows || []
-        that.list = list
-        that.listLoading = false
-        that.clickSubmit = false
-        if (that.outStatus) {
+        console.log(res,'resss')
+        this.list = list
+        this.listLoading = false
+        this.clickSubmit = false
+        if (this.outStatus) {
           let end = false
-          if (params.size > that.list.length) end = true
-          that.$nextTick(() => {
+          if (params.size > this.list.length) end = true
+          this.$nextTick(() => {
+            console.log(Math.ceil(res.total / params.size),'Math.ceil(res.total / params.size)',end,'end')
             that.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size), () => {
               if (end) {
                 that.outStatus = false
@@ -942,16 +941,16 @@ export default {
             })
           })
         } else {
-          that.listLoading = false
-          that.clickSubmit = false
+          this.listLoading = false
+          this.clickSubmit = false
           if (params.page == 0) {
-            that.listTotal = res.total
-            that.tableMaxH = window.innerHeight - that.$refs.list_table.$el.offsetTop - 60
+            this.listTotal = res.total
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
         }
       }).catch(() => {
-        that.clickSubmit = false
-        that.listLoading = false
+        this.clickSubmit = false
+        this.listLoading = false
       })
     },
 
@@ -1606,7 +1605,7 @@ export default {
         //图例组件
         legend: {
           show: true,
-          bottom: 0,
+          bottom: 10,
           data: legendData,
           //图例列表的布局朝向。
           orient: 'horizontal',

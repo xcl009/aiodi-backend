@@ -1,6 +1,115 @@
 <template>
-  <div class="rel pb-20 home-box mb-20">
+  <div>
+        <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
+            @saveXlsx="saveXlsx">
+            <template v-slot:defult>
+                <el-form-item v-for="item in 1">
+                    <div class="flex combined">
+                        <el-select v-model="formKey[`sel${item}`]" placeholder="请选择">
+                            <template v-for="(q, key) in queryObj">
+                                <el-option :label="q.title" :value="key"
+                                    v-if="checkQueryRepeat(key, item, formKey)"></el-option>
+                            </template>
+                        </el-select>
+                        <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
+                            <el-input :placeholder="`请输入${queryObj[formKey[`sel${item}`]].title}`"
+                                v-model="form[formKey[`sel${item}`]]"></el-input>
+                        </template>
+                        <template
+                            v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
+                            <selectSearch v-model="form[formKey[`sel${item}`]]"
+                                :type="queryObj[formKey[`sel${item}`]].sType" :name="queryObj[formKey[`sel${item}`]].name"
+                                :placeholder="`${queryObj[formKey['sel' + item]].title}`" @change="toQuery()">
+                            </selectSearch>
+                        </template>
+                        <template
+                            v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
+                            <el-select v-model="form[formKey[`sel${item}`]]"
+                                :placeholder="`${queryObj[formKey['sel' + item]].title}`" clearable @change="toQuery()">
+                                <el-option :label="item.label" :value="item.value"
+                                    v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
+                            </el-select>
+                        </template>
+                    </div>
+                </el-form-item>
+                <el-form-item>
+                    <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange"
+                        range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期"
+                        :picker-options="pickerOptionsEnd" @change="toQuery()">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-radio-group v-model="form.dates" @input="toQuery(1)">
+                        <el-radio-button label="0">今天</el-radio-button>
+                        <el-radio-button label="-1">昨天</el-radio-button>
+                        <el-radio-button label="3">本周</el-radio-button>
+                        <el-radio-button label="4">上周</el-radio-button>
+                        <el-radio-button label="5">本月</el-radio-button>
+                        <el-radio-button label="6">上月</el-radio-button>
+                        <el-radio-button label="7">本年</el-radio-button>
+                        <el-radio-button label="8">去年</el-radio-button>
+                    </el-radio-group>
+                </el-form-item>
+            </template>
+        </condition>
+        <div class="pl-10 pr-10 bg-white" :class="{ 'pt-15': isStore() }">
+            <div class="flex align-center pt-15 mb-15 l-t">
+                <div class="flex1 fs-c1 text-black">查询表格</div>
+                <table-column-set storageKey="storeTableColumn" :showColumn.sync="showColumn"
+                    :defaultColumn="defaultColumn"></table-column-set>
+            </div>
 
+            <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
+                v-loading="listLoading" :max-height="tableMaxH" :data="list">
+                <el-table-column label="商户名称" width="150" prop="storeName"></el-table-column>
+                <template v-for="item in showColumn">
+                    <el-table-column :label="item.name" v-if="item.val && item.key == 'orderNumber'">
+                        <template slot-scope="scope">
+                            <div class="flex align-center">
+                                {{ scope.row.orderNumber || 0 }}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="item.name" v-if="item.val && item.key == 'amount'">
+                        <template slot-scope="scope">
+                            <div class="row-device_stat">
+                                {{ scope.row.amount || 0 }}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="item.name" v-if="item.val && item.key == 'amountDivide'">
+                        <template slot-scope="scope">
+                            {{ scope.row.amountDivide || 0 }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="item.name"
+                        v-if="item.val && item.key == 'amountDeposit' && (isSaas() || isBrand())">
+                        <template slot-scope="scope">
+                            {{ scope.row.amountDeposit || 0 }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="item.name" v-if="item.val && item.key == 'active' && (isSaas() || isBrand())">
+                        <template slot-scope="scope">
+                            {{ scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) -
+                                Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0 }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="item.name"
+                        v-if="item.val && item.key == 'amountUnrefund' && (isSaas() || isBrand())">
+                        <template slot-scope="scope">
+                            {{ scope.row.amountUnrefund || 0 }}
+                        </template>
+                    </el-table-column>
+                </template>
+            </el-table>
+
+            <div class="flex justify-center">
+                <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
+                    @pagination="getList" />
+            </div>
+        </div>
+        <xlsx ref="toXlsx" fileName="商户数据统计"></xlsx>
+  <div class="rel pb-20 home-box mb-20">
     <el-image class="abs quadrangle tl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle tr" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle bl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
@@ -248,7 +357,7 @@
                   <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
-              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
+              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
                 @saveXlsx="saveXlsx">
                 <template v-slot:defult>
                   <el-form-item v-for="item in 1">
@@ -544,7 +653,7 @@ echarts.use([
   CanvasRenderer,
   LabelLayout,
   LineChart,
-  GridComponent,
+  GridComponent
 ])
 
 export default {
@@ -771,6 +880,7 @@ export default {
       listLoading: true,
       tableMaxH: '250',
       isadd: false,
+      outStatus: false,
       copyText: copyText,
     }
   },
@@ -796,9 +906,6 @@ export default {
     rests() {
       return this.$store.getters.rests
     }
-  },
-  activated() {
-    this.getList()
   },
   mounted() {
     this.getList()

@@ -7,8 +7,6 @@ export default {
         lastWeek: '上週',
         thisMonth: '本月',
         lastMonth: '上月',
-        thisYear: '本年',
-        lastYear: '去年',
         element: '元',
         one: '單',
         adds: '更多',
@@ -490,7 +488,6 @@ export default {
         successNum: '完成單數',
         averageATurnover: '平均交易額',
         resetPassword: '重置密碼',
-        storeList: '商戶數據統計',
     },
     order: {
         failedOrdersNum: '刷新扣款失敗訂單數',

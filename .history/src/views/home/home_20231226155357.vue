@@ -1,6 +1,5 @@
 <template>
   <div class="rel pb-20 home-box mb-20">
-
     <el-image class="abs quadrangle tl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle tr" :src="require('@/assets/home/quadrangle.svg')"></el-image>
     <el-image class="abs quadrangle bl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
@@ -146,7 +145,7 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.statisticsNum') }}</div>
           </div>
-          <div class="chart-device" ref="chart_device" style="height: 330px;"></div>
+          <div class="chart-device" ref="chart_device" style="height: 300px;"></div>
         </div>
       </el-col>
 
@@ -248,7 +247,7 @@
                   <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
-              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
+              <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
                 @saveXlsx="saveXlsx">
                 <template v-slot:defult>
                   <el-form-item v-for="item in 1">
@@ -282,8 +281,8 @@
                   </el-form-item>
                   <el-form-item>
                     <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange"
-                      range-separator="-" value-format="yyyy-MM-dd" :start-placeholder="$t('public.statrtDate')"
-                      :end-placeholder="$t('public.endDate')" :picker-options="pickerOptionsEnd" @change="toQuery()">
+                      range-separator="-" value-format="yyyy-MM-dd" :start-placeholder="$t('public.statrtDate')" :end-placeholder="$t('public.endDate')"
+                      :picker-options="pickerOptionsEnd" @change="toQuery()">
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item>
@@ -331,7 +330,7 @@
                   {{ scope.row.amount || 0 }}
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('public.income')" min-width="90">
+              <el-table-column :label="$t('public.income')"  min-width="90">
                 <template slot-scope="scope">
                   {{ scope.row.amountDivide || 0 }}
                 </template>
@@ -377,73 +376,73 @@
             :row-style="{ background: '#0D2749' }" :cell-style="{ border: 'none' }" :data="orderList"
             style="background:none">
             <el-table-column :label="`${$t('home.serialNumber')}`" width="60">
-              <template slot-scope="scope">
-                <div class="fs-c1 text-bold idx text-center" :class="'idx_' + scope.$index % 3">{{ scope.$index + 1 }}
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column :label="`${$t('public.store')}`" width="80">
-              <template slot-scope="scope">
-                <span>{{ scope.row.storeName.substring(0, 1) }}***</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="`${$t('public.user')}`" width="80">
-              <template slot-scope="scope">
-                {{ scope.row.userNickName ? scope.row.userNickName.substring(0, 1) : '' }}**
-              </template>
-            </el-table-column>
-            <el-table-column :label="`${$t('home.equipmentCategory')}`" width="100">
-              <template slot-scope="scope">
-                {{ scope.row.deviceType }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="`${$t('home.source')}`" width="80">
-              <template slot-scope="scope">
-                {{ scope.row.sourceType == 2 ? $t('payType.zfb') : $t('payType.wx') }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="`${$t('public.statrtTime')}`" width="160">
-              <template slot-scope="scope">
-                {{ scope.row.chargeStartTime || "--" }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="`${$t('public.endTime')}`" width="160">
-              <template slot-scope="scope">
-                {{ scope.row.chargeEndTime || "--" }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="`${$t('public.amount')}`">
-              <template slot-scope="scope">
-                ￥{{ scope.row.amount }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="`${$t('public.status')}`">
-              <template slot-scope="scope">
-                {{ Constant.OrderStatus ? Constant.OrderStatus[scope.row.status] : "--" }}
-              </template>
-            </el-table-column>
+                <template slot-scope="scope">
+                  <div class="fs-c1 text-bold idx text-center" :class="'idx_' + scope.$index % 3">{{ scope.$index + 1 }}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column :label="`${$t('public.store')}`" width="80">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.storeName.substring(0, 1) }}***</span>
+                </template>
+              </el-table-column>
+              <el-table-column :label="`${$t('public.user')}`" width="80">
+                <template slot-scope="scope">
+                  {{ scope.row.userNickName ? scope.row.userNickName.substring(0, 1) : '' }}**
+                </template>
+              </el-table-column>
+              <el-table-column :label="`${$t('home.equipmentCategory')}`" width="100">
+                <template slot-scope="scope">
+                  {{ scope.row.deviceType }}
+                </template>
+              </el-table-column>
+              <el-table-column :label="`${$t('home.source')}`" width="80">
+                <template slot-scope="scope">
+                  {{ scope.row.sourceType == 2 ? $t('payType.zfb') : $t('payType.wx') }}
+                </template>
+              </el-table-column>
+              <el-table-column :label="`${$t('public.statrtTime')}`" width="160">
+                <template slot-scope="scope">
+                  {{ scope.row.chargeStartTime || "--" }}
+                </template>
+              </el-table-column>
+              <el-table-column :label="`${$t('public.endTime')}`" width="160">
+                <template slot-scope="scope">
+                  {{ scope.row.chargeEndTime || "--" }}
+                </template>
+              </el-table-column>
+              <el-table-column :label="`${$t('public.amount')}`">
+                <template slot-scope="scope">
+                  ￥{{ scope.row.amount }}
+                </template>
+              </el-table-column>
+              <el-table-column :label="`${$t('public.status')}`">
+                <template slot-scope="scope">
+                  {{ Constant.OrderStatus ? Constant.OrderStatus[scope.row.status] : "--" }}
+                </template>
+              </el-table-column>
           </el-table>
         </div>
       </el-col>
       <el-col :sm="24" :lg="12">
-        <div class="pl-20 pr-20 pt-20 item-box">
-          <div class="flex align-center">
-            <div class="line"></div>
-            <div class="flex1 fs-b2">{{ $t('home.comparison') }}</div>
-            <div class="flex btn-box cursor">
-              <div class="btn" :class="{ 'act': day_type == index }" v-for="(item, index) in day_type_arr"
-                @click="day_type = index; getLineChart()">{{ item }}</div>
+          <div class="pl-20 pr-20 pt-20 item-box">
+            <div class="flex align-center">
+              <div class="line"></div>
+              <div class="flex1 fs-b2">{{$t('home.comparison')}}</div>
+              <div class="flex btn-box cursor">
+                <div class="btn" :class="{ 'act': day_type == index }" v-for="(item, index) in day_type_arr"
+                  @click="day_type = index; getLineChart()">{{ item }}</div>
+              </div>
+              <div class="ml-15 box-grey">
+                <el-date-picker class="range-day" type="month" size="small" v-model="form.date"
+                  :picker-options="pickerOptionsEnd" range-separator="-" :placeholder="$t('home.selectMonth')" value-format="yyyy-MM"
+                  @change="getTime">
+                </el-date-picker>
+              </div>
             </div>
-            <div class="ml-15 box-grey">
-              <el-date-picker class="range-day" type="month" size="small" v-model="form.date"
-                :picker-options="pickerOptionsEnd" range-separator="-" :placeholder="$t('home.selectMonth')"
-                value-format="yyyy-MM" @change="getTime">
-              </el-date-picker>
-            </div>
+            <div class="chart-daystat" ref="chartDay" style="height: 460px;"></div>
           </div>
-          <div class="chart-daystat" ref="chartDay" style="height: 460px;"></div>
-        </div>
-      </el-col>
+        </el-col>
     </el-row>
 
     <!-- <el-dialog
@@ -455,41 +454,38 @@
     </el-dialog> -->
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :close-on-press-escape="false"
-      width="560px">
-      <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
-      <template v-if="dialogType == 6">
-        <div class="text-center">
-          <div class="flex align-center justify-center">
-            <div>{{ $t('home.orderUsableduration') }}</div>
-            <el-select v-model="dform.duration" :placeholder="`${$t('public.freeTime')}`">
-              <el-option :label="`${item}${$t('public.huor')}`" :value="item" v-for="item in config.bed_order_time" />
-            </el-select>
-          </div>
-          <div class="mt-15 fs-s3">{{ $t('home.after') }}{{ dform.duration }}{{ $t('home.startupSettings') }}</div>
-
-          <div class="mt-30 text-black">
-            <div class="cursor">{{ $t('home.residueKhb') }}<span class="text-primary">{{ money.happyCurrencyNum
-            }}</span><span class="ml-20 text-primary cursor" @click="$router.push({ path: `/money` })">{{
-  $t('home.khbRecharge') }}</span></div>
-            <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">{{ $t('home.notConfigured') }}</div>
-            <div class="mt-15"
-              v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">
-              {{ $t('home.giveFreeTime') }}{{ formatSeconds((unixTime(curRow.bindStoreTime) +
-                createOrderConfig[dform.deviceTypeCode].giftDays
-                * 86400) - currentTime()) }}
+        width="560px">
+        <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
+        <template v-if="dialogType == 6">
+          <div class="text-center">
+            <div class="flex align-center justify-center">
+              <div>{{ $t('home.orderUsableduration') }}</div>
+              <el-select v-model="dform.duration" :placeholder="`${$t('public.freeTime')}`">
+                <el-option :label="`${item}${$t('public.huor')}`" :value="item" v-for="item in config.bed_order_time" />
+              </el-select>
             </div>
-            <div class="mt-15" v-else>{{ $t('home.deductKhb') }}<span class="text-danger">{{
-              createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
+            <div class="mt-15 fs-s3">{{ $t('home.after') }}{{ dform.duration }}{{ $t('home.startupSettings') }}</div>
+  
+            <div class="mt-30 text-black">
+              <div class="cursor">{{ $t('home.residueKhb') }}<span class="text-primary">{{ money.happyCurrencyNum }}</span><span
+                  class="ml-20 text-primary cursor" @click="$router.push({ path: `/money` })">{{ $t('home.khbRecharge') }}</span></div>
+              <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">{{ $t('home.notConfigured') }}</div>
+              <div class="mt-15"
+                v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">
+                {{ $t('home.giveFreeTime') }}{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays
+                  * 86400) - currentTime()) }}
+              </div>
+              <div class="mt-15" v-else>{{ $t('home.deductKhb') }}<span class="text-danger">{{
+                createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
+            </div>
           </div>
+        </template>
+        <div class="mt-30 text-center">
+          <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
         </div>
-      </template>
-      <div class="mt-30 text-center">
-        <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
-        }}</el-button>
-      </div>
-    </el-dialog>
-    <xlsx ref="toXlsx" :fileName="$t('home.storeList')"></xlsx>
+      </el-dialog>
+    <xlsx ref="toXlsx" fileName="商户数据统计"></xlsx>
   </div>
 </template>
 
@@ -502,11 +498,11 @@ import {
   unixTime,
   formatSeconds,
   accAdd,
-  accMul,
-  copyText
+  accMul
 } from '@/utils/index'
 import DateUtil from '@/utils/date'
 import CountTo from 'vue-count-to'
+
 import {
   Finance,
   TransactionOrder,
@@ -536,7 +532,6 @@ import condition from '@/components/condition/'
 import TableColumnSet from '@/components/TableColumnSet/index'
 import selectSearch from '@/components/condition/selectSearch'
 import xlsx from '@/components/xlsx/'
-
 echarts.use([
   TooltipComponent,
   LegendComponent,
@@ -544,7 +539,7 @@ echarts.use([
   CanvasRenderer,
   LabelLayout,
   LineChart,
-  GridComponent,
+  GridComponent
 ])
 
 export default {
@@ -611,23 +606,23 @@ export default {
       deviceChartData: [],
 
       day_type_arr: [this.$t('public.sevenDays'), this.$t('public.thisWeek'), this.$t('public.lastWeek'), this.$t('public.thisMonth'), this.$t('public.lastMonth')],
-      day_type: 0,
-      contrast_arr: [this.$t('public.aTurnover'), this.$t('home.orderNum'), this.$t('public.unitPrice')],
-      contrast_type: 0,
-
-      tool: [{
-        title: this.$t('home.contWifi'),
-        desc: this.$t('home.wifiText'),
-      },
-      {
-        title: this.$t('home.contactReception'),
-        desc: this.$t('home.receptionText'),
-      },
-      {
-        title: this.$t('home.suggestions'),
-        desc: this.$t('home.suggestionsText'),
-      }
-      ],
+        day_type: 0,
+        contrast_arr: [this.$t('public.aTurnover'), this.$t('home.orderNum'), this.$t('public.unitPrice')],
+        contrast_type: 0,
+  
+        tool: [{
+          title: this.$t('home.contWifi'),
+          desc: this.$t('home.wifiText'),
+        },
+        {
+          title: this.$t('home.contactReception'),
+          desc: this.$t('home.receptionText'),
+        },
+        {
+          title: this.$t('home.suggestions'),
+          desc: this.$t('home.suggestionsText'),
+        }
+        ],
 
       /*主题房*/
       roomList: {},
@@ -658,61 +653,61 @@ export default {
 
       storeList: [],
       storeLists: [
-        {
-          ranking: 1,
-          storeName: this.$t('home.hotelName'),
-          deviceNum: 16,
-          orderNum: 1506,
-          orderAmount: '￥11,235.00',
-          deviceOnline: 16,
-          deviceOffline: 0
-        },
-        {
-          ranking: 2,
-          storeName: this.$t('home.hotelName1'),
-          deviceNum: 13,
-          orderNum: 1100,
-          orderAmount: '￥10,345.00',
-          deviceOnline: 12,
-          deviceOffline: 1
-        },
-        {
-          ranking: 3,
-          storeName: this.$t('home.hotelName2'),
-          deviceNum: 11,
-          orderNum: 920,
-          orderAmount: '￥9,345.00',
-          deviceOnline: 9,
-          deviceOffline: 2
-        },
-        {
-          ranking: 4,
-          storeName: this.$t('home.hotelName3'),
-          deviceNum: 8,
-          orderNum: 956,
-          orderAmount: '￥9125.00',
-          deviceOnline: 8,
-          deviceOffline: 0
-        },
-        {
-          ranking: 5,
-          storeName: this.$t('home.hotelName4'),
-          deviceNum: 6,
-          orderNum: 812,
-          orderAmount: '￥7562.00',
-          deviceOnline: 5,
-          deviceOffline: 1
-        },
-        {
-          ranking: 6,
-          storeName: this.$t('home.hotelName5'),
-          deviceNum: 6,
-          orderNum: 806,
-          orderAmount: '￥7245.00',
-          deviceOnline: 5,
-          deviceOffline: 1
-        }
-      ],
+          {
+            ranking: 1,
+            storeName: this.$t('home.hotelName'),
+            deviceNum: 16,
+            orderNum: 1506,
+            orderAmount: '￥11,235.00',
+            deviceOnline: 16,
+            deviceOffline: 0
+          },
+          {
+            ranking: 2,
+            storeName: this.$t('home.hotelName1'),
+            deviceNum: 13,
+            orderNum: 1100,
+            orderAmount: '￥10,345.00',
+            deviceOnline: 12,
+            deviceOffline: 1
+          },
+          {
+            ranking: 3,
+            storeName: this.$t('home.hotelName2'),
+            deviceNum: 11,
+            orderNum: 920,
+            orderAmount: '￥9,345.00',
+            deviceOnline: 9,
+            deviceOffline: 2
+          },
+          {
+            ranking: 4,
+            storeName: this.$t('home.hotelName3'),
+            deviceNum: 8,
+            orderNum: 956,
+            orderAmount: '￥9125.00',
+            deviceOnline: 8,
+            deviceOffline: 0
+          },
+          {
+            ranking: 5,
+            storeName: this.$t('home.hotelName4'),
+            deviceNum: 6,
+            orderNum: 812,
+            orderAmount: '￥7562.00',
+            deviceOnline: 5,
+            deviceOffline: 1
+          },
+          {
+            ranking: 6,
+            storeName: this.$t('home.hotelName5'),
+            deviceNum: 6,
+            orderNum: 806,
+            orderAmount: '￥7245.00',
+            deviceOnline: 5,
+            deviceOffline: 1
+          }
+        ],
       /**
              * 列的配置化对象，存储配置信息
              */
@@ -721,32 +716,32 @@ export default {
         {
           key: 'orderNumber',
           val: true,
-          name: this.$t('home.orderNum')
+          name: '订单量'
         },
         {
           key: 'amount',
           val: true,
-          name: this.$t('public.aTurnover')
+          name: '交易额'
         },
         {
           key: 'amountDivide',
           val: true,
-          name: this.$t('public.income')
+          name: '收益'
         },
         {
           key: 'amountDeposit',
           val: true,
-          name: this.$t('home.seizuresNum')
+          name: '扣押总数'
         },
         {
           key: 'active',
           val: true,
-          name: this.$t('home.alldeposit')
+          name: '留存押金总额'
         },
         {
           key: 'amountUnrefund',
           val: true,
-          name: this.$t('home.allRefunded')
+          name: '留存押金未退总额'
         },
       ],
       // 是否显示商户统计数据
@@ -756,7 +751,7 @@ export default {
       },
       queryObj: {
         storeId: {
-          title: this.$t('public.storeName'),
+          title: '商户名称',
           type: 'selectSearch',
           name: 'name',
           sType: 3
@@ -771,7 +766,7 @@ export default {
       listLoading: true,
       tableMaxH: '250',
       isadd: false,
-      copyText: copyText,
+      outStatus: false
     }
   },
   computed: {
@@ -797,9 +792,6 @@ export default {
       return this.$store.getters.rests
     }
   },
-  activated() {
-    this.getList()
-  },
   mounted() {
     this.getList()
     this.getOrderStat()
@@ -823,6 +815,26 @@ export default {
     }
   },
   methods: {
+    // onAfterLeave() { },
+    // onBeforeLeave() {
+    //   style = document.createElement('style')
+    //   style.innerHTML =
+    //     `@keyframes scale-up-center {
+    //       0% {
+    //         transform: scale(0.5);
+    //         transform-origin: 500px 500px;
+    //       }
+    //       10% {
+    //         transform: scale(0.5);
+    //       }
+    //       100% {
+    //         transform: scale(1);
+    //       }
+    //    }`
+    //   document.head.appendChild(style);
+    // },
+    // onAfterEnter() { },
+    // onBeforeEnter() { },
     isCheckChange(type) {
       if (type) {
         this.isadd = type;
@@ -924,13 +936,13 @@ export default {
 
       this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(async (res = {}) => {
         let list = res.rows || []
-        that.list = list
-        that.listLoading = false
-        that.clickSubmit = false
-        if (that.outStatus) {
+        this.list = list
+        this.listLoading = false
+        this.clickSubmit = false
+        if (this.outStatus) {
           let end = false
-          if (params.size > that.list.length) end = true
-          that.$nextTick(() => {
+          if (params.size > this.list.length) end = true
+          this.$nextTick(() => {
             that.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size), () => {
               if (end) {
                 that.outStatus = false
@@ -942,16 +954,16 @@ export default {
             })
           })
         } else {
-          that.listLoading = false
-          that.clickSubmit = false
+          this.listLoading = false
+          this.clickSubmit = false
           if (params.page == 0) {
-            that.listTotal = res.total
-            that.tableMaxH = window.innerHeight - that.$refs.list_table.$el.offsetTop - 60
+            this.listTotal = res.total
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
         }
       }).catch(() => {
-        that.clickSubmit = false
-        that.listLoading = false
+        this.clickSubmit = false
+        this.listLoading = false
       })
     },
 
@@ -1158,35 +1170,35 @@ export default {
     } = {}) {
       if (!groupDate) return
       let legend = [this.$t('public.aTurnover'), this.$t('home.allOrderNum'), this.$t('home.successNum'), this.$t('home.averageATurnover')],
-        series = [{
-          name: this.$t('public.aTurnover'),
-          type: 'line',
-          data: amount,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut',
-        },
-        {
-          name: this.$t('home.allOrderNum'),
-          type: 'line',
-          data: orderNumber,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        },
-        {
-          name: this.$t('home.successNum'),
-          type: 'line',
-          data: doneOrderNumber,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        },
-        {
-          name: this.$t('home.averageATurnover'),
-          type: 'line',
-          data: unitPrice,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }
-        ]
+          series = [{
+            name: this.$t('public.aTurnover'),
+            type: 'line',
+            data: amount,
+            animationDuration: 2800,
+            animationEasing: 'cubicInOut',
+          },
+          {
+            name: this.$t('home.allOrderNum'),
+            type: 'line',
+            data: orderNumber,
+            animationDuration: 2800,
+            animationEasing: 'quadraticOut'
+          },
+          {
+            name: this.$t('home.successNum'),
+            type: 'line',
+            data: doneOrderNumber,
+            animationDuration: 2800,
+            animationEasing: 'quadraticOut'
+          },
+          {
+            name: this.$t('home.averageATurnover'),
+            type: 'line',
+            data: unitPrice,
+            animationDuration: 2800,
+            animationEasing: 'quadraticOut'
+          }
+          ]
       this.dayChartInit.setOption({
         color: ['#3CA1FE', '#FFA32B', '#07C160', '#FF5353'],
         xAxis: {
@@ -1295,29 +1307,29 @@ export default {
     /**
        * 弹窗确认
        */
-    dialogConfirm() {
-      let that = this;
-      let curRow = this.curRow,
-        curIdx = this.curIdx,
-        params = JSON.parse(JSON.stringify(this.dform))
-      if (this.clickSubmit) return
-      this.clickSubmit = true
-      switch (this.dialogType) {
-        case 6:
-          params.duration = params.duration * 60
-          this.$post('iot-saas-order/admin/order/create', params).then(res => {
-            this.$message({
-              message: that.$t('public.operationSuccessful'),
-              type: 'success'
+       dialogConfirm() {
+        let that = this;
+        let curRow = this.curRow,
+          curIdx = this.curIdx,
+          params = JSON.parse(JSON.stringify(this.dform))
+        if (this.clickSubmit) return
+        this.clickSubmit = true
+        switch (this.dialogType) {
+          case 6:
+            params.duration = params.duration * 60
+            this.$post('iot-saas-order/admin/order/create', params).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.dialogStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
-            this.dialogStatus = false
-            this.clickSubmit = false
-          }).catch(err => {
-            this.clickSubmit = false
-          })
-          break
-      }
-    },
+            break
+        }
+      },
 
     /**
      * 获取订单列表
@@ -1606,7 +1618,7 @@ export default {
         //图例组件
         legend: {
           show: true,
-          bottom: 0,
+          bottom: 10,
           data: legendData,
           //图例列表的布局朝向。
           orient: 'horizontal',
