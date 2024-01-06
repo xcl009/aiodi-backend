@@ -75,7 +75,15 @@ export default {
         statusCode: 'ENABLE',
         pictures: ''
       },
-      rules: {
+      cityList: []
+    }
+  },
+  computed: {
+    myDeviceId() {
+      return this.$store.getters.myDeviceId
+    },
+    rules() {
+      return {
         deviceTypeCode: [{
           required: true,
           message: this.$t('factory.message'),
@@ -96,14 +104,8 @@ export default {
           message: this.$t('shopping.pricesText1'),
           trigger: 'blur'
         }]
-      },
-      cityList: []
+      }
     }
-  },
-  computed: {
-    myDeviceId() {
-      return this.$store.getters.myDeviceId
-    },
   },
   mounted() {
     let info = this.$route.params.info

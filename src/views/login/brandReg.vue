@@ -56,7 +56,8 @@
       <div v-if="steps == 1">
         <div class="flex justify-center flex-wrap" style="padding: 30px 100px;">
           <el-button size="medium" :type="form.selCode === item.code ? 'primary' : ''"
-            :class="{ 'btn-body': form.selCode !== item.code }" v-for="item in device" @click="form.selCode = item.code">{{
+            :class="{ 'btn-body': form.selCode !== item.code }" v-for="item in device"
+            @click="form.selCode = item.code">{{
               item.name }}</el-button>
         </div>
         <div class="pb-30 text-center line-1" :class="{ 'mt-pc': clientWidth >= 992, 'mt-30': clientWidth < 992 }">
@@ -88,7 +89,8 @@
           </el-table>
         </div>
         <div class="pt-30 pb-30 text-center line-1" :class="{ 'mt-pc': clientWidth >= 992, 'mt-30': clientWidth < 992 }">
-          <el-button type="primary" class="login-btn" @click="$router.push({ path: `/login/${gid}` })">{{ $t('login.login')
+          <el-button type="primary" class="login-btn" @click="$router.push({ path: `/login/${gid}` })">{{
+            $t('login.login')
           }}</el-button>
         </div>
       </div>
@@ -120,7 +122,26 @@ export default {
   mixins: [ResizeMixin],
   data() {
     return {
-      rules: {
+      clickSubmit: false,
+      gid: this.$route.params.gid || '',
+      form: {
+        invitationCode: this.$route.params.code,
+        selCode: '',
+        checked: true
+      },
+
+      steps: 0,
+      account: [],
+
+      dialogStatus: false,
+    }
+  },
+  computed: {
+    clientWidth() {
+      return this.$store.getters.clientWidth
+    },
+    rules() {
+      return {
         name: [{
           required: true,
           message: this.$t('login.message'),
@@ -171,15 +192,10 @@ export default {
           message: this.$t('login.message5'),
           trigger: 'blur'
         }]
-      },
-      clickSubmit: false,
-      gid: this.$route.params.gid || '',
-      form: {
-        invitationCode: this.$route.params.code,
-        selCode: '',
-        checked: true
-      },
-      device: [
+      }
+    },
+    device() {
+      return [
         {
           "code": "PA",
           "name": this.$t('public.powerBank')
@@ -188,18 +204,8 @@ export default {
           "code": "PL",
           "name": this.$t('public.chargingCable')
         }
-      ],
-
-      steps: 0,
-      account: [],
-
-      dialogStatus: false,
-    }
-  },
-  computed: {
-    clientWidth() {
-      return this.$store.getters.clientWidth
-    }
+      ]
+    },
   },
   mounted() {
     if (!this.gid || !this.form.invitationCode) {
@@ -375,4 +381,5 @@ export default {
 
 .mt-pc {
   margin-top: 120px;
-}</style>
+}
+</style>

@@ -167,7 +167,18 @@ export default {
     return {
       swapItems: swapItems,
       clickSubmit: false,
-      withdrawTypes: [
+      withdrawType: {},
+      sellType: [],
+      userType: 'agent',
+      form: {
+        supportType: [],
+        timeLimit: {}
+      }
+    }
+  },
+  computed: {
+    withdrawTypes() {
+      return [
         {
           type: '1',
           name: this.$t('payType.wxWithdrawal')
@@ -188,15 +199,10 @@ export default {
           type: '5',
           name: this.$t('payType.card')
         }
-      ],
-      withdrawType: {},
-      week: ['', this.$t('public.one'), this.$t('public.two'), this.$t('public.three'), this.$t('public.four'), this.$t('public.five'), this.$t('public.six'), this.$t('public.sunday')],
-      sellType: [],
-      userType: 'agent',
-      form: {
-        supportType: [],
-        timeLimit: {}
-      }
+      ]
+    },
+    week() {
+      return ['', this.$t('public.one'), this.$t('public.two'), this.$t('public.three'), this.$t('public.four'), this.$t('public.five'), this.$t('public.six'), this.$t('public.sunday')]
     }
   },
   mounted() {

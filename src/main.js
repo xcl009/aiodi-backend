@@ -2,10 +2,13 @@ import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
-import ElementUI from 'element-ui'
+
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import VueI18n from 'vue-i18n'
-import i18n from './lang'
+import i18n from './lang/index'
  
 Vue.use(VueI18n)
 
@@ -102,7 +105,10 @@ Vue.prototype.checkAbility = function(keyArr, type = 1, deviceArr){
   return val
 }
 // set ElementUI lang to EN
-Vue.use(ElementUI)
+
+Vue.use(ElementUI,{
+  i18n:(key,value)=>i18n.t(key,value)
+})
 
 Vue.config.productionTip = false
 

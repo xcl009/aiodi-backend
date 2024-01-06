@@ -39,7 +39,8 @@ const service = axios.create({
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 60000, // request timeout
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept-Language': localStorage.getItem('lang')
   }
 })
 

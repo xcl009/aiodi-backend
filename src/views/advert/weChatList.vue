@@ -75,19 +75,23 @@ export default {
   components: {
 
   },
-  data() {
-    return {
-      category: this.$route.query.category,
-      advertTypeCode: this.$route.query.advertTypeCode,
-      advertTypeName: this.$route.query.advertTypeName,
-      positionType: {
+  computed: {
+    positionType() {
+      return {
         'BANNER': this.$t('advert.positionType'),
         'ENCOURAGE_VIDEO': this.$t('advert.positionType1'),
         'TABLE_SCREEN': this.$t('advert.positionType2'),
         'VIDEO': this.$t('advert.positionType3'),
         'VIDEO_BEFORE': this.$t('advert.positionType4'),
         'TEMPLATE': this.$t('advert.positionType5')
-      },
+      }
+    }
+  },
+  data() {
+    return {
+      category: this.$route.query.category,
+      advertTypeCode: this.$route.query.advertTypeCode,
+      advertTypeName: this.$route.query.advertTypeName,
       list: [],
       listLoading: true,
       dialogStatus: false,

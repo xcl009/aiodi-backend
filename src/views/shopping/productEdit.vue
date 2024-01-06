@@ -72,8 +72,8 @@
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')"
-              :disabled="clickSubmit">{{ $t('public.submit') }}</el-button>
+            <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submit')
+            }}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -114,7 +114,16 @@ export default {
         }],
         productDetail: '',
       },
-      rules: {
+      plantList: [],
+      brandList: [],
+    }
+  },
+  computed: {
+    myDeviceId() {
+      return this.$store.getters.myDeviceId
+    },
+    rules() {
+      return {
         deviceTypeCode: [{
           required: true,
           message: this.$t('shopping.pleaseDeviceType'),
@@ -150,15 +159,8 @@ export default {
           message: this.$t('shopping.pleasePrice'),
           trigger: 'blur'
         }],
-      },
-      plantList: [],
-      brandList: [],
+      }
     }
-  },
-  computed: {
-    myDeviceId() {
-      return this.$store.getters.myDeviceId
-    },
   },
   mounted() {
     this.getplantList()
@@ -313,4 +315,5 @@ export default {
 
 .delete {
   color: #e54d42;
-}</style>
+}
+</style>

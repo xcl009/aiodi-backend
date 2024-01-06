@@ -93,7 +93,10 @@ export default {
     },
     agentInfo() {
       return this.$store.getters.agentInfo
-    }
+    },
+    xlsxName(){
+      return this.$t('qrcode.codeList')
+    },
   },
   data() {
     return {
@@ -109,8 +112,6 @@ export default {
       },
       selSnArr: [],
       selSnUrl: [],
-
-      xlsxName: this.$t('qrcode.codeList'),
       outStatus: false,
       excel: false,
       percentage: 0,

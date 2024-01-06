@@ -66,6 +66,13 @@ export default {
   components: {
 
   },
+  computed: {
+    positionType() {
+      return {
+        PICTURE: this.$t('advert.imgAds')
+      }
+    }
+  },
   data() {
     return {
       category: this.$route.query.category,
@@ -73,9 +80,6 @@ export default {
       advertTypeName: this.$route.query.advertTypeName,
       list: [],
       listLoading: true,
-      positionType: {
-        PICTURE: this.$t('advert.imgAds')
-      },
       dialogStatus: false,
       form: {},
       clickSubmit: false

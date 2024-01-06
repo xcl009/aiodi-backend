@@ -229,33 +229,9 @@ export default {
     },
     Ability() {
       return this.$store.getters.Ability
-    }
-  },
-  data() {
-    return {
-      accSub: accSub,
-      clickSubmit: false,
-      pickerOptionsEnd: {
-        disabledDate: (time) => {
-          let timeOptionRange = this.timeOptionRange
-          let secondNum = 60 * 60 * 24 * 31 * 1000
-          if (timeOptionRange) {
-            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
-              .getTime() - secondNum) || time.getTime() > Date.now()
-          }
-          return time.getTime() > Date.now()
-        },
-        onPick: (time) => {
-          //当第一时间选中才设置禁用
-          if (time.minDate && !time.maxDate) {
-            this.timeOptionRange = time.minDate
-          }
-          if (time.maxDate) {
-            this.timeOptionRange = null
-          }
-        }
-      },
-      orderTab: [{
+    },
+    orderTab() {
+      return [{
         value: 'all',
         title: this.$t('public.all'),
         nkey: 'orderNumber'
@@ -280,43 +256,16 @@ export default {
         title: this.$t('public.receivedGoods'),
         nkey: 'expiredNumber'
       },
-      ],
-
-      search_regions_tag: [],
-      categoryList: [],
-      areaList: [],
-
-      tableMaxH: '250',
-      listLoading: true,
-      listTotal: 0,
-      statInfo: {},
-      list: [],
-      listQuery: {
-        status: 'all',
-        page: 1,
-        size: 20
-      },
-      form: {},
-      order: {},
-      selID: [],
-
-      // 弹出相关
-      dialogType: 1,
-      dialogStatus: false,
-      drawerStatus: false,
-      dialogTitle: {
+      ]
+    },
+    dialogTitle() {
+      return {
         1: this.$t('public.orderDetail'),
         2: this.$t('public.qrCodeGeneration')
-      },
-      curRow: {},
-      curIdx: 0,
-      dform: {},
-
-      /**
-       * 列的配置化对象，存储配置信息
-       */
-      showColumn: [],
-      defaultColumn: [{
+      }
+    },
+    defaultColumn() {
+      return [{
         key: 'brandName',
         val: true,
         name: this.$t('public.brand')
@@ -352,9 +301,70 @@ export default {
         val: true,
         name: this.$t('public.deliveryTime')
       },
-      ],
-      payStatusText: [this.$t('public.unpaid'), this.$t('public.paid'), this.$t('public.offlinePayment')],
-      statusText: [this.$t('public.toBePaid'), this.$t('public.inProduction'), this.$t('public.toBeReceived'), this.$t('public.receivedGoods')],
+      ]
+    },
+    payStatusText() {
+      return [this.$t('public.unpaid'), this.$t('public.paid'), this.$t('public.offlinePayment')]
+    },
+    statusText() {
+      return [this.$t('public.toBePaid'), this.$t('public.inProduction'), this.$t('public.toBeReceived'), this.$t('public.receivedGoods')]
+    }
+  },
+  data() {
+    return {
+      accSub: accSub,
+      clickSubmit: false,
+      pickerOptionsEnd: {
+        disabledDate: (time) => {
+          let timeOptionRange = this.timeOptionRange
+          let secondNum = 60 * 60 * 24 * 31 * 1000
+          if (timeOptionRange) {
+            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+              .getTime() - secondNum) || time.getTime() > Date.now()
+          }
+          return time.getTime() > Date.now()
+        },
+        onPick: (time) => {
+          //当第一时间选中才设置禁用
+          if (time.minDate && !time.maxDate) {
+            this.timeOptionRange = time.minDate
+          }
+          if (time.maxDate) {
+            this.timeOptionRange = null
+          }
+        }
+      },
+
+      search_regions_tag: [],
+      categoryList: [],
+      areaList: [],
+
+      tableMaxH: '250',
+      listLoading: true,
+      listTotal: 0,
+      statInfo: {},
+      list: [],
+      listQuery: {
+        status: 'all',
+        page: 1,
+        size: 20
+      },
+      form: {},
+      order: {},
+      selID: [],
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      drawerStatus: false,
+      curRow: {},
+      curIdx: 0,
+      dform: {},
+
+      /**
+       * 列的配置化对象，存储配置信息
+       */
+      showColumn: [],
     }
   },
   mounted() {

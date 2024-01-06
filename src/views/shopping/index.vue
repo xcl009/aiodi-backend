@@ -270,20 +270,6 @@ export default {
       curIdx: 0,
       dform: {},
       orderNo: '',
-      shipmenList: [{
-        title: this.$t('shopping.highToLow'),
-        type: 'asc'
-      }, {
-        title: this.$t('shopping.lowToHigh'),
-        type: 'desc'
-      }],
-      price: [{
-        title: this.$t('shopping.highToLow'),
-        type: 'username'
-      }, {
-        title: this.$t('shopping.lowToHigh'),
-        type: 'nickname'
-      }],
     }
   },
   computed: {
@@ -299,6 +285,24 @@ export default {
     myDeviceId() {
       return this.$store.getters.myDeviceId
     },
+    price(){
+      return [{
+        title: this.$t('shopping.highToLow'),
+        type: 'username'
+      }, {
+        title: this.$t('shopping.lowToHigh'),
+        type: 'nickname'
+      }]
+    },
+    shipmenList(){
+      return [{
+        title: this.$t('shopping.highToLow'),
+        type: 'asc'
+      }, {
+        title: this.$t('shopping.lowToHigh'),
+        type: 'desc'
+      }]
+    }
   },
   mounted() {
     this.getList()

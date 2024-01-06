@@ -195,14 +195,8 @@ export default {
     device() {
       return this.$store.state.app.device
     },
-  },
-  data() {
-    return {
-      formatSeconds: formatSeconds,
-      unixTime: unixTime,
-      accSub: accSub,
-      clickSubmit: false,
-      queryObj: {
+    queryObj() {
+      return {
         orderNo: {
           title: this.$t('public.orderNo'),
           type: 'input'
@@ -216,64 +210,10 @@ export default {
             2: this.$t('public.unreimbursed'),
           }
         },
-      },
-      formKey: {
-        sel1: 'orderNo',
-        sel2: 'refundInd'
-      },
-      form: {},
-      tableMaxH: '250',
-      list: [],
-      listLoading: true,
-      listTotal: 0,
-      listQuery: {
-        page: 1,
-        size: 20
-      },
-      totalStat: {},
-      pickerOptionsEnd: {
-        disabledDate: (time) => {
-          let timeOptionRange = this.timeOptionRange
-          let secondNum = 60 * 60 * 24 * 31 * 1000
-          if (timeOptionRange) {
-            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
-              .getTime() - secondNum) || time.getTime() > Date.now()
-          }
-          return time.getTime() > Date.now() + 86400000
-        },
-        onPick: (time) => {
-          //当第一时间选中才设置禁用
-          if (time.minDate && !time.maxDate) {
-            this.timeOptionRange = time.minDate
-          }
-          if (time.maxDate) {
-            this.timeOptionRange = null
-          }
-        }
-      },
-      deductionTimeStart: {
-        disabledDate: (time) => {
-          return time.getTime() < Date.now()
-        }
-      },
-
-      // 弹出相关
-      dialogType: 1,
-      dialogStatus: false,
-      drawerStatus: false,
-      dialogTitle: {
-        1: '',
-      },
-      curRow: {},
-      curIdx: 0,
-      dform: {},
-      showRow: {},
-
-      /**
-       * 列的配置化对象，存储配置信息
-       */
-      showColumn: [],
-      defaultColumn: [
+      }
+    },
+    defaultColumn() {
+      return [
         {
           key: 'orderNo',
           val: true,
@@ -332,6 +272,70 @@ export default {
           name: `${this.$t('public.refundAmount')}(${this.$t('public.element')})`
         }
       ]
+    }
+  },
+  data() {
+    return {
+      formatSeconds: formatSeconds,
+      unixTime: unixTime,
+      accSub: accSub,
+      clickSubmit: false,
+      formKey: {
+        sel1: 'orderNo',
+        sel2: 'refundInd'
+      },
+      form: {},
+      tableMaxH: '250',
+      list: [],
+      listLoading: true,
+      listTotal: 0,
+      listQuery: {
+        page: 1,
+        size: 20
+      },
+      totalStat: {},
+      pickerOptionsEnd: {
+        disabledDate: (time) => {
+          let timeOptionRange = this.timeOptionRange
+          let secondNum = 60 * 60 * 24 * 31 * 1000
+          if (timeOptionRange) {
+            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+              .getTime() - secondNum) || time.getTime() > Date.now()
+          }
+          return time.getTime() > Date.now() + 86400000
+        },
+        onPick: (time) => {
+          //当第一时间选中才设置禁用
+          if (time.minDate && !time.maxDate) {
+            this.timeOptionRange = time.minDate
+          }
+          if (time.maxDate) {
+            this.timeOptionRange = null
+          }
+        }
+      },
+      deductionTimeStart: {
+        disabledDate: (time) => {
+          return time.getTime() < Date.now()
+        }
+      },
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      drawerStatus: false,
+      dialogTitle: {
+        1: '',
+      },
+      curRow: {},
+      curIdx: 0,
+      dform: {},
+      showRow: {},
+
+      /**
+       * 列的配置化对象，存储配置信息
+       */
+      showColumn: [],
     }
   },
   mounted(options) {
@@ -495,4 +499,5 @@ export default {
     padding-top: 5px;
     border-radius: 20px;
   }
-}</style>
+}
+</style>

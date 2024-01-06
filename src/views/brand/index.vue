@@ -135,14 +135,19 @@
                   <el-dropdown-item @click.native="$router.push({ path: `/market?brandName=${scope.row.name}` })">{{
                     $t('brand.addedService') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="toLogin(scope.row)">{{ $t('brand.branding') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 1)">{{ $t('brand.deductionVoucher') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="copyloginUrl(scope.row)">{{ $t('brand.loginAddress') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 3)">{{ $t('brand.toMiniProgram') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 1)">{{ $t('brand.deductionVoucher')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="copyloginUrl(scope.row)">{{ $t('brand.loginAddress')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 3)">{{ $t('brand.toMiniProgram')
+                  }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(5, scope.row)">{{ $t('brand.cache') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(6, scope.row)">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)"
-                    v-if="scope.row.status == 1">{{ $t('brand.deleteBrand') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>{{ $t('brand.accountRecovery') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(6, scope.row)">{{ $t('public.setLoginPassword')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{
+                    $t('brand.deleteBrand') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>{{
+                    $t('brand.accountRecovery') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -164,14 +169,17 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-            <div class="text-danger" style="width: 400px; max-width: 100%;">{{ $t('public.tips') }}：{{ $t('brand.renewText') }}{{ dform.amount || 0
-            }}{{ $t('public.element') }}，{{ $t('brand.renewText1') }}{{ (dform.amount || 0) * 3 }}{{ $t('public.element') }}，{{ $t('brand.renewText2') }}。</div>
+            <div class="text-danger" style="width: 400px; max-width: 100%;">{{ $t('public.tips') }}：{{
+              $t('brand.renewText') }}{{ dform.amount || 0
+  }}{{ $t('public.element') }}，{{ $t('brand.renewText1') }}{{ (dform.amount || 0) * 3 }}{{
+  $t('public.element') }}，{{ $t('brand.renewText2') }}。</div>
           </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 2">
         <div class="flex flexv pl-20 pr-20 pb-20" style="width: 600px; height: 100%;">
-          <upload :uploadText="$t('brand.uploadContract')" accept=".pdf,.PDF" :upObj="{ fileType: 'pdfFile' }" @onSuccess="uploadPdf" />
+          <upload :uploadText="$t('brand.uploadContract')" accept=".pdf,.PDF" :upObj="{ fileType: 'pdfFile' }"
+            @onSuccess="uploadPdf" />
           <div class="mt-20 mb-15 text-black">{{ $t('brand.contractInformation') }}</div>
           <div class="text-gray" v-if="!dform.pdfUrl">{{ $t('brand.contractNotUploaded') }}</div>
           <div class="flex1">
@@ -204,7 +212,8 @@
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+          }}</el-button>
         </div>
       </template>
     </el-drawer>
@@ -231,27 +240,6 @@ export default {
     return {
       copyText: copyText,
       clickSubmit: false,
-      sort_type: [{
-        name: this.$t('brand.comprehensiveSorting'),
-        value: 0
-      },
-      {
-        name: this.$t('brand.highToLow'),
-        value: 1
-      },
-      {
-        name: this.$t('brand.lowToHogh'),
-        value: 2
-      },
-      {
-        name: this.$t('brand.nearToFar'),
-        value: 3
-      },
-      {
-        name: this.$t('brand.farToNear'),
-        value: 4
-      }
-      ],
       form: {},
       tableMaxH: '250',
       list: [],
@@ -268,7 +256,48 @@ export default {
        * 列的配置化对象，存储配置信息
        */
       showColumn: [],
-      defaultColumn: [
+
+      // 弹出相关
+      dialogType: 1,
+      drawerStatus: false,
+      curRow: {},
+      curIdx: 0,
+      dform: {},
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (from.name == 'addBrand') {
+      to.meta.reload = true
+    } else {
+      to.meta.reload = false
+    }
+    next()
+  },
+  activated() {
+    if (this.$route.meta.reload) {
+      this.getList()
+    } else if (!this.list || this.list.length == 0) {
+      this.toQuery(1)
+    }
+  },
+  computed: {
+    device() {
+      return this.$store.state.app.device
+    },
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
+    myDeviceName() {
+      return this.$store.state.user.myDeviceName
+    },
+    myDeviceId() {
+      return this.$store.state.user.myDeviceId
+    },
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
+    defaultColumn() {
+      return [
         {
           key: 'name',
           val: true,
@@ -315,52 +344,38 @@ export default {
           val: true,
           name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
         }
-      ],
-
-      // 弹出相关
-      dialogType: 1,
-      drawerStatus: false,
-      dialogTitle: {
+      ]
+    },
+    dialogTitle() {
+      return {
         1: this.$t('brand.giftOfDeductionVouchers'),
         2: this.$t('brand.contractManagement'),
         3: this.$t('brand.toMiniProgram')
+      }
+    },
+    sort_type() {
+      return [{
+        name: this.$t('brand.comprehensiveSorting'),
+        value: 0
       },
-      curRow: {},
-      curIdx: 0,
-      dform: {},
-    }
-  },
-  beforeRouteEnter(to, from, next) {
-    if (from.name == 'addBrand') {
-      to.meta.reload = true
-    } else {
-      to.meta.reload = false
-    }
-    next()
-  },
-  activated() {
-    if (this.$route.meta.reload) {
-      this.getList()
-    } else if (!this.list || this.list.length == 0) {
-      this.toQuery(1)
-    }
-  },
-  computed: {
-    device() {
-      return this.$store.state.app.device
+      {
+        name: this.$t('brand.highToLow'),
+        value: 1
+      },
+      {
+        name: this.$t('brand.lowToHogh'),
+        value: 2
+      },
+      {
+        name: this.$t('brand.nearToFar'),
+        value: 3
+      },
+      {
+        name: this.$t('brand.farToNear'),
+        value: 4
+      }
+      ]
     },
-    siteInfo() {
-      return this.$store.getters.siteInfo
-    },
-    myDeviceName() {
-      return this.$store.state.user.myDeviceName
-    },
-    myDeviceId() {
-      return this.$store.state.user.myDeviceId
-    },
-    agentInfo() {
-      return this.$store.getters.agentInfo
-    }
   },
   mounted() {
 

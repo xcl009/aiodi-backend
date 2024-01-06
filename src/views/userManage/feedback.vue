@@ -5,8 +5,9 @@
         <div class="pl-10 max-w filter-btn_box white-space">
           <el-scrollbar>
             <el-button size="medium" :type="listQuery.state == item.value ? 'primary' : ''"
-              :class="{'btn-body': listQuery.state != item.value}" v-for="item in dealStatus"
-              @click="listQuery.state = item.value; toQuery()">{{ item.title }}({{statInfo[item.nkey] || 0}})</el-button>
+              :class="{ 'btn-body': listQuery.state != item.value }" v-for="item in dealStatus"
+              @click="listQuery.state = item.value; toQuery()">{{ item.title }}({{ statInfo[item.nkey] || 0
+              }})</el-button>
           </el-scrollbar>
         </div>
       </template>
@@ -33,8 +34,8 @@
         </el-form-item>
         <el-form-item :label="$t('userManage.feedbackDate')">
           <el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange" range-separator="-"
-            value-format="yyyy-MM-dd HH:mm:ss" :start-placeholder="$t('public.statrtDate')" :end-placeholder="$t('public.endDate')"
-            :picker-options="pickerOptionsEnd" @change="toQuery()">
+            value-format="yyyy-MM-dd HH:mm:ss" :start-placeholder="$t('public.statrtDate')"
+            :end-placeholder="$t('public.endDate')" :picker-options="pickerOptionsEnd" @change="toQuery()">
           </el-date-picker>
         </el-form-item>
       </template>
@@ -114,8 +115,8 @@
         </el-table-column> -->
         <el-table-column :label="$t('public.status')" width="100">
           <template slot-scope="scope">
-            <el-button class="ml-0" :type="scope.row.state == 1 ? 'success' : 'danger'" size="mini"
-              plain>{{ statusObj[scope.row.state] || $t('userManage.untreated') }}</el-button>
+            <el-button class="ml-0" :type="scope.row.state == 1 ? 'success' : 'danger'" size="mini" plain>{{
+              statusObj[scope.row.state] || $t('userManage.untreated') }}</el-button>
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
@@ -137,279 +138,286 @@
           <el-form-item :label="$t('userManage.feedbackContet')">
             <div>{{ curRow.content }}</div>
           </el-form-item>
-          <el-form-item :label="$t('userManage.errorScreenshot')" v-if="dform.errorImages && dform.errorImages.length > 0">
+          <el-form-item :label="$t('userManage.errorScreenshot')"
+            v-if="dform.errorImages && dform.errorImages.length > 0">
             <el-image class="mr-5" v-for="item in dform.errorImages" style="width: 50px; height: 50px" :src="item"
               :preview-src-list="dform.errorImages"></el-image>
           </el-form-item>
           <el-form-item :label="$t('userManage.backendReply')">
-            <el-input v-model="dform.reply" type="textarea" :rows="4" :placeholder="$t('userManage.replyText')"></el-input>
+            <el-input v-model="dform.reply" type="textarea" :rows="4"
+              :placeholder="$t('userManage.replyText')"></el-input>
           </el-form-item>
         </el-form>
       </template>
       <div class="mt-30 text-center" v-if="curRow.state == 0">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import {
-    getRoleName
-  } from '@/utils/index.js'
-  import Pagination from '@/components/Pagination'
-  import condition from '@/components/condition/'
-  export default {
-    name: 'userList',
-    components: {
-      Pagination,
-      condition
+import {
+  getRoleName
+} from '@/utils/index.js'
+import Pagination from '@/components/Pagination'
+import condition from '@/components/condition/'
+export default {
+  name: 'userList',
+  components: {
+    Pagination,
+    condition
+  },
+  data() {
+    return {
+      getRoleName: getRoleName,
+      clickSubmit: false,
+      pickerOptionsEnd: {
+        disabledDate: (time) => {
+          let timeOptionRange = this.timeOptionRange
+          let secondNum = 60 * 60 * 24 * 31 * 1000
+          if (timeOptionRange) {
+            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+              .getTime() - secondNum) || time.getTime() > Date.now()
+          }
+          return time.getTime() > Date.now()
+        },
+        onPick: (time) => {
+          //当第一时间选中才设置禁用
+          if (time.minDate && !time.maxDate) {
+            this.timeOptionRange = time.minDate
+          }
+          if (time.maxDate) {
+            this.timeOptionRange = null
+          }
+        }
+      },
+      tableMaxH: '250',
+      list: [],
+      listLoading: false,
+      listTotal: 0,
+      listQuery: {
+        state: '',
+        page: 1,
+        size: 20
+      },
+      form: {
+        feedbackType: 'brand'
+      },
+      statInfo: {},
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      dialogTitle: {
+        1: this.$t('userManage.feedbackDetails')
+      },
+      curRow: {},
+      curIdx: 0,
+      dform: {},
+
+      issue: {},
+      replyDialog: false,
+      replyObj: {},
+
+      dealDialog: false,
+      deal_status: 1,
+      remark: ''
+    }
+  },
+  computed: {
+    myDeviceName() {
+      return this.$store.state.user.myDeviceName
     },
-    data() {
+    myDeviceId() {
+      return this.$store.state.user.myDeviceId
+    },
+    device() {
+      return this.$store.state.app.device
+    },
+    dealStatus() {
+      return [{
+        value: '',
+        title: this.$t('public.all'),
+        nkey: 'totalCount'
+      },
+      {
+        value: '0',
+        title: this.$t('userManage.untreated'),
+        nkey: 'processCount'
+      },
+      {
+        value: '1',
+        title: this.$t('userManage.processed'),
+        nkey: 'finishedCount'
+      }
+      ]
+    },
+    feedbackType() {
       return {
-        getRoleName: getRoleName,
-        clickSubmit: false,
-        dealStatus: [{
-            value: '',
-            title: this.$t('public.all'),
-            nkey: 'totalCount'
-          },
-          {
-            value: '0',
-            title: this.$t('userManage.untreated'),
-            nkey: 'processCount'
-          },
-          {
-            value: '1',
-            title: this.$t('userManage.processed'),
-            nkey: 'finishedCount'
+        brand: this.$t('userManage.platformIssues'),
+        store: this.$t('userManage.merchantIssues'),
+      }
+    },
+    statusObj() {
+      return {
+        0: this.$t('userManage.untreated'),
+        1: this.$t('userManage.processed')
+      }
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    to.meta.urlQuery = JSON.stringify(to.query)
+    if (from.name == '') {
+      to.meta.reload = true
+    } else {
+      to.meta.reload = false
+    }
+    next()
+  },
+  activated() {
+    let queryKey = [],
+      query = this.$route.query
+    for (var i in queryKey) {
+      this[queryKey[i]] = query[queryKey[i]]
+    }
+    if (this.$route.meta.reload) {
+      this.getList()
+    } else if (this.urlQuery != this.$route.meta.urlQuery) {
+      this.toQuery(1)
+    }
+    this.urlQuery = this.$route.meta.urlQuery
+  },
+  mounted(options) {
+
+  },
+  methods: {
+    /**
+     * 搜索查询
+     */
+    toQuery() {
+      if (this.clickSubmit) return
+      this.clickSubmit = true
+      this.listQuery.page = 1
+      this.listQuery.size = 20
+      this.getStat()
+      this.getList()
+    },
+
+    /**
+     * 重置查询
+     */
+    reset() {
+      if (this.clickSubmit) return
+      this.clickSubmit = true
+      this.form = {
+        feedbackType: 'brand'
+      }
+      this.listQuery.page = 1
+      this.listQuery.size = 20
+      this.getStat()
+      this.getList()
+    },
+
+    /**
+     * 获取数量
+     */
+    getStat() {
+      var params = Object.assign({}, this.form)
+      if (params.date) {
+        params.startDate = params.date[0]
+        params.endDate = params.date[1]
+        delete params.date
+      }
+      this.$get('iot-saas-basic/admin/feedback/findBrandCount', params).then(res => {
+        this.statInfo = res
+      })
+    },
+
+    /**
+     * 获取列表
+     */
+    getList() {
+      var params = Object.assign({}, this.form, this.listQuery, {
+        page: this.listQuery.page - 1
+      })
+      if (params.date) {
+        params.startDate = params.date[0]
+        params.endDate = params.date[1]
+        delete params.date
+      }
+      this.$get('iot-saas-basic/admin/feedback/findBrandPage', params).then(res => {
+        this.list = res.rows
+        this.listLoading = false
+        this.clickSubmit = false
+        if (params.page == 0) {
+          this.listTotal = res.total
+          this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
+        }
+      }).catch(() => {
+        this.listLoading = false
+        this.clickSubmit = false
+      })
+    },
+
+    /**
+     * 操作行
+     * @param {Object} type 1 dialog类型
+     * @param {Object} row 选择当前行
+     * @param {Object} dialogType dialog内容显示类型 1: '查看反馈详情'
+     * @param {Object} idx 当前行所在位置
+     */
+    setRows(type, row, dialogType, idx) {
+      switch (type) {
+        case 1:
+          this.dialogType = dialogType
+          this.curRow = row
+          this.curIdx = idx
+          this.dialogStatus = true
+          if (dialogType == 1) {
+            this.dform = {
+              id: row.id,
+              errorImages: (row.errorImages ? row.errorImages.split(',') : []),
+              reply: row.reply
+            }
           }
-        ],
-
-        feedbackType: {
-          brand: this.$t('userManage.platformIssues'),
-          store: this.$t('userManage.merchantIssues'),
-        },
-        statusObj: {
-          0: this.$t('userManage.untreated'),
-          1: this.$t('userManage.processed')
-        },
-
-        pickerOptionsEnd: {
-          disabledDate: (time) => {
-            let timeOptionRange = this.timeOptionRange
-            let secondNum = 60 * 60 * 24 * 31 * 1000
-            if (timeOptionRange) {
-              return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
-                .getTime() - secondNum) || time.getTime() > Date.now()
-            }
-            return time.getTime() > Date.now()
-          },
-          onPick: (time) => {
-            //当第一时间选中才设置禁用
-            if (time.minDate && !time.maxDate) {
-              this.timeOptionRange = time.minDate
-            }
-            if (time.maxDate) {
-              this.timeOptionRange = null
-            }
-          }
-        },
-        tableMaxH: '250',
-        list: [],
-        listLoading: false,
-        listTotal: 0,
-        listQuery: {
-          state: '',
-          page: 1,
-          size: 20
-        },
-        form: {
-          feedbackType: 'brand'
-        },
-        statInfo: {},
-
-        // 弹出相关
-        dialogType: 1,
-        dialogStatus: false,
-        dialogTitle: {
-          1: this.$t('userManage.feedbackDetails')
-        },
-        curRow: {},
-        curIdx: 0,
-        dform: {},
-
-        issue: {},
-        replyDialog: false,
-        replyObj: {},
-
-        dealDialog: false,
-        deal_status: 1,
-        remark: ''
+          break
       }
     },
-    computed: {
-      myDeviceName() {
-        return this.$store.state.user.myDeviceName
-      },
-      myDeviceId() {
-        return this.$store.state.user.myDeviceId
-      },
-      device() {
-        return this.$store.state.app.device
-      },
-    },
-    beforeRouteEnter(to, from, next) {
-      to.meta.urlQuery = JSON.stringify(to.query)
-      if (from.name == '') {
-        to.meta.reload = true
-      } else {
-        to.meta.reload = false
-      }
-      next()
-    },
-    activated() {
-      let queryKey = [],
-        query = this.$route.query
-      for (var i in queryKey) {
-        this[queryKey[i]] = query[queryKey[i]]
-      }
-      if (this.$route.meta.reload) {
-        this.getList()
-      } else if (this.urlQuery != this.$route.meta.urlQuery) {
-        this.toQuery(1)
-      }
-      this.urlQuery = this.$route.meta.urlQuery
-    },
-    mounted(options) {
 
-    },
-    methods: {
-      /**
-       * 搜索查询
-       */
-      toQuery() {
-        if (this.clickSubmit) return
-        this.clickSubmit = true
-        this.listQuery.page = 1
-        this.listQuery.size = 20
-        this.getStat()
-        this.getList()
-      },
-
-      /**
-       * 重置查询
-       */
-      reset() {
-        if (this.clickSubmit) return
-        this.clickSubmit = true
-        this.form = {
-          feedbackType: 'brand'
-        }
-        this.listQuery.page = 1
-        this.listQuery.size = 20
-        this.getStat()
-        this.getList()
-      },
-
-      /**
-       * 获取数量
-       */
-      getStat() {
-        var params = Object.assign({}, this.form)
-        if (params.date) {
-          params.startDate = params.date[0]
-          params.endDate = params.date[1]
-          delete params.date
-        }
-        this.$get('iot-saas-basic/admin/feedback/findBrandCount', params).then(res => {
-          this.statInfo = res
-        })
-      },
-
-      /**
-       * 获取列表
-       */
-      getList() {
-        var params = Object.assign({}, this.form, this.listQuery, {
-          page: this.listQuery.page - 1
-        })
-        if (params.date) {
-          params.startDate = params.date[0]
-          params.endDate = params.date[1]
-          delete params.date
-        }
-        this.$get('iot-saas-basic/admin/feedback/findBrandPage', params).then(res => {
-          this.list = res.rows
-          this.listLoading = false
-          this.clickSubmit = false
-          if (params.page == 0) {
-            this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
-          }
-        }).catch(() => {
-          this.listLoading = false
-          this.clickSubmit = false
-        })
-      },
-
-      /**
-       * 操作行
-       * @param {Object} type 1 dialog类型
-       * @param {Object} row 选择当前行
-       * @param {Object} dialogType dialog内容显示类型 1: '查看反馈详情'
-       * @param {Object} idx 当前行所在位置
-       */
-      setRows(type, row, dialogType, idx) {
-        switch (type) {
-          case 1:
-            this.dialogType = dialogType
-            this.curRow = row
-            this.curIdx = idx
-            this.dialogStatus = true
-            if (dialogType == 1) {
-              this.dform = {
-                id: row.id,
-                errorImages: (row.errorImages ? row.errorImages.split(',') : []),
-                reply: row.reply
-              }
-            }
-            break
-        }
-      },
-
-      /**
-       * 弹窗确认
-       */
-      dialogConfirm() {
-        let that = this;
-        let curRow = this.curRow,
-          curIdx = this.curIdx,
-          params = JSON.parse(JSON.stringify(this.dform))
-        switch (this.dialogType) {
-          case 1:
-            params.state = 1
-            this.$post('iot-saas-basic/admin/feedback/replById', params).then(res => {
-              this.$post('iot-saas-basic/admin/feedback/updateById', params).then(res => {
-                this.$message({
-                  type: 'success',
-                  message: that.$t('public.operationSuccessful')
-                })
-                this.curRow.state = params.state
-                this.curRow.reply = params.reply
-                this.dialogStatus = false
+    /**
+     * 弹窗确认
+     */
+    dialogConfirm() {
+      let that = this;
+      let curRow = this.curRow,
+        curIdx = this.curIdx,
+        params = JSON.parse(JSON.stringify(this.dform))
+      switch (this.dialogType) {
+        case 1:
+          params.state = 1
+          this.$post('iot-saas-basic/admin/feedback/replById', params).then(res => {
+            this.$post('iot-saas-basic/admin/feedback/updateById', params).then(res => {
+              this.$message({
+                type: 'success',
+                message: that.$t('public.operationSuccessful')
               })
+              this.curRow.state = params.state
+              this.curRow.reply = params.reply
+              this.dialogStatus = false
             })
-            break
-        }
+          })
+          break
       }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .el-icon-circle-close {
-    color: #fff;
-  }
+/deep/ .el-icon-circle-close {
+  color: #fff;
+}
 </style>

@@ -60,23 +60,6 @@ export default {
         deductionId: this.$route.query.deductionId,
         deductionTimeStr: (this.currentTime() + 86400) * 1000
       },
-      rules: {
-        deviceTypeCode: [
-          { required: true, message: this.$t('qrcode.plseaseDeviceType'), trigger: 'change' }
-        ],
-        amountTotal: [
-          { required: true, message: this.$t('leaseOrder.inputText'), trigger: 'blur' }
-        ],
-        deviceNum: [
-          { required: true, message: this.$t('leaseOrder.message'), trigger: 'blur' }
-        ],
-        deductionCycle: [
-          { required: true, message: this.$t('leaseOrder.message1'), trigger: 'blur' }
-        ],
-        deductionAmount: [
-          { required: true, message: this.$t('leaseOrder.message2'), trigger: 'blur' }
-        ]
-      }
     }
   },
   computed: {
@@ -94,7 +77,26 @@ export default {
     },
     myProfitRatio() {
       return this.$store.getters.myProfitRatio
-    }
+    },
+    rules() {
+      return {
+        deviceTypeCode: [
+          { required: true, message: this.$t('qrcode.plseaseDeviceType'), trigger: 'change' }
+        ],
+        amountTotal: [
+          { required: true, message: this.$t('leaseOrder.inputText'), trigger: 'blur' }
+        ],
+        deviceNum: [
+          { required: true, message: this.$t('leaseOrder.message'), trigger: 'blur' }
+        ],
+        deductionCycle: [
+          { required: true, message: this.$t('leaseOrder.message1'), trigger: 'blur' }
+        ],
+        deductionAmount: [
+          { required: true, message: this.$t('leaseOrder.message2'), trigger: 'blur' }
+        ]
+      }
+    },
   },
   mounted() {
     if (this.orderId) {

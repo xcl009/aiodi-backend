@@ -53,7 +53,25 @@ export default {
   },
   data() {
     return {
-      rules: {
+      clickSubmit: false,
+      form: {
+        picture: false,
+        brandId: this.$route.query.brandId || '',
+        positionQty: 1,
+        merchandiseQty: 1,
+      },
+      factoryList: []
+    }
+  },
+  computed: {
+    myDevice() {
+      return this.$store.state.user.myDevice
+    },
+    myDeviceName() {
+      return this.$store.state.user.myDeviceName
+    },
+    rules() {
+      return {
         deviceTypeCode: [{
           required: true,
           message: this.$t('qrcode.plseaseDeviceType'),
@@ -74,25 +92,8 @@ export default {
           message: this.$t('qrcode.numberOfWarehousesText'),
           trigger: 'blur'
         }]
-      },
-
-      clickSubmit: false,
-      form: {
-        picture: false,
-        brandId: this.$route.query.brandId || '',
-        positionQty: 1,
-        merchandiseQty: 1,
-      },
-      factoryList: []
-    }
-  },
-  computed: {
-    myDevice() {
-      return this.$store.state.user.myDevice
+      }
     },
-    myDeviceName() {
-      return this.$store.state.user.myDeviceName
-    }
   },
   mounted() {
     this.getFactory()
@@ -153,4 +154,5 @@ export default {
   /deep/ .el-select {
     width: 100%;
   }
-}</style>
+}
+</style>

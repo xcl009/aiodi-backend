@@ -178,21 +178,33 @@ export default {
         page: 1,
         size: 20
       },
-      CardType: [{ name: this.$t('membership.type'), val: 1 }, { name: this.$t('membership.type1'), val: 2 }, { name: this.$t('membership.type2'), val: 3 }],
-      Cycle: [{ name: this.$t('public.day'), val: 1 }, { name: this.$t('public.circumference'), val: 7 }, { name: this.$t('public.theMoon'), val: 30 }],
       form: {},
 
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
-      dialogTitle: {
-        1: this.$t('membership.addMembershipCard')
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
-
-      cardRules: {
+    }
+  },
+  computed: {
+    Ability() {
+      return this.$store.getters.Ability
+    },
+    CardType() {
+      return [{ name: this.$t('membership.type'), val: 1 }, { name: this.$t('membership.type1'), val: 2 }, { name: this.$t('membership.type2'), val: 3 }]
+    },
+    Cycle() {
+      return [{ name: this.$t('public.day'), val: 1 }, { name: this.$t('public.circumference'), val: 7 }, { name: this.$t('public.theMoon'), val: 30 }]
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('membership.addMembershipCard')
+      }
+    },
+    cardRules() {
+      return {
         serviceName: [{
           required: true,
           message: this.$t('membership.message'),
@@ -223,13 +235,8 @@ export default {
           message: this.$t('membership.message4'),
           trigger: 'blur'
         }]
-      },
-    }
-  },
-  computed: {
-    Ability() {
-      return this.$store.getters.Ability
-    }
+      }
+    },
   },
   mounted() {
     this.getDevice()
@@ -411,4 +418,5 @@ export default {
 <style scoped lang="scss">
 /deep/ .el-dialog__body {
   padding: 10px;
-}</style>
+}
+</style>

@@ -413,15 +413,6 @@ export default {
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
-      dialogTitle: {
-        1: '',
-        2: this.$t('public.deleteAgent'),
-        3: '',
-        4: this.$t('store.assignMerchants'),
-        5: this.$t('public.freezeAmount'),
-        8: this.$t('store.assignAgents'),
-        9: this.$t('store.assignAgents')
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
@@ -490,6 +481,17 @@ export default {
     },
     Ability() {
       return this.$store.getters.Ability
+    },
+    dialogTitle() {
+      return {
+        1: '',
+        2: this.$t('public.deleteAgent'),
+        3: '',
+        4: this.$t('store.assignMerchants'),
+        5: this.$t('public.freezeAmount'),
+        8: this.$t('store.assignAgents'),
+        9: this.$t('store.assignAgents')
+      }
     }
   },
   methods: {

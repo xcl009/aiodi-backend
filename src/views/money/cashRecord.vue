@@ -4,7 +4,7 @@
       <el-table id="list_table" v-loading="listLoading" :data="list" element-loading-text="Loading" highlight-current-row>
         <el-table-column :label="$t('public.orderNo')">
           <template slot-scope="scope">
-            {{ scope.row.id}}
+            {{ scope.row.id }}
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.withdrawalTime')">
@@ -24,7 +24,7 @@
         </el-table-column>
         <el-table-column :label="$t('moeny.receivedAmount')">
           <template slot-scope="scope">
-            <div class="el-link el-link--primary">{{ scope.row.amountReceived}}</div>
+            <div class="el-link el-link--primary">{{ scope.row.amountReceived }}</div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.status')">
@@ -42,69 +42,64 @@
         </el-table-column> -->
       </el-table>
       <div class="flex justify-center">
-        <pagination
-          v-show="listTotal > 0"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          :total="parseInt(listTotal)"
-          @pagination="getList"
-        />
+        <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
+          :total="parseInt(listTotal)" @pagination="getList" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import Pagination from '@/components/Pagination'
-  export default {
-    name: 'withdrawRecord',
-    components: {
-      Pagination
+import Pagination from '@/components/Pagination'
+export default {
+  name: 'withdrawRecord',
+  components: {
+    Pagination
+  },
+  computed: {
+    Constant() {
+      return this.$store.getters.Constant
     },
-    computed: {
-      Constant() {
-        return this.$store.getters.Constant
-      },
-    },
-    data() {
+    statusObj() {
       return {
-        son_id: this.$route.query.son_id || '',
-        list: [],
-        listLoading: true,
-        listTotal: 0,
-        listQuery: {
-          page: 0,
-          size: 20
-        },
-        statusObj: {
-          0: '审核中',
-          1: '审核不通过 ',
-          2: '审核通过,到账中 ',
-          3: '审核通过,已到账'
-        }
-      }
-    },
-    mounted(options) {
-      this.getList()
-    },
-    methods: {
-      getList() {
-        let params = Object.assign({}, this.listQuery, {
-            page: this.listQuery.page - 1
-          }),
-          url = 'iot-saas-pay/api/pay/withdraw/list'
-        this.$get(url, params).then(res => {
-          this.listLoading = false
-          this.list = res.rows
-          this.listTotal = res.total
-        }).catch(() => {
-          this.listLoading = false
-        })
+        0: this.$t('public.inReview'),
+        1: this.$t('cash.typeText'),
+        2: this.$t('cash.typeText1'),
+        3: this.$t('cash.typeText2')
       }
     }
+  },
+  data() {
+    return {
+      son_id: this.$route.query.son_id || '',
+      list: [],
+      listLoading: true,
+      listTotal: 0,
+      listQuery: {
+        page: 0,
+        size: 20
+      },
+    }
+  },
+  mounted(options) {
+    this.getList()
+  },
+  methods: {
+    getList() {
+      let params = Object.assign({}, this.listQuery, {
+        page: this.listQuery.page - 1
+      }),
+        url = 'iot-saas-pay/api/pay/withdraw/list'
+      this.$get(url, params).then(res => {
+        this.listLoading = false
+        this.list = res.rows
+        this.listTotal = res.total
+      }).catch(() => {
+        this.listLoading = false
+      })
+    }
   }
+}
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

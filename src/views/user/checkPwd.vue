@@ -29,11 +29,15 @@ export default {
     return {
       clickSubmit: false,
       form: {},
-      rules: {
+    }
+  },
+  computed: {
+    rules() {
+      return {
         password: [
           { required: true, message: this.$t('user.pleaseSetPassword'), trigger: 'blur' }
         ]
-      },
+      }
     }
   },
   mounted() {

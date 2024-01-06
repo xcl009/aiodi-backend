@@ -71,7 +71,15 @@ export default {
         profitRatio: '',
         code: ''
       },
-      rules: {
+      cityList: []
+    }
+  },
+  computed: {
+    myDeviceId() {
+      return this.$store.getters.myDeviceId
+    },
+    rules() {
+      return {
         deviceTypeCodes: [
           { required: true, message: this.$t('factory.message'), trigger: 'blur' }
         ],
@@ -90,13 +98,7 @@ export default {
         address: [
           { required: true, message: this.$t('factory.message5'), trigger: 'blur' }
         ]
-      },
-      cityList: []
-    }
-  },
-  computed: {
-    myDeviceId() {
-      return this.$store.getters.myDeviceId
+      }
     },
   },
   mounted() {

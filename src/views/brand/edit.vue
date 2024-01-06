@@ -69,23 +69,6 @@ export default {
         password: '123456',
         deviceTypeProfitRatios: {}
       },
-      rules: {
-        role_id: [
-          { required: true, message: this.$t('brand.message'), trigger: 'change' }
-        ],
-        name: [
-          { required: true, message: this.$t('brand.message1'), trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: this.$t('brand.message2'), trigger: 'blur' }
-        ],
-        mobile: [
-          { required: true, message: this.$t('brand.message3'), trigger: 'blur' }
-        ],
-        companyName: [
-          { required: true, message: this.$t('brand.message4'), trigger: 'blur' }
-        ]
-      },
       cityList: [],
       powerInfo: {},
       role: [],
@@ -109,7 +92,26 @@ export default {
     },
     myDevice() {
       return this.$store.getters.myDevice
-    }
+    },
+    rules() {
+      return {
+        role_id: [
+          { required: true, message: this.$t('brand.message'), trigger: 'change' }
+        ],
+        name: [
+          { required: true, message: this.$t('brand.message1'), trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: this.$t('brand.message2'), trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: this.$t('brand.message3'), trigger: 'blur' }
+        ],
+        companyName: [
+          { required: true, message: this.$t('brand.message4'), trigger: 'blur' }
+        ]
+      }
+    },
   },
   mounted() {
     if (this.brandId) {

@@ -154,22 +154,7 @@ export default {
       userKey: this.$route.query.userKey || '',
       code: this.$route.query.code || '',
       deviceTypeCode: '',
-
       form: {},
-
-      //分账关系
-      reType: {
-        STORE: this.$t('reType.STORE'),
-        STAFF: this.$t('reType.STAFF'),
-        STORE_OWNER: this.$t('reType.STORE_OWNER'),
-        PARTNER: this.$t('reType.PARTNER'),
-        HEADQUARTER: this.$t('reType.HEADQUARTER'),
-        BRAND: this.$t('reType.BRAND'),
-        DISTRIBUTOR: this.$t('reType.DISTRIBUTOR'),
-        USER: this.$t('reType.USER'),
-        SUPPLIER: this.$t('reType.SUPPLIER'),
-        CUSTOM: this.$t('reType.CUSTOM'),
-      },
       wechatList: [],
 
       // 弹出相关
@@ -192,6 +177,21 @@ export default {
     },
     Ability() {
       return this.$store.getters.Ability
+    },
+    //分账关系
+    reType() {
+      return {
+        STORE: this.$t('reType.STORE'),
+        STAFF: this.$t('reType.STAFF'),
+        STORE_OWNER: this.$t('reType.STORE_OWNER'),
+        PARTNER: this.$t('reType.PARTNER'),
+        HEADQUARTER: this.$t('reType.HEADQUARTER'),
+        BRAND: this.$t('reType.BRAND'),
+        DISTRIBUTOR: this.$t('reType.DISTRIBUTOR'),
+        USER: this.$t('reType.USER'),
+        SUPPLIER: this.$t('reType.SUPPLIER'),
+        CUSTOM: this.$t('reType.CUSTOM'),
+      }
     }
   },
   mounted() {
@@ -359,4 +359,5 @@ export default {
   height: 50px;
   line-height: 50px;
   font-size: 16px;
-}</style>
+}
+</style>

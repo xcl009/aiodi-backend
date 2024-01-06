@@ -146,10 +146,6 @@ export default {
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
-      dialogTitle: {
-        1: this.$t('miniProgram.bindTemplateId'),
-        2: this.$t('miniProgram.bindWxUser')
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
@@ -158,6 +154,12 @@ export default {
   computed: {
     agentInfo() {
       return this.$store.state.user.agentInfo
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('miniProgram.bindTemplateId'),
+        2: this.$t('miniProgram.bindWxUser')
+      }
     }
   },
   mounted() {

@@ -76,7 +76,21 @@ export default {
       clickSubmit: false,
       storeId: this.$route.query.storeId || '',
       toolsList: [],
-      toolsObj: {
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      curRow: {},
+      curIdx: 0,
+      dform: {}
+    }
+  },
+  computed: {
+    myDeviceId() {
+      return this.$store.state.user.myDeviceId
+    },
+    toolsObj() {
+      return {
         WIFI: {
           desc: this.$t('home.wifiText'),
           btns: [
@@ -108,24 +122,14 @@ export default {
             }
           ]
         }
-      },
-
-      // 弹出相关
-      dialogType: 1,
-      dialogStatus: false,
-      dialogTitle: {
+      }
+    },
+    dialogTitle() {
+      return {
         1: this.$t('store.setWifi'),
         2: this.$t('store.setPhone')
-      },
-      curRow: {},
-      curIdx: 0,
-      dform: {}
-    }
-  },
-  computed: {
-    myDeviceId() {
-      return this.$store.state.user.myDeviceId
-    }
+      }
+    },
   },
   mounted() {
     this.getTools()
@@ -235,4 +239,5 @@ export default {
   /deep/ .el-form-item {
     margin-bottom: 5px;
   }
-}</style>
+}
+</style>

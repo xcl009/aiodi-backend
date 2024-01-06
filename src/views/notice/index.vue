@@ -109,20 +109,6 @@ export default {
     },
     data() {
         return {
-            identity: [
-                {
-                    title: this.$t('public.brand'),
-                    type: 'brandId',
-                },
-                {
-                    title: this.$t('public.store'),
-                    type: 'storeId',
-                },
-                {
-                    title: this.$t('public.agent'),
-                    type: 'agentId',
-                }
-            ],
             clickSubmit: false,
             form: {
 
@@ -140,10 +126,6 @@ export default {
             dialogType: 1,
             dialogStatus: false,
             drawerStatus: false,
-            dialogTitle: {
-                1: this.$t('notice.addNotice'),
-                2: this.$t('notice.editNotice')
-            },
             curRow: {},
             curIdx: 0,
             dform: {
@@ -174,7 +156,29 @@ export default {
         },
         myDevice() {
             return this.$store.state.user.myDevice;
-        }
+        },
+        identity() {
+            return [
+                {
+                    title: this.$t('public.brand'),
+                    type: 'brandId',
+                },
+                {
+                    title: this.$t('public.store'),
+                    type: 'storeId',
+                },
+                {
+                    title: this.$t('public.agent'),
+                    type: 'agentId',
+                }
+            ]
+        },
+        dialogTitle() {
+            return {
+                1: this.$t('notice.addNotice'),
+                2: this.$t('notice.editNotice')
+            }
+        },
     },
     mounted() {
         this.getList();
@@ -333,7 +337,9 @@ export default {
 }
 </script>
   
-<style lang="scss" scoped>/deep/.el-drawer {
+<style lang="scss" scoped>
+/deep/.el-drawer {
     min-width: 500px !important;
-}</style>
+}
+</style>
   

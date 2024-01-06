@@ -70,9 +70,6 @@ export default {
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
-      dialogTitle: {
-        1: this.$t('role.deleteRole')
-      },
       curRow: {},
       curIdx: 0,
       dform: {}
@@ -94,7 +91,11 @@ export default {
     }
   },
   computed: {
-
+    dialogTitle() {
+      return {
+        1: this.$t('role.deleteRole')
+      }
+    }
   },
   mounted() {
 

@@ -3,37 +3,37 @@
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="10">
         <el-form ref="form" :rules="rules" :model="form" label-width="130px" label-position="left">
-          <h4>商品信息</h4>
-          <el-form-item ref="pictures" label="商品图片" prop="pictures">
+          <h4>{{ $t('goods.commodityInformation') }}</h4>
+          <el-form-item ref="pictures" :label="$t('shopping.commodityPicture')" prop="pictures">
             <upload v-model="form.pictures" :limit="5" />
           </el-form-item>
-          <el-form-item ref="title" label="商品标题" prop="title">
-            <el-input v-model="form.title" placeholder="请填写商品标题" />
+          <el-form-item ref="title" :label="$t('goods.productTitle')" prop="title">
+            <el-input v-model="form.title" :placeholder="$t('goods.productTitleText')" />
           </el-form-item>
-          <el-form-item ref="subhead" label="副标题" prop="subhead">
-            <el-input v-model="form.subhead" placeholder="请填写副标题" />
+          <el-form-item ref="subhead" :label="$t('goods.subtitle')" prop="subhead">
+            <el-input v-model="form.subhead" :placeholder="$t('goods.subtitleText')" />
           </el-form-item>
-          <el-form-item ref="costPrice" label="成本价" prop="costPrice">
-            <el-input type="number" v-model="form.costPrice" placeholder="请填写成本价" />
+          <el-form-item ref="costPrice" :label="$t('goods.costPrice')" prop="costPrice">
+            <el-input type="number" v-model="form.costPrice" :placeholder="$t('goods.costPriceText')" />
           </el-form-item>
-          <el-form-item ref="retailPrice" label="零售价" prop="retailPrice">
-            <el-input type="number" v-model="form.retailPrice" placeholder="请填写零售价" />
+          <el-form-item ref="retailPrice" :label="$t('goods.retailPrice')" prop="retailPrice">
+            <el-input type="number" v-model="form.retailPrice" :placeholder="$t('goods.retailPriceText')" />
           </el-form-item>
-          <el-form-item ref="stock" label="库存" prop="stock">
-            <el-input type="number" v-model="form.stock" placeholder="请填写库存" />
+          <el-form-item ref="stock" :label="$t('public.inventory')" prop="stock">
+            <el-input type="number" v-model="form.stock" :placeholder="$t('shopping.pleaseInventory')" />
           </el-form-item>
-          <el-form-item label="已售">
-            <el-input type="number" v-model="form.saleNum" placeholder="虚假的已售数量" />
+          <el-form-item :label="$t('goods.saleNum')">
+            <el-input type="number" v-model="form.saleNum" :placeholder="$t('goods.saleNumText')" />
           </el-form-item>
-          <el-form-item label="状态">
+          <el-form-item :label="$t('public.status')">
             <el-switch v-model="form.status" active-value="ENABLE" inactive-value="CLOSE" />
-            <div class="fs-s2 text-gray">注：开启表示上架。</div>
+            <div class="fs-s2 text-gray">{{ $t('goods.text2') }}</div>
           </el-form-item>
-          <el-form-item label="商品详情">
+          <el-form-item :label="$t('shopping.productDetails')">
             <tinymce v-model="form.description" :height="300" />
           </el-form-item>
           <el-form-item>
-            <el-button class="mt-10 mb-10" type="primary" @click="onSubmit('form')" :disabled="clickSubmit">立即提交
+            <el-button class="mt-10 mb-10" type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submitNow') }}
             </el-button>
           </el-form-item>
         </el-form>
@@ -54,43 +54,6 @@
     data() {
       return {
         clickSubmit: false,
-        form: {
-          pictures: [],
-          subhead: '私密购买，非正品包退',
-          status: 'ENABLE'
-        },
-        rules: {
-          // pictures: [{
-          //   required: true,
-          //   message: '请最少上传一张商品图片',
-          //   trigger: 'blur'
-          // }],
-          title: [{
-            required: true,
-            message: '请填写商品标题',
-            trigger: 'blur'
-          }],
-          subhead: [{
-            required: true,
-            message: '请填写商品副标题',
-            trigger: 'blur'
-          }],
-          costPrice: [{
-            required: true,
-            message: '请填写商品成本价',
-            trigger: 'blur'
-          }],
-          retailPrice: [{
-            required: true,
-            message: '请填写商品零售价',
-            trigger: 'blur'
-          }],
-          stock: [{
-            required: true,
-            message: '请填写商品库存',
-            trigger: 'blur'
-          }]
-        },
         id: this.$route.query.id || ''
       }
     },
@@ -98,6 +61,47 @@
       siteInfo() {
         const siteInfo = this.$store.getters.siteInfo
         return siteInfo
+      },
+      form(){
+        return {
+          pictures: [],
+          subhead: this.$t('goods.dataText'),
+          status: 'ENABLE'
+        }
+      },
+      rules(){
+        return {
+          // pictures: [{
+          //   required: true,
+          //   message: '请最少上传一张商品图片',
+          //   trigger: 'blur'
+          // }],
+          title: [{
+            required: true,
+            message: this.$t('goods.productTitleText'),
+            trigger: 'blur'
+          }],
+          subhead: [{
+            required: true,
+            message: this.$t('goods.subtitleText'),
+            trigger: 'blur'
+          }],
+          costPrice: [{
+            required: true,
+            message: this.$t('goods.costPriceText'),
+            trigger: 'blur'
+          }],
+          retailPrice: [{
+            required: true,
+            message: this.$t('goods.retailPriceText'),
+            trigger: 'blur'
+          }],
+          stock: [{
+            required: true,
+            message: this.$t('goods.dataText1'),
+            trigger: 'blur'
+          }]
+        }
       }
     },
     mounted() {
@@ -127,6 +131,7 @@
        * @param {String} formName
        */
       onSubmit(formName) {
+        let that = this;
         let type = '$post'
         this.clickSubmit = true
         this.$refs[formName].validate((valid, object) => {
@@ -145,7 +150,7 @@
             }
             this[type]('iot-saas-device/admin/merchandise', params).then(res => {
               this.$message({
-                message: '提交成功',
+                message: that.$t('public.submittedSuccess'),
                 type: 'success'
               })
               this.$router.push({

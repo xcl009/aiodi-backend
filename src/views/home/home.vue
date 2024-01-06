@@ -609,25 +609,8 @@ export default {
         "#9AF68C"
       ],
       deviceChartData: [],
-
-      day_type_arr: [this.$t('public.sevenDays'), this.$t('public.thisWeek'), this.$t('public.lastWeek'), this.$t('public.thisMonth'), this.$t('public.lastMonth')],
       day_type: 0,
-      contrast_arr: [this.$t('public.aTurnover'), this.$t('home.orderNum'), this.$t('public.unitPrice')],
       contrast_type: 0,
-
-      tool: [{
-        title: this.$t('home.contWifi'),
-        desc: this.$t('home.wifiText'),
-      },
-      {
-        title: this.$t('home.contactReception'),
-        desc: this.$t('home.receptionText'),
-      },
-      {
-        title: this.$t('home.suggestions'),
-        desc: this.$t('home.suggestionsText'),
-      }
-      ],
 
       /*主题房*/
       roomList: {},
@@ -643,9 +626,6 @@ export default {
       dialogType: 1,
       dialogStatus: false,
       dialogStatus111: true,
-      dialogTitle: {
-        6: this.$t('home.suggestionsText')
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
@@ -657,7 +637,95 @@ export default {
       orderList: [],
 
       storeList: [],
-      storeLists: [
+      /**
+             * 列的配置化对象，存储配置信息
+             */
+      showColumn: [],
+      // 是否显示商户统计数据
+      isStoreType: false,
+      formKey: {
+        sel1: 'storeId',
+      },
+      listQuery: {
+        page: 1,
+        size: 20
+      },
+      listTotal: 0,
+      list: [],
+      listLoading: true,
+      tableMaxH: '250',
+      isadd: false,
+      copyText: copyText,
+    }
+  },
+  computed: {
+    Constant() {
+      return this.$store.getters.Constant
+    },
+    device() {
+      return this.$store.state.app.device
+    },
+    myDeviceName() {
+      return this.$store.getters.myDeviceName
+    },
+    myDeviceId() {
+      return this.$store.getters.myDeviceId
+    },
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
+    Ability() {
+      return this.$store.getters.Ability
+    },
+    rests() {
+      return this.$store.getters.rests
+    },
+    defaultColumn() {
+      return [
+        {
+          key: 'orderNumber',
+          val: true,
+          name: this.$t('home.orderNum')
+        },
+        {
+          key: 'amount',
+          val: true,
+          name: this.$t('public.aTurnover')
+        },
+        {
+          key: 'amountDivide',
+          val: true,
+          name: this.$t('public.income')
+        },
+        {
+          key: 'amountDeposit',
+          val: true,
+          name: this.$t('home.seizuresNum')
+        },
+        {
+          key: 'active',
+          val: true,
+          name: this.$t('home.alldeposit')
+        },
+        {
+          key: 'amountUnrefund',
+          val: true,
+          name: this.$t('home.allRefunded')
+        },
+      ]
+    },
+    queryObj() {
+      return {
+        storeId: {
+          title: this.$t('public.storeName'),
+          type: 'selectSearch',
+          name: 'name',
+          sType: 3
+        },
+      }
+    },
+    storeLists() {
+      return [
         {
           ranking: 1,
           storeName: this.$t('home.hotelName'),
@@ -712,90 +780,34 @@ export default {
           deviceOnline: 5,
           deviceOffline: 1
         }
-      ],
-      /**
-             * 列的配置化对象，存储配置信息
-             */
-      showColumn: [],
-      defaultColumn: [
-        {
-          key: 'orderNumber',
-          val: true,
-          name: this.$t('home.orderNum')
-        },
-        {
-          key: 'amount',
-          val: true,
-          name: this.$t('public.aTurnover')
-        },
-        {
-          key: 'amountDivide',
-          val: true,
-          name: this.$t('public.income')
-        },
-        {
-          key: 'amountDeposit',
-          val: true,
-          name: this.$t('home.seizuresNum')
-        },
-        {
-          key: 'active',
-          val: true,
-          name: this.$t('home.alldeposit')
-        },
-        {
-          key: 'amountUnrefund',
-          val: true,
-          name: this.$t('home.allRefunded')
-        },
-      ],
-      // 是否显示商户统计数据
-      isStoreType: false,
-      formKey: {
-        sel1: 'storeId',
+      ]
+    },
+    tool() {
+      return [{
+        title: this.$t('home.contWifi'),
+        desc: this.$t('home.wifiText'),
       },
-      queryObj: {
-        storeId: {
-          title: this.$t('public.storeName'),
-          type: 'selectSearch',
-          name: 'name',
-          sType: 3
-        },
+      {
+        title: this.$t('home.contactReception'),
+        desc: this.$t('home.receptionText'),
       },
-      listQuery: {
-        page: 1,
-        size: 20
-      },
-      listTotal: 0,
-      list: [],
-      listLoading: true,
-      tableMaxH: '250',
-      isadd: false,
-      copyText: copyText,
-    }
-  },
-  computed: {
-    Constant() {
-      return this.$store.getters.Constant
+      {
+        title: this.$t('home.suggestions'),
+        desc: this.$t('home.suggestionsText'),
+      }
+      ]
     },
-    device() {
-      return this.$store.state.app.device
+    contrast_arr() {
+      return [this.$t('public.aTurnover'), this.$t('home.orderNum'), this.$t('public.unitPrice')]
     },
-    myDeviceName() {
-      return this.$store.getters.myDeviceName
+    day_type_arr() {
+      return [this.$t('public.sevenDays'), this.$t('public.thisWeek'), this.$t('public.lastWeek'), this.$t('public.thisMonth'), this.$t('public.lastMonth')]
     },
-    myDeviceId() {
-      return this.$store.getters.myDeviceId
+    dialogTitle() {
+      return {
+        6: this.$t('home.suggestionsText')
+      }
     },
-    agentInfo() {
-      return this.$store.getters.agentInfo
-    },
-    Ability() {
-      return this.$store.getters.Ability
-    },
-    rests() {
-      return this.$store.getters.rests
-    }
   },
   activated() {
     this.getList()

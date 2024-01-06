@@ -220,13 +220,53 @@ export default {
       accSub: accSub,
       copyText: copyText,
       clickSubmit: false,
-      statusObj: {
+      numInfo: {},
+      form: {},
+      tableMaxH: '250',
+      list: [],
+      listLoading: true,
+      listTotal: 0,
+      listQuery: {
+        status: this.$route.query.status || '-1',
+        page: 1,
+        size: 20
+      },
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      curRow: {},
+      curIdx: 0,
+      dform: {}
+    }
+  },
+  activated() {
+    if (this.$route.meta.reload) {
+      this.getList()
+    } else if (!this.list || this.list.length == 0) {
+      this.toQuery()
+    }
+  },
+  computed: {
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
+    device() {
+      return this.$store.state.app.device
+    },
+    statusObj() {
+      return {
         0: this.$t('public.inReview'),
         1: this.$t('cash.typeText'),
         2: this.$t('cash.typeText1'),
         3: this.$t('cash.typeText2')
-      },
-      statusArr: [
+      }
+    },
+    statusArr() {
+      return [
         {
           value: '-1',
           title: this.$t('public.all'),
@@ -252,48 +292,14 @@ export default {
           title: this.$t('public.passed'),
           nkey: 'done'
         }
-      ],
-      numInfo: {},
-      form: {},
-      tableMaxH: '250',
-      list: [],
-      listLoading: true,
-      listTotal: 0,
-      listQuery: {
-        status: this.$route.query.status || '-1',
-        page: 1,
-        size: 20
-      },
-
-      // 弹出相关
-      dialogType: 1,
-      dialogStatus: false,
-      dialogTitle: {
+      ]
+    },
+    dialogTitle() {
+      return {
         2: this.$t('goods.dialogTitle'),
         1: this.$t('goods.dialogTitle1')
-      },
-      curRow: {},
-      curIdx: 0,
-      dform: {}
+      }
     }
-  },
-  activated() {
-    if (this.$route.meta.reload) {
-      this.getList()
-    } else if (!this.list || this.list.length == 0) {
-      this.toQuery()
-    }
-  },
-  computed: {
-    siteInfo() {
-      return this.$store.getters.siteInfo
-    },
-    agentInfo() {
-      return this.$store.getters.agentInfo
-    },
-    device() {
-      return this.$store.state.app.device
-    },
   },
   mounted() {
 
@@ -462,7 +468,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>.pay-code {
+<style lang="scss" scoped>
+.pay-code {
   width: 50px;
   height: 50px;
-}</style>
+}
+</style>
