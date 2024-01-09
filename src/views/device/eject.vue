@@ -241,7 +241,7 @@
               this.clickSubmit = false
             })
           break
-          case 'HY': case 'XC': case 'DD': case 'OT':
+          default:
             this.$message({
               message: '指令已发送',
               type: 'success'

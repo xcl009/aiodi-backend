@@ -16,14 +16,23 @@
 
           <template v-if="checkAbility([`${deviceTypeCode}_DEPOSIT_MP`], 3)">
             <el-form-item label="退回钱包">
-              <div class="flex align-center">
-                <el-switch v-model="form.returnWallet" :active-value="1" :inactive-value="2" />
-                <span class="ml-10 fs-s3">开启表示押金退到小程序钱包，不开启表示押金原路退回</span>
-              </div>
+              <el-switch v-model="form.returnWallet" :active-value="1" :inactive-value="2" />
             </el-form-item>
+            <template v-if="form.returnWallet == 1">
+              <h4 class="flex mb-20 mt-10">支付方式</h4>
+              <template v-for="(item, key) in Constant.PayType">
+                <el-form-item :label="item" v-if="[1,2,8,9].indexOf(parseInt(key)) > -1">
+                  <div class="flex align-center">
+                    <el-switch v-model="form.paymentRefundConfig[key]" active-value="1" inactive-value="0"/>
+                    <span class="ml-10 fs-s3">开启表示{{ item }}支付的押金退到小程序钱包，不开启表示押金原路退回</span>
+                  </div>
+                </el-form-item>
+              </template>
+            </template>
           </template>
 
           <template v-if="checkAbility([`${deviceTypeCode}_DEPOSIT_DELAY`], 3)">
+            <h4 class="flex mb-20 mt-10">其他配置</h4>
             <el-form-item label="延时退">
               <div class="flex align-center">
                 <el-switch v-model="form.refundTimeStatus" :active-value="1" :inactive-value="2" />
@@ -69,16 +78,16 @@
     name: 'steal',
     data() {
       return {
-        form: {
-          returnWallet: 2,
-          refundTimeStatus: 2
-        },
+        form: {},
         id: this.$route.query.id || '',
         userKey: this.$route.query.userKey || '',
         deviceTypeCode: ''
       }
     },
     computed: {
+      Constant() {
+        return this.$store.getters.Constant
+      },
       myDeviceId() {
         return this.$store.getters.myDeviceId
       },
@@ -102,11 +111,15 @@
         this.$get(`iot-saas-basic/admin/depositRefundConfig/v1/find`, params).then((res = {}) => {
           if (res.enable != undefined) {
             res.refundTimeStatus = res.delayedRefundTime > 0 ? 1 : 0
+            if(!res.paymentRefundConfig){
+              res.paymentRefundConfig = {1: '0', 2: '0', 8: '0', 9: '0'}
+            }
             this.form = res
           } else {
             this.form = {
               returnWallet: 2,
-              refundTimeStatus: 2
+              refundTimeStatus: 2,
+              paymentRefundConfig: {1: '0', 2: '0', 8: '0', 9: '0'}
             }
           }
         })
@@ -124,6 +137,7 @@
         }
         params.deviceTypeCode = this.deviceTypeCode
         params.delayedRefundTime = params.refundTimeStatus == 1 ? params.delayedRefundTime : 0
+        params.paymentRefundConfig = JSON.stringify(params.paymentRefundConfig)
         this.$post(`iot-saas-basic/admin/depositRefundConfig/v1/update`, params).then(res => {
           this.$message({
             message: '设置成功',

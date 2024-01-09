@@ -2,11 +2,28 @@
   <div class="p-5">
     <div class="mt-5 pt-20 pl-20 pr-20 bg-white">
       <el-row :gutter="20">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand()">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box default flex align-center justify-center">
+                <svg-icon icon-class="setting"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">超时订单成本设置</div>
+                <div class="mt-5 fs-s3 text-gray">设置超时订单设备成本及分润规则</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/orderOt`})">设置</el-button>
+            </div>
+          </div>
+        </el-col>
+
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="myDeviceId['VM'] && vendorInfo.operationMode == 'SELF_RUN'">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
-              <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+              <div class="icon-box default flex align-center justify-center">
+                <svg-icon icon-class="setting"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">商品管理</div>
@@ -24,8 +41,8 @@
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-else-if="myDeviceId['VM'] && Ability['order']">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
-              <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+              <div class="icon-box default flex align-center justify-center">
+                <svg-icon icon-class="setting"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">售货机订单管理</div>
@@ -41,8 +58,8 @@
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(Object.keys(config.roomDevice), 2)">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
-              <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+              <div class="icon-box default flex align-center justify-center">
+                <svg-icon icon-class="setting"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">主题房设备</div>
@@ -59,7 +76,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">概率押金</div>
@@ -76,7 +93,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">押金退款规则</div>
@@ -92,7 +109,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">免费名额规则</div>
@@ -108,7 +125,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">默认计费规则</div>
@@ -124,7 +141,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">DD设置</div>
@@ -136,19 +153,19 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand()">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">超时订单成本设置</div>
-                <div class="mt-5 fs-s3 text-gray">设置超时订单设备成本及分润规则</div>
+                <div class="fs-b1">延时归还订单用户端展示状态</div>
+                <div class="mt-5 fs-s3 text-gray">配置延时归还订单在延时时间段内用户端订单展示状态</div>
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/orderOt`})">设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'ORDER_CLOSE_TIME' }, 5)">设置</el-button>
             </div>
           </div>
         </el-col>
@@ -156,7 +173,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">代理、商户、用户提现规则</div>
@@ -172,7 +189,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">登录手机号授权设置</div>
@@ -188,7 +205,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">免押订单租借次数限制</div>
@@ -204,7 +221,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">地图图标及附近商户展示设置</div>
@@ -220,11 +237,11 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">商户收益明细、月(日)统计设置</div>
-                <div class="mt-5 fs-s3 text-gray">配置商户收益明细、月(日)统计相关设置</div>
+                <div class="fs-b1">商户查看数据相关设置</div>
+                <div class="mt-5 fs-s3 text-gray">配置商户收益明细、月(日)统计、查看订单相关设置</div>
               </div>
             </div>
             <div class="text-right">
@@ -232,22 +249,23 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && myDeviceId['PA']">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['TIKTOK_DRAINS'], 3)">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">延时归还订单用户端展示状态</div>
-                <div class="mt-5 fs-s3 text-gray">配置延时归还订单在延时时间段内用户端订单展示状态</div>
+                <div class="fs-b1">抖音引流设置</div>
+                <div class="mt-5 fs-s3 text-gray">设置您的抖音推广码，用户扫描设备码自动复制推广码，打开抖音自动推荐</div>
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'ORDER_CLOSE_TIME' }, 5)">设置</el-button>
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'TIKTOK_DRAINS' }, 6)">设置</el-button>
             </div>
           </div>
         </el-col>
+
         <el-col :span="24" class="pb-20 cursor">
           <div>更多功能开发中，请持续关注</div>
         </el-col>
@@ -304,6 +322,14 @@
             <el-switch v-model="dform.checkMouthStatSp" :active-value="1" :inactive-value="0" />
             <div class="line-default fs-s3">开启表示只展示日期和收益额</div>
           </el-form-item>
+          <el-form-item label="查看订单权限">
+            <el-radio-group v-model="dform.checkOrder">
+              <el-radio-button :label="0">默认可查看</el-radio-button>
+              <el-radio-button :label="1">默认不可看</el-radio-button>
+              <el-radio-button :label="2">禁止查看</el-radio-button>
+            </el-radio-group>
+            <div class="mt-10 line-default fs-s3">选择禁止查看表示所有商户不可查看订单(设置单个商户查看订单权限将无效)</div>
+          </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 5">
@@ -314,7 +340,13 @@
           </el-form-item>
         </el-form>
       </template>
-
+      <template v-if="dialogType == 6">
+        <el-form class="custom-form pl-20 pr-20" :model="dform">
+          <el-form-item label="抖音推广码">
+            <el-input v-model="dform.tiktokDrains" type="textarea" rows="5"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
       <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
         <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
         <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">确定</el-button>
@@ -342,8 +374,9 @@
           1: '用户登录授权手机号',
           2: '免押订单租借次数限制',
           3: '地图图标及附近商户展示设置',
-          4: '全站商户设置',
+          4: '商户查看数据全站设置',
           5: '延时归还订单状态设置',
+          6: '抖音引流设置',
         },
         curRow: {},
         curIdx: 0,
@@ -396,7 +429,7 @@
             this.dialogType = dialogType
             this.curRow = row
             this.curIdx = idx
-            if([1, 2, 3, 4, 5].indexOf(dialogType) > -1){
+            if([1, 2, 3, 4, 5, 6].indexOf(dialogType) > -1){
               this.$get('iot-saas-basic/admin/settings/find', {
                 code: row.code
               }).then(res => {
@@ -424,7 +457,8 @@
                       this.dform = {
                         checkIncome: 1,
                         checkMouthStat: 1,
-                        checkMouthStatSp: 0
+                        checkMouthStatSp: 0,
+                        checkOrder: 0
                       }
                     break
                     case 5:
@@ -453,7 +487,7 @@
         if(this.clickSubmit) return
         this.clickSubmit = true
         switch (this.dialogType) {
-          case 1: case 2: case 3: case 4: case 5:
+          case 1: case 2: case 3: case 4: case 5: case 6:
             this.clickSubmit = false
             this.$post('iot-saas-basic/admin/settings/save', {
               code: curRow.code,
@@ -488,8 +522,8 @@
 
 <style lang="scss" scoped>
   .role-item {
-    padding: 20px 16px;
-    height: 184px;
+    padding: 15px;
+    height: 165px;
     border-radius: 4px;
     border: 1px solid #E5E6EB;
 

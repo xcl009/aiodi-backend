@@ -696,6 +696,8 @@
                     if(item.alipayPayMode.payModeDetails.maxAmount > item.alipayPayMode.payModeDetails.depositAmount && (item.alipayPayMode.modeType == 'DEPOSIT' || item.alipayPayMode.modeType == 'DEPOSIT_AND_FREE')){
                       error = `${this.myDeviceId[item.deviceTypeCode]}支付宝押金金额不可小于总封顶金额`
                       break
+                    }else if(item.alipayPayMode.modeType == 'DEPOSIT_FREE'){
+                      item.alipayPayMode.payModeDetails.depositAmount = item.alipayPayMode.payModeDetails.maxAmount
                     }
                     item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetails)
                   }
@@ -710,6 +712,8 @@
                     if(item.weixinPayMode.payModeDetails.maxAmount > item.weixinPayMode.payModeDetails.depositAmount && (item.weixinPayMode.modeType == 'DEPOSIT' || item.weixinPayMode.modeType == 'DEPOSIT_AND_FREE')){
                       error = `${this.myDeviceId[item.deviceTypeCode]}微信押金金额不可小于总封顶金额`
                       break
+                    }else if(item.weixinPayMode.modeType == 'DEPOSIT_FREE'){
+                      item.weixinPayMode.payModeDetails.depositAmount = item.weixinPayMode.payModeDetails.maxAmount
                     }
                     item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetails)
                   }

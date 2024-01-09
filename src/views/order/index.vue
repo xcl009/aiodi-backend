@@ -131,7 +131,7 @@
                 <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
               </template>
             </el-table-column>
-            <el-table-column label="支付类型" width="100" v-if="item.val && item.key == 'PayType'">
+            <el-table-column label="支付类型" width="120" v-if="item.val && item.key == 'PayType'">
               <template slot-scope="scope">
                 <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span
                     v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3 && isBrand()">(￥{{ scope.row.orderAmount
@@ -549,7 +549,7 @@
                   <div class="flex">
                     <div class="label-text">备注:</div>
                     <div>
-                      <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ? '消耗电量' : '租借时电量' }}({{ curRow.afterLevel || curRow.level }}%)</span>
+                      <span class="mr-5" v-if="curRow.afterLevel >= 0 || curRow.level >= 0">{{ curRow.afterLevel ? '消耗电量' : '租借时电量' }}({{ curRow.afterLevel >= 0 ? curRow.afterLevel : curRow.level }}%)</span>
                       <template v-if="curRow.freeTime > 0">
                         <span class="mr-5" v-if="curRow.freeUser == 1">免费名额：{{ curRow.freeTime }}分钟</span>
                         <span class="mr-5" v-else-if="curRow.freeUser == 3">暂停计费：{{ curRow.freeTime }}分钟</span>
@@ -1251,24 +1251,22 @@ export default {
               orderNo: row.orderNo
             }).then(res => {
               if (res.devicePopupRecordFeignOutFeign) {
-                this.$set(this.curRow, 'terminalId', res.devicePopupRecordFeignOutFeign.terminalId)
-                if (res.status != 'R') {
-                  this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn)
-                  if (res.devicePopupRecordFeignOutFeign.afterStoreId) {
-                    if(res.devicePopupRecordFeignOutFeign.afterLevel > 0) {
-                      this.$set(this.curRow, 'afterLevel', accSub(res.devicePopupRecordFeignOutFeign.level, res.devicePopupRecordFeignOutFeign.afterLevel))
-                    } else if(res.devicePopupRecordFeignOutFeign.level){
-                      this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
+                this.$set(this.curRow, 'terminalId', res.devicePopupRecordFeignOutFeign.terminalId || '')
+                this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn || '')
+                if (res.devicePopupRecordFeignOutFeign.afterLevel > 0) {
+                  this.$set(this.curRow, 'afterLevel', accSub(res.devicePopupRecordFeignOutFeign.level, res.devicePopupRecordFeignOutFeign.afterLevel))
+                }else if(res.devicePopupRecordFeignOutFeign.level){
+                  this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
+                }
+                if (parseFloat(res.devicePopupRecordFeignOutFeign.afterStoreId) > 0) {
+                  this.$post('iot-saas-order/api/order/getDeductions', {
+                    deductionType: 0,
+                    deductionIds: [res.devicePopupRecordFeignOutFeign.afterStoreId]
+                  }).then(list => {
+                    if (list && list[0]) {
+                    	this.$set(this.curRow, 'returnStore', list[0])
                     }
-                    this.$post('iot-saas-order/api/order/getDeductions', {
-                      deductionType: 0,
-                      deductionIds: [res.devicePopupRecordFeignOutFeign.afterStoreId]
-                    }).then(res => {
-                      this.$set(this.curRow, 'returnStore', res[0])
-                    })
-                  }else if(res.devicePopupRecordFeignOutFeign.level){
-                    this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
-                  }
+                  })
                 }
               }
             })

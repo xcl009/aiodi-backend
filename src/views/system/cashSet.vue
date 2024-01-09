@@ -3,13 +3,19 @@
     <el-row class="pl-20 pr-20 pb-20 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-tabs class="mb-10" v-model="userType" @tab-click="getInfo">
-          <el-tab-pane label="代理提现规则" name="agent" />
+          <el-tab-pane label="代理提现规则" name="agent" v-if="!userKey || userKey != 'storeId'" />
           <el-tab-pane label="商户提现规则" name="store" />
-          <el-tab-pane label="用户提现规则" name="user" />
+          <el-tab-pane label="用户提现规则" name="user" v-if="!id && !userKey"/>
         </el-tabs>
 
         <template v-if="checkAbility([`WD_${userType.toUpperCase()}`], 3)">
           <el-form ref="form" :model="form" label-position="left" label-width="120px">
+            <el-form-item label="规则所属代理" v-if="ruleAgent.id">
+              <div class="flex align-center">
+                {{ ruleAgent.name }}({{ ruleAgent.mobile }})
+              </div>
+            </el-form-item>
+
             <el-form-item label="是否开启">
               <div class="flex align-center">
                 <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
@@ -160,6 +166,7 @@
 
             <el-form-item class="mb-0">
               <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">提交</el-button>
+              <el-button type="danger" @click="del" :disabled="clickSubmit" v-if="parseInt(form.agentId) > 0 || parseInt(form.storeId) > 0">删除</el-button>
             </el-form-item>
           </el-form>
         </template>
@@ -206,14 +213,17 @@
         withdrawType: {},
         week: ['一', '二', '三', '四', '五', '六', '日'],
         sellType: [],
-        userType: 'agent',
         form: {
           supportType: [],
           timeLimit: {}
         },
         mobileWithdraw: {
           isAllowWithdraw: 0
-        }
+        },
+        userType: this.$route.query.userKey == 'storeId' ? 'store' : 'agent',
+        id: this.$route.query.id || '',
+        userKey: this.$route.query.userKey || '',
+        ruleAgent: {}
       }
     },
     mounted() {
@@ -256,9 +266,11 @@
        * 获取信息
        */
       getInfo() {
-        this.$get('iot-saas-basic/api/withdraw/config/v1/find', {
+        let params = {
           userType: this.userType
-        }).then((res = {}) => {
+        }
+        if(this.userKey && this.id) params[this.userKey] = this.id
+        this.$get('iot-saas-basic/api/withdraw/config/v1/find', params).then((res = {}) => {
           if(res.enable){
             let days = [{val: 1}], weeks = [{val: 1}]
             if(res.timeLimit.days && res.timeLimit.days.length > 0){
@@ -278,6 +290,14 @@
             res.timeLimit.weeks = weeks
             this.form = res
             this.sellType = this.arrayKeys(res.supportType, 'type')
+            this.ruleAgent = {}
+            if(parseInt(res.agentId) > 0){
+              this.$get('iot-saas-basic/admin/agent/findById', {
+                id: res.agentId
+              }).then(res => {
+                this.ruleAgent = res
+              })
+            }
           } else {
             this.sellType = ['2', '4']
             this.form = {
@@ -344,6 +364,7 @@
         }else{
           params.timeLimit.days = this.arrayKeys(params.timeLimit.days, 'val')
         }
+        if(this.userKey && this.id) params[this.userKey] = this.id
         this.clickSubmit = true
         this.$post(url, params).then(res => {
           if(!this.oldMobileWithdraw || this.oldMobileWithdraw.isAllowWithdraw != this.mobileWithdraw.isAllowWithdraw){
@@ -359,6 +380,32 @@
           })
         }).catch(err=>{
           this.clickSubmit = false
+        })
+      },
+
+      del(){
+        this.$alert('确定删除该提现规则吗？', '删除提现规则', {
+          confirmButtonText: '确定',
+          center: true,
+          callback: action => {
+            if (action == 'confirm') {
+              this.clickSubmit = true
+              this.$post('iot-saas-basic/admin/withdraw/config/v1/del', {
+                agentId: this.form.agentId,
+                storeId: this.form.storeId,
+                userType: this.userType,
+              }).then(res => {
+                this.clickSubmit = false
+                this.$message({
+                  message: '提交成功',
+                  type: 'success'
+                })
+                this.getInfo()
+              }).catch(err=>{
+                this.clickSubmit = false
+              })
+            }
+          }
         })
       }
     }

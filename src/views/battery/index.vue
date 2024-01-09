@@ -401,13 +401,14 @@
           {
             key: 'lendDurationTotal',
             val: true,
-            name: '使用时长'
+            name: '使用时长(分钟)',
+            width: 130
           },
           {
             key: 'lendDurationAvg',
             val: true,
-            name: '近10次使用时长',
-            width: 130
+            name: '近10次时长(分钟)',
+            width: 150
           },
           {
             key: 'deviceDamageIndex',

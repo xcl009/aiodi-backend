@@ -78,7 +78,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'balance'">
             <template slot-scope="scope">
-              <div class="text-primary cursor" @click="setRows(3, scope.row, 10)" v-if="checkAbility(['WD_MODIFY'], 3)">
+              <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(cashStat[scope.row.id] || {})" v-if="checkAbility(['WD_MODIFY'], 3)">
                 {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
               </div>
               <div class="cursor" v-else>
@@ -165,7 +165,6 @@
 
         <el-table-column label="操作" width="235" :fixed="device == 'desktop' ? 'right' : false" v-else>
           <template slot-scope="scope">
-
             <div class="flex flex-wrap operate">
               <template v-if="isSaas()">
                 <el-button type="text" @click="toLogin(scope.row)">商户管理</el-button>
@@ -208,10 +207,11 @@
                       @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=storeId` })"
                       v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">DD设置</el-dropdown-item>
                     <el-dropdown-item
+                      @click.native="$router.push({ path: `/system/cashSet?id=${scope.row.id}&userKey=storeId` })"
+                      v-if="isBrand() && checkAbility(['WD_AGENT','WD_STORE','WD_USER'], 3)">提现设置</el-dropdown-item>
+                    <el-dropdown-item
                       @click.native="$router.push({ path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId` })"
                       v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">免费名额</el-dropdown-item>
-                    <!-- <el-dropdown-item @click.native="setRows(3, scope.row, 4, scope.$index)"
-                      v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">分配给代理</el-dropdown-item> -->
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DEPOSIT_PRPR` })"
                       v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">概率押金</el-dropdown-item>
@@ -224,9 +224,9 @@
                     <template v-if="checkAbility(['WF'], 2, scope.row.storeDivisionConfig)">
                       <el-dropdown-item @click.native="setRows(3, scope.row, 7)">共享WIFI</el-dropdown-item>
                     </template>
+                    <el-dropdown-item @click.native="setRows(3, scope.row, 10)" v-if="isBrand()">登录记录</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
                       v-if="isBrand()">更多应用</el-dropdown-item>
-
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -464,35 +464,18 @@
         </div>
       </template>
       <template v-if="dialogType == 10">
-        <el-form class="pl-20 pr-20 custom-form" @submit.native.prevent="dialogConfirm()">
-          <el-form-item label="修改金额" v-if="isBrand()">
-            <el-switch
-              v-model="dform.deduction"
-              active-text="扣减"
-              inactive-text="增加" />
-            <el-input type="number" v-model="dform.amount" placeholder="请输入修改金额"></el-input>
-          </el-form-item>
-          <el-form-item label="扣减金额" v-if="isAgent()">
-            <el-input type="number" v-model="dform.amount" placeholder="请输入扣减金额"></el-input>
-          </el-form-item>
-          <el-form-item label="备注信息">
-            <el-input type="text" v-model="dform.remark" placeholder="请输入备注信息"></el-input>
-          </el-form-item>
-          <el-form-item label="记录状态" v-if="isBrand()">
-            <el-switch v-model="dform.visible"/>
-            <div class="fs-s3 color mt-5 line-1">
-              关闭表示下级无法看到本次修改记录且下级查看收益明细列表将无法查看到记录余额和收益总额
-              <el-popover placement="right" title="" trigger="hover">
-                <div>
-                  <img :src="require('@/assets/income.png')" width="300">
-                </div>
-                <el-link type="danger" :underline="false" slot="reference" class="el-icon-question fs-c1"></el-link>
-              </el-popover>
-            </div>
-          </el-form-item>
-        </el-form>
+        <div class="flexv pl-20 pr-20 text-black" v-if="dform.loginList">
+          <el-table class="ptd-5" highlight-current-row element-loading-text="Loading" :data="dform.loginList">
+            <el-table-column label="登录时间" prop="operationTime"></el-table-column>
+            <el-table-column label="可提现金额">
+              <template slot-scope="scope">
+                ￥{{ JSON.parse(scope.row.operationExt)['balance'] }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </template>
-      <template v-if="[1, 4, 6, 7, 9, 10].indexOf(dialogType) > -1">
+      <template v-if="[1, 4, 6, 7, 9].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
@@ -505,6 +488,8 @@
     <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN"></AssignAbility>
     <VendorMode ref="VendorModes" v-if="myDeviceId['VM'] && !isSaas()"></VendorMode>
     <xlsx ref="toXlsx" fileName="商户记录"></xlsx>
+
+    <update-blance ref="UpdateBlances" userType="store" v-if="checkAbility(['WD_MODIFY'], 3)"></update-blance>
   </div>
 </template>
 
@@ -520,6 +505,7 @@ import AssignAbility from '@/components/AssignAbility/'
 import ImportData from '@/components/ImportData/'
 import selectSearch from '@/components/condition/selectSearch'
 import TableColumnSet from '@/components/TableColumnSet/index'
+import UpdateBlance from '@/components/UpdateBlance/'
 import xlsx from '@/components/xlsx/'
 export default {
   name: 'subShop',
@@ -532,6 +518,7 @@ export default {
     AssignAbility,
     ImportData,
     selectSearch,
+    UpdateBlance,
     xlsx
   },
   props: {
@@ -575,7 +562,7 @@ export default {
         6: '冻结金额',
         7: '共享WIFI',
         8: '分配代理',
-        10: '修改下级可提现金额',
+        10: '商户登录记录'
       },
       curRow: {},
       curIdx: 0,
@@ -1073,10 +1060,16 @@ export default {
               }
             })
           } else if (dialogType == 10) {
-            this.dform = {
-              deduction: this.isAgent(),
-              visible: true
-            }
+            this.$get('iot-saas-basic/api/operation/findPage', {
+              ownerId: row.id,
+              operationType: 'STORE_LOGIN',
+              size: 100,
+              page: 0
+            }).then(res => {
+              this.dform = {
+                loginList: res && res.rows ? res.rows : []
+              }
+            })
           }
           if (type == 1) {
             this.dialogStatus = true
@@ -1267,26 +1260,6 @@ export default {
             isApprove: this.checkList.enable,
             isBand: this.checkList.isBand
           }).then(res => {
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.getList();
-            this.drawerStatus = false;
-          }).catch(err => {
-            this.clickSubmit = false
-          })
-          break
-        case 10:
-          if (isNaN(params.amount)) {
-            this.$message({
-              message: '请输入正确的金额',
-              type: 'error'
-            })
-            return
-          }
-          params.ownerId = curRow.id
-          this.$post('iot-saas-pay/admin/pay/withdraw/saasUpdateBlance', params).then(res => {
             this.$message({
               message: '操作成功',
               type: 'success'

@@ -123,6 +123,9 @@
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=agentId` })"
                     v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">DD设置</el-dropdown-item>
+                  <el-dropdown-item
+                    @click.native="$router.push({ path: `/system/cashSet?id=${scope.row.id}&userKey=agentId` })"
+                    v-if="isBrand() && checkAbility(['WD_AGENT','WD_STORE','WD_USER'], 3)">提现设置</el-dropdown-item>
                   <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)"
                     v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">分配给代理</el-dropdown-item> -->
                   <el-dropdown-item
@@ -643,8 +646,6 @@ export default {
           this.curRow = row
           this.curIdx = idx
           this.drawerStatus = true
-
-
       }
     },
 
