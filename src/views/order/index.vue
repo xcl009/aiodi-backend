@@ -1250,7 +1250,7 @@ export default {
             this.$get('iot-saas-order/admin/order/detail', {
               orderNo: row.orderNo
             }).then(res => {
-              if (res.devicePopupRecordFeignOutFeign) {
+              if (res.devicePopupRecordFeignOutFeign && res.status != 'F') {
                 this.$set(this.curRow, 'terminalId', res.devicePopupRecordFeignOutFeign.terminalId || '')
                 this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn || '')
                 if (res.devicePopupRecordFeignOutFeign.afterLevel > 0) {
