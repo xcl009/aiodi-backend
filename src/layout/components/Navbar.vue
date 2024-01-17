@@ -31,7 +31,7 @@
           <span class="ml-10 text-white">我的</span>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="setRows(3, 3)" v-if="!isSaas()">
+          <el-dropdown-item @click.native="setRows(3, 3)" v-if="isBrand()">
             <span>个人设置</span>
           </el-dropdown-item>
           <router-link to="/user/index">

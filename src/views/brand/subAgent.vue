@@ -39,11 +39,11 @@
         </el-table-column>
         <el-table-column label="品类" width="200">
           <template slot-scope="scope">
-            <div>
-              <span class="mr-20 inline" v-for="item in scope.row.agentDeviceType" @click="$router.push({path: `/device?agentId=${scope.row.id}`})">
+            <template v-for="(item, index) in scope.row.agentDeviceType">
+              <div class="cursor" v-if="index < 2">
                 {{ item.name }}
-              </span>
-            </div>
+              </div>
+            </template>
           </template>
         </el-table-column>
         <el-table-column label="设备数">
@@ -85,11 +85,11 @@
         </el-table-column>
         <el-table-column label="分润比例" width="140">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <div v-for="item in scope.row.agentDeviceType">
+            <template v-for="(item, index) in scope.row.agentDeviceType">
+              <div v-if="index < 2">
                 {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
               </div>
-            </div>
+            </template>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="245" :fixed="device == 'desktop' ? 'right' : false">

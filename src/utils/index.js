@@ -767,6 +767,10 @@ const util = {
     }else{
       return `范围${min}-${max}${p > 0 ? '，小数点后'+p+'位' : '的整数'}`
     }
+  },
+  
+  trim: (str) => {
+    return str.replace(/\s/g, "");
   }
 }
 
@@ -808,3 +812,4 @@ export const defaultFee = util.defaultFee
 export const dateSort = util.dateSort
 export const checkQueryRepeat = util.checkQueryRepeat
 export const checkDigit = util.checkDigit
+export const trim = util.trim

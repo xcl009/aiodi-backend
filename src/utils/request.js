@@ -63,6 +63,7 @@ service.interceptors.request.use(
       config.headers['ssid'] = ''
       config.headers['model'] = ''
       config.headers['screen'] = windowScreen
+      config.headers['Accept-Language'] = 'zh_HK'
     }
     if(config.url.indexOf('http') == -1){
       config.baseURL = Vue.prototype.BASE_URL
@@ -190,7 +191,8 @@ export function $export(url, data = {}) {
     data: data,
     responseType: 'blob',
     headers: {
-      'Content-Type': 'application/vnd.ms-excel;charset=UTF-8'
+      'Content-Type': 'application/vnd.ms-excel;charset=UTF-8',
+      'Accept-Language': 'zh-CN'
     }
   })
 }

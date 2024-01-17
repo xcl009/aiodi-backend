@@ -81,7 +81,7 @@
           <el-table-column :label="item.name" width="100" v-else-if="item.val && item.key == 'tenantNumber'">
             <template slot-scope="scope">
               <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
-                {{ parseInt(scope.row.tenantNumber) + parseInt(scope.row.restoreNumber) }} / {{ scope.row.tenantNumber }}
+                {{ scope.row.tenantNumber }} / {{ scope.row.restoreNumber }}
               </div>
               <div v-else>--</div>
             </template>

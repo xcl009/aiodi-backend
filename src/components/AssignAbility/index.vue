@@ -2,7 +2,7 @@
   <el-dialog :visible.sync="dialogStatus" :show-close="false" :modal-append-to-body="false" width="600px" :center="true"  title="权限设置">
     <div class="flex flex-wrap" v-if="dform.menus">
       <template v-for="item in agentInfo.AssignAbility">
-        <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="item.displayFlag != noFlag">{{ item.name }}</el-checkbox>
+        <el-checkbox class="mt-5 mb-5" v-model="dform.menus[item.id]" v-if="(item.displayFlag == 'BRAND_ASSIGN' && isBrand() && noFlag.indexOf(item.displayFlag) == -1) || (noFlag.indexOf(item.displayFlag) == -1 && item.displayFlag != 'BRAND_ASSIGN')">{{ item.name }}</el-checkbox>
       </template>
     </div>
     <div class="mt-30 text-center">

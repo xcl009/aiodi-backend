@@ -33,9 +33,11 @@
         </el-table-column>
         <el-table-column label="品类">
           <template slot-scope="scope">
-            <div class="cursor" v-for="item in scope.row.agentDeviceType">
-              {{ item.name }}
-            </div>
+            <template v-for="(item, index) in scope.row.agentDeviceType">
+              <div class="cursor" v-if="index < 2">
+                {{ item.name }}
+              </div>
+            </template>
           </template>
         </el-table-column>
         <el-table-column label="设备数">
@@ -76,9 +78,11 @@
         <el-table-column label="分润比例">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <div v-for="item in scope.row.agentDeviceType">
-                {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
-              </div>
+              <template v-for="(item, index) in scope.row.agentDeviceType">
+                <div v-if="index < 2">
+                  {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
+                </div>
+              </template>             
             </div>
           </template>
         </el-table-column>
@@ -91,7 +95,7 @@
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/store?agentId=${scope.row.id}` })">商户列表</el-button>
               <el-button type="primary" size="mini"
-                @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">权限设置</el-button>
+                @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)" v-if="checkAbility(['AGENT_POWER'], 3)">权限设置</el-button>
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/agent/addAgent?agentId=${scope.row.id}` })"
                 v-if="Ability['addAgent']">修改信息</el-button>
@@ -136,7 +140,7 @@
                     v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">微信分账</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"
                     v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">重置登录密码</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 11)" v-if="isBrand()">重置密码</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
                     v-if="isBrand()">更多应用</el-dropdown-item>
                 </el-dropdown-menu>
@@ -329,7 +333,17 @@
           </div>
         </div>
       </template>
-      <template v-if="[9].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 11">
+        <el-form class="pl-20 pr-20 custom-form">
+          <el-form-item label="登录密码">
+            <el-switch v-model="dform.password" />
+          </el-form-item>
+          <el-form-item label="操作密码">
+            <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[9, 11].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
@@ -394,7 +408,8 @@ export default {
         4: '分配商户',
         5: '冻结金额',
         8: '分配代理',
-        9: '分配代理'
+        9: '分配代理',
+        11: '重置密码'
       },
       curRow: {},
       curIdx: 0,
@@ -621,26 +636,6 @@ export default {
             }
           }
           break
-        case 6:
-          this.$alert('确定重置该代理账号的登录密码吗？', '重置登录密码', {
-            confirmButtonText: '确定',
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$post('iot-saas-user/admin/user/password/reset', {
-                  userId: row.userId,
-                  password: '123456'
-                }).then(res => {
-
-                  this.$message({
-                    message: '重置成功',
-                    type: 'success'
-                  })
-                })
-              }
-            }
-          })
-          break
         case 8:
           this.dialogType = dialogType
           this.curRow = row
@@ -745,6 +740,19 @@ export default {
             })
             this.getList();
             this.drawerStatus = false;
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 11:
+          params.userId = curRow.userId
+          if(params.password) params.password = '123456'
+          this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
+            this.$message({
+              message: '重置成功',
+              type: 'success'
+            })
+            this.drawerStatus = false
           }).catch(err => {
             this.clickSubmit = false
           })

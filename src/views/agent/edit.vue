@@ -153,6 +153,7 @@
           params.city = params.province[1]
           params.province = params.province[0]
         }
+        if(params.mobile) params.mobile = this.trim(params.mobile)
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
           if (valid) {

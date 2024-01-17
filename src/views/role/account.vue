@@ -182,6 +182,7 @@
             let type = '$post'
             if(params.userId) type = '$put'
             params.roleId = this.roleId
+            if(param.username) param.username = this.trim(param.username)
             this[type](`iot-saas-user/auth/user`, params).then(res => {
               this.$message({
                 message: '操作成功',

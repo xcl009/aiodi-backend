@@ -220,7 +220,7 @@
                       v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.storeDivisionConfig)">微信分账</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, cashStat[scope.row.id], 6)"
                       v-if="checkAbility(['FROZEN_BALANCE'], 3)">冻结金额</el-dropdown-item>
-                    <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">重置登录密码</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(3, scope.row, 11)" v-if="isBrand()">重置密码</el-dropdown-item>
                     <template v-if="checkAbility(['WF'], 2, scope.row.storeDivisionConfig)">
                       <el-dropdown-item @click.native="setRows(3, scope.row, 7)">共享WIFI</el-dropdown-item>
                     </template>
@@ -475,7 +475,17 @@
           </el-table>
         </div>
       </template>
-      <template v-if="[1, 4, 6, 7, 9].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 11">
+        <el-form class="pl-20 pr-20 custom-form">
+          <el-form-item label="登录密码">
+            <el-switch v-model="dform.password" />
+          </el-form-item>
+          <el-form-item label="操作密码">
+            <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1, 4, 6, 7, 9, 11].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
@@ -485,7 +495,7 @@
     </el-drawer>
 
     <relatedTemplate ref="relatedTemplates"></relatedTemplate>
-    <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN"></AssignAbility>
+    <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN,BRAND_ASSIGN"></AssignAbility>
     <VendorMode ref="VendorModes" v-if="myDeviceId['VM'] && !isSaas()"></VendorMode>
     <xlsx ref="toXlsx" fileName="商户记录"></xlsx>
 
@@ -562,7 +572,8 @@ export default {
         6: '冻结金额',
         7: '共享WIFI',
         8: '分配代理',
-        10: '商户登录记录'
+        10: '商户登录记录',
+        11: '重置密码'
       },
       curRow: {},
       curIdx: 0,
@@ -592,7 +603,8 @@ export default {
         },
         {
           key: 'amount',
-          val: true,
+          val: this.checkAbility(['STORE_NUM_AMOUNT'], 3),
+          hidden: !this.checkAbility(['STORE_NUM_AMOUNT'], 3),
           name: '交易额(元)'
         },
         {
@@ -607,7 +619,8 @@ export default {
         },
         {
           key: 'order',
-          val: true,
+          val: this.checkAbility(['STORE_NUM_AMOUNT'], 3),
+          hidden: !this.checkAbility(['STORE_NUM_AMOUNT'], 3),
           name: '订单量'
         },
         // {
@@ -1098,25 +1111,6 @@ export default {
             }
           })
           break
-        case 6:
-          this.$alert('确定重置该商户账号的登录密码吗？', '重置登录密码', {
-            confirmButtonText: '确定',
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$post('iot-saas-user/admin/user/password/reset', {
-                  userId: row.userId,
-                  password: '123456'
-                }).then(res => {
-                  this.$message({
-                    message: '重置成功',
-                    type: 'success'
-                  })
-                })
-              }
-            }
-          })
-          break
         case 8:
           this.dialogType = dialogType
           this.curRow = row
@@ -1266,6 +1260,19 @@ export default {
             })
             this.getList();
             this.drawerStatus = false;
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 11:
+          params.userId = curRow.userId
+          if(params.password) params.password = '123456'
+          this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
+            this.$message({
+              message: '重置成功',
+              type: 'success'
+            })
+            this.drawerStatus = false
           }).catch(err => {
             this.clickSubmit = false
           })

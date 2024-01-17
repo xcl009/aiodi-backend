@@ -740,6 +740,7 @@
               return
             }
             this.clickSubmit = true
+            if(params.userMobile) params.userMobile = this.trim(params.userMobile)
             this.$post(url, params).then(res => {
               if(!this.storeId){
                 localStorage.setItem(this.storeDfKey, JSON.stringify({

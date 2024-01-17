@@ -1,7 +1,16 @@
 <template>
   <div>
-    <div class="pt-10 pl-10 pr-10 bg-white">
-      <el-button class="mb-10" type="primary" size="medium" @click="refreshOpenToken" v-if="isSaas()">刷新第三方平台token</el-button>
+    <div class="pl-10 pr-10 bg-white">
+      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+        <template v-slot:defult>
+          <el-form-item label="小程序名称">
+            <el-input v-model="form.appName" placeholder="小程序名称" />
+          </el-form-item>
+        </template>
+        <template v-slot:endButton>
+          <el-button class="mb-10" type="primary" size="small" @click="refreshOpenToken" v-if="isSaas()">刷新第三方平台token</el-button>
+        </template>
+      </condition>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
@@ -85,10 +94,12 @@
 </template>
 
 <script>
+  import condition from '@/components/condition/'
   import Pagination from '@/components/Pagination'
   export default {
     name: 'wechat',
     components: {
+      condition,
       Pagination
     },
     props: {
@@ -98,6 +109,7 @@
       return {
         clickSubmit: false,
         tableMaxH: '250',
+        form: {},
         listQuery: {
           page: 1,
           size: 20
@@ -178,7 +190,7 @@
        * 获取列表
        */
       getList() {
-        var params = Object.assign({}, this.listQuery, {
+        var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
         this.$get('iot-saas-pay/admin/pay/config/wechat/list', params).then(res => {

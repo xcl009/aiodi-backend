@@ -121,7 +121,7 @@
                   <el-dropdown-item @click.native="copyloginUrl(scope.row)">登录地址</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3)">跳转小程序</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(5, scope.row)">代理层级缓存</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(6, scope.row)">重置登录密码</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(3, scope.row, 11)">重置密码</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">删除品牌</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>账号恢复</el-dropdown-item>
                 </el-dropdown-menu>
@@ -186,7 +186,17 @@
           </el-form-item>
         </el-form>
       </template>
-      <template v-if="[1,3].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 11">
+        <el-form class="pl-20 pr-20 custom-form">
+          <el-form-item label="登录密码">
+            <el-switch v-model="dform.password" />
+          </el-form-item>
+          <el-form-item label="操作密码">
+            <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1,3,11].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">取消</el-button>
@@ -309,7 +319,8 @@
         dialogTitle: {
           1: '赠送抵扣券',
           2: '合同管理',
-          3: '跳转小程序'
+          3: '跳转小程序',
+          11: '重置密码'
         },
         curRow: {},
         curIdx: 0,
@@ -578,25 +589,6 @@
               }
             })
             break
-          case 6:
-            this.$alert('确定重置该品牌账号的登录密码吗？', '重置登录密码', {
-              confirmButtonText: '确定',
-              center: true,
-              callback: action => {
-                if (action == 'confirm') {
-                  this.$post('iot-saas-user/admin/user/password/reset', {
-                    userId: row.userId,
-                    password: '123456'
-                  }).then(res => {
-                    this.$message({
-                      message: '重置成功',
-                      type: 'success'
-                    })
-                  })
-                }
-              }
-            })
-            break
         }
       },
 
@@ -634,6 +626,19 @@
               })
               this.drawerStatus = false
               this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 11:
+            params.userId = curRow.userId
+            if(params.password) params.password = '123456'
+            this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
+              this.$message({
+                message: '重置成功',
+                type: 'success'
+              })
+              this.drawerStatus = false
             }).catch(err => {
               this.clickSubmit = false
             })

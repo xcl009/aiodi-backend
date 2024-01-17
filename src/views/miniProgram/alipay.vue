@@ -1,6 +1,14 @@
 <template>
   <div>
-    <div class="pt-10 pl-10 pr-10 bg-white">
+    <div class="pl-10 pr-10 bg-white">
+      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+        <template v-slot:defult>
+          <el-form-item label="小程序名称">
+            <el-input v-model="form.appName" placeholder="小程序名称" />
+          </el-form-item>
+        </template>
+      </condition>
+
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column label="小程序">
           <template slot-scope="scope">
@@ -82,16 +90,19 @@
 </template>
 
 <script>
+  import condition from '@/components/condition/'
   import Pagination from '@/components/Pagination'
   export default {
     name: 'alipay',
     components: {
+      condition,
       Pagination
     },
     data() {
       return {
         clickSubmit: false,
         tableMaxH: '250',
+        form: {},
         listQuery: {
           page: 1,
           size: 20
@@ -159,10 +170,20 @@
       },
 
       /**
+       * 重置查询
+       */
+      reset(){
+        if(this.clickSubmit) return
+        this.clickSubmit = true
+        this.form = {}
+        this.getList()
+      },
+
+      /**
        * 获取列表
        */
       getList() {
-        var params = Object.assign({}, this.listQuery, {
+        var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
         this.$get('iot-saas-pay/admin/pay/config/alipay/list', params).then(res => {
