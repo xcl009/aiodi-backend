@@ -53,7 +53,20 @@ export default {
   name: 'freeQuotaConfig',
   data() {
     return {
-      rules: {
+      clickSubmit: false,
+      form: {},
+      deviceTypeCode: ''
+    }
+  },
+  computed: {
+    myDeviceId() {
+      return this.$store.getters.myDeviceId
+    },
+    Ability() {
+      return this.$store.getters.Ability
+    },
+    rules() {
+      return {
         freeTime: [{
           required: true,
           message: this.$t('device.message10'),
@@ -79,18 +92,7 @@ export default {
           message: this.$t('device.message14'),
           trigger: 'blur'
         }]
-      },
-      clickSubmit: false,
-      form: {},
-      deviceTypeCode: ''
-    }
-  },
-  computed: {
-    myDeviceId() {
-      return this.$store.getters.myDeviceId
-    },
-    Ability() {
-      return this.$store.getters.Ability
+      }
     }
   },
   mounted() {

@@ -24,8 +24,8 @@
       <div class="mb-15">
         {{ $t('system.text10') }}：<a class="text-blue"
           href="https://developers.weixin.qq.com/miniprogram/introduction/qrcode.html#%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B"
-          target="_blank">微信</a>、<a class="text-blue" href="https://opendocs.alipay.com/mini/operation/vzd5v0"
-          target="_blank">支付宝</a>。需要上传校验文件时，下载文件后点击下面上传校验文件。
+          target="_blank">{{ $t('payType.wx') }}</a>、<a class="text-blue" href="https://opendocs.alipay.com/mini/operation/vzd5v0"
+          target="_blank">{{ $t('payType.zfb') }}</a>。{{ $t('system.text11') }}。
       </div>
       <upload :uploadText="$t('system.uploadWj')" accept=".txt,.html" :upObj="upObj" />
     </div>
@@ -46,7 +46,18 @@ export default {
       upObj: {
         fileType: 'wxAliCheck'
       },
-      list: [
+      checkFile: ''
+    }
+  },
+  computed: {
+    myDeviceName() {
+      return this.$store.getters.myDeviceName
+    },
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
+    list() {
+      return [
         {
           name: this.$t('system.home'),
           link: 'pagesA/pages/index/index'
@@ -71,17 +82,8 @@ export default {
           name: this.$t('system.pcLogin'),
           link: `${window.location.host}/login/${agentInfo['brandId']}`
         }
-      ],
-      checkFile: ''
-    }
-  },
-  computed: {
-    myDeviceName() {
-      return this.$store.getters.myDeviceName
+      ]
     },
-    agentInfo() {
-      return this.$store.getters.agentInfo
-    }
   },
   mounted() {
     this.getDeviceList()

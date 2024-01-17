@@ -189,7 +189,15 @@ export default {
   computed: {
     myDeviceId() {
       return this.$store.state.user.myDeviceId
-    }
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('steal.addFreeVip'),
+        2: this.$t('steal.editVipTime'),
+        3: this.$t('steal.vipCode'),
+        4: this.$t('public.vipCode')
+      }
+    },
   },
   data() {
     return {
@@ -208,12 +216,6 @@ export default {
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
-      dialogTitle: {
-        1: this.$t('steal.addFreeVip'),
-        2: this.$t('steal.editVipTime'),
-        3: this.$t('steal.vipCode'),
-        4: this.$t('public.vipCode')
-      },
       curRow: {},
       curIdx: 0,
       dform: {},

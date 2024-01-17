@@ -418,14 +418,8 @@ export default {
     device() {
       return this.$store.state.app.device
     },
-  },
-  data() {
-    return {
-      formatSeconds: formatSeconds,
-      unixTime: unixTime,
-      accSub: accSub,
-      clickSubmit: false,
-      queryObj: {
+    queryObj() {
+      return {
         orderNo: {
           title: this.$t('public.orderNo'),
           type: 'input'
@@ -462,24 +456,10 @@ export default {
             1: this.$t('public.agent')
           }
         }
-      },
-      formKey: {
-        sel1: 'orderNo',
-        sel2: 'storeId'
-      },
-      form: {},
-      tableMaxH: '250',
-      list: [],
-      listLoading: true,
-      listTotal: 0,
-      listQuery: {
-        page: 1,
-        size: 20,
-        status: '-1'
-      },
-      totalStat: {},
-      orderStat: {},
-      orderTabs: [
+      }
+    },
+    orderTabs() {
+      return [
         {
           value: '-1',
           title: this.$t('public.all') || '',
@@ -509,8 +489,10 @@ export default {
           nkey: 'doneNumber',
           type: 'info'
         }
-      ],
-      orderTab: arrayToObj([
+      ]
+    },
+    orderTab() {
+      return arrayToObj([
         {
           value: '-1',
           title: this.$t('public.all') || '',
@@ -540,54 +522,18 @@ export default {
           nkey: 'doneNumber',
           type: 'info'
         }
-      ], 'value'),
-      pickerOptionsEnd: {
-        disabledDate: (time) => {
-          let timeOptionRange = this.timeOptionRange
-          let secondNum = 60 * 60 * 24 * 31 * 1000
-          if (timeOptionRange) {
-            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
-              .getTime() - secondNum) || time.getTime() > Date.now()
-          }
-          return time.getTime() > Date.now() + 86400000
-        },
-        onPick: (time) => {
-          //当第一时间选中才设置禁用
-          if (time.minDate && !time.maxDate) {
-            this.timeOptionRange = time.minDate
-          }
-          if (time.maxDate) {
-            this.timeOptionRange = null
-          }
-        }
-      },
-      deductionTimeStart: {
-        disabledDate: (time) => {
-          return time.getTime() < Date.now()
-        }
-      },
-
-      // 弹出相关
-      dialogType: 1,
-      dialogStatus: false,
-      drawerStatus: false,
-      dialogTitle: {
+      ], 'value')
+    },
+    dialogTitle() {
+      return {
         1: this.$t('leaseOrder.dialogTitle'),
         2: this.$t('leaseOrder.dialogTitle1'),
         3: this.$t('leaseOrder.dialogTitle2'),
         4: this.$t('leaseOrder.dialogTitle3')
-      },
-      curRow: {},
-      curIdx: 0,
-      dform: {},
-      ferror: {},
-      showRow: {},
-
-      /**
-       * 列的配置化对象，存储配置信息
-       */
-      showColumn: [],
-      defaultColumn: [{
+      }
+    },
+    defaultColumn() {
+      return [{
         key: 'name',
         val: true,
         name: this.$t('leaseOrder.tenant')
@@ -651,12 +597,13 @@ export default {
         name: this.$t('public.creationTime'),
         width: 170
       }
-      ],
-
-      /**
+      ]
+    },
+    /**
        * 添加修改校验条件
        */
-      rules: {
+    rules() {
+      return {
         deviceTypeCode: [{
           required: true,
           message: this.$t('qrcode.plseaseDeviceType'),
@@ -693,6 +640,70 @@ export default {
           trigger: 'blur'
         }]
       }
+    },
+  },
+  data() {
+    return {
+      formatSeconds: formatSeconds,
+      unixTime: unixTime,
+      accSub: accSub,
+      clickSubmit: false,
+      formKey: {
+        sel1: 'orderNo',
+        sel2: 'storeId'
+      },
+      form: {},
+      tableMaxH: '250',
+      list: [],
+      listLoading: true,
+      listTotal: 0,
+      listQuery: {
+        page: 1,
+        size: 20,
+        status: '-1'
+      },
+      totalStat: {},
+      orderStat: {},
+      pickerOptionsEnd: {
+        disabledDate: (time) => {
+          let timeOptionRange = this.timeOptionRange
+          let secondNum = 60 * 60 * 24 * 31 * 1000
+          if (timeOptionRange) {
+            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+              .getTime() - secondNum) || time.getTime() > Date.now()
+          }
+          return time.getTime() > Date.now() + 86400000
+        },
+        onPick: (time) => {
+          //当第一时间选中才设置禁用
+          if (time.minDate && !time.maxDate) {
+            this.timeOptionRange = time.minDate
+          }
+          if (time.maxDate) {
+            this.timeOptionRange = null
+          }
+        }
+      },
+      deductionTimeStart: {
+        disabledDate: (time) => {
+          return time.getTime() < Date.now()
+        }
+      },
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      drawerStatus: false,
+      curRow: {},
+      curIdx: 0,
+      dform: {},
+      ferror: {},
+      showRow: {},
+
+      /**
+       * 列的配置化对象，存储配置信息
+       */
+      showColumn: [],
     }
   },
   mounted(options) {

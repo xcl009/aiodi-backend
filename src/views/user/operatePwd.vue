@@ -21,104 +21,105 @@
           <el-input v-model="form.repeatNewPassword" show-password></el-input>
         </el-form-item>
         <el-form-item class="text-center">
-          <el-button type="primary" size="medium" :disabled="clickSubmit" @click="onSubmit()">{{ $t('public.saveInfo') }}</el-button>
+          <el-button type="primary" size="medium" :disabled="clickSubmit" @click="onSubmit()">{{ $t('public.saveInfo')
+          }}</el-button>
           <el-button size="medium" class="btn-body" @click="$router.go(-1)">{{ $t('public.cancel') }}</el-button>
         </el-form-item>
-       </el-form>
+      </el-form>
     </el-col>
   </el-row>
 </template>
 
 <script>
-  import AuthCode from '@/components/AuthCode/'
-  export default {
-    name: 'operatePwd',
-    components: {
-      AuthCode
-    },
-    data() {
-      return {
-        rules: {
-          newPassword: [
-            {
-              required: true,
-              message: this.$t('user.message5'),
-              trigger: 'blur'
-            },
-          ],
-          repeatNewPassword: [
-            {
-              required: true,
-              message: this.$t('user.message6'),
-              trigger: 'blur'
-            },
-            {
-              required: true,
-              validator: (rule, value, callback) => {
-                if (value === '') {
-                  callback(new Error(this.$t('user.message3')))
-                } else if (value !== this.form.newPassword) {
-                  callback(new Error(this.$t('user.message4')))
-                } else {
-                  callback()
-                }
-              },
-              trigger: 'blur'
-            }
-          ]
-        },
-        clickSubmit: false,
-        form: {}
-      }
-    },
-    computed: {
-      agentInfo() {
-        return this.$store.getters.agentInfo
-      }
-    },
-    mounted() {
-
-    },
-    methods: {
-      /**
-       * 提交保存
-       */
-      onSubmit(formName = 'form') {
-        let that = this;
-        this.clickSubmit = true
-        this.$refs[formName].validate((valid, object) => {
-          if (valid) {
-            const params = JSON.parse(JSON.stringify(this.form))
-            this.$post('iot-saas-user/admin/user/twoPassword/update', params).then(res => {
-              this.$message({
-                message: that.$t('public.operationSuccessful'),
-                type: 'success'
-              })
-              this.$router.back()
-              this.clickSubmit = false
-            }).catch( err => {
-              setTimeout(() => {
-                this.clickSubmit = false
-              }, 1000)
-            })
-          } else {
-            this.clickSubmit = false
-          }
-        })
-      },
-
-      /**
-       * 获取验证码
-       */
-      getAuthCode(){
-        this.$refs.authCode.getAuthCode({
-          mobile: this.agentInfo.mobile
-        }, 'iot-saas-user/admin/user/twoPassword/sendUpdateCode')
-      },
+import AuthCode from '@/components/AuthCode/'
+export default {
+  name: 'operatePwd',
+  components: {
+    AuthCode
+  },
+  data() {
+    return {
+      clickSubmit: false,
+      form: {}
     }
+  },
+  computed: {
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
+    rules() {
+      return {
+        newPassword: [
+          {
+            required: true,
+            message: this.$t('user.message5'),
+            trigger: 'blur'
+          },
+        ],
+        repeatNewPassword: [
+          {
+            required: true,
+            message: this.$t('user.message6'),
+            trigger: 'blur'
+          },
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (value === '') {
+                callback(new Error(this.$t('user.message3')))
+              } else if (value !== this.form.newPassword) {
+                callback(new Error(this.$t('user.message4')))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
+          }
+        ]
+      }
+    }
+  },
+  mounted() {
+
+  },
+  methods: {
+    /**
+     * 提交保存
+     */
+    onSubmit(formName = 'form') {
+      let that = this;
+      this.clickSubmit = true
+      this.$refs[formName].validate((valid, object) => {
+        if (valid) {
+          const params = JSON.parse(JSON.stringify(this.form))
+          this.$post('iot-saas-user/admin/user/twoPassword/update', params).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.$router.back()
+            this.clickSubmit = false
+          }).catch(err => {
+            setTimeout(() => {
+              this.clickSubmit = false
+            }, 1000)
+          })
+        } else {
+          this.clickSubmit = false
+        }
+      })
+    },
+
+    /**
+     * 获取验证码
+     */
+    getAuthCode() {
+      this.$refs.authCode.getAuthCode({
+        mobile: this.agentInfo.mobile
+      }, 'iot-saas-user/admin/user/twoPassword/sendUpdateCode')
+    },
   }
+}
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

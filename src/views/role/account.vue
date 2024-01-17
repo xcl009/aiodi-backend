@@ -80,10 +80,6 @@ export default {
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
-      dialogTitle: {
-        1: this.$t('role.deleteAccount'),
-        2: this.$t('role.addAccount'),
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
@@ -92,7 +88,12 @@ export default {
     }
   },
   computed: {
-
+    dialogTitle(){
+      return {
+        1: this.$t('role.deleteAccount'),
+        2: this.$t('role.addAccount'),
+      }
+    },
   },
   mounted() {
     this.toQuery(1)

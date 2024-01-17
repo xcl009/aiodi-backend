@@ -102,8 +102,11 @@ export default {
       formDialog: false,
       formEnd: false,
       list: [],
-
-      operateType: {
+    }
+  },
+  computed: {
+    operateType(){
+      return {
         USER_CREATE_COMPLAINT: this.$t('userManage.type'),
         USER_CONTINUE_COMPLAINT: this.$t('userManage.type1'),
         USER_RESPONSE: this.$t('userManage.type2'),
@@ -117,8 +120,10 @@ export default {
         MERCHANT_CONFIRM_COMPLETE_SYSTEM_MESSAGE: this.$t('userManage.type10'),
         USER_REVOKE_COMPLAINT: this.$t('userManage.type11'),
         USER_COMFIRM_COMPLAINT: this.$t('userManage.type12'),
-      },
-      statu: {
+      }
+    },
+    statu(){
+      return {
         PENDING: this.$t('public.pendingProcessing'),
         PROCESSING: this.$t('public.processing'),
         PROCESSED: this.$t('public.processed')

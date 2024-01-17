@@ -168,32 +168,6 @@ export default {
   data() {
     return {
       clickSubmit: false,
-      tabs: [
-        {
-          value: '1',
-          title: this.$t('public.use')
-        },
-        {
-          value: '2',
-          title: this.$t('public.payment')
-        },
-        {
-          value: '3',
-          title: this.$t('public.return')
-        },
-        {
-          value: '4',
-          title: this.$t('public.refund')
-        }
-      ],
-      orderStatus: {
-        U: this.$t('public.obligation'),
-        R: this.$t('public.underLease'),
-        F: this.$t('public.leaseFailed'),
-        O: this.$t('public.completed'),
-        W: this.$t('system.noDepositToBePaid'),
-        D: this.$t('public.refunded')
-      },
       form: {},
       list: [],
       tableMaxH: '250',
@@ -208,9 +182,6 @@ export default {
       dialogType: 1,
       dialogStatus: false,
       drawerStatus: false,
-      dialogTitle: {
-        1: this.$t('system.addGuide')
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
@@ -239,6 +210,41 @@ export default {
     },
     myDevice() {
       return this.$store.state.user.myDevice;
+    },
+    tabs() {
+      return [
+        {
+          value: '1',
+          title: this.$t('public.use')
+        },
+        {
+          value: '2',
+          title: this.$t('public.payment')
+        },
+        {
+          value: '3',
+          title: this.$t('public.return')
+        },
+        {
+          value: '4',
+          title: this.$t('public.refund')
+        }
+      ]
+    },
+    orderStatus() {
+      return {
+        U: this.$t('public.obligation'),
+        R: this.$t('public.underLease'),
+        F: this.$t('public.leaseFailed'),
+        O: this.$t('public.completed'),
+        W: this.$t('system.noDepositToBePaid'),
+        D: this.$t('public.refunded')
+      }
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('system.addGuide')
+      }
     }
   },
   mounted() {

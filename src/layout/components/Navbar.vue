@@ -42,10 +42,11 @@
               <el-dropdown trigger="click" placement="top-start">
                 <div>{{ $t('layout.langSelect') }}</div>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item  @click.native="waitOnLine('zn')">
-                    <span>{{ $t('layout.chineseVersion') }}</span>
+                  <el-dropdown-item  @click.native="waitOnLine('zh_CN')">
+                    <span>中文版本(简体)</span>
                   </el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('cp')">{{ $t('layout.chineseVersion1') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('zh_HK')">中文版本(繁體)</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('en_US')">English</el-dropdown-item>
                   <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>

@@ -91,15 +91,16 @@
             </div>
             <div class="flex" v-else>
               <div v-for="(item, idx) in timeLimit.days">
-                <span v-if="timeLimit.type == 'MONTH'">{{ $t('public.monthly') }}{{ item }}{{ $t('public.no') }}<span class="ml-10 mr-10"
-                    v-if="idx < timeLimit.days.length - 1">|</span></span>
+                <span v-if="timeLimit.type == 'MONTH'">{{ $t('public.monthly') }}{{ item }}{{ $t('public.no') }}<span
+                    class="ml-10 mr-10" v-if="idx < timeLimit.days.length - 1">|</span></span>
                 <span v-else>{{ $t('public.weekly') }}{{ week[item] }}<span class="ml-10 mr-10"
                     v-if="idx < timeLimit.days.length - 1">|</span></span>
               </div>
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit" :disabled="clickSubmit || timeLimit.type">{{ $t('public.submit') }}</el-button>
+            <el-button type="primary" @click="onSubmit" :disabled="clickSubmit || timeLimit.type">{{ $t('public.submit')
+            }}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -129,8 +130,6 @@ export default {
       bindCardInfo: {},
       aliQrcodeInfo: {},
       wxQrcodeInfo: {},
-
-      week: ['', this.$t('public.one'), this.$t('public.two'), this.$t('public.three'), this.$t('public.four'), this.$t('public.five'), this.$t('public.six'), this.$t('public.sunday')],
       cutStoreId: ''
     }
   },
@@ -141,6 +140,9 @@ export default {
     },
     agentInfo() {
       return this.$store.getters.agentInfo
+    },
+    week() {
+      return ['', this.$t('public.one'), this.$t('public.two'), this.$t('public.three'), this.$t('public.four'), this.$t('public.five'), this.$t('public.six'), this.$t('public.sunday')];
     }
   },
   mounted() {
@@ -341,4 +343,5 @@ export default {
 <style scoped>
 .line {
   text-align: center;
-}</style>
+}
+</style>

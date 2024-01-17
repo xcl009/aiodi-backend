@@ -5,7 +5,8 @@
         @saveXlsx="saveXlsx">
         <template v-slot:defult>
           <el-form-item :label="$t('public.brandName')" v-if="isSaas()">
-            <selectSearch v-model="form.brandId" :type="6" name="name" :placeholder="$t('store.pleaseBrandName')" @change="toQuery()">
+            <selectSearch v-model="form.brandId" :type="6" name="name" :placeholder="$t('store.pleaseBrandName')"
+              @change="toQuery()">
             </selectSearch>
           </el-form-item>
           <el-form-item :label="$t('store.goodsOrNot')">
@@ -24,7 +25,8 @@
         </template>
         <template v-slot:endButton>
           <!-- <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas() && !form.agentId"><i class="el-icon-plus el-icon--left" />添加商户</el-button> -->
-          <import-data :type="3" :uploadText="$t('store.importMerchants')" v-if="isBrand() && !lowerStore && !form.agentId"></import-data>
+          <import-data :type="3" :uploadText="$t('store.importMerchants')"
+            v-if="isBrand() && !lowerStore && !form.agentId"></import-data>
         </template>
       </condition>
     </template>
@@ -32,7 +34,8 @@
     <div class="pl-10 pr-10 bg-white" :class="{ 'pt-15': isStore() }">
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord') }}</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord')
+        }}</div>
         <table-column-set storageKey="storeTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
       </div>
@@ -113,11 +116,12 @@
                     <div>
                       <span v-if="scope.row.divisionMode == 1">
                         <span v-if="isStore()">{{ item.promised || item.live }}%</span>
-                        <span v-else-if="item.closeType == 3">{{$t('public.commitment')}}{{ item.promised }}%，{{$t('public.relative')}}{{ item.relative }}%({{
-                          config.closeType[item.closeType] }})</span>
+                        <span v-else-if="item.closeType == 3">{{ $t('public.commitment') }}{{ item.promised
+                        }}%，{{ $t('public.relative') }}{{ item.relative }}%({{
+  config.closeType[item.closeType] }})</span>
                         <span v-else>{{ item.live }}%({{ config.closeType[item.closeType] }})</span>
                       </span>
-                      <span v-else>{{$t('public.undivided')}}</span>
+                      <span v-else>{{ $t('public.undivided') }}</span>
                     </div>
                   </div>
                 </template>
@@ -145,11 +149,13 @@
           <el-table-column :label="item.name" v-else-if="item.val" :prop="item.key"></el-table-column>
         </template>
 
-        <el-table-column :label="$t('public.operate')" width="150" :fixed="device == 'desktop' ? 'right' : false" v-if="isStore()">
+        <el-table-column :label="$t('public.operate')" width="150" :fixed="device == 'desktop' ? 'right' : false"
+          v-if="isStore()">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(2, scope.row)"
-                v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">{{ $t('store.switchMerchant') }}</el-button>
+                v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">{{ $t('store.switchMerchant')
+                }}</el-button>
 
             </div>
           </template>
@@ -167,57 +173,71 @@
                 <el-button type="text" @click="bindStore(scope.row)">{{ $t('public.distributionOfGoods') }}</el-button>
               </template>
               <template v-else>
-                <el-button type="text" @click="setRows(3, scope.row, 1, scope.$index)">{{ $t('public.bindDevice') }}</el-button>
-                <el-button type="text" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">{{ $t('public.permissionSettings') }}</el-button>
+                <el-button type="text" @click="setRows(3, scope.row, 1, scope.$index)">{{ $t('public.bindDevice')
+                }}</el-button>
+                <el-button type="text" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">{{
+                  $t('public.permissionSettings') }}</el-button>
                 <el-button type="text"
-                  @click="$router.push({ path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore ? 1 : 0}` })">{{ $t('public.editStore') }}</el-button>
-                <el-button type="text" @click.native="setRows(1, scope.row, 3, scope.$index)"><span
-                    class="text-danger">{{ $t('public.deleteStore') }}</span></el-button>
+                  @click="$router.push({ path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore ? 1 : 0}` })">{{
+                    $t('public.editStore') }}</el-button>
+                <el-button type="text" @click.native="setRows(1, scope.row, 3, scope.$index)"><span class="text-danger">{{
+                  $t('public.deleteStore') }}</span></el-button>
                 <el-button type="text" @click="$router.push({ path: `/store/addStore?parentId=${scope.row.id}` })"
                   v-if="scope.row.parentId == '0'">{{ $t('public.addBranch') }}</el-button>
                 <el-dropdown trigger="click">
-                  <el-button type="text">{{ $t('public.add') }}<i class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                  <el-button type="text">{{ $t('public.add') }}<i
+                      class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                   <el-dropdown-menu slot="dropdown">
                     <template v-if="checkAbility(['VM'], 2, scope.row.storeDivisionConfig)">
-                      <el-dropdown-item
-                        @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">{{ $t('store.operationMode') }}</el-dropdown-item>
-                      <el-dropdown-item
-                        @click.native="$refs.relatedTemplates.getCompanyTemplate(scope.row.id)">{{ $t('store.companyTemplate') }}</el-dropdown-item>
+                      <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)">{{
+                        $t('store.operationMode') }}</el-dropdown-item>
+                      <el-dropdown-item @click.native="$refs.relatedTemplates.getCompanyTemplate(scope.row.id)">{{
+                        $t('store.companyTemplate') }}</el-dropdown-item>
                     </template>
                     <template
                       v-if="checkAbility(Object.keys(config.roomDevice), 2, scope.row.storeDivisionConfig) && isBrand()">
                       <el-dropdown-item
-                        @click.native="$router.push({ path: `/device/bedSetting?id=${scope.row.id}&userKey=storeId` })">{{ $t('store.roomDevice') }}</el-dropdown-item>
+                        @click.native="$router.push({ path: `/device/bedSetting?id=${scope.row.id}&userKey=storeId` })">{{
+                          $t('store.roomDevice') }}</el-dropdown-item>
                     </template>
-                    <el-dropdown-item @click.native="setRows(8, scope.row, 8)"
-                      v-if="isBrand()">{{ $t('store.assignMerchants') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(8, scope.row, 8)" v-if="isBrand()">{{
+                      $t('store.assignMerchants') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({ path: `/device/bedStat?id=${scope.row.id}` })"
-                      v-if="isBrand() && checkAbility(['BD', 'VG'], 2, scope.row.storeDivisionConfig)">{{ $t('store.onlineStatistics') }}</el-dropdown-item>
+                      v-if="isBrand() && checkAbility(['BD', 'VG'], 2, scope.row.storeDivisionConfig)">{{
+                        $t('store.onlineStatistics') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/store/membership?id=${scope.row.id}&userKey=storeId` })"
-                      v-if="checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">{{ $t('store.membershipCard') }}</el-dropdown-item>
+                      v-if="checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">{{
+                        $t('store.membershipCard') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=storeId` })"
-                      v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">{{ $t('store.DDSettings') }}</el-dropdown-item>
+                      v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">{{
+                        $t('store.DDSettings') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId` })"
-                      v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">{{ $t('public.freeQuota') }}</el-dropdown-item>
+                      v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">{{ $t('public.freeQuota')
+                      }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, scope.row, 4, scope.$index)"
-                      v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">{{ $t('public.assignToAgent') }}</el-dropdown-item>
+                      v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">{{ $t('public.assignToAgent')
+                      }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DEPOSIT_PRPR` })"
-                      v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">{{ $t('public.probabilityDeposit') }}</el-dropdown-item>
+                      v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">{{
+                        $t('public.probabilityDeposit') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DIVIDE_ACCOUNTS` })"
-                      v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.storeDivisionConfig)">{{ $t('public.weChatAccountSplitting') }}</el-dropdown-item>
+                      v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.storeDivisionConfig)">{{
+                        $t('public.weChatAccountSplitting') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, cashStat[scope.row.id], 6)"
                       v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
-                    <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">{{
+                      $t('public.setLoginPassword') }}</el-dropdown-item>
                     <template v-if="checkAbility(['WF'], 2, scope.row.storeDivisionConfig)">
-                      <el-dropdown-item @click.native="setRows(3, scope.row, 7)">{{ $t('store.sharedWIFI') }}</el-dropdown-item>
+                      <el-dropdown-item @click.native="setRows(3, scope.row, 7)">{{ $t('store.sharedWIFI')
+                      }}</el-dropdown-item>
                     </template>
-                    <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
-                      v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })" v-if="isBrand()">{{
+                      $t('public.moreApplications') }}</el-dropdown-item>
 
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -249,7 +269,8 @@
       </template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+        }}</el-button>
       </div>
     </el-dialog>
 
@@ -257,14 +278,16 @@
       <template v-if="dialogType == 1">
         <el-form class="pl-20 pr-20 custom-form">
           <el-form-item :label="$t('store.deviceSns')">
-            <el-input v-model="dform.deviceSns" :placeholder="$t('store.deviceSnsText')" type="textarea" :rows="5"></el-input>
+            <el-input v-model="dform.deviceSns" :placeholder="$t('store.deviceSnsText')" type="textarea"
+              :rows="5"></el-input>
           </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 4">
         <el-form class="pl-20 pr-20 custom-form">
           <el-form-item :label="$t('public.agentNickNames')">
-            <selectSearch :type="5" :emitRow="true" name="name" :placeholder="$t('store.agentNameSerach')" @change="getAgent"></selectSearch>
+            <selectSearch :type="5" :emitRow="true" name="name" :placeholder="$t('store.agentNameSerach')"
+              @change="getAgent"></selectSearch>
           </el-form-item>
           <el-form-item>
             <div class="pb-20" v-if="agentRow.id">
@@ -331,7 +354,8 @@
                         <div class="text-black">{{ item.name }}</div>
                         <div class="mt-5 text-gray">{{ item.mobile }}</div>
                       </div>
-                      <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{ $t('public.assignToTa') }}</el-button>
+                      <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{
+                        $t('public.assignToTa') }}</el-button>
                     </div>
                     <div class="mt-5" v-if="item.agentDeviceType">
                       <span class="text-gray">{{ $t('public.deviceType') }}</span>
@@ -380,7 +404,8 @@
                           <span class="ml-5">{{ item.province }}{{ item.city }}{{ item.district }}</span>
                         </div>
                         <div class="m_l_a">
-                          <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{ $t('public.assignToTa') }}</el-button>
+                          <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{
+                            $t('public.assignToTa') }}</el-button>
                         </div>
                       </div>
                     </div>
@@ -390,7 +415,8 @@
             </el-row>
           </div>
           <div class="bottom pt-15 pb-15" v-if="curRow.parentId != 0">
-            <el-button type="primary" plain size="mini" @click="allocation(2,{},9)">{{ $t('public.assignToOneself') }}</el-button>
+            <el-button type="primary" plain size="mini" @click="allocation(2, {}, 9)">{{ $t('public.assignToOneself')
+            }}</el-button>
           </div>
         </div>
       </template>
@@ -399,7 +425,7 @@
           <div class="mb-15 fw6">{{ $t('store.merchantRecipient') }}</div>
           <div class="flex align-center pb-20 l-b">
             <img :src="checkList.avatar || agentInfo.avatar" class="userimg" width="56" alt="">
-            <div class="pl-20" >
+            <div class="pl-20">
               <div class="flex" v-if="checkList.id == 0">
                 <div class="label-text">{{ $t('public.brandNames') }}:</div>
                 <div>{{ checkList.name }}</div>
@@ -444,9 +470,11 @@
                 {{ $t('store.message3') }}
               </div>
               <div class="ml-30">
-                <div class=" fs-s3 color mt-5">{{ $t('store.message4Title') }}</br>{{ $t('store.message4') }}</br>{{ $t('store.message4s') }}
+                <div class=" fs-s3 color mt-5">{{ $t('store.message4Title') }}</br>{{ $t('store.message4') }}</br>{{
+                  $t('store.message4s') }}
                 </div>
-                <div class="fs-s3 color mt-20">{{ $t('store.message5Title') }}</br>{{ $t('store.message5') }}</br>{{ $t('store.message5s') }}
+                <div class="fs-s3 color mt-20">{{ $t('store.message5Title') }}</br>{{ $t('store.message5') }}</br>{{
+                  $t('store.message5s') }}
                 </div>
                 <div class="fs-s3 color mt-20">{{ $t('store.message6Title') }}</br>{{ $t('store.message6') }}
                 </div>
@@ -459,7 +487,8 @@
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+          }}</el-button>
         </div>
       </template>
     </el-drawer>
@@ -529,16 +558,6 @@ export default {
       dialogType: 1,
       dialogStatus: false,
       drawerStatus: false,
-      dialogTitle: {
-        1: this.$t('public.bindDevice'),
-        2: '',
-        3: this.$t('public.deleteStore'),
-        4: this.$t('store.assignMerchants'),
-        5: this.$t('public.resetPassword'),
-        6: this.$t('public.freezeAmount'),
-        7: this.$t('store.sharedWIFI'),
-        8: this.$t('store.assignAgents'),
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
@@ -549,7 +568,60 @@ export default {
        * 列的配置化对象，存储配置信息
        */
       showColumn: [],
-      defaultColumn: [
+      // 代理
+      agentList: {
+        query: {
+          page: 1,
+          size: 20
+        },
+        list: [],
+        newly: []
+      },
+      // 商户
+      agentList: {
+        query: {
+          page: 1,
+          size: 20
+        },
+        list: [],
+        newly: []
+      },
+      checkList: {},
+    }
+  },
+  computed: {
+    device() {
+      return this.$store.state.app.device
+    },
+    myDeviceName() {
+      return this.$store.state.user.myDeviceName
+    },
+    myDeviceId() {
+      return this.$store.state.user.myDeviceId
+    },
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
+    Ability() {
+      return this.$store.getters.Ability
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('public.bindDevice'),
+        2: '',
+        3: this.$t('public.deleteStore'),
+        4: this.$t('store.assignMerchants'),
+        5: this.$t('public.resetPassword'),
+        6: this.$t('public.freezeAmount'),
+        7: this.$t('store.sharedWIFI'),
+        8: this.$t('store.assignAgents'),
+      }
+    },
+    defaultColumn() {
+      return [
         {
           key: 'name',
           val: true,
@@ -617,47 +689,8 @@ export default {
           val: true,
           name: this.$t('public.industry')
         }
-      ],
-      // 代理
-      agentList: {
-        query: {
-          page: 1,
-          size: 20
-        },
-        list: [],
-        newly: []
-      },
-      // 商户
-      agentList: {
-        query: {
-          page: 1,
-          size: 20
-        },
-        list: [],
-        newly: []
-      },
-      checkList: {},
-    }
-  },
-  computed: {
-    device() {
-      return this.$store.state.app.device
+      ]
     },
-    myDeviceName() {
-      return this.$store.state.user.myDeviceName
-    },
-    myDeviceId() {
-      return this.$store.state.user.myDeviceId
-    },
-    siteInfo() {
-      return this.$store.getters.siteInfo
-    },
-    agentInfo() {
-      return this.$store.getters.agentInfo
-    },
-    Ability() {
-      return this.$store.getters.Ability
-    }
   },
   beforeRouteEnter(to, from, next) {
     to.meta.urlQuery = JSON.stringify(to.query)
@@ -682,7 +715,7 @@ export default {
       this.getList()
     } else if (this.urlQuery != this.$route.meta.urlQuery) {
       this.toQuery()
-    }else{
+    } else {
       this.toQuery()
     }
     this.urlQuery = this.$route.meta.urlQuery
@@ -694,7 +727,7 @@ export default {
     // 分配事件
     allocation(type, item, dialogType) {
       this.checkList = item;
-      if(type == 2){
+      if (type == 2) {
         this.checkList['name'] = this.agentInfo.nickname;
         this.checkList.mobile = this.agentInfo.mobile;
         this.checkList['id'] = 0;

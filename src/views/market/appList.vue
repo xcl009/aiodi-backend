@@ -289,17 +289,37 @@ export default {
       dialogType: 1,
       dialogStatus: false,
       drawerStatus: false,
-      dialogTitle: {
-        1: '',
-        2: this.$t('market.confirmationInformation'),
-        3: '',
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
       info: {},
-
-      cycle: [
+    }
+  },
+  computed: {
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
+    myDeviceName() {
+      return this.$store.getters.myDeviceName
+    },
+    myDeviceId() {
+      return this.$store.getters.myDeviceId
+    },
+    rests() {
+      return this.$store.getters.rests
+    },
+    dialogTitle() {
+      return {
+        1: '',
+        2: this.$t('market.confirmationInformation'),
+        3: '',
+      }
+    },
+    cycle() {
+      return [
         // {
         //   code: 'TRYOUT',
         //   key: 'TRYOUT',
@@ -320,25 +340,8 @@ export default {
           key: 'permanentAmount',
           label: this.$t('payType.permanent')
         }
-      ],
-    }
-  },
-  computed: {
-    siteInfo() {
-      return this.$store.getters.siteInfo
+      ]
     },
-    agentInfo() {
-      return this.$store.getters.agentInfo
-    },
-    myDeviceName() {
-      return this.$store.getters.myDeviceName
-    },
-    myDeviceId() {
-      return this.$store.getters.myDeviceId
-    },
-    rests() {
-      return this.$store.getters.rests
-    }
   },
   beforeRouteEnter(to, from, next) {
     to.meta.urlQuery = JSON.stringify(to.query)
@@ -537,4 +540,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>@import './list.scss';</style>
+<style lang="scss" scoped>
+@import './list.scss';
+</style>

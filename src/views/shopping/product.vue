@@ -46,7 +46,8 @@
         <el-col :sm="24" :md="12" :lg="8" :xl="6" v-for="(item, index) in list">
           <div class=" list-item cursor bg-white shop_box">
             <div class="und">
-              <el-button :type="item.status == 0 ? 'success' : 'danger'" @click="undChange(item, index)">{{ item.status == 0
+              <el-button :type="item.status == 0 ? 'success' : 'danger'" @click="undChange(item, index)">{{ item.status ==
+                0
                 ? $t('public.grounding') : $t('public.offShelf') }}</el-button>
             </div>
             <el-image class="list-img" :src="item.productUrlList[0]" fit="cover"></el-image>
@@ -67,7 +68,8 @@
                   </div>
                 </template>
                 <el-button type="primary" size="medium"
-                  @click="$router.push({ path: `/shopping/productEdit?id=${item.id}` })">{{ $t('public.modifyNow') }}</el-button>
+                  @click="$router.push({ path: `/shopping/productEdit?id=${item.id}` })">{{ $t('public.modifyNow')
+                  }}</el-button>
               </div>
             </div>
           </div>
@@ -111,10 +113,6 @@ export default {
       // 弹出相关
       dialogType: 1,
       drawerStatus: false,
-      dialogTitle: {
-        1: this.$t('shopping.choose'),
-        2: '',
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
@@ -133,6 +131,12 @@ export default {
     },
     myDeviceId() {
       return this.$store.getters.myDeviceId
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('shopping.choose'),
+        2: '',
+      }
     },
   },
   mounted() {

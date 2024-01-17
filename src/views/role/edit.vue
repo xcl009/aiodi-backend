@@ -51,7 +51,13 @@ export default {
       clickSubmit: false,
       listLoading: true,
       form: {},
-      rules: {
+      mentList: [],
+      roleId: this.$route.query.roleId
+    }
+  },
+  computed: {
+    rules(){
+      return {
         name: [{
           required: true,
           message: this.$t('role.pleaseRoleNamee'),
@@ -62,10 +68,8 @@ export default {
           message: this.$t('role.roleDescription'),
           trigger: 'blur'
         }]
-      },
-      mentList: [],
-      roleId: this.$route.query.roleId
-    }
+      }
+    },
   },
   mounted() {
     this.getMenu()

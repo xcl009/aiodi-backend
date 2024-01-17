@@ -110,7 +110,37 @@ export default {
     return {
       clickSubmit: false,
       serviceType: {},
-      cycle: [
+
+      activeName: 'first',
+      pay_types: 1,
+      pay_type: 1,
+      info: {},
+      form: {
+        cycle: 'MONTH',
+        priceCode: ''
+      },
+      cycleKey: 'monthAmount',
+
+      id: this.$route.query.id,
+      checkFree: {},
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      curRow: {},
+      curIdx: 0,
+      dform: {}
+    }
+  },
+  computed: {
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
+    rests() {
+      return this.$store.getters.rests
+    },
+    cycle() {
+      return [
         {
           code: 'TRYOUT',
           key: 'TRYOUT',
@@ -131,39 +161,13 @@ export default {
           key: 'permanentAmount',
           label: this.$t('payType.permanent')
         }
-      ],
-
-      activeName: 'first',
-      pay_types: 1,
-      pay_type: 1,
-      info: {},
-      form: {
-        cycle: 'MONTH',
-        priceCode: ''
-      },
-      cycleKey: 'monthAmount',
-
-      id: this.$route.query.id,
-      checkFree: {},
-
-      // 弹出相关
-      dialogType: 1,
-      dialogStatus: false,
-      dialogTitle: {
-        1: this.$t('market.selectService')
-      },
-      curRow: {},
-      curIdx: 0,
-      dform: {}
-    }
-  },
-  computed: {
-    siteInfo() {
-      return this.$store.getters.siteInfo
+      ]
     },
-    rests() {
-      return this.$store.getters.rests
-    }
+    dialogTitle() {
+      return {
+        1: this.$t('market.selectService')
+      }
+    },
   },
   mounted() {
     this.$store.dispatch('api/getServiceType').then(res => {
@@ -275,4 +279,5 @@ export default {
 
 .w-60 {
   width: 60px;
-}</style>
+}
+</style>

@@ -136,7 +136,7 @@
             </el-table-column>
             <el-table-column :label="`${$t('order.source')}`" width="50" v-if="item.val && item.key == 'sourceType'">
               <template slot-scope="scope">
-                <span v-if="scope.row.sourceType == 3">{{$t('order.admin')}}</span>
+                <span v-if="scope.row.sourceType == 3">{{ $t('order.admin') }}</span>
                 <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="scope.row.sourceType == 1"></i>
                 <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
               </template>
@@ -164,12 +164,14 @@
                 <div>{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode) }}</div>
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.income')}(${$t('public.element')})`" width="75" v-if="item.val && item.key == 'amount'">
+            <el-table-column :label="`${$t('public.income')}(${$t('public.element')})`" width="75"
+              v-if="item.val && item.key == 'amount'">
               <template slot-scope="scope">
                 <el-link type="success">{{ scope.row.amount || '0.00' }}</el-link>
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.refund')}(${$t('public.element')})`" width="75" v-if="item.val && item.key == 'amountRefund'">
+            <el-table-column :label="`${$t('public.refund')}(${$t('public.element')})`" width="75"
+              v-if="item.val && item.key == 'amountRefund'">
               <template slot-scope="scope">
                 <el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
               </template>
@@ -185,10 +187,13 @@
               <template slot-scope="scope">
                 <div class="remark-box">
                   <el-link type="danger" v-if="scope.row.freeTime > 0">
-                    <span v-if="scope.row.freeUser == 1">{{$t('public.freeQuota')}}：{{ (parseInt(scope.row.freeTime) / 60).toFixed(1)
-                    }}{{$t('public.huor')}}</span>
-                    <span v-else-if="scope.row.freeUser == 3">{{$t('order.suspendBilling')}}：{{ parseInt(scope.row.freeTime) / 60 }}{{$t('public.huor')}}</span>
-                    <span v-else-if="scope.row.freeUser > 3">{{ scope.row.freeTime == 600000 ? `${$t('order.membershipOrder')}` :
+                    <span v-if="scope.row.freeUser == 1">{{ $t('public.freeQuota') }}：{{ (parseInt(scope.row.freeTime) /
+                      60).toFixed(1)
+                    }}{{ $t('public.huor') }}</span>
+                    <span v-else-if="scope.row.freeUser == 3">{{ $t('order.suspendBilling') }}：{{
+                      parseInt(scope.row.freeTime) / 60 }}{{ $t('public.huor') }}</span>
+                    <span v-else-if="scope.row.freeUser > 3">{{ scope.row.freeTime == 600000 ?
+                      `${$t('order.membershipOrder')}` :
                       `${$t('order.membershipFree')}${scope.row.freeTime}${$t('public.minute')}` }}</span>
                   </el-link>
                   <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
@@ -200,7 +205,8 @@
                 {{ scope.row.orderNo || '--' }}
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.transactionNum')}`" width="155" v-if="item.val && item.key == 'transactionNo'">
+            <el-table-column :label="`${$t('public.transactionNum')}`" width="155"
+              v-if="item.val && item.key == 'transactionNo'">
               <template slot-scope="scope">
                 <div>{{ scope.row.transactionNo || '--' }}</div>
               </template>
@@ -209,12 +215,13 @@
           <el-table-column :label="`${$t('public.operate')}`" width="165" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <div class="flex flex-wrap operate">
-                <div class="text-primary" @click="setRows(3, scope.row, 6)">{{$t('public.orderDetail')}}</div>
+                <div class="text-primary" @click="setRows(3, scope.row, 6)">{{ $t('public.orderDetail') }}</div>
                 <div class="text-danger" @click="setRows(3, scope.row, 1)"
-                  v-if="(Ability['orderFinish'] || isSaas()) && scope.row.status == 'R'">{{$t('public.closeOrder')}}</div>
+                  v-if="(Ability['orderFinish'] || isSaas()) && scope.row.status == 'R'">{{ $t('public.closeOrder') }}
+                </div>
                 <div class="text-grey" @click="setRows(3, scope.row, 2)"
                   v-if="Ability['orderRefund'] && (scope.row.status.indexOf('G') > -1) && (scope.row.amount > 0 || scope.row.amountEnable > 0)">
-                  {{$t('public.orderRefund')}}</div>
+                  {{ $t('public.orderRefund') }}</div>
               </div>
             </template>
           </el-table-column>
@@ -283,33 +290,33 @@
               {{ dform.results }}
             </el-form-item>
             <el-form-item :label="`${$t('public.operate')}`" v-if="dform.results">
-              <el-button size="medium" type="primary" @click="dialogType = 13; dialogConfirm()"
-                :disabled="clickSubmit">{{$t('order.operateText')}}</el-button>
+              <el-button size="medium" type="primary" @click="dialogType = 13; dialogConfirm()" :disabled="clickSubmit">{{
+                $t('order.operateText') }}</el-button>
             </el-form-item>
           </el-form>
         </template>
         <div class="mt-30 text-center">
-          <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{$t('public.cancel')}}</el-button>
+          <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
           <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit"
-            v-if="dialogType != 4">{{$t('public.confirm')}}</el-button>
+            v-if="dialogType != 4">{{ $t('public.confirm') }}</el-button>
         </div>
       </el-dialog>
 
       <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
         <template v-if="dialogType == 1">
           <div class="pl-20 pr-20 text-black">
-            <div class="mb-15">{{$t('public.userInfo')}}</div>
+            <div class="mb-15">{{ $t('public.userInfo') }}</div>
             <div class="flex align-center pb-20 l-b">
               <img :src="curRow.userAvatar || agentInfo.avatar" class="round" width="56" alt="">
               <div class="pl-20">
                 <div class="flex">
-                  <div class="label-text">{{$t('public.userName')}}:</div>
+                  <div class="label-text">{{ $t('public.userName') }}:</div>
                   <div>{{ curRow.userNickName }}</div>
-                  <div class="ml-50 label-text">{{$t('public.userId')}}:</div>
+                  <div class="ml-50 label-text">{{ $t('public.userId') }}:</div>
                   <div>{{ curRow.userId }}</div>
                 </div>
                 <div class="flex mt-10">
-                  <div class="label-text">{{$t('public.phone')}}:</div>
+                  <div class="label-text">{{ $t('public.phone') }}:</div>
                   <div v-if="isBrand() || isSaas()">{{ curRow.userMobile || `${$t('public.notHave')}` }}</div>
                   <div v-else>{{ dealPhone(curRow.userMobile) || `${$t('public.notHave')}` }}</div>
                 </div>
@@ -317,35 +324,35 @@
             </div>
 
             <div class="mt-20 mb-15">
-              {{$t('public.orderInformation')}}
+              {{ $t('public.orderInformation') }}
             </div>
             <div class="pb-20 l-b">
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.orderNo')}}:</div>
+                <div class="label-text">{{ $t('public.orderNo') }}:</div>
                 <div>{{ curRow.orderNo }}</div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.storeName')}}:</div>
+                <div class="label-text">{{ $t('public.storeName') }}:</div>
                 <div>{{ curRow.storeName }}</div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('order.orderSource')}}:</div>
+                <div class="label-text">{{ $t('order.orderSource') }}:</div>
                 <div>
-                  <span v-if="curRow.sourceType == 3">{{$t('order.admin')}}</span>
+                  <span v-if="curRow.sourceType == 3">{{ $t('order.admin') }}</span>
                   <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="curRow.sourceType == 1"></i>
                   <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
                 </div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.deviceType')}}:</div>
+                <div class="label-text">{{ $t('public.deviceType') }}:</div>
                 <div>{{ curRow.deviceType }}</div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.payType')}}:</div>
+                <div class="label-text">{{ $t('public.payType') }}:</div>
                 <div>{{ Constant.PayType ? Constant.PayType[curRow.payType] : '--' }}</div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.package')}}:</div>
+                <div class="label-text">{{ $t('public.package') }}:</div>
                 <div class="text-cut">
                   <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
                     <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode) }}</span>
@@ -353,13 +360,13 @@
                 </div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.statrtTime')}}:</div>
+                <div class="label-text">{{ $t('public.statrtTime') }}:</div>
                 <div>{{ curRow.chargeEndTime }}</div>
               </div>
             </div>
 
             <div class="mt-20 mb-15">
-              {{$t('public.operate')}} 
+              {{ $t('public.operate') }}
             </div>
             <el-form class="custom-form" label-width="130px" label-position="left">
               <template v-if="curRow.deviceType == '充电宝'">
@@ -378,18 +385,18 @@
 
         <template v-if="dialogType == 2">
           <div class="pl-20 pr-20 text-black">
-            <div class="mb-15"> {{$t('public.userInfo')}}</div>
+            <div class="mb-15"> {{ $t('public.userInfo') }}</div>
             <div class="flex align-center pb-20 l-b">
               <img :src="curRow.userAvatar || agentInfo.avatar" class="round" width="56" alt="">
               <div class="pl-20">
                 <div class="flex">
-                  <div class="label-text">{{$t('public.userName')}}:</div>
+                  <div class="label-text">{{ $t('public.userName') }}:</div>
                   <div>{{ curRow.userNickName }}</div>
-                  <div class="ml-50 label-text">{{$t('public.userId')}}:</div>
+                  <div class="ml-50 label-text">{{ $t('public.userId') }}:</div>
                   <div>{{ curRow.userId }}</div>
                 </div>
                 <div class="flex mt-10">
-                  <div class="label-text">{{$t('public.phone')}}:</div>
+                  <div class="label-text">{{ $t('public.phone') }}:</div>
                   <div v-if="isBrand() || isSaas()">{{ curRow.userMobile || `${$t('public.notHave')}` }}</div>
                   <div v-else>{{ dealPhone(curRow.userMobile) || `${$t('public.notHave')}` }}</div>
                 </div>
@@ -397,29 +404,29 @@
             </div>
 
             <div class="mt-20 mb-15">
-              {{$t('public.orderInformation')}}
+              {{ $t('public.orderInformation') }}
             </div>
             <div class="pb-20 l-b">
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.orderNo')}}:</div>
+                <div class="label-text">{{ $t('public.orderNo') }}:</div>
                 <div>{{ curRow.orderNo }}</div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.deviceType')}}:</div>
+                <div class="label-text">{{ $t('public.deviceType') }}:</div>
                 <div>{{ curRow.deviceType }}</div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{$t('public.statrtTime')}}:</div>
+                <div class="label-text">{{ $t('public.statrtTime') }}:</div>
                 <div>{{ curRow.chargeStartTime }}</div>
               </div>
               <div class="flex">
-                <div class="label-text">{{$t('public.endTime')}}:</div>
+                <div class="label-text">{{ $t('public.endTime') }}:</div>
                 <div>{{ curRow.chargeEndTime }}</div>
               </div>
             </div>
 
             <div class="mt-20 mb-15">
-              {{$t('public.operate')}}
+              {{ $t('public.operate') }}
             </div>
             <el-form class="custom-form" label-width="auto">
               <el-form-item :label="`${$t('public.returnType')}:`">
@@ -431,7 +438,7 @@
               <el-form-item :label="`${$t('public.refundAmount')}:`">
                 <el-input v-model="dform.amount"
                   :placeholder="`${$t('public.max')}${dform.refundType != 3 ? curRow.amount || 0 : curRow.amountEnable || 0}${$t('public.element')}`">
-                  <span slot="append">{{$t('public.element')}}</span>
+                  <span slot="append">{{ $t('public.element') }}</span>
                 </el-input>
               </el-form-item>
               <el-form-item :label="`${$t('order.reasonForRefund')}:`">
@@ -442,18 +449,18 @@
         </template>
         <template v-if="dialogType == 6">
           <div class="pl-20 pr-20 text-black">
-            <div class="mb-15">{{$t('public.userInfo')}}</div>
+            <div class="mb-15">{{ $t('public.userInfo') }}</div>
             <div class="flex align-center pb-20 l-b">
               <img :src="curRow.userAvatar || agentInfo.avatar" class="round" width="56" alt="">
               <div class="pl-20">
                 <div class="flex">
-                  <div class="label-text">{{$t('public.userName')}}:</div>
+                  <div class="label-text">{{ $t('public.userName') }}:</div>
                   <div>{{ curRow.userNickName }}</div>
-                  <div class="ml-50 label-text">{{$t('public.userId')}}:</div>
+                  <div class="ml-50 label-text">{{ $t('public.userId') }}:</div>
                   <div>{{ curRow.userId }}</div>
                 </div>
                 <div class="flex mt-10">
-                  <div class="label-text">{{$t('public.phone')}}:</div>
+                  <div class="label-text">{{ $t('public.phone') }}:</div>
                   <div v-if="isBrand() || isSaas()">{{ curRow.userMobile || `${$t('public.notHave')}` }}</div>
                   <div v-else>{{ dealPhone(curRow.userMobile) || `${$t('public.notHave')}` }}</div>
                 </div>
@@ -461,7 +468,7 @@
             </div>
 
             <div class="mt-20 mb-15">
-              {{$t('public.orderInformation')}}
+              {{ $t('public.orderInformation') }}
               <el-tag class="ml-10" :type="curRow.status > 2 || curRow.status == -1 ? 'danger' : 'success'" size="mini"
                 effect="dark">
                 {{ Constant.OrderStatus ? Constant.OrderStatus[curRow.status] : `${$t('public.completed')}` }}
@@ -471,37 +478,37 @@
               <div>
                 <div class="pb-10 l-b-dashed">
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.orderNo')}}:</div>
+                    <div class="label-text">{{ $t('public.orderNo') }}:</div>
                     <div>{{ curRow.orderNo }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.deviceType')}}:</div>
+                    <div class="label-text">{{ $t('public.deviceType') }}:</div>
                     <div>{{ curRow.deviceType }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.deviceCode')}}:</div>
+                    <div class="label-text">{{ $t('public.deviceCode') }}:</div>
                     <div>{{ curRow.deviceSn }}</div>
                   </div>
                   <div class="flex" v-if="curRow.returnStore">
-                    <div class="label-text">{{$t('order.returningEquipment')}}:</div>
+                    <div class="label-text">{{ $t('order.returningEquipment') }}:</div>
                     <div>{{ curRow.afterDeviceSn || '--' }}</div>
                   </div>
                 </div>
                 <div class="mt-10">
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.statrtTime')}}:</div>
+                    <div class="label-text">{{ $t('public.statrtTime') }}:</div>
                     <div>{{ curRow.chargeStartTime }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('order.orderSource')}}:</div>
+                    <div class="label-text">{{ $t('order.orderSource') }}:</div>
                     <div>
-                      <span v-if="curRow.sourceType == 3">{{$t('order.admin')}}</span>
+                      <span v-if="curRow.sourceType == 3">{{ $t('order.admin') }}</span>
                       <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="curRow.sourceType == 1"></i>
                       <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
                     </div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.package')}}:</div>
+                    <div class="label-text">{{ $t('public.package') }}:</div>
                     <div class="text-cut">
                       <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
                         <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode) }}</span>
@@ -509,7 +516,7 @@
                     </div>
                   </div>
                   <div class="flex">
-                    <div class="label-text">{{$t('public.refund')}}:</div>
+                    <div class="label-text">{{ $t('public.refund') }}:</div>
                     <div>{{ curRow.amountRefund || '0.00' }}</div>
                   </div>
                 </div>
@@ -517,45 +524,49 @@
               <div>
                 <div class="pl-20 pb-10 l-b-dashed">
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.transactionNum')}}:</div>
+                    <div class="label-text">{{ $t('public.transactionNum') }}:</div>
                     <div>{{ curRow.transactionNo || '--' }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.rentalMerchants')}}:</div>
+                    <div class="label-text">{{ $t('public.rentalMerchants') }}:</div>
                     <div>{{ curRow.storeName }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.sn')}}:</div>
+                    <div class="label-text">{{ $t('public.sn') }}:</div>
                     <div>{{ curRow.terminalId || '--' }}</div>
                   </div>
                   <div class="flex" v-if="curRow.returnStore">
-                    <div class="label-text">{{$t('public.returnToMerchant')}}:</div>
+                    <div class="label-text">{{ $t('public.returnToMerchant') }}:</div>
                     <div>{{ curRow.returnStore.name }}</div>
                   </div>
                 </div>
                 <div class="pl-20 mt-10">
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.endTime')}}:</div>
+                    <div class="label-text">{{ $t('public.endTime') }}:</div>
                     <div>{{ curRow.chargeEndTime || '--' }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.payType')}}:</div>
+                    <div class="label-text">{{ $t('public.payType') }}:</div>
                     <div>{{ Constant.PayType ? Constant.PayType[curRow.payType] : '--' }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{$t('public.income')}}:</div>
+                    <div class="label-text">{{ $t('public.income') }}:</div>
                     <div>{{ curRow.amount || '0.00' }}</div>
                   </div>
                   <div class="flex">
-                    <div class="label-text">{{$t('public.remark')}}:</div>
+                    <div class="label-text">{{ $t('public.remark') }}:</div>
                     <div>
-                      <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ? $t('order.powerConsumption') :
+                      <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ?
+                        $t('order.powerConsumption') :
                         $t('order.DuringLease') }}({{ curRow.afterLevel || curRow.level }}%)</span>
                       <template v-if="curRow.freeTime > 0">
-                        <span class="mr-5" v-if="curRow.freeUser == 1">{{$t('public.freeQuota')}}：{{ parseInt(curRow.freeTime) / 60 }}{{$t('public.huor')}}</span>
-                        <span class="mr-5" v-else-if="curRow.freeUser == 3">{{$t('order.suspendBilling')}}：{{ parseInt(curRow.freeTime) / 60
-                        }}{{$t('public.huor')}}</span>
-                        <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime == 600000 ? `${$t('order.membershipOrder')}` :
+                        <span class="mr-5" v-if="curRow.freeUser == 1">{{ $t('public.freeQuota') }}：{{
+                          parseInt(curRow.freeTime) / 60 }}{{ $t('public.huor') }}</span>
+                        <span class="mr-5" v-else-if="curRow.freeUser == 3">{{ $t('order.suspendBilling') }}：{{
+                          parseInt(curRow.freeTime) / 60
+                        }}{{ $t('public.huor') }}</span>
+                        <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime == 600000 ?
+                          `${$t('order.membershipOrder')}` :
                           `${$t('order.membershipFree')}${curRow.freeTime}${$t('public.minute')}` }}</span>
                       </template>
                       <span>{{ curRow.remark ? curRow.remark : curRow.freeTime || '' }}</span>
@@ -566,7 +577,7 @@
             </div>
 
             <template v-if="!isStore()">
-              <div class="mt-20 mb-15">{{$t('order.orderProcess')}}</div>
+              <div class="mt-20 mb-15">{{ $t('order.orderProcess') }}</div>
               <div class="flex pb-20 timeline-box white-space text-center l-b">
                 <div class="rel pt-30 timeline-item el-icon-" v-for="(item, index) in dform.orderFlow">
                   <div class="pl-10 pr-10">
@@ -597,13 +608,16 @@
                     {{ scope.row.percent }}%
                   </template>
                 </el-table-column>
-                <el-table-column width="120" :label="`${$t('public.dividedAmount')}(${$t('public.element')})`" align="center">
+                <el-table-column width="120" :label="`${$t('public.dividedAmount')}(${$t('public.element')})`"
+                  align="center">
                   <template slot-scope="scope">
                     <span>{{ accSub(scope.row.amount, scope.row.loseAmount) }}</span>
-                    <span v-if="scope.row.costAmount > 0">({{$t('order.overtimeCosts')}}{{ scope.row.costAmount }}{{$t('public.element')}})</span>
+                    <span v-if="scope.row.costAmount > 0">({{ $t('order.overtimeCosts') }}{{ scope.row.costAmount
+                    }}{{ $t('public.element') }})</span>
                   </template>
                 </el-table-column>
-                <el-table-column width="120" :label="`${$t('public.ddAmount')}(${$t('public.element')})`" align="center" v-if="dform.amountPaidLose > 0">
+                <el-table-column width="120" :label="`${$t('public.ddAmount')}(${$t('public.element')})`" align="center"
+                  v-if="dform.amountPaidLose > 0">
                   <template slot-scope="scope">
                     {{ scope.row.loseAmount || '--' }}
                   </template>
@@ -615,11 +629,13 @@
                 </el-table-column>
                 <el-table-column :label="$t('order.splitStates')" align="center">
                   <template slot-scope="scope">
-                    {{ scope.row.dividerPaymentStatus == 0 ? `${$t('order.status')}` : scope.row.dividerPaymentStatus == -1 ? `${$t('order.status1')}` :
+                    {{ scope.row.dividerPaymentStatus == 0 ? `${$t('order.status')}` : scope.row.dividerPaymentStatus ==
+                      -1 ? `${$t('order.status1')}` :
                       scope.row.dividerPaymentStatus == -2 ? `${$t('order.status2')}` : `${$t('order.status3')}` }}
                   </template>
                 </el-table-column>
-                <el-table-column width="120" :label="`${$t('public.refundAmount')}(${$t('public.element')})`" align="center">
+                <el-table-column width="120" :label="`${$t('public.refundAmount')}(${$t('public.element')})`"
+                  align="center">
                   <template slot-scope="scope">
                     {{ scope.row.refund }}
                   </template>
@@ -632,7 +648,8 @@
         <template v-if="dialogType != 6">
           <div class="p-15 mt-30 abs bfixed text-right l-t">
             <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
-            <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
+            <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{
+              $t('public.confirm') }}</el-button>
           </div>
         </template>
       </el-drawer>
@@ -697,36 +714,9 @@ export default {
     },
     Ability() {
       return this.$store.getters.Ability
-    }
-  },
-  data() {
-    return {
-      dealPhone: dealPhone,
-      showFeeMode: showFeeMode,
-      showFeeName: showFeeName,
-      accSub: accSub,
-      clickSubmit: false,
-      pickerOptionsEnd: {
-        disabledDate: (time) => {
-          let timeOptionRange = this.timeOptionRange
-          let secondNum = 60 * 60 * 24 * 31 * 1000
-          if (timeOptionRange) {
-            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
-              .getTime() - secondNum) || time.getTime() > Date.now()
-          }
-          return time.getTime() > Date.now()
-        },
-        onPick: (time) => {
-          //当第一时间选中才设置禁用
-          if (time.minDate && !time.maxDate) {
-            this.timeOptionRange = time.minDate
-          }
-          if (time.maxDate) {
-            this.timeOptionRange = null
-          }
-        }
-      },
-      orderTab: [{
+    },
+    orderTab() {
+      return [{
         value: 0,
         title: this.$t('public.all'),
         nkey: 'orderNumber'
@@ -761,25 +751,10 @@ export default {
         title: this.$t('public.deductionFailed'),
         nkey: 'payFailedNumber'
       }
-      ],
-
-      cat_id: [],
-      search_regions_tag: [],
-      categoryList: [],
-      areaList: [],
-
-      tableMaxH: '250',
-      listLoading: false,
-      listTotal: 0,
-      statInfo: {},
-      list: [],
-      listQuery: {
-        status: '',
-        page: 1,
-        size: 20
-      },
-
-      queryObj: {
+      ]
+    },
+    queryObj() {
+      return {
         orderNo: {
           title: this.$t('public.orderNo'),
           type: 'input'
@@ -830,20 +805,10 @@ export default {
           type: 'select',
           selectArr: []
         }
-      },
-      formKey: {
-        sel1: 'orderNo',
-        sel2: 'idLastNine'
-      },
-      form: {},
-      order: {},
-      selID: [],
-
-      // 弹出相关
-      dialogType: 1,
-      dialogStatus: false,
-      drawerStatus: false,
-      dialogTitle: {
+      }
+    },
+    dialogTitle() {
+      return {
         1: this.$t('public.closeOrder'),
         2: this.$t('public.orderRefund'),
         3: this.$t('order.cancelPayOrder'),
@@ -857,16 +822,10 @@ export default {
         11: this.$t('order.wxOrderRefundRetry'),
         12: this.$t('order.orderInquiry'),
         13: this.$t('order.followUpExecution'),
-      },
-      curRow: {},
-      curIdx: 0,
-      dform: {},
-
-      /**
-       * 列的配置化对象，存储配置信息
-       */
-      showColumn: [],
-      defaultColumn: [
+      }
+    },
+    defaultColumn() {
+      return [
         {
           key: 'userNickName',
           val: true,
@@ -948,6 +907,72 @@ export default {
           name: this.$t('public.transactionNum')
         }
       ]
+    }
+  },
+  data() {
+    return {
+      dealPhone: dealPhone,
+      showFeeMode: showFeeMode,
+      showFeeName: showFeeName,
+      accSub: accSub,
+      clickSubmit: false,
+      pickerOptionsEnd: {
+        disabledDate: (time) => {
+          let timeOptionRange = this.timeOptionRange
+          let secondNum = 60 * 60 * 24 * 31 * 1000
+          if (timeOptionRange) {
+            return (time.getTime() > timeOptionRange.getTime() + secondNum || time.getTime() < timeOptionRange
+              .getTime() - secondNum) || time.getTime() > Date.now()
+          }
+          return time.getTime() > Date.now()
+        },
+        onPick: (time) => {
+          //当第一时间选中才设置禁用
+          if (time.minDate && !time.maxDate) {
+            this.timeOptionRange = time.minDate
+          }
+          if (time.maxDate) {
+            this.timeOptionRange = null
+          }
+        }
+      },
+
+      cat_id: [],
+      search_regions_tag: [],
+      categoryList: [],
+      areaList: [],
+
+      tableMaxH: '250',
+      listLoading: false,
+      listTotal: 0,
+      statInfo: {},
+      list: [],
+      listQuery: {
+        status: '',
+        page: 1,
+        size: 20
+      },
+
+      formKey: {
+        sel1: 'orderNo',
+        sel2: 'idLastNine'
+      },
+      form: {},
+      order: {},
+      selID: [],
+
+      // 弹出相关
+      dialogType: 1,
+      dialogStatus: false,
+      drawerStatus: false,
+      curRow: {},
+      curIdx: 0,
+      dform: {},
+
+      /**
+       * 列的配置化对象，存储配置信息
+       */
+      showColumn: [],
     }
   },
   created() {

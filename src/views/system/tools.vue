@@ -341,12 +341,6 @@ export default {
       // 弹出相关
       dialogType: 1,
       drawerStatus: false,
-      dialogTitle: {
-        1: this.$t('system.userLoginPhone'),
-        2: this.$t('system.frequencyLimit'),
-        3: this.$t('system.setMap'),
-        4: this.$t('system.setStore'),
-      },
       curRow: {},
       curIdx: 0,
       dform: {},
@@ -361,6 +355,14 @@ export default {
     },
     myDeviceId() {
       return this.$store.state.user.myDeviceId
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('system.userLoginPhone'),
+        2: this.$t('system.frequencyLimit'),
+        3: this.$t('system.setMap'),
+        4: this.$t('system.setStore'),
+      }
     }
   },
   mounted() {

@@ -82,8 +82,11 @@ export default {
       step: 1,
       form: {},
       gid: this.$route.query.gid || '',
-
-      soon: [
+    }
+  },
+  computed:{
+    soon(){
+      return [
         {
           depend_type: 7,
           depend_name: this.$t('login.chargingStation'),
@@ -101,7 +104,7 @@ export default {
           depend_name: this.$t('login.skatekartRed'),
         }
       ]
-    }
+    },
   },
   mounted() {
     this.get_platform_config()

@@ -90,11 +90,6 @@ export default {
           {}
         ]
       },
-      rules: {
-        iotServiceTypeId: [
-          { required: true, message: this.$t('market.inputText'), trigger: 'change' }
-        ]
-      },
       powerInfo: {},
       role: [],
       id: '',
@@ -111,7 +106,14 @@ export default {
     },
     agentInfo() {
       return this.$store.getters.agentInfo
-    }
+    },
+    rules(){
+      return {
+        iotServiceTypeId: [
+          { required: true, message: this.$t('market.inputText'), trigger: 'change' }
+        ]
+      }
+    },
   },
   mounted() {
     this.getServiceType()

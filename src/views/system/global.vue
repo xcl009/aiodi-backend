@@ -65,7 +65,7 @@
         <el-table-column :label="$t('public.operate')" width="110">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <el-button type="text" @click="setRows(3, scope.row, 2,scope.$index)">{{ $t('public.edit') }}</el-button>
+              <el-button type="text" @click="setRows(3, scope.row, 2, scope.$index)">{{ $t('public.edit') }}</el-button>
               <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('system.deleteDictionary')" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
                 <el-button type="text" class="text-danger" slot="reference">{{ $t('public.delete') }}</el-button>
@@ -186,7 +186,29 @@ export default {
        * 列的配置化对象，存储配置信息
        */
       showColumn: [],
-      defaultColumn: [
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    next()
+  },
+  activated() {
+    if (this.$route.meta.reload) {
+      this.getConfig()
+      this.toQuery()
+    } else if (!this.list || this.list.length == 0) {
+      this.getConfig()
+      this.toQuery()
+    }
+  },
+  computed: {
+    device() {
+      return this.$store.state.app.device
+    },
+    Ability() {
+      return this.$store.getters.Ability
+    },
+    defaultColumn() {
+      return [
         {
           key: 'lanLable',
           val: true,
@@ -228,26 +250,6 @@ export default {
           name: this.$t('public.remark')
         }
       ]
-    }
-  },
-  beforeRouteEnter(to, from, next) {
-    next()
-  },
-  activated() {
-    if (this.$route.meta.reload) {
-      this.getConfig()
-      this.toQuery()
-    } else if (!this.list || this.list.length == 0) {
-      this.getConfig()
-      this.toQuery()
-    }
-  },
-  computed: {
-    device() {
-      return this.$store.state.app.device
-    },
-    Ability() {
-      return this.$store.getters.Ability
     }
   },
   mounted() {
@@ -292,7 +294,7 @@ export default {
       this.listQuery.page = 1
       this.listQuery.size = 20
       this.getList()
-      console.log(this.form,'this.form')
+      console.log(this.form, 'this.form')
     },
 
     /**

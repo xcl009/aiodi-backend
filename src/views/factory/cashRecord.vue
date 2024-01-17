@@ -135,11 +135,6 @@ export default {
         page: 1,
         size: 20
       },
-      statusObj: {
-        1: this.$t('public.applying'),
-        2: this.$t('public.passed'),
-        3: this.$t('public.rejected')
-      },
       pickerOptionsEnd: {
         disabledDate: (time) => {
           let timeOptionRange = this.timeOptionRange
@@ -162,10 +157,6 @@ export default {
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
-      dialogTitle: {
-        1: this.$t('goods.dialogTitle'),
-        2: this.$t('goods.dialogTitle1')
-      },
       curRow: {},
       curIdx: 0,
       dform: {}
@@ -174,6 +165,19 @@ export default {
   computed: {
     agentInfo() {
       return this.$store.state.user.agentInfo
+    },
+    statusObj() {
+      return {
+        1: this.$t('public.applying'),
+        2: this.$t('public.passed'),
+        3: this.$t('public.rejected')
+      }
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('goods.dialogTitle'),
+        2: this.$t('goods.dialogTitle1')
+      }
     }
   },
   mounted(options) {

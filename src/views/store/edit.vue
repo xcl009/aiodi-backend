@@ -156,7 +156,8 @@
                         v-if="getModeType(item.deviceTypeCode)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode)['DEPOSIT']">
                         <div>
                           {{ $t('store.text11') }}<el-link type="primary" :underline="false"
-                            @click="$router.push({ path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=计费模式` })">{{ $t('store.text10') }}</el-link>
+                            @click="$router.push({ path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=计费模式` })">{{
+                              $t('store.text10') }}</el-link>
                         </div>
                         <el-link type="danger" :underline="false" slot="reference"
                           class="ml-10 el-icon-question fs-c1"></el-link>
@@ -180,10 +181,11 @@
                           </el-input>
                           <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4"
                             v-if="index == 0"
-                            @click="item[`${xcx}PayMode`].payModeDetail.push({ time: (item.deviceTypeCode == 'WM' ? '46' : 60), money: 2, tag: index + 1 })">{{ $t('public.add') }}</el-button>
+                            @click="item[`${xcx}PayMode`].payModeDetail.push({ time: (item.deviceTypeCode == 'WM' ? '46' : 60), money: 2, tag: index + 1 })">{{
+                              $t('public.add') }}</el-button>
                           <el-button type="text" size="small" v-else
-                            @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)"
-                            class="text-danger">{{ $t('public.delete') }}</el-button>
+                            @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="text-danger">{{
+                              $t('public.delete') }}</el-button>
                         </div>
                       </el-form-item>
                       <el-form-item :label="`${$t('public.laundryDetergentSettings')}`"
@@ -336,11 +338,9 @@ export default {
     },
     myProfitRatio() {
       return this.$store.getters.myProfitRatio || { PA: 100 }
-    }
-  },
-  data() {
-    return {
-      rules: {
+    },
+    rules() {
+      return {
         name: [{
           required: true,
           message: this.$t('store.plseaseStoreName'),
@@ -370,7 +370,11 @@ export default {
           required: true,
           message: this.$t('store.pleaseMapLotion')
         }]
-      },
+      }
+    }
+  },
+  data() {
+    return {
       clickSubmit: false,
       storeId: this.$route.query.storeId || '',
       parentId: this.$route.query.parentId || '',
@@ -897,4 +901,5 @@ export default {
 
 /deep/ .input-with .el-input-group__prepend {
   padding: 0 0 0 5px;
-}</style>
+}
+</style>

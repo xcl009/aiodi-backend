@@ -607,13 +607,8 @@
       Ability() {
         return this.$store.getters.Ability
       },
-    },
-    data() {
-      return {
-        formatSeconds: formatSeconds,
-        unixTime: unixTime,
-        clickSubmit: false,
-        haveBind: [
+      haveBind(){
+        return [
           {
             value: 0,
             title: this.$t('public.all'),
@@ -639,8 +634,10 @@
             title: this.$t('public.offline'),
             nkey: 'offlineCount'
           }
-        ],
-        queryObj: {
+        ]
+      },
+      queryObj(){
+        return {
           deviceSn: {
             title: this.$t('public.code'),
             type: 'input'
@@ -683,40 +680,10 @@
             title: this.$t('public.deviceSn'),
             type: 'input'
           },
-        },
-        formKey: {
-          sel1: 'deviceSn',
-          sel2: 'storeId'
-        },
-        form: {},
-        tableMaxH: '250',
-        list: [],
-        listLoading: true,
-        listTotal: 0,
-        listQuery: {
-          haveBind: this.$route.query.haveBind || '',
-          page: 1,
-          size: 20
-        },
-        orderCount: {},
-        deviceCount: {},
-        onLineCount: {},
-        fatherSn: {},
-
-        selSnArr: [],
-        selID: [],
-
-        // 钱包 + 快活币余额
-        money: {},
-
-        //订单收费配置信息
-        createOrderConfig: {},
-
-        // 弹出相关
-        dialogType: 1,
-        dialogStatus: false,
-        drawerStatus: false,
-        dialogTitle: {
+        }
+      },
+      dialogTitle(){
+        return {
           1: this.$t('device.equipmentOwnership'),
           2: this.$t('public.deviceCode'),
           3: this.$t('device.putIn'),
@@ -727,34 +694,10 @@
           8: this.$t('device.distributionEquipment'),
           9: this.$t('device.switchBrand'),
           10: this.$t('device.goodsToMerchants')
-        },
-        curRow: {},
-        curIdx: 0,
-        dform: {},
-        // 代理
-        agentList: {
-          query: {
-            page: 1,
-            size: 20
-          },
-          list: [],
-          newly: []
-        },
-        // 商户
-        storeList: {
-          query: {
-            page: 1,
-            size: 20
-          },
-          list: [],
-          newly: []
-        },
-
-        /**
-         * 列的配置化对象，存储配置信息
-         */
-        showColumn: [],
-        defaultColumn: [
+        }
+      },
+      defaultColumn(){
+        return [
           {
             key: 'deviceType',
             val: true,
@@ -834,8 +777,71 @@
             val: false,
             name: this.$t('device.volume')
           }
-        ],
+        ]
+      }
+    },
+    data() {
+      return {
+        formatSeconds: formatSeconds,
+        unixTime: unixTime,
+        clickSubmit: false,
+        formKey: {
+          sel1: 'deviceSn',
+          sel2: 'storeId'
+        },
+        form: {},
+        tableMaxH: '250',
+        list: [],
+        listLoading: true,
+        listTotal: 0,
+        listQuery: {
+          haveBind: this.$route.query.haveBind || '',
+          page: 1,
+          size: 20
+        },
+        orderCount: {},
+        deviceCount: {},
+        onLineCount: {},
+        fatherSn: {},
 
+        selSnArr: [],
+        selID: [],
+
+        // 钱包 + 快活币余额
+        money: {},
+
+        //订单收费配置信息
+        createOrderConfig: {},
+
+        // 弹出相关
+        dialogType: 1,
+        dialogStatus: false,
+        drawerStatus: false,
+        curRow: {},
+        curIdx: 0,
+        dform: {},
+        // 代理
+        agentList: {
+          query: {
+            page: 1,
+            size: 20
+          },
+          list: [],
+          newly: []
+        },
+        // 商户
+        storeList: {
+          query: {
+            page: 1,
+            size: 20
+          },
+          list: [],
+          newly: []
+        },
+        /**
+         * 列的配置化对象，存储配置信息
+         */
+        showColumn: [],
         // 设备归属
         deviceInfo: {},
       }

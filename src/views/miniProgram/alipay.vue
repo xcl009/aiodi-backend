@@ -107,21 +107,9 @@ export default {
       listTotal: 0,
       list: [],
       listLoading: false,
-
-      appAuditStatus: {
-        0: this.$t('public.toBeUploaded'),
-        1: this.$t('public.audit'),
-        2: this.$t('public.inReview'),
-        3: this.$t('public.toBeReleased'),
-        4: this.$t('public.reviewFailed'),
-        5: this.$t('public.published')
-      },
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
-      dialogTitle: {
-        1: this.$t('miniProgram.uploadCode')
-      },
       curRow: {},
       curIdx: 0,
       dform: {}
@@ -151,7 +139,22 @@ export default {
     },
     agentInfo() {
       return this.$store.getters.agentInfo
-    }
+    },
+    appAuditStatus() {
+      return {
+        0: this.$t('public.toBeUploaded'),
+        1: this.$t('public.audit'),
+        2: this.$t('public.inReview'),
+        3: this.$t('public.toBeReleased'),
+        4: this.$t('public.reviewFailed'),
+        5: this.$t('public.published')
+      }
+    },
+    dialogTitle() {
+      return {
+        1: this.$t('miniProgram.uploadCode')
+      }
+    },
   },
   mounted() {
 

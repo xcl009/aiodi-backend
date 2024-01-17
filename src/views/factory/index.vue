@@ -123,9 +123,6 @@
         // 弹出相关
         dialogType: 1,
         dialogStatus: false,
-        dialogTitle: {
-          1: this.$t('factory.themeSettings')
-        },
         curRow: {},
         curIdx: 0,
         dform: {},
@@ -140,6 +137,11 @@
       myDeviceId() {
         return this.$store.getters.myDeviceId
       },
+      dialogTitle(){
+        return {
+          1: this.$t('factory.themeSettings')
+        }
+      }
     },
     beforeRouteEnter(to, from, next) {
       if (from.name == 'addFactory') {
