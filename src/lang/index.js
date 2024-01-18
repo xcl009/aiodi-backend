@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueI18n from "vue-i18n";
-//引入自定义语言配置  
+//引入自定义语言配置
 import zh from './zh';//语言包定义的位置，前文写在同一文件夹下，可自行修改位置
 import cp from './cp';
 import en from './en';
@@ -11,8 +11,11 @@ import twLocale from 'element-ui/lib/locale/lang/zh-TW';
 import cnLocale from 'element-ui/lib/locale/lang/zh-CN';
 import enLocale from 'element-ui/lib/locale/lang/en';
 Vue.use(VueI18n);
+let lang = localStorage.getItem('lang')
+lang = ['zh_CN', 'en_US', 'zh_HK','ja_JP','ko_KR','en_PH','ru_RU','vi_VN'].indexOf(lang) > -1 ? lang : 'zh_CN'
+localStorage.setItem('lang', lang)
 const i18n = new VueI18n({
-  locale: localStorage.getItem('lang') || "zh_CN",//将语言标识存入localStorage或sessionStorage中，页面刷新不会默认中文显示
+  locale: lang,//将语言标识存入localStorage或sessionStorage中，页面刷新不会默认中文显示
   messages: {
     'zh_CN': {
       ...zh,

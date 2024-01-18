@@ -214,12 +214,11 @@ export default {
       }).then((res = {}) => {
         if (res.rows && res.rows.length > 0) {
           this.wechatList = res.rows || []
-          this.form.wechatAppid = res.rows[0].appId
+          this.wechatAppid = res.rows[res.rows.length - 1].appId
           this.toQuery(1)
         }
       })
     },
-
 
     /**
      * 获取详情
@@ -271,9 +270,10 @@ export default {
       let params = JSON.parse(JSON.stringify(this.form)), url = 'iot-saas-basic/admin/orderdivideWXconfig/v1/save'
       if (this.userKey && this.id) params[this.userKey] = this.id
       params.deviceTypeCode = this.deviceTypeCode
-      if (this.code == 'DIVIDE_ACCOUNTS') {
+      if(this.code == 'DIVIDE_ACCOUNTS'){
         params.brandId = this.agentInfo.brandId
-        if (params.id) {
+        params.wechatAppid = this.wechatAppid
+        if(params.id){
           url = 'iot-saas-basic/admin/orderdivideWXconfig/v1/update'
         }
       } else if (this.code == 'DEPOSIT_PRPR') {

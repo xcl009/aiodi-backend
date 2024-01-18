@@ -31,7 +31,7 @@
           <span class="ml-10 text-white">{{ $t('layout.me') }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="setRows(3, 3)" v-if="!isSaas()">
+          <el-dropdown-item @click.native="setRows(3, 3)" v-if="isBrand()">
             <span>{{ $t('layout.personalSettings') }}</span>
           </el-dropdown-item>
           <router-link to="/user/index">
@@ -389,11 +389,8 @@ export default {
 
     waitOnLine(e) {
       localStorage.setItem('lang',e)
-      this.$i18n.locale = e;
-      this.$message({
-        message: this.$t('store.switchSuccess'),
-        type: 'success'
-      })
+      this.$i18n.locale = e
+      location.reload()
     }
   }
 }

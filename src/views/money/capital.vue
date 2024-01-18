@@ -56,17 +56,17 @@
           :max-height="tableMaxH" element-loading-text="Loading">
           <el-table-column :label="$t('public.name')">
             <template slot-scope="scope">
-              {{ scope.row.tradeName}}
+              {{ scope.row.remark}}
             </template>
           </el-table-column>
           <el-table-column :label="$t('public.time')">
             <template slot-scope="scope">
-              <span>{{ scope.row.tradeTime }}</span>
+              <span>{{ parseTime(scope.row.updateDatetime) }}</span>
             </template>
           </el-table-column>
           <el-table-column :label="$t('public.amount')">
             <template slot-scope="scope">
-              <el-link :type="scope.row.amount > 0 ? 'primary' : 'danger'">{{ scope.row.amount || "0.00" }}</el-link>
+              <el-link :type="scope.row.amountChange > 0 ? 'primary' : 'danger'">{{ scope.row.amountChange || "0.00" }}</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -193,8 +193,9 @@
        * 获取商户相关配置
        */
       getSettingsFind() {
-      	this.$request.get('iot-saas-basic/open/settings/find', {
-      		code: 'STORE_MONEY_SET'
+      	this.$get('iot-saas-basic/open/settings/find', {
+      		code: 'STORE_MONEY_SET',
+          brandId: this.agentInfo.brandId
       	}).then(res => {
       		if (res && res.code) {
       			this.storeMoneySetInfo = JSON.parse(res.setting)
@@ -259,7 +260,8 @@
           params.endTime = params.date[1]
           delete params.date
         }
-        this.$get('iot-saas-pay/api/pay/tradeLog/list', params).then((res = {}) => {
+        // /api/pay/tradeLog/list
+        this.$get('iot-saas-pay/api/pay/acount/flow/findPage', params).then((res = {}) => {
           this.list = res.rows || []
           if (this.outStatus) {
             let end = false

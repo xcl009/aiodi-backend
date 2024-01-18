@@ -45,8 +45,13 @@ router.beforeEach(async(to, from, next) => {
 
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
-          next({ ...to, replace: true })
-          next()
+          if((to.path == '/' || to.path == '/home') && to.path != menu[0].path ){
+            next({ ...to, replace: true })
+            next({ path: menu[0].path })
+          }else{
+            next({ ...to, replace: true })
+            next()
+          }
         } catch (error) {
           //remove token and go to login page to re-login
           console.log(error)

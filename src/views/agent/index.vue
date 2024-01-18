@@ -6,7 +6,7 @@
           <el-input v-model="form.name" :placeholder="$t('public.agentNickNames')" />
         </el-form-item>
         <el-form-item :label="$t('public.phone')">
-          <el-input type="tel" v-model="form.mobile" :placeholder="t('public.phone')" />
+          <el-input type="tel" v-model="form.mobile" :placeholder="$t('public.phone')" />
         </el-form-item>
       </template>
       <template v-slot:endButton>
@@ -34,21 +34,18 @@
         </el-table-column>
         <el-table-column :label="$t('brand.category')">
           <template slot-scope="scope">
-            <div class="cursor" v-for="item in scope.row.agentDeviceType">
-              {{ item.name }}
-            </div>
+            <template v-for="(item, index) in scope.row.agentDeviceType">
+              <div class="cursor" v-if="index < 2">
+                {{ item.name }}
+              </div>
+            </template>
           </template>
         </el-table-column>
         <el-table-column :label="$t('brand.numberOfDevices')">
           <template slot-scope="scope">
             <div class="cursor inline text-left" @click="$router.push({ path: `/device?agentId=${scope.row.id}` })">
-              <div>{{ $t('public.all') }}：{{ deviceCount[scope.row.id] ?
-                parseFloat(deviceCount[scope.row.id].deviceNumber)
-                -
-                parseFloat(deviceCount[scope.row.id].lowerDeviceNumber) : '0' }}</div>
-              <div>{{ $t('public.shipped') }}：{{ deviceCount[scope.row.id] ?
-                parseFloat(deviceCount[scope.row.id].bindStoreNumber) -
-                parseFloat(deviceCount[scope.row.id].lowerBindStoreNumber) : '0' }}</div>
+              <div>{{ $t('public.all') }}：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) : 0}}</div>
+              <div>{{ $t('public.shipped') }}：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) : 0 }}</div>
             </div>
           </template>
         </el-table-column>
@@ -86,9 +83,11 @@
         <el-table-column :label="$t('brand.dividendRatio')">
           <template slot-scope="scope">
             <div class="inline text-left">
-              <div v-for="item in scope.row.agentDeviceType">
-                {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
-              </div>
+              <template v-for="(item, index) in scope.row.agentDeviceType">
+                <div v-if="index < 2">
+                  {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
+                </div>
+              </template>
             </div>
           </template>
         </el-table-column>
@@ -104,11 +103,15 @@
               <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">{{
                 $t('public.permissionSettings') }}</el-button>
               <el-button type="primary" size="mini"
-                @click="$router.push({ path: `/agent/addAgent?agentId=${scope.row.id}` })" v-if="Ability['addAgent']">{{
-                  $t('public.modifyingInformation') }}</el-button>
+                @click="$router.push({ path: `/store?agentId=${scope.row.id}` })">{{ $t('brand.storeList') }}</el-button>
+              <el-button type="primary" size="mini"
+                @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)" v-if="checkAbility(['AGENT_POWER'], 3)">{{ $t('public.permissionSettings') }}</el-button>
+              <el-button type="primary" size="mini"
+                @click="$router.push({ path: `/agent/addAgent?agentId=${scope.row.id}` })"
+                v-if="Ability['addAgent']">{{ $t('public.modifyingInformation') }}</el-button>
               <!-- <el-button type="primary" size="mini" @click.native="setRows(8, scope.row, 8)">分配代理</el-button> -->
               <el-dropdown trigger="click">
-                <el-button type="primary" size="mini">{{ $t('public.add') }}<i
+                <el-button type="primary" size="mini">{{ $t('public.adds') }}<i
                     class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="setRows(1, scope.row, 2, scope.$index)">{{ $t('agent.deleteAgent')
@@ -132,14 +135,18 @@
                   </template>
                   <el-dropdown-item @click.native="setRows(8, scope.row, 8)" v-if="isBrand()">{{ $t('store.assignAgents')
                   }}</el-dropdown-item>
-
+                  <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)"
+                    v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">{{
+                      $t('public.assignToAgent') }}</el-dropdown-item> -->
+                  <el-dropdown-item
+                  @click.native="setRows(8, scope.row, 8)"
+                    v-if="isBrand()">{{ $t('store.assignAgents') }}</el-dropdown-item>
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=agentId` })"
-                    v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">{{
-                      $t('store.DDSettings') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)"
-                    v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">{{
-                      $t('public.assignToAgent') }}</el-dropdown-item>
+                    v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">{{ $t('store.DDSettings') }}</el-dropdown-item>
+                  <el-dropdown-item
+                    @click.native="$router.push({ path: `/system/cashSet?id=${scope.row.id}&userKey=agentId` })"
+                    v-if="isBrand() && checkAbility(['WD_AGENT','WD_STORE','WD_USER'], 3)">{{ $t('system.withdrawRule') }}</el-dropdown-item>
                   <el-dropdown-item
                     @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR` })"
                     v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">{{
@@ -150,10 +157,9 @@
                       $t('public.weChatAccountSplitting') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"
                     v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">{{
-                    $t('store.resettingLoginPasswordText') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })" v-if="isBrand()">{{
-                    $t('public.moreApplications') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 11)" v-if="isBrand()">{{ $t('store.resettingLoginPasswordText') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
+                    v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -210,7 +216,6 @@
     </el-dialog>
 
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus">
-
       <template v-if="dialogType == 8">
         <div class="flexv pl-20 pr-20 text-black" style="height: 100%;">
           <div class="mb-20 pb-5 l-b">
@@ -354,7 +359,17 @@
           </div>
         </div>
       </template>
-      <template v-if="[9].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 11">
+        <el-form class="pl-20 pr-20 custom-form">
+          <el-form-item :label="$('public.loginPassword')">
+            <el-switch v-model="dform.password" />
+          </el-form-item>
+          <el-form-item :label="$('public.operationPassword')">
+            <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[9, 11].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -490,7 +505,8 @@ export default {
         4: this.$t('store.assignMerchants'),
         5: this.$t('public.freezeAmount'),
         8: this.$t('store.assignAgents'),
-        9: this.$t('store.assignAgents')
+        9: this.$t('store.assignAgents'),
+        11: this.$t('public.setLoginPassword')
       }
     }
   },
@@ -619,7 +635,7 @@ export default {
         this.deviceCount = {}
         return
       }
-      this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+      this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
         countType: 'AGENT',
         groupIds: ids.join(',')
       }).then(res => {
@@ -650,33 +666,12 @@ export default {
             }
           }
           break
-        case 6:
-          this.$alert(that.$t('agent.message'), that.$t('public.setLoginPassword'), {
-            confirmButtonText: that.$t('public.confirm'),
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$post('iot-saas-user/admin/user/password/reset', {
-                  userId: row.userId,
-                  password: '123456'
-                }).then(res => {
-
-                  this.$message({
-                    message: that.$t('public.resetSuccess'),
-                    type: 'success'
-                  })
-                })
-              }
-            }
-          })
-          break
         case 8:
           this.dialogType = dialogType
           this.curRow = row
           this.curIdx = idx
           this.drawerStatus = true
-
-
+        break
       }
     },
 
@@ -777,6 +772,19 @@ export default {
             })
             this.getList();
             this.drawerStatus = false;
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 11:
+          params.userId = curRow.userId
+          if(params.password) params.password = '123456'
+          this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.drawerStatus = false
           }).catch(err => {
             this.clickSubmit = false
           })

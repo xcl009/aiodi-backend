@@ -62,7 +62,12 @@
         </el-table-column>
         <el-table-column :label="$t('public.walletBalance')" v-if="isSaas() || isBrand()">
           <template slot-scope="scope">
-            {{ scope.row.accountBalance || '0.00' }}
+            <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(scope.row)" v-if="checkAbility(['WD_MODIFY'], 3)">
+              {{ scope.row.accountBalance || '0.00' }}
+            </div>
+            <div class="cursor" v-else>
+              {{ scope.row.accountBalance || '0.00' }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('userManage.registrationDate')" width="150">
@@ -84,12 +89,15 @@
           @pagination="getList" />
       </div>
     </div>
+
+    <update-blance ref="UpdateBlances" userType="user" v-if="checkAbility(['WD_MODIFY'], 3)"></update-blance>
   </div>
 </template>
 
 <script>
   import Pagination from '@/components/Pagination'
-  import condition from '@/components/condition/'
+  import Condition from '@/components/condition/'
+  import UpdateBlance from '@/components/UpdateBlance/'
   import {
     dealPhone
   } from '@/utils/index'
@@ -97,7 +105,8 @@
     name: 'userManage',
     components: {
       Pagination,
-      condition
+      Condition,
+      UpdateBlance
     },
     computed: {
       myDeviceId(){

@@ -42,12 +42,11 @@
         </el-table-column>
         <el-table-column :label="$t('brand.category')" width="200">
           <template slot-scope="scope">
-            <div>
-              <span class="mr-20 inline" v-for="item in scope.row.agentDeviceType"
-                @click="$router.push({ path: `/device?agentId=${scope.row.id}` })">
+            <template v-for="(item, index) in scope.row.agentDeviceType">
+              <div class="cursor" v-if="index < 2" @click="$router.push({ path: `/device?agentId=${scope.row.id}` })">
                 {{ item.name }}
-              </span>
-            </div>
+              </div>
+            </template>
           </template>
         </el-table-column>
         <el-table-column :label="$t('brand.numberOfDevices')">
@@ -91,11 +90,11 @@
         </el-table-column>
         <el-table-column :label="$t('brand.dividendRatio')" width="140">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <div v-for="item in scope.row.agentDeviceType">
+            <template v-for="(item, index) in scope.row.agentDeviceType">
+              <div v-if="index < 2">
                 {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
               </div>
-            </div>
+            </template>
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.operate')" width="245" :fixed="device == 'desktop' ? 'right' : false">
@@ -106,7 +105,7 @@
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/store?brandId=${scope.row.brandId}&agentId=${scope.row.id}` })">{{ $t('brand.storeList') }}</el-button>
               <el-dropdown trigger="click">
-                <el-button type="primary" size="mini">{{ $t('public.add') }}<i
+                <el-button type="primary" size="mini">{{ $t('public.adds') }}<i
                     class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="toLogin(scope.row)">{{ $t('brand.agentManagement') }}</el-dropdown-item>
@@ -266,14 +265,30 @@ export default {
     },
 
     /**
+     * 订单数量统计查询
+     */
+    queryOrderCount(ids){
+      if(ids.length == 0){
+        this.orderCount = {}
+        return
+      }
+      this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+        countType: 'AGENT',
+        groupIds: ids.join(',')
+      }).then(res => {
+        this.orderCount = res
+      })
+    },
+
+    /**
      * 设备数量统计查询
      */
-    queryDeviceCount(ids) {
-      if (ids.length == 0) {
+    queryDeviceCount(ids){
+      if(ids.length == 0){
         this.deviceCount = {}
         return
       }
-      this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+      this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
         countType: 'AGENT',
         groupIds: ids.join(',')
       }).then(res => {

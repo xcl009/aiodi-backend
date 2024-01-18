@@ -1,8 +1,15 @@
 <template>
   <div>
-    <div class="pt-10 pl-10 pr-10 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        :max-height="tableMaxH" element-loading-text="Loading">
+    <div class="pl-10 pr-10 bg-white">
+      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+        <template v-slot:defult>
+          <el-form-item :label="$t('public.appletName')">
+            <el-input v-model="form.appName" />
+          </el-form-item>
+        </template>
+      </condition>
+
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading">
         <el-table-column :label="$t('public.applet')">
           <template slot-scope="scope">
             {{ scope.row.appName || $t('public.appletName') }}
@@ -90,16 +97,19 @@
 </template>
 
 <script>
+import condition from '@/components/condition/'
 import Pagination from '@/components/Pagination'
 export default {
   name: 'alipay',
   components: {
+    condition,
     Pagination
   },
   data() {
     return {
       clickSubmit: false,
       tableMaxH: '250',
+      form: {},
       listQuery: {
         page: 1,
         size: 20
@@ -107,6 +117,7 @@ export default {
       listTotal: 0,
       list: [],
       listLoading: false,
+
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
@@ -115,28 +126,7 @@ export default {
       dform: {}
     }
   },
-  beforeRouteEnter(to, from, next) {
-    if (from.name == "alipayEdit") {
-      to.meta.reload = true
-    } else {
-      to.meta.reload = false
-    }
-    next()
-  },
-  activated() {
-    if (this.$route.meta.reload) {
-      this.toQuery()
-    } else if (!this.list || this.list.length == 0) {
-      this.toQuery()
-    }
-  },
   computed: {
-    device() {
-      return this.$store.state.app.device
-    },
-    siteInfo() {
-      return this.$store.getters.siteInfo
-    },
     agentInfo() {
       return this.$store.getters.agentInfo
     },
@@ -170,10 +160,20 @@ export default {
     },
 
     /**
+     * 重置查询
+     */
+    reset(){
+      if(this.clickSubmit) return
+      this.clickSubmit = true
+      this.form = {}
+      this.getList()
+    },
+
+    /**
      * 获取列表
      */
     getList() {
-      var params = Object.assign({}, this.listQuery, {
+      var params = Object.assign({}, this.form, this.listQuery, {
         page: this.listQuery.page - 1
       })
       this.$get('iot-saas-pay/admin/pay/config/alipay/list', params).then(res => {
@@ -181,7 +181,7 @@ export default {
         this.listTotal = res.total
         this.listLoading = false
         this.clickSubmit = false
-        if (params.page == 0) {
+        if(params.page == 0){
           this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 120
         }
       }).catch(() => {

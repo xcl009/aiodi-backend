@@ -99,7 +99,7 @@
             </el-table-column>
             <el-table-column :label="`${$t('public.userId')}`" width="90" v-if="item.val && item.key == 'userId'">
               <template slot-scope="scope">
-                <el-tooltip :content="scope.row.userId || '无'">
+                <el-tooltip :content="scope.row.userId || '...'">
                   <div>{{ scope.row.userId ? parseInt(scope.row.userId.substr(-8, 8)) : '' }}</div>
                 </el-tooltip>
               </template>
@@ -141,7 +141,7 @@
                 <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.payType')}`" width="100" v-if="item.val && item.key == 'PayType'">
+            <el-table-column :label="`${$t('public.payType')}`" width="120" v-if="item.val && item.key == 'PayType'">
               <template slot-scope="scope">
                 <div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span
                     v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3 && isBrand()">(￥{{ scope.row.orderAmount
@@ -222,6 +222,9 @@
                 <div class="text-grey" @click="setRows(3, scope.row, 2)"
                   v-if="Ability['orderRefund'] && (scope.row.status.indexOf('G') > -1) && (scope.row.amount > 0 || scope.row.amountEnable > 0)">
                   {{ $t('public.orderRefund') }}</div>
+                <div class="text-grey" @click="setRows(7, scope.row, 1)"
+                  v-if="(scope.row.status.indexOf('W') > -1) && (scope.row.payType == 4)">
+                  {{ $t('order.clickPay') }}</div>
               </div>
             </template>
           </el-table-column>
@@ -275,6 +278,9 @@
               <div class="mt-10 text-danger line-default" v-if="dialogType == 8">{{ $t('order.message') }}</div>
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 9">{{ $t('order.message1') }}</div>
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 10">{{ $t('order.message2') }}</div>
+            </el-form-item>
+            <el-form-item  :label="`${$t('public.orderFree')}`" v-if="dialogType == 11">
+              <el-switch v-model="dform.isDeposit" />
             </el-form-item>
           </el-form>
         </template>
@@ -369,7 +375,7 @@
               {{ $t('public.operate') }}
             </div>
             <el-form class="custom-form" label-width="130px" label-position="left">
-              <template v-if="curRow.deviceType == '充电宝'">
+              <template v-if="curRow.deviceTypeCode && curRow.deviceTypeCode.indexOf('PA') > -1">
                 <el-form-item :label="`${$t('order.inspect')}:`">
                   <el-switch v-model="dform.validateDeviceRefund" />
                 </el-form-item>
@@ -443,6 +449,10 @@
               </el-form-item>
               <el-form-item :label="`${$t('order.reasonForRefund')}:`">
                 <el-input v-model="dform.reason" :placeholder="`${$t('order.reasonForRefund')}`"></el-input>
+                <div class="flex mt-10 line-six text-danger" v-if="isBrand()">
+                  <div>{{ $t('public.tips') }}：</div>
+                  <div>{{ $t('order.refundtext') }}</div>
+                </div>
               </el-form-item>
             </el-form>
           </div>
@@ -532,8 +542,9 @@
                     <div>{{ curRow.storeName }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{ $t('public.sn') }}:</div>
-                    <div>{{ curRow.terminalId || '--' }}</div>
+                    <div class="label-text" v-if="curRow.deviceType.indexOf('充电宝') > -1">{{ $t('public.sn') }}:</div>
+                    <div class="label-text" v-else>其他:</div>
+                    <div class="cursor" @click="curRow.terminalId && isBrand() ? $router.push({path: `/device/battery?terminalId=${curRow.terminalId}`}) : ''">{{ curRow.terminalId || '--' }}</div>
                   </div>
                   <div class="flex" v-if="curRow.returnStore">
                     <div class="label-text">{{ $t('public.returnToMerchant') }}:</div>
@@ -556,20 +567,15 @@
                   <div class="flex">
                     <div class="label-text">{{ $t('public.remark') }}:</div>
                     <div>
-                      <span class="mr-5" v-if="curRow.afterLevel > 0 || curRow.level > 0">{{ curRow.afterLevel ?
-                        $t('order.powerConsumption') :
-                        $t('order.DuringLease') }}({{ curRow.afterLevel || curRow.level }}%)</span>
+                      <span class="mr-5" v-if="curRow.afterLevel >= 0 || curRow.level >= 0">{{ curRow.afterLevel ?
+                        $t('order.powerConsumption') : $t('order.DuringLease') }}({{ curRow.afterLevel >= 0 ? curRow.afterLevel : curRow.level }}%)</span>
                       <template v-if="curRow.freeTime > 0">
-                        <span class="mr-5" v-if="curRow.freeUser == 1">{{ $t('public.freeQuota') }}：{{
-                          parseInt(curRow.freeTime) / 60 }}{{ $t('public.huor') }}</span>
-                        <span class="mr-5" v-else-if="curRow.freeUser == 3">{{ $t('order.suspendBilling') }}：{{
-                          parseInt(curRow.freeTime) / 60
-                        }}{{ $t('public.huor') }}</span>
-                        <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime == 600000 ?
-                          `${$t('order.membershipOrder')}` :
+                        <span class="mr-5" v-if="curRow.freeUser == 1">{{ $t('public.freeQuota') }}：{{ curRow.freeTime }}{{ $t('public.minute') }}</span>
+                        <span class="mr-5" v-else-if="curRow.freeUser == 3">{{ $t('order.suspendBilling') }}：{{ curRow.freeTime }}{{ $t('public.minute') }}</span>
+                        <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime == 600000 ?  `${$t('order.membershipOrder')}` :
                           `${$t('order.membershipFree')}${curRow.freeTime}${$t('public.minute')}` }}</span>
                       </template>
-                      <span>{{ curRow.remark ? curRow.remark : curRow.freeTime || '' }}</span>
+                      <span>{{ curRow.remark || '' }}</span>
                     </div>
                   </div>
                 </div>
@@ -1278,25 +1284,23 @@ export default {
             this.$get('iot-saas-order/admin/order/detail', {
               orderNo: row.orderNo
             }).then(res => {
-              if (res.devicePopupRecordFeignOutFeign) {
-                this.$set(this.curRow, 'terminalId', res.devicePopupRecordFeignOutFeign.terminalId)
-                if (res.status != 'R') {
-                  this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn)
-                  if (res.devicePopupRecordFeignOutFeign.afterStoreId) {
-                    if (res.devicePopupRecordFeignOutFeign.afterLevel > 0) {
-                      this.$set(this.curRow, 'afterLevel', accSub(res.devicePopupRecordFeignOutFeign.level, res.devicePopupRecordFeignOutFeign.afterLevel))
-                    } else if (res.devicePopupRecordFeignOutFeign.level) {
-                      this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
+              if (res.devicePopupRecordFeignOutFeign && res.status != 'F') {
+                this.$set(this.curRow, 'terminalId', res.devicePopupRecordFeignOutFeign.terminalId || '')
+                this.$set(this.curRow, 'afterDeviceSn', res.devicePopupRecordFeignOutFeign.afterDeviceSn || '')
+                if (res.devicePopupRecordFeignOutFeign.afterLevel > 0) {
+                  this.$set(this.curRow, 'afterLevel', accSub(res.devicePopupRecordFeignOutFeign.level, res.devicePopupRecordFeignOutFeign.afterLevel))
+                }else if(res.devicePopupRecordFeignOutFeign.level){
+                  this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
+                }
+                if (parseFloat(res.devicePopupRecordFeignOutFeign.afterStoreId) > 0) {
+                  this.$post('iot-saas-order/api/order/getDeductions', {
+                    deductionType: 0,
+                    deductionIds: [res.devicePopupRecordFeignOutFeign.afterStoreId]
+                  }).then(list => {
+                    if (list && list[0]) {
+                    	this.$set(this.curRow, 'returnStore', list[0])
                     }
-                    this.$post('iot-saas-order/api/order/getDeductions', {
-                      deductionType: 0,
-                      deductionIds: [res.devicePopupRecordFeignOutFeign.afterStoreId]
-                    }).then(res => {
-                      this.$set(this.curRow, 'returnStore', res[0])
-                    })
-                  } else if (res.devicePopupRecordFeignOutFeign.level) {
-                    this.$set(this.curRow, 'level', res.devicePopupRecordFeignOutFeign.level)
-                  }
+                  })
                 }
               }
             })
@@ -1357,6 +1361,19 @@ export default {
                 })
               }
             }
+          })
+          break
+        case 7:
+          this.$post('iot-saas-pay/open/alipay/depositPayComplete', {
+            orderNo: row.orderNo
+          }).then(res => {
+            this.$message({
+              message: that.$t('public.refreshSuccessful'),
+              type: 'success'
+            })
+            setTimeout(() => {
+            	this.getList()
+            }, 1000)
           })
           break
       }
@@ -1474,7 +1491,7 @@ export default {
               message: that.$t('order.orderRefundSuccess'),
               type: 'success'
             })
-            curRow.status = 'OTD'
+            curRow.status = 'OHD'
             curRow.amountRefund = params.amount
             this.drawerStatus = false
             this.clickSubmit = false
@@ -1545,9 +1562,7 @@ export default {
             10: 'iot-saas-pay/admin/pay/config/alipay/cancel',
             11: 'iot-saas-pay/wechat/order/refund'
           }
-          this.$post(url[this.dialogType], {
-            orderNo: params.orderNo
-          }).then(res => {
+          this.$post(url[this.dialogType], params).then(res => {
             this.$message({
               message: that.$t('public.submittedSuccess'),
               type: 'success'

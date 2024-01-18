@@ -767,6 +767,10 @@ const util = {
     } else {
       return `${i18n.t('lang.range')}${min}-${max}${p > 0 ? `，${i18n.t('lang.afterDecimalPoint')}` + p + `${i18n.t('lang.position')}` : `${i18n.t('lang.integerOf')}`}`
     }
+  },
+  
+  trim: (str) => {
+    return str.replace(/\s/g, "");
   }
 }
 
@@ -808,3 +812,4 @@ export const defaultFee = util.defaultFee
 export const dateSort = util.dateSort
 export const checkQueryRepeat = util.checkQueryRepeat
 export const checkDigit = util.checkDigit
+export const trim = util.trim

@@ -175,6 +175,7 @@ export default {
         })
       }
       params.deviceTypeProfitRatios = profitRatios
+      if(params.mobile) params.mobile = this.trim(params.mobile)
       this.clickSubmit = true
       this.$refs['form'].validate((valid) => {
         if (valid) {

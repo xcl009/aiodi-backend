@@ -3,13 +3,19 @@
     <el-row class="pl-20 pr-20 pb-20 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-tabs class="mb-10" v-model="userType" @tab-click="getInfo">
-          <el-tab-pane :label="$t('system.agentRule')" name="agent" />
+          <el-tab-pane :label="$t('system.agentRule')" name="agent" v-if="!userKey || userKey != 'storeId'"/>
           <el-tab-pane :label="$t('system.storeRule')" name="store" />
-          <el-tab-pane :label="$t('system.userRule')" name="user" />
+          <el-tab-pane :label="$t('system.userRule')" name="user" v-if="!id && !userKey"/>
         </el-tabs>
 
         <template v-if="checkAbility([`WD_${userType.toUpperCase()}`], 3)">
           <el-form ref="form" :model="form" label-position="left" label-width="120px">
+            <el-form-item :label="$t('system.ruleAgent')" v-if="ruleAgent.id">
+              <div class="flex align-center">
+                {{ ruleAgent.name }}({{ ruleAgent.mobile }})
+              </div>
+            </el-form-item>
+
             <el-form-item :label="$t('steal.isItEnabled')">
               <div class="flex align-center">
                 <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
@@ -38,7 +44,7 @@
             <h4>{{ $t('moeny.withdrawableTime') }}</h4>
             <el-form-item :label="$t('market.cycle')">
               <el-radio-group v-model="form.timeLimit.type">
-                <el-radio :label="DAY">{{ $t('public.everyDay') }}</el-radio>
+                <el-radio label="DAY">{{ $t('public.everyDay') }}</el-radio>
                 <el-radio label="WEEK">{{ $t('public.weekly') }}</el-radio>
                 <el-radio label="MONTH">{{ $t('public.monthly') }}</el-radio>
               </el-radio-group>
@@ -131,11 +137,16 @@
                       </el-input>
                     </div>
                   </el-form-item>
-                  <el-form-item :label="$t('system.orderRefundInd')"
-                    v-if="userType == 'user' && [1, 3].indexOf(parseInt(item.type)) > -1">
+                  <el-form-item :label="$t('system.orderRefundInd')" v-if="userType == 'user'">
                     <div class="flex align-center">
                       <el-switch v-model="item.orderRefundInd" :active-value="true" :inactive-value="false" />
                       <span class="ml-10 fs-s3">{{ $t('system.orderRefundIndText') }}</span>
+                    </div>
+                  </el-form-item>
+                  <el-form-item :label="$t('system.bindPhone')" v-if="[1].indexOf(parseInt(item.type)) > -1 && userType != 'user'">
+                    <div class="flex align-center">
+                      <el-switch v-model="mobileWithdraw.isAllowWithdraw" :active-value="0" :inactive-value="1" />
+                      <span class="ml-10 fs-s3">{{ $t('system.bindPhoneText') }}</span>
                     </div>
                   </el-form-item>
                 </template>
@@ -145,6 +156,7 @@
             <el-form-item class="mb-0">
               <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submit')
               }}</el-button>
+              <el-button type="danger" @click="del" :disabled="clickSubmit" v-if="parseInt(form.agentId) > 0 || parseInt(form.storeId) > 0">{{ $t('public.delete') }}</el-button>
             </el-form-item>
           </el-form>
         </template>
@@ -169,11 +181,17 @@ export default {
       clickSubmit: false,
       withdrawType: {},
       sellType: [],
-      userType: 'agent',
       form: {
         supportType: [],
         timeLimit: {}
-      }
+      },
+      mobileWithdraw: {
+        isAllowWithdraw: 0
+      },
+      userType: this.$route.query.userKey == 'storeId' ? 'store' : 'agent',
+      id: this.$route.query.id || '',
+      userKey: this.$route.query.userKey || '',
+      ruleAgent: {}
     }
   },
   computed: {
@@ -245,28 +263,38 @@ export default {
      * 获取信息
      */
     getInfo() {
-      this.$get('iot-saas-basic/api/withdraw/config/v1/find', {
+      let params = {
         userType: this.userType
-      }).then((res = {}) => {
-        if (res.enable) {
-          let days = [{ val: 1 }], weeks = [{ val: 1 }]
-          if (res.timeLimit.days && res.timeLimit.days.length > 0) {
+      }
+      if(this.userKey && this.id) params[this.userKey] = this.id
+      this.$get('iot-saas-basic/api/withdraw/config/v1/find', params).then((res = {}) => {
+        if(res.enable){
+          let days = [{val: 1}], weeks = [{val: 1}]
+          if(res.timeLimit.days && res.timeLimit.days.length > 0){
             let dayas = []
             res.timeLimit.days.map(item => {
               dayas.push({
                 val: item
               })
             })
-            if (res.timeLimit.type == 'MONTH') {
-              days = dayas
-            } else if (res.timeLimit.type == 'WEEK') {
-              weeks = dayas
-            }
+          }
+          if (res.timeLimit.type == 'MONTH') {
+            days = dayas
+          } else if (res.timeLimit.type == 'WEEK') {
+            weeks = dayas
           }
           res.timeLimit.days = days
           res.timeLimit.weeks = weeks
           this.form = res
           this.sellType = this.arrayKeys(res.supportType, 'type')
+          this.ruleAgent = {}
+          if(parseInt(res.agentId) > 0){
+            this.$get('iot-saas-basic/admin/agent/findById', {
+              id: res.agentId
+            }).then(res => {
+              this.ruleAgent = res
+            })
+          }
         } else {
           this.sellType = ['2', '4']
           this.form = {
@@ -279,8 +307,8 @@ export default {
                   endTime: '23:59'
                 }
               ],
-              days: [{ val: 1 }],
-              weeks: [{ val: 1 }]
+              days: [{val: 1}],
+              weeks: [{val: 1}]
             },
             supportType: [
               {
@@ -294,17 +322,21 @@ export default {
                 orderRefundInd: false
               },
               {
-                status: 1,
-                type: 4,
-                taxRate: 0,
-                handlingFee: 0,
-                minAmount: 0,
-                maxAmount: 999999,
-                needApprovalAmount: 0,
-                orderRefundInd: false
+                startTime: '00:00',
+                endTime: '23:59'
               }
-            ]
+            ],
+            days: [{ val: 1 }],
+            weeks: [{ val: 1 }]
           }
+        }
+      })
+      this.$get('iot-saas-basic/admin/settings/find', {
+        code: 'BRAND_ALLOW_MOBILE_WITHDRAW'
+      }).then(res => {
+        if(res && res.code){
+          this.mobileWithdraw = JSON.parse(res.setting)
+          this.oldMobileWithdraw = JSON.parse(res.setting)
         }
       })
     },
@@ -326,15 +358,48 @@ export default {
       } else {
         params.timeLimit.days = this.arrayKeys(params.timeLimit.days, 'val')
       }
+      if(this.userKey && this.id) params[this.userKey] = this.id
       this.clickSubmit = true
       this.$post(url, params).then(res => {
+        if(!this.oldMobileWithdraw || this.oldMobileWithdraw.isAllowWithdraw != this.mobileWithdraw.isAllowWithdraw){
+          this.$post('iot-saas-basic/admin/settings/save', {
+            code: 'BRAND_ALLOW_MOBILE_WITHDRAW',
+            setting: JSON.stringify(this.mobileWithdraw)
+          })
+        }
         this.clickSubmit = false
         this.$message({
           message: that.$t('public.submittedSuccess'),
           type: 'success'
         })
-      }).catch(err => {
+      }).catch(err=>{
         this.clickSubmit = false
+      })
+    },
+
+    del(){
+      this.$alert(this.$t('system.delWdText'), this.$t('system.delWdTitle'), {
+        confirmButtonText: this.$t('public.confirm'),
+        center: true,
+        callback: action => {
+          if (action == 'confirm') {
+            this.clickSubmit = true
+            this.$post('iot-saas-basic/admin/withdraw/config/v1/del', {
+              agentId: this.form.agentId,
+              storeId: this.form.storeId,
+              userType: this.userType,
+            }).then(res => {
+              this.clickSubmit = false
+              this.$message({
+                message: that.$t('public.submittedSuccess'),
+                type: 'success'
+              })
+              this.getInfo()
+            }).catch(err=>{
+              this.clickSubmit = false
+            })
+          }
+        }
       })
     }
   }

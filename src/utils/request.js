@@ -192,7 +192,8 @@ export function $export(url, data = {}) {
     data: data,
     responseType: 'blob',
     headers: {
-      'Content-Type': 'application/vnd.ms-excel;charset=UTF-8'
+      'Content-Type': 'application/vnd.ms-excel;charset=UTF-8',
+      'Accept-Language': 'zh-CN'
     }
   })
 }

@@ -50,7 +50,8 @@
     "AV": "pagesA/pages/butler/index",
     "SM": "pagesA/pages/washing/index",
     "WF": "pagesA/pages/wifi/wifiNew",
-    "WM": "pagesA/pages/washing/index"
+    "WM": "pagesA/pages/washing/index",
+    "HU": "pagesA/pages/humidifier/index"
   },
   "roomDevice": {
     "BD": "震动大床房",
@@ -59,6 +60,7 @@
   },
   "closeType": {
     "1": "真实",
+    "2": "摊销",
     "3": "分摊"
   },
   "withdrawType": {

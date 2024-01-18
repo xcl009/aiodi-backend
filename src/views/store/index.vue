@@ -55,11 +55,15 @@
           </el-table-column>
           <el-table-column :label="item.name" width="180" v-else-if="item.val && item.key == 'device'">
             <template slot-scope="scope">
-              <div class="row-device_stat">
+              <div class="row-device_stat" v-if="deviceCount[scope.row.id]">
+                <template v-for="(item, i) in deviceCount[scope.row.id].deviceCountVOMap">
+                  {{ myDeviceId[i.substr(0, 2)] }}：{{ item.deviceNumber }}
+                </template>
+              </div>
+              <div class="row-device_stat" v-else>
                 <template v-for="(item, index) in scope.row.storeDivisionConfig">
                   <div v-if="index < 2">
-                    {{ myDeviceId[item.deviceTypeCode] }}：{{ deviceCount[scope.row.id] ?
-                      deviceCount[scope.row.id].deviceNumber : 0 }}
+                    {{ myDeviceId[item.deviceTypeCode] }}：0
                   </div>
                 </template>
               </div>
@@ -77,7 +81,12 @@
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'balance'">
             <template slot-scope="scope">
-              {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+              <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(cashStat[scope.row.id] || {})" v-if="checkAbility(['WD_MODIFY'], 3)">
+                {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+              </div>
+              <div class="cursor" v-else>
+                {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+              </div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'order'">
@@ -154,16 +163,13 @@
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(2, scope.row)"
-                v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">{{ $t('store.switchMerchant')
-                }}</el-button>
-
+                v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">{{ $t('store.switchMerchant') }}</el-button>
             </div>
           </template>
         </el-table-column>
 
         <el-table-column :label="$t('public.operate')" width="235" :fixed="device == 'desktop' ? 'right' : false" v-else>
           <template slot-scope="scope">
-
             <div class="flex flex-wrap operate">
               <template v-if="isSaas()">
                 <el-button type="text" @click="toLogin(scope.row)">{{ $t('store.storeManagement') }}</el-button>
@@ -185,7 +191,7 @@
                 <el-button type="text" @click="$router.push({ path: `/store/addStore?parentId=${scope.row.id}` })"
                   v-if="scope.row.parentId == '0'">{{ $t('public.addBranch') }}</el-button>
                 <el-dropdown trigger="click">
-                  <el-button type="text">{{ $t('public.add') }}<i
+                  <el-button type="text">{{ $t('public.adds') }}<i
                       class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                   <el-dropdown-menu slot="dropdown">
                     <template v-if="checkAbility(['VM'], 2, scope.row.storeDivisionConfig)">
@@ -214,6 +220,9 @@
                       v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">{{
                         $t('store.DDSettings') }}</el-dropdown-item>
                     <el-dropdown-item
+                      @click.native="$router.push({ path: `/system/cashSet?id=${scope.row.id}&userKey=storeId` })"
+                      v-if="isBrand() && checkAbility(['WD_AGENT','WD_STORE','WD_USER'], 3)">{{ $t('system.withdrawRule') }}</el-dropdown-item>
+                    <el-dropdown-item
                       @click.native="$router.push({ path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId` })"
                       v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">{{ $t('public.freeQuota')
                       }}</el-dropdown-item>
@@ -230,15 +239,15 @@
                         $t('public.weChatAccountSplitting') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, cashStat[scope.row.id], 6)"
                       v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
-                    <el-dropdown-item @click.native="setRows(6, scope.row)" v-if="isBrand()">{{
+                    <el-dropdown-item @click.native="setRows(3, scope.row, 11)" v-if="isBrand()">{{
                       $t('public.setLoginPassword') }}</el-dropdown-item>
                     <template v-if="checkAbility(['WF'], 2, scope.row.storeDivisionConfig)">
                       <el-dropdown-item @click.native="setRows(3, scope.row, 7)">{{ $t('store.sharedWIFI')
                       }}</el-dropdown-item>
                     </template>
-                    <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })" v-if="isBrand()">{{
-                      $t('public.moreApplications') }}</el-dropdown-item>
-
+                    <el-dropdown-item @click.native="setRows(3, scope.row, 10)" v-if="isBrand()">登录记录</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
+                      v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -483,7 +492,29 @@
           </div>
         </div>
       </template>
-      <template v-if="[1, 4, 6, 7, 9].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 10">
+        <div class="flexv pl-20 pr-20 text-black" v-if="dform.loginList">
+          <el-table class="ptd-5" highlight-current-row element-loading-text="Loading" :data="dform.loginList">
+            <el-table-column :label="$t('store.loginTime')" prop="operationTime"></el-table-column>
+            <el-table-column :label="$t('brand.withdrawableAmount')">
+              <template slot-scope="scope">
+                ￥{{ JSON.parse(scope.row.operationExt)['balance'] }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </template>
+      <template v-if="dialogType == 11">
+        <el-form class="pl-20 pr-20 custom-form">
+          <el-form-item :label="$('public.loginPassword')">
+            <el-switch v-model="dform.password" />
+          </el-form-item>
+          <el-form-item :label="$('public.operationPassword')">
+            <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1, 4, 6, 7, 9, 11].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -494,9 +525,10 @@
     </el-drawer>
 
     <relatedTemplate ref="relatedTemplates"></relatedTemplate>
-    <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN"></AssignAbility>
+    <AssignAbility ref="AssignAbilitys" noFlag="AGENT_ASSIGN,BRAND_ASSIGN"></AssignAbility>
     <VendorMode ref="VendorModes" v-if="myDeviceId['VM'] && !isSaas()"></VendorMode>
     <xlsx ref="toXlsx" :fileName="$t('store.storeList')"></xlsx>
+    <update-blance ref="UpdateBlances" userType="store" v-if="checkAbility(['WD_MODIFY'], 3)"></update-blance>
   </div>
 </template>
 
@@ -512,6 +544,7 @@ import AssignAbility from '@/components/AssignAbility/'
 import ImportData from '@/components/ImportData/'
 import selectSearch from '@/components/condition/selectSearch'
 import TableColumnSet from '@/components/TableColumnSet/index'
+import UpdateBlance from '@/components/UpdateBlance/'
 import xlsx from '@/components/xlsx/'
 export default {
   name: 'subShop',
@@ -524,6 +557,7 @@ export default {
     AssignAbility,
     ImportData,
     selectSearch,
+    UpdateBlance,
     xlsx
   },
   props: {
@@ -618,6 +652,8 @@ export default {
         6: this.$t('public.freezeAmount'),
         7: this.$t('store.sharedWIFI'),
         8: this.$t('store.assignAgents'),
+        10: this.$t('store.loginRecord'),
+        11: this.$t('public.setLoginPassword')
       }
     },
     defaultColumn() {
@@ -639,7 +675,8 @@ export default {
         },
         {
           key: 'amount',
-          val: true,
+          val: this.checkAbility(['STORE_NUM_AMOUNT'], 3),
+          hidden: !this.checkAbility(['STORE_NUM_AMOUNT'], 3),
           name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
         },
         {
@@ -654,7 +691,8 @@ export default {
         },
         {
           key: 'order',
-          val: true,
+          val: this.checkAbility(['STORE_NUM_AMOUNT'], 3),
+          hidden: !this.checkAbility(['STORE_NUM_AMOUNT'], 3),
           name: this.$t('home.orderNum')
         },
         // {
@@ -839,7 +877,7 @@ export default {
           this.listLoading = false
           this.clickSubmit = false
           if (params.page == 0) {
-            this.listTotal = res.total
+            this.listTotal = parseInt(res.total)
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
         }
@@ -889,7 +927,7 @@ export default {
         this.deviceCount = {}
         return
       }
-      this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+      this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
         countType: 'STORE',
         groupIds: ids.join(',')
       }).then(res => {
@@ -1069,6 +1107,17 @@ export default {
                 }
               }
             })
+          } else if (dialogType == 10) {
+            this.$get('iot-saas-basic/api/operation/findPage', {
+              ownerId: row.id,
+              operationType: 'STORE_LOGIN',
+              size: 100,
+              page: 0
+            }).then(res => {
+              this.dform = {
+                loginList: res && res.rows ? res.rows : []
+              }
+            })
           }
           if (type == 1) {
             this.dialogStatus = true
@@ -1097,31 +1146,12 @@ export default {
             }
           })
           break
-        case 6:
-          this.$alert(that.$t('store.resettingLoginPassword'), that.$t('store.resettingLoginPasswordText'), {
-            confirmButtonText: that.$t('public.confirm'),
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$post('iot-saas-user/admin/user/password/reset', {
-                  userId: row.userId,
-                  password: '123456'
-                }).then(res => {
-                  this.$message({
-                    message: that.$t('public.resetSuccess'),
-                    type: 'success'
-                  })
-                })
-              }
-            }
-          })
-          break
-
         case 8:
           this.dialogType = dialogType
           this.curRow = row
           this.curIdx = idx
           this.drawerStatus = true
+        break
       }
     },
 
@@ -1267,6 +1297,19 @@ export default {
             })
             this.getList();
             this.drawerStatus = false;
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 11:
+          params.userId = curRow.userId
+          if(params.password) params.password = '123456'
+          this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.drawerStatus = false
           }).catch(err => {
             this.clickSubmit = false
           })

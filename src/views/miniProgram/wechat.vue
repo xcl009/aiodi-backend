@@ -1,8 +1,16 @@
 <template>
   <div>
-    <div class="pt-10 pl-10 pr-10 bg-white">
-      <el-button class="mb-10" type="primary" size="medium" @click="refreshOpenToken" v-if="isSaas()">{{
-        $t('miniProgram.refreshToken') }}</el-button>
+    <div class="pl-10 pr-10 bg-white">
+      <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
+        <template v-slot:defult>
+          <el-form-item :label="$t('public.appletName')">
+            <el-input v-model="form.appName" />
+          </el-form-item>
+        </template>
+        <template v-slot:endButton>
+          <el-button class="mb-10" type="primary" size="small" @click="refreshOpenToken" v-if="isSaas()">{{ $t('miniProgram.refreshToken') }}</el-button>
+        </template>
+      </condition>
 
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
@@ -94,10 +102,12 @@
 </template>
 
 <script>
+import condition from '@/components/condition/'
 import Pagination from '@/components/Pagination'
 export default {
   name: 'wechat',
   components: {
+    condition,
     Pagination
   },
   props: {
@@ -107,6 +117,7 @@ export default {
     return {
       clickSubmit: false,
       tableMaxH: '250',
+      form: {},
       listQuery: {
         page: 1,
         size: 20
@@ -114,6 +125,7 @@ export default {
       listTotal: 0,
       list: [],
       listLoading: false,
+
       // 弹出相关
       dialogType: 1,
       dialogStatus: false,
@@ -190,7 +202,7 @@ export default {
      * 获取列表
      */
     getList() {
-      var params = Object.assign({}, this.listQuery, {
+      var params = Object.assign({}, this.form, this.listQuery, {
         page: this.listQuery.page - 1
       })
       this.$get('iot-saas-pay/admin/pay/config/wechat/list', params).then(res => {
@@ -198,7 +210,7 @@ export default {
         this.listTotal = res.total
         this.listLoading = false
         this.clickSubmit = false
-        if (params.page == 0) {
+        if(params.page == 0){
           this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
         }
       }).catch(err => {

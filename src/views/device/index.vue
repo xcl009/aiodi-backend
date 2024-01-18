@@ -12,7 +12,7 @@
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">{{ $t('public.deviceStatus') }}</div>
           <el-tabs class="flex-1" v-model="listQuery.haveBind" @tab-click="toQuery()">
-            <el-tab-pane :label="`${item.title }(${deviceCount[item.nkey] || onLineCount[item.nkey] || 0})`" :name="''+item.value+''" v-for="item in haveBind" />
+            <el-tab-pane :label="`${item.title }(${deviceCount[item.nkey] || 0})`" :name="''+item.value+''" v-for="item in haveBind" />
           </el-tabs>
         </div>
       </template>
@@ -58,12 +58,12 @@
           </template>
         </el-table-column>
         <template v-for="item in showColumn">
-          <el-table-column :label="$t('public.deviceType')" width="80" v-if="item.val && item.key == 'deviceType'">
+          <el-table-column :label="item.name" width="80" v-if="item.val && item.key == 'deviceType'">
             <template slot-scope="scope">
               {{ scope.row.deviceType.name || $t('device.passwordLine') }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.code')" width="240" v-else-if="item.val && item.key == 'deviceSn'">
+          <el-table-column :label="item.name" width="240" v-else-if="item.val && item.key == 'deviceSn'">
             <template slot-scope="scope">
               <div class="flex align-center">
                 <span class="mr-10">{{ scope.row.deviceSn || "--" }}</span>
@@ -78,38 +78,46 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('device.allSort')" width="100" v-else-if="item.val && item.key == 'tenantNumber'">
+          <el-table-column :label="item.name" width="100" v-else-if="item.val && item.key == 'tenantNumber'">
             <template slot-scope="scope">
               <div v-if="scope.row.onlineStatus && scope.row.deviceType.code.indexOf('PA') > -1">
-                {{ parseInt(scope.row.tenantNumber) + parseInt(scope.row.restoreNumber) }} / {{ scope.row.tenantNumber }}
+                {{ scope.row.tenantNumber }} / {{ scope.row.restoreNumber }}
               </div>
               <div v-else>--</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.deviceProperties')" width="120" v-else-if="item.val && item.key == 'deviceFactory'">
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'deviceFactory'">
             <template slot-scope="scope">
               {{ scope.row.deviceFactory ? scope.row.deviceFactory.name : '--' }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.status')" width="100" v-else-if="item.val && item.key == 'distribute'">
+          <el-table-column :label="item.name" width="100" v-else-if="item.val && item.key == 'distribute'">
             <template slot-scope="scope">
               <div>{{ scope.row.distribute ? $t('public.shipped') : $t('public.unpacked') }}</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.deliveryTime')" width="150" v-else-if="item.val && item.key == 'bindStoreTime'">
+          <el-table-column :label="item.name" width="150" v-else-if="item.val && item.key == 'bindStoreTime'">
             <template slot-scope="scope">
               <div>{{ scope.row.distribute && scope.row.bindStoreTime ? parseTime(scope.row.bindStoreTime) : '--' }}</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.storeName')" min-width="200" v-else-if="item.val && item.key == 'store'">
+          <el-table-column :label="item.name" min-width="200" v-else-if="item.val && item.key == 'store'">
             <template slot-scope="scope">
               <div v-if="scope.row.store">
-                <div class="text-cut_two">{{ scope.row.store.name }}</div>
+                <div class="text-cut_two">{{ scope.row.store.name }}<span v-if="scope.row.store.mobile">（{{ scope.row.store.mobile }}）</span></div>
               </div>
               <div v-else>--</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.presence')" width="95" v-else-if="item.val && item.key == 'onlineStatus'">
+          <el-table-column :label="item.name" min-width="150" v-else-if="item.val && item.key == 'bind'">
+            <template slot-scope="scope">
+              <div v-if="scope.row.agent">
+                <div class="text-cut_two">{{ scope.row.agent.name }}<span v-if="scope.row.agent.mobile">（{{ scope.row.agent.mobile }}）</span></div>
+              </div>
+              <div v-else>--</div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="95" v-else-if="item.val && item.key == 'onlineStatus'">
             <template slot-scope="scope">
               <div v-if="scope.row.onlineStatus && checkAbility(['PA', 'VG', 'AV', 'BD'], 2, [scope.row.deviceType])">
                 <el-popover
@@ -123,14 +131,14 @@
               <div v-else>--</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.locationNotes')" width="100" v-else-if="item.val && item.key == 'place'">
+          <el-table-column :label="item.name" width="100" v-else-if="item.val && item.key == 'place'">
             <template slot-scope="scope">
               <div class="cursor text-primary text-cut" @click="setRows(1, scope.row, 3)">
                 {{ scope.row.place || '--' }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.orderNum')" width="240" v-else-if="item.val && item.key == 'order'">
+          <el-table-column :label="item.name" width="240" v-else-if="item.val && item.key == 'order'">
             <template slot-scope="scope">
               <div class="flex">
                 <div class="flex1">{{$t('payType.wx')}}：{{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].wx : 0 }}</div>
@@ -138,7 +146,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="`${$t('public.aTurnover')}(${$t('public.element')})`" width="90" v-else-if="item.val && item.key == 'amount'">
+          <el-table-column :label="item.name" width="90" v-else-if="item.val && item.key == 'amount'">
             <template slot-scope="scope">
               {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00' }}
             </template>
@@ -612,27 +620,27 @@
           {
             value: 0,
             title: this.$t('public.all'),
-            nkey: 'deviceNumber'
+            nkey: 'SUM'
           },
           {
             value: true,
             title: this.$t('public.bound'),
-            nkey: 'bindStoreNumber'
+            nkey: 'BIND'
           },
           {
             value: false,
             title: this.$t('public.unbound'),
-            nkey: 'noBindStoreNumber'
+            nkey: 'UNBIND'
           },
           {
             value: 'ONLINE',
             title: this.$t('public.onLine'),
-            nkey: 'onlineCount'
+            nkey: 'ONLINE'
           },
           {
             value: 'OFFLINE',
             title: this.$t('public.offline'),
-            nkey: 'offlineCount'
+            nkey: 'OFFLINE'
           }
         ]
       },
@@ -716,8 +724,8 @@
           },
           {
             key: 'tenantNumber',
-            val: this.checkAbility(['PA']),
-            hidden: !this.checkAbility(['PA']),
+            val: this.checkAbility(['PA'], 2),
+            hidden: !this.checkAbility(['PA'], 2),
             name: this.$t('device.lendableReturnable')
           },
           {
@@ -741,6 +749,12 @@
             name: this.$t('public.storeName')
           },
           {
+            key: 'bind',
+            val: this.lowerDevice,
+            hidden: !this.lowerDevice,
+            name: '归属'
+          },
+          {
             key: 'place',
             val: true,
             name: this.$t('public.locationNotes')
@@ -752,14 +766,14 @@
           },
           {
             key: 'order',
-            val: this.checkAbility(['order'], 3),
-            hidden: !this.checkAbility(['order'], 3),
+            val: this.isBrand() || this.isSaas(),
+            hidden: !this.isBrand() && !this.isSaas(),
             name: this.$t('public.orderNum')
           },
           {
             key: 'amount',
-            val: !this.isStore(),
-            hidden: !this.isStore(),
+            val: this.isBrand() || this.isSaas(),
+            hidden: !this.isBrand() && !this.isSaas(),
             name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
           },
           {
@@ -904,105 +918,6 @@
       },
 
       /**
-       * 设备数量统计查询
-       */
-      queryDeviceCount(){
-        let params = {}, url = 'iot-saas-device/admin/device/count/queryGroupCount'
-        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
-        if(this.form.agentId){
-          params.countType = 'AGENT'
-          params.groupIds = this.form.agentId
-        }else if(this.form.brandId){
-          params.countType = 'BRAND'
-          params.groupIds = this.form.brandId
-        } else if(this.isAgent()){
-          params.countType = 'AGENT'
-          params.groupIds = this.agentInfo.agentId
-        } else if(this.isBrand()){
-          params.countType = 'BRAND'
-          params.groupIds = this.agentInfo.brandId
-        } else if(this.isSaas()){
-          url = 'iot-saas-device/admin/device/count/queryByUser'
-        }
-        if(this.deviceCountes){
-          if(params.deviceTypeCode){
-            this.deviceCount = {
-              deviceNumber: 0,
-              bindStoreNumber: 0,
-              noBindStoreNumber: 0
-            }
-            for(var i in this.deviceCountes.deviceTypeDetail){
-              let item = this.deviceCountes.deviceTypeDetail[i]
-              if(i.indexOf(params.deviceTypeCode) > -1){
-                if(this.isSaas()){
-                  this.deviceCount.deviceNumber += parseInt(item.deviceNumber)
-                  this.deviceCount.bindStoreNumber += parseInt(item.bindStoreNumber)
-                  this.deviceCount.noBindStoreNumber += accSub(item.deviceNumber, item.bindStoreNumber)
-                }else if(this.lowerDevice){
-                  this.deviceCount.deviceNumber += parseInt(item.lowerDeviceNumber)
-                  this.deviceCount.bindStoreNumber += parseInt(item.lowerBindStoreNumber)
-                  this.deviceCount.noBindStoreNumber += accSub(item.lowerDeviceNumber, item.lowerBindStoreNumber)
-                }else{
-                  this.deviceCount.deviceNumber += accSub(item.deviceNumber, item.lowerDeviceNumber)
-                  this.deviceCount.bindStoreNumber += accSub(item.bindStoreNumber, item.lowerDeviceNumber)
-                  this.deviceCount.noBindStoreNumber += accSub(accSub(item.deviceNumber, item.lowerDeviceNumber), accSub(item.bindStoreNumber, item.lowerBindStoreNumber))
-                }
-              }
-            }
-          } else {
-            if(this.isSaas()){
-              this.deviceCount = {
-                deviceNumber: this.deviceCountes.deviceNumber,
-                bindStoreNumber: this.deviceCountes.bindStoreNumber,
-                noBindStoreNumber: this.deviceCountes.noBindStoreNumber
-              }
-            }else if(this.lowerDevice){
-              this.deviceCount = {
-                deviceNumber: this.deviceCountes.lowerDeviceNumber,
-                bindStoreNumber: this.deviceCountes.lowerBindStoreNumber,
-                noBindStoreNumber: accSub(this.deviceCountes.lowerDeviceNumber, this.deviceCountes.lowerBindStoreNumber)
-              }
-            }else{
-              this.deviceCount = {
-                deviceNumber: accSub(this.deviceCountes.deviceNumber, this.deviceCountes.lowerDeviceNumber),
-                bindStoreNumber: accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerBindStoreNumber),
-                noBindStoreNumber: accSub(accSub(this.deviceCountes.deviceNumber, this.deviceCountes.lowerDeviceNumber), accSub(this.deviceCountes.bindStoreNumber, this.deviceCountes.lowerBindStoreNumber))
-              }
-            }
-          }
-          return
-        }
-        this.$get(url, params).then((res = {}) => {
-          if(res[params.groupIds]){
-            res[params.groupIds].noBindStoreNumber = accSub(res[params.groupIds].deviceNumber, res[params.groupIds].bindStoreNumber)
-            let deviceCountes = JSON.parse(JSON.stringify(res[params.groupIds]))
-            deviceCountes.deviceTypeDetail = res[params.groupIds].deviceCountVOMap
-            delete deviceCountes.deviceCountVOMap
-            this.deviceCountes = deviceCountes
-            this.queryDeviceCount()
-          } else {
-            res.noBindStoreNumber = accSub(res.deviceNumber, res.bindStoreNumber)
-            this.deviceCountes = JSON.parse(JSON.stringify(res))
-            this.deviceCount = res
-          }
-        })
-      },
-
-      /**
-       * 在线设备数量统计
-       */
-      onlineDevice(){
-        let params = {
-          statisticsType: this.isSaas() ? 'ALL' : this.lowerDevice ? 'CHILDREN' : 'OWNER'
-        }
-        if(this.listQuery.deviceTypeCode != 0) params.deviceTypeCode = this.listQuery.deviceTypeCode
-        this.$get('iot-saas-device/deviceOnline/statistics', params).then((res = {}) => {
-          this.$set(this.onLineCount, 'onlineCount', res.onlineCount || 0)
-          this.$set(this.onLineCount, 'offlineCount', res.offlineCount || 0)
-        })
-      },
-
-      /**
        * 校验是否可选
        */
       checkSel(row) {
@@ -1034,10 +949,6 @@
         this.listQuery.size = 20
         this.deviceCodeIds = {}
         this.getList()
-        if(!this.isStore()){
-          this.queryDeviceCount()
-          this.onlineDevice()
-        }
       },
 
       /**
@@ -1048,10 +959,6 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
-        if(!this.isStore()){
-          this.queryDeviceCount()
-          this.onlineDevice()
-        }
       },
 
       /**
@@ -1102,6 +1009,7 @@
             if (params.page == 0) {
               this.listTotal = res.total
               this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
+              this.deviceCount = res.ext || {}
             }
           }
 

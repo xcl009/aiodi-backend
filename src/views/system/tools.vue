@@ -2,12 +2,29 @@
   <div class="p-5">
     <div class="mt-5 pt-20 pl-20 pr-20 bg-white">
       <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
-          v-if="myDeviceId['VM'] && vendorInfo.operationMode == 'SELF_RUN'">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand()">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
-              <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+              <div class="icon-box default flex align-center justify-center">
+                <svg-icon icon-class="setting"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">{{ $t('system.overdueOrders') }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('system.overdueOrdersText') }}</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/orderOt`})">{{
+                $t('public.setUp') }}</el-button>
+            </div>
+          </div>
+        </el-col>
+
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="myDeviceId['VM'] && vendorInfo.operationMode == 'SELF_RUN'">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box default flex align-center justify-center">
+                <svg-icon icon-class="setting"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.commodityManagement') }}</div>
@@ -29,8 +46,8 @@
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-else-if="myDeviceId['VM'] && Ability['order']">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
-              <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+              <div class="icon-box default flex align-center justify-center">
+                <svg-icon icon-class="setting"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.vendingOrder') }}</div>
@@ -48,8 +65,8 @@
           v-if="isBrand() && checkAbility(Object.keys(config.roomDevice), 2)">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
-              <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+              <div class="icon-box default flex align-center justify-center">
+                <svg-icon icon-class="setting"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.themeRoomEquipment') }}</div>
@@ -68,7 +85,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('public.probabilityDeposit') }}</div>
@@ -88,7 +105,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.depositRefundRules') }}</div>
@@ -105,7 +122,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.freeQuotaRules') }}</div>
@@ -122,7 +139,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.defaultBillingRules') }}</div>
@@ -140,7 +157,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('store.DDSettings') }}</div>
@@ -153,19 +170,19 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand()">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">{{ $t('system.overdueOrders') }}</div>
-                <div class="mt-5 fs-s3 text-gray">{{ $t('system.overdueOrdersText') }}</div>
+                <div class="fs-b1">{{ $t('steal.delayedOrder') }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('steal.delayedOrderText') }}</</div>
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/device/orderOt` })">{{
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'ORDER_CLOSE_TIME' }, 5)">{{
                 $t('public.setUp') }}</el-button>
             </div>
           </div>
@@ -175,7 +192,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.withdrawalRules') }}</div>
@@ -193,7 +210,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.withdrawalRulesText') }}</div>
@@ -211,7 +228,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.frequencyLimit') }}</div>
@@ -229,7 +246,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.setMap') }}</div>
@@ -247,7 +264,7 @@
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="mall"></svg-icon>
+                <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('system.statisticalSettings') }}</div>
@@ -260,6 +277,24 @@
             </div>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['TIKTOK_DRAINS'], 3)">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="fuwu"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">{{ $t('system.tiktok') }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('system.tiktokText') }}</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'TIKTOK_DRAINS' }, 6)">{{
+                $t('public.setUp') }}</el-button>
+            </div>
+          </div>
+        </el-col>
+
         <el-col :span="24" class="pb-20 cursor">
           <div>{{ $t('system.development') }}</div>
         </el-col>
@@ -314,9 +349,31 @@
             <el-switch v-model="dform.checkMouthStatSp" :active-value="1" :inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('system.simplifyText') }}</div>
           </el-form-item>
+          <el-form-item :label="$t('system.checkOrder')">
+            <el-radio-group v-model="dform.checkOrder">
+              <el-radio-button :label="0">{{ $t('system.checkOrder1') }}</el-radio-button>
+              <el-radio-button :label="1">{{ $t('system.checkOrder2') }}</el-radio-button>
+              <el-radio-button :label="2">{{ $t('system.checkOrder3') }}</el-radio-button>
+            </el-radio-group>
+            <div class="mt-10 line-default fs-s3">{{ $t('system.checkOrderText') }}</div>
+          </el-form-item>
         </el-form>
       </template>
-
+      <template v-if="dialogType == 5">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
+          <el-form-item :label="$t('system.showComplete')">
+            <el-switch v-model="dform.closeTimeComplete" :active-value="1" :inactive-value="0" />
+            <div class="line-default fs-s3">{{ $t('system.showCompleteText') }} </div>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="dialogType == 6">
+        <el-form class="custom-form pl-20 pr-20" :model="dform">
+          <el-form-item :label="$t('system.tiktokVal')">
+            <el-input v-model="dform.tiktokDrains" type="textarea" rows="5"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
       <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
         <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
         <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
@@ -337,7 +394,6 @@ export default {
     return {
       clickSubmit: false,
       vendorInfo: {}, // 售货机运营信息
-
       // 弹出相关
       dialogType: 1,
       drawerStatus: false,
@@ -362,6 +418,8 @@ export default {
         2: this.$t('system.frequencyLimit'),
         3: this.$t('system.setMap'),
         4: this.$t('system.setStore'),
+        5: this.$t('steal.delayedOrder'),
+        6: this.$t('system.tiktok')
       }
     }
   },
@@ -400,11 +458,11 @@ export default {
           this.dialogType = dialogType
           this.curRow = row
           this.curIdx = idx
-          if ([1, 2, 3, 4].indexOf(dialogType) > -1) {
+          if([1, 2, 3, 4, 5, 6].indexOf(dialogType) > -1){
             this.$get('iot-saas-basic/admin/settings/find', {
               code: row.code
             }).then(res => {
-              if (res && res.code) {
+              if(res && res.code){
                 this.dform = JSON.parse(res.setting)
               } else {
                 switch (dialogType) {
@@ -413,32 +471,38 @@ export default {
                       wx_phone: 0,
                       //ali_phone: 0
                     }
-                    break
-                  case 2:
-                    this.dform = {
-                      RENT_LIMIT: 3
-                    }
-                    break
-                  case 3:
-                    this.dform = {
-                      nearStore: 1
-                    }
-                    break
+                  break
+                case 2:
+                  this.dform = {
+                    RENT_LIMIT: 3
+                  }
+                  break
+                case 3:
+                  this.dform = {
+                    nearStore: 1
+                  }
+                  break
                   case 4:
                     this.dform = {
                       checkIncome: 1,
                       checkMouthStat: 1,
-                      checkMouthStatSp: 0
+                      checkMouthStatSp: 0,
+                      checkOrder: 0
                     }
-                    break
-                }
+                  break
+                  case 5:
+                    this.dform = {
+                      closeTimeComplete: 0
+                    }
+                  break
               }
-            })
-          } else {
-            this.dform = {}
-          }
-          this.drawerStatus = true
-          break
+            }
+          })
+        } else {
+          this.dform = {}
+        }
+        this.drawerStatus = true
+        break
       }
     },
 
@@ -446,21 +510,20 @@ export default {
      * 弹窗确认
      */
     dialogConfirm() {
-      let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.dform))
-      if (this.clickSubmit) return
+      if(this.clickSubmit) return
       this.clickSubmit = true
       switch (this.dialogType) {
-        case 1: case 2: case 3: case 4:
+        case 1: case 2: case 3: case 4: case 5: case 6:
           this.clickSubmit = false
           this.$post('iot-saas-basic/admin/settings/save', {
             code: curRow.code,
             setting: JSON.stringify(params)
           }).then(res => {
             this.$message({
-              message: that.$t('public。submittedSuccess'),
+              message: that.$t('public.submittedSuccess'),
               type: 'success'
             })
             this.drawerStatus = false
@@ -468,7 +531,7 @@ export default {
           }).catch(err => {
             this.clickSubmit = false
           })
-          break
+        break
       }
     },
 
@@ -488,8 +551,8 @@ export default {
 
 <style lang="scss" scoped>
 .role-item {
-  padding: 20px 16px;
-  height: 184px;
+  padding: 15px;
+  height: 165px;
   border-radius: 4px;
   border: 1px solid #E5E6EB;
 

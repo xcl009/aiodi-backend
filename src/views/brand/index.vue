@@ -129,7 +129,7 @@
                 @click="$router.push({ path: `/brand/addBrand?brandId=${scope.row.id}` })">{{
                   $t('public.modifyingInformation') }}</el-button>
               <el-dropdown trigger="click">
-                <el-button type="primary" size="mini" class="" @click="">{{ $t('public.add') }}<i
+                <el-button type="primary" size="mini" class="" @click="">{{ $t('public.adds') }}<i
                     class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="$router.push({ path: `/market?brandName=${scope.row.name}` })">{{
@@ -142,7 +142,7 @@
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3)">{{ $t('brand.toMiniProgram')
                   }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(5, scope.row)">{{ $t('brand.cache') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(6, scope.row)">{{ $t('public.setLoginPassword')
+                  <el-dropdown-item @click.native="setRow(3, scope.row, 11)">{{ $t('public.setLoginPassword')
                   }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{
                     $t('brand.deleteBrand') }}</el-dropdown-item>
@@ -208,7 +208,17 @@
           </el-form-item>
         </el-form>
       </template>
-      <template v-if="[1, 3].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 11">
+        <el-form class="pl-20 pr-20 custom-form">
+          <el-form-item :label="$t('public.loginPassword')">
+            <el-switch v-model="dform.password" />
+          </el-form-item>
+          <el-form-item :label="$t('public.operationPassword')">
+            <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1,3,11].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -350,7 +360,8 @@ export default {
       return {
         1: this.$t('brand.giftOfDeductionVouchers'),
         2: this.$t('brand.contractManagement'),
-        3: this.$t('brand.toMiniProgram')
+        3: this.$t('brand.toMiniProgram'),
+        11: this.$t('public.setLoginPassword'),
       }
     },
     sort_type() {
@@ -428,30 +439,14 @@ export default {
     },
 
     /**
-     * 订单数量统计查询
-     */
-    queryOrderCount(ids) {
-      if (ids.length == 0) {
-        this.orderCount = {}
-        return
-      }
-      this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
-        countType: 'BRAND',
-        groupIds: ids.join(',')
-      }).then(res => {
-        this.orderCount = res
-      })
-    },
-
-    /**
      * 设备数量统计查询
      */
-    queryDeviceCount(ids) {
-      if (ids.length == 0) {
+    queryDeviceCount(ids){
+      if(ids.length == 0){
         this.deviceCount = {}
         return
       }
-      this.$get('iot-saas-device/admin/device/count/queryGroupCount', {
+      this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
         countType: 'BRAND',
         groupIds: ids.join(',')
       }).then(res => {
@@ -608,25 +603,6 @@ export default {
             }
           })
           break
-        case 6:
-          this.$alert(that.$t('brand.areYouSetPassword'), that.$t('public.setLoginPassword'), {
-            confirmButtonText: that.$t('public.confirm'),
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$post('iot-saas-user/admin/user/password/reset', {
-                  userId: row.userId,
-                  password: '123456'
-                }).then(res => {
-                  this.$message({
-                    message: that.$t('public.resetSuccess'),
-                    type: 'success'
-                  })
-                })
-              }
-            }
-          })
-          break
       }
     },
 
@@ -669,8 +645,21 @@ export default {
             this.clickSubmit = false
           })
           break
-      }
-    },
+        case 11:
+          params.userId = curRow.userId
+          if(params.password) params.password = '123456'
+          this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.drawerStatus = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        }
+      },
 
     /**
      * 登录代理后台
