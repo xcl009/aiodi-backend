@@ -222,8 +222,7 @@
                 <div class="text-grey" @click="setRows(3, scope.row, 2)"
                   v-if="Ability['orderRefund'] && (scope.row.status.indexOf('G') > -1) && (scope.row.amount > 0 || scope.row.amountEnable > 0)">
                   {{ $t('public.orderRefund') }}</div>
-                <div class="text-grey" @click="setRows(7, scope.row, 1)"
-                  v-if="(scope.row.status.indexOf('W') > -1) && (scope.row.payType == 4)">
+                <div class="text-grey" @click="setRows(7, scope.row, 1)" v-if="(scope.row.status.indexOf('W') > -1) && (scope.row.payType == 4)">
                   {{ $t('order.clickPay') }}</div>
               </div>
             </template>
@@ -1364,6 +1363,14 @@ export default {
           })
           break
         case 7:
+          if(this.payOrderNo == row.orderNo){
+            this.$message({
+              message: that.$t('order.clickPayDesc'),
+              type: 'error'
+            })
+            return
+          }
+          this.payOrderNo = row.orderNo
           this.$post('iot-saas-pay/open/alipay/depositPayComplete', {
             orderNo: row.orderNo
           }).then(res => {

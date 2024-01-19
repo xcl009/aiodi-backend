@@ -568,6 +568,7 @@ export default {
     cancelSuccess: '取消成功',
     retext: '原路退回及餘額退款時需保證您的收單帳戶餘額充足，否則用戶無法收到退款金額<br></span>提交退款申請5秒後點擊訂單詳情-訂單流程中可查看退款結果',
     clickPay: '發起扣款',
+    clickPayDesc: '請勿連續重複發起扣款',
   },
   battery: {
     batteryCount: '品牌名下電池數',

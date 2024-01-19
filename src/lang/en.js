@@ -568,6 +568,7 @@ export default {
     cancelSuccess: 'Cancelled successfully',
     retext: 'The original return and balance refund must ensure that your account balance is sufficient, otherwise the user will not receive the refund amount <br></span> Click on the order details after 5 seconds of submitting the refund request - the refund result can be viewed in the order process',
     clickPay: 'Initiating deduction',
+    clickPayDesc: 'Do not initiate deductions repeatedly',
   },
   battery: {
     batteryCount: 'Number of batteries under the brand name',
