@@ -245,7 +245,7 @@
                       <el-dropdown-item @click.native="setRows(3, scope.row, 7)">{{ $t('store.sharedWIFI')
                       }}</el-dropdown-item>
                     </template>
-                    <el-dropdown-item @click.native="setRows(3, scope.row, 10)" v-if="isBrand()">登录记录</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(3, scope.row, 10)" v-if="isBrand()">{{ $t('store.loginRecord') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
                       v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
                   </el-dropdown-menu>
@@ -506,10 +506,10 @@
       </template>
       <template v-if="dialogType == 11">
         <el-form class="pl-20 pr-20 custom-form">
-          <el-form-item :label="$('public.loginPassword')">
+          <el-form-item :label="$t('public.loginPassword')">
             <el-switch v-model="dform.password" />
           </el-form-item>
-          <el-form-item :label="$('public.operationPassword')">
+          <el-form-item :label="$t('public.operationPassword')">
             <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
           </el-form-item>
         </el-form>

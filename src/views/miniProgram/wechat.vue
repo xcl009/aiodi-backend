@@ -66,7 +66,7 @@
               }}</el-button>
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/system/wechatEdit?app_id=${scope.row.appId}` })" v-if="isBrand()">{{
-                  $t('miniProgram.modifyingInformation') }}</el-button>
+                  $t('public.modifyingInformation') }}</el-button>
               <el-button type="primary" size="mini" @click="setRows(6, scope.row, 1)" v-if="isSaas()">{{
                 $t('miniProgram.refreshTokenText') }}</el-button>
             </div>

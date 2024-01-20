@@ -146,7 +146,7 @@ export default {
     commitment: '承諾',
     relative: '相對',
     undivided: '不分成',
-    setLoginPassword: '重置登錄密碼',
+    setLoginPassword: '重置密码',
     bindDevice: '設備綁定',
     permissionSettings: '權限設置',
     edit: '編輯',

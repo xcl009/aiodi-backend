@@ -157,7 +157,7 @@
                       $t('public.weChatAccountSplitting') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"
                     v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 11)" v-if="isBrand()">{{ $t('store.resettingLoginPasswordText') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(8, scope.row, 11)" v-if="isBrand()">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
                     v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
                 </el-dropdown-menu>
@@ -361,10 +361,10 @@
       </template>
       <template v-if="dialogType == 11">
         <el-form class="pl-20 pr-20 custom-form">
-          <el-form-item :label="$('public.loginPassword')">
+          <el-form-item :label="$t('public.loginPassword')">
             <el-switch v-model="dform.password" />
           </el-form-item>
-          <el-form-item :label="$('public.operationPassword')">
+          <el-form-item :label="$t('public.operationPassword')">
             <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
           </el-form-item>
         </el-form>

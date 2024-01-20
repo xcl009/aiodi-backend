@@ -142,7 +142,7 @@
                   <el-dropdown-item @click.native="setRows(1, scope.row, 3)">{{ $t('brand.toMiniProgram')
                   }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(5, scope.row)">{{ $t('brand.cache') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(3, scope.row, 11)">{{ $t('public.setLoginPassword')
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 11)">{{ $t('public.setLoginPassword')
                   }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{
                     $t('brand.deleteBrand') }}</el-dropdown-item>

@@ -146,7 +146,7 @@ export default {
     commitment: 'Commitment',
     relative: 'Relative',
     undivided: 'Not divided',
-    setLoginPassword: 'Reset login password',
+    setLoginPassword: 'Reset password',
     bindDevice: 'Device binding',
     permissionSettings: 'Permission settings',
     edit: 'Edit',
