@@ -213,7 +213,7 @@
                 <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">{{ $t('system.withdrawalRulesText') }}</div>
+                <div class="fs-b1">{{ $t('system.setLoginPone') }}</div>
                 <div class="mt-5 fs-s3 text-gray">{{ $t('system.setLoginPone') }}</div>
               </div>
             </div>

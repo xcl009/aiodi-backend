@@ -269,9 +269,8 @@ export default {
       if(this.userKey && this.id) params[this.userKey] = this.id
       this.$get('iot-saas-basic/api/withdraw/config/v1/find', params).then((res = {}) => {
         if(res.enable){
-          let days = [{val: 1}], weeks = [{val: 1}]
+          let days = [{val: 1}], weeks = [{val: 1}], dayas = []
           if(res.timeLimit.days && res.timeLimit.days.length > 0){
-            let dayas = []
             res.timeLimit.days.map(item => {
               dayas.push({
                 val: item
