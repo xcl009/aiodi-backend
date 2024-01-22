@@ -401,6 +401,8 @@ export default {
     dailyCap: '每天封顶',
     minCap: '分钟封顶',
     freeOfCharge: '免押',
+    month: '月',
+    billingRules: '计费规则',
   },
   // 分账关系
   reType: {
@@ -806,7 +808,6 @@ export default {
     times: '分成时长',
     deductionTime: '扣减时间',
     message: '扣款延时时长必须大于5分钟',
-    todayFrequency: '今日次数',
     timeNum: '时长次数',
     userNameandId: '用户昵称或ID',
     findUsers: '查找用户',
@@ -833,7 +834,12 @@ export default {
     delTitle: '删除DD规则',
     delText: '确定删除该DD规则吗？',
     delayedOrder: '延时归还订单用户端展示状态',
-    delayedOrderText: '配置延时归还订单在延时时间段内用户端订单展示状态'
+    delayedOrderText: '配置延时归还订单在延时时间段内用户端订单展示状态',
+    durationPerSession: '每次时长',
+    freeNum: '免费次数',
+    immobilization: '固定',
+    nonFixed: '非固定',
+    useOk: '已使用'
   },
   shopping: {
     pleaseAddEquipment: '请新增设备',

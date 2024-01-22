@@ -241,7 +241,7 @@
             <el-form-item :label="`${$t('public.orderNo')}`">
               <el-input v-model="dform.orderNo"></el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('public.cancelReason')}`">
+            <el-form-item :label="`${$t('order.cancelReason')}`">
               <el-input v-model="dform.reason"></el-input>
             </el-form-item>
           </el-form>
@@ -278,7 +278,7 @@
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 9">{{ $t('order.message1') }}</div>
               <div class="mt-10 text-danger line-default" v-else-if="dialogType == 10">{{ $t('order.message2') }}</div>
             </el-form-item>
-            <el-form-item  :label="`${$t('public.orderFree')}`" v-if="dialogType == 11">
+            <el-form-item  :label="`${$t('order.orderFree')}`" v-if="dialogType == 11">
               <el-switch v-model="dform.isDeposit" />
             </el-form-item>
           </el-form>

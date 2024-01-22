@@ -146,8 +146,23 @@ export default {
       }
     },
   },
+  beforeRouteEnter(to, from, next) {
+    if (from.name == "alipayEdit") {
+      to.meta.reload = true
+    } else {
+      to.meta.reload = false
+    }
+    next()
+  },
+  activated() {
+    if (this.$route.meta.reload) {
+      this.toQuery()
+    } else if (!this.list || this.list.length == 0) {
+      this.toQuery()
+    }
+  },
   mounted() {
-
+    
   },
   methods: {
     /**

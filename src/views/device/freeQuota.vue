@@ -41,15 +41,16 @@
             <div>{{ dealPhone(scope.row.mobile) }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.freeTime')">
+        <el-table-column :label="$t('steal.timeNum')">
           <template slot-scope="scope">
-            {{ parseInt(scope.row.freeTime) / 60 }}{{ $t('public.huor') }}
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('steal.todayFrequency')">
-          <template slot-scope="scope">
-            {{ scope.row.today != parseTime(currentTime(), '{y}-{m}-{d}') ? 0 : scope.row.haveUseTimes }}/{{
-              scope.row.freeTimes }}
+            <div v-if="scope.row.feeType == 1">
+              {{ parseInt(scope.row.freeTime) / 60 }}{{ $t('public.huor') }}/{{ `${scope.row.feeCycle == 1 ? $t('public.day') : scope.row.feeCycle == 7 ? $t('public.circumference') : $t('public.month')}` }}
+              <span v-if="scope.row.useTime">{{ $t('steal.useOk') }}{{ unixTime(scope.row.today) + 86400 > currentTime() ? scope.row.useTime : 0 }}{{ $t('public.minute') }}</span>
+            </div>
+            <div v-else>
+              {{ parseInt(scope.row.freeTime) / 60 }}{{ $t('public.huor') }}/{{ $t('public.few') }}
+              {{ $t('steal.useOk') }}{{ unixTime(scope.row.today) + 86400 > currentTime() ? scope.row.haveUseTimes : 0 }}{{ $t('public.few') }}/{{ scope.row.freeTimes }}{{ $t('public.few') }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.operate')">
@@ -113,15 +114,40 @@
       </template>
       <template v-if="dialogType == 2">
         <el-form class="custom-form pl-20 pr-20" label-width="100px" label-position="left">
-          <el-form-item :label="$t('public.freeTime')">
+          <el-form-item :label="$t('public.billingRules')">
+            <el-radio-group v-model="dform.feeType">
+              <el-radio-button :label="0">{{ $t('steal.nonFixed') }}</el-radio-button>
+              <el-radio-button :label="1">{{ $t('steal.immobilization') }}</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item :label="$t('steal.durationPerSession')" v-if="dform.feeType == 0">
             <el-input type="number" v-model="dform.freeTime">
               <span slot="append">{{ $t('public.huor') }}</span>
             </el-input>
           </el-form-item>
-          <el-form-item :label="$t('steal.dailyUsageFrequency')">
-            <el-input type="number" v-model="dform.freeTimes">
-              <span slot="append">{{ $t('public.few') }}</span>
-            </el-input>
+          <el-form-item :label="$t('steal.freeNum')" v-if="dform.feeType == 0">
+            <div class="flex align-center">
+              <el-select v-model="dform.feeCycle">
+                <el-option :label=" $t('public.everyDay')" :value="1" />
+                <el-option :label=" $t('public.weekly')" :value="7" />
+                <el-option :label=" $t('public.monthly')" :value="30" />
+              </el-select>
+              <el-input type="number" v-model="dform.freeTimes" class="flex-1">
+                <span slot="append">{{ $t('public.few') }}</span>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item :label="$t('steal.freeNum')" v-if="dform.feeType == 1">
+            <div class="flex align-center">
+              <el-select v-model="dform.feeCycle">
+                <el-option :label=" $t('public.everyDay')" :value="1" />
+                <el-option :label=" $t('public.weekly')" :value="7" />
+                <el-option :label=" $t('public.monthly')" :value="30" />
+              </el-select>
+              <el-input type="number" v-model="dform.freeTime" class="flex-1">
+                <span slot="append">{{ $t('public.huor') }}</span>
+              </el-input>
+            </div>
           </el-form-item>
         </el-form>
       </template>
@@ -178,7 +204,8 @@
 import condition from '@/components/condition/'
 import selectSearch from '@/components/condition/selectSearch'
 import {
-  dealPhone
+  dealPhone,
+  unixTime
 } from '@/utils/index'
 export default {
   name: 'freeQuota',
@@ -201,6 +228,7 @@ export default {
   },
   data() {
     return {
+      unixTime: unixTime,
       dealPhone: dealPhone,
       clickSubmit: false,
       deviceTab: {},
@@ -342,6 +370,8 @@ export default {
             this.dform = {
               freeTime: parseInt(row.freeTime) / 60,
               freeTimes: row.freeTimes,
+              feeType: row.feeType,
+              feeCycle: row.feeCycle,
               userId: row.userId
             }
           } else if (dialogType == 3) {
@@ -419,6 +449,8 @@ export default {
             })
             curRow.freeTime = params.freeTime
             curRow.freeTimes = params.freeTimes
+            curRow.feeType = params.feeType
+            curRow.feeCycle = params.feeCycle
             this.dialogStatus = false
             this.clickSubmit = false
           }).catch(err => {

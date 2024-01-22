@@ -437,7 +437,23 @@ export default {
         this.listLoading = false
       })
     },
-
+    
+    /**
+     * 订单数量统计查询
+     */
+    queryOrderCount(ids){
+      if(ids.length == 0){
+        this.orderCount = {}
+        return
+      }
+      this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+        countType: 'BRAND',
+        groupIds: ids.join(',')
+      }).then(res => {
+        this.orderCount = res
+      })
+    },
+    
     /**
      * 设备数量统计查询
      */
