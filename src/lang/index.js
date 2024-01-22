@@ -6,6 +6,8 @@ import cp from './cp'; //中文(繁体)
 import en from './en'; //英文
 import ru from './ru'; //俄语
 import vi from './vi'; //越南语
+import tp from './tp'; //菲律宾语
+
 //引入UI框架语言配置---elementui
 import Element from 'element-ui'
 import locale from 'element-ui/lib/locale';
@@ -41,6 +43,10 @@ const i18n = new VueI18n({
       ...vi,
       ...viLocale
     },   //越南语
+    'en_PH': {
+      ...tp,
+      ...viLocale
+    },   //菲律宾语
   },
   silentTranslationWarn:true//解决vue-i18n黄色警告"value of key 'xxx' is not a string"和"cannot translate the value of keypath 'xxx'.use the value of keypath as default",可忽略
 });
