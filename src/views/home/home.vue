@@ -2229,10 +2229,10 @@ export default {
 
 }
 
-/deep/.is-active {
-  background-color: rgba(17, 102, 177, 0.10) !important;
-  box-shadow: 0px 0px 12px 0px #1166B1 inset !important;
-}
+// /deep/.is-active {
+//   background-color: rgba(17, 102, 177, 0.10) !important;
+//   box-shadow: 0px 0px 12px 0px #1166B1 inset !important;
+// }
 
 /deep/.el-pagination__total {
   color: rgba(255, 255, 255, 0.80) !important;

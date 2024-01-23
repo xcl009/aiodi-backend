@@ -33,7 +33,7 @@
             {{ scope.row.amount }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('home.orderNum')}(${$t('home.one')})`" align="center">
+        <el-table-column :label="`${$t('home.orderNum')}(${$t('public.ones')})`" align="center">
           <template slot-scope="scope">
             {{ scope.row.orderNumber }}
           </template>
@@ -220,6 +220,7 @@ export default {
       doneOrderNumber,
       unitPrice
     } = {}) {
+      let that = this
       if (!groupDate) return
       let legend = [that.$t('public.aTurnover'), that.$t('home.allOrderNum'), that.$t('home.successNum'), that.$t('home.averageATurnover')],
         series = [{
