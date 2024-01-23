@@ -130,7 +130,7 @@
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
                     <div>
                       {{ index == 0 ? querHistogram[key].amount + `${$t('public.element')}` : index == 1 ?
-                        querHistogram[key].orderNumber + `${$t('public.one')}`
+                        querHistogram[key].orderNumber + `${$t('public.ones')}`
                         : querHistogram[key].unitPrice + `${$t('public.element')}` }}
                     </div>
                   </template>
@@ -2229,10 +2229,10 @@ export default {
 
 }
 
-/deep/.is-active {
-  background-color: rgba(17, 102, 177, 0.10) !important;
-  box-shadow: 0px 0px 12px 0px #1166B1 inset !important;
-}
+// /deep/.is-active {
+//   background-color: rgba(17, 102, 177, 0.10) !important;
+//   box-shadow: 0px 0px 12px 0px #1166B1 inset !important;
+// }
 
 /deep/.el-pagination__total {
   color: rgba(255, 255, 255, 0.80) !important;
