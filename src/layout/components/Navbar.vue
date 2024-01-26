@@ -47,6 +47,11 @@
                   </el-dropdown-item>
                   <el-dropdown-item @click.native="waitOnLine('zh_HK')">中文版本(繁體)</el-dropdown-item>
                   <el-dropdown-item @click.native="waitOnLine('en_US')">English</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('ru_RU')">Tiếng Việt</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('vi_VN')">Русский язык</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('en_PH')">Pilipino</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('ko_KR')">한국어</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('ja_JP')">日本語</el-dropdown-item>
                   <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
