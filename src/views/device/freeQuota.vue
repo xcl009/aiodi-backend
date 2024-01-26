@@ -45,7 +45,7 @@
           <template slot-scope="scope">
             <div v-if="scope.row.feeType == 1">
               {{ parseInt(scope.row.freeTime) / 60 }}{{ $t('public.huor') }}/{{ `${scope.row.feeCycle == 1 ? $t('public.day') : scope.row.feeCycle == 7 ? $t('public.circumference') : $t('public.month')}` }}
-              <span v-if="scope.row.useTime">{{ $t('steal.useOk') }}{{ unixTime(scope.row.today) + 86400 > currentTime() ? scope.row.useTime : 0 }}{{ $t('public.minute') }}</span>
+              <span>{{ $t('steal.useOk') }}{{ unixTime(scope.row.today) + 86400 > currentTime() ? scope.row.useTime : 0 }}{{ $t('public.minute') }}</span>
             </div>
             <div v-else>
               {{ parseInt(scope.row.freeTime) / 60 }}{{ $t('public.huor') }}/{{ $t('public.few') }}

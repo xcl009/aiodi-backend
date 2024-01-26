@@ -33,7 +33,8 @@
         <template v-for="item in showColumn" v-if="item.val">
           <el-table-column :label="$t('brand.brandInfo')" width="150" v-if="item.key == 'name'">
             <template slot-scope="scope">
-              <div class="mb-5 cursor" @click="copyText(scope.row.id)">{{ scope.row.name || $t('brand.brandName') }}</div>
+              <div class="mb-5 cursor" @click="copyText(scope.row.id)">{{ scope.row.name || $t('brand.brandName') }}
+              </div>
               <el-tooltip class="item" effect="dark" :content="scope.row.brandUser.mobile" placement="top"
                 v-if="scope.row.brandUser">
                 <div>{{ dealPhone(scope.row.brandUser.mobile) }}</div>
@@ -55,7 +56,8 @@
           </el-table-column>
           <el-table-column :label="$t('brand.regimentalCommander')" width="100" v-else-if="item.key == 'isLeader'">
             <template slot-scope="scope">
-              <div class="text-primary cursor" v-if="scope.row.isLeader == 1">{{ $t('brand.regimentalCommander') }}</div>
+              <div class="text-primary cursor" v-if="scope.row.isLeader == 1">{{ $t('brand.regimentalCommander') }}
+              </div>
               <div class="text-primary cursor" @click="setRow(3, scope.row)"
                 v-else-if="scope.row.isLeader == 0 && scope.row.leaderBrandId == 0">{{ $t('brand.setAsTeamLeader') }}
               </div>
@@ -74,7 +76,8 @@
           <el-table-column :label="$t('brand.numberOfDevices')" min-width="100" v-else-if="item.key == 'deviceCount'">
             <template slot-scope="scope">
               <div class="inline text-left" @click="$router.push({ path: `/device?brandId=${scope.row.id}` })">
-                <div>{{ $t('public.all') }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}
+                <div>
+                  {{ $t('public.all') }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}
                 </div>
                 <div>{{ $t('public.shipped') }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber :
                   '0' }}</div>
@@ -132,22 +135,16 @@
                 <el-button type="primary" size="mini" class="" @click="">{{ $t('public.adds') }}<i
                     class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="$router.push({ path: `/market?brandName=${scope.row.name}` })">{{
-                    $t('brand.addedService') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="$router.push({ path: `/market?brandName=${scope.row.name}` })">{{ $t('brand.addedService') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="toLogin(scope.row)">{{ $t('brand.branding') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 1)">{{ $t('brand.deductionVoucher')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="copyloginUrl(scope.row)">{{ $t('brand.loginAddress')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 3)">{{ $t('brand.toMiniProgram')
-                  }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 1)">{{ $t('brand.deductionVoucher') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="copyloginUrl(scope.row)">{{ $t('brand.loginAddress') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 3)">{{ $t('brand.toMiniProgram') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(5, scope.row)">{{ $t('brand.cache') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 11)">{{ $t('public.setLoginPassword')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{
-                    $t('brand.deleteBrand') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>{{
-                    $t('brand.accountRecovery') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 11)">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 12)">{{ $t('brand.payChannel') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{ $t('brand.deleteBrand') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>{{ $t('brand.accountRecovery') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -183,7 +180,8 @@
           <div class="mt-20 mb-15 text-black">{{ $t('brand.contractInformation') }}</div>
           <div class="text-gray" v-if="!dform.pdfUrl">{{ $t('brand.contractNotUploaded') }}</div>
           <div class="flex1">
-            <iframe ref="pdfCotainer" :src="dform.pdfUrl" width="100%" height="100%" style="min-height: 600px;"></iframe>
+            <iframe ref="pdfCotainer" :src="dform.pdfUrl" width="100%" height="100%"
+              style="min-height: 600px;"></iframe>
           </div>
         </div>
       </template>
@@ -204,7 +202,8 @@
           </template>
           <el-form-item>
             <div class="text-danger" style="width: 400px; max-width: 100%;">
-              {{ $t('brand.message') }}</div>
+              {{ $t('brand.message') }}
+            </div>
           </el-form-item>
         </el-form>
       </template>
@@ -218,7 +217,60 @@
           </el-form-item>
         </el-form>
       </template>
-      <template v-if="[1,3,11].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 12">
+        <div class="pl-20 pr-20 channel-box" v-if="payChannel.length > 0">
+          <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': channels[item.id]}" v-for="item in payChannel" @click="channels[item.id] = !channels[item.id]; dialogConfirm()">
+            <el-avatar class="block" :size="35" :src="item.logo" :fit="cover" shape="square"></el-avatar>
+            <div class="pl-15 pr-15 flex-1" :class="{'text-bold text-black': channels[item.id]}">{{ item.name }}</div>
+            <div class="text-primary" @click.stop="setRows(1, brandChannels[item.id], 13)" v-if="channels[item.id] && item.code != 'BALANCE'">{{ $t('brand.payConfig') }}</div>
+          </div>
+        </div>
+      </template>
+      <template v-if="dialogType == 13">
+        <el-form class="pl-20 pr-20 custom-form max-w" style="width: 600px;">
+          <el-form-item>
+            <i class="text-primary el-icon-arrow-left cursor fs-a1" @click="dialogType = 12"></i>
+          </el-form-item>
+          <el-form-item :label="$t('brand.appType')">
+            <el-select v-model="dform.sourceType" class="tfixed">
+              <el-option :label="item" :value="parseInt(key)" v-for="(item, key) in Constant.SourceType" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="APPID">
+            <el-input v-model="dform.appId"></el-input>
+          </el-form-item>
+          <template v-if="curRow.code == 'ALIPAY_HK' && dform.content">
+            <el-form-item :label="$t('miniProgram.zfbId')">
+              <el-input v-model="dform.content.pid"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.clientId')">
+              <el-input v-model="dform.content.clientId"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.gatewayUrl')">
+              <el-input v-model="dform.content.gatewayUrl"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.appPrivateKey')">
+              <el-input v-model="dform.content.appPrivateKey" type="textarea" :rows="6"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.appPublicKey')">
+              <el-input v-model="dform.content.appPublicKey" type="textarea" :rows="6"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.alipayPublicKey')">
+              <el-input v-model="dform.content.alipayPublicKey" type="textarea" :rows="6"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.appCert')">
+              <el-input v-model="dform.content.appCert" type="textarea" :rows="6"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.alipayCert')">
+              <el-input v-model="dform.content.alipayCert" type="textarea" :rows="6"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.alipayRootCert')">
+              <el-input v-model="dform.content.alipayRootCert" type="textarea" :rows="6"></el-input>
+            </el-form-item>
+          </template>
+        </el-form>
+      </template>
+      <template v-if="[1,3,11,13].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -231,512 +283,614 @@
 </template>
 
 <script>
-import upload from '@/components/upload'
-import Pagination from '@/components/Pagination'
-import condition from '@/components/condition/'
-import { copyText } from '@/utils/index'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import TableColumnSet from '@/components/TableColumnSet/index'
+  import upload from '@/components/upload'
+  import Pagination from '@/components/Pagination'
+  import condition from '@/components/condition/'
+  import {
+    copyText
+  } from '@/utils/index'
+  import {
+    getToken,
+    setToken,
+    removeToken
+  } from '@/utils/auth'
+  import TableColumnSet from '@/components/TableColumnSet/index'
 
-export default {
-  name: 'brand',
-  components: {
-    upload,
-    TableColumnSet,
-    Pagination,
-    condition
-  },
-  data() {
-    return {
-      copyText: copyText,
-      clickSubmit: false,
-      form: {},
-      tableMaxH: '250',
-      list: [],
-      listLoading: true,
-      listTotal: 0,
-      listQuery: {
-        page: 1,
-        size: 20
+  export default {
+    name: 'brand',
+    components: {
+      upload,
+      TableColumnSet,
+      Pagination,
+      condition
+    },
+    data() {
+      return {
+        copyText: copyText,
+        clickSubmit: false,
+        form: {},
+        tableMaxH: '250',
+        list: [],
+        listLoading: true,
+        listTotal: 0,
+        listQuery: {
+          page: 1,
+          size: 20
+        },
+        orderCount: {},
+        deviceCount: {},
+
+        /**
+         * 列的配置化对象，存储配置信息
+         */
+        showColumn: [],
+
+        // 弹出相关
+        dialogType: 1,
+        drawerStatus: false,
+        curRow: {},
+        curIdx: 0,
+        dform: {},
+
+        //支付通道
+        payChannel: [],
+        channels: {},
+        brandChannels: {}
+      }
+    },
+    beforeRouteEnter(to, from, next) {
+      if (from.name == 'addBrand') {
+        to.meta.reload = true
+      } else {
+        to.meta.reload = false
+      }
+      next()
+    },
+    activated() {
+      if (this.$route.meta.reload) {
+        this.getList()
+      } else if (!this.list || this.list.length == 0) {
+        this.toQuery(1)
+      }
+    },
+    computed: {
+      Constant() {
+        return this.$store.getters.Constant
       },
-      orderCount: {},
-      deviceCount: {},
+      device() {
+        return this.$store.state.app.device
+      },
+      siteInfo() {
+        return this.$store.getters.siteInfo
+      },
+      myDeviceName() {
+        return this.$store.state.user.myDeviceName
+      },
+      myDeviceId() {
+        return this.$store.state.user.myDeviceId
+      },
+      agentInfo() {
+        return this.$store.getters.agentInfo
+      },
+      defaultColumn() {
+        return [{
+            key: 'name',
+            val: true,
+            name: this.$t('brand.brandInfo')
+          },
+          {
+            key: 'companyName',
+            val: false,
+            name: this.$t('brand.corporateName')
+          },
+          {
+            key: 'createTime',
+            val: true,
+            name: this.$t('brand.timeOfEntry'),
+            width: 260
+          },
+          {
+            key: 'isLeader',
+            val: true,
+            name: this.$t('brand.regimentalCommander')
+          },
+          {
+            key: 'fatherBrandName',
+            val: true,
+            name: this.$t('brand.inviter')
+          },
+          {
+            key: 'brandDeviceType',
+            val: true,
+            name: this.$t('brand.category')
+          },
+          {
+            key: 'deviceCount',
+            val: true,
+            name: this.$t('brand.numberOfDevices')
+          },
+          {
+            key: 'orderCount',
+            val: true,
+            name: this.$t('public.orderNum')
+          },
+          {
+            key: 'amount',
+            val: true,
+            name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
+          }
+        ]
+      },
+      dialogTitle() {
+        return {
+          1: this.$t('brand.giftOfDeductionVouchers'),
+          2: this.$t('brand.contractManagement'),
+          3: this.$t('brand.toMiniProgram'),
+          11: this.$t('public.setLoginPassword'),
+          12: this.$t('brand.payChannel'),
+          13: this.$t('brand.payConfig'),
+        }
+      },
+      sort_type() {
+        return [{
+            name: this.$t('brand.comprehensiveSorting'),
+            value: 0
+          },
+          {
+            name: this.$t('brand.highToLow'),
+            value: 1
+          },
+          {
+            name: this.$t('brand.lowToHogh'),
+            value: 2
+          },
+          {
+            name: this.$t('brand.nearToFar'),
+            value: 3
+          },
+          {
+            name: this.$t('brand.farToNear'),
+            value: 4
+          }
+        ]
+      },
+    },
+    mounted() {
+
+    },
+    methods: {
+      /**
+       * 搜索查询
+       */
+      toQuery() {
+        if (this.clickSubmit) return
+        this.clickSubmit = true
+        this.listQuery.page = 1
+        this.listQuery.size = 20
+        this.getList()
+      },
 
       /**
-       * 列的配置化对象，存储配置信息
+       * 重置查询
        */
-      showColumn: [],
-
-      // 弹出相关
-      dialogType: 1,
-      drawerStatus: false,
-      curRow: {},
-      curIdx: 0,
-      dform: {},
-    }
-  },
-  beforeRouteEnter(to, from, next) {
-    if (from.name == 'addBrand') {
-      to.meta.reload = true
-    } else {
-      to.meta.reload = false
-    }
-    next()
-  },
-  activated() {
-    if (this.$route.meta.reload) {
-      this.getList()
-    } else if (!this.list || this.list.length == 0) {
-      this.toQuery(1)
-    }
-  },
-  computed: {
-    device() {
-      return this.$store.state.app.device
-    },
-    siteInfo() {
-      return this.$store.getters.siteInfo
-    },
-    myDeviceName() {
-      return this.$store.state.user.myDeviceName
-    },
-    myDeviceId() {
-      return this.$store.state.user.myDeviceId
-    },
-    agentInfo() {
-      return this.$store.getters.agentInfo
-    },
-    defaultColumn() {
-      return [
-        {
-          key: 'name',
-          val: true,
-          name: this.$t('brand.brandInfo')
-        },
-        {
-          key: 'companyName',
-          val: false,
-          name: this.$t('brand.corporateName')
-        },
-        {
-          key: 'createTime',
-          val: true,
-          name: this.$t('brand.timeOfEntry'),
-          width: 260
-        },
-        {
-          key: 'isLeader',
-          val: true,
-          name: this.$t('brand.regimentalCommander')
-        },
-        {
-          key: 'fatherBrandName',
-          val: true,
-          name: this.$t('brand.inviter')
-        },
-        {
-          key: 'brandDeviceType',
-          val: true,
-          name: this.$t('brand.category')
-        },
-        {
-          key: 'deviceCount',
-          val: true,
-          name: this.$t('brand.numberOfDevices')
-        },
-        {
-          key: 'orderCount',
-          val: true,
-          name: this.$t('public.orderNum')
-        },
-        {
-          key: 'amount',
-          val: true,
-          name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
+      reset() {
+        this.form = {
+          status: 1
         }
-      ]
-    },
-    dialogTitle() {
-      return {
-        1: this.$t('brand.giftOfDeductionVouchers'),
-        2: this.$t('brand.contractManagement'),
-        3: this.$t('brand.toMiniProgram'),
-        11: this.$t('public.setLoginPassword'),
-      }
-    },
-    sort_type() {
-      return [{
-        name: this.$t('brand.comprehensiveSorting'),
-        value: 0
+        this.listQuery.page = 1
+        this.listQuery.size = 20
+        this.getList()
       },
-      {
-        name: this.$t('brand.highToLow'),
-        value: 1
-      },
-      {
-        name: this.$t('brand.lowToHogh'),
-        value: 2
-      },
-      {
-        name: this.$t('brand.nearToFar'),
-        value: 3
-      },
-      {
-        name: this.$t('brand.farToNear'),
-        value: 4
-      }
-      ]
-    },
-  },
-  mounted() {
 
-  },
-  methods: {
-    /**
-     * 搜索查询
-     */
-    toQuery() {
-      if (this.clickSubmit) return
-      this.clickSubmit = true
-      this.listQuery.page = 1
-      this.listQuery.size = 20
-      this.getList()
-    },
-
-    /**
-     * 重置查询
-     */
-    reset() {
-      this.form = {
-        status: 1
-      }
-      this.listQuery.page = 1
-      this.listQuery.size = 20
-      this.getList()
-    },
-
-    /**
-     * 获取列表
-     */
-    getList() {
-      var params = Object.assign({}, this.form, this.listQuery, {
-        page: this.listQuery.page - 1
-      })
-      this.$get('iot-saas-basic/admin/brand/findPage', params).then(res => {
-        this.listLoading = false
-        this.list = res.rows
-        this.clickSubmit = false
-        if (params.page == 0) {
-          this.listTotal = res.total
-          this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
-        }
-        this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
-        this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))
-      }).catch(() => {
-        this.clickSubmit = false
-        this.listLoading = false
-      })
-    },
-    
-    /**
-     * 订单数量统计查询
-     */
-    queryOrderCount(ids){
-      if(ids.length == 0){
-        this.orderCount = {}
-        return
-      }
-      this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
-        countType: 'BRAND',
-        groupIds: ids.join(',')
-      }).then(res => {
-        this.orderCount = res
-      })
-    },
-    
-    /**
-     * 设备数量统计查询
-     */
-    queryDeviceCount(ids){
-      if(ids.length == 0){
-        this.deviceCount = {}
-        return
-      }
-      this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
-        countType: 'BRAND',
-        groupIds: ids.join(',')
-      }).then(res => {
-        this.deviceCount = res
-      })
-    },
-
-    /**
-     * 操作行
-     * @param {Object} type 1 dialog类型
-     * @param {Object} row 选择当前行
-     * @param {Object} dialogType dialog内容显示类型 1: '赠送券' 2: '合同'
-     * @param {Object} idx 当前行所在位置
-     */
-    setRows(type, row, dialogType, idx) {
-      switch (type) {
-        case 1:
-          this.dialogType = dialogType
-          this.curRow = row
-          this.curIdx = idx
-          this.dform = {}
-          if (dialogType == 2) {
-            this.$get('iot-saas-basic/admin/platform/getFileInfo', {
-              bussinessId: row.id,
-              type: 1
-            }).then(res => {
-              this.dform = {
-                pdfUrl: res.url
-              }
-            })
-          } else if (dialogType == 1) {
-            this.$get('iot-saas-basic/admin/settings/find', {
-              brandId: row.id,
-              code: 'VIP_COUPON'
-            }).then(res => {
-              if (res && res.setting) {
-                let coupon = JSON.parse(res.setting)
-                this.dform = {
-                  amount: coupon.amount || 0
-                }
-              }
-            })
-          } else if (dialogType == 3) {
-            this.$get('iot-saas-basic/admin/settings/find', {
-              brandId: row.id,
-              code: 'BRAND_JUMP_MINI'
-            }).then(res => {
-              if (res && res.setting) {
-                let info = JSON.parse(res.setting)
-                console.log(info)
-                this.dform = {
-                  jumpDetail: {
-                    wx: JSON.parse(info.wx),
-                    ali: JSON.parse(info.ali),
-                  }
-                }
-              } else {
-                this.dform = {
-                  jumpDetail: {
-                    wx: {},
-                    ali: {}
-                  }
-                }
-              }
-            })
+      /**
+       * 获取列表
+       */
+      getList() {
+        var params = Object.assign({}, this.form, this.listQuery, {
+          page: this.listQuery.page - 1
+        })
+        this.$get('iot-saas-basic/admin/brand/findPage', params).then(res => {
+          this.listLoading = false
+          this.list = res.rows
+          this.clickSubmit = false
+          if (params.page == 0) {
+            this.listTotal = res.total
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
           }
-          this.drawerStatus = true
-          break
-      }
-    },
+          this.queryOrderCount(this.arrayKeys(res.rows, 'id'))
+          this.queryDeviceCount(this.arrayKeys(res.rows, 'id'))
+        }).catch(() => {
+          this.clickSubmit = false
+          this.listLoading = false
+        })
+      },
 
-    /**
-     * 操作行
-     * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长 4 设备统计数量  5 代理层级缓存  6 重置登录密码
-     * @param {Object} row
-     * @param {Object} index
-     */
-    setRow(type, row, index) {
-      let that = this;
-      switch (type) {
-        case 1:
-          this.$alert(that.$t('brand.areYouDeleteBrand'), that.$t('brand.deleteBrand'), {
-            confirmButtonText: that.$t('public.confirm'),
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$post('iot-saas-basic/admin/brand/updateStatusById', {
-                  id: row.id,
-                  status: 0
-                }).then(res => {
-                  this.$message({
-                    message: that.$t('public.deleteSuccess'),
-                    type: 'success'
-                  })
-                  this.list.splice(index, 1)
-                })
-              }
-            }
-          })
-          break
-        case 2:
-          this.$alert(that.$t('brand.accountToNormal'), that.$t('brand.accountRecovery'), {
-            confirmButtonText: that.$t('public.confirm'),
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$post('iot-saas-basic/admin/brand/updateStatusById', {
-                  id: row.id,
-                  status: 0
-                }).then(res => {
-                  this.$message({
-                    message: that.$t('brand.recoveryWasSuccess'),
-                    type: 'success'
-                  })
-                  this.list.splice(index, 1)
-                })
-              }
-            }
-          })
-          break
-        case 3:
-          this.$alert(that.$t('brand.areYouSetAsTeamLeader'), that.$t('brand.regimentalCommander'), {
-            confirmButtonText: that.$t('public.confirm'),
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$post('iot-saas-basic/admin/brand/setLeader', {
-                  brandId: row.id
-                }).then(res => {
-                  this.$message({
-                    message: that.$t('public.setSuccess'),
-                    type: 'success'
-                  })
-                })
-              }
-            }
-          })
-          break
-        case 5:
-          this.$alert(that.$t('brand.agentLevel'), that.$t('brand.levelRefresh'), {
-            confirmButtonText: that.$t('public.confirm'),
-            center: true,
-            callback: action => {
-              if (action == 'confirm') {
-                this.$get('iot-saas-basic/admin/agent/initAgentCache', {
-                  brandId: row.id
-                }).then(res => {
-                  this.$message({
-                    message: that.$t('public.refreshSuccessful'),
-                    type: 'success'
-                  })
-                })
-              }
-            }
-          })
-          break
-      }
-    },
+      /**
+       * 订单数量统计查询
+       */
+      queryOrderCount(ids) {
+        if (ids.length == 0) {
+          this.orderCount = {}
+          return
+        }
+        this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+          countType: 'BRAND',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.orderCount = res
+        })
+      },
 
-    /**
-     * 弹窗确认
-     */
-    dialogConfirm(row = {}) {
-      let that = this;
-      let curRow = this.curRow,
-        curIdx = this.curIdx,
-        params = JSON.parse(JSON.stringify(this.dform))
-      if (this.clickSubmit) return
-      this.clickSubmit = true
-      switch (this.dialogType) {
-        case 1:
-          params.brandId = curRow.id
-          this.$post('iot-saas-basic/admin/settings/saveCoupon', params).then(res => {
-            this.$message({
-              message: that.$t('public.operationSuccessful'),
-              type: 'success'
-            })
-            this.drawerStatus = false
-            this.clickSubmit = false
-          }).catch(err => {
-            this.clickSubmit = false
-          })
-          break
-        case 3:
-          params.brandId = curRow.id
-          if (params.jumpDetail.wx) params.jumpDetail.wx = JSON.stringify(params.jumpDetail.wx)
-          if (params.jumpDetail.ali) params.jumpDetail.ali = JSON.stringify(params.jumpDetail.ali)
-          this.$post('iot-saas-basic/admin/settings/saveJump', params).then(res => {
-            this.$message({
-              message: that.$t('public.operationSuccessful'),
-              type: 'success'
-            })
-            this.drawerStatus = false
-            this.clickSubmit = false
-          }).catch(err => {
-            this.clickSubmit = false
-          })
-          break
-        case 11:
-          params.userId = curRow.userId
-          if(params.password) params.password = '123456'
-          this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
-            this.$message({
-              message: that.$t('public.operationSuccessful'),
-              type: 'success'
-            })
-            this.drawerStatus = false
-          }).catch(err => {
-            this.clickSubmit = false
-          })
-          break
+      /**
+       * 设备数量统计查询
+       */
+      queryDeviceCount(ids) {
+        if (ids.length == 0) {
+          this.deviceCount = {}
+          return
+        }
+        this.$get('iot-saas-device/admin/device/count/queryGroupCountV2', {
+          countType: 'BRAND',
+          groupIds: ids.join(',')
+        }).then(res => {
+          this.deviceCount = res
+        })
+      },
+
+      /**
+       * 操作行
+       * @param {Object} type 1 dialog类型
+       * @param {Object} row 选择当前行
+       * @param {Object} dialogType dialog内容显示类型 1: '赠送券' 2: '合同'
+       * @param {Object} idx 当前行所在位置
+       */
+      setRows(type, row, dialogType, idx) {
+        switch (type) {
+          case 1:
+            this.dialogType = dialogType
+            this.curRow = row
+            this.curIdx = idx
+            this.dform = {}
+            if (dialogType == 2) {
+              this.$get('iot-saas-basic/admin/platform/getFileInfo', {
+                bussinessId: row.id,
+                type: 1
+              }).then(res => {
+                this.dform = {
+                  pdfUrl: res.url
+                }
+              })
+            } else if (dialogType == 1) {
+              this.$get('iot-saas-basic/admin/settings/find', {
+                brandId: row.id,
+                code: 'VIP_COUPON'
+              }).then(res => {
+                if (res && res.setting) {
+                  let coupon = JSON.parse(res.setting)
+                  this.dform = {
+                    amount: coupon.amount || 0
+                  }
+                }
+              })
+            } else if (dialogType == 3) {
+              this.$get('iot-saas-basic/admin/settings/find', {
+                brandId: row.id,
+                code: 'BRAND_JUMP_MINI'
+              }).then(res => {
+                if (res && res.setting) {
+                  let info = JSON.parse(res.setting)
+                  console.log(info)
+                  this.dform = {
+                    jumpDetail: {
+                      wx: JSON.parse(info.wx),
+                      ali: JSON.parse(info.ali),
+                    }
+                  }
+                } else {
+                  this.dform = {
+                    jumpDetail: {
+                      wx: {},
+                      ali: {}
+                    }
+                  }
+                }
+              })
+            } else if (dialogType == 12) {
+              this.dform = {
+                channels: {}
+              }
+              let channels = {}
+              this.$get('iot-saas-pay/admin/pay/channel/all').then(res => {
+                this.payChannel = res
+                res.map(item => {
+                  channels[item.id] = false
+                })
+                this.getBrandCannel(row.id, channels)
+              })
+            } else if (dialogType == 13) {
+              let content = row.content ? JSON.parse(row.content) : {}
+              this.dform = {
+                id: row.configId || '',
+                brandId: row.brandId,
+                bindId: row.id,
+                sourceType: row.sourceType || 4,
+                channelCode: row.code,
+                appId: content.appId || '',
+                content: content
+              }
+            }
+            this.drawerStatus = true
+            break
         }
       },
 
-    /**
-     * 登录代理后台
-     * @param {Object} row
-     */
-    toLogin(row) {
-      let that = this;
-      this.loadObj = this.$loading({
-        lock: true,
-        text: that.$t('public.loggingIn'),
-        spinner: 'el-icon-loading'
-      })
-      this.$post('iot-saas-user/admin/login', {
-        userType: 'brand',
-        id: row.id
-      }).then(res => {
-        setToken(getToken(), 'token1')
-        setToken(res.loginToken.accessToken)
-        setTimeout(() => {
-          location.href = '/home'
-          this.loadObj.close()
-        }, 500)
-      }).catch(err => {
-        this.loadObj.close()
-      })
-    },
+      getBrandCannel(id, channels){
+        channels = channels || this.channels
+        this.$get('iot-saas-pay/admin/pay/channel', {
+          brandId: id,
+        }).then(res => {
+          let brandChannels = {}
+          res.map(item => {
+            channels[item.channelId] = (item.status == 'ENABLE' ? true : false)
+            brandChannels[item.channelId] = item
+          })
+          this.channels = channels
+          this.brandChannels = brandChannels
+        })
+      },
 
-    /**
-     * 复制贴牌登录地址
-     * @param {Object} row
-     */
-    copyloginUrl(row) {
-      let that = this;
-      copyText(`${location.origin}/login/${row.id}`)
-      this.$message({
-        message: that.$t('public.copySuccess'),
-        type: 'success'
-      })
-    },
-
-    /**
-     * 上传合同
-     */
-    uploadPdf(res) {
-      let that = this;
-      this.$post('iot-saas-basic/admin/platform/saveFileInfo', {
-        type: 1,
-        businessId: this.curRow.id,
-        url: res.data.url
-      }).then(ares => {
-        this.dform = {
-          pdfUrl: res.data.url
+      /**
+       * 操作行
+       * @param {Object} type 1 删除品牌 2 账号恢复 3 设为团长 4 设备统计数量  5 代理层级缓存  6 重置登录密码
+       * @param {Object} row
+       * @param {Object} index
+       */
+      setRow(type, row, index) {
+        let that = this;
+        switch (type) {
+          case 1:
+            this.$alert(that.$t('brand.areYouDeleteBrand'), that.$t('brand.deleteBrand'), {
+              confirmButtonText: that.$t('public.confirm'),
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-basic/admin/brand/updateStatusById', {
+                    id: row.id,
+                    status: 0
+                  }).then(res => {
+                    this.$message({
+                      message: that.$t('public.deleteSuccess'),
+                      type: 'success'
+                    })
+                    this.list.splice(index, 1)
+                  })
+                }
+              }
+            })
+            break
+          case 2:
+            this.$alert(that.$t('brand.accountToNormal'), that.$t('brand.accountRecovery'), {
+              confirmButtonText: that.$t('public.confirm'),
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-basic/admin/brand/updateStatusById', {
+                    id: row.id,
+                    status: 0
+                  }).then(res => {
+                    this.$message({
+                      message: that.$t('brand.recoveryWasSuccess'),
+                      type: 'success'
+                    })
+                    this.list.splice(index, 1)
+                  })
+                }
+              }
+            })
+            break
+          case 3:
+            this.$alert(that.$t('brand.areYouSetAsTeamLeader'), that.$t('brand.regimentalCommander'), {
+              confirmButtonText: that.$t('public.confirm'),
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$post('iot-saas-basic/admin/brand/setLeader', {
+                    brandId: row.id
+                  }).then(res => {
+                    this.$message({
+                      message: that.$t('public.setSuccess'),
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
+            break
+          case 5:
+            this.$alert(that.$t('brand.agentLevel'), that.$t('brand.levelRefresh'), {
+              confirmButtonText: that.$t('public.confirm'),
+              center: true,
+              callback: action => {
+                if (action == 'confirm') {
+                  this.$get('iot-saas-basic/admin/agent/initAgentCache', {
+                    brandId: row.id
+                  }).then(res => {
+                    this.$message({
+                      message: that.$t('public.refreshSuccessful'),
+                      type: 'success'
+                    })
+                  })
+                }
+              }
+            })
+            break
         }
+      },
+
+      /**
+       * 弹窗确认
+       */
+      dialogConfirm(row = {}) {
+        let that = this;
+        let curRow = this.curRow,
+          curIdx = this.curIdx,
+          params = JSON.parse(JSON.stringify(this.dform))
+        if (this.clickSubmit) return
+        this.clickSubmit = true
+        switch (this.dialogType) {
+          case 1:
+            params.brandId = curRow.id
+            this.$post('iot-saas-basic/admin/settings/saveCoupon', params).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.drawerStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 3:
+            params.brandId = curRow.id
+            if (params.jumpDetail.wx) params.jumpDetail.wx = JSON.stringify(params.jumpDetail.wx)
+            if (params.jumpDetail.ali) params.jumpDetail.ali = JSON.stringify(params.jumpDetail.ali)
+            this.$post('iot-saas-basic/admin/settings/saveJump', params).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.drawerStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 11:
+            params.userId = curRow.userId
+            if (params.password) params.password = '123456'
+            this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.drawerStatus = false
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 12:
+            params.brandId = curRow.id
+            let channels = []
+            for(var i in this.channels){
+              channels.push({
+                channelId: i,
+                status: this.channels[i] ? 1 : 0
+              })
+            }
+            params.channels = channels
+            this.$post('iot-saas-pay/admin/pay/channel/saveChannelBrand', params).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.getBrandCannel(curRow.id)
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 13:
+            params.content.appId = params.appId
+            params.content = JSON.stringify(params.content)
+            this.$post('iot-saas-pay/admin/pay/channel/saveAppConfig', params).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.dialogType = 12
+              this.getBrandCannel(params.brandId)
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+        }
+      },
+
+      /**
+       * 登录代理后台
+       * @param {Object} row
+       */
+      toLogin(row) {
+        let that = this;
+        this.loadObj = this.$loading({
+          lock: true,
+          text: that.$t('public.loggingIn'),
+          spinner: 'el-icon-loading'
+        })
+        this.$post('iot-saas-user/admin/login', {
+          userType: 'brand',
+          id: row.id
+        }).then(res => {
+          setToken(getToken(), 'token1')
+          setToken(res.loginToken.accessToken)
+          setTimeout(() => {
+            location.href = '/home'
+            this.loadObj.close()
+          }, 500)
+        }).catch(err => {
+          this.loadObj.close()
+        })
+      },
+
+      /**
+       * 复制贴牌登录地址
+       * @param {Object} row
+       */
+      copyloginUrl(row) {
+        let that = this;
+        copyText(`${location.origin}/login/${row.id}`)
         this.$message({
-          message: that.$t('public.uploadSuccess'),
+          message: that.$t('public.copySuccess'),
           type: 'success'
         })
-      })
-    }
-  },
-}
+      },
+
+      /**
+       * 上传合同
+       */
+      uploadPdf(res) {
+        let that = this;
+        this.$post('iot-saas-basic/admin/platform/saveFileInfo', {
+          type: 1,
+          businessId: this.curRow.id,
+          url: res.data.url
+        }).then(ares => {
+          this.dform = {
+            pdfUrl: res.data.url
+          }
+          this.$message({
+            message: that.$t('public.uploadSuccess'),
+            type: 'success'
+          })
+        })
+      }
+    },
+  }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .channel-box{
+    .channel-item{
+      border: 2px solid #eee;
+      &.act{
+        border-color: var(--olive);
+      }
+    }
+    /deep/ .el-avatar{
+      background: none;
+    }
+  }
+</style>

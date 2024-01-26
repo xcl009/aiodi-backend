@@ -694,6 +694,9 @@ export default {
     message3: '请填写手机号码作为登录账户',
     message4: '请填写公司名称',
     message5: '最少选择一个运营产品',
+    payChannel: '支付通道',
+    payConfig: '支付配置',
+    appType: '应用类型',
   },
   userManage: {
     userSource: '用户来源',
@@ -1377,6 +1380,10 @@ export default {
     certName: '支付证书(p12)',
     certNameText: '上传支付证书',
     apiclientKey: '支付证书密钥(apiclient_key)：',
+    appPublicKey: '应用公钥',
+    alipayPublicKey: '支付宝公钥',
+    gatewayUrl: '支付网关',
+    clientId: '支付客户端ID',
   },
   membership: {
     addMembershipCard: '添加会员卡',

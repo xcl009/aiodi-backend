@@ -201,6 +201,12 @@ export default {
           title: this.$t('public.orderNo'),
           type: 'input'
         },
+        // storeId: {
+        //   title: this.$t('public.storeName'),
+        //   type: 'selectSearch',
+        //   name: 'name',
+        //   sType: 3
+        // },
         refundInd: {
           title: this.$t('public.refundStatus'),
           type: 'select',
