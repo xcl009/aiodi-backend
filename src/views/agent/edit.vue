@@ -3,30 +3,30 @@
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="12" :lg="10">
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="100px">
-          <h4>基础信息</h4>
-          <el-form-item label="代理名称" prop="name">
-            <el-input v-model="form.name" placeholder="输入代理名称" />
+          <h4>{{ $t('public.basicInformation') }}</h4>
+          <el-form-item :label="$t('public.agentNickNames')" prop="name">
+            <el-input v-model="form.name" :placeholder="$t('public.agentNameText')" />
           </el-form-item>
-          <el-form-item label="手机号码" prop="mobile">
-            <el-input type="tel" v-model="form.mobile" placeholder="请输入手机号码（此号码会作为登录账户）" />
+          <el-form-item :label="$t('public.phone')" prop="mobile">
+            <el-input type="tel" v-model="form.mobile" :placeholder="$t('brand.phoneText')" />
           </el-form-item>
-          <el-form-item label="登录密码" v-if="!agentId">
-            <el-input v-model="form.password" placeholder="会作为用户代理登录的密码" />
+          <el-form-item :label="$t('public.loginPassword')" v-if="!agentId">
+            <el-input v-model="form.password" :placeholder="$t('factory.agentLogonPassword')" />
           </el-form-item>
-          <el-form-item label="运营区域">
+          <el-form-item :label="$t('public.operatingArea')">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
 
-          <h4 class="pt-20">运营产品</h4>
+          <h4 class="pt-20">{{ $t('public.operationalProducts') }}</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">
             <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
           </el-checkbox-group>
 
           <template>
-            <h4 class="pt-20">分润比例</h4>
+            <h4 class="pt-20">{{ $t('brand.dividendRatio') }}</h4>
             <template v-for="(id, index) in selDevice">
               <el-form-item :label="`${myDeviceId[id]}`">
-                <el-input type="number" v-model="form.deviceTypeProfitRatios[id]" :placeholder="`最高不能超过${myProfitRatio[id]}%`">
+                <el-input type="number" v-model="form.deviceTypeProfitRatios[id]" :placeholder="`${$t('store.max')}${myProfitRatio[id]}%`">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -34,7 +34,7 @@
           </template>
 
           <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">立即提交</el-button>
+            <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submitNow') }}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -56,13 +56,13 @@
         },
         rules: {
           role_id: [
-            { required: true, message: '请选择开通类型', trigger: 'change' }
+            { required: true, message: this.$t('brand.message'), trigger: 'change' }
           ],
           name: [
-            { required: true, message: '请填写联系人姓名', trigger: 'blur' }
+            { required: true, message: this.$t('brand.message1'), trigger: 'blur' }
           ],
           mobile: [
-            { required: true, message: '请填写手机号码作为登录账户', trigger: 'blur' }
+            { required: true, message: this.$t('brand.message3'), trigger: 'blur' }
           ]
         },
         cityList: [],
@@ -131,10 +131,11 @@
        * 提交添加
        */
       onSubmit() {
+        let that = this;
         let params = {}, url = 'iot-saas-basic/admin/agent/save'
         if(this.selDevice.length == 0){
           this.$message({
-            message: '最少选择一个运营产品',
+            message: that.$t('brand.message5'),
             type: 'error'
           })
           return
@@ -164,7 +165,7 @@
             this.clickSubmit = true
             this.$post(url, params).then(res => {
               this.$message({
-                message: '提交成功',
+                message: that.$t('public.submittedSuccess'),
                 type: 'success'
               })
               this.$router.back()
