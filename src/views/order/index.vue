@@ -223,7 +223,7 @@
                   v-if="Ability['orderRefund'] && (scope.row.status.indexOf('G') > -1) && (scope.row.amount > 0 || scope.row.amountEnable > 0)">
                   {{ $t('public.orderRefund') }}</div>
                 <div class="text-grey" @click="setRows(7, scope.row, 1)" v-if="(scope.row.status.indexOf('W') > -1) && (scope.row.payType == 4)">
-                  {{ $t('order.clickPay') }}</div>
+                  {{ scope.row.payOrder ? $t('public.submitting') : $t('order.clickPay') }}</div>
               </div>
             </template>
           </el-table-column>
@@ -752,7 +752,7 @@ export default {
         nkey: 'rentFailedNumber'
       },
       {
-        value: 'OHW',
+        value: 'W',
         title: this.$t('public.deductionFailed'),
         nkey: 'payFailedNumber'
       }
