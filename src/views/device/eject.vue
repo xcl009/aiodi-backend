@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="p-15 bg-white">
-      <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+      <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
         :title="$t('device.areYouPopUpAll')" @onConfirm="allEject()">
         <el-button class="mb-15" type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{
           allEjectStatus ? $t('public.popUp') : $t('public.popUpAll') }} </el-button>
@@ -35,18 +35,18 @@
         <el-table-column :label="$t('public.operate')" v-if="checkAbility(['eject'], 3)">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('device.popUpThisMouth')" @onConfirm="singleEject(scope.row)">
                 <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? $t('public.popUp') :
                   $t('public.eject') }}</el-button>
               </el-popconfirm>
-              <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="`${scope.row.stats == 2 ? $t('device.rentable') : $t('device.notAvailableForLease')}`"
                 @onConfirm="lockChange(scope.row)">
                 <el-button type="text" :disabled="[0, 2].indexOf(scope.row.stats) == -1" slot="reference">{{
                   scope.row.stats == 2 ? $t('public.unlock') : $t('public.lock') }}</el-button>
               </el-popconfirm>
-              <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('device.popUpThisTreasure')" @onConfirm="singleEject(scope.row, 3)"
                 v-if="scope.row.terminalId && isBrand()">
                 <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? $t('public.popUp') :

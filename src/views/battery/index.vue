@@ -146,7 +146,7 @@
         <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('battery.toPopUp')" @onConfirm="singleEject(scope.row)">
                 <el-button type="text" :disabled="!scope.row.ext" slot="reference">{{ $t('public.eject') }}</el-button>
               </el-popconfirm>
