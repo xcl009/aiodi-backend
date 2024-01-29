@@ -287,16 +287,18 @@
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item>
+                   <div class="checkType">
                     <el-radio-group v-model="form.dates" @input="toQuery(1)">
-                      <el-radio-button label="0">{{ $t('public.today') }}</el-radio-button>
-                      <el-radio-button label="-1">{{ $t('public.yesterday') }}</el-radio-button>
-                      <el-radio-button label="3">{{ $t('public.thisWeek') }}</el-radio-button>
-                      <el-radio-button label="4">{{ $t('public.lastWeek') }}</el-radio-button>
-                      <el-radio-button label="5">{{ $t('public.thisMonth') }}</el-radio-button>
-                      <el-radio-button label="6">{{ $t('public.lastMonth') }}</el-radio-button>
-                      <el-radio-button label="7">{{ $t('public.thisYear') }}</el-radio-button>
-                      <el-radio-button label="8">{{ $t('public.lastYear') }}</el-radio-button>
+                      <el-radio-button :label="0">{{ $t('public.today') }}</el-radio-button>
+                      <el-radio-button :label="-1">{{ $t('public.yesterday') }}</el-radio-button>
+                      <el-radio-button :label="3">{{ $t('public.thisWeek') }}</el-radio-button>
+                      <el-radio-button :label="4">{{ $t('public.lastWeek') }}</el-radio-button>
+                      <el-radio-button :label="5">{{ $t('public.thisMonth') }}</el-radio-button>
+                      <el-radio-button :label="6">{{ $t('public.lastMonth') }}</el-radio-button>
+                      <el-radio-button :label="7">{{ $t('public.thisYear') }}</el-radio-button>
+                      <el-radio-button :label="8">{{ $t('public.lastYear') }}</el-radio-button>
                     </el-radio-group>
+                   </div>
                   </el-form-item>
                 </template>
               </condition>
@@ -2351,4 +2353,11 @@ export default {
 /deep/.filterBox {
   max-height: 100% !important;
 }
+.checkType{
+  /deep/.is-active{
+  box-shadow: inset 0 0 12px #1166B1;
+      color: #1CB9FB;
+}
+}
+
 </style>
