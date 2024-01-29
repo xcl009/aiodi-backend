@@ -301,14 +301,14 @@
                 </template>
               </condition>
               <!-- <table-column-set storageKey="storeTableColumn" :showColumn.sync="showColumn"
-            :defaultColumn="defaultColumn"></table-column-set> -->
+                :defaultColumn="defaultColumn"></table-column-set> -->
             </div>
 
             <el-table class="store-table text-white" :highlight-current-row="false"
               :header-row-style="{ background: 'none' }"
               :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
               :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="list"
-              style="background:none">
+              style="background:none" @sort-change="sortChange">
               <el-table-column :label="$t('home.ranking')" width="120">
                 <template slot-scope="scope">
                   <span class="fs-c1 text-bold"
@@ -321,17 +321,17 @@
                   <span class="y-yellow">{{ scope.row.storeName.substring(0, 2) }}**</span>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('home.orderNum')" min-width="90">
+              <el-table-column :label="$t('home.orderNum')" min-width="90" column-key="orderAllNumber" sortable>
                 <template slot-scope="scope">
                   {{ scope.row.orderNumber || 0 }}
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('public.aTurnover')" min-width="120">
+              <el-table-column :label="$t('public.aTurnover')" min-width="120" column-key="amount" sortable>
                 <template slot-scope="scope">
                   {{ scope.row.amount || 0 }}
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('public.income')" min-width="90">
+              <el-table-column :label="$t('public.income')" min-width="90" column-key="amountDivide" sortable>
                 <template slot-scope="scope">
                   {{ scope.row.amountDivide || 0 }}
                 </template>
@@ -570,7 +570,10 @@ export default {
       clickSubmit: false,
       totalStat: {},
       form: {
-        date: ''
+        date: '',
+        sortSet:{
+          amount:'desc'
+        }       
       },
       orderStat: {},
       deviceStat: {},
@@ -835,6 +838,18 @@ export default {
     }
   },
   methods: {
+    /**
+       * 排序
+       */
+    sortChange({ column, prop, order }) {
+      if (order) {
+        this.form.sortSet = {}
+        this.form.sortSet[column.columnKey] = (order == 'ascending' ? 'asc' : 'desc')
+      } else {
+        this.form.sortSet[column.columnKey] = ''
+      }
+      this.toQuery()
+    },
     isCheckChange(type) {
       if (type) {
         this.isadd = type;
