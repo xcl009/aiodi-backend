@@ -450,7 +450,7 @@
                 <el-input v-model="dform.reason" :placeholder="`${$t('order.reasonForRefund')}`"></el-input>
                 <div class="flex mt-10 line-six text-danger" v-if="isBrand()">
                   <div>{{ $t('public.tips') }}：</div>
-                  <div>{{ $t('order.refundtext') }}</div>
+                  <div>{{ $t('order.reasonForRefundText') }}</div>
                 </div>
               </el-form-item>
             </el-form>

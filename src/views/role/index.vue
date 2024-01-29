@@ -29,7 +29,7 @@
               <el-button size="small" class="btn-body" @click="setRows(1, item, 1, index)">{{ $t('public.delete')
               }}</el-button>
               <el-button type="primary" size="small"
-                @click="$router.push({ path: `/role/roleAccount?roleId=${item.roleId}` })">{{ $t('public.viewAccount')
+                @click="$router.push({ path: `/role/roleAccount?roleId=${item.roleId}` })">{{ $t('role.viewAccount')
                 }}</el-button>
             </div>
           </div>

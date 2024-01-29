@@ -64,7 +64,7 @@
           'zh': 'zh_CN',
           'en': 'en',
           'es': 'es_MX',
-          'ja': 'ja'
+          'ja': 'ja',
         }
       }
     },
@@ -112,9 +112,16 @@
       },
       initTinymce() {
         const _this = this
+        let lang = localStorage.getItem('lang');
+        let langText = '';
+        if(lang !='zh_CN' && lang !='zh_HK' && lang){
+          langText = 'en'
+        }else{
+          langText = 'zh'
+        }
         tinymce.init({
           selector: `#${this.tinymceId}`,
-          language: this.languageTypeList['zh'],
+          language: this.languageTypeList[langText],
           height: this.height,
           branding: false,
           body_class: 'panel-body ',
