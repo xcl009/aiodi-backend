@@ -1694,6 +1694,8 @@ export default {
     typeText: '正常分成',
     typeText1: '只分上级',
     typeText2: '只分一级代理',
+    restart: '重启',
+    restartText: '确定要重启该设备吗？'
   },
   cash: {
     withdrawalStatus: '提现状态',

@@ -266,6 +266,17 @@
                 <el-button type="text" :disabled="!scope.row.distribute" slot="reference">{{ $t('device.unbind') }}</el-button>
               </el-popconfirm>
               <el-button type="text" v-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.eject') }}</el-button>
+              <el-popconfirm
+                class="pop"
+                cancel-button-type=""
+                icon="el-icon-info"
+                icon-color="#FF7D00"
+                :title="$t('device.restartText')"
+                @onConfirm="restart(scope.row)"
+                v-if="scope.row.onlineStatus == 'ONLINE' && scope.row.deviceType.code.indexOf('PA') > -1"
+              >
+                <el-button type="text" slot="reference">{{ $t('device.restart') }}</el-button>
+              </el-popconfirm>
               <!-- <div class="text-primary" v-if="scope.row.distribute && checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType]) && (isBrand() || isSaas())" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">在线统计</div> -->
             </div>
           </template>
@@ -1093,6 +1104,20 @@
           } else {
             this.getList()
           }
+        })
+      },
+
+      /**
+       * 设备重启
+       */
+      restart(row){
+        this.$get('iot-saas-device/admin/device/restartDevice', {
+          deviceSn: row.deviceSn
+        }).then(res => {
+          this.$message({
+            message: this.$t('public.operationSuccessful'),
+            type: 'success'
+          })
         })
       },
 
