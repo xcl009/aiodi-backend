@@ -1158,15 +1158,14 @@ export default {
     setRows(type, row, dialogType, idx) {
       switch (type) {
         case 1:
-          this.dialogType = dialogType
-          this.curRow = row
-          this.curIdx = idx
-          this.dialogStatus = true
-          this.dform = {}
-          if(dialogType == 3){
-            this.dform = {
-              place: row.place
-            }
+        this.dialogType = dialogType
+        this.curRow = row
+        this.curIdx = idx
+        this.dialogStatus = true
+        this.dform = {}
+        if(dialogType == 3){
+          this.dform = {
+            place: row.place
           }
         }
         break
