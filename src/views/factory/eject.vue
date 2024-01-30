@@ -14,7 +14,7 @@
       <div class="pl-15 pr-15">
         <div class="mb-15">
           <el-button class="mr-15" type="primary" size="medium" @click="getInfo()">{{ $t('public.refresh') }}</el-button>
-          <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+          <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
             :title="$t('device.areYouPopUpAll')" @onConfirm="allEject()"
             v-if="factoryCode == 'WS' || factoryCode == 'TP'">
             <el-button type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ?

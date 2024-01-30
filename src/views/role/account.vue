@@ -48,7 +48,7 @@
           <el-form-item :label="$t('role.username')">
             <el-input v-model="dform.username" :placeholder="$t('role.pleaseUserName')"></el-input>
           </el-form-item>
-          <el-form-item :label="$t('role.loginPassword')">
+          <el-form-item :label="$t('public.loginPassword')">
             <el-input v-model="dform.password" :placeholder="$t('role.pleaseLoginPassword')" type="password"></el-input>
           </el-form-item>
         </el-form>
