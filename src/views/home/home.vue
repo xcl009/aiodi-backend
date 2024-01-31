@@ -643,8 +643,8 @@ export default {
 
       storeList: [],
       /**
-             * 列的配置化对象，存储配置信息
-             */
+       * 列的配置化对象，存储配置信息
+       */
       showColumn: [],
       // 是否显示商户统计数据
       isStoreType: false,
@@ -841,8 +841,8 @@ export default {
   },
   methods: {
     /**
-       * 排序
-       */
+     * 排序
+     */
     sortChange({ column, prop, order }) {
       if (order) {
         this.form.sortSet = {}
@@ -950,7 +950,6 @@ export default {
       } else if (this.isAgent()) {
         params.agentId = this.agentInfo.agentId;
       }
-
       this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(async (res = {}) => {
         let list = res.rows || []
         that.list = list
@@ -1032,6 +1031,9 @@ export default {
         page: 0,
         startDateStr: "2011",
         endDateStr,
+        sortSet:{
+          amount:'desc'
+        } 
       }
       if (this.isBrand()) {
         params.brandId = this.agentInfo.brandId;
