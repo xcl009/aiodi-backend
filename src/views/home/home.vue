@@ -99,9 +99,9 @@
       v-show="!isStoreType">
       <el-col :sm="24" :lg="(checkHotel() && isStore()) || !isStore() ? 8 : 12">
         <div class="p-20 item-box">
-          <div class="mb-20 flex align-center">
+          <div class="mb-20 flex align-center flex-wrap">
             <div class="line"></div>
-            <div class="flex1 fs-b2">{{ $t('home.contrast') }}</div>
+            <div class="flex-auto fs-b2">{{ $t('home.contrast') }}</div>
             <div class="flex btn-box cursor">
               <div class="btn" :class="{ 'act': contrast_type == index }" v-for="(item, index) in contrast_arr"
                 @click="contrast_type = index; $refs.contrastCarusel.setActiveItem(index)">{{ item }}</div>
@@ -365,9 +365,9 @@
       </transition>
     </div>
 
-    <el-row :gutter="20" type="flex" class="three-box mt-20 pl-20 pr-20 text-white"
+    <el-row :gutter="20" type="flex" class="three-box flex-wrap mt-20 pl-20 pr-20 text-white"
       v-show="Ability['order'] && !isStoreType">
-      <el-col :sm="24" :lg="12">
+      <el-col :md="24" :lg="12">
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
@@ -427,16 +427,16 @@
           </el-table>
         </div>
       </el-col>
-      <el-col :sm="24" :lg="12">
+      <el-col :md="24" :lg="12">
         <div class="pl-20 pr-20 pt-20 item-box">
-          <div class="flex align-center">
+          <div class="flex align-center flex-wrap">
             <div class="line"></div>
-            <div class="flex1 fs-b2">{{ $t('home.comparison') }}</div>
+            <div class="flex-auto fs-b2">{{ $t('home.comparison') }}</div>
             <div class="flex btn-box cursor">
               <div class="btn" :class="{ 'act': day_type == index }" v-for="(item, index) in day_type_arr"
                 @click="day_type = index; getLineChart()">{{ item }}</div>
             </div>
-            <div class="ml-15 box-grey">
+            <div class="ml-15 box-grey hidden-lg-and-down">
               <el-date-picker class="range-day" type="month" size="small" v-model="form.date"
                 :picker-options="pickerOptionsEnd" range-separator="-" :placeholder="$t('home.selectMonth')"
                 value-format="yyyy-MM" @change="getTime">
@@ -575,7 +575,7 @@ export default {
         date: '',
         sortSet:{
           amount:'desc'
-        }       
+        }
       },
       orderStat: {},
       deviceStat: {},
@@ -1033,7 +1033,7 @@ export default {
         endDateStr,
         sortSet:{
           amount:'desc'
-        } 
+        }
       }
       if (this.isBrand()) {
         params.brandId = this.agentInfo.brandId;

@@ -246,6 +246,10 @@ div:focus {
   flex: 1;
   overflow: hidden;
 }
+.flex-auto {
+  flex: 1 1 auto;
+}
+
 
 // 两端对齐
 .justify-between {
