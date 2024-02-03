@@ -60,7 +60,7 @@
           res.map(item => {
             if(this.myDeviceId[item.advertTypeCode]){
               list.push(item)
-            }else if(item.advertTypeCode == 'SA' && this.isBrand()){
+            }else if(item.advertTypeCode == 'SA' && (this.isBrand() || this.isSaas())){
               list.push(item)
             }
           })
