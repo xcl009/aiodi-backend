@@ -1157,6 +1157,7 @@ export default {
         module: 'Mô đun ngôn ngữ',
         key: 'Nhận dạng ngôn ngữ',
         languageTags: 'Nhãn ngôn ngữ',
+        contextCode: '语言标签',
         languageEncoding: 'Mã hóa ngôn ngữ',
         languageContent: 'Nội dung ngôn ngữ',
         addDictionary: 'Thêm từ điển',

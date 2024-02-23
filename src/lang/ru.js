@@ -1157,6 +1157,7 @@ export default {
         module: 'Языковые модули',
         key: 'Логотип языка',
         languageTags: 'Языковые метки',
+        contextCode: '语言标签',
         languageEncoding: 'Языковая кодировка',
         languageContent: 'Языковой контент',
         addDictionary: 'Добавить словарь',

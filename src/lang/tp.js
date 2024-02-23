@@ -1156,6 +1156,7 @@ export default {
       module: 'Language module',
       key: 'Pagkilalang ng wika',
       languageTags: 'Tag ng wika',
+      contextCode: '语言标签',
       languageEncoding: 'Language encoding',
       languageContent: 'Kalaman ng wika',
       addDictionary: 'Idagdagdag ang Dictionary',

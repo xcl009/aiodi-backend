@@ -1156,6 +1156,7 @@ export default {
       module: '言語モジュール',
       key: '言語ID',
       languageTags: '言語ラベル',
+      contextCode: '语言标签',
       languageEncoding: '言語コード',
       languageContent: '言語の内容',
       addDictionary: '辞書の追加',

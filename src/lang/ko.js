@@ -1156,6 +1156,7 @@ export default {
       module: '언어 모듈',
       key: '언어 식별',
       languageTags: '언어 레이블',
+      contextCode: '语言标签',
       languageEncoding: '언어 인코딩',
       languageContent: '언어 내용',
       addDictionary: '사전 추가',

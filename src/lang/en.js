@@ -1157,6 +1157,7 @@ export default {
     module: 'language module',
     key: 'language identification',
     languageTags: 'Language tags',
+    contextCode: '语言标签',
     languageEncoding: 'Language encoding',
     languageContent: 'Language Content',
     addDictionary: 'add dictionary',

@@ -1157,6 +1157,7 @@ export default {
     module: '語言模塊',
     key: '語言標識',
     languageTags: '語言標籤',
+    contextCode: '语言标签',
     languageEncoding: '語言編碼',
     languageContent: '語言內容',
     addDictionary: '添加字典',

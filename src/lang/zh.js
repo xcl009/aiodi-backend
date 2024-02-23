@@ -1163,6 +1163,7 @@ export default {
     module: '语言模块',
     key: '语言标识',
     languageTags: '语言标签',
+    contextCode: '内容编号',
     languageEncoding: '语言编码',
     languageContent: '语言内容',
     addDictionary: '添加字典',
