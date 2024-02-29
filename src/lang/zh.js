@@ -697,6 +697,8 @@ export default {
     payChannel: '支付通道',
     payConfig: '支付配置',
     appType: '应用类型',
+    loginChannel: '登录通道',
+    loginConfig: '登录配置',
   },
   userManage: {
     userSource: '用户来源',

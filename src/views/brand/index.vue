@@ -143,6 +143,7 @@
                   <el-dropdown-item @click.native="setRow(5, scope.row)">{{ $t('brand.cache') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 11)">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 12)">{{ $t('brand.payChannel') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 14)">{{ $t('brand.loginChannel') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{ $t('brand.deleteBrand') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>{{ $t('brand.accountRecovery') }}</el-dropdown-item>
                 </el-dropdown-menu>
@@ -270,7 +271,42 @@
           </template>
         </el-form>
       </template>
-      <template v-if="[1,3,11,13].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 14">
+        <div class="pl-20 pr-20 channel-box" v-if="loginChannel.length > 0">
+          <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': brandLoginChannels[item.loginCode]}" v-for="item in loginChannel" @click="dialogConfirm(brandLoginChannels[item.loginCode] || item)">
+            <el-avatar class="block" :size="35" :src="item.loginLogo" :fit="cover" shape="square"></el-avatar>
+            <div class="pl-15 pr-15 flex-1" :class="{'text-bold text-black': brandLoginChannels[item.loginCode]}">{{ item.loginName }} {{ item.loginExt || '' }}</div>
+            <div class="text-primary">{{ $t('brand.loginConfig') }}</div>
+          </div>
+        </div>
+      </template>
+      <template v-if="dialogType == 15">
+        <el-form class="pl-20 pr-20 custom-form max-w" style="width: 600px;">
+          <el-form-item>
+            <i class="text-primary el-icon-arrow-left cursor fs-a1" @click="dialogType = 14"></i>
+          </el-form-item>
+          <el-form-item :label="$t('brand.appType')">
+            <el-select v-model="dform.soureType" class="tfixed">
+              <el-option :label="item" :value="parseInt(key)" v-for="(item, key) in Constant.SourceType" />
+            </el-select>
+          </el-form-item>
+          <el-form-item :label="$t('public.status')">
+            <el-select v-model="dform.status" class="tfixed">
+              <el-option :label="$t('brand.effective')" :value="1"/>
+              <el-option :label="$t('brand.invalid')" :value="2"/>
+            </el-select>
+          </el-form-item>
+          <template v-if="dform.loginCode == 'WECHAT'">
+            <el-form-item label="APPID">
+              <el-input v-model="dform.content.appId"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.xcxAPPSECRET')">
+              <el-input v-model="dform.content.appSecret"></el-input>
+            </el-form-item>
+          </template>
+        </el-form>
+      </template>
+      <template v-if="[1,3,11,13,15].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -335,7 +371,11 @@
         //支付通道
         payChannel: [],
         channels: {},
-        brandChannels: {}
+        brandChannels: {},
+
+        //登录通道
+        loginChannel: [],
+        brandLoginChannels: {}
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -429,6 +469,8 @@
           11: this.$t('public.setLoginPassword'),
           12: this.$t('brand.payChannel'),
           13: this.$t('brand.payConfig'),
+          14: this.$t('brand.loginChannel'),
+          15: this.$t('brand.loginConfig'),
         }
       },
       sort_type() {
@@ -618,12 +660,23 @@
                 appId: content.appId || '',
                 content: content
               }
+            } else if (dialogType == 14) {
+              this.dform = {}
+              this.$get('iot-saas-user/admin/queryAllLoginChannel').then(res => {
+                this.loginChannel = res
+                this.getBrandLoginCannel(row.id)
+              })
             }
             this.drawerStatus = true
             break
         }
       },
 
+      /**
+       * 获取品牌支付通道
+       * @param {Object} id
+       * @param {Object} channels
+       */
       getBrandCannel(id, channels){
         channels = channels || this.channels
         this.$get('iot-saas-pay/admin/pay/channel', {
@@ -636,6 +689,23 @@
           })
           this.channels = channels
           this.brandChannels = brandChannels
+        })
+      },
+
+      /**
+       * 获取品牌登录通道
+       * @param {Object} id
+       * @param {Object} channels
+       */
+      getBrandLoginCannel(id){
+        this.$get('iot-saas-user/admin/queryLoginChannelByBrands', {
+          brandId: id,
+        }).then(res => {
+          let brandChannels = {}
+          res.map(item => {
+            brandChannels[item.loginCode] = item
+          })
+          this.brandLoginChannels = brandChannels
         })
       },
 
@@ -811,6 +881,39 @@
               })
               this.dialogType = 12
               this.getBrandCannel(params.brandId)
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+            break
+          case 14:
+            this.dform = {
+              id: row.brandId ? row.id : '',
+              brandId: row.brandId || '',
+              soureType: row.soureType ? parseInt(row.soureType) : '',
+              status: row.status ? parseInt(row.status) : 0,
+              loginCode: row.loginCode,
+              loginChannelId: row.loginChannelId || row.id,
+              content: row.content ? JSON.parse(row.content) : {}
+            }
+            this.dialogType = 15
+            this.clickSubmit = false
+            console.log(this.dform)
+            break
+          case 15:
+            params.content = JSON.stringify(params.content)
+            let url15 = 'iot-saas-user/admin/updateLoginChannelByBrands'
+            if(!params.brandId){
+              params.brandId = this.curRow.id
+              url15 = 'iot-saas-user/admin/saveLoginChannelByBrands'
+            }
+            this.$post(url15, params).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.dialogType = 14
+              this.getBrandLoginCannel(params.brandId)
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
