@@ -68,9 +68,9 @@
           </template>
         </el-table-column>
         <template v-for="item in showColumn">
-          <el-table-column :label="item.name" width="80" v-if="item.val && item.key == 'deviceType'">
+          <el-table-column :label="item.name" width="100" v-if="item.val && item.key == 'deviceType'">
             <template slot-scope="scope">
-              {{ scope.row.deviceType.name || $t('device.passwordLine') }}
+              {{ scope.row.deviceType.name || '' }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="240" v-else-if="item.val && item.key == 'deviceSn'">

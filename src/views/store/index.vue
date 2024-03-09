@@ -513,7 +513,7 @@
         </div>
       </template>
       <template v-if="dialogType == 11">
-        <el-form class="pl-20 pr-20 custom-form">
+        <el-form class="pl-20 pr-20 custom-form" @submit.native.prevent="dialogConfirm()">
           <el-form-item :label="$t('public.loginPassword')">
             <el-switch v-model="dform.password" />
           </el-form-item>
@@ -523,7 +523,7 @@
         </el-form>
       </template>
       <template v-if="dialogType == 12">
-        <el-form class="pl-20 pr-20 custom-form">
+        <el-form class="pl-20 pr-20 custom-form" @submit.native.prevent="dialogConfirm()">
           <el-form-item :label="$t('public.remark')">
             <el-input v-model="dform.remark" :placeholder="$t('public.enter')"></el-input>
           </el-form-item>
@@ -1340,13 +1340,14 @@ export default {
           })
           break
         case 12:
-          params.storeId = curRow.Id
-          this.$post('iot-saas-user/admin/user/password/reset', params).then(res => {
+          params.storeId = curRow.id
+          params.remark = params.remark || 0
+          this.$post('iot-saas-basic/admin/store/updateRemark', params).then(res => {
             this.$message({
               message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
-            curRow.remark = params.remark
+            this.$set(curRow, 'remark', params.remark)
             this.drawerStatus = false
           }).catch(err => {
             this.clickSubmit = false
