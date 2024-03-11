@@ -8,8 +8,8 @@
       </el-table-column>
       <el-table-column :label="$t('public.link')">
         <template slot-scope="scope">
-          <div v-if="scope.row.deviceTypeCode">{{ $t('public.ewmLink') }}：{{ scope.row.link }}</div>
-          <div class="mt-10" v-if="scope.row.deviceTypeCode">{{ $t('public.xcxLink') }}：{{
+          <div v-if="scope.row.deviceTypeCode">{{ $t('system.ewmLink') }}：{{ scope.row.link }}</div>
+          <div class="mt-10" v-if="scope.row.deviceTypeCode">{{ $t('system.xcxLink') }}：{{
             config.xcx_page[scope.row.deviceTypeCode] }}</div>
           <div v-else>{{ scope.row.link }}</div>
         </template>

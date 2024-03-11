@@ -456,7 +456,9 @@ const util = {
    * 浮点数加法
    */
   accAdd: (arg1, arg2) => {
-    var r1, r2, m, c;
+    var r1, r2, m, c
+    arg1 = arg1 || 0
+    arg2 = arg2 || 0
     try {
       r1 = arg1.toString().split(".")[1].length
     } catch (e) {
@@ -468,7 +470,7 @@ const util = {
       r2 = 0
     }
 
-    c = Math.abs(r1 - r2);
+    c = Math.abs(r1 - r2)
     m = Math.pow(10, Math.max(r1, r2))
     if (c > 0) {
       var cm = Math.pow(10, c);
@@ -491,8 +493,8 @@ const util = {
    */
   accMul: (arg1, arg2) => {
     var c = 0,
-      d = arg1.toString(),
-      e = arg2.toString();
+      d = arg1 ? arg1.toString() : 0,
+      e = arg2 ? arg2.toString() : 0;
     try {
       c += d.split(".")[1].length;
     } catch (f) { }
@@ -768,7 +770,7 @@ const util = {
       return `${i18n.t('lang.range')}${min}-${max}${p > 0 ? `，${i18n.t('lang.afterDecimalPoint')}` + p + `${i18n.t('lang.position')}` : `${i18n.t('lang.integerOf')}`}`
     }
   },
-  
+
   trim: (str) => {
     return str.replace(/\s/g, "");
   }

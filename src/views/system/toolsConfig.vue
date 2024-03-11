@@ -44,6 +44,7 @@
           <el-form-item :label="$t('system.receiverAccount')">
             <el-input v-model="form.divideAccount"
               :placeholder="form.divideType == 1 ? $t('system.receiverStoreId') : $t('system.receiverOpenId')"></el-input>
+            <div class="mt-10 line-six fs-s3" v-if="form.divideType == 2">{{ $t('system.getOpenId') }}</div>
           </el-form-item>
           <el-form-item :label="$t('system.receiverRelationship')">
             <el-select v-model="form.divideRelationType" :placeholder="$t('public.pleaseSelect')">

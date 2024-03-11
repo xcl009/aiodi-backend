@@ -178,7 +178,7 @@
               </div>
               <div class="pl-20 flex1">
                 <div class="fs-b1">{{ $t('steal.delayedOrder') }}</div>
-                <div class="mt-5 fs-s3 text-gray">{{ $t('steal.delayedOrderText') }}</</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('steal.delayedOrderText') }}</div>
               </div>
             </div>
             <div class="text-right">

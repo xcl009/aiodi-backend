@@ -1297,6 +1297,7 @@ export default {
     checkOrderText: '选择禁止查看表示所有商户不可查看订单(设置单个商户查看订单权限将无效)',
     showComplete: '显示已完成',
     showCompleteText: '开启表示延时归还订单在延时时间段内用户查看订单状态展示为已完成',
+    getOpenId: '让用户绑定分账接收的微信后申请提现，您在提现管理列表操作栏中复制微信ID粘贴保存即可',
   },
   user: {
     message: '请填写旧密码',
