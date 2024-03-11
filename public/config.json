@@ -51,7 +51,8 @@
     "SM": "pagesA/pages/washing/index",
     "WF": "pagesA/pages/wifi/wifiNew",
     "WM": "pagesA/pages/washing/index",
-    "HU": "pagesA/pages/humidifier/index"
+    "HU": "pagesA/pages/humidifier/index",
+    "DC": "pagesA/pages/desktopCharge/index"
   },
   "roomDevice": {
     "BD": "震动大床房",

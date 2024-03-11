@@ -180,8 +180,8 @@
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">
-          <div class="text-black">{{ $t('agent.text') }}</div>
-          <div class="mt-10 pl-40 pr-40 text-danger text-left line-default">{{ $t('agent.text1') }}</div>
+          <div class="text-black">{{ $t('agent.delText') }}</div>
+          <div class="mt-10 pl-40 pr-40 text-danger text-left line-default">{{ $t('agent.delText1') }}</div>
         </div>
       </template>
       <template v-if="dialogType == 4">
@@ -500,7 +500,7 @@ export default {
     dialogTitle() {
       return {
         1: '',
-        2: this.$t('public.deleteAgent'),
+        2: this.$t('agent.deleteAgent'),
         3: '',
         4: this.$t('store.assignMerchants'),
         5: this.$t('public.freezeAmount'),
