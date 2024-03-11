@@ -37,7 +37,7 @@
             {{ scope.row.operator }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.actionType')">
+        <el-table-column :label="$t('userManage.actionType')">
           <template slot-scope="scope">
             {{ operateType[scope.row.operate_type] || '--' }}
           </template>

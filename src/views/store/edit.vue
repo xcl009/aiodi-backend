@@ -192,7 +192,7 @@
                               $t('public.delete') }}</el-button>
                         </div>
                       </el-form-item>
-                      <el-form-item :label="`${$t('public.laundryDetergentSettings')}`"
+                      <el-form-item :label="`${$t('store.laundryDetergentSettings')}`"
                         v-if="item.deviceTypeCode == 'WM'">
                         <template v-for="(laundry, lidx) in item[`${xcx}PayMode`].laundryMode">
                           <!-- <el-input v-model="laundry.title" class="flex1 mr-10" disabled></el-input> -->

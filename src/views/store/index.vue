@@ -22,6 +22,9 @@
           <el-form-item :label="$t('public.phone')">
             <el-input v-model="form.mobile" :placeholder="$t('public.phone')" />
           </el-form-item>
+          <el-form-item :label="$t('public.remark')">
+            <el-input v-model="form.remark" :placeholder="$t('public.remark')" />
+          </el-form-item>
         </template>
         <template v-slot:endButton>
           <!-- <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas() && !form.agentId"><i class="el-icon-plus el-icon--left" />添加商户</el-button> -->
@@ -153,6 +156,11 @@
             <template slot-scope="scope">
               <div>{{ supUser[scope.row.agentId] ? supUser[scope.row.agentId].name : '' }}</div>
               <div>{{ supUser[scope.row.agentId] ? dealPhone(supUser[scope.row.agentId].mobile) : '' }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'remark'">
+            <template slot-scope="scope">
+              <div class="cursor text-primary" @click="setRows(3, scope.row, 12)">{{ scope.row.remark || '无' }}</div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.val" :prop="item.key"></el-table-column>
@@ -505,7 +513,7 @@
         </div>
       </template>
       <template v-if="dialogType == 11">
-        <el-form class="pl-20 pr-20 custom-form">
+        <el-form class="pl-20 pr-20 custom-form" @submit.native.prevent="dialogConfirm()">
           <el-form-item :label="$t('public.loginPassword')">
             <el-switch v-model="dform.password" />
           </el-form-item>
@@ -514,7 +522,14 @@
           </el-form-item>
         </el-form>
       </template>
-      <template v-if="[1, 4, 6, 7, 9, 11].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 12">
+        <el-form class="pl-20 pr-20 custom-form" @submit.native.prevent="dialogConfirm()">
+          <el-form-item :label="$t('public.remark')">
+            <el-input v-model="dform.remark" :placeholder="$t('public.enter')"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1, 4, 6, 7, 9, 11, 12].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -653,7 +668,8 @@ export default {
         7: this.$t('store.sharedWIFI'),
         8: this.$t('store.assignAgents'),
         10: this.$t('store.loginRecord'),
-        11: this.$t('public.setLoginPassword')
+        11: this.$t('public.setLoginPassword'),
+        12: this.$t('public.remark'),
       }
     },
     defaultColumn() {
@@ -726,6 +742,11 @@ export default {
           key: 'catId',
           val: true,
           name: this.$t('public.industry')
+        },
+        {
+          key: 'remark',
+          val: false,
+          name: this.$t('public.remark')
         }
       ]
     },
@@ -1118,6 +1139,10 @@ export default {
                 loginList: res && res.rows ? res.rows : []
               }
             })
+          } else if (dialogType == 12) {
+            this.dform = {
+              remark: row.remark || ''
+            }
           }
           if (type == 1) {
             this.dialogStatus = true
@@ -1309,6 +1334,20 @@ export default {
               message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
+            this.drawerStatus = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 12:
+          params.storeId = curRow.id
+          params.remark = params.remark || 0
+          this.$post('iot-saas-basic/admin/store/updateRemark', params).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.$set(curRow, 'remark', params.remark)
             this.drawerStatus = false
           }).catch(err => {
             this.clickSubmit = false

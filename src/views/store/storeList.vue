@@ -202,7 +202,7 @@
         },
         queryObj: {
           storeId: {
-            title: $t('public.storeName'),
+            title: this.$t('public.storeName'),
             type: 'selectSearch',
             name: 'name',
             sType: 3

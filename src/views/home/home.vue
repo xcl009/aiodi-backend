@@ -99,9 +99,9 @@
       v-show="!isStoreType">
       <el-col :sm="24" :lg="(checkHotel() && isStore()) || !isStore() ? 8 : 12">
         <div class="p-20 item-box">
-          <div class="mb-20 flex align-center">
+          <div class="mb-20 flex align-center flex-wrap">
             <div class="line"></div>
-            <div class="flex1 fs-b2">{{ $t('home.contrast') }}</div>
+            <div class="flex-auto fs-b2">{{ $t('home.contrast') }}</div>
             <div class="flex btn-box cursor">
               <div class="btn" :class="{ 'act': contrast_type == index }" v-for="(item, index) in contrast_arr"
                 @click="contrast_type = index; $refs.contrastCarusel.setActiveItem(index)">{{ item }}</div>
@@ -287,28 +287,30 @@
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item>
+                   <div class="checkType">
                     <el-radio-group v-model="form.dates" @input="toQuery(1)">
-                      <el-radio-button label="0">{{ $t('public.today') }}</el-radio-button>
-                      <el-radio-button label="-1">{{ $t('public.yesterday') }}</el-radio-button>
-                      <el-radio-button label="3">{{ $t('public.thisWeek') }}</el-radio-button>
-                      <el-radio-button label="4">{{ $t('public.lastWeek') }}</el-radio-button>
-                      <el-radio-button label="5">{{ $t('public.thisMonth') }}</el-radio-button>
-                      <el-radio-button label="6">{{ $t('public.lastMonth') }}</el-radio-button>
-                      <el-radio-button label="7">{{ $t('public.thisYear') }}</el-radio-button>
-                      <el-radio-button label="8">{{ $t('public.lastYear') }}</el-radio-button>
+                      <el-radio-button :label="0">{{ $t('public.today') }}</el-radio-button>
+                      <el-radio-button :label="-1">{{ $t('public.yesterday') }}</el-radio-button>
+                      <el-radio-button :label="3">{{ $t('public.thisWeek') }}</el-radio-button>
+                      <el-radio-button :label="4">{{ $t('public.lastWeek') }}</el-radio-button>
+                      <el-radio-button :label="5">{{ $t('public.thisMonth') }}</el-radio-button>
+                      <el-radio-button :label="6">{{ $t('public.lastMonth') }}</el-radio-button>
+                      <el-radio-button :label="7">{{ $t('public.thisYear') }}</el-radio-button>
+                      <el-radio-button :label="8">{{ $t('public.lastYear') }}</el-radio-button>
                     </el-radio-group>
+                   </div>
                   </el-form-item>
                 </template>
               </condition>
               <!-- <table-column-set storageKey="storeTableColumn" :showColumn.sync="showColumn"
-            :defaultColumn="defaultColumn"></table-column-set> -->
+                :defaultColumn="defaultColumn"></table-column-set> -->
             </div>
 
             <el-table class="store-table text-white" :highlight-current-row="false"
               :header-row-style="{ background: 'none' }"
               :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
               :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="list"
-              style="background:none">
+              style="background:none" @sort-change="sortChange">
               <el-table-column :label="$t('home.ranking')" width="120">
                 <template slot-scope="scope">
                   <span class="fs-c1 text-bold"
@@ -321,17 +323,17 @@
                   <span class="y-yellow">{{ scope.row.storeName.substring(0, 2) }}**</span>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('home.orderNum')" min-width="90">
+              <el-table-column :label="$t('home.orderNum')" min-width="90" column-key="orderAllNumber" sortable>
                 <template slot-scope="scope">
                   {{ scope.row.orderNumber || 0 }}
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('public.aTurnover')" min-width="120">
+              <el-table-column :label="$t('public.aTurnover')" min-width="120" column-key="amount" sortable>
                 <template slot-scope="scope">
                   {{ scope.row.amount || 0 }}
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('public.income')" min-width="90">
+              <el-table-column :label="$t('public.income')" min-width="90" column-key="amountDivide" sortable>
                 <template slot-scope="scope">
                   {{ scope.row.amountDivide || 0 }}
                 </template>
@@ -363,9 +365,9 @@
       </transition>
     </div>
 
-    <el-row :gutter="20" type="flex" class="three-box mt-20 pl-20 pr-20 text-white"
+    <el-row :gutter="20" type="flex" class="three-box flex-wrap mt-20 pl-20 pr-20 text-white"
       v-show="Ability['order'] && !isStoreType">
-      <el-col :sm="24" :lg="12">
+      <el-col :md="24" :lg="12">
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
@@ -425,16 +427,16 @@
           </el-table>
         </div>
       </el-col>
-      <el-col :sm="24" :lg="12">
+      <el-col :md="24" :lg="12">
         <div class="pl-20 pr-20 pt-20 item-box">
-          <div class="flex align-center">
+          <div class="flex align-center flex-wrap">
             <div class="line"></div>
-            <div class="flex1 fs-b2">{{ $t('home.comparison') }}</div>
+            <div class="flex-auto fs-b2">{{ $t('home.comparison') }}</div>
             <div class="flex btn-box cursor">
               <div class="btn" :class="{ 'act': day_type == index }" v-for="(item, index) in day_type_arr"
                 @click="day_type = index; getLineChart()">{{ item }}</div>
             </div>
-            <div class="ml-15 box-grey">
+            <div class="ml-15 box-grey hidden-lg-and-down">
               <el-date-picker class="range-day" type="month" size="small" v-model="form.date"
                 :picker-options="pickerOptionsEnd" range-separator="-" :placeholder="$t('home.selectMonth')"
                 value-format="yyyy-MM" @change="getTime">
@@ -570,7 +572,10 @@ export default {
       clickSubmit: false,
       totalStat: {},
       form: {
-        date: ''
+        date: '',
+        sortSet:{
+          amount:'desc'
+        }
       },
       orderStat: {},
       deviceStat: {},
@@ -638,8 +643,8 @@ export default {
 
       storeList: [],
       /**
-             * 列的配置化对象，存储配置信息
-             */
+       * 列的配置化对象，存储配置信息
+       */
       showColumn: [],
       // 是否显示商户统计数据
       isStoreType: false,
@@ -835,6 +840,18 @@ export default {
     }
   },
   methods: {
+    /**
+     * 排序
+     */
+    sortChange({ column, prop, order }) {
+      if (order) {
+        this.form.sortSet = {}
+        this.form.sortSet[column.columnKey] = (order == 'ascending' ? 'asc' : 'desc')
+      } else {
+        this.form.sortSet[column.columnKey] = ''
+      }
+      this.toQuery()
+    },
     isCheckChange(type) {
       if (type) {
         this.isadd = type;
@@ -933,7 +950,6 @@ export default {
       } else if (this.isAgent()) {
         params.agentId = this.agentInfo.agentId;
       }
-
       this.$post('iot-saas-order/admin/order/count/store/queryDepositCount', params).then(async (res = {}) => {
         let list = res.rows || []
         that.list = list
@@ -1015,6 +1031,9 @@ export default {
         page: 0,
         startDateStr: "2011",
         endDateStr,
+        sortSet:{
+          amount:'desc'
+        }
       }
       if (this.isBrand()) {
         params.brandId = this.agentInfo.brandId;
@@ -2336,4 +2355,11 @@ export default {
 /deep/.filterBox {
   max-height: 100% !important;
 }
+.checkType{
+  /deep/.is-active{
+  box-shadow: inset 0 0 12px #1166B1;
+      color: #1CB9FB;
+}
+}
+
 </style>

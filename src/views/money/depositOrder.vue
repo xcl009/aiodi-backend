@@ -124,7 +124,7 @@
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'rStatus'">
             <template slot-scope="scope">
-              {{ scope.row.amountEnable != accSub(scope.row.depositAmount, scope.row.amount) ? $t('public.refunded') :
+              {{ scope.row.depositAmount > accAdd(scope.row.amountEnable, scope.row.amount) ? $t('public.refunded') :
                 $t('public.unreimbursed') }}
             </template>
           </el-table-column>
@@ -166,6 +166,7 @@ import selectSearch from '@/components/condition/selectSearch'
 import TableColumnSet from '@/components/TableColumnSet/index'
 import {
   accSub,
+  accAdd,
   formatSeconds,
   unixTime,
   arrayToObj
@@ -201,11 +202,17 @@ export default {
           title: this.$t('public.orderNo'),
           type: 'input'
         },
-        // storeId: {
-        //   title: this.$t('public.storeName'),
+        storeId: {
+          title: this.$t('public.storeName'),
+          type: 'selectSearch',
+          name: 'name',
+          sType: 3
+        },
+        // agentId: {
+        //   title: this.$t('public.agentNickNames'),
         //   type: 'selectSearch',
         //   name: 'name',
-        //   sType: 3
+        //   sType: 5
         // },
         refundInd: {
           title: this.$t('public.refundStatus'),
@@ -282,13 +289,14 @@ export default {
   },
   data() {
     return {
+      accAdd: accAdd,
       formatSeconds: formatSeconds,
       unixTime: unixTime,
       accSub: accSub,
       clickSubmit: false,
       formKey: {
         sel1: 'orderNo',
-        sel2: 'refundInd'
+        sel2: 'storeId'
       },
       form: {},
       tableMaxH: '250',
@@ -353,7 +361,23 @@ export default {
      * 获取统计
      */
     getTotalStat() {
-      this.$get(`iot-saas-order/admin/order/count/queryOrderDepositCount`).then(res => {
+      var params = Object.assign({}, this.form, this.listQuery)
+      if (params.date && params.date.length > 0) {
+        params.startTime = params.date[0] + ' 00:00:00'
+        params.endTime = params.date[1] + ' 23:59:59'
+        delete params.date
+      }
+      delete params.page
+      delete params.size
+      if (params.refundInd <= 0) delete params.refundInd
+      if (params.deviceTypeCode == 0) delete params.deviceTypeCode
+      if (params.storeId && params.storeId.indexOf('&') > -1) {
+        let ids = params.storeId.split('&')
+        params.storeId = ids[0]
+        //params.agentId = ids[1]
+        //params.brandId = ids[2]
+      }
+      this.$get(`iot-saas-order/admin/order/count/queryOrderDepositCount`, params).then(res => {
         this.totalStat = res || {}
       })
     },
@@ -367,6 +391,7 @@ export default {
       this.listQuery.page = 1
       this.listQuery.size = 20
       this.getList()
+      this.getTotalStat()
     },
 
     /**
@@ -379,6 +404,7 @@ export default {
       this.listQuery.page = 1
       this.listQuery.size = 20
       this.getList()
+      this.getTotalStat()
     },
 
     /**
@@ -406,6 +432,12 @@ export default {
       }
       if (params.refundInd <= 0) delete params.refundInd
       if (params.deviceTypeCode == 0) delete params.deviceTypeCode
+      if (params.storeId && params.storeId.indexOf('&') > -1) {
+        let ids = params.storeId.split('&')
+        params.storeId = ids[0]
+      }
+      console.log(params)
+      this.clickSubmit = false
       this.$get('iot-saas-order/api/order/deposit/list', params).then(async (res = {}) => {
         this.listLoading = false
         this.clickSubmit = false

@@ -137,7 +137,7 @@
               <el-button type="text" @click="setRows(3, scope.row, 2)">{{ $t('public.particulars') }}</el-button>
               <el-button type="text" @click="setRows(3, scope.row, 3)"
                 :disabled="[2, 9].indexOf(scope.row.status) > -1">{{ $t('public.edit') }}</el-button>
-              <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('leaseOrder.text')" @onConfirm="closeOrder(scope.row)">
                 <el-button type="text" :disabled="[2, 9].indexOf(scope.row.status) > -1" slot="reference"><span
                     :class="{ 'text-danger': [2, 9].indexOf(scope.row.status) == -1 }">{{ $t('public.cancel')

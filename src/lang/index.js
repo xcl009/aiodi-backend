@@ -1,15 +1,25 @@
 import Vue from "vue";
 import VueI18n from "vue-i18n";
 //引入自定义语言配置
-import zh from './zh';//语言包定义的位置，前文写在同一文件夹下，可自行修改位置
-import cp from './cp';
-import en from './en';
+import zh from './zh'; //中文(简体)
+import cp from './cp'; //中文(繁体)
+import en from './en'; //英文
+import ru from './ru'; //俄语
+import vi from './vi'; //越南语
+import tp from './tp'; //菲律宾语
+import ko from './ko'; //韩语
+import jp from './jp'; //日语
+
 //引入UI框架语言配置---elementui
 import Element from 'element-ui'
 import locale from 'element-ui/lib/locale';
-import twLocale from 'element-ui/lib/locale/lang/zh-TW';
-import cnLocale from 'element-ui/lib/locale/lang/zh-CN';
-import enLocale from 'element-ui/lib/locale/lang/en';
+import cnLocale from 'element-ui/lib/locale/lang/zh-CN'; //element 中文(简体)
+import twLocale from 'element-ui/lib/locale/lang/zh-TW'; //element 中文(繁体)
+import enLocale from 'element-ui/lib/locale/lang/en'; //element 英文
+import ruLocale from 'element-ui/lib/locale/lang/ru-RU'; //element 俄语
+import viLocale from 'element-ui/lib/locale/lang/vi'; //element 越南语
+import koLocale from 'element-ui/lib/locale/lang/ko'; //element 韩语
+import jaLocale from 'element-ui/lib/locale/lang/ja'; //element 日语
 Vue.use(VueI18n);
 let lang = localStorage.getItem('lang')
 lang = ['zh_CN', 'en_US', 'zh_HK','ja_JP','ko_KR','en_PH','ru_RU','vi_VN'].indexOf(lang) > -1 ? lang : 'zh_CN'
@@ -28,12 +38,29 @@ const i18n = new VueI18n({
     'zh_HK': {
       ...cp,
       ...twLocale
-    }   //繁体
+    },   //繁体
+    'ru_RU': {
+      ...ru,
+      ...ruLocale
+    },   //俄语
+    'vi_VN': {
+      ...vi,
+      ...viLocale
+    },   //越南语
+    'en_PH': {
+      ...tp,
+      ...viLocale
+    },   //菲律宾语
+    'ko_KR': {
+      ...ko,
+      ...koLocale
+    },   //韩语
+    'ja_JP': {
+      ...jp,
+      ...jaLocale
+    },   //日语
   },
   silentTranslationWarn:true//解决vue-i18n黄色警告"value of key 'xxx' is not a string"和"cannot translate the value of keypath 'xxx'.use the value of keypath as default",可忽略
 });
-
-// locale.i18n((key, value) => i18n.$t(key, value));
-// Vue.use(Element, {enLocale})
 export default i18n;
 

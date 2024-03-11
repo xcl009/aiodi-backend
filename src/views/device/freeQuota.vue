@@ -165,7 +165,7 @@
           </el-form-item>
           <el-form-item :label="$t('steal.vipNum')">
             <el-input type="number" v-model="dform.userNumber">
-              <span slot="append">{{ $t('steal.people') }}</span>
+              <span slot="append">{{ $t('public.people') }}</span>
             </el-input>
             <div class="pt-5 line-default">{{ $t('steal.vipNumText') }}<span class="text-danger">{{
               $t('steal.vipNumText1') }}</span></div>

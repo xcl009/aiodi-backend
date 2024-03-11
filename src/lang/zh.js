@@ -1168,6 +1168,7 @@ export default {
     module: '语言模块',
     key: '语言标识',
     languageTags: '语言标签',
+    contextCode: '内容编号',
     languageEncoding: '语言编码',
     languageContent: '语言内容',
     addDictionary: '添加字典',
@@ -1301,6 +1302,7 @@ export default {
     checkOrderText: '选择禁止查看表示所有商户不可查看订单(设置单个商户查看订单权限将无效)',
     showComplete: '显示已完成',
     showCompleteText: '开启表示延时归还订单在延时时间段内用户查看订单状态展示为已完成',
+    getOpenId: '让用户绑定分账接收的微信后申请提现，您在提现管理列表操作栏中复制微信ID粘贴保存即可',
   },
   user: {
     message: '请填写旧密码',
@@ -1703,6 +1705,8 @@ export default {
     typeText: '正常分成',
     typeText1: '只分上级',
     typeText2: '只分一级代理',
+    restart: '重启',
+    restartText: '确定要重启该设备吗？'
   },
   cash: {
     withdrawalStatus: '提现状态',
@@ -1726,8 +1730,8 @@ export default {
     setMassageTable: '按摩床设置',
     returnSettings: '押金退回设置',
     setBilling: '默认计费设置',
-    text: '确定删除此代理吗？',
-    text1: '注：若该代理下存在设备，则无法删除。需解绑回收设备。',
+    delText: '确定删除此代理吗？',
+    delText1: '注：若该代理下存在设备，则无法删除。需解绑回收设备。',
     agentData: '代理数据变更',
     amountReserved: '可提现金额保留',
     text: '开启表示保留代理可提现金额。关闭表示清空当前代理的可提现金额',

@@ -91,78 +91,74 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="245" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.operate')" width="235" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
-            <template v-if="deviceSns">
-              <el-button type="primary" size="mini" @click="bindAgent(scope.row)">{{ $t('public.assignToTa')
-              }}</el-button>
-            </template>
-            <template v-else>
-              <el-button type="primary" size="mini" @click="$router.push({ path: `/store?agentId=${scope.row.id}` })">{{
-                $t('brand.storeList') }}</el-button>
-              <el-button type="primary" size="mini" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">{{
-                $t('public.permissionSettings') }}</el-button>
-              <el-button type="primary" size="mini"
-                @click="$router.push({ path: `/store?agentId=${scope.row.id}` })">{{ $t('brand.storeList') }}</el-button>
-              <el-button type="primary" size="mini"
-                @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)" v-if="checkAbility(['AGENT_POWER'], 3)">{{ $t('public.permissionSettings') }}</el-button>
-              <el-button type="primary" size="mini"
-                @click="$router.push({ path: `/agent/addAgent?agentId=${scope.row.id}` })"
-                v-if="Ability['addAgent']">{{ $t('public.modifyingInformation') }}</el-button>
-              <!-- <el-button type="primary" size="mini" @click.native="setRows(8, scope.row, 8)">分配代理</el-button> -->
-              <el-dropdown trigger="click">
-                <el-button type="primary" size="mini">{{ $t('public.adds') }}<i
-                    class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="setRows(1, scope.row, 2, scope.$index)">{{ $t('agent.deleteAgent')
-                  }}</el-dropdown-item>
-                  <template v-for="item in scope.row.agentDeviceType">
-                    <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)"
-                      v-if="item.code == 'VM'">{{ $t('agent.vendingMachine') }}</el-dropdown-item>
+            <div class="flex flex-wrap operate">
+              <template v-if="deviceSns">
+                <el-button type="text" @click="bindAgent(scope.row)">{{ $t('public.assignToTa')
+                }}</el-button>
+              </template>
+              <template v-else>
+                <el-button type="text" @click="$router.push({ path: `/store?agentId=${scope.row.id}` })">{{
+                  $t('brand.storeList') }}</el-button>
+                <el-button type="text" @click="$refs.AssignAbilitys.getAuthMenu(scope.row.userId)">{{
+                  $t('public.permissionSettings') }}</el-button>
+                <el-button type="text"
+                  @click="$router.push({ path: `/agent/addAgent?agentId=${scope.row.id}` })"
+                  v-if="Ability['addAgent']">{{ $t('public.modifyingInformation') }}</el-button>
+                <!-- <el-button type="primary" size="mini" @click.native="setRows(8, scope.row, 8)">分配代理</el-button> -->
+                <el-dropdown trigger="click">
+                  <el-button type="text">{{ $t('public.adds') }}<i
+                      class="el-icon-arrow-down el-icon--right line-1"></i></el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="setRows(1, scope.row, 2, scope.$index)">{{ $t('agent.deleteAgent')
+                    }}</el-dropdown-item>
+                    <template v-for="item in scope.row.agentDeviceType">
+                      <el-dropdown-item @click.native="$refs.VendorModes.getCompanyInfo(scope.row.id)"
+                        v-if="item.code == 'VM'">{{ $t('agent.vendingMachine') }}</el-dropdown-item>
+                      <el-dropdown-item
+                        @click.native="$router.push({ path: `/device/bedSetting?id=${scope.row.id}&userKey=agentId` })"
+                        v-if="item.code == 'BD' && isBrand()">{{ $t('agent.setMassageTable') }}</el-dropdown-item>
+                    </template>
+                    <template
+                      v-if="checkAbility(['_DEPOSIT_DELAY', '_DEPOSIT_MP'], 1, scope.row.agentDeviceType) && isBrand()">
+                      <el-dropdown-item
+                        @click.native="$router.push({ path: `/device/depositRefund?id=${scope.row.id}&userKey=agentId` })">{{
+                          $t('agent.returnSettings') }}</el-dropdown-item>
+                    </template>
+                    <template v-if="checkAbility(['_BILLING'], 1, scope.row.agentDeviceType) && isBrand()">
+                      <el-dropdown-item @click.native="$router.push({ path: `/device/billing?agentId=${scope.row.id}` })">{{
+                        $t('agent.setBilling') }}</el-dropdown-item>
+                    </template>
+                    <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)"
+                      v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">{{
+                        $t('public.assignToAgent') }}</el-dropdown-item> -->
                     <el-dropdown-item
-                      @click.native="$router.push({ path: `/device/bedSetting?id=${scope.row.id}&userKey=agentId` })"
-                      v-if="item.code == 'BD' && isBrand()">{{ $t('agent.setMassageTable') }}</el-dropdown-item>
-                  </template>
-                  <template
-                    v-if="checkAbility(['_DEPOSIT_DELAY', '_DEPOSIT_MP'], 1, scope.row.agentDeviceType) && isBrand()">
+                    @click.native="setRows(8, scope.row, 8)"
+                      v-if="isBrand()">{{ $t('store.assignAgents') }}</el-dropdown-item>
                     <el-dropdown-item
-                      @click.native="$router.push({ path: `/device/depositRefund?id=${scope.row.id}&userKey=agentId` })">{{
-                        $t('agent.returnSettings') }}</el-dropdown-item>
-                  </template>
-                  <template v-if="checkAbility(['_BILLING'], 1, scope.row.agentDeviceType) && isBrand()">
-                    <el-dropdown-item @click.native="$router.push({ path: `/device/billing?agentId=${scope.row.id}` })">{{
-                      $t('agent.setBilling') }}</el-dropdown-item>
-                  </template>
-                  <el-dropdown-item @click.native="setRows(8, scope.row, 8)" v-if="isBrand()">{{ $t('store.assignAgents')
-                  }}</el-dropdown-item>
-                  <!-- <el-dropdown-item @click.native="setRows(1, scope.row, 4, scope.$index)"
-                    v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id] && isBrand()">{{
-                      $t('public.assignToAgent') }}</el-dropdown-item> -->
-                  <el-dropdown-item
-                  @click.native="setRows(8, scope.row, 8)"
-                    v-if="isBrand()">{{ $t('store.assignAgents') }}</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=agentId` })"
-                    v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">{{ $t('store.DDSettings') }}</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="$router.push({ path: `/system/cashSet?id=${scope.row.id}&userKey=agentId` })"
-                    v-if="isBrand() && checkAbility(['WD_AGENT','WD_STORE','WD_USER'], 3)">{{ $t('system.withdrawRule') }}</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR` })"
-                    v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">{{
-                      $t('public.probabilityDeposit') }}</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DIVIDE_ACCOUNTS` })"
-                    v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">{{
-                      $t('public.weChatAccountSplitting') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"
-                    v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="setRows(8, scope.row, 11)" v-if="isBrand()">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
-                  <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
-                    v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
+                      @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=agentId` })"
+                      v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.agentDeviceType)">{{ $t('store.DDSettings') }}</el-dropdown-item>
+                    <el-dropdown-item
+                      @click.native="$router.push({ path: `/system/cashSet?id=${scope.row.id}&userKey=agentId` })"
+                      v-if="isBrand() && checkAbility(['WD_AGENT','WD_STORE','WD_USER'], 3)">{{ $t('system.withdrawRule') }}</el-dropdown-item>
+                    <el-dropdown-item
+                      @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DEPOSIT_PRPR` })"
+                      v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.agentDeviceType)">{{
+                        $t('public.probabilityDeposit') }}</el-dropdown-item>
+                    <el-dropdown-item
+                      @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DIVIDE_ACCOUNTS` })"
+                      v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">{{
+                        $t('public.weChatAccountSplitting') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"
+                      v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(8, scope.row, 11)" v-if="isBrand()">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
+                      v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -180,8 +176,8 @@
       </template>
       <template v-if="dialogType == 2">
         <div class="text-center">
-          <div class="text-black">{{ $t('agent.text') }}</div>
-          <div class="mt-10 pl-40 pr-40 text-danger text-left line-default">{{ $t('agent.text1') }}</div>
+          <div class="text-black">{{ $t('agent.delText') }}</div>
+          <div class="mt-10 pl-40 pr-40 text-danger text-left line-default">{{ $t('agent.delText1') }}</div>
         </div>
       </template>
       <template v-if="dialogType == 4">
@@ -500,7 +496,7 @@ export default {
     dialogTitle() {
       return {
         1: '',
-        2: this.$t('public.deleteAgent'),
+        2: this.$t('agent.deleteAgent'),
         3: '',
         4: this.$t('store.assignMerchants'),
         5: this.$t('public.freezeAmount'),

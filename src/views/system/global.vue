@@ -66,7 +66,7 @@
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(3, scope.row, 2, scope.$index)">{{ $t('public.edit') }}</el-button>
-              <el-popconfirm class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('system.deleteDictionary')" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
                 <el-button type="text" class="text-danger" slot="reference">{{ $t('public.delete') }}</el-button>
               </el-popconfirm>
@@ -89,7 +89,7 @@
             </el-select>
           </el-form-item> -->
           <el-form-item :label="$t('system.langType')">
-            <el-select v-model="dform.lanTypeName">
+            <el-select v-model="dform.langType">
               <el-option :label="`${item}`" :value="item" :key="index" v-for="(item, index) in dists"></el-option>
             </el-select>
           </el-form-item>
@@ -98,11 +98,11 @@
               <el-option :label="item" :value="item" :key="index" v-for="(item, index) in modules" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('system.languageTags')">
-            <el-input v-model="dform.lab" :placeholder="$t('system.languageTags')"></el-input>
-          </el-form-item>
-          <el-form-item :label="$t('leaseOrder.agentPhones')">
-            <el-input v-model="dform.contextCode" :placeholder="$t('leaseOrder.agentPhones')"></el-input>
+          <!-- <el-form-item :label="$t('system.languageEncoding')">
+            <el-input v-model="dform.lab" :placeholder="$t('system.languageEncoding')"></el-input>
+          </el-form-item> -->
+          <el-form-item :label="$t('system.contextCode')">
+            <el-input v-model="dform.contextCode" :placeholder="$t('system.contextCode')"></el-input>
           </el-form-item>
           <el-form-item :label="$t('system.languageEncoding')">
             <el-input v-model="dform.lanLable" :placeholder="$t('system.languageEncoding')"></el-input>
@@ -210,9 +210,9 @@ export default {
     defaultColumn() {
       return [
         {
-          key: 'lanLable',
+          key: 'sysMod',
           val: true,
-          name: this.$t('public.type')
+          name: this.$t('system.module')
         },
         {
           key: 'lanTypeName',
@@ -220,29 +220,24 @@ export default {
           name: this.$t('system.langType')
         },
         {
+          key: 'lanLable',
+          val: true,
+          name: this.$t('system.languageEncoding')
+        },
+        {
           key: 'contextCode',
           val: true,
-          name: this.$t('leaseOrder.agentPhones')
+          name: this.$t('system.contextCode')
         },
-        // {
-        //   key: 'code',
-        //   val: true,
-        //   name: 'code'
-        // },
-        // {
-        //   key: 'keyes',
-        //   val: true,
-        //   name: this.$t('system.identifying')
-        // },
         {
           key: 'lanValue',
           val: true,
           name: this.$t('public.content')
         },
         {
-          key: 'sysMod',
+          key: 'contentType',
           val: true,
-          name: this.$t('system.module')
+          name: 'contentType'
         },
         {
           key: 'remark',
@@ -253,7 +248,7 @@ export default {
     }
   },
   mounted() {
-    this.getList()
+
   },
   methods: {
     /**
@@ -307,7 +302,7 @@ export default {
       })
       if (!params.sysModel || params.sysModel == 0) {
         delete params.sysModel
-        this.form.sysModel = '0';
+        this.form.sysModel = '0'
       }
       this.$post(url, params).then(res => {
         this.list = res.rows
