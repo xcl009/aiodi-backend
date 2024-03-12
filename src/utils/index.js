@@ -773,6 +773,15 @@ const util = {
 
   trim: (str) => {
     return str.replace(/\s/g, "");
+  },
+
+  ossThumbnail: (url, w = 200, h = '') => {
+    if(!url) return ''
+    url = url.split('?')
+    let wStr = ','
+    if(h) wStr += `h_${h},`
+    if(w) wStr += `w_${w}`
+    return url[0] + '?x-oss-process=image/resize,m_lfit' + wStr
   }
 }
 
@@ -815,3 +824,4 @@ export const dateSort = util.dateSort
 export const checkQueryRepeat = util.checkQueryRepeat
 export const checkDigit = util.checkDigit
 export const trim = util.trim
+export const ossThumbnail = util.ossThumbnail

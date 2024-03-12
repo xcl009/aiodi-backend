@@ -50,7 +50,7 @@
           <el-table-column :label="item.name" min-width="120" v-if="item.val && item.key == 'name'">
             <template slot-scope="scope">
               <div class="flex align-center">
-                <el-avatar class="block" :size="40" :src="scope.row.avatar || agentInfo.avatar" fit="fill"
+                <el-avatar class="block" shape="square" :size="40" :src="ossThumbnail(scope.row.avatar || agentInfo.avatar)" fit="fill"
                   icon="el-icon-picture-outline"></el-avatar>
                 <div class="ml-10 cursor text-cut_two" @click="copyText(scope.row.id)">{{ scope.row.name || '--' }}</div>
               </div>
