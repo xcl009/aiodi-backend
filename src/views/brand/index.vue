@@ -304,6 +304,11 @@
               <el-input v-model="dform.content.appSecret"></el-input>
             </el-form-item>
           </template>
+          <template v-if="dform.loginCode == 'GOOGLE'">
+            <el-form-item label="clientId">
+              <el-input v-model="dform.content.clientId"></el-input>
+            </el-form-item>
+          </template>
         </el-form>
       </template>
       <template v-if="[1,3,11,13,15].indexOf(dialogType) > -1">
@@ -698,7 +703,7 @@
        * @param {Object} channels
        */
       getBrandLoginCannel(id){
-        this.$get('iot-saas-user/admin/queryLoginChannelByBrands', {
+        this.$get('iot-saas-user/open/api/queryLoginChannelByBrands', {
           brandId: id,
         }).then(res => {
           let brandChannels = {}
