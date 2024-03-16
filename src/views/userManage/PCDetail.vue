@@ -17,8 +17,8 @@
         <template v-for="item in info.complaint_order_info">
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
             <div class="mb-10">{{ $t('public.transactionNum') }}：{{ item.transaction_id }}</div>
-            <div class="mb-10 cursor" @click="copyText(item.out_trade_no)">{{ $t('public.merchantTrackingNumber') }}：{{
-              item.out_trade_no }} <span>{{ $t('public.copy') }}</span></div>
+            <div class="mb-10 cursor" @click="copyText(item.out_trade_no)">{{ $t('public.orderNo') }}：{{
+              item.out_trade_no }} <span class="text-primary">{{ $t('public.copy') }}</span></div>
           </el-col>
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
             <div class="mb-10">{{ $t('public.orderMoeny') }}：￥{{ item.amount / 100 }}</div>

@@ -471,9 +471,26 @@ export default {
       showColumn: [],
     }
   },
+  beforeRouteEnter(to, from, next) {
+    to.meta.urlQuery = JSON.stringify(to.query)
+    if (from.name == 'addQrcode') {
+      to.meta.reload = true
+    } else {
+      to.meta.reload = false
+    }
+    next()
+  },
+  activated() {
+    if (this.$route.meta.reload) {
+      this.getList()
+    } else if (this.urlQuery != this.$route.meta.urlQuery) {
+      this.toQuery()
+      this.getStat()
+    }
+    this.urlQuery = this.$route.meta.urlQuery
+  },
   mounted(options) {
-    this.toQuery()
-    this.getStat()
+    
   },
   methods: {
     /**

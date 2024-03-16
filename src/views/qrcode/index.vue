@@ -122,17 +122,21 @@ export default {
     }
   },
   beforeRouteEnter(to, from, next) {
+    to.meta.urlQuery = JSON.stringify(to.query)
     if (from.name == 'addQrcode') {
-      to.meta.isBack = true
+      to.meta.reload = true
     } else {
-      to.meta.isBack = false
+      to.meta.reload = false
     }
     next()
   },
   activated() {
-    if (!this.$route.meta.isBack || !this.list) {
+    if (this.$route.meta.reload) {
       this.getList()
+    } else if (this.urlQuery != this.$route.meta.urlQuery) {
+      this.toQuery()
     }
+    this.urlQuery = this.$route.meta.urlQuery
   },
   mounted(options) {
 

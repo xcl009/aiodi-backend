@@ -1114,6 +1114,7 @@ export default {
         feedbackList: 'Запись обратной связи',
         loginTime: 'Время входа',
         loginRecord: 'Регистрация',
+        resetOPwdText: "Обновить пароль операции и идентификационный номер",
     },
     system: {
         miniProgramConfiguration: 'Параметры малых программ',

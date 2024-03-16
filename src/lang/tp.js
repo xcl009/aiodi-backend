@@ -1113,6 +1113,7 @@ export default {
       feedbackList: 'query-sort',
       loginTime: 'oras ng login',
       loginRecord: 'Login Record',
+      resetOPwdText: "Ang Reset ay nangangahulugang i-clear ang password at numero ng ID ng set na operasyon",
     },
     system: {
       miniProgramConfiguration: 'Mga Mini Program Configuration',

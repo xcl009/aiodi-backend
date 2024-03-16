@@ -706,9 +706,34 @@ export default {
       showColumn: [],
     }
   },
+  beforeRouteEnter(to, from, next) {
+    to.meta.urlQuery = JSON.stringify(to.query)
+    if (from.name == 'addStore') {
+      to.meta.reload = true
+    } else {
+      to.meta.reload = false
+    }
+    next()
+  },
+  activated() {
+    let query = this.$route.query
+    for (var i in this.queryKey) {
+      if (query[this.queryKey[i]]) {
+        this.form[this.queryKey[i]] = query[this.queryKey[i]]
+      } else {
+        delete this.form[this.queryKey[i]]
+      }
+    }
+    if (this.$route.meta.reload) {
+      this.getList()
+    } else if (this.urlQuery != this.$route.meta.urlQuery) {
+      this.toQuery()
+      this.getTotalStat()
+    }
+    this.urlQuery = this.$route.meta.urlQuery
+  },
   mounted(options) {
-    this.getTotalStat()
-    this.toQuery()
+    
   },
   methods: {
     /**
