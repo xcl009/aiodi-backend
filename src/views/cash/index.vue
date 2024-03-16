@@ -33,8 +33,16 @@
           <selectSearch v-model="form.storeIds" :type="3" name="name" :placeholder="$t('public.storeName')"
             @change="toQuery()"></selectSearch>
         </el-form-item>
+        <el-form-item :label="$t('public.phone')" v-if="userType == 3">
+          <selectSearch v-model="form.userIds" :type="1" name="mobile" :placeholder="$t('public.phone')"
+            @change="toQuery()"></selectSearch>
+        </el-form-item>
         <el-form-item :label="$t('public.userId')" v-if="userType == 3">
           <selectSearch v-model="form.userIds" :type="1" name="idLastNine" :placeholder="$t('public.userId')"
+            @change="toQuery()"></selectSearch>
+        </el-form-item>
+        <el-form-item :label="$t('public.userNickName')" v-if="userType == 3">
+          <selectSearch v-model="form.userIds" :type="2" name="nickname" :placeholder="$t('public.userNickName')"
             @change="toQuery()"></selectSearch>
         </el-form-item>
         <!-- <el-form-item label="手机号码">
