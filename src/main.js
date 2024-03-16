@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
-import { setRem, checkDigit, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent, dealPhone, getOsInfo, getBrowser, checkQueryRepeat, trim } from './utils/index'
+import { setRem, checkDigit, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent, dealPhone, getOsInfo, getBrowser, checkQueryRepeat, trim, ossThumbnail } from './utils/index'
 Vue.prototype.checkDigit = checkDigit
 Vue.prototype.parseTime = parseTime
 Vue.prototype.currentTime = currentTime
@@ -62,6 +62,7 @@ Vue.prototype.OsInfo = getOsInfo
 Vue.prototype.Browser = getBrowser
 Vue.prototype.checkQueryRepeat = checkQueryRepeat
 Vue.prototype.trim = trim
+Vue.prototype.ossThumbnail = ossThumbnail
 
  /**
  * 校验是否拥有服务市场设备类型相关能力

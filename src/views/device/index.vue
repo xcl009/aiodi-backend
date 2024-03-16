@@ -828,6 +828,11 @@ export default {
           key: 'voice',
           val: false,
           name: this.$t('device.volume')
+        },
+        {
+          key: 'batteryLevel',
+          val: false,
+          name: this.$t('device.electricity')
         }
       ]
     }

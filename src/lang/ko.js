@@ -1113,6 +1113,7 @@ export default {
       feedbackList: '피드백 레코드',
       loginTime: '로그인 시간',
       loginRecord: '로그인 레코드',
+      resetOPwdText: "재설정은 설정된 작업 암호 및 주민등록번호 비우기를 나타냅니다.",
     },
     system: {
       miniProgramConfiguration: '애플릿 구성',

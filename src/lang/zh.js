@@ -1035,7 +1035,7 @@ export default {
     deleteThisMerchant: '确定删除此商户吗？',
     deleteThisMerchantText: '注：若该商户下存在设备，则无法删除。需由该设备的归属代理去回收，无法跨级回收。',
     resettingStorePassword: '确定重置到该商户登录密码吗？',
-    resettingStorePasswordText: '注：重置后登录密码为123456',
+    resettingStorePasswordText: '重置后登录密码为123456',
     deviceSns: '设备编号',
     deviceSnsText: '设备编号与编号之间用英文逗号隔开',
     agentNameSerach: '输入代理名称搜索',
@@ -1125,6 +1125,7 @@ export default {
     feedbackList: '反馈记录',
     loginTime: '登录时间',
     loginRecord: '登录记录',
+    resetOPwdText: "重置表示清空已设置的操作密码及身份证号",
   },
   system: {
     miniProgramConfiguration: '小程序配置',
@@ -1706,7 +1707,8 @@ export default {
     typeText1: '只分上级',
     typeText2: '只分一级代理',
     restart: '重启',
-    restartText: '确定要重启该设备吗？'
+    restartText: '确定要重启该设备吗？',
+    electricity: '电量'
   },
   cash: {
     withdrawalStatus: '提现状态',

@@ -1114,6 +1114,7 @@ export default {
     feedbackList: '反饋記錄',
     loginTime: '登入時間',
     loginRecord: '登入記錄',
+    resetOPwdText: "重置表示清空已設定的操作密碼及身份證號",
   },
   system: {
     miniProgramConfiguration: '小程序配置',

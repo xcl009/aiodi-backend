@@ -1113,6 +1113,7 @@ export default {
       feedbackList: 'フィードバックレコード',
       loginTime: 'ログイン時間',
       loginRecord: 'ログオンレコード',
+      resetOPwdText: "設定した操作パスワードとID番号をクリアすることを示すリセット",
     },
     system: {
       miniProgramConfiguration: 'アプレット構成',
@@ -1936,4 +1937,3 @@ export default {
       addTemp: 'テンプレートの追加',
     },
   };
-  

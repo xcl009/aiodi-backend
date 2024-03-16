@@ -81,7 +81,7 @@
 
       <div v-if="showColumn.length > 0">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-          :max-height="tableMaxH" element-loading-text="Loading">
+          :max-height="tableMaxH" :auto-scroll="false" element-loading-text="Loading">
           <el-table-column :label="`${$t('public.brand')}`" width="150" prop="brandName"
             v-if="isSaas()"></el-table-column>
           <template v-for="item in showColumn">
@@ -92,7 +92,7 @@
                   {{ $t('order.usingUsers') }}
                 </div>
                 <div v-else class="flex align-center">
-                  <img :src="scope.row.userAvatar || agentInfo.avatar" class="mr-5 radius-15" width="30" alt="">
+                  <img :src="scope.row.userAvatar || agentInfo.avatar" class="mr-5 radius-15" width="30" height="30" alt="">
                   <div class="text-cut">{{ scope.row.userNickName || "--" }}</div>
                 </div>
               </template>
@@ -985,12 +985,18 @@ export default {
       this.formKey = JSON.parse(localStorage.getItem('formKey_order'))
     }
   },
-  mounted() {
+  beforeRouteEnter(to, from, next) {
+    to.meta.urlQuery = JSON.stringify(to.query)
+    if (from.name == 'addStore') {
+      to.meta.reload = true
+    } else {
+      to.meta.reload = false
+    }
+    next()
+  },
+  activated() {
     let query = this.$route.query
     this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceSn', 'sourceType', 'userId']
-    for (var i in this.queryKey) {
-      if (query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
-    }
     this.queryObj.sourceType.selectArr = this.Constant.SourceType
     this.queryObj.payType.selectArr = this.Constant.PayType
     if (this.isSaas()) {
@@ -1001,7 +1007,22 @@ export default {
         sType: 6
       })
     }
-    this.toQuery()
+    for (var i in this.queryKey) {
+      if (query[this.queryKey[i]]) {
+        this.form[this.queryKey[i]] = query[this.queryKey[i]]
+      } else {
+        delete this.form[this.queryKey[i]]
+      }
+    }
+    if (this.$route.meta.reload) {
+      this.getList()
+    } else if (this.urlQuery != this.$route.meta.urlQuery) {
+      this.toQuery()
+    }
+    this.urlQuery = this.$route.meta.urlQuery
+  },
+  mounted() {
+
   },
   beforeDestroy() {
     localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
