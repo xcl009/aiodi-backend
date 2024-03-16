@@ -81,7 +81,7 @@
 
       <div v-if="showColumn.length > 0">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-          :max-height="tableMaxH" :auto-scroll="false" element-loading-text="Loading">
+          :max-height="tableMaxH" element-loading-text="Loading">
           <el-table-column :label="`${$t('public.brand')}`" width="150" prop="brandName"
             v-if="isSaas()"></el-table-column>
           <template v-for="item in showColumn">
@@ -205,7 +205,7 @@
                 {{ scope.row.orderNo || '--' }}
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.transactionNum')}`" width="155"
+            <el-table-column :label="`${$t('public.transactionNum')}`" width="160"
               v-if="item.val && item.key == 'transactionNo'">
               <template slot-scope="scope">
                 <div>{{ scope.row.transactionNo || '--' }}</div>
@@ -978,6 +978,8 @@ export default {
        * 列的配置化对象，存储配置信息
        */
       showColumn: [],
+
+      scrollTop: 0
     }
   },
   created() {
@@ -1018,11 +1020,26 @@ export default {
       this.getList()
     } else if (this.urlQuery != this.$route.meta.urlQuery) {
       this.toQuery()
+    }else{
+      this.$nextTick(() => {
+        if(this.scrollTop){
+          // 设置滚动条的位置 需要设置延迟，否则无效
+          setTimeout(() => {
+            this.$refs.list_table.bodyWrapper.scrollTop = this.scrollTop
+          }, 100)
+        }
+      })
     }
     this.urlQuery = this.$route.meta.urlQuery
   },
   mounted() {
-
+    setTimeout(() => {
+      if(this.$refs.list_table){
+        this.$refs.list_table.bodyWrapper.addEventListener('scroll', (res) => {
+          this.scrollTop = res.target.scrollTop
+        }, false)
+      }
+    }, 200)
   },
   beforeDestroy() {
     localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
@@ -1151,6 +1168,11 @@ export default {
           if (params.page == 0) {
             this.listTotal = res.total
             this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 55
+          }
+          if(this.scrollTop > 0){
+            setTimeout(() => {
+              this.$refs.list_table.bodyWrapper.scrollTop = 0
+            }, 50)
           }
         }
       }).catch(() => {
@@ -1299,7 +1321,6 @@ export default {
               this.Constant.RefundType[3] = that.$t('public.balanceRefund');
               this.editObj.refundType = '3';
             }
-
           } else if (dialogType == 6) {
             this.$get('iot-saas-order/admin/order/detail', {
               orderNo: row.orderNo

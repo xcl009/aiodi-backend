@@ -18,7 +18,7 @@
 
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
-        :max-height="tableMaxH" element-loading-text="Loading">
+        :max-height="tableMaxH" element-loading-text="Loading" stripe>
         <el-table-column :label="$t('userManage.complaintId')" width="140">
           <template slot-scope="scope">
             {{ scope.row.complaint_id }}
@@ -162,11 +162,26 @@ export default {
       this.getList()
     } else if (this.urlQuery != this.$route.meta.urlQuery) {
       this.getWechatList()
+    }else{
+      this.$nextTick(() => {
+        if(this.scrollTop){
+          // 设置滚动条的位置 需要设置延迟，否则无效
+          setTimeout(() => {
+            this.$refs.list_table.bodyWrapper.scrollTop = this.scrollTop
+          }, 100)
+        }
+      })
     }
     this.urlQuery = this.$route.meta.urlQuery
   },
   mounted(options) {
-
+    setTimeout(() => {
+      if(this.$refs.list_table){
+        this.$refs.list_table.bodyWrapper.addEventListener('scroll', (res) => {
+          this.scrollTop = res.target.scrollTop
+        }, false)
+      }
+    }, 200)
   },
   methods: {
     /**
@@ -213,6 +228,11 @@ export default {
         if (params.page == 0) {
           this.listTotal = res.total || 0
           this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 95
+        }
+        if(this.scrollTop > 0){
+          setTimeout(() => {
+            this.$refs.list_table.bodyWrapper.scrollTop = 0
+          }, 50)
         }
       }).catch(() => {
         this.listLoading = false
