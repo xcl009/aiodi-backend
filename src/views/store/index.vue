@@ -431,7 +431,7 @@
               </template>
             </el-row>
           </div>
-          <div class="bottom pt-15 pb-15" v-if="curRow.parentId != 0">
+          <div class="bottom pt-15 pb-15" v-if="curRow.agentId != 0">
             <el-button type="primary" plain size="mini" @click="allocation(2, {}, 9)">{{ $t('public.assignToOneself')
             }}</el-button>
           </div>
