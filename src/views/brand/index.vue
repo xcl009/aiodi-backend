@@ -44,7 +44,7 @@
           <el-table-column :label="$t('brand.brandInfo')" min-width="160" v-else-if="item.key == 'companyName'">
             <template slot-scope="scope">
               <div class="flex align-center">
-                <el-avatar shape="square" :size="35" fit="cover" :src="scope.row.logo"></el-avatar>
+                <el-avatar shape="square" :size="35" fit="cover" :src="ossThumbnail(scope.row.logo || agentInfo.avatar)"></el-avatar>
                 <div class="pl-5 flex-sub">{{ scope.row.companyName || '--' }}</div>
               </div>
             </template>
@@ -219,11 +219,22 @@
         </el-form>
       </template>
       <template v-if="dialogType == 12">
-        <div class="pl-20 pr-20 channel-box" v-if="payChannel.length > 0">
-          <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': channels[item.id]}" v-for="item in payChannel" @click="channels[item.id] = !channels[item.id]; dialogConfirm()">
-            <el-avatar class="block" :size="35" :src="item.logo" :fit="cover" shape="square"></el-avatar>
-            <div class="pl-15 pr-15 flex-1" :class="{'text-bold text-black': channels[item.id]}">{{ item.name }}</div>
-            <div class="text-primary" @click.stop="setRows(1, brandChannels[item.id], 13)" v-if="channels[item.id] && item.code != 'BALANCE'">{{ $t('brand.payConfig') }}</div>
+        <div class="pl-20 pr-20 channel-box" v-if="brandChannels.length > 0">
+          <div class="mb-15">排序值越大越靠前</div>
+
+          <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': item.status == 'ENABLE'}" v-for="item in brandChannels">
+            <el-avatar class="block" :size="35" :src="item.logo" fit="cover" shape="square"></el-avatar>
+            <div class="pl-10 pr-10 flex-1" :class="{'text-bold text-black': item.status == 'ENABLE'}">{{ item.name }}</div>
+            <div class="flex align-center sort-box text-center">
+              <template v-if="item.status == 'ENABLE'">
+                <span class="mr-5">排序值</span>
+                <el-input class="flex-1" v-model="item.sort" type="number"/>
+              </template>
+            </div>
+            <div class="pay-config text-primary text-center">
+              <span v-if="item.status == 'ENABLE' && item.code != 'BALANCE'" @click.stop="setRows(1, item, 13)">{{ $t('brand.payConfig') }}</span>
+            </div>
+            <el-checkbox v-model="item.status" true-label="ENABLE" false-label="DISABLE"></el-checkbox>
           </div>
         </div>
       </template>
@@ -311,7 +322,7 @@
           </template>
         </el-form>
       </template>
-      <template v-if="[1,3,11,13,15].indexOf(dialogType) > -1">
+      <template v-if="[1,3,11,12,13,15].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -646,14 +657,19 @@
               this.dform = {
                 channels: {}
               }
-              let channels = {}
-              this.$get('iot-saas-pay/admin/pay/channel/all').then(res => {
-                this.payChannel = res
-                res.map(item => {
-                  channels[item.id] = false
-                })
-                this.getBrandCannel(row.id, channels)
-              })
+              this.getBrandCannel(row.id)
+
+              // let channels = {}
+              // this.$get('iot-saas-pay/admin/pay/channel/all').then(res => {
+              //   this.payChannel = res
+              //   res.map(item => {
+              //     channels[item.id] = {
+              //       status: item.status,
+              //       sort: item.sort
+              //     }
+              //   })
+
+              // })
             } else if (dialogType == 13) {
               let content = row.content ? JSON.parse(row.content) : {}
               this.dform = {
@@ -680,20 +696,12 @@
       /**
        * 获取品牌支付通道
        * @param {Object} id
-       * @param {Object} channels
        */
-      getBrandCannel(id, channels){
-        channels = channels || this.channels
+      getBrandCannel(id){
         this.$get('iot-saas-pay/admin/pay/channel', {
           brandId: id,
         }).then(res => {
-          let brandChannels = {}
-          res.map(item => {
-            channels[item.channelId] = (item.status == 'ENABLE' ? true : false)
-            brandChannels[item.channelId] = item
-          })
-          this.channels = channels
-          this.brandChannels = brandChannels
+          this.brandChannels = res
         })
       },
 
@@ -858,10 +866,11 @@
           case 12:
             params.brandId = curRow.id
             let channels = []
-            for(var i in this.channels){
+            for(var i in this.brandChannels){
               channels.push({
-                channelId: i,
-                status: this.channels[i] ? 1 : 0
+                channelId: this.brandChannels[i].channelId,
+                status: this.brandChannels[i].status == 'ENABLE' ? 1 : 0,
+                sort: this.brandChannels[i].sort
               })
             }
             params.channels = channels
@@ -992,6 +1001,7 @@
 <style lang="scss" scoped>
   .channel-box{
     .channel-item{
+      width: 450px;
       border: 2px solid #eee;
       &.act{
         border-color: var(--olive);
@@ -999,6 +1009,17 @@
     }
     /deep/ .el-avatar{
       background: none;
+    }
+    .sort-box{
+      width: 110px;
+      /deep/ .el-input__inner{
+        padding-right: 0;
+        width: 100%;
+        height: 32px;
+      }
+    }
+    .pay-config{
+      width: 90px;
     }
   }
 </style>
