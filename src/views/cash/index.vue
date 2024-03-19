@@ -29,8 +29,16 @@
           <selectSearch v-model="form.agentIds" :type="5" name="name" :placeholder="$t('public.agentName')"
             @change="toQuery()"></selectSearch>
         </el-form-item>
+        <el-form-item :label="$t('public.phone')" v-if="userType == 1">
+          <selectSearch v-model="form.agentIds" :type="5" name="mobile" :placeholder="$t('public.phone')"
+            @change="toQuery()"></selectSearch>
+        </el-form-item>
         <el-form-item :label="$t('public.storeName')" v-if="userType == 2">
           <selectSearch v-model="form.storeIds" :type="3" name="name" :placeholder="$t('public.storeName')"
+            @change="toQuery()"></selectSearch>
+        </el-form-item>
+        <el-form-item :label="$t('public.phone')" v-if="userType == 2">
+          <selectSearch v-model="form.storeIds" :type="3" name="mobile" :placeholder="$t('public.phone')"
             @change="toQuery()"></selectSearch>
         </el-form-item>
         <el-form-item :label="$t('public.phone')" v-if="userType == 3">

@@ -356,6 +356,7 @@
       </template>
       <template v-if="dialogType == 4">
         <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
+          <h4>{{ $t('public.store') }}</h4>
           <el-form-item :label="$t('system.revenueDetails')">
             <el-switch v-model="dform.checkIncome" :active-value="1" :inactive-value="0" />
           </el-form-item>
@@ -373,6 +374,15 @@
               <el-radio-button :label="2">{{ $t('system.checkOrder3') }}</el-radio-button>
             </el-radio-group>
             <div class="mt-10 line-default fs-s3">{{ $t('system.checkOrderText') }}</div>
+          </el-form-item>
+
+          <h4>{{ $t('public.agent') }}</h4>
+          <el-form-item :label="$t('system.monthlyAndDailyStatistics')">
+            <el-switch v-model="dform.checkMouthStatAgent" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item :label="$t('system.simplify')">
+            <el-switch v-model="dform.checkMouthStatSpAgent" :active-value="1" :inactive-value="0" />
+            <div class="line-default fs-s3">{{ $t('system.simplifyText') }}</div>
           </el-form-item>
         </el-form>
       </template>
@@ -504,7 +514,9 @@ export default {
                       checkIncome: 1,
                       checkMouthStat: 1,
                       checkMouthStatSp: 0,
-                      checkOrder: 0
+                      checkOrder: 0,
+                      checkMouthStatAgent: 1,
+                      checkMouthStatSpAgent: 0,
                     }
                   break
                   case 5:
@@ -540,7 +552,7 @@ export default {
             setting: JSON.stringify(params)
           }).then(res => {
             this.$message({
-              message: that.$t('public.submittedSuccess'),
+              message: this.$t('public.submittedSuccess'),
               type: 'success'
             })
             this.drawerStatus = false

@@ -19,13 +19,13 @@
           element-loading-text="Loading" :show-header="false" highlight-current-row border>
           <el-table-column width="200">
             <template slot-scope="scope">
-              <el-checkbox v-model="scope.row.checked">{{ scope.row.name }}</el-checkbox>
+              <el-checkbox v-model="selMenu[scope.row.id]">{{ scope.row.name }}</el-checkbox>
             </template>
           </el-table-column>
           <el-table-column>
             <template slot-scope="scope">
               <div v-if="scope.row.childrenAuthList">
-                <el-checkbox v-model="item.checked" v-for="(item, index) in scope.row.childrenAuthList">{{ item.name
+                <el-checkbox v-model="selMenu[item.id]" v-for="(item, index) in scope.row.childrenAuthList">{{ item.name
                 }}</el-checkbox>
               </div>
             </template>
@@ -52,6 +52,7 @@ export default {
       listLoading: true,
       form: {},
       mentList: [],
+      selMenu: {},
       roleId: this.$route.query.roleId
     }
   },
@@ -79,6 +80,12 @@ export default {
      * 获取信息
      */
     getMenu() {
+      this.$get('iot-saas-user/auth/menu', {
+        ifTreeStructure: true
+      }).then(res => {
+        this.mentList = res
+        this.listLoading = false
+      })
       this.$get('iot-saas-user/auth/allMenu', {
         roleId: this.roleId || 1
       }).then(res => {
@@ -86,8 +93,16 @@ export default {
           name: res.roleName,
           remark: res.describe
         }
-        this.mentList = res.menus
-        this.listLoading = false
+        let selMenu = {}
+        res.menus.map(item => {
+          selMenu[item.id]= true
+          if(item.childrenAuthList && item.childrenAuthList.length > 0){
+            item.childrenAuthList.map(sitem => {
+              selMenu[sitem.id]= true
+            })
+          }
+        })
+        this.selMenu = selMenu
       })
     },
 
@@ -104,16 +119,12 @@ export default {
             params.roleId = this.roleId
             type = '$put'
           }
-          this.mentList.map(pItem => {
-            if (pItem.checked) {
-              params.menuIds.push(pItem.id)
-              if (pItem.childrenAuthList) {
-                pItem.childrenAuthList.map(item => {
-                  if (item.checked) params.menuIds.push(item.id)
-                })
-              }
+          for(var i in this.selMenu){
+            if (this.selMenu[i]) {
+              params.menuIds.push(i)
             }
-          })
+          }
+          this.clickSubmit = false
           this[type](url, params).then(res => {
             this.$message({
               message: that.$t('public.submittedSuccess'),

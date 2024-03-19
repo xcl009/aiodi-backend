@@ -13,7 +13,7 @@
           <div class="mr-10">{{ $t('system.module') }}</div>
           <el-tabs class="flex-1" v-model="form.sysModel" @tab-click="toQuery()">
             <el-tab-pane :label="$t('public.all')" :name="''" />
-            <el-tab-pane :label="item" :name="item" v-for="item in modules" />
+            <el-tab-pane :label="item.distLable" :name="item.distValue" v-for="item in modules" />
           </el-tabs>
         </div>
       </template>
@@ -83,24 +83,16 @@
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
       <template v-if="dialogType == 1 || dialogType == 2">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
-          <!-- <el-form-item :label="$t('system.type')">
-            <el-select v-model="dform.type">
-              <el-option :label="`${item}`" :value="item" :key="index" v-for="(item, index) in types"></el-option>
-            </el-select>
-          </el-form-item> -->
           <el-form-item :label="$t('system.langType')">
             <el-select v-model="dform.langType">
-              <el-option :label="`${item}`" :value="item" :key="index" v-for="(item, index) in dists"></el-option>
+              <el-option :label="item.distLable" :value="item.distValue" :key="index" v-for="(item, index) in dists"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('system.module')">
             <el-select v-model="dform.sysMod">
-              <el-option :label="item" :value="item" :key="index" v-for="(item, index) in modules" />
+              <el-option :label="item.distLable" :value="item.distValue" :key="index" v-for="(item, index) in modules" />
             </el-select>
           </el-form-item>
-          <!-- <el-form-item :label="$t('system.languageEncoding')">
-            <el-input v-model="dform.lab" :placeholder="$t('system.languageEncoding')"></el-input>
-          </el-form-item> -->
           <el-form-item :label="$t('system.contextCode')">
             <el-input v-model="dform.contextCode" :placeholder="$t('system.contextCode')"></el-input>
           </el-form-item>
@@ -156,20 +148,8 @@ export default {
         size: 20
       },
 
-      types: {},
-      dists: {
-        1: 'zh_CN',
-        2: 'zh_HK',
-        3: 'zh_TW',
-        4: 'en_US'
-      }, // 语言
-      modules: {
-        1: 'USER',
-        2: 'BASIC',
-        3: 'ORDER',
-        4: 'PAY',
-        5: 'DEVICE'
-      }, // 模块
+      dists: {}, // 语言
+      modules: {}, // 模块
 
       // 弹出相关
       dialogType: 1,
@@ -255,10 +235,16 @@ export default {
      * 获取语言类型和模板
      */
     getConfig() {
-      this.$get('iot-saas-basic/admin/internation/config/getConfig').then(res => {
-        this.dists = arrayToObj(res.dists, 'code')
-        this.modules = arrayToObj(res.modules, 'code')
-        this.types = arrayToObj(res.types, 'code')
+      this.$post('iot-saas-basic/admin/sys/dict/query', {
+        key: 'SYSTEM_INTERNATION_LAN'
+      }).then(res => {
+        this.dists = arrayToObj(res, 'distValue')
+      })
+
+      this.$post('iot-saas-basic/admin/sys/dict/query', {
+        key: 'SYSTEM_MODULE'
+      }).then(res => {
+        this.modules = arrayToObj(res, 'distValue')
       })
     },
 
