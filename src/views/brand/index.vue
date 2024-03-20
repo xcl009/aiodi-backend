@@ -221,7 +221,6 @@
       <template v-if="dialogType == 12">
         <div class="pl-20 pr-20 channel-box" v-if="brandChannels.length > 0">
           <div class="mb-15">排序值越大越靠前</div>
-
           <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': item.status == 'ENABLE'}" v-for="item in brandChannels">
             <el-avatar class="block" :size="35" :src="item.logo" fit="cover" shape="square"></el-avatar>
             <div class="pl-10 pr-10 flex-1" :class="{'text-bold text-black': item.status == 'ENABLE'}">{{ item.name }}</div>
