@@ -29,7 +29,7 @@
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" highlight-current-row>
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" highlight-current-row @sort-change="sortChange">
         <el-table-column :label="$t('public.img')" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
@@ -60,7 +60,7 @@
             {{ scope.row.totalConsumption || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.walletBalance')" v-if="isSaas() || isBrand()">
+        <el-table-column :label="$t('public.walletBalance')" v-if="isSaas() || isBrand()" column-key="orderByBalance" sortable>
           <template slot-scope="scope">
             <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(scope.row)" v-if="checkAbility(['WD_MODIFY'], 3)">
               {{ scope.row.accountBalance || '0.00' }}
@@ -68,6 +68,11 @@
             <div class="cursor" v-else>
               {{ scope.row.accountBalance || '0.00' }}
             </div>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('store.loginTime')" width="150">
+          <template slot-scope="scope">
+            {{ parseTime(scope.row.lastLoginTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>
         </el-table-column>
         <el-table-column :label="$t('userManage.registrationDate')" width="150">
@@ -78,7 +83,7 @@
         <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
-              <el-button type="primary" size="mini" @click="$router.push({path: `/order?userId=${scope.row.id}`})">{{ $t('public.orderList') }}</el-button>
+              <el-button type="primary" size="mini" @click="$router.push({path: `/order/allOrder?userId=${scope.row.id}`})">{{ $t('public.orderList') }}</el-button>
               <el-button :type="scope.row.status == 1 ? 'danger' : ''" size="mini" @click="setBlack(scope.row)">{{ scope.row.status == 1 ? $t('userManage.restore') : $t('userManage.block') }}</el-button>
             </div>
           </template>
@@ -164,8 +169,13 @@
       /**
        * 搜索查询
        */
-      toQuery() {
+      toQuery(type = 1) {
         if(this.clickSubmit) return
+        if(type == 1){
+          delete this.form['orderByBalance']
+          delete this.form.desc
+          this.$refs.list_table.clearSort()
+        }
         this.clickSubmit = true
         this.listQuery.page = 1
         this.listQuery.size = 20
@@ -182,6 +192,21 @@
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
+      },
+
+      /**
+       * 排序
+       */
+      sortChange({ column, prop, order }) {
+        this.form = {}
+        if (order) {
+          this.form[column.columnKey] = true
+          this.form.desc = (order == 'ascending' ? 0 : 1)
+        } else {
+          delete this.form[column.columnKey]
+          delete this.form.desc
+        }
+        this.toQuery(2)
       },
 
       /**

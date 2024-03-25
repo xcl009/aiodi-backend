@@ -188,7 +188,7 @@ export default {
           let type = '$post'
           if (params.userId) type = '$put'
           params.roleId = this.roleId
-          if(param.username) param.username = this.trim(param.username)
+          if(params.username) params.username = this.trim(params.username)
           this[type](`iot-saas-user/auth/user`, params).then(res => {
             this.$message({
               message: that.$t('public.operationSuccessful'),

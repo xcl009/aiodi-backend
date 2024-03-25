@@ -77,7 +77,12 @@
         </el-table-column>
         <el-table-column :label="`${$t('brand.withdrawableAmount')}(${$t('public.element')})`" width="120">
           <template slot-scope="scope">
-            <span class="cursor text-blue">{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</span>
+            <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(cashStat[scope.row.id] || {})" v-if="checkAbility(['WD_MODIFY'], 3)">
+              {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+            </div>
+            <div class="cursor" v-else>
+              {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('brand.dividendRatio')">
@@ -377,6 +382,7 @@
 
     <AssignAbility ref="AssignAbilitys"></AssignAbility>
     <VendorMode ref="VendorModes" v-if="myDeviceId['VM']"></VendorMode>
+    <update-blance ref="UpdateBlances" userType="store" v-if="checkAbility(['WD_MODIFY'], 3)"></update-blance>
   </div>
 </template>
 
@@ -388,6 +394,7 @@ import VendorMode from '@/components/VendorMode/'
 import AssignAbility from '@/components/AssignAbility/'
 import ImportData from '@/components/ImportData/'
 import selectSearch from '@/components/condition/selectSearch'
+import UpdateBlance from '@/components/UpdateBlance/'
 export default {
   name: 'agent',
   components: {
@@ -396,7 +403,8 @@ export default {
     VendorMode,
     AssignAbility,
     ImportData,
-    selectSearch
+    selectSearch,
+    UpdateBlance
   },
   props: {
     lowerAgent: {

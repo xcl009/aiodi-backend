@@ -11,6 +11,9 @@
             <el-form-item :label="$t('role.roleDescription')" prop="remark">
               <el-input v-model="form.remark" :placeholder="$t('role.roleDescriptionText')" />
             </el-form-item>
+            <el-form-item>
+              <div>温馨提示：添加自定义角色选择功能权限，账号在移动端登录时，不是所有勾选的页面、功能权限都已开放</div>
+            </el-form-item>
           </el-col>
         </el-row>
 
@@ -25,8 +28,9 @@
           <el-table-column>
             <template slot-scope="scope">
               <div v-if="scope.row.childrenAuthList">
-                <el-checkbox v-model="selMenu[item.id]" v-for="(item, index) in scope.row.childrenAuthList">{{ item.name
-                }}</el-checkbox>
+                <template v-for="(item, index) in scope.row.childrenAuthList">
+                  <el-checkbox v-model="selMenu[item.id]" v-if="item.serviceMarket == 'NO'">{{ item.name }}</el-checkbox>
+                </template>
               </div>
             </template>
           </el-table-column>
@@ -83,27 +87,34 @@ export default {
       this.$get('iot-saas-user/auth/menu', {
         ifTreeStructure: true
       }).then(res => {
-        this.mentList = res
+        let mentList = []
+        res.forEach(item => {
+          if(item.label == 'ROLE_MANAGE') return
+          mentList.push(item)
+        })
+        this.mentList = mentList
         this.listLoading = false
       })
-      this.$get('iot-saas-user/auth/allMenu', {
-        roleId: this.roleId || 1
-      }).then(res => {
-        this.form = {
-          name: res.roleName,
-          remark: res.describe
-        }
-        let selMenu = {}
-        res.menus.map(item => {
-          selMenu[item.id]= true
-          if(item.childrenAuthList && item.childrenAuthList.length > 0){
-            item.childrenAuthList.map(sitem => {
-              selMenu[sitem.id]= true
-            })
+      if(this.roleId > 0){
+        this.$get('iot-saas-user/auth/allMenu', {
+          roleId: this.roleId
+        }).then(res => {
+          this.form = {
+            name: res.roleName,
+            remark: res.describe
           }
+          let selMenu = {}
+          res.menus.map(item => {
+            selMenu[item.id]= true
+            if(item.childrenAuthList && item.childrenAuthList.length > 0){
+              item.childrenAuthList.map(sitem => {
+                selMenu[sitem.id]= true
+              })
+            }
+          })
+          this.selMenu = selMenu
         })
-        this.selMenu = selMenu
-      })
+      }
     },
 
     onSubmit(formName) {

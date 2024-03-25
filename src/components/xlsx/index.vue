@@ -48,7 +48,6 @@ export default {
       let fix = document.querySelector('.el-table__fixed-right')
       let xlsxParam = { raw: true }
       let wb
-      console.log(end,pages,cbk)
       if (fix) {
         this.wbout[this.wi] = XLSX.utils.table_to_book(document.querySelector(`#${this.table_id}`).removeChild(fix), xlsxParam)
         document.querySelector(`#${this.table_id}`).appendChild(fix)
