@@ -127,6 +127,9 @@ export default {
     }
   },
   computed: {
+    device() {
+      return this.$store.state.app.device
+    },
     agentInfo() {
       return this.$store.getters.agentInfo
     },

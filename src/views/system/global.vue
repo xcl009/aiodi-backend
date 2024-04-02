@@ -83,27 +83,32 @@
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
       <template v-if="dialogType == 1 || dialogType == 2">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
-          <el-form-item :label="$t('system.langType')">
-            <el-select v-model="dform.langType">
-              <el-option :label="item.distLable" :value="item.distValue" :key="index" v-for="(item, index) in dists"></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item :label="$t('system.module')">
             <el-select v-model="dform.sysMod">
               <el-option :label="item.distLable" :value="item.distValue" :key="index" v-for="(item, index) in modules" />
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('system.contextCode')">
-            <el-input v-model="dform.contextCode" :placeholder="$t('system.contextCode')"></el-input>
+            <el-select v-model="dform.contextCode">
+              <el-option :label="item" :value="idx + 1" :key="idx" v-for="(item, idx) in ['exception', 'detail', 'body', 'open_front' , 'front']" />
+            </el-select>
           </el-form-item>
           <el-form-item :label="$t('system.languageEncoding')">
             <el-input v-model="dform.lanLable" :placeholder="$t('system.languageEncoding')"></el-input>
           </el-form-item>
-          <el-form-item :label="$t('system.languageContent')">
-            <el-input v-model="dform.lanValue" :placeholder="$t('public.content')" style="width: 600px;"></el-input>
-          </el-form-item>
-          <el-form-item :label="$t('system.memo')">
-            <el-input v-model="dform.remark" :placeholder="$t('system.memo')" type="textarea" :rows="4" />
+          <!-- <el-form-item :label="$t('system.memo')">
+            <el-input v-model="dform.remark" :placeholder="$t('system.memo')" type="textarea" :rows="2" />
+          </el-form-item> -->
+          <template v-if="!dform.id">
+            <h4>{{ $t('system.languageContent') }}</h4>
+            <template v-for="(item, index) in dists">
+              <el-form-item :label="`${item.distLable}${item.remark ? '('+item.remark+')' : ''}`">
+                <el-input v-model="langForm[item.distValue]" :placeholder="item.distLable" type="textarea" :rows="2" style="width: 500px;"></el-input>
+              </el-form-item>
+            </template>
+          </template>
+          <el-form-item :label="$t('system.languageContent')" v-if="dform.id">
+            <el-input v-model="dform.lanValue" :placeholder="$t('public.content')" type="textarea" :rows="2" style="width: 500px;"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -161,6 +166,8 @@ export default {
       curRow: {},
       curIdx: 0,
       dform: {},
+      langForm: {},
+
 
       /**
        * 列的配置化对象，存储配置信息
@@ -275,7 +282,6 @@ export default {
       this.listQuery.page = 1
       this.listQuery.size = 20
       this.getList()
-      console.log(this.form, 'this.form')
     },
 
     /**
@@ -333,6 +339,7 @@ export default {
           this.curIdx = idx
           this.drawerStatus = true
           this.dform = {}
+          this.langForm = {}
           if (dialogType == 2) {
             this.dform = JSON.parse(JSON.stringify(row))
           }
@@ -347,31 +354,49 @@ export default {
       let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
-        params = JSON.parse(JSON.stringify(this.dform))
+        params = JSON.parse(JSON.stringify(this.dform)),
+        langForm = JSON.parse(JSON.stringify(this.langForm))
       switch (this.dialogType) {
-        case 1: case 2:
-          let url = 'iot-saas-basic/admin/lan/save'
-          if (this.dialogType == 2) {
-            url = 'iot-saas-basic/admin/lan/update'
-          } else {
-            for (const key in this.dists) {
-              if (this.dists[key] == params.lanTypeName) {
-                params.lanType = key;
-              }
+        case 1:
+          let url = 'iot-saas-basic/admin/lan/save', endKey = Object.keys(this.dists)[Object.keys(this.dists).length - 1]
+          for (var key in this.dists) {
+            if(langForm[key]){
+              params.lanValue = langForm[key]
+              params.lanType = this.dists[key].id
+              params.lanTypeName = key
+              this.$post(url, params).then(res => {
+                if(endKey == key){
+                  this.$message({
+                    message: that.$t('public.operationSuccessful'),
+                    type: 'success'
+                  })
+                  this.toQuery()
+                  this.drawerStatus = false
+                  this.clickSubmit = false
+                }
+              }).catch(err => {
+                if(endKey == key){
+                  this.clickSubmit = false
+                }
+              })
+            }else if(endKey == key){
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.toQuery()
+              this.drawerStatus = false
+              this.clickSubmit = false
             }
-
           }
-          this.$post(url, params).then(res => {
+          break
+        case 2:
+          this.$post('iot-saas-basic/admin/lan/update', params).then(res => {
             this.$message({
-              message: that.$t('public.operationSuccessful'),
+              message: this.$t('public.operationSuccessful'),
               type: 'success'
             })
-            if (this.dialogType == 2) {
-              this.list[curIdx] = params;
-              // console.log(this.curRow,'curRow')
-            } else {
-              this.toQuery()
-            }
+            this.list[curIdx] = params
             this.drawerStatus = false
             this.clickSubmit = false
           }).catch(err => {

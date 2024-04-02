@@ -1369,14 +1369,16 @@ export default {
             }
           }
           this.orderList = rows
-          let orderTable = this.$refs.orderTable.bodyWrapper
-          clearInterval(this.orderTableTimer)
-          this.orderTableTimer = setInterval(() => {
-            orderTable.scrollTop += 1
-            if (orderTable.clientHeight + orderTable.scrollTop + 1 > orderTable.scrollHeight) {
-              orderTable.scrollTop = 0
-            }
-          }, 50)
+          this.$nextTick(() => {
+            let orderTable = this.$refs.orderTable.bodyWrapper
+            clearInterval(this.orderTableTimer)
+            this.orderTableTimer = setInterval(() => {
+              orderTable.scrollTop += 1
+              if (orderTable.clientHeight + orderTable.scrollTop + 1 > orderTable.scrollHeight) {
+                orderTable.scrollTop = 0
+              }
+            }, 50)
+          })
         }
       })
     },

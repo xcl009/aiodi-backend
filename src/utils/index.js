@@ -493,8 +493,8 @@ const util = {
    */
   accMul: (arg1, arg2) => {
     var c = 0,
-      d = arg1 ? arg1.toString() : 0,
-      e = arg2 ? arg2.toString() : 0;
+      d = arg1 ? arg1.toString() : '0',
+      e = arg2 ? arg2.toString() : '0';
     try {
       c += d.split(".")[1].length;
     } catch (f) { }

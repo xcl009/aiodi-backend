@@ -48,7 +48,7 @@
               </el-popconfirm>
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('device.popUpThisTreasure')" @onConfirm="singleEject(scope.row, 3)"
-                v-if="scope.row.terminalId && isBrand()">
+                v-if="scope.row.terminalId">
                 <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? $t('public.popUp') :
                   $t('device.danbao') }}</el-button>
               </el-popconfirm>

@@ -691,7 +691,7 @@ export default {
   },
   props: {
     lowerAgent: {
-      type: Boolean,
+      type: String,
       default: false
     }
   },
