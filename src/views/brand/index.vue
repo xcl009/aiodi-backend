@@ -353,6 +353,11 @@ export default {
           key: 'amount',
           val: true,
           name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
+        },
+        {
+          key: 'expiresTime',
+          val: true,
+          name: `${this.$t('public.expirationTime')}`
         }
       ]
     },
