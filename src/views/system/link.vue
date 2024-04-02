@@ -121,6 +121,13 @@ export default {
       let that = this;
       let params = new FormData()
       params.append('file', file)
+      let reader = new FileReader()
+      //将上传的文件读取成text
+      reader.onload = function () {
+        console.log(reader.result,'reader');
+      }
+      reader.readAsText(file)
+      return
       this.loadObj = this.$loading({
         lock: true,
         text: that.$t('system.uploading'),

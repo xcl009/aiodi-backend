@@ -219,22 +219,32 @@
         </el-form>
       </template>
       <template v-if="dialogType == 12">
-        <div class="pl-20 pr-20 channel-box" v-if="brandChannels.length > 0">
-          <div class="mb-15">排序值越大越靠前</div>
-          <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': item.status == 'ENABLE'}" v-for="item in brandChannels">
-            <el-avatar class="block" :size="35" :src="item.logo" fit="cover" shape="square"></el-avatar>
-            <div class="pl-10 pr-10 flex-1" :class="{'text-bold text-black': item.status == 'ENABLE'}">{{ item.name }}</div>
-            <div class="flex align-center sort-box text-center">
-              <template v-if="item.status == 'ENABLE'">
-                <span class="mr-5">排序值</span>
-                <el-input class="flex-1" v-model="item.sort" type="number"/>
-              </template>
+        <div class="pl-20 pr-20 channel-box">
+          <el-radio-group v-model="dform.sourceType" @change="getBrandCannel()">
+            <el-radio-button :label="key" v-for="(item, key) in Constant.SourceType">{{ item }}</el-radio-button>
+            <el-radio-button label="5">H5</el-radio-button>
+          </el-radio-group>
+
+          <template v-if="brandChannels.length > 0">
+            <div class="mt-15 mb-15">排序值越大越靠前</div>
+            <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': item.status == 'ENABLE'}" v-for="item in brandChannels">
+              <el-avatar class="block" :size="35" :src="item.logo" fit="cover" shape="square"></el-avatar>
+              <div class="pl-10 pr-10 flex-1" :class="{'text-bold text-black': item.status == 'ENABLE'}">{{ item.name }}</div>
+              <div class="flex align-center sort-box text-center">
+                <template v-if="item.status == 'ENABLE'">
+                  <span class="mr-5">排序值</span>
+                  <el-input class="flex-1" v-model="item.sort" type="number"/>
+                </template>
+              </div>
+              <div class="pay-config text-primary text-center">
+                <span v-if="item.status == 'ENABLE' && item.code != 'BALANCE'" @click.stop="setRows(1, item, 13)">{{ $t('brand.payConfig') }}</span>
+              </div>
+              <el-checkbox v-model="item.status" true-label="ENABLE" false-label="DISABLE"></el-checkbox>
             </div>
-            <div class="pay-config text-primary text-center">
-              <span v-if="item.status == 'ENABLE' && item.code != 'BALANCE'" @click.stop="setRows(1, item, 13)">{{ $t('brand.payConfig') }}</span>
-            </div>
-            <el-checkbox v-model="item.status" true-label="ENABLE" false-label="DISABLE"></el-checkbox>
-          </div>
+          </template>
+          <template v-else>
+            <div class="mt-15 mb-15">暂无可配置通道</div>
+          </template>
         </div>
       </template>
       <template v-if="dialogType == 13">
@@ -243,7 +253,7 @@
             <i class="text-primary el-icon-arrow-left cursor fs-a1" @click="dialogType = 12"></i>
           </el-form-item>
           <el-form-item :label="$t('brand.appType')">
-            <el-select v-model="dform.sourceType" class="tfixed">
+            <el-select v-model="dform.sourceType" class="tfixed" disabled>
               <el-option :label="item" :value="parseInt(key)" v-for="(item, key) in Constant.SourceType" />
             </el-select>
           </el-form-item>
@@ -277,6 +287,49 @@
             </el-form-item>
             <el-form-item :label="$t('miniProgram.alipayRootCert')">
               <el-input v-model="dform.content.alipayRootCert" type="textarea" :rows="6"></el-input>
+            </el-form-item>
+          </template>
+          <template v-if="curRow.code == 'WECHAT_APP' && dform.content">
+            <el-form-item label="MCHID">
+              <el-input v-model="dform.content.merchantId"></el-input>
+            </el-form-item>
+            <el-form-item label="apiV3Key">
+              <el-input v-model="dform.content.apiV3Key"></el-input>
+            </el-form-item>
+            <el-form-item label="merchantSerialNumber">
+              <el-input v-model="dform.content.merchantSerialNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="apiclientKey">
+              <el-input v-model="dform.content.apiclientKey" type="textarea" :rows="6"></el-input>
+            </el-form-item>
+            <el-form-item label="payNotifyUrl">
+              <el-input v-model="dform.content.payNotifyUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="refundNotifyUrl">
+              <el-input v-model="dform.content.refundNotifyUrl"></el-input>
+            </el-form-item>
+          </template>
+          <template v-if="['VNPAY_APP','VNPAY_H5'].indexOf(curRow.code) > -1 && dform.content">
+            <el-form-item label="secretKey">
+              <el-input v-model="dform.content.secretKey"></el-input>
+            </el-form-item>
+            <el-form-item label="appReturnUrl">
+              <el-input v-model="dform.content.appReturnUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="h5ReturnUrl">
+              <el-input v-model="dform.content.h5ReturnUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="payUrl">
+              <el-input v-model="dform.content.payUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="apiUrl">
+              <el-input v-model="dform.content.apiUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="tmnCode">
+              <el-input v-model="dform.content.tmnCode"></el-input>
+            </el-form-item>
+            <el-form-item label="refundUrl">
+              <el-input v-model="dform.content.refundUrl"></el-input>
             </el-form-item>
           </template>
         </el-form>
@@ -654,9 +707,9 @@
               })
             } else if (dialogType == 12) {
               this.dform = {
-                channels: {}
+                sourceType: 4
               }
-              this.getBrandCannel(row.id)
+              this.getBrandCannel()
 
               // let channels = {}
               // this.$get('iot-saas-pay/admin/pay/channel/all').then(res => {
@@ -696,9 +749,10 @@
        * 获取品牌支付通道
        * @param {Object} id
        */
-      getBrandCannel(id){
+      getBrandCannel(){
         this.$get('iot-saas-pay/admin/pay/channel', {
-          brandId: id,
+          brandId: this.curRow.id,
+          sourceType: this.dform.sourceType
         }).then(res => {
           this.brandChannels = res
         })
@@ -878,7 +932,7 @@
                 message: that.$t('public.operationSuccessful'),
                 type: 'success'
               })
-              this.getBrandCannel(curRow.id)
+              this.getBrandCannel()
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
@@ -893,7 +947,7 @@
                 type: 'success'
               })
               this.dialogType = 12
-              this.getBrandCannel(params.brandId)
+              this.getBrandCannel()
               this.clickSubmit = false
             }).catch(err => {
               this.clickSubmit = false
@@ -911,7 +965,6 @@
             }
             this.dialogType = 15
             this.clickSubmit = false
-            console.log(this.dform)
             break
           case 15:
             params.content = JSON.stringify(params.content)
