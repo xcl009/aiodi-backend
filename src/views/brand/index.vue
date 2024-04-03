@@ -222,7 +222,6 @@
         <div class="pl-20 pr-20 channel-box">
           <el-radio-group v-model="dform.sourceType" @change="getBrandCannel()">
             <el-radio-button :label="key" v-for="(item, key) in Constant.SourceType">{{ item }}</el-radio-button>
-            <el-radio-button label="5">H5</el-radio-button>
           </el-radio-group>
 
           <template v-if="brandChannels.length > 0">

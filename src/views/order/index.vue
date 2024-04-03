@@ -136,7 +136,7 @@
             </el-table-column>
             <el-table-column :label="`${$t('order.source')}`" width="50" v-if="item.val && item.key == 'sourceType'">
               <template slot-scope="scope">
-                <span v-if="scope.row.sourceType == 3">{{ $t('order.admin') }}</span>
+                <span v-if="scope.row.sourceType >= 3">{{ Constant.SourceType[scope.row.sourceType] }}</span>
                 <i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="scope.row.sourceType == 1"></i>
                 <i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
               </template>
