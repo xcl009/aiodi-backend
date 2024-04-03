@@ -130,7 +130,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="95" v-else-if="item.val && item.key == 'onlineStatus'">
             <template slot-scope="scope">
-              <div v-if="scope.row.onlineStatus && checkAbility(['PA', 'VG', 'AV', 'BD'], 2, [scope.row.deviceType])">
+              <div v-if="scope.row.onlineStatus && checkAbility(['PA', 'DC', 'VG', 'AV', 'BD'], 2, [scope.row.deviceType])">
                 <el-popover trigger="hover">
                   <div>{{ scope.row.updateTime }}</div>
                   <span class="cursor text-primary" slot="reference" v-if="scope.row.onlineStatus == 'ONLINE'">{{

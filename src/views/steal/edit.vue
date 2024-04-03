@@ -248,7 +248,7 @@
 
         <el-form-item class="mt-10">
           <el-button type="primary" @click="onSubmit">{{ $t('public.submitNow') }}</el-button>
-          <el-button type="info" @click="delRule" v-if="form.id">删除</el-button>
+          <el-button type="warning" plain @click="delRule" v-if="form.brandId && ((form[userKey] == id) || (!userKey && !id))">删除</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -374,7 +374,7 @@ export default {
               storeId: this.form.storeId
             }).then(res => {
               this.$message({
-                message: that.$t('public.setSuccess'),
+                message: this.$t('public.setSuccess'),
                 type: 'success'
               })
               this.$router.back()

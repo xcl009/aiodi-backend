@@ -31,7 +31,7 @@
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
         <template v-for="item in showColumn" v-if="item.val">
-          <el-table-column :label="$t('brand.brandInfo')" width="150" v-if="item.key == 'name'">
+          <el-table-column :label="item.name" width="150" v-if="item.key == 'name'">
             <template slot-scope="scope">
               <div class="mb-5 cursor" @click="copyText(scope.row.id)">{{ scope.row.name || $t('brand.brandName') }}</div>
               <el-tooltip class="item" effect="dark" :content="scope.row.brandUser.mobile" placement="top"
@@ -40,7 +40,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.brandInfo')" min-width="160" v-else-if="item.key == 'companyName'">
+          <el-table-column :label="item.name" min-width="160" v-else-if="item.key == 'companyName'">
             <template slot-scope="scope">
               <div class="flex align-center">
                 <el-avatar shape="square" :size="35" fit="cover" :src="scope.row.logo"></el-avatar>
@@ -48,12 +48,17 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.timeOfEntry')" width="130" v-else-if="item.key == 'createTime'">
+          <el-table-column :label="item.name" width="130" v-else-if="item.key == 'createTime'">
             <template slot-scope="scope">
               {{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.regimentalCommander')" width="100" v-else-if="item.key == 'isLeader'">
+          <el-table-column :label="item.name" width="130" v-else-if="item.key == 'expiresTime'">
+            <template slot-scope="scope">
+              {{ parseTime(scope.row.expiresTime, '{y}-{m}-{d}') }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="100" v-else-if="item.key == 'isLeader'">
             <template slot-scope="scope">
               <div class="text-primary cursor" v-if="scope.row.isLeader == 1">{{ $t('brand.regimentalCommander') }}</div>
               <div class="text-primary cursor" @click="setRow(3, scope.row)"
@@ -62,7 +67,7 @@
               <div class="mb-5" v-else>{{ scope.row.leaderBrandName || '--' }}</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.category')" width="200" v-else-if="item.key == 'brandDeviceType'">
+          <el-table-column :label="item.name" width="200" v-else-if="item.key == 'brandDeviceType'">
             <template slot-scope="scope">
               <div>
                 <span class="mr-20 inline" v-for="item in scope.row.brandDeviceType">
@@ -71,7 +76,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.numberOfDevices')" min-width="100" v-else-if="item.key == 'deviceCount'">
+          <el-table-column :label="item.name" min-width="100" v-else-if="item.key == 'deviceCount'">
             <template slot-scope="scope">
               <div class="inline text-left" @click="$router.push({ path: `/device?brandId=${scope.row.id}` })">
                 <div>{{ $t('public.all') }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}
@@ -81,7 +86,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.orderNum')" width="120" v-else-if="item.key == 'orderCount'">
+          <el-table-column :label="item.name" width="120" v-else-if="item.key == 'orderCount'">
             <template slot-scope="scope">
               <div class="inline text-left">
                 <div>{{ $t('payType.wx') }}：<el-link type="primary"
@@ -105,7 +110,7 @@
               </div>
             </template>
           </el-table-column> -->
-          <el-table-column :label="`${$t('public.aTurnover')}(${$t('public.element')})`" width="120"
+          <el-table-column :label="item.name" width="120"
             v-else-if="item.key == 'amount'">
             <template slot-scope="scope">
               {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
@@ -442,7 +447,7 @@ export default {
         this.listLoading = false
       })
     },
-    
+
     /**
      * 订单数量统计查询
      */
@@ -458,7 +463,7 @@ export default {
         this.orderCount = res
       })
     },
-    
+
     /**
      * 设备数量统计查询
      */

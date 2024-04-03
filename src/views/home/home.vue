@@ -196,13 +196,13 @@
                 {{ scope.row.amountDeposit || 0 }}
               </template>
             </el-table-column>
-            <el-table-column :label="$t('home.seizuresNum')" min-width="120" v-if="isSaas() || isBrand()">
+            <el-table-column :label="$t('home.alldeposit')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
                 {{ scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) -
                   Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0 }}
               </template>
             </el-table-column>
-            <el-table-column :label="$t('home.seizuresNum')" min-width="160" v-if="isSaas() || isBrand()">
+            <el-table-column :label="$t('home.allRefunded')" min-width="160" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
                 {{ scope.row.amountUnrefund || 0 }}
               </template>
