@@ -156,7 +156,7 @@
                       v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">{{
                         $t('public.weChatAccountSplitting') }}</el-dropdown-item>
                     <el-dropdown-item
-                      @click.native="$router.push({ path: `/device/orderOt?id=${scope.row.id}&userKey=agentId` })"
+                      @click.native="$router.push({ path: `/device/orderOt?id=${scope.row.id}&roleType=2` })"
                       v-if="isBrand()">{{
                         $t('device.deviceCost') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"

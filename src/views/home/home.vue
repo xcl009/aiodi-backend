@@ -130,7 +130,7 @@
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
                     <div>
                       {{ index == 0 ? querHistogram[key].amount + `${$t('public.element')}` : index == 1 ?
-                        querHistogram[key].orderNumber + `${$t('public.ones')}`
+                        querHistogram[key].orderNumber + `${$t('public.one')}`
                         : querHistogram[key].unitPrice + `${$t('public.element')}` }}
                     </div>
                   </template>

@@ -247,6 +247,10 @@
                         $t('public.weChatAccountSplitting') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, cashStat[scope.row.id], 6)"
                       v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
+                    <el-dropdown-item
+                      @click.native="$router.push({ path: `/device/orderOt?id=${scope.row.id}&roleType=3` })"
+                      v-if="isBrand()">{{
+                        $t('device.deviceCost') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, scope.row, 11)" v-if="isBrand()">{{
                       $t('public.setLoginPassword') }}</el-dropdown-item>
                     <template v-if="checkAbility(['WF'], 2, scope.row.storeDivisionConfig)">

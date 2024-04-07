@@ -17,7 +17,7 @@ export default {
     thisYear: '本年',
     lastYear: '去年',
     element: '元',
-    ones: '单',
+    one: '单',
     adds: '更多',
     store: '商户',
     user: '用户',
