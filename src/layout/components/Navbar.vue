@@ -52,6 +52,7 @@
                   <el-dropdown-item @click.native="waitOnLine('en_PH')">Pilipino</el-dropdown-item>
                   <el-dropdown-item @click.native="waitOnLine('ko_KR')">한국어</el-dropdown-item>
                   <el-dropdown-item @click.native="waitOnLine('ja_JP')">日本語</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine('es_ES')">Español</el-dropdown-item>
                   <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
