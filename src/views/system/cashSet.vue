@@ -319,10 +319,6 @@ export default {
                 maxAmount: 999999,
                 needApprovalAmount: 0,
                 orderRefundInd: false
-              },
-              {
-                startTime: '00:00',
-                endTime: '23:59'
               }
             ],
             days: [{ val: 1 }],
