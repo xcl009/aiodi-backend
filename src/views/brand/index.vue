@@ -238,6 +238,9 @@
               <div class="pay-config text-primary text-center">
                 <span v-if="item.status == 'ENABLE' && item.code != 'BALANCE'" @click.stop="setRows(1, item, 13)">{{ $t('brand.payConfig') }}</span>
               </div>
+              <div class="mr-20 text-primary text-center" v-if="item.status == 'ENABLE'">
+                <span @click.stop="item.access = (item.access == 'ENABLE' ? 'DISABLE' : 'ENABLE')">{{ item.access == 'ENABLE' ? '已接入' : '开通中' }}</span>
+              </div>
               <el-checkbox v-model="item.status" true-label="ENABLE" false-label="DISABLE"></el-checkbox>
             </div>
           </template>
@@ -921,8 +924,9 @@
             for(var i in this.brandChannels){
               channels.push({
                 channelId: this.brandChannels[i].channelId,
-                status: this.brandChannels[i].status == 'ENABLE' ? 1 : 0,
-                sort: this.brandChannels[i].sort
+                status: this.brandChannels[i].status,
+                sort: this.brandChannels[i].sort,
+                access: this.brandChannels[i].access
               })
             }
             params.channels = channels
@@ -1052,7 +1056,7 @@
 <style lang="scss" scoped>
   .channel-box{
     .channel-item{
-      width: 450px;
+      width: 500px;
       border: 2px solid #eee;
       &.act{
         border-color: var(--olive);
