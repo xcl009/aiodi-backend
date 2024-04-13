@@ -145,19 +145,19 @@
                 <el-col :sm="24" :lg="12" v-for="(name, xcx) in config.xcx_pay.default">
                   <div>
                     <div class="mb-10 text-dfs text-bold text-black">
-                      {{ $t('public.' + xcx) }}{{ $t('public.empty') }}{{ $t('store.billingSettings') }}
+                      {{ $t('payMode.' + xcx) }}{{ $t('public.empty') }}{{ $t('store.billingSettings') }}
                       <span class="ml-10 text-primary cursor" v-if="xcx == 'alipay'" @click="setAlipayMode(item)">{{
                         $t('store.synchronous') }}</span>
                     </div>
 
                     <el-form-item :label="`${$t('store.paymentMode')}`">
                       <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
-                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode)"
-                          :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode))[0]">{{
+                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode, xcx)"
+                          :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode), xcx)[0]">{{
                            $t('public.' + key) }}</el-radio-button>
                       </el-radio-group>
                       <el-popover placement="right" title="" trigger="hover"
-                        v-if="getModeType(item.deviceTypeCode)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode)['DEPOSIT']">
+                        v-if="getModeType(item.deviceTypeCode, xcx)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode, xcx)['DEPOSIT']">
                         <div>
                           {{ $t('store.text11') }}<el-link type="primary" :underline="false"
                             @click="$router.push({ path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=计费模式` })">{{
@@ -475,6 +475,10 @@ export default {
       defaultDevice.deviceTypeCode = deviceTypeCode
       defaultDevice.weixinPayMode.modeType = mode_way[0]
       defaultDevice.alipayPayMode.modeType = mode_way[0]
+      let mode_way_three = Object.values(this.config.mode_way[`${deviceTypeCode}_three`] || this.config.mode_way[deviceTypeCode] || this.config.mode_way.default)
+      defaultDevice.threePayMode.modeType = mode_way_three[0]
+      let mode_way_four = Object.values(this.config.mode_way[`${deviceTypeCode}_four`] || this.config.mode_way[deviceTypeCode] || this.config.mode_way.default)
+      defaultDevice.fourPayMode.modeType = mode_way_four[0]
       return new Promise((resolve, reject) => {
         if (!this.Ability['defaultBilling']) {
           this.$get(`iot-saas-basic/admin/billing/configs/findMax`, {
@@ -483,11 +487,19 @@ export default {
             if (res.deviceTypeCode) {
               defaultDevice.weixinPayMode = JSON.parse(res.wechatJson)
               defaultDevice.alipayPayMode = JSON.parse(res.alipayJson)
+              defaultDevice.threePayMode = res.threeJson ? JSON.parse(res.threeJson) : JSON.parse(res.wechatJson)
+              defaultDevice.fourPayMode = res.fourJson ? JSON.parse(res.fourJson) : JSON.parse(res.wechatJson)
               if (!this.Ability[`${deviceTypeCode}_${defaultDevice.weixinPayMode.modeType}`]) {
                 defaultDevice.weixinPayMode.modeType = mode_way[0]
               }
               if (!this.Ability[`${deviceTypeCode}_${defaultDevice.alipayPayMode.modeType}`]) {
                 defaultDevice.alipayPayMode.modeType = mode_way[0]
+              }
+              if (!this.Ability[`${deviceTypeCode}_${defaultDevice.threePayMode.modeType}`]) {
+                defaultDevice.threePayMode.modeType = mode_way_three[0]
+              }
+              if (!this.Ability[`${deviceTypeCode}_${defaultDevice.fourPayMode.modeType}`]) {
+                defaultDevice.fourPayMode.modeType = mode_way_four[0]
               }
               resolve(defaultDevice)
             } else {
@@ -495,12 +507,18 @@ export default {
                 `payModeDetail`]
               defaultDevice.alipayPayMode.payModeDetail = defaultFee(deviceTypeCode).alipayPayMode[
                 `payModeDetail`]
+              defaultDevice.threePayMode.payModeDetail = defaultFee(deviceTypeCode).threePayMode[
+                  `payModeDetail`]
+              defaultDevice.fourPayMode.payModeDetail = defaultFee(deviceTypeCode).fourPayMode[
+                    `payModeDetail`]
               resolve(defaultDevice)
             }
           })
         } else {
           defaultDevice.weixinPayMode.payModeDetail = defaultFee(deviceTypeCode).weixinPayMode[`payModeDetail`]
           defaultDevice.alipayPayMode.payModeDetail = defaultFee(deviceTypeCode).alipayPayMode[`payModeDetail`]
+          defaultDevice.threePayMode.payModeDetail = defaultFee(deviceTypeCode).weixinPayMode[`payModeDetail`]
+          defaultDevice.fourPayMode.payModeDetail = defaultFee(deviceTypeCode).alipayPayMode[`payModeDetail`]
           resolve(defaultDevice)
         }
       })
@@ -623,12 +641,36 @@ export default {
                 item.weixinPayMode.payModeDetail = this.defaultDevice.weixinPayMode[`payModeDetail`]
               }
             }
+            if (item.threePayMode) {
+              if (item.threePayMode.modeType == 'PACKAGE') {
+                item.threePayMode.payModeDetail = JSON.parse(item.threePayMode.payModeDetail)
+                item.threePayMode.payModeDetails = this.defaultDevice.threePayMode.payModeDetails
+              } else {
+                item.threePayMode.payModeDetails = JSON.parse(item.threePayMode.payModeDetail)
+                item.threePayMode.payModeDetail = this.defaultDevice.threePayMode[`payModeDetail`]
+              }
+            }
+            if (item.fourPayMode) {
+              if (item.fourPayMode.modeType == 'PACKAGE') {
+                item.fourPayMode.payModeDetail = JSON.parse(item.fourPayMode.payModeDetail)
+                item.fourPayMode.payModeDetails = this.defaultDevice.fourPayMode.payModeDetails
+              } else {
+                item.fourPayMode.payModeDetails = JSON.parse(item.fourPayMode.payModeDetail)
+                item.fourPayMode.payModeDetail = this.defaultDevice.fourPayMode[`payModeDetail`]
+              }
+            }
             item.alipayPayMode = (item.alipayPayMode ? item.alipayPayMode : item.weixinPayMode ? item
               .weixinPayMode : this.defaultDevice.alipayPayMode)
             item.weixinPayMode = (item.weixinPayMode ? item.weixinPayMode : item.alipayPayMode ? item
               .alipayPayMode : this.defaultDevice.weixinPayMode)
+            item.threePayMode = (item.threePayMode ? item.threePayMode : item.threePayMode ? item
+              .threePayMode : this.defaultDevice.threePayMode)
+            item.fourPayMode = (item.fourPayMode ? item.fourPayMode : item.fourPayMode ? item
+              .fourPayMode : this.defaultDevice.fourPayMode)
             item.alipayPayMode = JSON.parse(JSON.stringify(item.alipayPayMode))
             item.weixinPayMode = JSON.parse(JSON.stringify(item.weixinPayMode))
+            item.threePayMode = JSON.parse(JSON.stringify(item.threePayMode))
+            item.fourPayMode = JSON.parse(JSON.stringify(item.fourPayMode))
             item.storePayConfig = storePayConfig[item.deviceTypeCode]
             item.status = 1
             item.payConfigId = payConfigId[item.deviceTypeCode]
@@ -742,11 +784,45 @@ export default {
                   item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetails)
                 }
               }
+              if (item.threePayMode && item.threePayMode.payModeDetail) {
+                if (item.threePayMode.modeType == 'PACKAGE') {
+                  item.threePayMode.payModeDetail.map((packItem, packI) => {
+                    return packItem.tag = packI + 1
+                  })
+                  item.threePayMode.payModeDetail = JSON.stringify(item.threePayMode.payModeDetail)
+                } else {
+                  if(item.threePayMode.payModeDetails.maxAmount > item.threePayMode.payModeDetails.depositAmount && (item.threePayMode.modeType == 'DEPOSIT' || item.threePayMode.modeType == 'DEPOSIT_AND_FREE')){
+                    error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
+                    break
+                  }else if(item.threePayMode.modeType == 'DEPOSIT_FREE'){
+                    item.threePayMode.payModeDetails.depositAmount = item.threePayMode.payModeDetails.maxAmount
+                  }
+                  item.threePayMode.payModeDetail = JSON.stringify(item.threePayMode.payModeDetails)
+                }
+              }
+              if (item.fourPayMode && item.fourPayMode.payModeDetail) {
+                if (item.fourPayMode.modeType == 'PACKAGE') {
+                  item.fourPayMode.payModeDetail.map((packItem, packI) => {
+                    return packItem.tag = packI + 1
+                  })
+                  item.fourPayMode.payModeDetail = JSON.stringify(item.fourPayMode.payModeDetail)
+                } else {
+                  if(item.fourPayMode.payModeDetails.maxAmount > item.fourPayMode.payModeDetails.depositAmount && (item.fourPayMode.modeType == 'DEPOSIT' || item.fourPayMode.modeType == 'DEPOSIT_AND_FREE')){
+                    error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
+                    break
+                  }else if(item.fourPayMode.modeType == 'DEPOSIT_FREE'){
+                    item.fourPayMode.payModeDetails.depositAmount = item.fourPayMode.payModeDetails.maxAmount
+                  }
+                  item.fourPayMode.payModeDetail = JSON.stringify(item.fourPayMode.payModeDetails)
+                }
+              }
               let division = {
                 closeType: item.closeType,
                 deviceTypeCode: item.deviceTypeCode,
                 alipayPayMode: item.alipayPayMode,
-                weixinPayMode: item.weixinPayMode
+                weixinPayMode: item.weixinPayMode,
+                threePayMode: item.threePayMode || this.defaultDevice.threePayMode,
+                fourPayMode: item.fourPayMode || this.defaultDevice.fourPayMode
               }
               if (item.id) division.id = item.id
               division.live = item.live || 0
@@ -850,8 +926,8 @@ export default {
     /**
      * 获取设备支持模式
      */
-    getModeType(code) {
-      return this.config.mode_way[code] ? this.config.mode_way[code] : this.config.mode_way.default
+    getModeType(code, xcx) {
+      return this.config.mode_way[`${code}_${xcx}`] ? this.config.mode_way[`${code}_${xcx}`] : this.config.mode_way[code] ? this.config.mode_way[code] : this.config.mode_way.default
     },
 
     /**
@@ -892,7 +968,9 @@ export default {
             deviceTypeCode: item.deviceTypeCode,
             agentId: this.isBrand() ? 0 : this.agentInfo.agentId,
             wechatJson: JSON.stringify(item.weixinPayMode),
-            alipayJson: JSON.stringify(item.alipayPayMode)
+            alipayJson: JSON.stringify(item.alipayPayMode),
+            threeJson: JSON.stringify(item.threePayMode),
+            fourJson: JSON.stringify(item.fourPayMode)
           }
           this.$post('iot-saas-basic/admin/billing/configs/save', params).then(res => { })
         }

@@ -88,10 +88,13 @@
               <el-option :label="item.distLable" :value="item.distValue" :key="index" v-for="(item, index) in modules" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('system.contextCode')">
+          <!-- <el-form-item :label="$t('system.contextCode')">
             <el-select v-model="dform.contextCode">
               <el-option :label="item" :value="idx + 1" :key="idx" v-for="(item, idx) in ['exception', 'detail', 'body', 'open_front' , 'front']" />
             </el-select>
+          </el-form-item> -->
+          <el-form-item :label="$t('system.contextCode')">
+            <el-input v-model="dform.contextCode" :placeholder="$t('system.contextCode')"></el-input>
           </el-form-item>
           <el-form-item :label="$t('system.languageEncoding')">
             <el-input v-model="dform.lanLable" :placeholder="$t('system.languageEncoding')"></el-input>

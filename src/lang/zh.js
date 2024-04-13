@@ -1956,4 +1956,10 @@ export default {
     associatedGoods: '关联商品',
     addTemp: '添加模板',
   },
+  payMode: {
+    weixin: '微信',
+    alipay: '支付宝',
+    three: 'APP',
+    four: '其他'
+  }
 };

@@ -32,12 +32,20 @@
     },
     "WM": {
       "套餐": "PACKAGE"
+    },
+    "PA_three": {
+      "余额": "DEPOSIT"
+    },
+    "PA_four": {
+      "余额": "DEPOSIT"
     }
   },
   "xcx_pay": {
     "default": {
       "weixin": "微信",
-      "alipay": "支付宝"
+      "alipay": "支付宝",
+      "three": "APP",
+      "four": "其他"
     }
   },
   "xcx_page": {

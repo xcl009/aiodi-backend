@@ -715,7 +715,59 @@ const util = {
           maxAmount: 99,
           depositAmount: 99
         },
-      }
+      },
+      threePayMode: {
+        modeType: 'PACKAGE',
+        WMpayModeDetail: [
+          {
+            time: '46',
+            money: 2
+          }
+        ],
+        payModeDetail: [
+          {
+            time: 60,
+            money: 2
+          }
+        ],
+        laundryMode: laundryMode,
+        payModeDetails: {
+          startingTime: 180,
+          startingAmount: 3,
+          overBillingUnit: 60,
+          unitPrice: 1,
+          maxBillingTimeUnit: 1440,
+          maxBillingTimePrice: 20,
+          maxAmount: 99,
+          depositAmount: 99
+        },
+      },
+      fourPayMode: {
+        modeType: 'PACKAGE',
+        WMpayModeDetail: [
+          {
+            time: '46',
+            money: 2
+          }
+        ],
+        payModeDetail: [
+          {
+            time: 60,
+            money: 2
+          }
+        ],
+        laundryMode: laundryMode,
+        payModeDetails: {
+          startingTime: 180,
+          startingAmount: 3,
+          overBillingUnit: 60,
+          unitPrice: 1,
+          maxBillingTimeUnit: 1440,
+          maxBillingTimePrice: 20,
+          maxAmount: 99,
+          depositAmount: 99
+        },
+      },
     }
     if (code && obj.weixinPayMode[`${code}payModeDetail`]) {
       obj.weixinPayMode.payModeDetail = obj.weixinPayMode[`${code}payModeDetail`]
