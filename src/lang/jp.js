@@ -1113,7 +1113,7 @@ export default {
       feedbackList: 'フィードバックレコード',
       loginTime: 'ログイン時間',
       loginRecord: 'ログオンレコード',
-      resetOPwdText: "設定した操作パスワードとID番号をクリアすることを示すリセット",
+      resetOPwdText: "リセット後の操作パスワードとセキュリティは両方とも 123456 です",
     },
     system: {
       miniProgramConfiguration: 'アプレット構成',

@@ -1114,7 +1114,7 @@ export default {
     feedbackList: 'Feedback Record',
     loginTime: 'Login time',
     loginRecord: 'Entry record',
-    resetOPwdText: "Reset means to clear the set operation password and ID number",
+    resetOPwdText: "After reset, the operation password and security are both 123456",
   },
   system: {
     miniProgramConfiguration: 'Mini Program Configuration',

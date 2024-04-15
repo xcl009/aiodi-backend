@@ -1120,7 +1120,7 @@ export default {
         feedbackList: 'Registro de comentarios',
         loginTime: 'Tiempo de inicio de sesión',
         loginRecord: 'Registro de inicio de sesión',
-        resetOPwdText: "Restablecer indica que se borrará la contrasena de operación y el número de identificación ya establecidos.",
+        resetOPwdText: "Después del reinicio, la contraseña de operación y la seguridad son 123456",
     },
     system: {
         miniProgramConfiguration: 'Configuración de mini programa',

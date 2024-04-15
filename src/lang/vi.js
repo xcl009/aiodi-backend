@@ -1114,7 +1114,7 @@ export default {
         feedbackList: 'Hồ sơ phản hồi',
         loginTime: 'Thời gian đăng nhập',
         loginRecord: 'Đăng nhập',
-        resetOPwdText: "Đặt lại có nghĩa là xóa mật khẩu hoạt động và số ID đã thiết lập",
+        resetOPwdText: "Sau khi thiết lập lại, mật khẩu hoạt động và bảo mật đều là 123456",
     },
     system: {
         miniProgramConfiguration: 'Cấu hình Tiểu dụng',
