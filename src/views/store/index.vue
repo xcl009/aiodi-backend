@@ -1327,7 +1327,8 @@ export default {
               type: 'success'
             })
             this.getList();
-            this.drawerStatus = false;
+            this.drawerStatus = false
+            this.clickSubmit = false
           }).catch(err => {
             this.clickSubmit = false
           })
@@ -1341,6 +1342,7 @@ export default {
               type: 'success'
             })
             this.drawerStatus = false
+            this.clickSubmit = false
           }).catch(err => {
             this.clickSubmit = false
           })
@@ -1355,6 +1357,7 @@ export default {
             })
             this.$set(curRow, 'remark', params.remark)
             this.drawerStatus = false
+            this.clickSubmit = false
           }).catch(err => {
             this.clickSubmit = false
           })

@@ -1120,7 +1120,7 @@ export default {
     feedbackList: '反馈记录',
     loginTime: '登录时间',
     loginRecord: '登录记录',
-    resetOPwdText: "重置表示清空已设置的操作密码及身份证号",
+    resetOPwdText: "重置后操作密码及密保均为123456",
   },
   system: {
     miniProgramConfiguration: '小程序配置',
