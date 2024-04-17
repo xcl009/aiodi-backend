@@ -311,6 +311,23 @@
             </div>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand()">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="fuwu"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">{{ $t('system.checkTwoPwd') }} </div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('system.setCheckTwoPwd') }} </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'IS_CHECK_TWOPASSWORD' }, 7)">{{
+                $t('public.setUp') }}</el-button>
+            </div>
+          </div>
+        </el-col>
 
         <el-col :span="24" class="pb-20 cursor">
           <div>{{ $t('system.development') }}</div>
@@ -401,10 +418,17 @@
           </el-form-item>
         </el-form>
       </template>
+      <template v-if="dialogType == 7">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
+          <el-form-item :label="$t('steal.isItEnabled')">
+            <el-switch v-model="dform.IS_CHECK_TWOPASSWORD" active-value="1" inactive-value="0" />
+            <div class="line-default fs-s3">{{ $t('system.setCheckTwoPwdText') }}</div>
+          </el-form-item>
+        </el-form>
+      </template>
       <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
         <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
-        }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
       </div>
     </el-drawer>
   </div>
@@ -446,7 +470,8 @@ export default {
         3: this.$t('system.setMap'),
         4: this.$t('system.setStore'),
         5: this.$t('steal.delayedOrder'),
-        6: this.$t('system.tiktok')
+        6: this.$t('system.tiktok'),
+        7: this.$t('system.checkTwoPwd')
       }
     }
   },
@@ -485,7 +510,7 @@ export default {
           this.dialogType = dialogType
           this.curRow = row
           this.curIdx = idx
-          if([1, 2, 3, 4, 5, 6].indexOf(dialogType) > -1){
+          if([1, 2, 3, 4, 5, 6, 7].indexOf(dialogType) > -1){
             this.$get('iot-saas-basic/admin/settings/find', {
               code: row.code
             }).then(res => {
@@ -509,20 +534,20 @@ export default {
                     nearStore: 1
                   }
                   break
-                  case 4:
-                    this.dform = {
-                      checkIncome: 1,
-                      checkMouthStat: 1,
-                      checkMouthStatSp: 0,
-                      checkOrder: 0,
-                      checkMouthStatAgent: 1,
-                      checkMouthStatSpAgent: 0,
-                    }
+                case 4:
+                  this.dform = {
+                    checkIncome: 1,
+                    checkMouthStat: 1,
+                    checkMouthStatSp: 0,
+                    checkOrder: 0,
+                    checkMouthStatAgent: 1,
+                    checkMouthStatSpAgent: 0,
+                  }
                   break
-                  case 5:
-                    this.dform = {
-                      closeTimeComplete: 0
-                    }
+                case 5:
+                  this.dform = {
+                    closeTimeComplete: 0
+                  }
                   break
               }
             }
@@ -545,7 +570,7 @@ export default {
       if(this.clickSubmit) return
       this.clickSubmit = true
       switch (this.dialogType) {
-        case 1: case 2: case 3: case 4: case 5: case 6:
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7:
           this.clickSubmit = false
           this.$post('iot-saas-basic/admin/settings/save', {
             code: curRow.code,

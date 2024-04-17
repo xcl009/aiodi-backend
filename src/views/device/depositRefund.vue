@@ -102,6 +102,9 @@ export default {
           if(!res.paymentRefundConfig){
             res.paymentRefundConfig = {1: '0', 2: '0', 8: '0', 9: '0'}
           }
+          if(this.userKey && this.id && res[this.userKey] != this.id){
+            res.enable = 2
+          }
           this.form = res
         } else {
           this.form = {
