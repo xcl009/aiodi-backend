@@ -18,7 +18,7 @@
             </el-form-item>
             <el-form-item :label="`${$t('layout.doublingMultiple')}:`">
               <el-input oninput="value=value.replace(/[^\d.]/g,'')" v-model="form.show_virtual_data_times"></el-input>
-              <div class="fs-s2 text-gray">{{ $t('user.text') }}</div>
+              <div class="fs-s2 text-gray">{{ $t('user.text1') }}</div>
             </el-form-item>
           </template>
           <el-form-item>

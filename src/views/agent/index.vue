@@ -155,6 +155,10 @@
                       @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=agentId&code=DIVIDE_ACCOUNTS` })"
                       v-if="isBrand() && checkAbility(['_DIVIDE_ACCOUNTS'], 1, scope.row.agentDeviceType)">{{
                         $t('public.weChatAccountSplitting') }}</el-dropdown-item>
+                    <el-dropdown-item
+                      @click.native="$router.push({ path: `/device/orderOt?id=${scope.row.id}&roleType=2` })"
+                      v-if="isBrand()">{{
+                        $t('device.deviceCost') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"
                       v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(8, scope.row, 11)" v-if="isBrand()">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
@@ -364,9 +368,11 @@
         <el-form class="pl-20 pr-20 custom-form">
           <el-form-item :label="$t('public.loginPassword')">
             <el-switch v-model="dform.password" />
+            <div class="fs-s3 text-danger">{{ $t('store.resettingStorePasswordText') }}</div>
           </el-form-item>
           <el-form-item :label="$t('public.operationPassword')">
             <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
+            <div class="fs-s3 text-danger">{{ $t('store.resetOPwdText') }}</div>
           </el-form-item>
         </el-form>
       </template>

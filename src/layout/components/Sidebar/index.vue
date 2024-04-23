@@ -185,7 +185,7 @@ export default {
           cycle: 'QUARTER'
         },
         {
-          name: this.$t('layout.quarterlyVIP'),
+          name: this.$t('layout.permanentVIP'),
           info: this.$t('layout.permanentVIPInfo'),
           mkey: 'overPrice',
           cycle: 'PERMANENT'

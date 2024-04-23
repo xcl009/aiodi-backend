@@ -1125,7 +1125,7 @@ export default {
     feedbackList: '反馈记录',
     loginTime: '登录时间',
     loginRecord: '登录记录',
-    resetOPwdText: "重置表示清空已设置的操作密码及身份证号",
+    resetOPwdText: "重置后操作密码为123456，密保为空，用户可前往设置密保和密码",
   },
   system: {
     miniProgramConfiguration: '小程序配置',
@@ -1304,6 +1304,9 @@ export default {
     showComplete: '显示已完成',
     showCompleteText: '开启表示延时归还订单在延时时间段内用户查看订单状态展示为已完成',
     getOpenId: '让用户绑定分账接收的微信后申请提现，您在提现管理列表操作栏中复制微信ID粘贴保存即可',
+    checkTwoPwd: '操作密码校验状态',
+    setCheckTwoPwd: '设置是否开启操作密码校验',
+    setCheckTwoPwdText: '开启表示代理、商户对资金相关操作时不进行操作密码校验。这可能导致代理、商户的资金被盗提，请谨慎操作。',
   },
   user: {
     message: '请填写旧密码',
@@ -1324,7 +1327,7 @@ export default {
     setDevice: '设备设置',
     defaultStore: '默认商户ID',
     defaultStoreText: '注：设备未铺货时，用户租借订单取此商户的计费规则，商户ID可在商户列表查到。',
-    text: '注：状态开启时，首页、设备列表、订单列表、商户列表的统计数据会在当前基础上乘以设置的倍数。',
+    text1: '注：状态开启时，首页、设备列表、订单列表、商户列表的统计数据会在当前基础上乘以设置的倍数。',
     code: '验证码'
   },
   miniProgram: {

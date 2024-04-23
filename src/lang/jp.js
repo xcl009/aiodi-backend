@@ -1113,7 +1113,7 @@ export default {
       feedbackList: 'フィードバックレコード',
       loginTime: 'ログイン時間',
       loginRecord: 'ログオンレコード',
-      resetOPwdText: "設定した操作パスワードとID番号をクリアすることを示すリセット",
+      resetOPwdText: "リセット後の操作パスワードとセキュリティは両方とも 123456 です",
     },
     system: {
       miniProgramConfiguration: 'アプレット構成',
@@ -1311,7 +1311,7 @@ export default {
       setDevice: 'デバイスの設定',
       defaultStore: 'デフォルトマーチャントID',
       defaultStoreText: '注意：設備が未舗装の場合、ユーザーのリース注文はこの業者の課金規則を取り、業者IDは業者リストで調べることができる。',
-      text: '注：ステータスがオンの場合、トップページ、デバイスリスト、注文リスト、取引先リストの統計データは現在の基礎に設定された倍数を乗算します。',
+      text1: '注：ステータスがオンの場合、トップページ、デバイスリスト、注文リスト、取引先リストの統計データは現在の基礎に設定された倍数を乗算します。',
       code: '認証コード'
     },
     miniProgram: {

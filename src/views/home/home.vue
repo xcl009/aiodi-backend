@@ -173,7 +173,7 @@
             </el-table-column>
             <el-table-column :label="$t('public.storeName')" min-width="90">
               <template slot-scope="scope">
-                <span class="y-yellow">{{ scope.row.storeName.substring(0, 2) }}**</span>
+                <span class="y-yellow">{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.orderNum')" min-width="90">
@@ -196,13 +196,13 @@
                 {{ scope.row.amountDeposit || 0 }}
               </template>
             </el-table-column>
-            <el-table-column :label="$t('home.seizuresNum')" min-width="120" v-if="isSaas() || isBrand()">
+            <el-table-column :label="$t('home.alldeposit')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
                 {{ scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) -
                   Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0 }}
               </template>
             </el-table-column>
-            <el-table-column :label="$t('home.seizuresNum')" min-width="160" v-if="isSaas() || isBrand()">
+            <el-table-column :label="$t('home.allRefunded')" min-width="160" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
                 {{ scope.row.amountUnrefund || 0 }}
               </template>
@@ -320,7 +320,7 @@
               </el-table-column>
               <el-table-column :label="$t('public.storeName')" min-width="90">
                 <template slot-scope="scope">
-                  <span class="y-yellow">{{ scope.row.storeName.substring(0, 2) }}**</span>
+                  <span class="y-yellow">{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('home.orderNum')" min-width="90" column-key="orderAllNumber" sortable>
@@ -386,7 +386,7 @@
             </el-table-column>
             <el-table-column :label="`${$t('public.store')}`" width="80">
               <template slot-scope="scope">
-                <span>{{ scope.row.storeName.substring(0, 1) }}***</span>
+                <span>{{ scope.row.storeName ? scope.row.storeName.substring(0, 1) : '' }}***</span>
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.user')}`" width="80">

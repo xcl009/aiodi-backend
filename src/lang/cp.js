@@ -1114,7 +1114,7 @@ export default {
     feedbackList: '反饋記錄',
     loginTime: '登入時間',
     loginRecord: '登入記錄',
-    resetOPwdText: "重置表示清空已設定的操作密碼及身份證號",
+    resetOPwdText: "重置後操作密碼及密保均為123456",
   },
   system: {
     miniProgramConfiguration: '小程序配置',
@@ -1312,7 +1312,7 @@ export default {
     setDevice: '設備設置',
     defaultStore: '默認商戶ID',
     defaultStoreText: '注：設備未鋪貨時，用戶租借訂單取此商戶的計費規則，商戶ID可在商戶列表查到。',
-    text: '注：狀態開啓時，首頁、設備列表、訂單列表、商戶列表的統計數據會在當前基礎上乘以設置的倍數。',
+    text1: '注：狀態開啓時，首頁、設備列表、訂單列表、商戶列表的統計數據會在當前基礎上乘以設置的倍數。',
     code: '驗證碼'
   },
   miniProgram: {

@@ -1113,7 +1113,7 @@ export default {
       feedbackList: '피드백 레코드',
       loginTime: '로그인 시간',
       loginRecord: '로그인 레코드',
-      resetOPwdText: "재설정은 설정된 작업 암호 및 주민등록번호 비우기를 나타냅니다.",
+      resetOPwdText: "재설정 후 작업 비밀번호와 보안은 모두 123456입니다",
     },
     system: {
       miniProgramConfiguration: '애플릿 구성',
@@ -1311,7 +1311,7 @@ export default {
       setDevice: '장치 설정',
       defaultStore: '기본 사업자 ID',
       defaultStoreText: '주: 설비가 포장되지 않았을 때, 사용자가 주문서를 임대하여 이 상인의 비용 계산 규칙을 취하면, 상인 ID는 상인 목록에서 찾을 수 있다.',
-      text: '참고: 상태가 켜져 있으면 첫 페이지, 장비 목록, 주문 목록, 사업자 목록의 통계 데이터에 현재 기초에서 설정된 배수를 곱합니다.',
+      text1: '참고: 상태가 켜져 있으면 첫 페이지, 장비 목록, 주문 목록, 사업자 목록의 통계 데이터에 현재 기초에서 설정된 배수를 곱합니다.',
       code: '인증 코드'
     },
     miniProgram: {

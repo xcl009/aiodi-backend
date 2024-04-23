@@ -27,6 +27,7 @@
 
           <el-form-item class="mt-10">
             <el-button type="primary" @click="onSubmit">{{ $t('public.submitNow') }}</el-button>
+            <el-button type="warning" plain @click="delRule" v-if="update && id && roleType">删除</el-button>
           </el-form-item>
         </el-form>
       </template>
@@ -45,10 +46,13 @@ export default {
   data() {
     return {
       form: {
-        onlySuperior: 2
+        onlySuperior: 0
       },
       id: this.$route.query.id || '',
-      deviceTypeCode: ''
+      roleType: this.$route.query.roleType || '',
+      deviceTypeCode: '',
+
+      update: false
     }
   },
   computed: {
@@ -68,11 +72,22 @@ export default {
      * 获取详情
      */
     getInfo() {
-      this.$get(`iot-saas-basic/admin/brand/queryDeviceTypeCost`, {
+      let params = {
         deviceTypeCode: this.deviceTypeCode
-      }).then((res = {}) => {
+      }, url = 'iot-saas-basic/admin/brand/queryDeviceTypeCost'
+      if (this.roleType && this.id){
+        params.agentId = this.id
+        params.roleType = this.roleType
+        url = 'iot-saas-basic/admin/brand/queryDeviceTypeCostByAgent'
+      }
+      this.$get(url, params).then((res = {}) => {
         if (res.deviceTypeCode != undefined) {
+          this.update = true
           this.form = res
+        }else{
+          this.form = {
+            onlySuperior: 0
+          }
         }
       })
     },
@@ -81,16 +96,37 @@ export default {
      * 提交保存
      */
     onSubmit() {
-      let that = this;
-      let params = JSON.parse(JSON.stringify(this.form))
+      let params = JSON.parse(JSON.stringify(this.form)), url = 'iot-saas-basic/admin/brand/updateDeviceCost'
+      if (this.roleType && this.id){
+        params.brandId = this.id
+        params.roleType = this.roleType
+        if(!this.update) url = 'iot-saas-basic/admin/brand/insertDeviceCost'
+      }
       params.deviceTypeCode = this.deviceTypeCode
-      this.$post(`iot-saas-basic/admin/brand/updateDeviceCost`, params).then(res => {
+      this.$post(url, params).then(res => {
         this.$message({
-          message: that.$t('public.setSuccess'),
+          message: this.$t('public.setSuccess'),
           type: 'success'
         })
       })
-    }
+    },
+
+    /**
+     * 删除规则
+     */
+    delRule() {
+      this.$post('iot-saas-basic/admin/brand/deleteDeviceCost', {
+        deviceTypeCode: this.deviceTypeCode,
+        brandId: this.id,
+        roleType: this.roleType
+      }).then(res => {
+        this.$message({
+          message: this.$t('public.setSuccess'),
+          type: 'success'
+        })
+        this.$router.back()
+      })
+    },
   }
 }
 </script>

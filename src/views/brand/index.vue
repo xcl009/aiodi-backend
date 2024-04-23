@@ -31,7 +31,7 @@
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
         <template v-for="item in showColumn" v-if="item.val">
-          <el-table-column :label="$t('brand.brandInfo')" width="150" v-if="item.key == 'name'">
+          <el-table-column :label="item.name" width="150" v-if="item.key == 'name'">
             <template slot-scope="scope">
               <div class="mb-5 cursor" @click="copyText(scope.row.id)">{{ scope.row.name || $t('brand.brandName') }}
               </div>
@@ -41,7 +41,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.brandInfo')" min-width="160" v-else-if="item.key == 'companyName'">
+          <el-table-column :label="item.name" min-width="160" v-else-if="item.key == 'companyName'">
             <template slot-scope="scope">
               <div class="flex align-center">
                 <el-avatar shape="square" :size="35" fit="cover" :src="ossThumbnail(scope.row.logo || agentInfo.avatar)"></el-avatar>
@@ -49,12 +49,17 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.timeOfEntry')" width="130" v-else-if="item.key == 'createTime'">
+          <el-table-column :label="item.name" width="130" v-else-if="item.key == 'createTime'">
             <template slot-scope="scope">
               {{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.regimentalCommander')" width="100" v-else-if="item.key == 'isLeader'">
+          <el-table-column :label="item.name" width="130" v-else-if="item.key == 'expiresTime'">
+            <template slot-scope="scope">
+              {{ parseTime(scope.row.expiresTime, '{y}-{m}-{d}') }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" width="100" v-else-if="item.key == 'isLeader'">
             <template slot-scope="scope">
               <div class="text-primary cursor" v-if="scope.row.isLeader == 1">{{ $t('brand.regimentalCommander') }}
               </div>
@@ -64,7 +69,7 @@
               <div class="mb-5" v-else>{{ scope.row.leaderBrandName || '--' }}</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.category')" width="200" v-else-if="item.key == 'brandDeviceType'">
+          <el-table-column :label="item.name" width="200" v-else-if="item.key == 'brandDeviceType'">
             <template slot-scope="scope">
               <div>
                 <span class="mr-20 inline" v-for="item in scope.row.brandDeviceType">
@@ -73,7 +78,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('brand.numberOfDevices')" min-width="100" v-else-if="item.key == 'deviceCount'">
+          <el-table-column :label="item.name" min-width="100" v-else-if="item.key == 'deviceCount'">
             <template slot-scope="scope">
               <div class="inline text-left" @click="$router.push({ path: `/device?brandId=${scope.row.id}` })">
                 <div>
@@ -84,7 +89,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.orderNum')" width="120" v-else-if="item.key == 'orderCount'">
+          <el-table-column :label="item.name" width="120" v-else-if="item.key == 'orderCount'">
             <template slot-scope="scope">
               <div class="inline text-left">
                 <div>{{ $t('payType.wx') }}：<el-link type="primary"
@@ -108,7 +113,7 @@
               </div>
             </template>
           </el-table-column> -->
-          <el-table-column :label="`${$t('public.aTurnover')}(${$t('public.element')})`" width="120"
+          <el-table-column :label="item.name" width="120"
             v-else-if="item.key == 'amount'">
             <template slot-scope="scope">
               {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
@@ -212,9 +217,11 @@
         <el-form class="pl-20 pr-20 custom-form">
           <el-form-item :label="$t('public.loginPassword')">
             <el-switch v-model="dform.password" />
+            <div class="fs-s3 text-danger">{{ $t('store.resettingStorePasswordText') }}</div>
           </el-form-item>
           <el-form-item :label="$t('public.operationPassword')">
             <el-switch v-model="dform.twoPassword" :active-value="1" :inactive-value="0" />
+            <div class="fs-s3 text-danger">{{ $t('store.resetOPwdText') }}</div>
           </el-form-item>
         </el-form>
       </template>
@@ -448,13 +455,60 @@
         brandLoginChannels: {}
       }
     },
-    beforeRouteEnter(to, from, next) {
-      if (from.name == 'addBrand') {
-        to.meta.reload = true
-      } else {
-        to.meta.reload = false
-      }
-      next()
+    defaultColumn() {
+      return [
+        {
+          key: 'name',
+          val: true,
+          name: this.$t('brand.brandInfo')
+        },
+        {
+          key: 'companyName',
+          val: false,
+          name: this.$t('brand.corporateName')
+        },
+        {
+          key: 'createTime',
+          val: true,
+          name: this.$t('brand.timeOfEntry'),
+          width: 260
+        },
+        {
+          key: 'isLeader',
+          val: true,
+          name: this.$t('brand.regimentalCommander')
+        },
+        {
+          key: 'fatherBrandName',
+          val: true,
+          name: this.$t('brand.inviter')
+        },
+        {
+          key: 'brandDeviceType',
+          val: true,
+          name: this.$t('brand.category')
+        },
+        {
+          key: 'deviceCount',
+          val: true,
+          name: this.$t('brand.numberOfDevices')
+        },
+        {
+          key: 'orderCount',
+          val: true,
+          name: this.$t('public.orderNum')
+        },
+        {
+          key: 'amount',
+          val: true,
+          name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
+        },
+        {
+          key: 'expiresTime',
+          val: true,
+          name: `${this.$t('public.expirationTime')}`
+        }
+      ]
     },
     activated() {
       if (this.$route.meta.reload) {
@@ -617,11 +671,12 @@
         })
       },
 
+
       /**
        * 订单数量统计查询
        */
-      queryOrderCount(ids) {
-        if (ids.length == 0) {
+      queryOrderCount(ids){
+        if(ids.length == 0){
           this.orderCount = {}
           return
         }
