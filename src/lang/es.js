@@ -1319,7 +1319,7 @@ export default {
         setDevice: 'Configuración de dispositivo',
         defaultStore: 'ID de comerciante predeterminado',
         defaultStoreText: 'Nota: Cuando el dispositivo no tiene productos disponibles, las órdenes de alquiler de los usuarios tomarán las reglas de tarificación de este comerciante. El ID de comerciante puede ser encontrado en la lista de comerciantes.',
-        text: 'Nota: Cuando el estado está activado, los datos estadísticos de la página de inicio, la lista de dispositivos, la lista de órdenes y la lista de comerciantes se multiplicarán por el número establecido.',
+        text1: 'Nota: Cuando el estado está activado, los datos estadísticos de la página de inicio, la lista de dispositivos, la lista de órdenes y la lista de comerciantes se multiplicarán por el número establecido.',
         code: 'Código de verificación',
     },
     miniProgram: {

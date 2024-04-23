@@ -1312,7 +1312,7 @@ export default {
         setDevice: 'Thiết lập thiết bị',
         defaultStore: 'Mặc định Merchant ID',
         defaultStoreText: 'Ghi chú: Khi thiết bị chưa trải hàng, đơn đặt hàng thuê của người dùng để lấy quy tắc tính phí của thương gia này, ID thương gia có thể tra được trong danh sách thương gia.',
-        text: 'Lưu ý: Khi trạng thái được bật, số liệu thống kê cho trang đầu tiên, danh sách thiết bị, danh sách đặt hàng, danh sách người bán được nhân với bội số thiết lập trên cơ sở hiện tại.',
+        text1: 'Lưu ý: Khi trạng thái được bật, số liệu thống kê cho trang đầu tiên, danh sách thiết bị, danh sách đặt hàng, danh sách người bán được nhân với bội số thiết lập trên cơ sở hiện tại.',
         code: 'Mã xác nhận'
     },
     miniProgram: {

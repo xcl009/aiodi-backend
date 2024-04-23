@@ -165,7 +165,7 @@ export default {
     }
   },
   mounted() {
-    
+
   },
   methods: {
     /**
@@ -227,13 +227,22 @@ export default {
         case 2:
           if (this.clickSubmit) return
           this.clickSubmit = true
-          this.$post(`iot-saas-pay/alipay/${row.appId}/submit/audit`).then(res => {
-            this.$message({
-              message: that.$t('public.operationSuccessful'),
-              type: 'success'
+          this.$prompt('请输入交易单号', '温馨提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          }).then(({ value }) => {
+            this.$post(`iot-saas-pay/alipay/${row.appId}/submit/audit`, {
+              transactionNo: value
+            }).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              row.appAuditStatus = 2
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
             })
-            row.appAuditStatus = 2
-            this.clickSubmit = false
           }).catch(err => {
             this.clickSubmit = false
           })

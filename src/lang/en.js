@@ -1312,7 +1312,7 @@ export default {
     setDevice: 'devices setting up',
     defaultStore: 'Default Merchant ID',
     defaultStoreText: "Note: When the device is not stocked, the user's rental order will be charged according to the merchant's billing rules, and the merchant ID can be found in the merchant list.",
-    text: 'Note: When the status is enabled, the statistical data of the homepage, device list, order list, and merchant list will be multiplied by the set multiple on the current basis.',
+    text1: 'Note: When the status is enabled, the statistical data of the homepage, device list, order list, and merchant list will be multiplied by the set multiple on the current basis.',
     code: 'Code'
   },
   miniProgram: {

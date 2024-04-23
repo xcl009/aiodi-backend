@@ -1311,7 +1311,7 @@ export default {
       setDevice: 'pag-install ng mga device',
       defaultStore: 'Default na ID ng Merchant',
       defaultStoreText: 'Nota: Kapag ang aparato ay hindi nakalagay, ang order ng rental ng gumagamit ay bibigay-charge ayon sa mga patakaran ng bayaran ng tindero, at ang ID ng tindero ay makikita sa listahan ng tindero.',
-      text: 'Nota: Kapag ang status ay naka-enable, ang istatistikang datos ng homepage, device list, order list at merchant list ay multiplied ng set multiple sa kasalukuyang base.',
+      text1: 'Nota: Kapag ang status ay naka-enable, ang istatistikang datos ng homepage, device list, order list at merchant list ay multiplied ng set multiple sa kasalukuyang base.',
       code: 'Verification code'
     },
     miniProgram: {
