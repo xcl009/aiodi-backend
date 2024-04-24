@@ -1041,7 +1041,7 @@
 			 */
 			getStatNum() {
 				let url =
-					'iot-saas-order/admin/order/count/queryByUser', // 'iot-saas-order/admin/order/count/queryByUser',
+					'iot-saas-order/admin/order/count/order/statistic/count', // 'iot-saas-order/admin/order/count/queryByUser',
 					params = Object.assign({}, this.listQuery, this.form)
 				if (params.date && params.date.length > 0) {
 					params.startTime = params.date[0] + ' 00:00:00'
@@ -1067,9 +1067,9 @@
 				delete params.size
 				this.$get(url, params).then(res => {
 					this.statInfo = res
-					/* this.$get('iot-saas-order/admin/order/count/order/statistic/today', params).then(res => {
+					this.$get('iot-saas-order/admin/order/count/order/statistic/today', params).then(res => {
 						this.$set(this.statInfo, 'todayNumber', res)
-					}) */
+					})
 				})
 			},
 
