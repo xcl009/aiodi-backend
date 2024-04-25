@@ -1951,4 +1951,13 @@ export default {
     associatedGoods: '关联商品',
     addTemp: '添加模板',
   },
+
+  activity: {
+    typeName: '活动类型',
+    activityName: '活动名称',
+    countCost: '回本份数',
+    countTotal: '购买份数',
+    countPrice: '单价',
+    nn: ''
+  }
 };
