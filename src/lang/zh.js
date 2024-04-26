@@ -1958,6 +1958,21 @@ export default {
     countCost: '回本份数',
     countTotal: '购买份数',
     countPrice: '单价',
-    nn: ''
+    nn: '',
+    addActive:'添加活动',
+    onePurchase:"一元购",
+    copyPrice:"份数价格",
+    deleteActive:"确定删除此活动吗？",
+    prize:"奖品",
+    activityPrize:"活动奖品",
+    addReward:"添加奖励",
+    prizeName:"奖品名称",
+    prizeImg:"奖品图片",
+    prizePrice:"奖品价格",
+    prizeLowestPrize:"奖品成本价",
+    prizeContent:"奖品内容",
+    deletePrize:"确定删除此奖励吗？",
+    plaseImg:'请上传商品图片'
   }
 };
+ 

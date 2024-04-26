@@ -1937,4 +1937,27 @@ export default {
     associatedGoods: 'Associated Goods',
     addTemp: 'add template',
   },
+
+  activity: {
+    typeName: 'Activity Type',
+    activityName: 'Activity Name',
+    countCost: 'Break-even Quantity',
+    countTotal: 'Total Purchased Quantity',
+    countPrice: 'Unit Price',
+    nn: '',
+    addActive: 'Add Activity',
+    onePurchase: 'One Yuan Purchase',
+    copyPrice: 'Quantity Price',
+    deleteActive: 'Confirm to delete this activity?',
+    prize: 'Prize',
+    activityPrize: 'Activity Prize',
+    addReward: 'Add Reward',
+    prizeName: 'Prize Name',
+    prizeImg: 'Prize Image',
+    prizePrice: 'Prize Price',
+    prizeLowestPrize: 'Prize Cost Price',
+    prizeContent: 'Prize Details',
+    deletePrize: 'Confirm to delete this reward?',
+    plaseImg: 'Please upload a product image'
+  }
 };

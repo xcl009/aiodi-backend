@@ -98,12 +98,34 @@ export const constantRoutes = [
         path: 'edit',
         name: 'activityEdit',
         component: () => import('@/views/activity/edit'),
+        hidden: true,
         meta: {
-          title: '添加活动'
+          title: '添加活动',
+          keepAlive: false,
         }
-      }
+      },
+      {
+        path: 'prize',
+        name: 'prize',
+        component: () => import('@/views/activity/prize'),
+        meta: {
+          title: '奖品',
+          keepAlive: true,
+        }
+      },
+      {
+        path: 'prizeEdit',
+        name: 'prizeEdit',
+        hidden: true,
+        component: () => import('@/views/activity/prizeEdit'),
+        meta: {
+          title: '添加',
+          keepAlive: false,
+        }
+      },
     ]
-  }
+  },
+  
 ]
 
 const createRouter = () => new Router({

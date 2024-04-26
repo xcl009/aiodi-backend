@@ -2,9 +2,9 @@
     <div>
         <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
             <template v-slot:defult>
-                <el-form-item :label="$t('activity.activityName')">
-                    <el-input v-model="form.name" :placeholder="`${$t('public.enter')}${$t('activity.activityName')}`" />
-                </el-form-item>
+                <!-- <el-form-item :label="$t('public.agentNickNames')">
+                    <el-input v-model="form.name" :placeholder="$t('public.agentNickNames')" />
+                </el-form-item> -->
                 <el-form-item :label="$t('public.status')">
                     <el-select v-model="form.status" @change="toQuery()" :placeholder="$t('public.status')">
                         <el-option :label="$t('public.close')" :value="0" />
@@ -14,53 +14,43 @@
             </template>
             <template v-slot:endButton>
                 <el-button type="primary" size="small" class="mr-10"
-                    @click="$router.push({ path: `/activity/edit` })"><i
-                        class="el-icon-plus el-icon--left" />{{ $t('activity.addActive') }}</el-button>
+                    @click="$router.push({ path: `/activity/prizeEdit` })"><i
+                        class="el-icon-plus el-icon--left" />{{ $t('activity.addReward') }}</el-button>
             </template>
         </condition>
 
         <div class="pl-10 pr-10 bg-white">
             <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
                 element-loading-text="Loading" :max-height="tableMaxH">
-                <el-table-column :label="$t('activity.activityName')" width="130">
+                <el-table-column :label="$t('activity.prizeName')" width="130">
                     <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.name }}</div>
+                        <div class="mb-5">{{ scope.row.prizeName }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('activity.typeName')" width="130">
+                <el-table-column :label="$t('activity.prizeImg')" width="130">
                     <template slot-scope="scope">
-                        <div class="mb-5">{{ $t('activity.onePurchase') }}</div>
+                        <img :src="scope.row.prizePicture" class="prizePictureImg" />
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('activity.countTotal')">
+                <el-table-column :label="$t('activity.prizePrice')">
                     <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.countTotal }}</div>
+                        <div class="mb-5">{{ scope.row.prizePrice }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('activity.countPrice')">
+                <el-table-column :label="$t('activity.prizeLowestPrize')">
                     <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.countPrice }}</div>
+                        <div class="mb-5">{{ scope.row.prizeLowestPrize }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('activity.copyPrice')">
+                <el-table-column :label="$t('activity.prizeContent')">
                     <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.countBuying }}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column :label="$t('activity.countCost')">
-                    <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.countCost }}</div>
+                        <div class="mb-5">{{ scope.row.prizeContent }}</div>
                     </template>
                 </el-table-column>
                 <el-table-column :label="$t('public.status')">
                     <template slot-scope="scope">
                         <el-button type="success" v-if="scope.row.status == 1" size="mini">{{ $t('public.open') }}</el-button>
                         <el-button type="info" v-else size="mini">{{ $t('public.close') }}</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column :label="$t('public.statrtTime')" width="230">
-                    <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.startTime }}</div>
                     </template>
                 </el-table-column>
                 <el-table-column :label="$t('public.remark')">
@@ -74,11 +64,11 @@
                     <template slot-scope="scope">
                         <div>
                             <el-button type="text"
-                                @click="$router.push({ path: `/activity/edit?id=${scope.row.id}` })">{{
+                                @click="$router.push({ path: `/activity/prizeEdit?id=${scope.row.id}` })">{{
             $t('public.modifyingInformation') }}</el-button>
                             <el-popconfirm :confirm-button-text="$t('public.confirm')"
                                 :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type=""
-                                icon="el-icon-info" icon-color="#FF7D00" :title="$t('activity.deleteActive')"
+                                icon="el-icon-info" icon-color="#FF7D00" :title="$t('activity.deletePrize')"
                                 @onConfirm="deleteChange(scope.row, scope.$index)">
                                 <el-button type="text" slot="reference"><span class="text-danger">{{
             $t('public.delete') }}</span></el-button>
@@ -90,15 +80,14 @@
 
             <div class="flex justify-center">
                 <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size"
-                    :total="parseInt(listTotal)" @pagination="getList" />
+                    :total="parseInt(listTotal) " @pagination="getList" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-
-import { arrayToObj, unixTime } from '@/utils/index'
+import { arrayToObj } from '@/utils/index'
 import Pagination from '@/components/Pagination'
 import condition from '@/components/condition/'
 import VendorMode from '@/components/VendorMode/'
@@ -215,7 +204,7 @@ export default {
     methods: {
         deleteChange(e, i) {
             let that = this;
-            this.$get(`iot-saas-activity/admin/v2/activity/delete/${e.id}`).then(res => {
+            this.$get(`iot-saas-activity/admin/v2/prizeInfo/delete/${e.id}`).then(res => {
                 this.dialogStatus = false
                 this.$message({
                     message: that.$t('public.deleteSuccess'),
@@ -256,7 +245,7 @@ export default {
             var params = Object.assign({}, this.form, this.listQuery, {
                 page: this.listQuery.page - 1
             })
-            this.$post('iot-saas-activity/api/v2/activity/findPage', params).then(res => {
+            this.$post('iot-saas-activity/admin/v2/prizeInfo/findPage', params).then(res => {
                 this.list = res.rows
                 this.listLoading = false
                 this.clickSubmit = false
@@ -269,7 +258,6 @@ export default {
                 this.clickSubmit = false
             })
         },
-
 
     }
 }

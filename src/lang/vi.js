@@ -1948,4 +1948,27 @@ export default {
         associatedGoods: 'Hàng hóa liên quan',
         addTemp: 'Thêm mẫu'
     },
+    
+    activity:{
+        typeName: 'Loại hoạt động',
+        activityName: 'Tên hoạt động',
+        countCost: 'Số lượng hoàn vốn',
+        countTotal: 'Tổng số lượng mua',
+        countPrice: 'Đơn giá',
+        nn: '',
+        addActive: 'Thêm hoạt động',
+        onePurchase: 'Mua với 1 đồng',
+        copyPrice: 'Giá theo số lượng',
+        deleteActive: 'Xác nhận xóa hoạt động này?',
+        prize: 'Giải thưởng',
+        activityPrize: 'Giải thưởng hoạt động',
+        addReward: 'Thêm giải thưởng',
+        prizeName: 'Tên giải thưởng',
+        prizeImg: 'Hình ảnh giải thưởng',
+        prizePrice: 'Giá giải thưởng',
+        prizeLowestPrize: 'Giá vốn thấp nhất của giải thưởng',
+        prizeContent: 'Nội dung giải thưởng',
+        deletePrize: 'Xác nhận xóa giải thưởng này?',
+        plaseImg: 'Vui lòng tải lên hình ảnh sản phẩm'
+    }
 };

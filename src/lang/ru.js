@@ -1937,4 +1937,27 @@ export default {
         associatedGoods: 'Ассоциированные товары',
         addTemp: 'Добавить шаблон',
     },
+
+    activity: {
+        typeName: 'Тип мероприятия',
+        activityName: 'Название мероприятия',
+        countCost: 'Количество для возврата затрат',
+        countTotal: 'Общее количество покупок',
+        countPrice: 'Цена за единицу',
+        nn: '',
+        addActive: 'Добавить мероприятие',
+        onePurchase: 'Покупка за один рубль',
+        copyPrice: 'Цена за количество',
+        deleteActive: 'Вы уверены, что хотите удалить это мероприятие?',
+        prize: 'Приз',
+        activityPrize: 'Приз мероприятия',
+        addReward: 'Добавить награду',
+        prizeName: 'Название приза',
+        prizeImg: 'Изображение приза',
+        prizePrice: 'Цена приза',
+        prizeLowestPrize: 'Стоимость приза',
+        prizeContent: 'Описание приза',
+        deletePrize: 'Вы уверены, что хотите удалить эту награду?',
+        plaseImg: 'Пожалуйста, загрузите изображение товара'
+    }
 };
