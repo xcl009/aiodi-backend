@@ -3,8 +3,7 @@
         <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
             <template v-slot:defult>
                 <el-form-item :label="$t('activity.activityName')">
-                    <el-input v-model="form.name"
-                        :placeholder="`${$t('public.enter')}${$t('activity.activityName')}`" />
+                    <el-input v-model="form.name" :placeholder="`${$t('public.enter')}${$t('activity.activityName')}`" />
                 </el-form-item>
                 <el-form-item :label="$t('public.status')">
                     <el-select v-model="form.status" @change="toQuery()" :placeholder="$t('public.status')">
@@ -14,9 +13,6 @@
                 </el-form-item>
             </template>
             <template v-slot:endButton>
-                <el-button type="primary" size="small" class="mr-10"
-                    @click="$router.push({ path: `/activity/edit` })"><i class="el-icon-plus el-icon--left" />{{
-            $t('activity.addActive') }}</el-button>
             </template>
         </condition>
 
@@ -55,8 +51,7 @@
                 </el-table-column>
                 <el-table-column :label="$t('public.status')">
                     <template slot-scope="scope">
-                        <el-button type="success" v-if="scope.row.status == 1" size="mini">{{ $t('public.open')
-                            }}</el-button>
+                        <el-button type="success" v-if="scope.row.status == 1" size="mini">{{ $t('public.open') }}</el-button>
                         <el-button type="info" v-else size="mini">{{ $t('public.close') }}</el-button>
                     </template>
                 </el-table-column>
@@ -258,7 +253,7 @@ export default {
             var params = Object.assign({}, this.form, this.listQuery, {
                 page: this.listQuery.page - 1
             })
-            this.$post('iot-saas-activity/api/v2/activity/findPage', params).then(res => {
+            this.$post('iot-saas-activity/admin/v2/activity/record/findActivityWinnerPage', params).then(res => {
                 this.list = res.rows
                 this.listLoading = false
                 this.clickSubmit = false
@@ -266,19 +261,6 @@ export default {
                     this.listTotal = res.total
                     this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
                 }
-                let arr = [];
-                res.rows.forEach(list => {
-                    if (list.id) {
-                        arr.push(list.id)
-                    }
-                });
-                console.log(arr,'arrr')
-                if (arr.length > 0) {
-                    this.$post('iot-saas-activity/admin/v2/prizeInfo/findPrizesByIds', {ids:arr.join(',')}).then(res => {
-                         console.log(res,'ressListbuyIDs')
-                    })
-                }
-
             }).catch(() => {
                 this.listLoading = false
                 this.clickSubmit = false

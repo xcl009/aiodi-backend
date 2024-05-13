@@ -1961,7 +1961,7 @@ export default {
     nn: '',
     addActive:'添加活动',
     onePurchase:"一元购",
-    copyPrice:"份数价格",
+    copyPrice:"已购买份数",
     deleteActive:"确定删除此活动吗？",
     prize:"奖品",
     activityPrize:"活动奖品",

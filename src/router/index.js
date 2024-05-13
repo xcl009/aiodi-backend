@@ -123,6 +123,15 @@ export const constantRoutes = [
           keepAlive: false,
         }
       },
+      {
+        path: 'lottery',
+        name: 'lottery',
+        component: () => import('@/views/activity/lottery'),
+        meta: {
+          title: '中奖列表',
+          keepAlive: true,
+        }
+      },
     ]
   },
   
