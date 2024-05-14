@@ -399,9 +399,9 @@
                 {{ scope.row.deviceType }}
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('home.source')}`" width="80">
+            <el-table-column :label="`${$t('home.source')}`" width="150">
               <template slot-scope="scope">
-                {{ scope.row.sourceType == 2 ? $t('payType.zfb') : $t('payType.wx') }}
+                {{ Constant.PayType ? Constant.PayType[scope.row.payType] : '' }}
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.statrtTime')}`" width="160">

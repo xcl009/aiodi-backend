@@ -130,13 +130,13 @@
 									@click="checkBao(scope.row.goods_sn)">{{ $t('public.sn') }}：{{ scope.row.goods_sn || "--" }}</div>
 							</template>
 						</el-table-column>
-						<el-table-column :label="item.name" width="50" v-else-if="item.val && item.key == 'sourceType'">
+						<!-- <el-table-column :label="item.name" width="50" v-else-if="item.val && item.key == 'sourceType'">
 							<template slot-scope="scope">
 								<span v-if="scope.row.sourceType == 3">{{ $t('order.admin') }}</span>
 								<i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="scope.row.sourceType == 1"></i>
 								<i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
 							</template>
-						</el-table-column>
+						</el-table-column> -->
 						<el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'PayType'">
 							<template slot-scope="scope">
 								<div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span
@@ -802,11 +802,11 @@
 						title: this.$t('public.transactionNum'),
 						type: 'input'
 					},
-					sourceType: {
-						title: this.$t('order.orderSource'),
-						type: 'select',
-						selectArr: []
-					},
+					// sourceType: {
+					// 	title: this.$t('order.orderSource'),
+					// 	type: 'select',
+					// 	selectArr: []
+					// },
 					payType: {
 						title: this.$t('public.payType'),
 						type: 'select',
@@ -858,11 +858,11 @@
 						val: true,
 						name: this.$t('public.storeName')
 					},
-					{
-						key: 'sourceType',
-						val: true,
-						name: this.$t('order.source')
-					},
+					// {
+					// 	key: 'sourceType',
+					// 	val: true,
+					// 	name: this.$t('order.source')
+					// },
 					{
 						key: 'PayType',
 						val: true,
@@ -1007,11 +1007,11 @@
 		},
 		mounted() {
 			let query = this.$route.query
-			this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceSn', 'sourceType', 'userId']
+			this.queryKey = ['storeId', 'agentId', 'brandId', 'deviceSn', 'userId']
 			for (var i in this.queryKey) {
 				if (query[this.queryKey[i]]) this[this.queryKey[i]] = query[this.queryKey[i]]
 			}
-			this.queryObj.sourceType.selectArr = this.Constant.SourceType
+			//this.queryObj.sourceType.selectArr = this.Constant.SourceType
 			this.queryObj.payType.selectArr = this.Constant.PayType
 			if ((this.checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1) && this.isBrand()) || this
 				.isSaas()) {
@@ -1034,7 +1034,7 @@
 		beforeDestroy() {
 			localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
 		},
-		methods: {      
+		methods: {
 			/**
 			 * 订单数量
 			 */
