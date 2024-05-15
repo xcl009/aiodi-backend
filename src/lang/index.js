@@ -51,7 +51,7 @@ const i18n = new VueI18n({
     },   //越南语
     'en_PH': {
       ...tp,
-      ...viLocale
+      ...enLocale
     },   //菲律宾语
     'ko_KR': {
       ...ko,

@@ -42,17 +42,7 @@
               <el-dropdown trigger="click" placement="top-start">
                 <div>{{ $t('layout.langSelect') }}</div>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item  @click.native="waitOnLine('zh_CN')">
-                    <span>中文版本(简体)</span>
-                  </el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('zh_HK')">中文版本(繁體)</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('en_US')">English</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('ru_RU')">Tiếng Việt</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('vi_VN')">Русский язык</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('en_PH')">Pilipino</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('ko_KR')">한국어</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('ja_JP')">日本語</el-dropdown-item>
-                  <el-dropdown-item @click.native="waitOnLine('es_ES')">Español</el-dropdown-item>
+                  <el-dropdown-item @click.native="waitOnLine(item.distValue)" v-for="item in range">{{ item.distLable }}</el-dropdown-item>
                   <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -193,13 +183,27 @@ export default {
         2: this.$t('layout.systemUpdateDetails'),
         3: this.$t('layout.defaultStore')
       },
-      dform: {}
+      dform: {},
+      
+      range: []
     }
   },
   mounted() {
     if (this.isBrand()) this.getConfigs()
+    this.getLang()
   },
   methods: {
+    /**
+     * 获取语言
+     */
+    getLang(){
+    	this.$post('iot-saas-basic/open/sys/dict/query', {
+    		key: 'SYSTEM_INTERNATION_LAN'
+    	}).then(res => {
+    		this.range = res
+    	})
+    },
+    
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
