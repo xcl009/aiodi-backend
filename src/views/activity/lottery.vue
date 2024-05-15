@@ -39,25 +39,15 @@
                         <div class="mb-5">{{ scope.row.countPrice }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('activity.copyPrice')">
-                    <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.countBuying }}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column :label="$t('activity.countCost')">
-                    <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.countCost }}</div>
-                    </template>
-                </el-table-column>
                 <el-table-column :label="$t('public.status')">
                     <template slot-scope="scope">
                         <el-button type="success" v-if="scope.row.status == 1" size="mini">{{ $t('public.open') }}</el-button>
                         <el-button type="info" v-else size="mini">{{ $t('public.close') }}</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('public.statrtTime')" width="230">
+                <el-table-column :label="$t('public.endTime')" width="230">
                     <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.startTime }}</div>
+                        <div class="mb-5">{{ scope.row.endTime }}</div>
                     </template>
                 </el-table-column>
                 <el-table-column :label="$t('public.remark')">
@@ -66,23 +56,6 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column :label="$t('public.operate')" width="235"
-                    :fixed="device == 'desktop' ? 'right' : false">
-                    <template slot-scope="scope">
-                        <div>
-                            <el-button type="text"
-                                @click="$router.push({ path: `/activity/edit?id=${scope.row.id}` })">{{
-            $t('public.modifyingInformation') }}</el-button>
-                            <el-popconfirm :confirm-button-text="$t('public.confirm')"
-                                :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type=""
-                                icon="el-icon-info" icon-color="#FF7D00" :title="$t('activity.deleteActive')"
-                                @onConfirm="deleteChange(scope.row, scope.$index)">
-                                <el-button type="text" slot="reference"><span class="text-danger">{{
-            $t('public.delete') }}</span></el-button>
-                            </el-popconfirm>
-                        </div>
-                    </template>
-                </el-table-column>
             </el-table>
 
             <div class="flex justify-center">

@@ -60,14 +60,17 @@
           </el-checkbox-group>
 
           <div>
-            <div class="mt-15 p-10 radius-10 shadow-light" v-for="(item, index) in deviceDataArr" v-if="item.status == 1">
-              <h3 class="mt-0">{{ myDeviceId[item.deviceTypeCode] }}{{ $t('public.empty') }}{{ $t('public.setUp') }}</h3>
+            <div class="mt-15 p-10 radius-10 shadow-light" v-for="(item, index) in deviceDataArr"
+              v-if="item.status == 1">
+              <h3 class="mt-0">{{ myDeviceId[item.deviceTypeCode] }}{{ $t('public.empty') }}{{ $t('public.setUp') }}
+              </h3>
 
               <template v-if="form.divisionMode != 2">
                 <el-form-item :label="$t('store.splitMode')">
                   <el-radio-group v-model="item.closeType" @change="setCloseType">
                     <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType"
-                      :disabled="!Ability[`${item.deviceTypeCode}_CLOSETYPE_${cti}`] && cti != 1">{{ $t('store.closeType' + cti) }}</el-radio-button>
+                      :disabled="!Ability[`${item.deviceTypeCode}_CLOSETYPE_${cti}`] && cti != 1">{{
+        $t('store.closeType' + cti) }}</el-radio-button>
                   </el-radio-group>
                   <el-popover placement="right" title="" width="400" trigger="hover">
                     <div>
@@ -84,7 +87,7 @@
                       </div>
                       <div class="mt-20">{{ $t('store.text9') }}<el-link type="primary" :underline="false"
                           @click="$router.push({ path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=分成方式` })">{{
-                            $t('store.text10') }}</el-link>
+        $t('store.text10') }}</el-link>
                       </div>
                     </div>
                     <el-link type="danger" slot="reference" :underline="false"
@@ -105,20 +108,23 @@
                     </el-input>
                   </el-form-item>
                   <el-form-item :label="$t('store.beforeTheEnd')" :error="ferror.promisedDeal">
-                    <el-input type="number" v-model="item.promisedDeal" placeholder="0" @input="(v) => (ferror.promisedDeal = checkDigit(v))">
-                      <template slot="append">{{$t('store.beforeTheEndText') }}</template>
+                    <el-input type="number" v-model="item.promisedDeal" placeholder="0"
+                      @input="(v) => (ferror.promisedDeal = checkDigit(v))">
+                      <template slot="append">{{ $t('store.beforeTheEndText') }}</template>
                     </el-input>
                   </el-form-item>
                 </template>
                 <template v-else-if="item.closeType == 2">
                   <el-form-item :label="$t('store.closeType1')" :error="ferror.live">
-                    <el-input type="number" v-model="item.live" :placeholder="`${$t('store.max')}${myProfitRatio[item.deviceTypeCode]}%`"
+                    <el-input type="number" v-model="item.live"
+                      :placeholder="`${$t('store.max')}${myProfitRatio[item.deviceTypeCode]}%`"
                       @input="(v) => (ferror.live = checkDigit(v))">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                   <el-form-item :label="$t('store.closeType2')" :error="ferror.relative">
-                    <el-input type="number" v-model="item.relative" :placeholder="`${$t('store.max')}${item.live || 100}%`"
+                    <el-input type="number" v-model="item.relative"
+                      :placeholder="`${$t('store.max')}${item.live || 100}%`"
                       @input="(v) => (ferror.relative = checkDigit(v, 0, item.live))">
                       <template slot="append">%</template>
                     </el-input>
@@ -147,21 +153,21 @@
                     <div class="mb-10 text-dfs text-bold text-black">
                       {{ $t('public.' + xcx) }}{{ $t('public.empty') }}{{ $t('store.billingSettings') }}
                       <span class="ml-10 text-primary cursor" v-if="xcx == 'alipay'" @click="setAlipayMode(item)">{{
-                        $t('store.synchronous') }}</span>
+        $t('store.synchronous') }}</span>
                     </div>
 
                     <el-form-item :label="`${$t('store.paymentMode')}`">
                       <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
                         <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode)"
                           :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode))[0]">{{
-                           $t('public.' + key) }}</el-radio-button>
+        $t('public.' + key) }}</el-radio-button>
                       </el-radio-group>
                       <el-popover placement="right" title="" trigger="hover"
                         v-if="getModeType(item.deviceTypeCode)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode)['DEPOSIT']">
                         <div>
                           {{ $t('store.text11') }}<el-link type="primary" :underline="false"
                             @click="$router.push({ path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=计费模式` })">{{
-                              $t('store.text10') }}</el-link>
+        $t('store.text10') }}</el-link>
                         </div>
                         <el-link type="danger" :underline="false" slot="reference"
                           class="ml-10 el-icon-question fs-c1"></el-link>
@@ -183,13 +189,13 @@
                           <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
                             <template slot="append">{{ $t('public.element') }}</template>
                           </el-input>
-                          <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4"
-                            v-if="index == 0"
+                          <el-button type="text" size="small"
+                            :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
                             @click="item[`${xcx}PayMode`].payModeDetail.push({ time: (item.deviceTypeCode == 'WM' ? '46' : 60), money: 2, tag: index + 1 })">{{
-                              $t('public.add') }}</el-button>
+        $t('public.add') }}</el-button>
                           <el-button type="text" size="small" v-else
                             @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="text-danger">{{
-                              $t('public.delete') }}</el-button>
+        $t('public.delete') }}</el-button>
                         </div>
                       </el-form-item>
                       <el-form-item :label="`${$t('store.laundryDetergentSettings')}`"
@@ -223,24 +229,29 @@
                           <template slot="append">{{ $t('public.minute') }}</template>
                         </el-input>
                       </el-form-item>
-                      <el-form-item :label="$t('public.front')"
+                      <el-form-item :label="$t('public.amount')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
                         <div class="flex">
-                          <div class="flex1">
-                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingTime"
-                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))">
-                              <template slot="append">{{ $t('public.minute') }}</template>
-                            </el-input>
-                          </div>
-                          <div class="pl-10 flex1">
+                          
+                          <div class=" flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1000000))">
                               <template slot="append">{{ $t('public.element') }}</template>
                             </el-input>
                           </div>
+                          <div class="pl-10 flex1">
+                            <!-- <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingTime"
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))">
+                              <template slot="append">{{ $t('public.minute') }}</template>
+                            </el-input> -->
+                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.startingTime">
+                              <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList"
+                                :key="index"></el-option>
+                            </el-select>
+                          </div>
                         </div>
                       </el-form-item>
-                      <el-form-item :label="$t('public.afterExceeding')"
+                      <!-- <el-form-item :label="$t('public.afterExceeding')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_overBillingUnit`]">
                         <div class="flex">
                           <div class="flex1">
@@ -256,15 +267,18 @@
                             </el-input>
                           </div>
                         </div>
-                      </el-form-item>
+                      </el-form-item> -->
                       <el-form-item :label="$t('public.capping')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`]">
                         <div class="flex">
-                          <div>
-                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
+                          <div class=" flex1">
+                            <!-- <el-select v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
                               <el-option :label="`${item / 60}${$t('public.hourlyCap')}`" :value="item"
                                 v-for="item in config.day_unit"></el-option>
-                            </el-select>
+                            </el-select> -->
+                            <el-input placeholder="24小时封顶" disabled>
+
+                            </el-input>
                           </div>
                           <div class="pl-10 flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice"
@@ -297,7 +311,7 @@
           </div>
           <el-form-item>
             <el-button class="mt-10 mb-10" type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{
-              $t('public.submitNow') }}</el-button>
+        $t('public.submitNow') }}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -375,7 +389,20 @@ export default {
           message: this.$t('store.pleaseMapLotion')
         }]
       }
-    }
+    },
+    timeList() {
+      return [
+          {
+            title: this.$t('public.oneHour'),
+            value: '60'
+          },
+          {
+            title: this.$t('public.halfHour'),
+            value: '30'
+          }
+        ]
+      
+    },
   },
   data() {
     return {
@@ -402,7 +429,7 @@ export default {
       defaultDevice: defaultFee(),
 
       // 地图加载
-      mapTrue: false
+      mapTrue: false,
     }
   },
   mounted() {
@@ -717,10 +744,10 @@ export default {
                   })
                   item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetail)
                 } else {
-                  if(item.alipayPayMode.payModeDetails.maxAmount > item.alipayPayMode.payModeDetails.depositAmount && (item.alipayPayMode.modeType == 'DEPOSIT' || item.alipayPayMode.modeType == 'DEPOSIT_AND_FREE')){
+                  if (item.alipayPayMode.payModeDetails.maxAmount > item.alipayPayMode.payModeDetails.depositAmount && (item.alipayPayMode.modeType == 'DEPOSIT' || item.alipayPayMode.modeType == 'DEPOSIT_AND_FREE')) {
                     error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message7')}`
                     break
-                  }else if(item.alipayPayMode.modeType == 'DEPOSIT_FREE'){
+                  } else if (item.alipayPayMode.modeType == 'DEPOSIT_FREE') {
                     item.alipayPayMode.payModeDetails.depositAmount = item.alipayPayMode.payModeDetails.maxAmount
                   }
                   item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetails)
@@ -733,10 +760,10 @@ export default {
                   })
                   item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetail)
                 } else {
-                  if(item.weixinPayMode.payModeDetails.maxAmount > item.weixinPayMode.payModeDetails.depositAmount && (item.weixinPayMode.modeType == 'DEPOSIT' || item.weixinPayMode.modeType == 'DEPOSIT_AND_FREE')){
+                  if (item.weixinPayMode.payModeDetails.maxAmount > item.weixinPayMode.payModeDetails.depositAmount && (item.weixinPayMode.modeType == 'DEPOSIT' || item.weixinPayMode.modeType == 'DEPOSIT_AND_FREE')) {
                     error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
                     break
-                  }else if(item.weixinPayMode.modeType == 'DEPOSIT_FREE'){
+                  } else if (item.weixinPayMode.modeType == 'DEPOSIT_FREE') {
                     item.weixinPayMode.payModeDetails.depositAmount = item.weixinPayMode.payModeDetails.maxAmount
                   }
                   item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetails)
@@ -756,7 +783,7 @@ export default {
               params.storeDivisionConfig.push(division)
             }
           }
-          if(error){
+          if (error) {
             this.$message({
               message: error,
               type: 'error'
@@ -764,7 +791,7 @@ export default {
             return
           }
           this.clickSubmit = true
-          if(params.userMobile) params.userMobile = this.trim(params.userMobile)
+          if (params.userMobile) params.userMobile = this.trim(params.userMobile)
           this.$post(url, params).then(res => {
             if (!this.storeId) {
               localStorage.setItem(this.storeDfKey, JSON.stringify({
@@ -802,14 +829,14 @@ export default {
      * @param {Object} type
      */
     setCloseType(type) {
-      if(type == 1){
+      if (type == 1) {
         this.ferror.promised = ''
         this.ferror.relative = ''
         this.ferror.promisedDeal = ''
-      }else if(type == 2){
+      } else if (type == 2) {
         this.ferror.promisedDeal = ''
         this.ferror.promised = ''
-      }else{
+      } else {
         this.ferror.live = ''
         this.ferror.live = ''
       }

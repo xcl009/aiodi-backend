@@ -403,6 +403,8 @@ export default {
     freeOfCharge: '免押',
     month: '月',
     billingRules: '计费规则',
+    halfHour:'半小时',
+    oneHour:'1小时'
   },
   // 分账关系
   reType: {

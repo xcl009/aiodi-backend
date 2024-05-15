@@ -156,7 +156,7 @@ export default {
             url = `iot-saas-activity/admin/v2/activity/update/${this.id}`
             delete params.endTime;
             delete params.createTime;
-            delete params.startTime;
+            // delete params.startTime;
             delete params.updateTime;
           }
           this.clickSubmit = true
