@@ -88,7 +88,7 @@
               </div>
               <div>
                 <span class="text-grey">{{ $t('payType.totalAmount') }}</span>
-                <span class="text-danger">￥<span class="fs-b3">{{ accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] ||
+                <span class="text-danger"><span class="fs-b3">￥{{ accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] ||
                   0)) > 0 ? accSub(vipPrice[dform.mkey], (vipCoupon[dform.mkey] || 0)) : 0 }}</span></span>
               </div>
             </div>
@@ -140,6 +140,9 @@ export default {
     },
     myDevice() {
       return this.$store.state.user.myDevice
+    },
+    siteInfo() {
+      return this.$store.state.user.siteInfo
     },
     activeMenu() {
       const route = this.$route

@@ -187,7 +187,7 @@
                               v-for="time in config[`plan_time`]"></el-option>
                           </el-select>
                           <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
-                            <template slot="append">{{ $t('public.element') }}</template>
+                            <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                           </el-input>
                           <el-button type="text" size="small"
                             :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
@@ -208,7 +208,7 @@
                               <template slot="append">ml</template>
                             </el-input>
                             <el-input type="number" v-model="lpi.money" class="flex1 mr-10">
-                              <template slot="append">{{ $t('public.element') }}</template>
+                              <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                             <!-- <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].laundryMode[lidx].package.length == 3" v-if="lpidx == 0"
                               @click="item[`${xcx}PayMode`].laundryMode[lidx].package.push({tag: lpidx + 1})">添加</el-button>
@@ -216,7 +216,6 @@
                               @click="item[`${xcx}PayMode`].laundryMode[lidx].package.splice(lpidx, 1)" class="text-danger">删除</el-button> -->
                           </div>
                         </template>
-
                       </el-form-item>
                     </template>
 
@@ -232,19 +231,18 @@
                       <el-form-item :label="$t('public.amount')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
                         <div class="flex">
-                          
-                          <div class=" flex1">
+                          <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1000000))">
-                              <template slot="append">{{ $t('public.element') }}</template>
+                              <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
-                          <div class="pl-10 flex1">
+                          <div class="pl-10 flex1 flex">
                             <!-- <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingTime"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))">
                               <template slot="append">{{ $t('public.minute') }}</template>
                             </el-input> -->
-                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.startingTime">
+                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.startingTime" class="flex1">
                               <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList"
                                 :key="index"></el-option>
                             </el-select>
@@ -263,7 +261,7 @@
                           <div class="pl-10 flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_overBillingUnit`] = checkDigit(v, 0, 1000000))">
-                              <template slot="append">{{ $t('public.element') }}</template>
+                              <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                         </div>
@@ -271,19 +269,17 @@
                       <el-form-item :label="$t('public.capping')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`]">
                         <div class="flex">
-                          <div class=" flex1">
-                            <!-- <el-select v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
+                          <!-- <div class="flex1">
+                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimeUnit">
                               <el-option :label="`${item / 60}${$t('public.hourlyCap')}`" :value="item"
                                 v-for="item in config.day_unit"></el-option>
-                            </el-select> -->
-                            <el-input placeholder="24小时封顶" disabled>
-
-                            </el-input>
-                          </div>
-                          <div class="pl-10 flex1">
+                            </el-select>
+                          </div> -->
+                          <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`] = checkDigit(v, 0, 1000000))">
-                              <template slot="append">{{ $t('public.element') }}</template>
+                              <template slot="prepend">{{ $t('public.dailyCap') }}</template>
+                              <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                         </div>
@@ -292,7 +288,7 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`]">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`] = checkDigit(v, 0, 1000000))">
-                          <template slot="append">{{ $t('public.element') }}</template>
+                          <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.deposit')"
@@ -300,7 +296,7 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 1000000))">
-                          <template slot="append">{{ $t('public.element') }}</template>
+                          <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                     </template>
@@ -392,16 +388,15 @@ export default {
     },
     timeList() {
       return [
-          {
-            title: this.$t('public.oneHour'),
-            value: '60'
-          },
-          {
-            title: this.$t('public.halfHour'),
-            value: '30'
-          }
-        ]
-      
+        {
+          title: this.$t('public.oneHour'),
+          value: 60
+        },
+        {
+          title: this.$t('public.halfHour'),
+          value: 30
+        }
+      ]
     },
   },
   data() {

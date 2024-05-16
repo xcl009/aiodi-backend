@@ -140,7 +140,7 @@
 						<el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'PayType'">
 							<template slot-scope="scope">
 								<div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span
-										v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3 && isBrand()">(￥{{ scope.row.orderAmount }})</span> </div>
+										v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3 && isBrand()">({{ scope.row.orderAmount }})</span> </div>
 							</template>
 						</el-table-column>
 						<el-table-column :label="item.name" width="160" v-else-if="item.val && item.key == 'chargeStartTime'">
@@ -436,8 +436,8 @@
 							</el-form-item>
 							<el-form-item :label="`${$t('public.refundAmount')}:`">
 								<el-input v-model="dform.amount"
-									:placeholder="`${$t('public.max')}${dform.refundType != 3 ? curRow.amount || 0 : curRow.amountEnable || 0}${$t('public.element')}`">
-									<span slot="append">{{ $t('public.element') }}</span>
+									:placeholder="`${$t('public.max')}${dform.refundType != 3 ? curRow.amount || 0 : curRow.amountEnable || 0}`">
+									<span slot="append">{{ siteInfo.currencySymbol }}</span>
 								</el-input>
 							</el-form-item>
 							<el-form-item :label="`${$t('order.reasonForRefund')}:`">
@@ -597,7 +597,7 @@
 							<el-table border :data="dform.orderDivide" :span-method="fenRunSpanMethod" class="custom">
 								<el-table-column :label="$t('public.orderMoeny')" align="center">
 									<template slot-scope="scope">
-										{{ dform.amountPaid }}{{ $t('public.element') }}
+										{{ dform.amountPaid }}
 									</template>
 								</el-table-column>
 								<el-table-column width="160" :label="`${$t('order.divideIntoAdults')}`" align="center">
@@ -610,15 +610,15 @@
 										{{ scope.row.percent }}%
 									</template>
 								</el-table-column>
-								<el-table-column width="120" :label="`${$t('public.dividedAmount')}(${$t('public.element')})`"
+								<el-table-column width="120" :label="`${$t('public.dividedAmount')}`"
 									align="center">
 									<template slot-scope="scope">
 										<span>{{ accSub(scope.row.amount, scope.row.loseAmount) }}</span>
 										<span v-if="scope.row.costAmount > 0">({{ $t('order.overtimeCosts') }}{{ scope.row.costAmount
-                    }}{{ $t('public.element') }})</span>
+                    }}</span>
 									</template>
 								</el-table-column>
-								<el-table-column width="120" :label="`${$t('public.ddAmount')}(${$t('public.element')})`" align="center"
+								<el-table-column width="120" :label="`${$t('public.ddAmount')}`" align="center"
 									v-if="dform.amountPaidLose > 0">
 									<template slot-scope="scope">
 										{{ scope.row.loseAmount || '--' }}
@@ -636,7 +636,7 @@
                       scope.row.dividerPaymentStatus == -2 ? `${$t('order.status2')}` : `${$t('order.status3')}` }}
 									</template>
 								</el-table-column>
-								<el-table-column width="120" :label="`${$t('public.refundAmount')}(${$t('public.element')})`"
+								<el-table-column width="120" :label="`${$t('public.refundAmount')}`"
 									align="center">
 									<template slot-scope="scope">
 										{{ scope.row.refund }}
@@ -886,12 +886,12 @@
 					{
 						key: 'amount',
 						val: true,
-						name: `${this.$t('public.income')}(${this.$t('public.element')})`
+						name: `${this.$t('public.income')}`
 					},
 					{
 						key: 'amountRefund',
 						val: true,
-						name: `${this.$t('public.refund')}(${this.$t('public.element')})`
+						name: `${this.$t('public.refund')}`
 					},
 					{
 						key: 'status',
@@ -1040,7 +1040,7 @@
 			 */
 			getStatNum() {
 				let url =
-					'iot-saas-order/admin/order/count/order/statistic/count', // 'iot-saas-order/admin/order/count/queryByUser',
+					'iot-saas-order/admin/order/count/queryByUser', // 'iot-saas-order/admin/order/count/order/statistic/count',
 					params = Object.assign({}, this.listQuery, this.form)
 				if (params.date && params.date.length > 0) {
 					params.startTime = params.date[0] + ' 00:00:00'
@@ -1066,9 +1066,9 @@
 				delete params.size
 				this.$get(url, params).then(res => {
 					this.statInfo = res
-					this.$get('iot-saas-order/admin/order/count/order/statistic/today', params).then(res => {
-						this.$set(this.statInfo, 'todayNumber', res)
-					})
+					// this.$get('iot-saas-order/admin/order/count/order/statistic/today', params).then(res => {
+					// 	this.$set(this.statInfo, 'todayNumber', res)
+					// })
 				})
 			},
 
@@ -1517,7 +1517,7 @@
 					case 2:
 						if (this.dform.refundType == 3 && (this.dform.amount > (this.curRow.amountEnable || 0))) {
 							this.$message({
-								message: `${that.$t('order.maxAmount')}${this.curRow.amountEnable || 0}${that.$t('public.element')}`,
+								message: `${that.$t('order.maxAmount')}${this.curRow.amountEnable || 0}`,
 								type: 'error'
 							})
 							this.clickSubmit = false

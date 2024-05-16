@@ -6,7 +6,7 @@
         <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
           <div class="fs-s3 text-black">{{ $t('brand.withdrawableAmount') }}（{{ $t('public.freezeAmount') }}：{{ money.frozenBalance || 0.00 }}）</div>
           <div class="mt-15 mb-15 cursor">
-            <span class="text-primary khcoin">￥{{ money.balance || 0.00 }}</span>
+            <span class="text-primary khcoin">{{ money.balance || 0.00 }}{{ siteInfo.currencySymbol }}</span>
           </div>
           <div v-if="!isBrand() && Ability['cash']">
             <el-button type="primary" size="small" class="fs-s3" @click="$router.push({path: `/money/cash`})">{{ $t('public.withdrawal') }}</el-button>
@@ -26,7 +26,7 @@
               </el-popover>
           </div>
           <div class="mt-15 mb-15 cursor">
-            <span class="text-primary khcoin">￥{{ money.happyCurrencyNum || 0.00 }}</span>
+            <span class="text-primary khcoin">{{ money.happyCurrencyNum || 0.00 }}</span>
           </div>
           <el-button type="primary" size="small" class="fs-s3" @click="$refs.rechargeCoin.show()">{{ $t('moeny.goRecharge') }}</el-button>
         </el-col>
@@ -133,9 +133,12 @@
       xlsx
     },
     computed: {
+      siteInfo() {
+        return this.$store.getters.siteInfo
+      },
       agentInfo() {
         return this.$store.getters.agentInfo
-      },
+      },      
       Ability() {
         return this.$store.getters.Ability
       },

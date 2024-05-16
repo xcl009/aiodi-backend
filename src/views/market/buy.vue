@@ -48,8 +48,8 @@
       <div class="flex align-center mb-20 pb-5">
         <div class="mr-15 w-60">{{ $t('public.price') }}</div>
         <div class="flex align-center" v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
-          <div class="fs-b3 text-danger">￥0</div>
-          <div class="ml-10 fs-c1 text-black3 text-line" v-if="info.priceSettings">￥{{
+          <div class="fs-b3 text-danger">0</div>
+          <div class="ml-10 fs-c1 text-black3 text-line" v-if="info.priceSettings">{{
             info.priceSettings[form.priceCode][cycleKey] || 0 }}</div>
         </div>
         <div class="fs-c1 text-danger" v-else-if="info.priceSettings">{{ info.priceSettings[form.priceCode][cycleKey] || 0

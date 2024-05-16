@@ -9,7 +9,7 @@
         <el-form ref="form" label-position="left" label-width="130px">
           <el-form-item :label="$t('device.deviceCost')">
             <el-input v-model="form.deviceCost" type="number">
-              <template slot="append">{{ $t('public.element') }}</template>
+              <template slot="append">{{ siteInfo.currencySymbol }}</template>
             </el-input>
           </el-form-item>
 
@@ -61,6 +61,9 @@ export default {
     },
     Ability() {
       return this.$store.getters.Ability
+    },
+    siteInfo(){
+      return this.$store.getters.siteInfo
     }
   },
   mounted() {

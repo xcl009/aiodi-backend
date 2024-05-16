@@ -92,7 +92,7 @@
               <div class="mt-15 flex align-center">
                 <template>
                   <div class="flex1">
-                    <span class=" fs-b3 text-danger">￥{{ minPrice(item.productStandardList) }}</span>
+                    <span class=" fs-b3 text-danger">{{ minPrice(item.productStandardList) }}</span>
                     <span>{{ $t('public.rise') }}</span>
                   </div>
                 </template>
@@ -134,7 +134,7 @@
             <div class="flex_j">
               <div class="gg_width">{{ $t('public.price') }}</div>
               <div>
-                ￥{{ curRow.productStandardList[dform.stand].price }}
+                {{ curRow.productStandardList[dform.stand].price }}
               </div>
             </div>
             <div class="flex_j mt-20">
@@ -167,7 +167,7 @@
             {{ $t('public.amountTo') }}{{ dform.productNumber }}{{ $t('public.pieces') }} <div class="pl-15 flex_b">
               <span>{{ $t('public.totalAmount') }}</span> <span class="red_color fs-b3 text-bold m_lr_10">{{
                 (parseInt(dform.productNumber) * parseFloat(curRow.productStandardList[dform.stand].price)).toFixed(2)
-              }}</span>{{ $t('public.element') }}
+              }}</span>
             </div>
           </div>
           <div class="m_l_a">
@@ -196,7 +196,7 @@
           <el-form-item :label="$t('shopping.paidInAmount')">
             <div class="red_color fs-b3">
               {{ (parseInt(dform.productNumber) * parseFloat(curRow.productStandardList[dform.stand].price)).toFixed(2)
-              }}{{ $t('public.element') }}
+              }}
             </div>
           </el-form-item>
         </el-form>

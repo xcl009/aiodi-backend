@@ -29,7 +29,7 @@ export default {
         ddAmount: 'Số tiền DD',
         status: 'Trạng thái',
         freeTime: 'Thời gian miễn phí',
-        huor: 'Giờ',
+        huor: 'h',
         cancel: 'Hủy',
         confirm: 'Xác nhận',
         sevenDays: '7 ngày gần đây',
@@ -57,7 +57,7 @@ export default {
         refund: 'Hoàn tiền',
         remark: 'Ghi chú',
         freeQuota: 'Số lượng miễn phí',
-        minute: 'Phút',
+        minute: 'min',
         orderNo: 'Mã đơn hàng',
         transactionNum: 'Mã giao dịch',
         operate: 'Thao tác',
@@ -403,6 +403,8 @@ export default {
         freeOfCharge: 'Miễn phí',
         month: 'Tháng',
         billingRules: 'Quy tắc tính phí',
+        halfHour:'0.5 h',
+        oneHour:'1 h'
     },
     // 分账关系
     reType: {
@@ -571,6 +573,7 @@ export default {
         retext: 'Khi hoàn tiền theo cách thức trả tiền ban đầu và tiền dư, hãy đảm bảo rằng tài khoản thu tiền của bạn có đủ dư, nếu không khách hàng sẽ không thể nhận được tiền hoàn.<br></span>5 giây sau khi gửi yêu cầu hoàn tiền, hãy nhấn vào chi tiết đơn hàng - quy trình đơn hàng để xem kết quả hoàn tiền',
         clickPay: 'Bắt đầu khấu trừ',
         clickPayDesc: 'Vui lòng không khởi tạo khấu trừ liên tục và lặp lại',
+        ddOrder: 'DD Đặt hàng'
     },
     battery: {
         batteryCount: 'Số lượng pin thuộc thương hiệu',
@@ -1948,7 +1951,12 @@ export default {
         associatedGoods: 'Hàng hóa liên quan',
         addTemp: 'Thêm mẫu'
     },
-    
+    payMode: {
+      weixin: 'WECHAT',
+      alipay: 'ALIPAY',
+      three: 'APP',
+      four: 'OTHER',
+    },
     activity:{
         typeName: 'Loại hoạt động',
         activityName: 'Tên hoạt động',

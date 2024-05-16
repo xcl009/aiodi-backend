@@ -154,9 +154,9 @@
                     {{ scope.row.number }}
                   </template>
                 </el-table-column>
-                <el-table-column :label="`${$t('public.unitPrice')}(${$t('public.element')})`" align="center">
+                <el-table-column :label="`${$t('public.unitPrice')}`" align="center">
                   <template slot-scope="scope">
-                    {{ scope.row.price }}{{ $t('public.element') }}
+                    {{ scope.row.price }}
                   </template>
                 </el-table-column>
                 <el-table-column :label="$t('public.number')" align="center">
@@ -164,7 +164,7 @@
                     {{ curRow.productNumber }}
                   </template>
                 </el-table-column>
-                <el-table-column :label="`${$t('public.totalAmount')}(${$t('public.element')})`" align="center">
+                <el-table-column :label="`${$t('public.totalAmount')}`" align="center">
                   <template slot-scope="scope">
                     <span class="red_color">{{ curRow.productPrice }}</span>
                   </template>

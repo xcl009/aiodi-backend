@@ -168,14 +168,13 @@
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
           <el-form-item :label="$t('brand.voucherAmount')">
             <el-input v-model="dform.amount">
-              <template slot="append">{{ $t('public.element') }}</template>
+              <template slot="append">{{ siteInfo.currencySymbol }}</template>
             </el-input>
           </el-form-item>
           <el-form-item>
             <div class="text-danger" style="width: 400px; max-width: 100%;">{{ $t('public.tips') }}：{{
               $t('brand.renewText') }}{{ dform.amount || 0
-  }}{{ $t('public.element') }}，{{ $t('brand.renewText1') }}{{ (dform.amount || 0) * 3 }}{{
-  $t('public.element') }}，{{ $t('brand.renewText2') }}。</div>
+  }}，{{ $t('brand.renewText1') }}{{ (dform.amount || 0) * 3 }}，{{ $t('brand.renewText2') }}。</div>
           </el-form-item>
         </el-form>
       </template>
@@ -501,7 +500,7 @@
         {
           key: 'amount',
           val: true,
-          name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
+          name: `${this.$t('public.aTurnover')}`
         },
         {
           key: 'expiresTime',
@@ -581,7 +580,7 @@
           {
             key: 'amount',
             val: true,
-            name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
+            name: `${this.$t('public.aTurnover')}`
           }
         ]
       },

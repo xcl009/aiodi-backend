@@ -34,3 +34,7 @@ export function getWdConstant() {
 export function getAuthMenu(data) {
   return $get('iot-saas-user/auth/menu', data)
 }
+
+export function queryCurrencySymbol(data) {
+  return $get('iot-saas-basic/open/sys/dict/queryCurrencySymbol', data)
+}

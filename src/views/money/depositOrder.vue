@@ -8,8 +8,7 @@
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('home.alldeposit') }}</div>
-            <div><span class="mr-5 fs-b3 text-bold">{{ accSub(totalStat.allAmount, totalStat.amount) || 0 }}</span>{{
-              $t('public.element') }}</div>
+            <div><span class="mr-5 fs-b3 text-bold">{{ accSub(totalStat.allAmount, totalStat.amount) || 0 }}</span></div>
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
@@ -24,7 +23,7 @@
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('moeny.unreturnedAmount') }}</div>
-            <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.unrefundAmount || 0.00 }}</span>{{ $t('public.element')
+            <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.unrefundAmount || 0.00 }}</span>
             }}</div>
           </div>
           <div class="flex1 ml-30">
@@ -40,7 +39,7 @@
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('moeny.refundedAmount') }}</div>
-            <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.refundedAmount || 0 }}</span>{{ $t('public.element') }}
+            <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.refundedAmount || 0 }}</span>
             </div>
           </div>
           <div class="flex1 ml-30">
@@ -282,7 +281,7 @@ export default {
         {
           key: 'rAmount',
           val: true,
-          name: `${this.$t('public.refundAmount')}(${this.$t('public.element')})`
+          name: `${this.$t('public.refundAmount')}`
         }
       ]
     }

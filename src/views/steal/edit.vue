@@ -154,7 +154,7 @@
             </el-form-item>
             <el-form-item :label="`${$t('steal.leakageAmount')}：`">
               <el-input type="number" v-model="form.complateRule.startAmount">
-                <template slot="append">{{ $t('public.element') }}</template>
+                <template slot="append">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </el-form-item>
             <el-form-item :label="`${$t('steal.afterOffline')}：`" class="ml-10">
@@ -240,7 +240,7 @@
             </el-form-item>
             <el-form-item :label="`${$t('steal.leakageAmount')}：`">
               <el-input type="number" v-model="form.failRule.startAmount">
-                <template slot="append">{{ $t('public.element') }}</template>
+                <template slot="append">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </el-form-item>
           </div>

@@ -34,7 +34,7 @@
                       v-for="time in config[`plan_time`]"></el-option>
                   </el-select>
                   <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
-                    <template slot="append">{{ $t('public.element') }}</template>
+                    <template slot="append">{{ siteInfo.currencySymbol }}</template>
                   </el-input>
                   <el-button type="text" size="small" :disabled="billing[`${xcx}PayMode`].payModeDetail.length == 4"
                     v-if="index == 0"
@@ -56,7 +56,7 @@
                   </div>
                   <div class="pl-10 flex1">
                     <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.startingAmount">
-                      <template slot="append">{{ $t('public.element') }}</template>
+                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
                 </div>
@@ -70,7 +70,7 @@
                   </div>
                   <div class="pl-10 flex1">
                     <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.unitPrice">
-                      <template slot="append">{{ $t('public.element') }}</template>
+                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
                 </div>
@@ -85,19 +85,19 @@
                   </div>
                   <div class="pl-10 flex1">
                     <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
-                      <template slot="append">{{ $t('public.element') }}</template>
+                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
                 </div>
               </el-form-item>
               <el-form-item :label="$t('public.totalCapping')">
                 <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.maxAmount">
-                  <template slot="append">{{ $t('public.element') }}</template>
+                  <template slot="append">{{ siteInfo.currencySymbol }}</template>
                 </el-input>
               </el-form-item>
               <el-form-item :label="$t('public.deposit')">
                 <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.depositAmount">
-                  <template slot="append">{{ $t('public.element') }}</template>
+                  <template slot="append">{{ siteInfo.currencySymbol }}</template>
                 </el-input>
               </el-form-item>
             </template>
@@ -145,6 +145,9 @@ export default {
     Ability() {
       return this.$store.getters.Ability
     },
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    }
   },
   mounted() {
     this.deviceTypeCode = Object.keys(this.myDeviceId)[0]

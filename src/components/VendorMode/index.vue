@@ -25,7 +25,7 @@
       </template>
       <el-form-item :label="$t('components.managementFees')" v-if="dform.operationMode == 'SELF_RUN'">
         <el-input v-model="dform.poundage" :placeholder="$t('components.managementFeesText')">
-          <span slot="append">{{ $t('public.element') }}</span>
+          <span slot="append">{{ siteInfo.currencySymbol }}</span>
         </el-input>
         <div class="mt-10 fs-s3 line-default">
           {{ $t('components.text4') }}
@@ -57,6 +57,9 @@ export default {
   computed: {
     agentInfo() {
       return this.$store.getters.agentInfo
+    },
+    siteInfo() {
+      return this.$store.getters.siteInfo
     }
   },
   mounted() {

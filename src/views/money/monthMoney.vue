@@ -28,17 +28,17 @@
             {{ scope.row.countGroupDate }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('public.aTurnover')}(${$t('public.element')})`" align="center">
+        <el-table-column :label="`${$t('public.aTurnover')}`" align="center">
           <template slot-scope="scope">
             {{ scope.row.amount }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('home.orderNum')}(${$t('public.ones')})`" align="center">
+        <el-table-column :label="`${$t('home.orderNum')}`" align="center">
           <template slot-scope="scope">
             {{ scope.row.orderNumber }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('public.income')}(${$t('public.element')})`" align="center">
+        <el-table-column :label="`${$t('public.income')}`" align="center">
           <template slot-scope="scope">
             {{ scope.row.amountDivide }}
           </template>

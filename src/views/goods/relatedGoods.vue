@@ -20,14 +20,14 @@
           <el-table-column :label="$t('goods.costPrice')" width="200">
             <template slot-scope="scope">
               <el-input type="number" v-model="scope.row.costPrice" :placeholder="$t('goods.costPrice')" disabled>
-                <template slot="append">{{ $t('public.element') }}</template>
+                <template slot="append">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </template>
           </el-table-column>
           <el-table-column :label="$t('goods.retailPrice')" width="200">
             <template slot-scope="scope">
               <el-input type="number" v-model="scope.row.retailPrice" :placeholder="$t('goods.retailPrice')">
-                <template slot="append">{{ $t('public.element') }}</template>
+                <template slot="append">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </template>
           </el-table-column>
@@ -119,6 +119,9 @@ export default {
       return {
         1: this.$t('goods.selectCommodity')
       }
+    },
+    siteInfo(){
+      return this.$store.getters.siteInfo
     }
   },
   mounted() {

@@ -27,7 +27,7 @@
               <div class="pl-10 flex1">
                 <el-input type="number" v-model="form.deductionAmount">
                   <template slot="prepend">{{ $t('leaseOrder.deduction') }}</template>
-                  <template slot="append">{{ $t('public.element') }}</template>
+                  <template slot="append">{{ siteInfo.currencySymbol }}</template>
                 </el-input>
               </div>
             </div>

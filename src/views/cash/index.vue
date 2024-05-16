@@ -95,23 +95,23 @@
             {{ scope.row.createTime || '--' }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('public.withdrawalAmount')}(${$t('public.element')})`">
+        <el-table-column :label="`${$t('public.withdrawalAmount')}`">
           <template slot-scope="scope">
             {{ scope.row.amount || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('public.commission')}(${$t('public.element')})`">
+        <el-table-column :label="`${$t('public.commission')}`">
           <template slot-scope="scope">
             <div>{{ $t('system.singleStroke') }}：{{ scope.row.feeDeal || '0.00' }}</div>
             <div>{{ $t('system.taxPoints') }}：{{ scope.row.feePercent || '0.00' }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('cash.accountsReceivable')}(${$t('public.element')})`">
+        <el-table-column :label="`${$t('cash.accountsReceivable')}`">
           <template slot-scope="scope">
             {{ accSub(accSub(scope.row.amount, scope.row.feeDeal), scope.row.feePercent) }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('moeny.actualReceipt')}(${$t('public.element')})`">
+        <el-table-column :label="`${$t('moeny.actualReceipt')}`">
           <template slot-scope="scope">
             {{ scope.row.amountReceived || '0.00' }}
           </template>

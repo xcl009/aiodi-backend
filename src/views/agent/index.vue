@@ -65,7 +65,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('public.amount')}(${$t('public.element')})`" width="150">
+        <el-table-column :label="`${$t('public.amount')}`" width="150">
           <template slot-scope="scope">
             <div class="inline">
               <div>{{ $t('public.aTurnover') }}：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
@@ -75,7 +75,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('brand.withdrawableAmount')}(${$t('public.element')})`" width="120">
+        <el-table-column :label="`${$t('brand.withdrawableAmount')}`" width="120">
           <template slot-scope="scope">
             <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(cashStat[scope.row.id] || {})" v-if="checkAbility(['WD_MODIFY'], 3)">
               {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}

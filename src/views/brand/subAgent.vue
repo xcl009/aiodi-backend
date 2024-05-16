@@ -75,7 +75,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('public.amount')}(${$t('public.element')})`" width="140">
+        <el-table-column :label="`${$t('public.amount')}`" width="140">
           <template slot-scope="scope">
             <div class="inline">
               <div>{{ $t('public.aTurnover') }}：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
@@ -83,7 +83,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('brand.withdrawableAmount')}(${$t('public.element')})`" width="120">
+        <el-table-column :label="`${$t('brand.withdrawableAmount')}`" width="120">
           <template slot-scope="scope">
             <span class="cursor text-blue">{{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}</span>
           </template>

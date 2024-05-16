@@ -66,11 +66,11 @@
             <div class="mt-15 flex align-center">
               <template v-if="checkAbility(['BRAND_MEMBER'], 3)">
                 <div class="flex1">
-                  <span class="mr-5 fs-b4 text-black">￥0</span>
+                  <span class="mr-5 fs-b4 text-black">0</span>
                   <template v-for="(sitem, idx) in item.priceSettings">
                     <template v-if="idx == 0">
-                      <span class="text-line">{{ sitem.monthAmount > 0 ? `¥${sitem.monthAmount}` : sitem.yearAmount > 0 ?
-                        `¥${sitem.yearAmount}` : `¥${sitem.permanentAmount}` }}</span>
+                      <span class="text-line">{{ sitem.monthAmount > 0 ? `${sitem.monthAmount}` : sitem.yearAmount > 0 ?
+                        `${sitem.yearAmount}` : `${sitem.permanentAmount}` }}</span>
                       <span>{{ sitem.monthAmount > 0 ? `/${$t('public.theMoon')}` : sitem.yearAmount > 0 ?
                         `/${$t('public.year')}` : `/${$t('payType.permanent')}` }}</span>
                     </template>
@@ -125,8 +125,8 @@
           <div class="flex align-center mb-10">
             <div class="mr-15 w-60 text-grey">{{ $t('market.servicePrece') }}</div>
             <div class="flex align-center" v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
-              <div class="fs-b3 text-danger">￥0</div>
-              <div class="ml-10 fs-c1 text-black3 text-line" v-if="info.priceSettings">￥{{
+              <div class="fs-b3 text-danger">0</div>
+              <div class="ml-10 fs-c1 text-black3 text-line" v-if="info.priceSettings">{{
                 info.priceSettings[dform.priceCode][cycleKey] || 0 }}</div>
             </div>
             <div class="fs-c1 text-danger" v-else-if="info.priceSettings">{{ info.priceSettings[dform.priceCode][cycleKey]
@@ -183,7 +183,7 @@
         <div style="height: 66px;"></div>
         <div class="flex align-center justify-end p-15 mt-30 abs bfixed bg-white text-right l-t">
           <template v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
-            <div class="mr-20 fs-b3 text-danger">￥0</div>
+            <div class="mr-20 fs-b3 text-danger">0</div>
           </template>
           <template v-else-if="info.priceSettings">
             <div class="mr-20 fs-b3 text-danger">{{ info.priceSettings[dform.priceCode][cycleKey] || 0 }}</div>
@@ -222,8 +222,8 @@
           <div class="flex align-center mb-10">
             <div class="mr-20 w-60 text-grey">{{ $t('shopping.paidInAmount') }}</div>
             <div class="flex align-center" v-if="checkAbility(['BRAND_MEMBER'], 3) && rests.expiresDatetime">
-              <div class="fs-b3 text-danger">￥0</div>
-              <div class="ml-10 fs-c1 text-black3 text-line" v-if="info.priceSettings">￥{{
+              <div class="fs-b3 text-danger">0</div>
+              <div class="ml-10 fs-c1 text-black3 text-line" v-if="info.priceSettings">{{
                 info.priceSettings[dform.priceCode][cycleKey] || 0 }}</div>
             </div>
             <div class="fs-c1 text-danger" v-else-if="info.priceSettings">{{ info.priceSettings[dform.priceCode][cycleKey]

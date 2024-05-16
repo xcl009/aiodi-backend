@@ -45,9 +45,8 @@
           </el-table-column>
           <el-table-column :label="$t('public.deposit')">
             <template slot-scope="scope">
-              <div>{{ scope.row.depositAmount }}{{ $t('public.element') }}</div>
-              <div v-if="scope.row.depositAmount > 0">{{ $t('public.exceed') }}{{ scope.row.overTime }}{{
-                $t('membership.noRefund') }}</div>
+              <div>{{ scope.row.depositAmount }}</div>
+              <div v-if="scope.row.depositAmount > 0">{{ $t('public.exceed') }}{{ scope.row.overTime }}{{ $t('membership.noRefund') }}</div>
             </template>
           </el-table-column>
           <el-table-column :label="$t('public.operate')">
@@ -72,7 +71,7 @@
           </el-form-item>
           <el-form-item :label="$t('membership.cardAmount')" ref="amount" prop="amount">
             <el-input type="number" v-model="dform.amount">
-              <template slot="append">{{ $t('public.element') }}</template>
+              <template slot="append">{{ siteInfo.currencySymbol }}</template>
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('membership.cardTime')" ref="availableDay" prop="availableDay">
@@ -112,7 +111,7 @@
                 <template slot="append">
                   <el-popover placement="top" :title="$t('public.tips')" width="250" trigger="hover"
                     :content="$t('membership.text')">
-                    <span slot="reference">{{ $t('public.element') }}<i class="el-icon-question text-primary"></i></span>
+                    <span slot="reference">{{ siteInfo.currencySymbol }}<i class="el-icon-question text-primary"></i></span>
                   </el-popover>
                 </template>
               </el-input>

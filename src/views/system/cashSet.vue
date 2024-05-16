@@ -114,18 +114,18 @@
                     <div class="ml-30">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('system.singleStroke')
                     }}</div>
                     <el-input type="number" v-model="item.handlingFee" class="flex1 ml-10 mr-10">
-                      <template slot="append">{{ $t('public.element') }}</template>
+                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
                 </el-form-item>
                 <el-form-item :label="$t('system.minMoeny')">
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.minAmount" class="flex1 mr-10">
-                      <template slot="append">{{ $t('public.element') }}</template>
+                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                     <div class="ml-30">{{ $t('system.maxMoeny') }}</div>
                     <el-input type="number" v-model="item.maxAmount" class="flex1 ml-10 mr-10">
-                      <template slot="append">{{ $t('public.element') }}</template>
+                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
                 </el-form-item>
@@ -133,7 +133,7 @@
                   <el-form-item :label="$t('system.needApprovalAmount')">
                     <div class="flex align-center flex-wrap">
                       <el-input type="number" v-model="item.needApprovalAmount" class="flex1 mr-10">
-                        <template slot="append">{{ $t('public.element') }}</template>
+                        <template slot="append">{{ siteInfo.currencySymbol }}</template>
                       </el-input>
                     </div>
                   </el-form-item>
@@ -221,6 +221,9 @@ export default {
     },
     week() {
       return ['', this.$t('public.one'), this.$t('public.two'), this.$t('public.three'), this.$t('public.four'), this.$t('public.five'), this.$t('public.six'), this.$t('public.sunday')]
+    },
+    siteInfo() {
+      return this.$store.getters.siteInfo
     }
   },
   mounted() {

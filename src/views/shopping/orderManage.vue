@@ -183,9 +183,9 @@
                                         {{ scope.row.number }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column :label="`${$t('public.unitPrice')}(${$t('public.element')})`" align="center">
+                                <el-table-column :label="`${$t('public.unitPrice')}`" align="center">
                                     <template slot-scope="scope">
-                                        {{ scope.row.price }}{{ $t('public.element') }}
+                                        {{ scope.row.price }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column :label="$t('public.number')" align="center">
@@ -193,7 +193,7 @@
                                         {{ curRow.productNumber }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column :label="`${$t('public.totalAmount')}(${$t('public.element')})`" align="center">
+                                <el-table-column :label="`${$t('public.totalAmount')}`" align="center">
                                     <template slot-scope="scope">
                                         <span class="red_color">{{ curRow.productPrice }}</span>
                                     </template>
@@ -245,7 +245,7 @@
         </div>
     </div>
 </template>
-  
+
 <script>
 import Pagination from '@/components/Pagination'
 import condition from '@/components/condition/'
@@ -418,7 +418,7 @@ export default {
                 {
                     key: 'productStandardDTO',
                     val: true,
-                    name: `${this.$t('public.orderMoeny')}(${this.$t('public.element')})`
+                    name: `${this.$t('public.orderMoeny')}`
                 },
                 {
                     key: 'deviceTypeCode',
@@ -613,7 +613,7 @@ export default {
     }
 }
 </script>
-  
+
 <style lang="scss" scoped>
 .remark-box {
     max-height: 80px;
@@ -681,4 +681,3 @@ export default {
     border-radius: 8px;
 }
 </style>
-  

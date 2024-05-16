@@ -110,7 +110,7 @@
 
           <el-form-item :label="$t('public.walletBalance')">
             <el-input type="number" v-model="form.walletBalance">
-              <template slot="append">{{ $t('public.element') }}</template>
+              <template slot="append">{{ siteInfo.currencySymbol }}</template>
             </el-input>
             <div>
               {{ $t('system.userMoeny') }}{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}{{
@@ -170,6 +170,9 @@ export default {
     }
   },
   computed: {
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
     myDeviceId() {
       return this.$store.getters.myDeviceId
     },

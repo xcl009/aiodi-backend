@@ -510,7 +510,7 @@
             <el-table-column :label="$t('store.loginTime')" prop="operationTime"></el-table-column>
             <el-table-column :label="$t('brand.withdrawableAmount')">
               <template slot-scope="scope">
-                ￥{{ JSON.parse(scope.row.operationExt)['balance'] }}
+                {{ JSON.parse(scope.row.operationExt)['balance'] }}
               </template>
             </el-table-column>
           </el-table>
@@ -699,17 +699,17 @@ export default {
           key: 'amount',
           val: this.checkAbility(['STORE_NUM_AMOUNT'], 3),
           hidden: !this.checkAbility(['STORE_NUM_AMOUNT'], 3),
-          name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
+          name: `${this.$t('public.aTurnover')}`
         },
         {
           key: 'amountDivide',
           val: true,
-          name: `${this.$t('public.totalRevenue')}(${this.$t('public.element')})`
+          name: `${this.$t('public.totalRevenue')}`
         },
         {
           key: 'balance',
           val: true,
-          name: `${this.$t('store.withdrawable')}(${this.$t('public.element')})`
+          name: `${this.$t('store.withdrawable')}`
         },
         {
           key: 'order',

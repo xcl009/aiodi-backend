@@ -26,8 +26,7 @@
           <img :src="require('@/assets/lease/ok.svg')" width="54">
           <div class="flex1 ml-10">
             <div class="mb-5">{{ $t('leaseOrder.payAmount') }}</div>
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.payAmount || 0.00 }}</span>{{
-              $t('public.element') }}</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.payAmount || 0.00 }}</span></div>
           </div>
         </div>
       </el-col>
@@ -36,8 +35,7 @@
           <img :src="require('@/assets/lease/wait.svg')" width="54">
           <div class="flex1 ml-10">
             <div class="mb-5">{{ $t('leaseOrder.residueAmount') }}</div>
-            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount || 0.00 }}</span>{{
-              $t('public.element') }}</div>
+            <div><span class="mr-5 fs-b3 text-bold text-black">{{ totalStat.residueAmount || 0.00 }}</span></div>
           </div>
         </div>
       </el-col>
@@ -226,7 +224,7 @@
             <el-form-item :label="$t('public.totalAmount')" :error="ferror.amountTotal">
               <el-input type="number" v-model="dform.amountTotal" :placeholder="$t('leaseOrder.totalAmount')"
                 @input="(v) => (ferror.amountTotal = checkDigit(v, 1, 9999999))">
-                <template slot="append">{{ $t('public.element') }}</template>
+                <template slot="append">{{ siteInfo.currencySymbol}}</template>
               </el-input>
             </el-form-item>
             <el-form-item :label="$t('leaseOrder.periodicDeductions')" :error="ferror.deductionAmount">
@@ -237,7 +235,7 @@
                   <el-option :label="$t('public.weekly')" :value="7"></el-option>
                   <el-option :label="$t('public.monthly')" :value="30"></el-option>
                 </el-select>
-                <template slot="append">{{ $t('public.element') }}</template>
+                <template slot="append">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </el-form-item>
             <el-form-item :label="$t('leaseOrder.kkStartTime')">
@@ -294,7 +292,7 @@
               </div>
               <div class="flex mb-10">
                 <div class="label-text">{{ $t('leaseOrder.deductionPeriod') }}:</div>
-                <div>{{ curRow.deductionAmount }}{{ $t('public.element') }}/{{ curRow.deductionCycle == 1 ? '' :
+                <div>{{ curRow.deductionAmount }}{{ siteInfo.currencySymbol }}/{{ curRow.deductionCycle == 1 ? '' :
                   curRow.deductionCycle }}{{ $t('public.day') }}</div>
               </div>
               <div class="flex">
@@ -313,8 +311,7 @@
                 <img :src="require('@/assets/lease/info_amout.svg')" width="32">
                 <div class="pl-10 flex-1">
                   <div>{{ $t('leaseOrder.totalAmountTo') }}</div>
-                  <div class="mt-5"><span class="fs-b2 text-bold">{{ curRow.amountTotal }}</span><span
-                      class="fs-s2 text-gray"> {{ $t('public.element') }}</span></div>
+                  <div class="mt-5"><span class="fs-b2 text-bold">{{ curRow.amountTotal }}</span></div>
                 </div>
               </div>
             </el-col>
@@ -323,8 +320,7 @@
                 <img :src="require('@/assets/lease/info_time.svg')" width="32">
                 <div class="pl-10 flex-1">
                   <div>{{ $t('leaseOrder.remainingAmount') }}</div>
-                  <div class="mt-5"><span class="fs-b2 text-bold">{{ accSub(curRow.amountTotal, curRow.payAmount)
-                  }}</span><span class="fs-s2 text-gray"> {{ $t('public.element') }}</span></div>
+                  <div class="mt-5"><span class="fs-b2 text-bold">{{ accSub(curRow.amountTotal, curRow.payAmount) }}</span></div>
                 </div>
               </div>
             </el-col>
@@ -356,7 +352,7 @@
                 {{ $t('payType.balance') }}
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('leaseOrder.deductionAmount')}(${$t('public.element')})`">
+            <el-table-column :label="`${$t('leaseOrder.deductionAmount')}`">
               <template slot-scope="scope">
                 {{ Math.abs(scope.row.amount) }}
               </template>
@@ -562,12 +558,12 @@ export default {
       {
         key: 'amountTotal',
         val: true,
-        name: `${this.$t('leaseOrder.amountTotal')}(${this.$t('public.element')})`
+        name: `${this.$t('leaseOrder.amountTotal')}`
       },
       {
         key: 'payAmount',
         val: true,
-        name: `${this.$t('leaseOrder.payAmounts')}(${this.$t('public.element')})`
+        name: `${this.$t('leaseOrder.payAmounts')}`
       },
       {
         key: 'deductionCycle',
@@ -733,7 +729,7 @@ export default {
     this.urlQuery = this.$route.meta.urlQuery
   },
   mounted(options) {
-    
+
   },
   methods: {
     /**

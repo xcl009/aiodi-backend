@@ -38,13 +38,13 @@
             <el-input v-model="item.priceCode" class="mr-10" :placeholder="$t('market.packageIdentification')"></el-input>
             <el-input v-model="item.priceName" class="mr-10" :placeholder="$t('market.packageName')"></el-input>
             <el-input type="number" v-model="item.monthAmount" class="mr-10">
-              <template slot="append">{{ $t('public.element') }}/{{ $t('public.theMoon') }}</template>
+              <template slot="append">{{ siteInfo.currencySymbol }}/{{ $t('public.theMoon') }}</template>
             </el-input>
             <el-input type="number" v-model="item.yearAmount" class="mr-10">
-              <template slot="append">{{ $t('public.element') }}/{{ $t('public.year') }}</template>
+              <template slot="append">{{ siteInfo.currencySymbol }}/{{ $t('public.year') }}</template>
             </el-input>
             <el-input type="number" v-model="item.permanentAmount" class="mr-10">
-              <template slot="append">{{ $t('public.element') }}/{{ $t('payType.permanent') }}</template>
+              <template slot="append">{{ siteInfo.currencySymbol }}/{{ $t('payType.permanent') }}</template>
             </el-input>
             <el-button type="text" size="small" v-if="index == 0" @click="form.priceSettings.push({})">{{ $t('public.add')
             }}</el-button>

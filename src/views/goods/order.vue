@@ -92,17 +92,17 @@
           </el-table-column>
           <el-table-column :label="$t('goods.buyDetails')" width="150">
             <template slot-scope="scope">
-              {{ $t('goods.costPrice') }}:{{ scope.row.buyDetail.costPrice }}{{ $t('public.element') }}，{{
-                $t('goods.retailPrice') }}:{{ scope.row.buyDetail.retailPrice }}{{ $t('public.element') }}，{{
+              {{ $t('goods.costPrice') }}:{{ scope.row.buyDetail.costPrice }}{{ siteInfo.currencySymbol }}，{{
+                $t('goods.retailPrice') }}:{{ scope.row.buyDetail.retailPrice }}{{ siteInfo.currencySymbol }}，{{
     scope.row.buyDetail.position }}{{ $t('public.numCard') }}
             </template>
           </el-table-column>
-          <el-table-column :label="`${$t('public.income')}(${$t('public.element')})`" width="75">
+          <el-table-column :label="`${$t('public.income')}`" width="75">
             <template slot-scope="scope">
               <el-link type="success">{{ scope.row.amount || '0.00' }}</el-link>
             </template>
           </el-table-column>
-          <el-table-column :label="`${$t('public.refund')}(${$t('public.element')})`" width="75">
+          <el-table-column :label="`${$t('public.refund')}`" width="75">
             <template slot-scope="scope">
               <el-link type="success">{{ scope.row.refundAmount || '0.00' }}</el-link>
             </template>
@@ -150,7 +150,7 @@
         <el-table border :data="orderDivide" :span-method="fenRunSpanMethod" class="custom">
           <el-table-column :label="$t('public.orderMoeny')" align="center">
             <template slot-scope="scope">
-              {{ amountPaid }}{{ $t('public.element') }}
+              {{ amountPaid }}
             </template>
           </el-table-column>
           <el-table-column width="190" :label="$t('order.divideIntoAdults')" align="center">
@@ -170,12 +170,12 @@
               <span v-else>{{ scope.row.percent }}%</span>
             </template>
           </el-table-column>
-          <el-table-column :label="`${$t('public.dividedAmount')}(${$t('public.element')})`" align="center">
+          <el-table-column :label="`${$t('public.dividedAmount')}`" align="center">
             <template slot-scope="scope">
               {{ scope.row.amount }}
             </template>
           </el-table-column>
-          <el-table-column :label="`${$t('public.refundAmount')}(${$t('public.element')})`" align="center">
+          <el-table-column :label="`${$t('public.refundAmount')}`" align="center">
             <template slot-scope="scope">
               {{ scope.row.refund }}
             </template>
@@ -195,8 +195,8 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item :label="$t('public.refundAmount')">
-            <el-input v-model="dform.amount" :placeholder="`${$t('public.max')}${curRow.amount}${$t('public.element')}`">
-              <span slot="append">{{ $t('public.element') }}</span>
+            <el-input v-model="dform.amount" :placeholder="`${$t('public.max')}${curRow.amount}`">
+              <span slot="append">{{ siteInfo.currencySymbol }}</span>
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('order.reasonForRefund')">
@@ -284,6 +284,9 @@ export default {
     },
     Ability() {
       return this.$store.getters.Ability
+    },
+    siteInfo() {
+      return this.$store.getters.siteInfo
     },
     dialogTitle(){
       return {

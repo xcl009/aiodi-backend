@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getSaasDevice, getConstant, getWdConstant, getAuthMenu } from '@/api/user'
+import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getSaasDevice, getConstant, getWdConstant, getAuthMenu, queryCurrencySymbol } from '@/api/user'
 import { arrayToObj } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -178,26 +178,31 @@ const actions = {
       getPlatformConfig({
         brandId: params.brandId || getToken('brandId')
       }).then(data => {
-        data = data || {}
-        commit('SET_SITEINFO', data)
-        if (data.appName) {
-          var icon_link = document.createElement('link')
-          icon_link.type = 'image/x-icon'
-          icon_link.rel = 'shortcut icon'
-          icon_link.href = data.appLogo
-          document.getElementsByTagName('head')[0].appendChild(icon_link)
-          document.title = `${data.appName}-${i18n.t('layout.admins')}`;
-        }
-        data.time_unit = data.fund_fee_time_unit == 0 ? `${i18n.t('public.minute')}` : `${i18n.t('public.huor')}`
-        data.withdrawType = {
-          1: i18n.t('payType.wxWithdrawal'),
-          2: i18n.t('payType.wxCode'),
-          3: i18n.t('payType.zfbWithdrawal'),
-          4: i18n.t('payType.zfbCode'),
-          5: i18n.t('payType.card')
-        }
-        Vue.prototype.SITE_INFO = data
-        resolve(data)
+        queryCurrencySymbol().then(ares => {
+          let symbol = arrayToObj(ares, 'code', 'currencyCoin')
+          data.currencySymbol = symbol[data.currency]
+          data.symbol = symbol
+          window.currencySymbol = data.currencySymbol
+          commit('SET_SITEINFO', data)
+          if (data.appName) {
+            var icon_link = document.createElement('link')
+            icon_link.type = 'image/x-icon'
+            icon_link.rel = 'shortcut icon'
+            icon_link.href = data.appLogo
+            document.getElementsByTagName('head')[0].appendChild(icon_link)
+            document.title = `${data.appName}-${i18n.t('layout.admins')}`;
+          }
+          data.time_unit = data.fund_fee_time_unit == 0 ? `${i18n.t('public.minute')}` : `${i18n.t('public.huor')}`
+          data.withdrawType = {
+            1: i18n.t('payType.wxWithdrawal'),
+            2: i18n.t('payType.wxCode'),
+            3: i18n.t('payType.zfbWithdrawal'),
+            4: i18n.t('payType.zfbCode'),
+            5: i18n.t('payType.card')
+          }
+          Vue.prototype.SITE_INFO = data
+          resolve(data)
+        })
       })
     })
   },

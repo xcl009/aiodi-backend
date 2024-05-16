@@ -812,7 +812,7 @@ export default {
           key: 'amount',
           val: this.isBrand() || this.isSaas(),
           hidden: !this.isBrand() && !this.isSaas(),
-          name: `${this.$t('public.aTurnover')}(${this.$t('public.element')})`
+          name: `${this.$t('public.aTurnover')}`
         },
         {
           key: 'trafficCardId',

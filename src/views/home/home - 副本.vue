@@ -6,8 +6,8 @@
           <div>总交易额</div>
           <div class="flex align-center line-1">
             <div class="flex1 flex align-center">
-              <div class="fs-b5 text-black">￥</div>
               <div class="mr-10 fs-b5 text-black"><count-to :start-val="0" :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2"/></div>
+              <div class="fs-b5 text-black">{{ siteInfo.currencySymbol }}</div>
               <i class="iconfont icon-right fs-s1"></i>
             </div>
             <div class="stat-icon flex align-center justify-center">

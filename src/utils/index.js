@@ -579,16 +579,16 @@ const util = {
     mode = JSON.parse(mode)
     if (type == 1) {
       if (deviceTypeCode && deviceTypeCode.indexOf('WM') > -1) {
-        return `${window.config.washing_package[mode.time].title}(${mode.money}${i18n.t('public.element')})`
+        return `${window.config.washing_package[mode.time].title}(${mode.money}${currencySymbol}`
       }
-      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${mode.money}${i18n.t('public.element')}` : `${mode.time}${i18n.t('public.minute')}${mode.money}${i18n.t('public.element')}`
+      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${mode.money}${currencySymbol}` : `${mode.time}${i18n.t('public.minute')}${mode.money}${currencySymbol}`
     } else {
-      let fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${i18n.t('public.element')}，${i18n.t('public.superrule')}${mode.overBillingUnit}${i18n.t('public.minute')}/${mode.unitPrice}${i18n.t('public.element')}`
+      let fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${currencySymbol}，${i18n.t('public.superrule')}${mode.overBillingUnit}${i18n.t('public.minute')}/${mode.unitPrice}${currencySymbol}`
       if (mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice) {
-        fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${i18n.t('public.element')}`
+        fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${currencySymbol}`
       }
       if (stype == 2) {
-        fee = fee + `${mode.maxBillingTimeUnit == 1440 ? `，${i18n.t('public.dailyCap')}` + (mode.maxBillingTimePrice || 19.9) + `${i18n.t('public.element')}` : '，' + mode.maxBillingTimeUnit + `${i18n.t('public.minCap')}` + mode.maxBillingTimePrice + `${i18n.t('public.element')}`}，${i18n.t('public.totalCapping')}${mode.maxAmount}${i18n.t('public.element')}`
+        fee = fee + `${mode.maxBillingTimeUnit == 1440 ? `，${i18n.t('public.dailyCap')}` + (mode.maxBillingTimePrice || 19.9) + currencySymbol : '，' + mode.maxBillingTimeUnit + `${i18n.t('public.minCap')}` + mode.maxBillingTimePrice + currencySymbol}，${i18n.t('public.totalCapping')}${mode.maxAmount}${currencySymbol}`
       }
       return fee
     }
@@ -680,10 +680,10 @@ const util = {
         ],
         laundryMode: laundryMode,
         payModeDetails: {
-          startingTime: 180,
+          startingTime: 60,
           startingAmount: 3,
           overBillingUnit: 60,
-          unitPrice: 1,
+          unitPrice: 3,
           maxBillingTimeUnit: 1440,
           maxBillingTimePrice: 20,
           maxAmount: 99,
@@ -706,10 +706,10 @@ const util = {
         ],
         laundryMode: laundryMode,
         payModeDetails: {
-          startingTime: 180,
+          startingTime: 60,
           startingAmount: 3,
           overBillingUnit: 60,
-          unitPrice: 2,
+          unitPrice: 3,
           maxBillingTimeUnit: 1440,
           maxBillingTimePrice: 20,
           maxAmount: 99,
@@ -732,10 +732,10 @@ const util = {
         ],
         laundryMode: laundryMode,
         payModeDetails: {
-          startingTime: 180,
+          startingTime: 60,
           startingAmount: 3,
           overBillingUnit: 60,
-          unitPrice: 1,
+          unitPrice: 3,
           maxBillingTimeUnit: 1440,
           maxBillingTimePrice: 20,
           maxAmount: 99,
@@ -758,10 +758,10 @@ const util = {
         ],
         laundryMode: laundryMode,
         payModeDetails: {
-          startingTime: 180,
+          startingTime: 60,
           startingAmount: 3,
           overBillingUnit: 60,
-          unitPrice: 1,
+          unitPrice: 3,
           maxBillingTimeUnit: 1440,
           maxBillingTimePrice: 20,
           maxAmount: 99,

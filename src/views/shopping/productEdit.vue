@@ -51,7 +51,7 @@
             <div v-for="(item, index) in form.productStandardList" class="flex_j mark_box">
               <el-input v-model="item.number" :placeholder="$t('shopping.pricesText')" />
               <el-input v-model="item.price" :placeholder="$t('shopping.pricesText1')" class="ml-10" />
-              <span>{{ $t('public.element') }}/{{ $t('public.tower') }}</span>
+              <span>{{ siteInfo.currencySymbol }}/{{ $t('public.tower') }}</span>
               <span>{{ $t('shopping.minimumPurchase') }}</span>
               <el-input v-model="item.min" :placeholder="$t('shopping.minimumPurchaseText')" class="ml-10" />
               <span>{{ $t('public.tower') }}，{{ $t('shopping.highestPurchase') }}</span>
@@ -121,6 +121,9 @@ export default {
   computed: {
     myDeviceId() {
       return this.$store.getters.myDeviceId
+    },
+    siteInfo() {
+      return this.$store.getters.siteInfo
     },
     rules() {
       return {

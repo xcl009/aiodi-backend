@@ -13,8 +13,8 @@
       <el-col :span="24" class="rel">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({ path: `/money/monthMoney` })">
-            <div class="flex align-center fs-b5 baby-blue">￥<count-to :start-val="0"
-                :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" /></div>
+            <div class="flex align-center fs-b5 baby-blue"><count-to :start-val="0"
+                :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" />{{ siteInfo.currencySymbol }}</div>
             <div class="mt-5 fs-c1 text-white">{{ $t('home.transactionAmount') }}</div>
             <el-image class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')"></el-image>
           </div>
@@ -129,9 +129,7 @@
                 <div class="label">
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
                     <div>
-                      {{ index == 0 ? querHistogram[key].amount + `${$t('public.element')}` : index == 1 ?
-                        querHistogram[key].orderNumber + `${$t('public.ones')}`
-                        : querHistogram[key].unitPrice + `${$t('public.element')}` }}
+                      {{ index == 0 ? querHistogram[key].amount: index == 1 ? querHistogram[key].orderNumber : querHistogram[key].unitPrice }}
                     </div>
                   </template>
                 </div>
@@ -416,7 +414,7 @@
             </el-table-column>
             <el-table-column :label="`${$t('public.amount')}`">
               <template slot-scope="scope">
-                ￥{{ scope.row.amount }}
+                {{ scope.row.amount }}
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.status')}`">
@@ -670,6 +668,9 @@ export default {
     device() {
       return this.$store.state.app.device
     },
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
     myDeviceName() {
       return this.$store.getters.myDeviceName
     },
@@ -736,7 +737,7 @@ export default {
           storeName: this.$t('home.hotelName'),
           deviceNum: 16,
           orderNum: 1506,
-          orderAmount: '￥11,235.00',
+          orderAmount: '11,235.00',
           deviceOnline: 16,
           deviceOffline: 0
         },
@@ -745,7 +746,7 @@ export default {
           storeName: this.$t('home.hotelName1'),
           deviceNum: 13,
           orderNum: 1100,
-          orderAmount: '￥10,345.00',
+          orderAmount: '10,345.00',
           deviceOnline: 12,
           deviceOffline: 1
         },
@@ -754,7 +755,7 @@ export default {
           storeName: this.$t('home.hotelName2'),
           deviceNum: 11,
           orderNum: 920,
-          orderAmount: '￥9,345.00',
+          orderAmount: '9,345.00',
           deviceOnline: 9,
           deviceOffline: 2
         },
@@ -763,7 +764,7 @@ export default {
           storeName: this.$t('home.hotelName3'),
           deviceNum: 8,
           orderNum: 956,
-          orderAmount: '￥9125.00',
+          orderAmount: '9125.00',
           deviceOnline: 8,
           deviceOffline: 0
         },
@@ -772,7 +773,7 @@ export default {
           storeName: this.$t('home.hotelName4'),
           deviceNum: 6,
           orderNum: 812,
-          orderAmount: '￥7562.00',
+          orderAmount: '7562.00',
           deviceOnline: 5,
           deviceOffline: 1
         },
@@ -781,7 +782,7 @@ export default {
           storeName: this.$t('home.hotelName5'),
           deviceNum: 6,
           orderNum: 806,
-          orderAmount: '￥7245.00',
+          orderAmount: '7245.00',
           deviceOnline: 5,
           deviceOffline: 1
         }

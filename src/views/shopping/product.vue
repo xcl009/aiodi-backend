@@ -56,7 +56,7 @@
                 {{ item.productName }}
               </div>
               <div class="mt-15  text-cut_two flex_j fs-b2 red_color">
-                ￥{{ minPrice(item.productStandardList) }}<span>{{ $t('public.rise') }}</span>
+                {{ minPrice(item.productStandardList) }}<span>{{ $t('public.rise') }}</span>
               </div>
               <div class="text-right">
                 {{ $t('shopping.characteristics') }}:{{ item.productContent }}
