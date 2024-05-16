@@ -91,17 +91,8 @@
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.key == 'orderCount'">
             <template slot-scope="scope">
-              <div class="inline text-left">
-                <div>{{ $t('payType.wx') }}：<el-link type="primary"
-                    @click="$router.push({ path: `/order?brandId=${scope.row.id}&sourceType=1` })">
-                    {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
-                  </el-link>
-                </div>
-                <div>{{ $t('payType.zfb') }}：<el-link type="primary"
-                    @click="$router.push({ path: `/order?brandId=${scope.row.id}&sourceType=2` })">
-                    {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
-                  </el-link>
-                </div>
+              <div class="text-primary cursor" @click="$router.push({ path: `/order?brandId=${scope.row.id}`})">
+                {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}
               </div>
             </template>
           </el-table-column>
@@ -575,7 +566,7 @@
           {
             key: 'orderCount',
             val: true,
-            name: this.$t('public.orderNum')
+            name: this.$t('home.orderNum')
           },
           {
             key: 'amount',

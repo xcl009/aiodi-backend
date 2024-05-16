@@ -61,17 +61,8 @@
         </el-table-column>
         <el-table-column :label="$t('public.orderNum')" width="120">
           <template slot-scope="scope">
-            <div class="inline text-left">
-              <div>{{ $t('payType.wx') }}：<el-link type="primary"
-                  @click="$router.push({ path: `/order?agentId=${scope.row.id}&sourceType=1` })">
-                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx : 0 }}
-                </el-link>
-              </div>
-              <div>{{ $t('payType.zfb') }}：<el-link type="primary"
-                  @click="$router.push({ path: `/order?agentId=${scope.row.id}&sourceType=2` })">
-                  {{ orderCount[scope.row.id] ? orderCount[scope.row.id].ali : 0 }}
-                </el-link>
-              </div>
+            <div class="text-primary cursor" @click="$router.push({ path: `/order?brandId=${scope.row.brandId}&agentId=${scope.row.id}`})">
+              {{ orderCount[scope.row.id] ? orderCount[scope.row.id].wx + orderCount[scope.row.id].ali : 0 }}
             </div>
           </template>
         </el-table-column>

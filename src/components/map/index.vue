@@ -1,245 +1,285 @@
 <template>
-  <div>
-    <div class="mb-10" v-if="isEdit">
-      <el-input v-model="keyword" :placeholder="$t('components.inputText')" />
-      <!-- <div class="mt-10 flex align-center">
-        <div>经度：</div>
-        <el-input class="mr-10 flex1" v-model="center.lat" placeholder="经度" />
-        <div class="ml-10">纬度：</div>
-        <el-input class="flex1" v-model="center.lng" placeholder="纬度" />
-      </div> -->
+  <div class="map">
+    <div class="mb-10 mapLeftStyle" v-if="isEdit">
+      <el-input v-model="keyword" :placeholder="$t('components.inputText')" @input="changeAddress"></el-input>
+      <div class="card" v-if="list.length > 0 && cardShow">
+        <div class="item" v-for="(item, index) in list" :key="index">
+          <div @click="confirm(item)">
+            <div class="title">{{ item.structured_formatting.main_text }}</div>
+            <div class="address">
+              {{ item.structured_formatting.secondary_text }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <baidu-map ref="map_box" class="bm-view" :style="{ height: height }" :ak="config.baidu_map_ak"
-      :center="center.lat ? center : iniCenter" :zoom="zoom" :scroll-wheel-zoom="true" @ready="handler" @click="mapClick"
-      @moveend="handlerMoveend">
+    <div class="mapStyle">
+      <div :style="googleMapStyle" class="googleMap" :id="mapID"></div>
       <img v-if="isEdit" class="map-icon" src="@/assets/marker_red_sprite.png" alt="">
-      <!-- <bm-marker-clusterer :averageCenter="true" :maxZoom="2" :minClusterSize="15" v-else>
-        <bm-marker v-for="marker in markers" v-if="marker.lng" :position="{lng: marker.lng, lat: marker.lat}" :icon="{url: marker.icon, size: imgSize}" @click="setShopInfo(marker)"></bm-marker>
-      </bm-marker-clusterer> -->
-      <bm-local-search class="search-list" :auto-viewport="true" :keyword="keyword" :page-capacity="5" :panel="showPanel"
-        @infohtmlset="infohtmlset"></bm-local-search>
-      <bm-geolocation :autoLocation="true"></bm-geolocation>
-    </baidu-map>
+    </div>
   </div>
 </template>
-.
 <script>
-import BaiduMap from 'vue-baidu-map/components/map/Map.vue';
-import BmGeolocation from 'vue-baidu-map/components/controls/Geolocation.vue';
-import BmLocalSearch from 'vue-baidu-map/components/search/LocalSearch'; //搜索
-//import BmMarker from 'vue-baidu-map/components/overlays/Marker'; //点标注
-//import BmMarkerClusterer from 'vue-baidu-map/components/extra/MarkerClusterer.vue'; //点标注
-
-export default {
-  components: {
-    BaiduMap,
-    BmGeolocation,
-    BmLocalSearch,
-    //BmMarker,
-    //BmMarkerClusterer
-  },
-  props: {
-    center: {
-      type: Object,
-      default: () => {
-        return {
-          lng: 114.02597366,
-          lat: 22.54605355
+  import {
+    Loader
+  } from "@googlemaps/js-api-loader"; //引入
+  // 输入框模糊查询
+  let searchBox = undefined;
+  // 搜索地点和检索地点详细信息
+  let service = undefined;
+  // 对请求进行地理编码
+  let geocoder = undefined;
+  let marker = undefined;
+  export default {
+    props: {
+      center: {
+        type: Object,
+        default: () => {
+          return {
+            lng: 114.02597366,
+            lat: 22.54605355
+          }
         }
-      }
-    },
-
-    isEdit: {
-      type: Boolean,
-      default: true
-    },
-
-    zooms: {
-      type: Number,
-      default: 14
-    },
-
-    height: {
-      type: String,
-      default: '300px'
-    }
-  },
-
-  data() {
-    return {
-      iniCenter: {},
-      shopInfo: {},
-      infoVisible: false,
-      keyword: '',
-      showPanel: true,
-
-      imgSize: {
-        width: 35,
-        height: 35,
       },
 
-      map_obj: '',
-      mapvLayer: '',
+      zooms: {
+        type: Number,
+        default: 14
+      },
 
-      zoom: 14
-    }
-  },
-  mounted() {
+      isEdit: {
+        type: Boolean,
+        default: true
+      },
 
-  },
-  methods: {
-    handler({ BMap, map }) {
-      let that = this, ivn = 0, geolocation = new BMap.Geolocation()
-      that.map_obj = map
-      that.BMap = BMap
-      that.geocoder = new BMap.Geocoder()
-      if (this.zooms) this.zoom = this.zooms
-      if (!this.$route.params.id) {
-        geolocation.getCurrentPosition(function (r) {
-          that.iniCenter = {
-            lng: r.longitude,
-            lat: r.latitude,
-          }
-          that.update()
-        }, { enableHighAccuracy: true })
+      //地图id
+      mapID: {
+        type: String,
+        default: () => {
+          return "googleMap"
+        },
+      },
+
+      //谷歌地图样式
+      googleMapStyle: {
+        type: Object,
+        default: () => {
+          return {
+            wdith: "100%",
+            height: "300px",
+          };
+        },
+      },
+
+      //谷歌地图配置
+      mapOptions: {
+        type: Object,
+        default: () => {
+          return {
+            //为了关闭默认控件集,设置地图的disableDefaultUI的属性为true
+            disableDefaultUI: false,
+            // 启用缩放和平移
+            gestureHandling: "greedy",
+            panControl: true,
+            zoomControl: true,
+            scaleControl: true,
+            //关闭街景
+            streetViewControl: false,
+          };
+        },
+      },
+
+      //谷歌地图图形path
+      mapPath: {
+        type: String,
+        default: () => {
+          return "";
+        },
+      },
+    },
+    data() {
+      return {
+        apiKey: "AIzaSyD_5Qm99I7RxKkxkw6QF-sNy6lh5OWUbUM",
+        map: {},
+        keyword: "",
+        googleMapCenter: {
+          lng: "",
+          lat: "",
+        },
+        //标记点
+        marker: [],
+        //图形实例
+        graphicalExample: null,
+        //图形路径经纬度
+        graphicalPath: [],
+        // 模糊匹配数据
+        list: [],
+        cardShow: false
       }
     },
-
-    /**
-     * 设置地图图标
-     */
-    setMapLayer(markers) {
-      let that = this
-      if (that.mapvLayer) {
-        that.mapvLayer.hide()
-      }
-      let markers_inter = setInterval(() => {
-        if (this.map_obj) {
-          clearInterval(markers_inter)
-          const mapv = require("mapv"), storeList = []
-          markers.map(item => {
-            storeList.push({
-              geometry: {
-                type: 'Point',
-                coordinates: [item.lng, item.lat]	//经纬度，用于标点
-              },
-              icon: item.icon,
-              tag: item
-            })
+    mounted() {
+      this.init()
+    },
+    methods: {
+      init() {
+        this.$nextTick(() => {
+          const loader = new Loader({
+            apiKey: this.apiKey, //之前的key
+            version: "weekly", //版本
+            libraries: ["places", "drawing"], //插件库places为基础库 drawing为绘制工具库
+            region: "Canada",
+            //language: "en",
           })
-          let dataSet = new mapv.DataSet(storeList)
-          let dataOptions = {
-            deg: 0,
-            draw: 'icon',
-            methods: {
-              click: (res) => {
-                if (res && res.tag) that.setShopInfo(res.tag)
-              }
-            },
-            size: 30,
-            width: 30,
-            height: 30
+
+          const mapOptions = {
+            center: this.center, //中心点
+            zoom: this.zooms, //缩放级别
+            ...this.mapOptions, //其他配置
           }
 
-          that.mapvLayer = new mapv.baiduMapLayer(that.map_obj, dataSet, dataOptions)
-          that.mapvLayer.show()
-        }
-      }, 500)
-    },
+          loader
+            .load()
+            .then((google) => {
+              const map = new google.maps.Map(
+                document.getElementById(this.mapID),
+                mapOptions
+              )
+              this.googleMap = map
+              this.googleApi = google
+              // 自动完成请求 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service?hl=en
+              searchBox = new google.maps.places.AutocompleteService()
+              // 搜索地点和检索地点详细信息 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-service?hl=en
+              service = new google.maps.places.PlacesService(map)
+              // 对请求进行地理编码 参考文档：https://developers.google.com/maps/documentation/javascript/reference/geocoder?hl=en
+              geocoder = new google.maps.Geocoder()
+              // marker = new google.maps.Marker({
+              //   map: map,
+              //   position: {},
+              //   draggable: true,
+              // })
+              google.maps.event.addListener(map, 'center_changed', () => {
+                this.center.lng = map.getCenter().lng()
+                this.center.lat = map.getCenter().lat()
+                this.update()
+              })
+              this.update()
+            })
+            .catch((e) => {
+              console.log(e);
+            })
+        });
+      },
 
-    /**
-     * 移动地图
-     * @param {Object} e
-     */
-    handlerMoveend(e) {
-      const { lng, lat } = e.target.getCenter()
-      this.center.lng = lng
-      this.center.lat = lat
-      this.zoom = this.zooms
-      this.update()
-    },
+      /**
+       * 向父组件更新
+       */
+      update() {
+        this.center.keyword = this.keyword
+        clearTimeout(this.iTime)
+        this.iTime = setTimeout(() => {
+          geocoder.geocode({
+            location: this.center,
+          }, (results, status) => {
+            if (results && results.length > 0) {
+              this.center.address = results[0].formatted_address
+            }
+            this.$emit('locationOk', this.center)
+          })
 
-    /**
-     * 选择搜索列表
-     * @param {Object} pois
-     */
-    infohtmlset(pois) {
-      this.center.lng = pois.point.lng
-      this.center.lat = pois.point.lat
-      this.zoom = this.zooms
-      this.showPanel = false
-      this.update()
-    },
+        }, 500)
+      },
 
-    /**
-     * 向父组件更新
-     */
-    update() {
-      this.center.keyword = this.keyword
-      clearTimeout(this.iTime)
-      this.iTime = setTimeout(() => {
-        let pt = new this.BMap.Point(this.center.lng, this.center.lat)
-        this.geocoder.getLocation(pt, res => {
-          this.center.address = res.address
-          if (res.surroundingPois.length > 0) {
-            this.center.address = res.surroundingPois[0].title
-          }
-          this.$emit('locationOk', this.center)
+      /**
+       * 搜索地点和检索地点详细信息
+       * @param {Object} e
+       */
+      confirm(e) {
+        service.getDetails({
+          placeId: e.place_id
+        }, (event, status) => {
+          if (status === "OK") {
+            this.keyword = event.name
+            this.cardShow = false
+            let str = event.name
+            geocoder.geocode({
+              address: str
+            }, (results, status) => {
+              this.googleMap.setCenter(results[0].geometry.location)
+            })
+          } else {}
         })
-      }, 500)
-    },
+      },
 
-    /**
-     * 向父组件传输点击店铺信息
-     */
-    setShopInfo(info) {
-      this.$emit('setShopInfo', info)
+      changeAddress(e) {
+        searchBox.getPlacePredictions({
+          input: e
+        }, (event, status) => {
+          if (status === "OK") {
+            this.list = event || []
+            this.list = this.list.filter((x) => x.place_id)
+            this.cardShow = true
+          } else {
+            this.list = []
+          }
+        })
+      },
     },
+  };
+</script>
+<style lang="scss" scoped>
+  .map {
+    .mapLeftStyle {
+      position: relative;
+      background: #ffffff;
 
-    mapClick(e) {
-      console.log(e.point)
-      if (!e.overlay) {
-        this.$emit('setShopInfo', {})
+      .controls {
+        padding: 0 30px;
+        height: 50px;
+      }
+
+      .card {
+        position: absolute;
+        left: 0;
+        top: 40px;
+        width: 100%;
+        box-shadow: 0 0 8px rgba(0, 0, 0, .4);
+        z-index: 999;
+        background: #fff;
+
+        .item {
+          cursor: pointer;
+          padding: 8px;
+          border-bottom: 1px solid #ebebeb;
+
+          .title {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 26px;
+          }
+
+          .address {
+            font-size: 14px;
+            font-family: Hei;
+            font-weight: 400;
+            color: #9f9f9f;
+            line-height: 26px;
+          }
+        }
       }
     }
+
+    .mapStyle {
+      position: relative;
+    }
+
+    .map-icon {
+      position: absolute;
+      z-index: 99;
+      left: 50%;
+      top: 50%;
+      margin-left: -9px;
+      margin-top: -26px;
+      width: 40px;
+    }
   }
-}
-</script>
-
-<style lang="scss" scoped>
-.bm-view {
-  position: relative;
-  min-width: 300px;
-  width: 100%;
-
-  /*
-    去除百度地图版权
-    去除右上角[地图、卫星、三维]控件
-    去除百度地图右上角平移缩放控件的市县区文字
-    */
-  >>>.anchorBL,
-  >>>.anchorTR,
-  >>>.BMap_zlHolder,
-  /*隐藏因为播放街景失败的"您未安装Flash Player播放器或者版本过低"提示图层导致无法继续点击地图*/
-  >>>[id^=PanoramaFlashWraperTANGRAM] {
-    display: none;
-    visibility: hidden;
-  }
-}
-
-.map-icon {
-  position: absolute;
-  z-index: 99;
-  left: 50%;
-  top: 50%;
-  margin-left: -9px;
-  margin-top: -26px;
-  width: 40px;
-}
-
-.search-list {
-  position: absolute;
-  z-index: 999;
-  top: 0;
-  left: 0;
-}</style>
+</style>

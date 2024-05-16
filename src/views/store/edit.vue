@@ -443,9 +443,8 @@ export default {
     } else {
       if (storeDefaultConfig) {
         if (storeDefaultConfig.lng) {
-          let ns = qqMapTransBMap(storeDefaultConfig.lng, storeDefaultConfig.lat)
-          this.$set(this.form, 'lat', ns.lat)
-          this.$set(this.form, 'lng', ns.lng)
+          this.$set(this.form, 'lat', storeDefaultConfig.lat)
+          this.$set(this.form, 'lng', storeDefaultConfig.lng)
         }
         if (storeDefaultConfig.province) {
           this.$set(this.form, 'province', [storeDefaultConfig.province, storeDefaultConfig.city, storeDefaultConfig.district])
@@ -624,11 +623,6 @@ export default {
       this.$get('iot-saas-basic/admin/store/findById', {
         id: this.storeId
       }).then(res => {
-        if (res.lat > 0 && res.lng > 0) {
-          let ns = qqMapTransBMap(res.lng, res.lat)
-          res.lng = ns.lng
-          res.lat = ns.lat
-        }
         let info = res,
           deviceDataArr = [],
           storePayConfig = {},
@@ -744,11 +738,6 @@ export default {
         if (valid) {
           const params = JSON.parse(JSON.stringify(this.form))
           if (this.parentId) params.parentId = this.parentId
-          if (params.lat > 0 && params.lng > 0) {
-            let lng_lat = bMapTransQQMap(params.lng, params.lat)
-            params.lng = lng_lat.lng
-            params.lat = lng_lat.lat
-          }
           if (params.catId && typeof params.catId == 'object') {
             params.catId = params.catId[params.catId.length - 1]
           }
