@@ -9,7 +9,9 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: '',
-    siteInfo: {},
+    siteInfo: {
+      currencySymbol: '￥'
+    },
     agentInfo: {},
     Ability: {},
     Constant: {}

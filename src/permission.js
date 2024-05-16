@@ -33,6 +33,8 @@ router.beforeEach(async(to, from, next) => {
           const { roles, menu } = await store.dispatch('user/getInfo')
           if(roles[0] != 'admin'){
             await store.dispatch('user/getPlatformConfig')
+          }else{
+            window.currencySymbol = data.currencySymbol
           }
           await store.dispatch('user/getConstant')
           await store.dispatch('user/getMyDevice')
