@@ -75,7 +75,35 @@ export const constantRoutes = [
         }
       }
     ]
-  }
+  },
+  // {
+  //   path: '/activity',
+  //   component: Layout,
+  //   redirect: '/activity/index',
+  //   meta: {
+  //     title: '活动管理',
+  //     icon: 'user'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'activityList',
+  //       component: () => import('@/views/activity/index'),
+  //       meta: {
+  //         title: '活动管理',
+  //         keepAlive: true,
+  //       }
+  //     },
+  //     {
+  //       path: 'edit',
+  //       name: 'activityEdit',
+  //       component: () => import('@/views/activity/edit'),
+  //       meta: {
+  //         title: '添加活动'
+  //       }
+  //     }
+  //   ]
+  // }
 ]
 
 const createRouter = () => new Router({

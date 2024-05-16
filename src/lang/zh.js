@@ -571,6 +571,7 @@ export default {
     retext: '原路退回及余额退款时需保证您的收单账户余额充足，否则用户无法收到退款金额<br></span>提交退款申请5秒后点击订单详情-订单流程中可查看退款结果',
     clickPay: '发起扣款',
     clickPayDesc: '请勿连续重复发起扣款',
+    ddOrder: 'DD订单'
   },
   battery: {
     batteryCount: '品牌名下电池数',
@@ -1963,6 +1964,14 @@ export default {
     weixin: '微信',
     alipay: '支付宝',
     three: 'APP',
-    four: '其他'
+    four: '其他',
+  },
+  activity: {
+    typeName: '活动类型',
+    activityName: '活动名称',
+    countCost: '回本份数',
+    countTotal: '购买份数',
+    countPrice: '单价',
+    nn: ''
   }
 };

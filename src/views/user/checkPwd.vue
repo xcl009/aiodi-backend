@@ -55,7 +55,7 @@ export default {
         if (valid) {
           this.$post('iot-saas-user/admin/user/twoPassword/confirm', params).then(res => {
             this.$message({
-              message: that.$t('user.pleaseSetPassword'),
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.$router.back()
