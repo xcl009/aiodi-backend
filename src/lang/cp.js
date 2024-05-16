@@ -1937,4 +1937,27 @@ export default {
     associatedGoods: '關聯商品',
     addTemp: '添加模板',
   },
+
+  activity: {
+    typeName: '活動類型',
+    activityName: '活動名稱',
+    countCost: '回本期數量',
+    countTotal: '購買總數量',
+    countPrice: '單價',
+    nn: '',
+    addActive: '新增活動',
+    onePurchase: '一元購',
+    copyPrice: '數量價格',
+    deleteActive: '確定刪除此活動嗎？',
+    prize: '獎品',
+    activityPrize: '活動獎品',
+    addReward: '添加獎勵',
+    prizeName: '獎品名稱',
+    prizeImg: '獎品圖片',
+    prizePrice: '獎品價格',
+    prizeLowestPrize: '獎品成本價',
+    prizeContent: '獎品內容',
+    deletePrize: '確定刪除此獎勵嗎？',
+    plaseImg: '請上傳商品圖片'
+}
 }

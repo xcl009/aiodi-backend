@@ -1947,4 +1947,27 @@ export default {
         associatedGoods: 'Productos asociados',
         addTemp: 'Agregar plantilla'
     },
+
+    activity: {
+        typeName: 'Tipo de actividad',
+        activityName: 'Nombre de la actividad',
+        countCost: 'Número de unidades para recuperar el costo',
+        countTotal: 'Número total de compras',
+        countPrice: 'Precio unitario',
+        nn: '',
+        addActive: 'Agregar actividad',
+        onePurchase: 'Compra de un solo yuan',
+        copyPrice: 'Precio por unidad',
+        deleteActive: '¿Está seguro de que desea eliminar esta actividad?',
+        prize: 'Premio',
+        activityPrize: 'Premio de la actividad',
+        addReward: 'Agregar recompensa',
+        prizeName: 'Nombre del premio',
+        prizeImg: 'Imagen del premio',
+        prizePrice: 'Precio del premio',
+        prizeLowestPrize: 'Costo del premio',
+        prizeContent: 'Contenido del premio',
+        deletePrize: '¿Está seguro de que desea eliminar esta recompensa?',
+        plaseImg: 'Por favor, sube una imagen del producto'
+    }
 };

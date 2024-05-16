@@ -3,8 +3,7 @@
         <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
             <template v-slot:defult>
                 <el-form-item :label="$t('activity.activityName')">
-                    <el-input v-model="form.name"
-                        :placeholder="`${$t('public.enter')}${$t('activity.activityName')}`" />
+                    <el-input v-model="form.name" :placeholder="`${$t('public.enter')}${$t('activity.activityName')}`" />
                 </el-form-item>
                 <el-form-item :label="$t('public.status')">
                     <el-select v-model="form.status" @change="toQuery()" :placeholder="$t('public.status')">
@@ -14,9 +13,6 @@
                 </el-form-item>
             </template>
             <template v-slot:endButton>
-                <el-button type="primary" size="small" class="mr-10"
-                    @click="$router.push({ path: `/activity/edit` })"><i class="el-icon-plus el-icon--left" />{{
-            $t('activity.addActive') }}</el-button>
             </template>
         </condition>
 
@@ -43,26 +39,15 @@
                         <div class="mb-5">{{ scope.row.countPrice }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('activity.copyPrice')">
-                    <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.countBuying }}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column :label="$t('activity.countCost')">
-                    <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.countCost }}</div>
-                    </template>
-                </el-table-column>
                 <el-table-column :label="$t('public.status')">
                     <template slot-scope="scope">
-                        <el-button type="success" v-if="scope.row.status == 1" size="mini">{{ $t('public.open')
-                            }}</el-button>
+                        <el-button type="success" v-if="scope.row.status == 1" size="mini">{{ $t('public.open') }}</el-button>
                         <el-button type="info" v-else size="mini">{{ $t('public.close') }}</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('public.statrtTime')" width="230">
+                <el-table-column :label="$t('public.endTime')" width="230">
                     <template slot-scope="scope">
-                        <div class="mb-5">{{ scope.row.startTime }}</div>
+                        <div class="mb-5">{{ scope.row.endTime }}</div>
                     </template>
                 </el-table-column>
                 <el-table-column :label="$t('public.remark')">
@@ -71,23 +56,6 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column :label="$t('public.operate')" width="235"
-                    :fixed="device == 'desktop' ? 'right' : false">
-                    <template slot-scope="scope">
-                        <div>
-                            <el-button type="text"
-                                @click="$router.push({ path: `/activity/edit?id=${scope.row.id}` })">{{
-            $t('public.modifyingInformation') }}</el-button>
-                            <el-popconfirm :confirm-button-text="$t('public.confirm')"
-                                :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type=""
-                                icon="el-icon-info" icon-color="#FF7D00" :title="$t('activity.deleteActive')"
-                                @onConfirm="deleteChange(scope.row, scope.$index)">
-                                <el-button type="text" slot="reference"><span class="text-danger">{{
-            $t('public.delete') }}</span></el-button>
-                            </el-popconfirm>
-                        </div>
-                    </template>
-                </el-table-column>
             </el-table>
 
             <div class="flex justify-center">
@@ -258,7 +226,7 @@ export default {
             var params = Object.assign({}, this.form, this.listQuery, {
                 page: this.listQuery.page - 1
             })
-            this.$post('iot-saas-activity/api/v2/activity/findPage', params).then(res => {
+            this.$post('iot-saas-activity/admin/v2/activity/record/findActivityWinnerPage', params).then(res => {
                 this.list = res.rows
                 this.listLoading = false
                 this.clickSubmit = false
@@ -266,19 +234,6 @@ export default {
                     this.listTotal = res.total
                     this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 80
                 }
-                let arr = [];
-                res.rows.forEach(list => {
-                    if (list.id) {
-                        arr.push(list.id)
-                    }
-                });
-                console.log(arr,'arrr')
-                if (arr.length > 0) {
-                    this.$post('iot-saas-activity/admin/v2/prizeInfo/findPrizesByIds', {ids:arr.join(',')}).then(res => {
-                         console.log(res,'ressListbuyIDs')
-                    })
-                }
-
             }).catch(() => {
                 this.listLoading = false
                 this.clickSubmit = false
