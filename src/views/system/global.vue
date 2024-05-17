@@ -19,9 +19,6 @@
       </template>
 
       <template v-slot:defult>
-        <el-form-item :label="$t('system.key')">
-          <el-input v-model="form.key" />
-        </el-form-item>
         <el-form-item :label="$t('system.languageContent')">
           <el-input v-model="form.lanValue" />
         </el-form-item>
@@ -88,11 +85,11 @@
               <el-option :label="item.distLable" :value="item.distValue" :key="index" v-for="(item, index) in modules" />
             </el-select>
           </el-form-item>
-          <!-- <el-form-item :label="$t('system.contextCode')">
-            <el-select v-model="dform.contextCode">
+          <el-form-item label="contentType">
+            <el-select v-model="dform.contentType">
               <el-option :label="item" :value="idx + 1" :key="idx" v-for="(item, idx) in ['exception', 'detail', 'body', 'open_front' , 'front']" />
             </el-select>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item :label="$t('system.contextCode')">
             <el-input v-model="dform.contextCode" :placeholder="$t('system.contextCode')"></el-input>
           </el-form-item>
@@ -353,7 +350,7 @@ export default {
     /**
      * 弹窗确认
      */
-    dialogConfirm(row = {}) {
+    async dialogConfirm(row = {}) {
       let that = this;
       let curRow = this.curRow,
         curIdx = this.curIdx,
@@ -367,7 +364,7 @@ export default {
               params.lanValue = langForm[key]
               params.lanType = this.dists[key].id
               params.lanTypeName = key
-              this.$post(url, params).then(res => {
+              await this.$post(url, params).then(res => {
                 if(endKey == key){
                   this.$message({
                     message: that.$t('public.operationSuccessful'),
