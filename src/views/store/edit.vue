@@ -20,9 +20,9 @@
             <maps v-if="form.lng" :center="{ lng: form.lng, lat: form.lat }" @locationOk="locationOk" :zooms="18" />
             <maps v-else @locationOk="locationOk" :zooms="18" />
           </el-form-item>
-          <el-form-item ref="province" :label="$t('store.area')" prop="province">
+          <!-- <el-form-item ref="province" :label="$t('store.area')" prop="province">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item ref="address" :label="$t('store.storeAddress')" prop="address">
             <el-input v-model="form.address" :placeholder="$t('store.storeAddressText')" />
           </el-form-item>
@@ -770,6 +770,8 @@ export default {
                   })
                   item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetail)
                 } else {
+                  item.alipayPayMode.payModeDetails.unitPrice = item.alipayPayMode.payModeDetails.startingAmount;
+                  item.alipayPayMode.payModeDetails.overBillingUnit = item.alipayPayMode.payModeDetails.startingTime;
                   if (item.alipayPayMode.payModeDetails.maxAmount > item.alipayPayMode.payModeDetails.depositAmount && (item.alipayPayMode.modeType == 'DEPOSIT' || item.alipayPayMode.modeType == 'DEPOSIT_AND_FREE')) {
                     error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message7')}`
                     break
@@ -786,6 +788,8 @@ export default {
                   })
                   item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetail)
                 } else {
+                  item.weixinPayMode.payModeDetails.unitPrice = item.weixinPayMode.payModeDetails.startingAmount;
+                  item.weixinPayMode.payModeDetails.overBillingUnit = item.weixinPayMode.payModeDetails.startingTime;
                   if (item.weixinPayMode.payModeDetails.maxAmount > item.weixinPayMode.payModeDetails.depositAmount && (item.weixinPayMode.modeType == 'DEPOSIT' || item.weixinPayMode.modeType == 'DEPOSIT_AND_FREE')) {
                     error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
                     break
@@ -802,6 +806,8 @@ export default {
                   })
                   item.threePayMode.payModeDetail = JSON.stringify(item.threePayMode.payModeDetail)
                 } else {
+                  item.threePayMode.payModeDetails.unitPrice = item.threePayMode.payModeDetails.startingAmount;
+                  item.threePayMode.payModeDetails.overBillingUnit = item.threePayMode.payModeDetails.startingTime;
                   if(item.threePayMode.payModeDetails.maxAmount > item.threePayMode.payModeDetails.depositAmount && (item.threePayMode.modeType == 'DEPOSIT' || item.threePayMode.modeType == 'DEPOSIT_AND_FREE')){
                     error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
                     break
@@ -818,6 +824,8 @@ export default {
                   })
                   item.fourPayMode.payModeDetail = JSON.stringify(item.fourPayMode.payModeDetail)
                 } else {
+                  item.fourPayMode.payModeDetails.unitPrice = item.fourPayMode.payModeDetails.startingAmount;
+                  item.fourPayMode.payModeDetails.overBillingUnit = item.fourPayMode.payModeDetails.startingTime;
                   if(item.fourPayMode.payModeDetails.maxAmount > item.fourPayMode.payModeDetails.depositAmount && (item.fourPayMode.modeType == 'DEPOSIT' || item.fourPayMode.modeType == 'DEPOSIT_AND_FREE')){
                     error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
                     break
