@@ -20,9 +20,9 @@
             <maps v-if="form.lng" :center="{ lng: form.lng, lat: form.lat }" @locationOk="locationOk" :zooms="18" />
             <maps v-else @locationOk="locationOk" :zooms="18" />
           </el-form-item>
-          <el-form-item ref="province" :label="$t('store.area')" prop="province">
+          <!-- <el-form-item ref="province" :label="$t('store.area')" prop="province">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item ref="address" :label="$t('store.storeAddress')" prop="address">
             <el-input v-model="form.address" :placeholder="$t('store.storeAddressText')" />
           </el-form-item>

@@ -140,13 +140,13 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="item.name" width="180" v-else-if="item.val && item.key == 'province'">
+          <!-- <el-table-column :label="item.name" width="180" v-else-if="item.val && item.key == 'province'">
             <template slot-scope="scope">
               {{ scope.row.province }}
               {{ scope.row.city }}
               {{ scope.row.district }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'catId'">
             <template slot-scope="scope">
               {{ cateObj[scope.row.catId] ? cateObj[scope.row.catId].catName : '--' }}
@@ -739,11 +739,11 @@ export default {
           hidden: this.isStore(),
           name: this.$t('public.analysisMode')
         },
-        {
-          key: 'province',
-          val: true,
-          name: this.$t('store.cityRegion')
-        },
+        // {
+        //   key: 'province',
+        //   val: true,
+        //   name: this.$t('store.cityRegion')
+        // },
         {
           key: 'catId',
           val: true,
