@@ -14,16 +14,23 @@
             </div>
           </el-form-item>
 
+
           <template v-if="checkAbility([`${deviceTypeCode}_DEPOSIT_MP`], 3)">
             <el-form-item :label="$t('device.returnWallet')">
               <el-switch v-model="form.returnWallet" :active-value="1" :inactive-value="2" />
             </el-form-item>
             <template v-if="form.returnWallet == 1">
+              <el-form-item :label="$t('device.returnWallet')">
+                <el-radio-group v-model="sourceType" @change="getBrandCannel">
+                  <el-radio-button :label="key" v-for="(item, key) in Constant.SourceType">{{ item }}</el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+
               <h4 class="flex mb-20 mt-10">{{ $t('public.payType') }}</h4>
-              <template v-for="(item, key) in Constant.PayType">
-                <el-form-item :label="item" v-if="[1,2,8,9].indexOf(parseInt(key)) > -1">
+              <template v-for="(item, key) in brandChannels[sourceType]">
+                <el-form-item :label="item.name" v-if="[3,4,5,6,7].indexOf(item.payType) == -1 && item.access != 'DISABLE'">
                   <div class="flex align-center">
-                    <el-switch v-model="form.paymentRefundConfig[key]" active-value="1" inactive-value="0"/>
+                    <el-switch v-model="form.paymentRefundConfig[item.payType]" active-value="1" inactive-value="0"/>
                     <span class="ml-10 fs-s3">{{ $t('device.text5') }}</span>
                   </div>
                 </el-form-item>
@@ -69,7 +76,10 @@ export default {
       form: {},
       id: this.$route.query.id || '',
       userKey: this.$route.query.userKey || '',
-      deviceTypeCode: ''
+      deviceTypeCode: '',
+
+      sourceType: 4,
+      brandChannels: {}
     }
   },
   computed: {
@@ -86,8 +96,22 @@ export default {
   mounted() {
     this.deviceTypeCode = Object.keys(this.myDeviceId)[0]
     this.getInfo()
+    this.getBrandCannel()
   },
   methods: {
+    /**
+     * 获取品牌支付通道
+     * @param {Object} id
+     */
+    getBrandCannel(){
+      if(this.brandChannels[this.sourceType]) return
+      this.$get('iot-saas-pay/api/pay/channel', {
+        sourceType: this.sourceType
+      }).then(res => {
+        this.$set(this.brandChannels, this.sourceType, res)
+      })
+    },
+
     /**
      * 获取详情
      */
@@ -96,6 +120,7 @@ export default {
         deviceTypeCode: this.deviceTypeCode
       }
       if(this.userKey && this.id) params[this.userKey] = this.id
+
       this.$get(`iot-saas-basic/admin/depositRefundConfig/v1/find`, params).then((res = {}) => {
         if (res.enable != undefined) {
           res.refundTimeStatus = res.delayedRefundTime > 0 ? 1 : 0

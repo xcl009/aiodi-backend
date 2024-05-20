@@ -129,7 +129,7 @@
                     </el-input>
                   </div>
                 </el-form-item>
-                <template v-if="[1, 3].indexOf(parseInt(item.type)) > -1">
+                <template v-if="[1, 3, 6].indexOf(parseInt(item.type)) > -1">
                   <el-form-item :label="$t('system.needApprovalAmount')">
                     <div class="flex align-center flex-wrap">
                       <el-input type="number" v-model="item.needApprovalAmount" class="flex1 mr-10">
@@ -216,6 +216,10 @@ export default {
         {
           type: '5',
           name: this.$t('payType.card')
+        },
+        {
+          type: '6',
+          name: '电子钱包'
         }
       ]
     },
