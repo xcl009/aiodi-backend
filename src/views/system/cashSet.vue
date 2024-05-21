@@ -37,7 +37,7 @@
 
             <el-form-item :label="$t('moeny.withdrawalMethod')">
               <el-checkbox-group v-model="sellType" @change="change">
-                <el-checkbox :label="item.type" v-for="(item, key) in withdrawTypes">{{ item.name }}</el-checkbox>
+                <el-checkbox :label="item.type" v-for="(item, key) in withdrawTypes" v-if="!item.userType || (item.userType && item.userType == userType)">{{ item.name }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
 
@@ -102,7 +102,7 @@
             <template v-for="(item, idx) in form.supportType">
               <template v-if="item.status != 0">
                 <h4 class="flex align-center">
-                  <span>{{ withdrawType[item.type].name }}{{ $t('public.commission') }}</span>
+                  <span>{{ withdrawType[item.type] ? withdrawType[item.type].name : item.type }}{{ $t('public.commission') }}</span>
                   <i class="ml-5 el-icon-top fs-b3 cursor text-primary" v-if="idx > 0"
                     @click="swapItems(form.supportType, idx, idx - 1)"></i>
                 </h4>
@@ -197,7 +197,7 @@ export default {
   computed: {
     withdrawTypes() {
       return [
-        {
+        /* {
           type: '1',
           name: this.$t('payType.wxWithdrawal')
         },
@@ -212,14 +212,15 @@ export default {
         {
           type: '4',
           name: this.$t('payType.zfbCode')
-        },
+        }, */
         {
           type: '5',
           name: this.$t('payType.card')
         },
         {
           type: '6',
-          name: '电子钱包'
+          name: this.$t('payType.orderRefund'),
+          userType: 'user'
         }
       ]
     },
@@ -302,7 +303,7 @@ export default {
             })
           }
         } else {
-          this.sellType = ['2', '4']
+          this.sellType = ['5']
           this.form = {
             enable: 2,
             timeLimit: {
@@ -319,7 +320,7 @@ export default {
             supportType: [
               {
                 status: 1,
-                type: 2,
+                type: 5,
                 taxRate: 0,
                 handlingFee: 0,
                 minAmount: 0,

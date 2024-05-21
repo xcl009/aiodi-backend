@@ -438,6 +438,7 @@ export default {
     goRecharge: 'Recharge',
     payNow: 'Pay Now',
     paySuccess: 'Payment successful',
+    orderRefund: 'Order refund',
   },
   // 数字单位
   numUnit: {

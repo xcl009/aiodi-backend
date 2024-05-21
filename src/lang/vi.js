@@ -441,7 +441,8 @@ export default {
         totalAmount: 'Tổng số tiền',
         goRecharge: 'Vào nạp tiền',
         payNow: 'Thanh toán ngay',
-        paySuccess: 'Thanh toán thành công'
+        paySuccess: 'Thanh toán thành công',
+        orderRefund: 'Hoàn tiền đặt hàng',
     },
     // 数字单位
     numUnit: {

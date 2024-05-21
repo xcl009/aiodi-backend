@@ -442,6 +442,7 @@ export default {
     goRecharge: '去充值',
     payNow: '立即支付',
     paySuccess: '支付成功',
+    orderRefund: '电子钱包',
   },
   // 数字单位
   numUnit: {
