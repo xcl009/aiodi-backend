@@ -130,17 +130,19 @@
 									@click="checkBao(scope.row.goods_sn)">{{ $t('public.sn') }}：{{ scope.row.goods_sn || "--" }}</div>
 							</template>
 						</el-table-column>
-						<!-- <el-table-column :label="item.name" width="50" v-else-if="item.val && item.key == 'sourceType'">
+						<el-table-column :label="item.name" width="50" v-else-if="item.val && item.key == 'sourceType'">
 							<template slot-scope="scope">
-								<span v-if="scope.row.sourceType == 3">{{ $t('order.admin') }}</span>
-								<i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="scope.row.sourceType == 1"></i>
-								<i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
+                <el-tooltip :content="Constant.SourceType ? Constant.SourceType[scope.row.sourceType] : '--'">
+                	<i :class="'fs-a1 iconfont ' + sourceType[scope.row.sourceType]"></i>
+                </el-tooltip>
 							</template>
-						</el-table-column> -->
-						<el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'PayType'">
+						</el-table-column>
+						<el-table-column :label="item.name" width="140" v-else-if="item.val && item.key == 'PayType'">
 							<template slot-scope="scope">
-								<div class="fs-s3">{{ Constant.PayType ? Constant.PayType[scope.row.payType] : '--' }}<span
-										v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3 && isBrand()">({{ scope.row.orderAmount }})</span> </div>
+                <div class="flex align-center">
+                  <el-avatar :src="payChannel[scope.row.payType].logo" :size="20" v-if="payChannel[scope.row.payType]" class="mr-5 radius-15"></el-avatar>
+                  <span v-if="scope.row.orderAmount > 0 && scope.row.feeType == 3 && (isBrand() || isSaas())">({{ formatCurrency(scope.row.orderAmount) }})</span>
+                </div>
 							</template>
 						</el-table-column>
 						<el-table-column :label="item.name" width="160" v-else-if="item.val && item.key == 'chargeStartTime'">
@@ -161,12 +163,12 @@
 						</el-table-column>
 						<el-table-column :label="item.name" width="85" v-else-if="item.val && item.key == 'amount'">
 							<template slot-scope="scope">
-								<el-link type="success">{{ scope.row.amount || '0.00' }}</el-link>
+								<el-link type="success">{{ formatCurrency(scope.row.amount || '0.00') }}</el-link>
 							</template>
 						</el-table-column>
 						<el-table-column :label="item.name" width="75" v-else-if="item.val && item.key == 'amountRefund'">
 							<template slot-scope="scope">
-								<el-link type="success">{{ scope.row.amountRefund || '0.00' }}</el-link>
+								<el-link type="success">{{ formatCurrency(scope.row.amountRefund || '0.00') }}</el-link>
 							</template>
 						</el-table-column>
 						<el-table-column :label="item.name" width="90" v-else-if="item.val && item.key == 'status'">
@@ -337,9 +339,7 @@
 							<div class="flex mb-10">
 								<div class="label-text">{{ $t('order.orderSource') }}:</div>
 								<div>
-									<span v-if="curRow.sourceType == 3">{{ $t('order.admin') }}</span>
-									<i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="curRow.sourceType == 1"></i>
-									<i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
+                  <i :class="'fs-c1 iconfont ' + sourceType[curRow.sourceType]"></i>
 								</div>
 							</div>
 							<div class="flex mb-10">
@@ -348,7 +348,10 @@
 							</div>
 							<div class="flex mb-10">
 								<div class="label-text">{{ $t('public.payType') }}:</div>
-								<div>{{ Constant.PayType ? Constant.PayType[curRow.payType] : '--' }}</div>
+                <div class="flex align-center">
+                  <el-avatar :src="payChannel[curRow.payType].logo" :size="15" v-if="payChannel[curRow.payType]" class="mr-5 radius-15"></el-avatar>
+                  <span v-if="curRow.orderAmount > 0 && curRow.feeType == 3 && (isBrand() || isSaas())">({{ formatCurrency(curRow.orderAmount) }})</span>
+                </div>
 							</div>
 							<div class="flex mb-10">
 								<div class="label-text">{{ $t('public.package') }}:</div>
@@ -505,10 +508,7 @@
 									<div class="flex mb-10">
 										<div class="label-text">{{ $t('order.orderSource') }}:</div>
 										<div>
-											<span v-if="curRow.sourceType == 3">{{ $t('order.admin') }}</span>
-											<i class="fs-a1 iconfont icon-weixin1 text-green" v-else-if="curRow.sourceType == 1"></i>
-											<i class="fs-a1 iconfont icon-zhifubao text-primary" v-else></i>
-										</div>
+                      <i :class="'fs-c1 iconfont ' + sourceType[curRow.sourceType]"></i>										</div>
 									</div>
 									<div class="flex mb-10">
 										<div class="label-text">{{ $t('public.package') }}:</div>
@@ -551,11 +551,14 @@
 									</div>
 									<div class="flex mb-10">
 										<div class="label-text">{{ $t('public.payType') }}:</div>
-										<div>{{ Constant.PayType ? Constant.PayType[curRow.payType] : '--' }}</div>
+                    <div class="flex align-center">
+                      <el-avatar :src="payChannel[curRow.payType].logo" :size="15" v-if="payChannel[curRow.payType]" class="mr-5 radius-15"></el-avatar>
+                      <span v-if="curRow.orderAmount > 0 && curRow.feeType == 3 && (isBrand() || isSaas())">({{ formatCurrency(curRow.orderAmount) }})</span>
+                    </div>
 									</div>
 									<div class="flex mb-10">
 										<div class="label-text">{{ $t('public.income') }}:</div>
-										<div>{{ curRow.amount || '0.00' }}</div>
+										<div>{{ formatCurrency(curRow.amount) || '0.00' }}</div>
 									</div>
 									<div class="flex">
 										<div class="label-text">{{ $t('public.remark') }}:</div>
@@ -597,7 +600,7 @@
 							<el-table border :data="dform.orderDivide" :span-method="fenRunSpanMethod" class="custom">
 								<el-table-column :label="$t('public.orderMoeny')" align="center">
 									<template slot-scope="scope">
-										{{ dform.amountPaid }}
+										{{ formatCurrency(dform.amountPaid) }}
 									</template>
 								</el-table-column>
 								<el-table-column width="160" :label="`${$t('order.divideIntoAdults')}`" align="center">
@@ -613,15 +616,14 @@
 								<el-table-column width="120" :label="`${$t('public.dividedAmount')}`"
 									align="center">
 									<template slot-scope="scope">
-										<span>{{ accSub(scope.row.amount, scope.row.loseAmount) }}</span>
-										<span v-if="scope.row.costAmount > 0">({{ $t('order.overtimeCosts') }}{{ scope.row.costAmount
-                    }}</span>
+										<span>{{ formatCurrency(accSub(scope.row.amount, scope.row.loseAmount)) }}</span>
+										<span v-if="scope.row.costAmount > 0">({{ $t('order.overtimeCosts') }}{{ formatCurrency(scope.row.costAmount) }}</span>
 									</template>
 								</el-table-column>
 								<el-table-column width="120" :label="`${$t('public.ddAmount')}`" align="center"
 									v-if="dform.amountPaidLose > 0">
 									<template slot-scope="scope">
-										{{ scope.row.loseAmount || '--' }}
+										{{ formatCurrency(scope.row.loseAmount || 0.00) }}
 									</template>
 								</el-table-column>
 								<el-table-column :label="$t('order.dividedTypes')" align="center">
@@ -639,7 +641,7 @@
 								<el-table-column width="120" :label="`${$t('public.refundAmount')}`"
 									align="center">
 									<template slot-scope="scope">
-										{{ scope.row.refund }}
+										{{ formatCurrency(scope.row.refund) }}
 									</template>
 								</el-table-column>
 							</el-table>
@@ -802,11 +804,11 @@
 						title: this.$t('public.transactionNum'),
 						type: 'input'
 					},
-					// sourceType: {
-					// 	title: this.$t('order.orderSource'),
-					// 	type: 'select',
-					// 	selectArr: []
-					// },
+					sourceType: {
+						title: this.$t('order.orderSource'),
+						type: 'select',
+						selectArr: []
+					},
 					payType: {
 						title: this.$t('public.payType'),
 						type: 'select',
@@ -858,11 +860,11 @@
 						val: true,
 						name: this.$t('public.storeName')
 					},
-					// {
-					// 	key: 'sourceType',
-					// 	val: true,
-					// 	name: this.$t('order.source')
-					// },
+					{
+						key: 'sourceType',
+						val: true,
+						name: this.$t('order.source')
+					},
 					{
 						key: 'PayType',
 						val: true,
@@ -966,6 +968,15 @@
 				search_regions_tag: [],
 				categoryList: [],
 				areaList: [],
+        payChannel: {},
+        sourceType: [
+          'icon-xiaochengxu text-six',
+          'icon-weixin1 text-green',
+          'icon-zhifubao text-primary',
+          'icon-houtai8 text-gray',
+          'icon-app text-danger',
+          'icon-line-HTML5H5 text-primary'
+        ],
 
 				tableMaxH: '250',
 				listLoading: false,
@@ -1033,6 +1044,7 @@
 		},
 		mounted() {
       this.queryObj.payType.selectArr = this.Constant.PayType
+      this.queryObj.sourceType.selectArr = this.Constant.SourceType
 			if ((this.checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1) && this.isBrand()) || this.isSaas()) {
 				this.orderTab.push({
 					value: 'isLose',
@@ -1048,6 +1060,9 @@
 					sType: 6
 				})
 			}
+      this.$store.dispatch('api/getPayChannel').then(res => {
+        this.payChannel = res
+      })
 		},
 		beforeDestroy() {
 			localStorage.setItem('formKey_order', JSON.stringify(this.formKey))

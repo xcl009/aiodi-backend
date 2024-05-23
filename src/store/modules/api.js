@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { getRegions, getServiceType } from '@/api/api'
+import { getRegions, getServiceType, getPayChannel } from '@/api/api'
 
 const result = {}
 const actions = {
@@ -20,7 +20,7 @@ const actions = {
       })
     })
   },
-  
+
   /**
    * 获取区域
    */
@@ -33,6 +33,28 @@ const actions = {
       getServiceType().then(res => {
         result.serviceType = res
         resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  /**
+   * 获取所有支付通电
+   */
+  getPayChannel({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      if(result.payChannel){
+        resolve(result.payChannel)
+        return
+      }
+      getPayChannel().then(res => {
+        let payChannel = {}
+        res.map(item => {
+          payChannel[item.payType] = item
+        })
+        result.payChannel = payChannel
+        resolve(payChannel)
       }).catch(error => {
         reject(error)
       })

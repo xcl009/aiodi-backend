@@ -1,6 +1,7 @@
 import {
   Message
 } from 'element-ui'
+import { parse } from 'qs'
 import i18n from '../lang'
 const util = {
   /**
@@ -836,16 +837,19 @@ const util = {
     if(w) wStr += `w_${w}`
     return url[0] + '?x-oss-process=image/resize,m_lfit' + wStr
   },
-  
+
   formatCurrency: (number) => {
   	if (!number) return 0
+    if (number >= 1000) {
+      number = parseFloat((number / 1000).toFixed(1)) + 'K'
+    }
   	// 将数字转换为字符串
-  	const numberStr = number.toString();
+  	const numberStr = number.toString()
   	// 使用正则表达式去除末尾的 .00
-  	const trimmedNumber = numberStr.replace(/\.00$/, '');
+  	const trimmedNumber = numberStr.replace(/\.00$/, '')
   	// 应用千位格式化
-  	const formattedNumber = trimmedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  	return formattedNumber;
+  	const formattedNumber = trimmedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  	return formattedNumber
   },
 }
 
