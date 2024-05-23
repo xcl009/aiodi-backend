@@ -1063,8 +1063,8 @@ export default {
     message5s: '保留代理原始的分成比例',
     message6Title: '2.1 分成不一致情况:',
     message6: '划拨后，当前商户的分成比例，默认保留商户原始的分成比例',
-    message7: '支付宝押金金额不可小于总封顶金额',
-    message8: '微信押金金额不可小于总封顶金额',
+    message7: '押金金额不可小于总封顶金额',
+    message8: '押金金额不可小于总封顶金额',
     storeList: '商户记录',
     assignAgents: '分配代理',
     storeAddress: '商户地址',
@@ -1130,6 +1130,7 @@ export default {
     loginTime: '登录时间',
     loginRecord: '登录记录',
     resetOPwdText: "重置后操作密码为123456，密保为空，用户可前往设置密保和密码",
+    message21: '计费金额不可小于',
   },
   system: {
     miniProgramConfiguration: '小程序配置',

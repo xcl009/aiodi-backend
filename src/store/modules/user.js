@@ -180,6 +180,16 @@ const actions = {
       getPlatformConfig({
         brandId: params.brandId || getToken('brandId')
       }).then(data => {
+        let currencyMin = {
+        	'CNY': 0,
+        	'HKD': 0,
+        	'USD': 0,
+        	'PHP': 0,
+        	'IDR': 1000,
+        	'KRW': 0,
+        	'VND': 1000
+        }
+        data.currencyMin = currencyMin[data.currency]
         queryCurrencySymbol().then(ares => {
           let symbol = arrayToObj(ares, 'code', 'currencyCoin')
           data.currencySymbol = symbol[data.currency]

@@ -123,51 +123,56 @@
     methods: {
       init() {
         this.$nextTick(() => {
-          const loader = new Loader({
-            apiKey: this.apiKey, //之前的key
-            version: "weekly", //版本
-            libraries: ["places", "drawing"], //插件库places为基础库 drawing为绘制工具库
-            region: "Canada",
-            //language: "en",
-          })
+          try{
+            const loader = new Loader({
+              apiKey: this.apiKey, //之前的key
+              version: "weekly", //版本
+              libraries: ["places", "drawing"], //插件库places为基础库 drawing为绘制工具库
+              region: "Canada",
+              //language: "en",
+            })
 
-          const mapOptions = {
-            center: this.center, //中心点
-            zoom: this.zooms, //缩放级别
-            ...this.mapOptions, //其他配置
-          }
+            const mapOptions = {
+              center: this.center, //中心点
+              zoom: this.zooms, //缩放级别
+              ...this.mapOptions, //其他配置
+            }
 
-          loader
-            .load()
-            .then((google) => {
-              const map = new google.maps.Map(
-                document.getElementById(this.mapID),
-                mapOptions
-              )
-              this.googleMap = map
-              this.googleApi = google
-              // 自动完成请求 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service?hl=en
-              searchBox = new google.maps.places.AutocompleteService()
-              // 搜索地点和检索地点详细信息 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-service?hl=en
-              service = new google.maps.places.PlacesService(map)
-              // 对请求进行地理编码 参考文档：https://developers.google.com/maps/documentation/javascript/reference/geocoder?hl=en
-              geocoder = new google.maps.Geocoder()
-              // marker = new google.maps.Marker({
-              //   map: map,
-              //   position: {},
-              //   draggable: true,
-              // })
-              google.maps.event.addListener(map, 'center_changed', () => {
-                this.center.lng = map.getCenter().lng()
-                this.center.lat = map.getCenter().lat()
+            loader
+              .load()
+              .then((google) => {
+                const map = new google.maps.Map(
+                  document.getElementById(this.mapID),
+                  mapOptions
+                )
+                this.googleMap = map
+                this.googleApi = google
+                // 自动完成请求 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service?hl=en
+                searchBox = new google.maps.places.AutocompleteService()
+                // 搜索地点和检索地点详细信息 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-service?hl=en
+                service = new google.maps.places.PlacesService(map)
+                // 对请求进行地理编码 参考文档：https://developers.google.com/maps/documentation/javascript/reference/geocoder?hl=en
+                geocoder = new google.maps.Geocoder()
+                // marker = new google.maps.Marker({
+                //   map: map,
+                //   position: {},
+                //   draggable: true,
+                // })
+                google.maps.event.addListener(map, 'center_changed', () => {
+                  this.center.lng = map.getCenter().lng()
+                  this.center.lat = map.getCenter().lat()
+                  this.update()
+                })
                 this.update()
               })
-              this.update()
-            })
-            .catch((e) => {
-              console.log(e);
-            })
-        });
+              .catch((e) => {
+                this.$emit('locationOk', this.center)
+                console.log(e);
+              })
+            }catch(e){
+              this.$emit('locationOk', this.center)
+            }
+        })
       },
 
       /**

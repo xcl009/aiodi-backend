@@ -152,7 +152,7 @@
                   <div>
                     <div class="mb-10 text-dfs text-bold text-black">
                       {{ $t('payMode.' + xcx) }}{{ $t('public.empty') }}{{ $t('store.billingSettings') }}
-                      <span class="ml-10 text-primary cursor" v-if="xcx == 'alipay'" @click="setAlipayMode(item)">{{
+                      <span class="ml-10 text-primary cursor" v-if="xcx != 'weixin'" @click="setAlipayMode(item, xcx)">{{
         $t('store.synchronous') }}</span>
                     </div>
 
@@ -187,7 +187,7 @@
                               v-for="time in config[`plan_time`]"></el-option>
                           </el-select>
                           <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
-                            <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                            <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                           </el-input>
                           <el-button type="text" size="small"
                             :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
@@ -208,7 +208,7 @@
                               <template slot="append">ml</template>
                             </el-input>
                             <el-input type="number" v-model="lpi.money" class="flex1 mr-10">
-                              <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                             <!-- <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].laundryMode[lidx].package.length == 3" v-if="lpidx == 0"
                               @click="item[`${xcx}PayMode`].laundryMode[lidx].package.push({tag: lpidx + 1})">添加</el-button>
@@ -233,8 +233,8 @@
                         <div class="flex">
                           <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
-                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1000000))">
-                              <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
+                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1 flex">
@@ -260,8 +260,8 @@
                           </div>
                           <div class="pl-10 flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice"
-                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_overBillingUnit`] = checkDigit(v, 0, 1000000))">
-                              <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_overBillingUnit`] = checkDigit(v, 0, 100000000))">
+                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                         </div>
@@ -277,9 +277,9 @@
                           </div> -->
                           <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice"
-                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`] = checkDigit(v, 0, 1000000))">
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`] = checkDigit(v, 0, 100000000))">
                               <template slot="prepend">{{ $t('public.dailyCap') }}</template>
-                              <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                         </div>
@@ -287,16 +287,16 @@
                       <el-form-item :label="$t('public.totalCapping')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`]">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount"
-                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`] = checkDigit(v, 0, 1000000))">
-                          <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`] = checkDigit(v, 0, 100000000))">
+                          <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.deposit')"
                         v-if="item[`${xcx}PayMode`].modeType == 'DEPOSIT' || item[`${xcx}PayMode`].modeType == 'DEPOSIT_AND_FREE'"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
-                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount"
-                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 1000000))">
-                          <template slot="append">{{ ['weixin','alipay'].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount"
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))">
+                          <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                     </template>
@@ -639,54 +639,19 @@ export default {
         }
         if (res.storeDivisionConfig) {
           res.storeDivisionConfig.map(item => {
-            if (item.alipayPayMode) {
-              if (item.alipayPayMode.modeType == 'PACKAGE') {
-                item.alipayPayMode.payModeDetail = JSON.parse(item.alipayPayMode.payModeDetail)
-                item.alipayPayMode.payModeDetails = this.defaultDevice.alipayPayMode.payModeDetails
+            Object.keys(this.config.xcx_pay.default).map(key => {
+              if (item[`${key}PayMode`]) {
+                if (item[`${key}PayMode`].modeType == 'PACKAGE') {
+                  item[`${key}PayMode`].payModeDetail = JSON.parse(item[`${key}PayMode`].payModeDetail)
+                  item[`${key}PayMode`].payModeDetails = JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`].payModeDetails))
+                } else {
+                  item[`${key}PayMode`].payModeDetails = JSON.parse(item[`${key}PayMode`].payModeDetail)
+                  item[`${key}PayMode`].payModeDetail = JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`][`payModeDetail`]))
+                }
               } else {
-                item.alipayPayMode.payModeDetails = JSON.parse(item.alipayPayMode.payModeDetail)
-                item.alipayPayMode.payModeDetail = this.defaultDevice.alipayPayMode[`payModeDetail`]
+                item[`${key}PayMode`] = item.weixinPayMode ? JSON.parse(JSON.stringify(item.weixinPayMode)) : JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`]))
               }
-            }
-            if (item.weixinPayMode) {
-              if (item.weixinPayMode.modeType == 'PACKAGE') {
-                item.weixinPayMode.payModeDetail = JSON.parse(item.weixinPayMode.payModeDetail)
-                item.weixinPayMode.payModeDetails = this.defaultDevice.weixinPayMode.payModeDetails
-              } else {
-                item.weixinPayMode.payModeDetails = JSON.parse(item.weixinPayMode.payModeDetail)
-                item.weixinPayMode.payModeDetail = this.defaultDevice.weixinPayMode[`payModeDetail`]
-              }
-            }
-            if (item.threePayMode) {
-              if (item.threePayMode.modeType == 'PACKAGE') {
-                item.threePayMode.payModeDetail = JSON.parse(item.threePayMode.payModeDetail)
-                item.threePayMode.payModeDetails = this.defaultDevice.threePayMode.payModeDetails
-              } else {
-                item.threePayMode.payModeDetails = JSON.parse(item.threePayMode.payModeDetail)
-                item.threePayMode.payModeDetail = this.defaultDevice.threePayMode[`payModeDetail`]
-              }
-            }
-            if (item.fourPayMode) {
-              if (item.fourPayMode.modeType == 'PACKAGE') {
-                item.fourPayMode.payModeDetail = JSON.parse(item.fourPayMode.payModeDetail)
-                item.fourPayMode.payModeDetails = this.defaultDevice.fourPayMode.payModeDetails
-              } else {
-                item.fourPayMode.payModeDetails = JSON.parse(item.fourPayMode.payModeDetail)
-                item.fourPayMode.payModeDetail = this.defaultDevice.fourPayMode[`payModeDetail`]
-              }
-            }
-            item.alipayPayMode = (item.alipayPayMode ? item.alipayPayMode : item.weixinPayMode ? item
-              .weixinPayMode : this.defaultDevice.alipayPayMode)
-            item.weixinPayMode = (item.weixinPayMode ? item.weixinPayMode : item.alipayPayMode ? item
-              .alipayPayMode : this.defaultDevice.weixinPayMode)
-            item.threePayMode = (item.threePayMode ? item.threePayMode : item.threePayMode ? item
-              .threePayMode : this.defaultDevice.threePayMode)
-            item.fourPayMode = (item.fourPayMode ? item.fourPayMode : item.fourPayMode ? item
-              .fourPayMode : this.defaultDevice.fourPayMode)
-            item.alipayPayMode = JSON.parse(JSON.stringify(item.alipayPayMode))
-            item.weixinPayMode = JSON.parse(JSON.stringify(item.weixinPayMode))
-            item.threePayMode = JSON.parse(JSON.stringify(item.threePayMode))
-            item.fourPayMode = JSON.parse(JSON.stringify(item.fourPayMode))
+            })
             item.storePayConfig = storePayConfig[item.deviceTypeCode]
             item.status = 1
             item.payConfigId = payConfigId[item.deviceTypeCode]
@@ -748,6 +713,7 @@ export default {
           }
           params.storePayConfig = []
           params.storeDivisionConfig = []
+          let moneyKeyArr = ['startingAmount','maxBillingTimePrice','maxAmount','depositAmount']
           for (var i in deviceDataArr) {
             let item = deviceDataArr[i]
             if (item.status == 1) {
@@ -763,78 +729,33 @@ export default {
               }
               if (item.payConfigId) payConfig.id = item.payConfigId
               params.storePayConfig.push(payConfig)
-              if (item.alipayPayMode.payModeDetail) {
-                if (item.alipayPayMode.modeType == 'PACKAGE') {
-                  item.alipayPayMode.payModeDetail.map((packItem, packI) => {
-                    return packItem.tag = packI + 1
-                  })
-                  item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetail)
-                } else {
-                  item.alipayPayMode.payModeDetails.unitPrice = item.alipayPayMode.payModeDetails.startingAmount;
-                  item.alipayPayMode.payModeDetails.overBillingUnit = item.alipayPayMode.payModeDetails.startingTime;
-                  if (item.alipayPayMode.payModeDetails.maxAmount > item.alipayPayMode.payModeDetails.depositAmount && (item.alipayPayMode.modeType == 'DEPOSIT' || item.alipayPayMode.modeType == 'DEPOSIT_AND_FREE')) {
-                    error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message7')}`
-                    break
-                  } else if (item.alipayPayMode.modeType == 'DEPOSIT_FREE') {
-                    item.alipayPayMode.payModeDetails.depositAmount = item.alipayPayMode.payModeDetails.maxAmount
+              Object.keys(this.config.xcx_pay.default).map(key => {
+                if (item[`${key}PayMode`].payModeDetail) {
+                  if (item[`${key}PayMode`].modeType == 'PACKAGE') {
+                    item[`${key}PayMode`].payModeDetail.map((packItem, packI) => {
+                      if(packItem.money < this.siteInfo.currencyMin){
+                      	error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message21')}${this.siteInfo.currencyMin}`
+                      }
+                      return packItem.tag = packI + 1
+                    })
+                    item[`${key}PayMode`].payModeDetail = JSON.stringify(item[`${key}PayMode`].payModeDetail)
+                  } else {
+                    item[`${key}PayMode`].payModeDetails.unitPrice = item[`${key}PayMode`].payModeDetails.startingAmount
+                    item[`${key}PayMode`].payModeDetails.overBillingUnit = item[`${key}PayMode`].payModeDetails.startingTime
+                    if (item[`${key}PayMode`].payModeDetails.maxAmount > item[`${key}PayMode`].payModeDetails.depositAmount && (item[`${key}PayMode`].modeType == 'DEPOSIT' || item[`${key}PayMode`].modeType == 'DEPOSIT_AND_FREE')) {
+                      error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message7')}`
+                    } else if (item[`${key}PayMode`].modeType == 'DEPOSIT_FREE') {
+                      item[`${key}PayMode`].payModeDetails.depositAmount = item[`${key}PayMode`].payModeDetails.maxAmount
+                    }
+                    moneyKeyArr.map(moneyKey => {
+                    	if(item[`${key}PayMode`].payModeDetails[moneyKey] < this.siteInfo.currencyMin){
+                    		error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message21')}${this.formatCurrency(this.siteInfo.currencyMin)}`
+                    	}
+                    })
+                    item[`${key}PayMode`].payModeDetail = JSON.stringify(item[`${key}PayMode`].payModeDetails)
                   }
-                  item.alipayPayMode.payModeDetail = JSON.stringify(item.alipayPayMode.payModeDetails)
                 }
-              }
-              if (item.weixinPayMode.payModeDetail) {
-                if (item.weixinPayMode.modeType == 'PACKAGE') {
-                  item.weixinPayMode.payModeDetail.map((packItem, packI) => {
-                    return packItem.tag = packI + 1
-                  })
-                  item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetail)
-                } else {
-                  item.weixinPayMode.payModeDetails.unitPrice = item.weixinPayMode.payModeDetails.startingAmount;
-                  item.weixinPayMode.payModeDetails.overBillingUnit = item.weixinPayMode.payModeDetails.startingTime;
-                  if (item.weixinPayMode.payModeDetails.maxAmount > item.weixinPayMode.payModeDetails.depositAmount && (item.weixinPayMode.modeType == 'DEPOSIT' || item.weixinPayMode.modeType == 'DEPOSIT_AND_FREE')) {
-                    error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
-                    break
-                  } else if (item.weixinPayMode.modeType == 'DEPOSIT_FREE') {
-                    item.weixinPayMode.payModeDetails.depositAmount = item.weixinPayMode.payModeDetails.maxAmount
-                  }
-                  item.weixinPayMode.payModeDetail = JSON.stringify(item.weixinPayMode.payModeDetails)
-                }
-              }
-              if (item.threePayMode && item.threePayMode.payModeDetail) {
-                if (item.threePayMode.modeType == 'PACKAGE') {
-                  item.threePayMode.payModeDetail.map((packItem, packI) => {
-                    return packItem.tag = packI + 1
-                  })
-                  item.threePayMode.payModeDetail = JSON.stringify(item.threePayMode.payModeDetail)
-                } else {
-                  item.threePayMode.payModeDetails.unitPrice = item.threePayMode.payModeDetails.startingAmount;
-                  item.threePayMode.payModeDetails.overBillingUnit = item.threePayMode.payModeDetails.startingTime;
-                  if(item.threePayMode.payModeDetails.maxAmount > item.threePayMode.payModeDetails.depositAmount && (item.threePayMode.modeType == 'DEPOSIT' || item.threePayMode.modeType == 'DEPOSIT_AND_FREE')){
-                    error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
-                    break
-                  }else if(item.threePayMode.modeType == 'DEPOSIT_FREE'){
-                    item.threePayMode.payModeDetails.depositAmount = item.threePayMode.payModeDetails.maxAmount
-                  }
-                  item.threePayMode.payModeDetail = JSON.stringify(item.threePayMode.payModeDetails)
-                }
-              }
-              if (item.fourPayMode && item.fourPayMode.payModeDetail) {
-                if (item.fourPayMode.modeType == 'PACKAGE') {
-                  item.fourPayMode.payModeDetail.map((packItem, packI) => {
-                    return packItem.tag = packI + 1
-                  })
-                  item.fourPayMode.payModeDetail = JSON.stringify(item.fourPayMode.payModeDetail)
-                } else {
-                  item.fourPayMode.payModeDetails.unitPrice = item.fourPayMode.payModeDetails.startingAmount;
-                  item.fourPayMode.payModeDetails.overBillingUnit = item.fourPayMode.payModeDetails.startingTime;
-                  if(item.fourPayMode.payModeDetails.maxAmount > item.fourPayMode.payModeDetails.depositAmount && (item.fourPayMode.modeType == 'DEPOSIT' || item.fourPayMode.modeType == 'DEPOSIT_AND_FREE')){
-                    error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
-                    break
-                  }else if(item.fourPayMode.modeType == 'DEPOSIT_FREE'){
-                    item.fourPayMode.payModeDetails.depositAmount = item.fourPayMode.payModeDetails.maxAmount
-                  }
-                  item.fourPayMode.payModeDetail = JSON.stringify(item.fourPayMode.payModeDetails)
-                }
-              }
+              })
               let division = {
                 closeType: item.closeType,
                 deviceTypeCode: item.deviceTypeCode,
@@ -952,7 +873,7 @@ export default {
     /**
      * 一键同步微信计费
      */
-    setAlipayMode(item) {
+    setAlipayMode(item, key) {
       let that = this;
       let errorMsg = false
       for (var i in this.ferror) {
@@ -973,7 +894,7 @@ export default {
           delete this.ferror[i]
         }
       }
-      item.alipayPayMode = JSON.parse(JSON.stringify(item.weixinPayMode))
+      item[`${key}PayMode`] = JSON.parse(JSON.stringify(item.weixinPayMode))
     },
 
     /**

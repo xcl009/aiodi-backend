@@ -61,8 +61,8 @@
                 v-if="scope.row.appAuditStatus == 3">{{ $t('miniProgram.publishCode') }}</el-button>
               <el-button type="primary" size="mini" @click="setRows(6, scope.row, 1)"
                 v-if="scope.row.appAuditStatus == 4">{{ $t('miniProgram.returnToDevelopment') }}</el-button>
-              <el-button type="primary" size="mini" @click="setRows(7, scope.row, 1)"
-                v-if="scope.row.appAuditStatus == 1">{{ $t('miniProgram.privacySettings') }}</el-button>
+              <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2)"
+              	v-if="scope.row.appAuditStatus == 1">{{ $t('miniProgram.experienceVersion') }}</el-button>
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/system/alipayEdit?app_id=${scope.row.appId}` })" v-if="isBrand()">{{
                   $t('public.modifyingInformation') }}</el-button>
@@ -87,16 +87,27 @@
           <div class="text-black">{{ $t('miniProgram.uploadCodeText') }}</div>
         </div>
       </template>
+			<template v-if="dialogType == 2">
+				<div class="flex justify-center">
+					<div class="qrcode-box">
+            <img :src="dform.qrCodeUrl" width="100%" height="100%" alt="">
+					</div>
+				</div>
+				<div class="mt-10 p-10 text-center cursor" @click="setRows(7, curRow, 1)">
+					点此生成最新体验版
+				</div>
+			</template>
       <div class="mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
-        }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit"
+        	v-if="[1].indexOf(dialogType) > -1">{{ $t('public.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+	import QRCode from 'qrcodejs2'
 import condition from '@/components/condition/'
 import Pagination from '@/components/Pagination'
 export default {
@@ -210,9 +221,9 @@ export default {
 
     /**
      * 操作
-     * @param {Object} type 1 dialog类型
+     * @param {Object} type 1 dialog类型 1: '上传代码' 2: '提交审核' 3: '查询审核状态' 4: '发布代码' 5: '取消审核' 6: '回退开发'
      * @param {Object} row 选择当前数据
-     * @param {Object} dialogType dialog内容显示类型 1: '上传代码' 2: '提交审核' 3: '查询审核状态' 4: '发布代码' 5: '取消审核' 6: '回退开发' 7: '体验版本'
+     * @param {Object} dialogType dialog内容显示类型  2: '体验版本'
      * @param {Object} idx 当前数据所在位置
      */
     setRows(type, row, dialogType, idx) {
@@ -223,14 +234,31 @@ export default {
           this.curRow = row
           this.curIdx = idx
           this.dialogStatus = true
-          break
+					switch (dialogType) {
+						case 2:
+							this.$get(`iot-saas-pay/alipay/${row.appId}/experience`).then(res => {
+								this.dform = res
+								// if (res.qrCodeUrl) {
+								// 	document.getElementById('aliqrcode').innerHTML = ''
+								// 	new QRCode('aliqrcode', {
+								// 		width: 150,
+								// 		height: 150,
+								// 		text: res.qrCodeUrl
+								// 	})
+								// }
+							})
+							break
+					}
+					break
         case 2:
           if (this.clickSubmit) return
           this.clickSubmit = true
           this.$prompt('请输入交易单号', '温馨提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消'
-          }).then(({ value }) => {
+          }).then(({
+          	value
+          }) => {
             this.$post(`iot-saas-pay/alipay/${row.appId}/submit/audit`, {
               transactionNo: value
             }).then(res => {
@@ -301,8 +329,12 @@ export default {
           })
           break
         case 7:
-          this.$post(`iot-saas-pay/alipay/${row.appId}/create/experience`).then(res => {
-            console.log(res)
+          this.$post(`iot-saas-pay/alipay/${row.appId}/experience`).then(res => {
+          	this.$message({
+          		message: '提交成功，5s后点击体验版查询',
+          		type: 'success'
+          	})
+          	this.dialogStatus = false
           })
           break
       }
@@ -344,4 +376,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+	.qrcode-box {
+		width: 168px;
+		height: 168px;
+	}
+</style>

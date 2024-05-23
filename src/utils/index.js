@@ -808,6 +808,7 @@ const util = {
   checkDigit(val, min = 0, max = 100, p = 2, isEmpty = false) {
     let testReg = new RegExp("(^[0-9]{1," + max.toString().length + "}$)")
     if (p > 0) testReg = new RegExp("(^[0-9]{1," + max.toString().length + "}$)|(^[0-9]{1," + max.toString().length + "}[\\.]{1}[0-9]{1," + p + "}$)")
+    val = val.replace(/,/g, "")
     if (isEmpty && val != 0 && !val) {
 
     } else if (parseFloat(val) > parseFloat(max)) {
@@ -834,7 +835,18 @@ const util = {
     if(h) wStr += `h_${h},`
     if(w) wStr += `w_${w}`
     return url[0] + '?x-oss-process=image/resize,m_lfit' + wStr
-  }
+  },
+  
+  formatCurrency: (number) => {
+  	if (!number) return 0
+  	// 将数字转换为字符串
+  	const numberStr = number.toString();
+  	// 使用正则表达式去除末尾的 .00
+  	const trimmedNumber = numberStr.replace(/\.00$/, '');
+  	// 应用千位格式化
+  	const formattedNumber = trimmedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  	return formattedNumber;
+  },
 }
 
 export const param2Obj = util.param2Obj
@@ -877,3 +889,4 @@ export const checkQueryRepeat = util.checkQueryRepeat
 export const checkDigit = util.checkDigit
 export const trim = util.trim
 export const ossThumbnail = util.ossThumbnail
+export const formatCurrency = util.formatCurrency

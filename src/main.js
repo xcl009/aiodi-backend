@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
-import { setRem, checkDigit, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent, dealPhone, getOsInfo, getBrowser, checkQueryRepeat, trim, ossThumbnail } from './utils/index'
+import { setRem, checkDigit, parseTime, currentTime, pick, checkRoles, formErrow, arrayKeys, pickKeys, mul, division, isSaas, isBrand, isStore, isAgent, dealPhone, getOsInfo, getBrowser, checkQueryRepeat, trim, ossThumbnail, formatCurrency } from './utils/index'
 Vue.prototype.checkDigit = checkDigit
 Vue.prototype.parseTime = parseTime
 Vue.prototype.currentTime = currentTime
@@ -67,6 +67,7 @@ Vue.prototype.Browser = getBrowser
 Vue.prototype.checkQueryRepeat = checkQueryRepeat
 Vue.prototype.trim = trim
 Vue.prototype.ossThumbnail = ossThumbnail
+Vue.prototype.formatCurrency = formatCurrency
 
  /**
  * 校验是否拥有服务市场设备类型相关能力
@@ -117,6 +118,26 @@ Vue.use(ElementUI,{
 })
 
 Vue.config.productionTip = false
+
+// 自定义指令 v-currency
+Vue.directive('currency', {
+  bind(el, binding, vnode) {
+    el.oninput = function(e) {
+      if (!e.isTrusted) return
+
+      // 格式化输入的值为千分位
+      let value = e.target.value.replace(/\D/g, '')
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      e.target.value = value
+
+      // 更新绑定的值
+      vnode.elm.dispatchEvent(new Event('input'))
+    }
+  },
+  unbind(el) {
+    el.oninput = el.onblur = null
+  }
+})
 
 //改变窗口大小时重新设置 rem
 // setRem()
