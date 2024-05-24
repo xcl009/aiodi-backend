@@ -259,7 +259,7 @@ export default {
     withdrawalTime: '提现时间',
     withdrawalAmount: '提现金额',
     commission: '手续费',
-    name: '真实姓名',
+    realName: '真实姓名',
     withdrawal: '去提现',
     cardNo: '银行卡号',
     bankName: '开户行',
@@ -1312,6 +1312,10 @@ export default {
     checkTwoPwd: '操作密码校验状态',
     setCheckTwoPwd: '设置是否开启操作密码校验',
     setCheckTwoPwdText: '开启表示代理、商户对资金相关操作时不进行操作密码校验。这可能导致代理、商户的资金被盗提，请谨慎操作。',
+    receiptTime: '到账时间',
+    receiptNow: '即时到账',
+    receiptRule: '请完善到账时间规则',
+    receiptDay: '天内',
   },
   user: {
     message: '请填写旧密码',
@@ -1993,4 +1997,3 @@ export default {
     plaseImg:'请上传商品图片'
   }
 };
- 

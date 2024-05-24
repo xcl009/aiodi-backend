@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="pl-20 pr-20 pb-20 custom-form bg-white">
-      <el-col :xs="24" :sm="18" :md="12" :lg="10">
+      <el-col :xs="24" :sm="22" :md="16" :lg="14">
         <el-tabs class="mb-10" v-model="userType" @tab-click="getInfo">
           <el-tab-pane :label="$t('system.agentRule')" name="agent" v-if="!userKey || userKey != 'storeId'"/>
           <el-tab-pane :label="$t('system.storeRule')" name="store" />
@@ -106,7 +106,8 @@
                   <i class="ml-5 el-icon-top fs-b3 cursor text-primary" v-if="idx > 0"
                     @click="swapItems(form.supportType, idx, idx - 1)"></i>
                 </h4>
-                <el-form-item :label="$t('system.taxPoints')">
+
+                <!-- <el-form-item :label="$t('system.taxPoints')">
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.taxRate" class="flex1 mr-10">
                       <template slot="append">%</template>
@@ -117,7 +118,30 @@
                       <template slot="append">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
+                </el-form-item> -->
+
+                <el-form-item :label="$t('system.receiptTime')">
+                  <div class="mb-5 flex align-center flex-wrap"
+                    v-for="(ritem, rindex) in item.receipt">
+                    <el-select v-model="ritem.day" :placeholder="$t('public.pleaseSelect')">
+                      <el-option :label="$t('system.receiptNow')" :value="0" v-if="[2,4,5].indexOf(parseInt(item.type)) == -1"></el-option>
+                      <el-option v-for="iitem in 30" :label="iitem + $t('system.receiptDay')" :value="iitem"></el-option>
+                    </el-select>
+                    <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('public.name') }}</div>
+                    <el-input v-model="ritem.name" class="flex1 ml-10 mr-10"></el-input>
+                    <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('system.taxPoints')}}</div>
+                    <el-input type="number" v-model="ritem.taxRate" class="flex1 ml-10 mr-10">
+                      <template slot="append">%</template>
+                    </el-input>
+                    <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('system.singleStroke')}}</div>
+                    <el-input type="number" v-model="ritem.handlingFee" class="flex1 ml-10 mr-10">
+                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                    </el-input>
+                    <el-button type="text" size="small" :disabled="item.receipt.length == 4" v-if="rindex == 0" @click="item.receipt.push({})" class="mr-10">{{ $t('public.add') }}</el-button>
+                    <el-button type="text" size="small" v-else @click="item.receipt.splice(rindex, 1)" class="mr-10 text-danger">{{ $t('public.delete') }}</el-button>
+                  </div>
                 </el-form-item>
+
                 <el-form-item :label="$t('system.minMoeny')">
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.minAmount" class="flex1 mr-10">
@@ -252,19 +276,34 @@ export default {
       let sType = this.arrayKeys(supportType, 'type')
       val.map(item => {
         if (sType.indexOf(item) == -1) {
-          supportType.push({
-            status: 1,
-            type: item,
-            taxRate: 0,
-            handlingFee: 0,
-            minAmount: 0,
-            maxAmount: 999999,
-            needApprovalAmount: 0,
-            orderRefundInd: false
-          })
+          supportType.push(this.getSupportDefault())
         }
       })
       this.form.supportType = supportType
+    },
+
+    /**
+     * 默认信息
+     * @param {Object} type
+     */
+    getSupportDefault(type){
+      return [
+        {
+          status: 1,
+          type: type,
+          taxRate: 0,
+          handlingFee: 0,
+          minAmount: 0,
+          maxAmount: 999999,
+          needApprovalAmount: 0,
+          orderRefundInd: false,
+          receipt: [{
+            day: 1,
+            taxRate: 0,
+            handlingFee: 0,
+          }]
+        }
+      ]
     },
 
     /**
@@ -290,6 +329,16 @@ export default {
           } else if (res.timeLimit.type == 'WEEK') {
             weeks = dayas
           }
+          res.supportType.map(item => {
+            if(!item.receipt){
+              return item.receipt = [{
+                day: [2,4,5].indexOf(parseInt(item.type)) > -1 ? 1 : 0,
+                name: '',
+                taxRate: item.taxRate,
+                handlingFee: item.handlingFee,
+              }]
+            }
+          })
           res.timeLimit.days = days
           res.timeLimit.weeks = weeks
           this.form = res
@@ -317,18 +366,7 @@ export default {
               days: [{val: 1}],
               weeks: [{val: 1}]
             },
-            supportType: [
-              {
-                status: 1,
-                type: 5,
-                taxRate: 0,
-                handlingFee: 0,
-                minAmount: 0,
-                maxAmount: 999999,
-                needApprovalAmount: 0,
-                orderRefundInd: false
-              }
-            ],
+            supportType: this.getSupportDefault(),
             days: [{ val: 1 }],
             weeks: [{ val: 1 }]
           }
@@ -348,12 +386,25 @@ export default {
       let that = this;
       let url = 'iot-saas-basic/admin/withdraw/config/v1/update',
         params = JSON.parse(JSON.stringify(this.form)),
-        supportType = []
+        supportType = [],
+        errorText = ''
       params.supportType.map((item, idx) => {
         if (item.status != 0) {
+          item.receipt.map(ritem => {
+            if(!ritem.name || !(item.taxRate >= 0) || !(item.handlingFee >= 0)){
+              errorText = that.$t('system.receiptRule')
+            }
+          })
           supportType.push(item)
         }
       })
+      if(errorText){
+        this.$message({
+          message: errorText,
+          type: 'error'
+        })
+        return
+      }
       params.supportType = supportType
       params.userType = this.userType
       if (params.timeLimit.type == 'WEEK') {

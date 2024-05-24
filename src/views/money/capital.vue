@@ -54,9 +54,9 @@
       <div class="pt-10 pl-20 pr-20 bg-white">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
           :max-height="tableMaxH" element-loading-text="Loading">
-          <el-table-column :label="$t('public.name')">
+          <el-table-column :label="$t('public.remark')">
             <template slot-scope="scope">
-              {{ scope.row.remark}}
+              {{ scope.row.remark }}
             </template>
           </el-table-column>
           <el-table-column :label="$t('public.time')">

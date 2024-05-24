@@ -32,7 +32,7 @@
             <div class="el-link">{{ statusObj[scope.row.status] }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.name')">
+        <el-table-column :label="$t('public.realName')">
           <template slot-scope="scope">
             <div class="el-link">{{ scope.row.userName || '--' }}</div>
           </template>
