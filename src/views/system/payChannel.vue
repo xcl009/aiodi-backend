@@ -18,7 +18,7 @@
                 <div class="flex align-center mb-20 p-10 channel-item radius-10 cursor">
                   <el-avatar class="block" :size="35" :src="item.logo" fit="cover" shape="square"></el-avatar>
                   <div class="pl-10 pr-10 flex-1 text-bold">
-                    <div class="mb-5 text-primary">{{ Constant.SourceType[item.sourceType] }}</div>
+                    <div class="mb-5 text-primary">{{ Constant.SourceType[item.sourceType] }} · {{ item.code }}</div>
                     <div>{{ item.name }}</div>
                   </div>
                   <div class="text-primary" @click="setRows(3, item, 2)">

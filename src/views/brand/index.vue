@@ -224,8 +224,11 @@
           <template v-if="brandChannels.length > 0">
             <div class="mt-15 mb-15">排序值越大越靠前</div>
             <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': item.status == 'ENABLE'}" v-for="item in brandChannels">
-              <el-avatar class="block" :size="35" :src="item.logo" fit="cover" shape="square"></el-avatar>
-              <div class="pl-10 pr-10 flex-1" :class="{'text-bold text-black': item.status == 'ENABLE'}">{{ item.name }}</div>
+              <el-avatar class="block" :size="40" :src="item.logo" fit="cover" shape="square"></el-avatar>
+              <div class="pl-10 pr-10 flex-1">
+                <div :class="{'text-bold text-black': item.status == 'ENABLE'}">{{ item.name }}</div>
+                <div class="mt-5 fs-s2">{{ item.code }}</div>
+              </div>
               <div class="flex align-center sort-box text-center">
                 <template v-if="item.status == 'ENABLE'">
                   <span class="mr-5">排序值</span>
@@ -337,7 +340,10 @@
         <div class="pl-20 pr-20 channel-box" v-if="loginChannel.length > 0">
           <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{'act': brandLoginChannels[item.loginCode]}" v-for="item in loginChannel" @click="dialogConfirm(brandLoginChannels[item.loginCode] || item)">
             <el-avatar class="block" :size="35" :src="item.loginLogo" :fit="cover" shape="square"></el-avatar>
-            <div class="pl-15 pr-15 flex-1" :class="{'text-bold text-black': brandLoginChannels[item.loginCode]}">{{ item.loginName }} {{ item.loginExt || '' }}</div>
+            <div class="pl-15 pr-15 flex-1">
+              <div :class="{'text-bold text-black': brandLoginChannels[item.loginCode]}">{{ item.loginName }} {{ item.loginExt || '' }}</div>
+              <div class="mt-5 fs-s2">{{ item.loginCode }}</div>
+            </div>
             <div class="text-primary">{{ $t('brand.loginConfig') }}</div>
           </div>
         </div>
@@ -1101,7 +1107,8 @@
 <style lang="scss" scoped>
   .channel-box{
     .channel-item{
-      width: 500px;
+      min-width: 500px;
+      max-width: 800px;
       border: 2px solid #eee;
       &.act{
         border-color: var(--olive);
