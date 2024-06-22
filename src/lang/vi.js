@@ -404,7 +404,8 @@ export default {
         month: 'Tháng',
         billingRules: 'Quy tắc tính phí',
         halfHour:'0.5 h',
-        oneHour:'1 h'
+        oneHour:'1 h',
+        dailyCapping:"Ngày đóng cửa",
     },
     // 分账关系
     reType: {

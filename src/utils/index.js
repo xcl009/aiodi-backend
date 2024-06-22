@@ -582,14 +582,17 @@ const util = {
       if (deviceTypeCode && deviceTypeCode.indexOf('WM') > -1) {
         return `${window.config.washing_package[mode.time].title}(${mode.money}${currencySymbol}`
       }
-      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${mode.money}${currencySymbol}` : `${mode.time}${i18n.t('public.minute')}${mode.money}${currencySymbol}`
+      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${mode.money}${currencySymbol}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${currencySymbol}` : `${mode.time}${i18n.t('public.minute')}${mode.money}${currencySymbol}`
     } else {
-      let fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${currencySymbol}，${i18n.t('public.superrule')}${mode.overBillingUnit}${i18n.t('public.minute')}/${mode.unitPrice}${currencySymbol}`
+      let fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${currencySymbol}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${currencySymbol}`
       if (mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice) {
-        fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${currencySymbol}`
+        fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${currencySymbol}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${currencySymbol}`
       }
       if (stype == 2) {
         fee = fee + `${mode.maxBillingTimeUnit == 1440 ? `，${i18n.t('public.dailyCap')}` + (mode.maxBillingTimePrice || 19.9) + currencySymbol : '，' + mode.maxBillingTimeUnit + `${i18n.t('public.minCap')}` + mode.maxBillingTimePrice + currencySymbol}，${i18n.t('public.totalCapping')}${mode.maxAmount}${currencySymbol}`
+      }
+      if(mode.feeTime > 0){
+        fee = `${i18n.t('public.free')}${mode.feeTime}${i18n.t('public.minute')}${fee}`
       }
       return fee
     }
