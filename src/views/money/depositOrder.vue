@@ -230,7 +230,7 @@ export default {
           key: 'orderNo',
           val: true,
           name: this.$t('public.orderNo'),
-          width: 260
+          width: 280
         },
         {
           key: 'chargeEndTime',
