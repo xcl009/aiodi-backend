@@ -54,6 +54,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
 
       // config.headers['user_id'] = getToken('user_id')
+      config.headers['timeZone'] = Intl.DateTimeFormat().resolvedOptions().timeZone;
       config.headers['Authorization'] = store.getters.token
       config.headers['apiVersion'] = ''
       config.headers['appVersion'] = '0.0.1'

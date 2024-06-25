@@ -8,7 +8,7 @@
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('home.alldeposit') }}</div>
-            <div><span class="mr-5 fs-b3 text-bold">{{ accSub(totalStat.allAmount, totalStat.amount) || 0 }}</span></div>
+            <div><span class="mr-5 fs-b3 text-bold">{{ delComma(accSub(totalStat.allAmount, totalStat.amount)) || 0 }}</span></div>
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
@@ -24,7 +24,7 @@
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('moeny.unreturnedAmount') }}</div>
             <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.unrefundAmount || 0.00 }}</span>
-            }}</div>
+            </div>
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('moeny.unreturnedTransactions') }}</div>
@@ -168,7 +168,8 @@ import {
   accAdd,
   formatSeconds,
   unixTime,
-  arrayToObj
+  arrayToObj,
+  delComma
 } from '@/utils/index'
 
 export default {
@@ -288,6 +289,7 @@ export default {
   },
   data() {
     return {
+      delComma:delComma,
       accAdd: accAdd,
       formatSeconds: formatSeconds,
       unixTime: unixTime,
