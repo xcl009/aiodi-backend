@@ -1,6 +1,10 @@
 <template>
 	<div>
-		<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
+		<div class="serchBox" @mouseover="serchShow = true" @mouseleave="serchShow = false">
+          <div v-if="!serchShow" class=" text-bold fs-b5 ">
+		<div class="flex_c">{{$t('components.screen')}} <img src="@/assets/bottomIcon.png" class="bottomIcon" /></div></div>
+		  <div v-if="serchShow">
+			<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
 			@saveXlsx="saveXlsx">
 			<template v-slot:tabs>
 				<div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
@@ -80,6 +84,8 @@
 									v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
 							</el-select>
 						</template>
+
+
 					</div>
 				</el-form-item>
 				<el-form-item>
@@ -89,8 +95,20 @@
 						@change="toQuery()">
 					</el-date-picker>
 				</el-form-item>
+				<!-- <el-form-item :label="`${$t('order.orderSource')}`">
+					<i :class="'fs-c1 iconfont ' +sourceList[sourceTypeIndex].icon" ></i>
+					<el-select v-model="listQuery.sourceType" :placeholder="$t('public.pleaseSelect')" @change="selectChange" >
+						<el-option v-for="(item,index) in sourceList" :key="item.value" :label="item.title" :value="item.value">
+							<div v-if="index == 0">{{ item.title }}</div>
+							<i :class="'fs-c1 iconfont ' + item.icon" v-else></i>
+						</el-option>
+					</el-select>
+				</el-form-item> -->
 			</template>
 		</condition>
+		  </div>
+		</div>
+		
 
 		<div class="pl-10 pr-10 bg-white">
 			<div class="flex align-center pt-15 mb-15 l-t">
@@ -1136,7 +1154,7 @@ export default {
 				page: 1,
 				size: 20,
 				sourceType: 'false',
-				payType: 'false'
+				payType: 'false',
 			},
 
 			formKey: {
@@ -1159,7 +1177,9 @@ export default {
 			 * 列的配置化对象，存储配置信息
 			 */
 			showColumn: [],
-			payChannellist: []
+			payChannellist: [],
+			sourceTypeIndex:0,
+			serchShow:false,
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -1237,6 +1257,10 @@ export default {
 		localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
 	},
 	methods: {
+		selectChange(e){
+			if(e =='false') this.sourceTypeIndex = 0;
+			this.sourceTypeIndex = e;
+		},
 		payChange(e) {
 			this.listQuery.payType = e.code;
 			this.toQuery();
@@ -1974,5 +1998,16 @@ export default {
 .iconSize {
 	width: 20px;
 	height: 20px;
+}
+.serchBox{
+	background: #fff;
+	margin:10px 0 0;
+	padding:10px 20px;
+	border:1px solid  var(--olive);
+	color:var(--olive);
+}
+.bottomIcon{
+	width:30px;
+	height:30px;
 }
 </style>
