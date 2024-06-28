@@ -1,101 +1,123 @@
 <template>
 	<div>
-		<div class="serchBox" @mouseover="serchShow = true" @mouseleave="serchShow = false">
-          <div v-if="!serchShow" class=" text-bold fs-b5 ">
-		<div class="flex_c">{{$t('components.screen')}} <img src="@/assets/bottomIcon.png" class="bottomIcon" /></div></div>
-		  <div v-if="serchShow">
-			<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
-			@saveXlsx="saveXlsx">
-			<template v-slot:tabs>
-				<div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
-					<div class="mr-10">{{ $t('public.deviceType') }}</div>
-					<el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
-						<el-tab-pane :label="`${$t('public.allDevice')}`" :name="''" />
-						<el-tab-pane :label="index" :name="'' + item + ''" v-for="(item, index) in myDeviceName" />
-					</el-tabs>
+		<div v-if="!serchShow" class="serchBox" @click.stop="serchShow = !serchShow">
+			<div class=" text-bold fs-b5 ">
+				<div class="flex_c cursor">{{ $t('components.screen') }} <img src="@/assets/bottomIcon.png"
+						class="bottomIcon" />
 				</div>
-				<div class="mb-10 flex align-center bg-white">
-					<div class="mr-10">{{ $t('public.orderType') }}</div>
-					<el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
-						<el-tab-pane :label="`${item.title}${item.nkey ? '(' + (statInfo[item.nkey] || 0) + ')' : ''}`"
-							:name="'' + item.value + ''" v-for="item in orderTab" />
-					</el-tabs>
+			</div>
+
+		</div>
+
+		<div v-if="serchShow" @click="bing"  class="serchBox">
+			<div class=" text-bold fs-b5 "  @click.stop="serchShow = !serchShow">
+				<div class="flex_c cursor">{{ $t('public.hide') }} <img src="@/assets/topIcon.png"
+						class="bottomIcon" />
 				</div>
-				<div class="mb-10 flex align-center bg-white">
-					<div class="mr-10">{{ $t('order.orderSource') }}</div>
-					<el-tabs class="flex-1" v-model="listQuery.sourceType" @tab-click="toQuery()">
-						<el-tab-pane :label="`${item.title}${item.nkey ? '(' + (statInfo[item.nkey] || 0) + ')' : ''}`"
-							:name="'' + item.value + ''" v-for="(item, index) in sourceList" v-if="index == 0" />
-						<el-tab-pane :key="index" :name="JSON.stringify(item.value)" v-for="(item, index) in sourceList"
-							v-if="index != 0">
+			</div>
+			<div>
+				<condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery"
+					:exportStatus="true" @saveXlsx="saveXlsx">
+					<template v-slot:tabs>
+						<div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
+							<div class="mr-10">{{ $t('public.deviceType') }}</div>
+							<el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
+								<el-tab-pane :label="`${$t('public.allDevice')}`" :name="''" />
+								<el-tab-pane :label="index" :name="'' + item + ''"
+									v-for="(item, index) in myDeviceName" />
+							</el-tabs>
+						</div>
+						<div class="mb-10 flex align-center bg-white">
+							<div class="mr-10">{{ $t('public.orderType') }}</div>
+							<el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
+								<el-tab-pane
+									:label="`${item.title}${item.nkey ? '(' + (statInfo[item.nkey] || 0) + ')' : ''}`"
+									:name="'' + item.value + ''" v-for="item in orderTab" />
+							</el-tabs>
+						</div>
+						<div class="mb-10 flex align-center bg-white">
+							<div class="mr-10">{{ $t('order.orderSource') }}</div>
+							<el-tabs class="flex-1" v-model="listQuery.sourceType" @tab-click="toQuery()">
+								<el-tab-pane
+									:label="`${item.title}${item.nkey ? '(' + (statInfo[item.nkey] || 0) + ')' : ''}`"
+									:name="'' + item.value + ''" v-for="(item, index) in sourceList"
+									v-if="index == 0" />
+								<el-tab-pane :key="index" :name="JSON.stringify(item.value)"
+									v-for="(item, index) in sourceList" v-if="index != 0">
 
-							<span slot="label">
-								<el-tooltip class="item" effect="dark" :content="item.title" placement="top">
-									<i :class="'fs-c1 iconfont ' + item.icon"></i>
-								</el-tooltip>
-							</span>
-						</el-tab-pane>
-					</el-tabs>
-				</div>
-				<div class="mb-10 flex align-center bg-white">
-					<div class="mr-10">{{ $t('public.payType') }}</div>
-					<el-tabs class="flex-1" v-model="listQuery.payType" @tab-click="toQuery()">
-						<el-tab-pane :label="`${item.title}${item.nkey ? '(' + (statInfo[item.nkey] || 0) + ')' : ''}`"
-							:name="'' + item.payType + ''" v-for="(item, index) in payChannellist" v-if="index == 0" />
-						<el-tab-pane :key="index" :name="JSON.stringify(item.payType)"
-							v-for="(item, index) in payChannellist" v-if="index != 0">
-							<span slot="label" class="flex_c">
-								<el-tooltip class="item" effect="dark" :content="item.name" placement="top">
-									<img :src="item.logo" class="iconSize">
-								</el-tooltip>
-							</span>
-						</el-tab-pane>
-					</el-tabs>
-				</div>
-			</template>
+									<span slot="label">
+										<el-tooltip class="item" effect="dark" :content="item.title" placement="top">
+											<i :class="'fs-c1 iconfont ' + item.icon"></i>
+										</el-tooltip>
+									</span>
+								</el-tab-pane>
+							</el-tabs>
+						</div>
+						<div class="mb-10 flex align-center bg-white">
+							<div class="mr-10">{{ $t('public.payType') }}</div>
+							<el-tabs class="flex-1" v-model="listQuery.payType" @tab-click="toQuery()">
+								<el-tab-pane
+									:label="`${item.title}${item.nkey ? '(' + (statInfo[item.nkey] || 0) + ')' : ''}`"
+									:name="'' + item.payType + ''" v-for="(item, index) in payChannellist"
+									v-if="index == 0" />
+								<el-tab-pane :key="index" :name="JSON.stringify(item.payType)"
+									v-for="(item, index) in payChannellist" v-if="index != 0">
+									<span slot="label" class="flex_c">
+										<el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+											<img :src="item.logo" class="iconSize">
+										</el-tooltip>
+									</span>
+								</el-tab-pane>
+							</el-tabs>
+						</div>
+					</template>
 
-			<template v-slot:defult>
-				<el-form-item v-for="item in 2">
-					<div class="flex combined">
-						<el-select v-model="formKey[`sel${item}`]" :placeholder="`${$t('public.pleaseSelect')}`">
-							<template v-for="(q, key) in queryObj">
-								<el-option :label="q.title" :value="key"
-									v-if="checkQueryRepeat(key, item, formKey)"></el-option>
-							</template>
-						</el-select>
-						<template
-							v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-							<el-input :placeholder="`${$t('public.enter')}${queryObj[formKey[`sel${item}`]].title}`"
-								v-model="form[formKey[`sel${item}`]]"></el-input>
-						</template>
-						<template
-							v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
-							<selectSearch v-model="form[formKey[`sel${item}`]]"
-								:type="queryObj[formKey[`sel${item}`]].sType"
-								:name="queryObj[formKey[`sel${item}`]].name"
-								:placeholder="`${queryObj[formKey['sel' + item]].title}`" @change="toQuery()"
-								:isStoreOrder="['storeId'].indexOf(formKey[`sel${item}`]) > -1"></selectSearch>
-						</template>
-						<template
-							v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
-							<el-select v-model="form[formKey[`sel${item}`]]"
-								:placeholder="`${queryObj[formKey['sel' + item]].title}`" clearable @change="toQuery()">
-								<el-option :label="item" :value="key"
-									v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
-							</el-select>
-						</template>
+					<template v-slot:defult>
+						<el-form-item v-for="item in 2">
+							<div class="flex combined">
+								<el-select v-model="formKey[`sel${item}`]"
+									:placeholder="`${$t('public.pleaseSelect')}`">
+									<template v-for="(q, key) in queryObj">
+										<el-option :label="q.title" :value="key"
+											v-if="checkQueryRepeat(key, item, formKey)"></el-option>
+									</template>
+								</el-select>
+								<template
+									v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
+									<el-input
+										:placeholder="`${$t('public.enter')}${queryObj[formKey[`sel${item}`]].title}`"
+										v-model="form[formKey[`sel${item}`]]"></el-input>
+								</template>
+								<template
+									v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
+									<selectSearch v-model="form[formKey[`sel${item}`]]"
+										:type="queryObj[formKey[`sel${item}`]].sType"
+										:name="queryObj[formKey[`sel${item}`]].name"
+										:placeholder="`${queryObj[formKey['sel' + item]].title}`" @change="toQuery()"
+										:isStoreOrder="['storeId'].indexOf(formKey[`sel${item}`]) > -1"></selectSearch>
+								</template>
+								<template
+									v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
+									<el-select v-model="form[formKey[`sel${item}`]]"
+										:placeholder="`${queryObj[formKey['sel' + item]].title}`" clearable
+										@change="toQuery()">
+										<el-option :label="item" :value="key"
+											v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
+									</el-select>
+								</template>
 
 
-					</div>
-				</el-form-item>
-				<el-form-item>
-					<el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange"
-						range-separator="-" value-format="yyyy-MM-dd" :start-placeholder="`${$t('public.statrtDate')}`"
-						:end-placeholder="`${$t('public.endDate')}`" :picker-options="pickerOptionsEnd"
-						@change="toQuery()">
-					</el-date-picker>
-				</el-form-item>
-				<!-- <el-form-item :label="`${$t('order.orderSource')}`">
+							</div>
+						</el-form-item>
+						<el-form-item>
+							<el-date-picker class="range-day flex align-center" v-model="form.date" type="daterange"
+								range-separator="-" value-format="yyyy-MM-dd"
+								:start-placeholder="`${$t('public.statrtDate')}`"
+								:end-placeholder="`${$t('public.endDate')}`" :picker-options="pickerOptionsEnd"
+								@change="toQuery()">
+							</el-date-picker>
+						</el-form-item>
+						<!-- <el-form-item :label="`${$t('order.orderSource')}`">
 					<i :class="'fs-c1 iconfont ' +sourceList[sourceTypeIndex].icon" ></i>
 					<el-select v-model="listQuery.sourceType" :placeholder="$t('public.pleaseSelect')" @change="selectChange" >
 						<el-option v-for="(item,index) in sourceList" :key="item.value" :label="item.title" :value="item.value">
@@ -104,11 +126,11 @@
 						</el-option>
 					</el-select>
 				</el-form-item> -->
-			</template>
-		</condition>
-		  </div>
+					</template>
+				</condition>
+			</div>
 		</div>
-		
+
 
 		<div class="pl-10 pr-10 bg-white">
 			<div class="flex align-center pt-15 mb-15 l-t">
@@ -1178,8 +1200,8 @@ export default {
 			 */
 			showColumn: [],
 			payChannellist: [],
-			sourceTypeIndex:0,
-			serchShow:false,
+			sourceTypeIndex: 0,
+			serchShow: false,
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -1257,8 +1279,15 @@ export default {
 		localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
 	},
 	methods: {
-		selectChange(e){
-			if(e =='false') this.sourceTypeIndex = 0;
+		bing(event) {
+			console.log('zhixngl')
+			if (event.target === event.currentTarget) {
+				// 这里编写点击空白区域应该执行的操作
+				console.log('Clicked outside!');
+			}
+		},
+		selectChange(e) {
+			if (e == 'false') this.sourceTypeIndex = 0;
 			this.sourceTypeIndex = e;
 		},
 		payChange(e) {
@@ -1999,15 +2028,17 @@ export default {
 	width: 20px;
 	height: 20px;
 }
-.serchBox{
+
+.serchBox {
 	background: #fff;
-	margin:10px 0 0;
-	padding:10px 20px;
-	border:1px solid  var(--olive);
-	color:var(--olive);
+	margin: 10px 0 0;
+	padding: 10px 20px;
+	border: 1px solid var(--olive);
+	color: var(--olive);
 }
-.bottomIcon{
-	width:30px;
-	height:30px;
+
+.bottomIcon {
+	width: 30px;
+	height: 30px;
 }
 </style>

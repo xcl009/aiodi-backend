@@ -406,6 +406,10 @@ export default {
     halfHour:'半小时',
     oneHour:'1小时',
     dailyCapping:"日封顶",
+    refundOfDeposit:'押金自动退',
+    refundOfDepositText:'是否开启押金自动退',
+    refundOfDepositText1:'开启表示商户可开启押金自动退功能',
+    hide:"隐藏"
   },
   // 分账关系
   reType: {
