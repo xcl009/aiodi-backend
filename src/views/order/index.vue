@@ -9,10 +9,9 @@
 
 		</div>
 
-		<div v-if="serchShow" @click="bing"  class="serchBox">
-			<div class=" text-bold fs-b5 "  @click.stop="serchShow = !serchShow">
-				<div class="flex_c cursor">{{ $t('public.hide') }} <img src="@/assets/topIcon.png"
-						class="bottomIcon" />
+		<div v-if="serchShow" @click="bing" class="serchBox">
+			<div class=" text-bold fs-b5 " @click.stop="serchShow = !serchShow">
+				<div class="flex_c cursor">{{ $t('public.hide') }} <img src="@/assets/topIcon.png" class="bottomIcon" />
 				</div>
 			</div>
 			<div>
@@ -303,8 +302,7 @@
 							<div class="flex flex-wrap operate">
 								<div class="text-primary" @click="setRows(3, scope.row, 6)">{{ $t('public.orderDetail')
 									}}</div>
-								<div class="text-danger" @click="setRows(3, scope.row, 1)"
-									v-if="(Ability['orderFinish'] || isSaas()) && scope.row.status == 'R'">{{
+								<div class="text-danger" @click="setRows(3, scope.row, 1)" v-if="(Ability['orderFinish'] || isSaas()) && scope.row.status == 'R'">{{
 			$t('public.closeOrder') }}
 								</div>
 								<div class="text-grey" @click="setRows(3, scope.row, 2)"
@@ -1279,8 +1277,15 @@ export default {
 		localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
 	},
 	methods: {
+		getSystemTimeInChina(dates) {
+			let day = dates.split(" ")[0];
+			const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			const date = new Date();
+			const options = { timeZone: timeZone, timeStyle: 'short' };
+			const formatted = new Intl.DateTimeFormat('zh-CN', options).format(date);
+			return `${day} ${formatted}`;
+		},
 		bing(event) {
-			console.log('zhixngl')
 			if (event.target === event.currentTarget) {
 				// 这里编写点击空白区域应该执行的操作
 				console.log('Clicked outside!');
@@ -1760,7 +1765,7 @@ export default {
 					}
 					this.$post('iot-saas-order/admin/order/complete', {
 						orderNo: this.curRow.orderNo,
-						chargeEndTime: params.chargeEndTime,
+						chargeEndTime: that.getSystemTimeInChina(params.chargeEndTime),
 						validateDeviceRefund: params.validateDeviceRefund || false
 					}).then(res => {
 						this.$message({
