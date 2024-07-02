@@ -714,13 +714,14 @@ export default {
           params.storePayConfig = []
           params.storeDivisionConfig = []
           let moneyKeyArr = ['startingAmount','maxBillingTimePrice','maxAmount','depositAmount']
-          for (var i in deviceDataArr) {
-            let item = deviceDataArr[i]
+          for (let i in deviceDataArr) {
+            let list =  deviceDataArr[i]
+            let item = list
             if (item.status == 1) {
               let payConfig = {
                 deviceTypeCode: item.deviceTypeCode
               }
-              for (var i in this.config.pay_way) {
+              for (let i in this.config.pay_way) {
                 if (item.storePayConfig.indexOf(i) > -1) {
                   payConfig[i] = 1
                 } else {

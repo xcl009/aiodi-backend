@@ -94,6 +94,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(data => {
         if (data.userType) {
+          localStorage.setItem('userType', data.userType)
           if (data.brandId) {
             setToken(data.brandId, 'brandId')
           }
