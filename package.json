@@ -27,6 +27,7 @@
     "file-saver": "^2.0.5",
     "html5-qrcode": "^2.3.8",
     "js-cookie": "2.2.0",
+    "json-bigint": "^1.0.0",
     "jszip": "^3.6.0",
     "mapv": "^2.0.59",
     "normalize.css": "7.0.0",

@@ -100,8 +100,8 @@
 						</el-table-column>
 						<el-table-column :label="item.name" width="90" v-else-if="item.val && item.key == 'userId'">
 							<template slot-scope="scope">
-								<el-tooltip :content="scope.row.userId || '...'">
-									<div>{{ scope.row.userId ? parseInt(scope.row.userId.substr(-8, 8)) : '' }}</div>
+								<el-tooltip :content="scope.row.userId.toString() || '...'">
+									<div>{{ scope.row.userId ? parseInt(scope.row.userId.toString().substr(-8, 8)) : '' }}</div>
 								</el-tooltip>
 							</template>
 						</el-table-column>

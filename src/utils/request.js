@@ -11,7 +11,6 @@ import {
   getToken
 } from '@/utils/auth'
 import i18n from '../lang'
-
 const windowScreen = `${window.screen.width} * ${window.screen.height}`
 
 let pending = []; //声明一个数组用于存储每个ajax请求的取消函数和ajax标识
