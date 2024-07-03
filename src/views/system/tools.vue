@@ -458,14 +458,15 @@
             <el-switch v-model="dform.AUTO_REFUND_DEPOSIT" active-value="1" inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText1') }}</div>
           </el-form-item>
-          <el-form-item :label="$t('public.refundOfDepositText5')">
-            <el-switch v-model="dform.TIME_LIMITED_RELIEF" active-value="1" inactive-value="0" />
-            <div class="line-default fs-s3">{{ $t('public.refundOfDepositText6') }}</div>
-          </el-form-item>
           <el-form-item :label="$t('public.refundOfDepositText7')">
             <el-switch v-model="dform.TIME_LIMITED_RELIEF_SHOW" active-value="1" inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText8') }}</div>
           </el-form-item>
+          <el-form-item :label="$t('public.refundOfDepositText5')" v-if="dform.TIME_LIMITED_RELIEF_SHOW == 1">
+            <el-switch v-model="dform.TIME_LIMITED_RELIEF" active-value="1" inactive-value="0" />
+            <div class="line-default fs-s3">{{ $t('public.refundOfDepositText6') }}</div>
+          </el-form-item>
+          
 
           <el-tabs v-model="activeName" type="card" >
             <el-tab-pane :label="$t('public.refundOfDepositText2')" name="voluntarily">
@@ -685,6 +686,10 @@ export default {
           this.clickSubmit = false
           if (this.dialogType == 8) {
             params.type = this.activeName;
+            if(params.TIME_LIMITED_RELIEF_SHOW == 0){
+                params.TIME_LIMITED_RELIEF = 0;
+                this.dform.TIME_LIMITED_RELIEF = 0;
+            }
           }
           this.$post('iot-saas-basic/admin/settings/save', {
             code: curRow.code,
