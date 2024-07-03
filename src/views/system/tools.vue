@@ -361,7 +361,7 @@
       </el-row>
     </div>
 
-    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
+    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false" :size="dialogType == 8 ?'600':''">
       <template v-if="dialogType == 1">
         <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
           <el-form-item :label="$t('payType.wx')">
@@ -460,11 +460,12 @@
           </el-form-item>
           <el-form-item :label="$t('public.refundOfDepositText7')">
             <el-switch v-model="dform.TIME_LIMITED_RELIEF_SHOW" active-value="1" inactive-value="0" />
-            <div class="line-default fs-s3">{{ $t('public.refundOfDepositText8') }}</div>
+            <div class="line-default fs-s3 min-width">{{ $t('public.refundOfDepositText8') }}</div>
           </el-form-item>
           <el-form-item :label="$t('public.refundOfDepositText5')" v-if="dform.TIME_LIMITED_RELIEF_SHOW == 1">
             <el-switch v-model="dform.TIME_LIMITED_RELIEF" active-value="1" inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText6') }}</div>
+            <div class="line-default fs-s3">{{ $t('public.refundOfDepositText9') }}</div>
           </el-form-item>
           
 
@@ -750,5 +751,8 @@ export default {
 }
 .cash{
   min-width:450px;
+}
+.min-width{
+  width:450px;
 }
 </style>
