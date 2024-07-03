@@ -14,13 +14,14 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({path: `/device/orderOt`})">{{
-                $t('public.setUp') }}</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/device/orderOt` })">{{
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
 
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="myDeviceId['VM'] && vendorInfo.operationMode == 'SELF_RUN'">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+          v-if="myDeviceId['VM'] && vendorInfo.operationMode == 'SELF_RUN'">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box default flex align-center justify-center">
@@ -33,13 +34,13 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/goods/relatedTemplate` })">{{
-                $t('system.warehouseTemplate') }}</el-button>
+        $t('system.warehouseTemplate') }}</el-button>
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/goods/addGoods` })">{{
-                $t('system.addGoods') }}</el-button>
+        $t('system.addGoods') }}</el-button>
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/goods` })">{{
-                $t('system.productList') }}</el-button>
+        $t('system.productList') }}</el-button>
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/goods/goodsOrder` })">{{
-                $t('userManage.viewOrder') }}</el-button>
+        $t('userManage.viewOrder') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -56,7 +57,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/goods/goodsOrder` })">{{
-                $t('userManage.viewOrder') }}</el-button>
+        $t('userManage.viewOrder') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -75,7 +76,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/device/bedSetting` })">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -94,9 +95,9 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/steal/depositCash` })">{{
-                $t('system.setProbability') }}</el-button>
+        $t('system.setProbability') }}</el-button>
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/steal/depositCashUser` })">{{
-                $t('system.probabilityDepositList') }}</el-button>
+        $t('system.probabilityDepositList') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -114,7 +115,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/device/depositRefund` })">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -130,8 +131,9 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/device/freeQuotaConfig` })">{{
-                $t('public.setUp') }}</el-button>
+              <el-button plain class="bg-body text-primary"
+                @click="$router.push({ path: `/device/freeQuotaConfig` })">{{
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -148,7 +150,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/device/billing` })">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -166,11 +168,12 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/store/steal` })">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+          v-if="isBrand() && checkAbility(['_DD_RATIO', '_DD_TIME', '_DD_FAIL'])">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
@@ -183,7 +186,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'ORDER_CLOSE_TIME' }, 5)">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -201,7 +204,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/system/cashSet` })">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -219,7 +222,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'MOBILE_POWER' }, 1)">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -237,7 +240,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'RENT_LIMIT' }, 2)">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -255,7 +258,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'NEAR_STORE' }, 3)">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -273,11 +276,12 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'STORE_MONEY_SET' }, 4)">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['TIKTOK_DRAINS'], 3)">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+          v-if="isBrand() && checkAbility(['TIKTOK_DRAINS'], 3)">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
@@ -290,11 +294,12 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'TIKTOK_DRAINS' }, 6)">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+          v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
@@ -306,12 +311,14 @@
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/store/openMemberRecord` })">{{
-                $t('userManage.viewOrder') }}</el-button>
+              <el-button plain class="bg-body text-primary"
+                @click="$router.push({ path: `/store/openMemberRecord` })">{{
+        $t('userManage.viewOrder') }}</el-button>
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+          v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
@@ -324,12 +331,13 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'IS_CHECK_TWOPASSWORD' }, 7)">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
 
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand()  && checkAbility(['AUTO_REFUND_DEPOSIT'],3)">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+          v-if="isBrand() && checkAbility(['AUTO_REFUND_DEPOSIT'], 3)">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
@@ -342,7 +350,7 @@
             </div>
             <div class="text-right">
               <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'AUTO_REFUND_DEPOSIT' }, 8)">{{
-                $t('public.setUp') }}</el-button>
+        $t('public.setUp') }}</el-button>
             </div>
           </div>
         </el-col>
@@ -444,17 +452,59 @@
           </el-form-item>
         </el-form>
       </template>
-      <template v-if="dialogType == 8">
+      <template v-if="dialogType == 8" >
         <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
           <el-form-item :label="$t('steal.isItEnabled')">
             <el-switch v-model="dform.AUTO_REFUND_DEPOSIT" active-value="1" inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText1') }}</div>
           </el-form-item>
+          <el-form-item :label="$t('public.refundOfDepositText5')">
+            <el-switch v-model="dform.TIME_LIMITED_RELIEF" active-value="1" inactive-value="0" />
+            <div class="line-default fs-s3">{{ $t('public.refundOfDepositText6') }}</div>
+          </el-form-item>
+          <el-form-item :label="$t('public.refundOfDepositText7')">
+            <el-switch v-model="dform.TIME_LIMITED_RELIEF_SHOW" active-value="1" inactive-value="0" />
+            <div class="line-default fs-s3">{{ $t('public.refundOfDepositText8') }}</div>
+          </el-form-item>
+
+          <el-tabs v-model="activeName" type="card" >
+            <el-tab-pane :label="$t('public.refundOfDepositText2')" name="voluntarily">
+             <div class="cash">
+              <el-form-item :label="$t('public.refundOfDepositText3')">
+                <el-switch v-model="dform.AUTO_REFUND_DEPOSIT_VOLUNTARILY" active-value="1" inactive-value="0" />
+
+              </el-form-item>
+              <img src="@/assets/img1.png" class="imgs"
+                v-if="dform.AUTO_REFUND_DEPOSIT_VOLUNTARILY == 0 || !dform.AUTO_REFUND_DEPOSIT_VOLUNTARILY" />
+              <img src="@/assets/img2.png" class="imgs" v-if="dform.AUTO_REFUND_DEPOSIT_VOLUNTARILY == 1 " />
+             </div>
+            </el-tab-pane>
+            <!-- <el-tab-pane :label="$t('public.refundOfDepositText4')" name="custom">
+              <div class="cash">
+                 <div v-for="(item,index) in payList" :key="index" class="mt-10 paybox">
+                     <div class="text-center">
+                      {{ item.name }}
+                     </div>
+                     <div class="flex_c mt-5 text-center">
+                       <div class="text-center">
+                        {{$t('system.taxPoints')}}:{{item.taxRate}}%
+                       </div>
+                       <div class="ml-10 text-center">
+                        {{$t('system.singleStroke')}}:{{item.handlingFee}}
+                       </div>
+                     </div>
+                 </div>
+              </div>
+
+            </el-tab-pane> -->
+          </el-tabs>
+
         </el-form>
       </template>
       <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
         <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
+          }}</el-button>
       </div>
     </el-drawer>
   </div>
@@ -477,6 +527,27 @@ export default {
       curRow: {},
       curIdx: 0,
       dform: {},
+      activeName: 'voluntarily',
+      payList: [
+        {
+          day: 0,
+          handlingFee: 0,
+          name:"hoàn phí nhanh chóng",
+          taxRate:0
+        },
+        {
+          day: 0,
+          handlingFee: 0,
+          name:"3-7 ngày làm việc",
+          taxRate:0
+        },
+        {
+          day: 0,
+          handlingFee: 0,
+          name:"5-7 ngày làm việc",
+          taxRate:0
+        }
+      ]
     }
   },
   computed: {
@@ -537,12 +608,16 @@ export default {
           this.dialogType = dialogType
           this.curRow = row
           this.curIdx = idx
-          if([1, 2, 3, 4, 5, 6, 7,8].indexOf(dialogType) > -1){
+          if ([1, 2, 3, 4, 5, 6, 7, 8].indexOf(dialogType) > -1) {
             this.$get('iot-saas-basic/admin/settings/find', {
               code: row.code
             }).then(res => {
-              if(res && res.code){
+              if (res && res.code) {
                 this.dform = JSON.parse(res.setting)
+                if(this.dialogType == 8){
+                  this.activeName = this.dform.type
+                 
+                }
               } else {
                 switch (dialogType) {
                   case 1:
@@ -550,40 +625,49 @@ export default {
                       wx_phone: 0,
                       //ali_phone: 0
                     }
-                  break
-                case 2:
-                  this.dform = {
-                    RENT_LIMIT: 3
-                  }
-                  break
-                case 3:
-                  this.dform = {
-                    nearStore: 1
-                  }
-                  break
-                case 4:
-                  this.dform = {
-                    checkIncome: 1,
-                    checkMouthStat: 1,
-                    checkMouthStatSp: 0,
-                    checkOrder: 0,
-                    checkMouthStatAgent: 1,
-                    checkMouthStatSpAgent: 0,
-                  }
-                  break
-                case 5:
-                  this.dform = {
-                    closeTimeComplete: 0
-                  }
-                  break
+                    break
+                  case 2:
+                    this.dform = {
+                      RENT_LIMIT: 3
+                    }
+                    break
+                  case 3:
+                    this.dform = {
+                      nearStore: 1
+                    }
+                    break
+                  case 4:
+                    this.dform = {
+                      checkIncome: 1,
+                      checkMouthStat: 1,
+                      checkMouthStatSp: 0,
+                      checkOrder: 0,
+                      checkMouthStatAgent: 1,
+                      checkMouthStatSpAgent: 0,
+                    }
+                    break
+                  case 5:
+                    this.dform = {
+                      closeTimeComplete: 0
+                    }
+                    break
+                    case 8:
+                    this.dform = {
+                      AUTO_REFUND_DEPOSIT: 0,
+                      TIME_LIMITED_RELIEF:0,
+                      AUTO_REFUND_DEPOSIT_VOLUNTARILY:0,
+                      TIME_LIMITED_RELIEF_SHOW:0,
+                    }
+                    console.log(this.dform,'this.dform')
+                    break
+                }
               }
-            }
-          })
-        } else {
-          this.dform = {}
-        }
-        this.drawerStatus = true
-        break
+            })
+          } else {
+            this.dform = {}
+          }
+          this.drawerStatus = true
+          break
       }
     },
 
@@ -594,11 +678,14 @@ export default {
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.dform))
-      if(this.clickSubmit) return
+      if (this.clickSubmit) return
       this.clickSubmit = true
       switch (this.dialogType) {
-        case 1: case 2: case 3: case 4: case 5: case 6: case 7:case 8:
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
           this.clickSubmit = false
+          if (this.dialogType == 8) {
+            params.type = this.activeName;
+          }
           this.$post('iot-saas-basic/admin/settings/save', {
             code: curRow.code,
             setting: JSON.stringify(params)
@@ -612,7 +699,7 @@ export default {
           }).catch(err => {
             this.clickSubmit = false
           })
-        break
+          break
       }
     },
 
@@ -649,5 +736,14 @@ export default {
   .bg-body {
     padding: 10px 15px;
   }
+
+}
+.paybox{
+ border:1px solid #ccc;
+ padding:10px;
+ border-radius: 6px;
+}
+.cash{
+  min-width:450px;
 }
 </style>

@@ -403,9 +403,16 @@ export default {
         freeOfCharge: 'Miễn phí',
         month: 'Tháng',
         billingRules: 'Quy tắc tính phí',
-        halfHour:'0.5 h',
-        oneHour:'1 h',
-        dailyCapping:"Ngày đóng cửa",
+        halfHour: '0.5 h',
+        oneHour: '1 h',
+        dailyCapping: "Ngày đóng cửa",
+        refundOfDepositText2: "Tự động hoàn tiền đặt cọc",
+        refundOfDepositText3: "Công tắc mặc định",
+        refundOfDepositText4: "Tự động hoàn lại tiền đặt cọc tùy chỉnh",
+        refundOfDepositText5: "Giảm thời gian giới hạn",
+        refundOfDepositText6: "Mở ra nghĩa là không cần phí thủ tục, đóng cửa nghĩa là cần phí thủ tục, khi phí thủ tục hoàn lại tức thời lớn hơn 0, sau khi mở chức năng miễn giảm thời hạn có thể khấu trừ phí thủ tục",
+        refundOfDepositText7: "Giảm thời gian có hiển thị không?",
+        refundOfDepositText8: "Mở có nghĩa là hiển thị, đóng có nghĩa là không hiển thị",
     },
     // 分账关系
     reType: {
@@ -1961,12 +1968,12 @@ export default {
         addTemp: 'Thêm mẫu'
     },
     payMode: {
-      weixin: 'WECHAT',
-      alipay: 'ALIPAY',
-      three: 'APP',
-      four: 'OTHER',
+        weixin: 'WECHAT',
+        alipay: 'ALIPAY',
+        three: 'APP',
+        four: 'OTHER',
     },
-    activity:{
+    activity: {
         typeName: 'Loại hoạt động',
         activityName: 'Tên hoạt động',
         countCost: 'Số lượng hoàn vốn',

@@ -409,7 +409,14 @@ export default {
     refundOfDeposit:'押金自动退',
     refundOfDepositText:'是否开启押金自动退',
     refundOfDepositText1:'开启表示商户可开启押金自动退功能',
-    hide:"隐藏"
+    hide:"隐藏",
+    refundOfDepositText2:"押金自动退",
+    refundOfDepositText3:"默认开关",
+    refundOfDepositText4:"自定义押金自动退",
+    refundOfDepositText5:"限时减免",
+    refundOfDepositText6:"开启表示不用手续费，关闭表示需要手续费,当即时退款手续费大于0时，开启限时减免功能后即可抵扣手续费",
+    refundOfDepositText7:"限时减免是否显示",
+    refundOfDepositText8:"开启表示显示，关闭表示不显示",
   },
   // 分账关系
   reType: {
