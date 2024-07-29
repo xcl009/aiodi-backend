@@ -95,7 +95,10 @@
       },
       Ability() {
         return this.$store.getters.Ability
-      }
+      },
+      siteInfo() {
+      	return this.$store.getters.siteInfo
+      },
     },
     mounted() {
       this.deviceTypeCode = Object.keys(this.myDeviceId)[0]
