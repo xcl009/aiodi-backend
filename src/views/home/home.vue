@@ -402,12 +402,12 @@
                 {{ Constant.PayType ? Constant.PayType[scope.row.payType] : '' }}
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.statrtTime')}`" width="160">
+            <el-table-column :label="`${$t('public.statrtTime')}`" width="180">
               <template slot-scope="scope">
                 {{ scope.row.chargeStartTime || "--" }}
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.endTime')}`" width="160">
+            <el-table-column :label="`${$t('public.endTime')}`" width="180">
               <template slot-scope="scope">
                 {{ scope.row.chargeEndTime || "--" }}
               </template>

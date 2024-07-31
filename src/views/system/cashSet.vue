@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="pl-20 pr-20 pb-20 custom-form bg-white">
-      <el-col :xs="24" :sm="22" :md="16" :lg="14">
+      <el-col :xs="24" :sm="22" :md="20" :lg="18">
         <el-tabs class="mb-10" v-model="userType" @tab-click="getInfo">
           <el-tab-pane :label="$t('system.agentRule')" name="agent" v-if="!userKey || userKey != 'storeId'"/>
           <el-tab-pane :label="$t('system.storeRule')" name="store" />

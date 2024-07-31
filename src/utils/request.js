@@ -11,7 +11,6 @@ import {
   getToken
 } from '@/utils/auth'
 import i18n from '../lang'
-
 const windowScreen = `${window.screen.width} * ${window.screen.height}`
 
 let pending = []; //声明一个数组用于存储每个ajax请求的取消函数和ajax标识
@@ -54,6 +53,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
 
       // config.headers['user_id'] = getToken('user_id')
+      config.headers['timeZone'] = Intl.DateTimeFormat().resolvedOptions().timeZone;
       config.headers['Authorization'] = store.getters.token
       config.headers['apiVersion'] = ''
       config.headers['appVersion'] = '0.0.1'

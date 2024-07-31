@@ -5,7 +5,7 @@
         <h4>{{ $t('miniProgram.bindApplet') }}</h4>
         <div class="pt-20 mb-20 flex fs-c1">
           <span>{{ $t('miniProgram.text') }}</span>
-          <el-link class="fs-c1" :href="config.wx_auth_url" target="_blank" type="primary">{{ $t('miniProgram.authorize')
+          <el-link class="fs-c1" href="http://authorize.api.iotgx.cn/open/wechat/authorizeaccount" target="_blank" type="primary">{{ $t('miniProgram.authorize')
           }}</el-link>
           <span>{{ $t('miniProgram.text1') }}</span>
         </div>
