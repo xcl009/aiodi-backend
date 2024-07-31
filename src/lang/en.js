@@ -454,7 +454,7 @@ export default {
   home: {
     transactionAmount: 'Total GMV',
     allOrderNum: 'Total orders',
-    allDevicesNum: 'Total orders',
+    allDevicesNum: 'Total devices',
     allAgentNum: 'Total agencies',
     allStoreNum: 'Total merchants',
     createOrder: 'Click on the room number to create an order',
