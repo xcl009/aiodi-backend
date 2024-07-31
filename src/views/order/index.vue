@@ -2043,4 +2043,7 @@ export default {
   width: 30px;
   height: 30px;
 }
+::v-deep .el-select{
+	width:100% !important;
+}
 </style>

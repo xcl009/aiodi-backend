@@ -28,7 +28,11 @@
           <el-form-item :label="$t('public.companyPhone')">
             <el-input v-model="form.companyPhoneNum" :placeholder="$t('public.companyPhoneText')" />
           </el-form-item>
-
+          <el-form-item :label="$t('public.currency')" prop="currency">
+            <el-select v-model="form.currency" style="width: 100%;">
+              <el-option :label="item.code" :value="item.code" v-for="(item, index) in currencySymbolList" />
+            </el-select>
+          </el-form-item>
           <h4 class="pt-20">{{ $t('public.operationalProducts') }}</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">
             <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
@@ -47,7 +51,7 @@
 
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submit')
-            }}</el-button>
+              }}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -57,6 +61,7 @@
 
 <script>
 import upload from '@/components/upload'
+import { queryCurrencySymbol } from '@/api/user'
 export default {
   components: {
     upload
@@ -74,7 +79,8 @@ export default {
       role: [],
 
       selDevice: [],
-      brandId: this.$route.query.brandId || ''
+      brandId: this.$route.query.brandId || '',
+      currencySymbolList: []
     }
   },
   computed: {
@@ -109,11 +115,15 @@ export default {
         ],
         companyName: [
           { required: true, message: this.$t('brand.message4'), trigger: 'blur' }
-        ]
+        ],
+        currency:[
+          { required: true, message: this.$t('public.currencyText'), trigger: 'blur' }
+        ],
       }
     },
   },
   mounted() {
+    this.getqueryCurrencySymbolChange()
     if (this.brandId) {
       this.getInfo()
     } else {
@@ -122,6 +132,12 @@ export default {
     }
   },
   methods: {
+    getqueryCurrencySymbolChange() {
+      queryCurrencySymbol().then(ares => {
+        this.currencySymbolList = ares;
+        console.log(ares, 'ares')
+      })
+    },
     /**
      * 获取信息
      */
@@ -175,7 +191,7 @@ export default {
         })
       }
       params.deviceTypeProfitRatios = profitRatios
-      if(params.mobile) params.mobile = this.trim(params.mobile)
+      if (params.mobile) params.mobile = this.trim(params.mobile)
       this.clickSubmit = true
       this.$refs['form'].validate((valid) => {
         if (valid) {

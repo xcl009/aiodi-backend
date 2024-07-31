@@ -418,6 +418,9 @@ export default {
     refundOfDepositText7:"限时减免是否显示",
     refundOfDepositText8:"开启表示显示，关闭表示不显示",
     refundOfDepositText9:"当即时退款手续费大于0时，开启限时减免功能后即可抵扣手续费",
+    currency:"币种",
+    currencyText:'请选择币种',
+    generate:"没有APPID请点击生成",
   },
   // 分账关系
   reType: {

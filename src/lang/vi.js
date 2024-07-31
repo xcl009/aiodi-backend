@@ -414,6 +414,9 @@ export default {
         refundOfDepositText7: "Giảm thời gian có hiển thị không?",
         refundOfDepositText8: "Mở có nghĩa là hiển thị, đóng có nghĩa là không hiển thị",
         refundOfDepositText9: "khi phí thủ tục hoàn lại tức thời lớn hơn 0, sau khi mở chức năng miễn giảm thời hạn có thể khấu trừ phí thủ tục",
+        currency:"Tiền tệ",
+        currencyText:'Vui lòng chọn đồng tiền',
+        generate:"Không có APPID, vui lòng tạo",
     },
     // 分账关系
     reType: {
