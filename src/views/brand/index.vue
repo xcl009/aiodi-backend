@@ -274,10 +274,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="APPID">
-            <div class="flex_j">
-              <el-input v-model="dform.appId"></el-input>
-              <div class="generatebox generate" @click="generateChange()">没有APPID请点击生成</div>
-            </div>
+            <el-input v-model="dform.appId"></el-input>
+            <div class="generatebox generate" @click="generateChange()">没有APPID请点击生成</div>
+            <!-- <div class="flex_j"> -->
+             
+              <!-- <div class="generatebox generate" @click="generateChange()">没有APPID请点击生成</div> -->
+            <!-- </div> -->
           </el-form-item>
           <el-form-item label="code">
             <el-input v-model="dform.channelCode" disabled></el-input>
@@ -1045,13 +1047,6 @@ export default {
           break
         case 13:
           this.clickSubmit = false
-          console.log(params, 'params')
-          console.log(this.twoDform,'this.twoDform')
-          if(!params.brandId){
-            params.brandId = this.twoDform.brandId;
-            params.bindId = this.twoDform.bindId;
-          }
-          console.log(params,'params123')
           // params.content.appId = JSON.parse(params.content).appId
           // params.content = JSON.parse(params.content)
           this.$post('iot-saas-pay/admin/pay/channel/saveAppConfig', params).then(res => {
