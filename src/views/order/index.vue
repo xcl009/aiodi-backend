@@ -1275,11 +1275,11 @@ export default {
       const now = moment();
 
       // 转换到上海时区
-      const shanghaiTime = now.tz('Asia/Shanghai').format();
-
-      // 打印出上海时区的时间
-      let time = this.format(shanghaiTime)
-      console.log(this.format(shanghaiTime), '2222');
+      let time = now.tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
+      // console.log(shanghaiTime,'shanghaiTime')
+      // // 打印出上海时区的时间
+      // let time = this.format(shanghaiTime)
+      // console.log(this.format(shanghaiTime), '2222');
       return time;
     },
     bing(event) {
