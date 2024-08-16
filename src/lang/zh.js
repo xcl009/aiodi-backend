@@ -719,6 +719,10 @@ export default {
     appType: '应用类型',
     loginChannel: '登录通道',
     loginConfig: '登录配置',
+    country: '运营国家',
+    countryText: '请选择运营国家',
+    linkBrand: '关联品牌',
+    switchCountry: '切换国家'
   },
   userManage: {
     userSource: '用户来源',

@@ -7,8 +7,9 @@
             <el-tab-pane :label="item" :name="key" v-for="(item, key) in myDeviceId"></el-tab-pane>
           </el-tabs>
           <template v-if="billing.deviceTypeCode == deviceTypeCode && checkAbility([`${deviceTypeCode}_BILLING`], 3)">
-            <template v-for="(name, xcx) in config.xcx_pay.default">
-              <h4>{{ name }}{{ $t('device.defaultBilling') }}</h4>
+            <template v-for="(name, xcx) in config.xcx_pay.default" v-if="billing[`${xcx}PayMode`]">
+              <h4>{{ name }}{{ $t('device.defaultBilling') }}<span class="ml-10 text-primary cursor" v-if="xcx != 'weixin'" @click="setAlipayMode(xcx)">{{
+        $t('store.synchronous') }}</span></h4>
               <el-form-item :label="`${$t('store.paymentMode')}`">
                 <el-radio-group v-model="billing[`${xcx}PayMode`].modeType" size="medium">
                   <el-radio-button :label="item"
@@ -165,18 +166,20 @@ export default {
         deviceTypeCode: this.deviceTypeCode,
         agentId: this.agentId
       }).then((res = {}) => {
-        if (res.deviceTypeCode) {
-          res.weixinPayMode = JSON.parse(res.wechatJson)
-          res.alipayPayMode = JSON.parse(res.alipayJson)
-          this.billing = res
-        } else {
-          this.billing = {
-            deviceTypeCode: this.deviceTypeCode,
-            weixinPayMode: defaultDevice.weixinPayMode,
-            alipayPayMode: defaultDevice.alipayPayMode
-          }
-        }
+        res.weixinPayMode = res.wechatJson ? JSON.parse(res.wechatJson) : JSON.parse(JSON.stringify(defaultDevice.weixinPayMode))
+        res.alipayPayMode = res.alipayJson ? JSON.parse(res.alipayJson) : JSON.parse(JSON.stringify(defaultDevice.alipayPayMode))
+        res.threePayMode = res.threeJson ? JSON.parse(res.threeJson) : JSON.parse(JSON.stringify(defaultDevice.weixinPayMode))
+        res.fourPayMode = res.fourJson ? JSON.parse(res.fourJson) : JSON.parse(JSON.stringify(defaultDevice.weixinPayMode))
+        res.deviceTypeCode = this.deviceTypeCode
+        this.billing = res
       })
+    },
+
+    /**
+     * 一键同步微信计费
+     */
+    setAlipayMode(key) {
+      this.billing[`${key}PayMode`] = JSON.parse(JSON.stringify(this.billing.weixinPayMode))
     },
 
     /**
@@ -189,7 +192,9 @@ export default {
         deviceTypeCode: billing.deviceTypeCode,
         agentId: this.agentId,
         wechatJson: JSON.stringify(billing.weixinPayMode),
-        alipayJson: JSON.stringify(billing.alipayPayMode)
+        alipayJson: JSON.stringify(billing.alipayPayMode),
+        threeJson: JSON.stringify(billing.threePayMode),
+        fourJson: JSON.stringify(billing.fourPayMode)
       }
 
       this.clickSubmit = true
@@ -203,6 +208,12 @@ export default {
             },
             alipayPayMode: {
               modeType: billing.alipayPayMode.modeType
+            },
+            threePayMode: {
+              modeType: billing.threePayMode.modeType
+            },
+            fourPayMode: {
+              modeType: billing.fourPayMode.modeType
             }
           }
           if (params1.agentId == 0) delete params1.agentId
@@ -221,6 +232,22 @@ export default {
             params1.alipayPayMode.payModeDetail = JSON.stringify(billing.alipayPayMode.payModeDetail)
           } else {
             params1.alipayPayMode.payModeDetail = JSON.stringify(billing.alipayPayMode.payModeDetails)
+          }
+          if (billing.threePayMode.modeType == 'PACKAGE') {
+            billing.threePayMode.payModeDetail.map((packItem, packI) => {
+              return packItem.tag = packI + 1
+            })
+            params1.threePayMode.payModeDetail = JSON.stringify(billing.threePayMode.payModeDetail)
+          } else {
+            params1.threePayMode.payModeDetail = JSON.stringify(billing.threePayMode.payModeDetails)
+          }
+          if (billing.fourPayMode.modeType == 'PACKAGE') {
+            billing.fourPayMode.payModeDetail.map((packItem, packI) => {
+              return packItem.tag = packI + 1
+            })
+            params1.fourPayMode.payModeDetail = JSON.stringify(billing.fourPayMode.payModeDetail)
+          } else {
+            params1.fourPayMode.payModeDetail = JSON.stringify(billing.fourPayMode.payModeDetails)
           }
           this.$post(`iot-saas-basic/admin/billing/configs/refreshStore`, params1).then(res => {
             this.clickSubmit = false

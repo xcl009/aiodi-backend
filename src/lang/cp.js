@@ -692,6 +692,15 @@ export default {
     message3: '請填寫手機號碼作爲登錄賬戶',
     message4: '請填寫公司名稱',
     message5: '最少選擇一個運營產品',
+    payChannel: '支付通道',
+    payConfig: '支付配寘',
+    appType: '應用類型',
+    loginChannel: '登入通道',
+    loginConfig: '登入配寘',
+    country: '運營國家',
+    countryText: '請選擇運營國家',
+    linkBrand: '關聯品牌',
+    switchCountry: '切換國家'
   },
   userManage: {
     userSource: '用户来源',

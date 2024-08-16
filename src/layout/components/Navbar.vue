@@ -14,6 +14,17 @@
         <svg-icon icon-class="head_link" class="mr-10 head_new"></svg-icon>
         邀请链接获取
       </div> -->
+        <el-dropdown class="mr-10 hover-effect" trigger="click"  v-if="brandList.length > 0 && isBrand()">
+          <div class="pl-15 pr-15 menu-item flex align-center">
+            <svg-icon icon-class="switch_country" class="head_user text-white"></svg-icon>
+            <span class="ml-10 text-white">{{ $t('brand.switchCountry') }}</span>
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="setRows(4, 1, item)" v-for="item in brandList">
+              <span :class="{'text-primary': agentInfo.brandId == item.id}">{{ item.country }}</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <div class="pl-15 pr-15 menu-item flex align-center" @click="setRows(3, 2)" v-if="isBrand()">
           <el-badge is-dot :hidden="!updateDetails.isNews" class="news-dot">
             <i class="el-icon-bell fs-b2 text-white"></i>
@@ -184,8 +195,9 @@ export default {
         3: this.$t('layout.defaultStore')
       },
       dform: {},
-      
-      range: []
+
+      range: [],
+      brandList: []
     }
   },
   mounted() {
@@ -203,7 +215,7 @@ export default {
     		this.range = res
     	})
     },
-    
+
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
@@ -223,6 +235,9 @@ export default {
           this.updateDetails = valueJson
         }
       })
+      this.$get('iot-saas-basic/admin/brand/link/list').then(res => {
+        this.brandList = res
+      })
     },
 
     /**
@@ -230,7 +245,7 @@ export default {
      * @param {Object} type 1 dialog类型 3 drawer类型
      * @param {Object} dialogType dialog内容显示类型 1: '结束订单' 2: '更新明细'
      */
-    setRows(type, dialogType) {
+    setRows(type, dialogType, row = {}) {
       switch (type) {
         case 1:
           this.dialogType = dialogType
@@ -262,6 +277,26 @@ export default {
             })
           }
           break
+        case 4:
+          if(this.agentInfo.brandId == row.id) return
+          this.loadObj = this.$loading({
+            lock: true,
+            text: this.$t('public.loggingIn'),
+            spinner: 'el-icon-loading'
+          })
+          this.$post('iot-saas-user/admin/login', {
+            userType: 'brand',
+            id: row.id
+          }).then(res => {
+            setToken(res.loginToken.accessToken)
+            setTimeout(() => {
+              location.href = '/home'
+              this.loadObj.close()
+            }, 500)
+          }).catch(err => {
+            this.loadObj.close()
+          })
+        break
       }
     },
 

@@ -149,14 +149,15 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="item.name" width="240" v-else-if="item.val && item.key == 'order'">
+          <el-table-column :label="item.name" width="100" v-else-if="item.val && item.key == 'order'">
             <template slot-scope="scope">
-              <div class="flex">
+              {{ orderCount[scope.row.deviceSn] ? parseInt(orderCount[scope.row.deviceSn].wx) + parseInt(orderCount[scope.row.deviceSn].ali) : 0 }}
+              <!-- <div class="flex">
                 <div class="flex1">{{ $t('payType.wx') }}：{{ orderCount[scope.row.deviceSn] ?
                   orderCount[scope.row.deviceSn].wx : 0 }}</div>
                 <div class="pr-5 flex1">{{ $t('payType.zfb') }}：{{ orderCount[scope.row.deviceSn] ?
                   orderCount[scope.row.deviceSn].ali : 0 }}</div>
-              </div>
+              </div> -->
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.val && item.key == 'amount'">
@@ -806,7 +807,7 @@ export default {
           key: 'order',
           val: this.isBrand() || this.isSaas(),
           hidden: !this.isBrand() && !this.isSaas(),
-          name: this.$t('public.orderNum')
+          name: this.$t('home.allOrderNum')
         },
         {
           key: 'amount',

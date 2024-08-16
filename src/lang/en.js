@@ -693,6 +693,15 @@ export default {
     message3: 'Please fill in your phone number as your login account',
     message4: 'Please fill in the company name',
     message5: 'Select at least one operational product',
+    payChannel: 'Payment channel',
+    payConfig: 'Payment configuration',
+    appType: 'Application type',
+    loginChannel: 'Login channel',
+    loginConfig: 'Login configuration',
+    country: 'Operating country',
+    countryText: 'Please select the operating country',
+    linkBrand: 'Related brands',
+    switchCountry: 'Switching countries'
   },
   userManage: {
     userSource: 'User Source',
