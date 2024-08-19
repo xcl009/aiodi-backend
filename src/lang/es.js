@@ -1020,8 +1020,8 @@ export default {
         operationIp: 'IP de operación',
         operateDevice: 'Dispositivo de operación',
         operateTime: 'Hora de operación',
-        message: '¿Está seguro de que desea exportar los registros de operaciones?',
-        message1: 'Exportación de registros de operaciones'
+        opMessage: '¿Está seguro de que desea exportar los registros de operaciones?',
+        opMessage1: 'Exportación de registros de operaciones'
     },
     store: {
         pleaseBrandName: 'Ingrese el nombre de la marca',

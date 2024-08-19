@@ -1036,8 +1036,8 @@ export default {
         operationIp: 'IP thao tác',
         operateDevice: 'Thiết bị thao tác',
         operateTime: 'Thời gian thao tác',
-        messageExport: 'Bạn có chắc chắn muốn xuất lịch sử thao tác không?',
-        message1Export: 'Xuất lịch sử thao tác'
+        opMessage: 'Bạn có chắc chắn muốn xuất lịch sử thao tác không?',
+        opMessage1: 'Xuất lịch sử thao tác'
     },
     store: {
         pleaseBrandName: 'Vui lòng nhập tên thương hiệu',

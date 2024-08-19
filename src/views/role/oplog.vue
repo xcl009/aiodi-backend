@@ -145,7 +145,7 @@ export default {
      */
     saveXlsx(row) {
       let that = this;
-      this.$alert(that.$t('role.message'), that.$t('role.message1'), {
+      this.$alert(that.$t('role.opMessage'), that.$t('role.opMessage1'), {
         confirmButtonText: that.$t('public.confirm'),
         callback: action => {
           if (action == 'confirm') {

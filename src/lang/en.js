@@ -1015,8 +1015,8 @@ export default {
     operationIp: 'Operation IP',
     operateDevice: 'operate device',
     operateTime: 'TIME',
-    message: 'Are you sure to export the operation record?',
-    message1: 'Export operation records',
+    opMessage: 'Are you sure to export the operation record?',
+    opMessage1: 'Export operation records',
   },
   store: {
     pleaseBrandName: 'Please enter the brand name',

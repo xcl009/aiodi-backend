@@ -1014,8 +1014,8 @@ export default {
     operationIp: '操作IP',
     operateDevice: '操作設備',
     operateTime: '操作時間',
-    message: '確定導出操作記錄嗎？',
-    message1: '操作記錄導出',
+    opMessage: '確定導出操作記錄嗎？',
+    opMessage1: '操作記錄導出',
   },
   store: {
     pleaseBrandName: '請輸入品牌名稱',

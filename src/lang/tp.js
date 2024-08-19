@@ -1013,8 +1013,8 @@ export default {
     operationIp: 'Operasyon IP',
     operateDevice: 'Operating kagamitan',
     operateTime: 'Oras ng operasyon',
-    message: 'Sigurado ka bang i-export ang operation record?',
-    message1: 'Export operation records',
+    opMessage: 'Sigurado ka bang i-export ang operation record?',
+    opMessage1: 'Export operation records',
   },
   store: {
     pleaseBrandName: 'Pakiusap ipasok ang pangalan ng marka',

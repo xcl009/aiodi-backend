@@ -163,13 +163,17 @@ export default {
       this.clickSubmit = true
       switch (this.dialogType) {
         case 1:
-          this.$message({
-            message: that.$t('public.deleteSuccess'),
-            type: 'success'
+          this.$delete(`iot-saas-user/auth/role/${curRow.roleId}`).then(res => {
+           this.$message({
+             message: that.$t('public.deleteSuccess'),
+             type: 'success'
+           })
+           this.list.splice(curIdx, 1)
+           this.dialogStatus = false
+           this.clickSubmit = false
+          }).catch(() => {
+            this.clickSubmit = false
           })
-          this.list.splice(curIdx, 1)
-          this.dialogStatus = false
-          this.clickSubmit = false
           break
       }
     },

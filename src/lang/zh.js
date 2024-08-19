@@ -421,6 +421,8 @@ export default {
     currency:"币种",
     currencyText:'请选择币种',
     generate:"没有APPID请点击生成",
+    reserve: '保留',
+    reserveEmpty: '清空'
   },
   // 分账关系
   reType: {
@@ -1040,8 +1042,8 @@ export default {
     operationIp: '操作IP',
     operateDevice: '操作设备',
     operateTime: '操作时间',
-    message: '确定导出操作记录吗？',
-    message1: '操作记录导出',
+    opMessage: '确定导出操作记录吗？',
+    opMessage1: '操作记录导出',
   },
   store: {
     pleaseBrandName: '请输入品牌名称',
@@ -1068,11 +1070,11 @@ export default {
     WIFIAccount: 'WIFI账号',
     WIFIPassword: 'WIFI密码',
     WIFItext: '温馨提示：用户进入房间扫描设备，优先查询该房间号绑定的WIFI，未查询到时则会展示房间号为空的WIFI',
-    merchantRecipient: '商户接收方',
+    merchantRecipient: '接收方',
     merchantDataChange: '商户数据变更',
-    empty: '可提现金额清空',
+    empty: '可提现金额',
     message: '开启表示保留商户可提现金额。关闭表示清空当前商户的可提现金额',
-    message1: '是否设备直接解绑',
+    message1: '设备归属',
     message2: '开启表示只解绑商户，归属在原代理名下。关闭表示绑定到新代理名下',
     message3: '分成比例说明',
     message4Title: '1.1 真实分成情况：',

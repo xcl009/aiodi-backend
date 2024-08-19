@@ -1013,8 +1013,8 @@ export default {
     operationIp: 'オペレーションIP',
     operateDevice: 'オペレーティングデバイス',
     operateTime: 'そうさじかん',
-    message: 'オペレーションレコードをエクスポートしてもよろしいですか。',
-    message1: 'オペレーションレコードのエクスポート',
+    opMessage: 'オペレーションレコードをエクスポートしてもよろしいですか。',
+    opMessage1: 'オペレーションレコードのエクスポート',
   },
   store: {
     pleaseBrandName: 'オペレーションレコードのエクスポート',

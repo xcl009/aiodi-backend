@@ -327,9 +327,13 @@ $light_gray: #eee;
     .hello {
       font-size: 36px;
     }
-
+    
+    .desc{
+      width: 360px;
+    }
+    
     .el-input__inner {
-      width: 320px;
+      width: 360px;
       background: var(--bodyBg);
       border: none;
     }

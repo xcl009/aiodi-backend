@@ -234,9 +234,9 @@
                       @click.native="$router.push({ path: `/device/freeQuota?id=${scope.row.id}&userKey=storeId` })"
                       v-if="checkAbility(['_FREEQUOTA'], 1, scope.row.storeDivisionConfig)">{{ $t('public.freeQuota')
                       }}</el-dropdown-item>
-                    <el-dropdown-item @click.native="setRows(3, scope.row, 4, scope.$index)"
+                    <!-- <el-dropdown-item @click.native="setRows(3, scope.row, 4, scope.$index)"
                       v-if="!deviceCount[scope.row.id] && !orderCount[scope.row.id]">{{ $t('public.assignToAgent')
-                      }}</el-dropdown-item>
+                      }}</el-dropdown-item> -->
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/system/toolsConfig?id=${scope.row.id}&userKey=storeId&code=DEPOSIT_PRPR` })"
                       v-if="isBrand() && checkAbility(['_DEPOSIT_PRPR'], 1, scope.row.storeDivisionConfig)">{{
@@ -473,8 +473,10 @@
                 {{ $t('store.empty') }}
               </div>
               <div class="ml-30">
-                <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="0" />
-                <div class=" fs-s3 color mt-5">{{ $t('store.message') }}</div>
+                <el-radio-group v-model="checkList.enable">
+                  <el-radio-button :label="0">{{ $t('public.reserve') }}</el-radio-button>
+                  <el-radio-button :label="1">{{ $t('public.reserveEmpty') }}</el-radio-button>
+                </el-radio-group>
               </div>
             </div>
             <div class="flex mt-20">
@@ -672,7 +674,8 @@ export default {
         5: this.$t('public.resetPassword'),
         6: this.$t('public.freezeAmount'),
         7: this.$t('store.sharedWIFI'),
-        8: this.$t('store.assignAgents'),
+        8: this.$t('store.assignMerchants'),
+        9: this.$t('store.assignMerchants'),
         10: this.$t('store.loginRecord'),
         11: this.$t('public.setLoginPassword'),
         12: this.$t('public.remark'),
@@ -791,13 +794,17 @@ export default {
   methods: {
     // 分配事件
     allocation(type, item, dialogType) {
-      this.checkList = item;
+      let jitem = JSON.parse(JSON.stringify(item))
       if (type == 2) {
-        this.checkList['name'] = this.agentInfo.nickname;
-        this.checkList.mobile = this.agentInfo.mobile;
-        this.checkList['id'] = 0;
+        jitem = {
+          name: this.agentInfo.nickname,
+          mobile: this.agentInfo.mobile,
+          id: 0
+        }
       }
-      this.dialogType = dialogType;
+      jitem.enable = 0
+      this.checkList = jitem
+      this.dialogType = dialogType
     },
     /**
        * 获取代理

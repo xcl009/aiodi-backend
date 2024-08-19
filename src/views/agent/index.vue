@@ -332,11 +332,13 @@
           <div class="mt-30">
             <div class="flex">
               <div class="title color2">
-                {{ $t('agent.amountReserved') }}
+                {{ $t('store.empty') }}
               </div>
               <div class="ml-30">
-                <el-switch v-model="checkList.enable" :active-value="1" :inactive-value="0" />
-                <div class=" fs-s3 color mt-5">{{ $t('agent.text') }}</div>
+                <el-radio-group v-model="checkList.enable">
+                  <el-radio-button :label="0">{{ $t('public.reserve') }}</el-radio-button>
+                  <el-radio-button :label="1">{{ $t('public.reserveEmpty') }}</el-radio-button>
+                </el-radio-group>
               </div>
             </div>
             <div class="flex mt-20">
@@ -514,13 +516,17 @@ export default {
   methods: {
     // 分配事件
     allocation(type, item, dialogType) {
-      this.checkList = item;
+      let jitem = JSON.parse(JSON.stringify(item))
       if (type == 2) {
-        this.checkList['name'] = this.agentInfo.nickname;
-        this.checkList['mobile'] = this.agentInfo.mobile;
-        this.checkList['id'] = 0;
+        jitem = {
+          name: this.agentInfo.nickname,
+          mobile: this.agentInfo.mobile,
+          id: 0
+        }
       }
-      this.dialogType = dialogType;
+      jitem.enable = 0
+      this.checkList = jitem
+      this.dialogType = dialogType
     },
     /**
     * 获取代理

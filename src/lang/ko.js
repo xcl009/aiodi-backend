@@ -1013,8 +1013,8 @@ export default {
     operationIp: '운영 IP',
     operateDevice: '운영 장치',
     operateTime: '작업 시간',
-    message: '작업 레코드를 내보내시겠습니까?',
-    message1: '작업 레코드 내보내기',
+    opMessages: '작업 레코드를 내보내시겠습니까?',
+    opMessage1s: '작업 레코드 내보내기',
   },
   store: {
     pleaseBrandName: '브랜드 이름을 입력하십시오.',

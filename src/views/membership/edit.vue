@@ -202,6 +202,9 @@ export default {
         1: this.$t('membership.addMembershipCard')
       }
     },
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
     cardRules() {
       return {
         serviceName: [{
