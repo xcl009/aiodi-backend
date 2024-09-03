@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getSaasDevice, getConstant, getWdConstant, getAuthMenu, queryCurrencySymbol } from '@/api/user'
+import { login, codeLogin, logout, getInfo, getPlatformConfig, getMyDevice, getSaasDevice, getConstant, getWdConstant, getAuthMenu, queryCurrencySymbol, getOpenSettings, deleteSettings } from '@/api/user'
 import { arrayToObj } from '@/utils/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -54,6 +54,10 @@ const mutations = {
   SET_CONSTANT: (state, res) => {
     state.Constant = res
   }
+}
+
+const globalObj = {
+  openSettings: {}
 }
 
 const actions = {
@@ -305,7 +309,41 @@ const actions = {
         reject(error)
       })
     })
-  }
+  },
+
+  getOpenSettings({ commit, state }, params = {}) {
+    return new Promise((resolve, reject) => {
+      let code1 = params.code
+      if(params.agentId) code1 = code1 + '_' + params.agentId
+      if(params.storeId) code1 = code1 + '_' + params.storeId
+      if (globalObj.openSettings[code1]) {
+      	resolve(globalObj.openSettings[code1])
+      } else {
+        getOpenSettings(params).then(res => {
+          if(res && res.code){
+            let info  = JSON.parse(res.setting)
+            info.loadStatus = 1
+            info.code = res.code
+            globalObj.openSettings[code1] = info
+            resolve(info)
+          }else{
+            resolve({
+              code: params.code,
+              loadStatus: 1
+            })
+          }
+        })
+      }
+    })
+  },
+
+  deleteSettings({ commit, state }, params = {}) {
+    return new Promise((resolve, reject) => {
+      deleteSettings(params).then(res => {
+        resolve({})
+      })
+    })
+  },
 }
 
 export default {

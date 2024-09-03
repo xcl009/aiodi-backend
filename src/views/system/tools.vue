@@ -427,6 +427,9 @@
             <el-switch v-model="dform.checkMouthStatSpAgent" :active-value="1" :inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('system.simplifyText') }}</div>
           </el-form-item>
+          <el-form-item :label="$t('system.agentEditStoreMobile')">
+            <el-switch v-model="dform.agentEditStoreMobile" :active-value="1" :inactive-value="0" />
+          </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 5">

@@ -1332,6 +1332,7 @@ export default {
         receiptNow: 'Thanh toán ngay lập tức',
         receiptRule: 'Vui lòng hoàn thành các quy định về thời gian đến',
         receiptDay: 'ngày',
+        agentEditStoreMobile: 'Cấm sửa đổi tài khoản thương mại',
     },
     user: {
         message: 'Vui lòng điền mật khẩu cũ',

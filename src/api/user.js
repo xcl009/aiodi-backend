@@ -38,3 +38,11 @@ export function getAuthMenu(data) {
 export function queryCurrencySymbol(data) {
   return $get('iot-saas-basic/open/sys/dict/queryCurrencySymbol', data)
 }
+
+export function getOpenSettings(data) {
+  return $get('iot-saas-basic/open/settings/find', data)
+}
+
+export function deleteSettings(data) {
+  return $post('iot-saas-basic/admin/settings/delete', data)
+}

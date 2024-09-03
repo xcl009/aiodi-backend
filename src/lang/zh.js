@@ -1338,6 +1338,7 @@ export default {
     receiptNow: '即时到账',
     receiptRule: '请完善到账时间规则',
     receiptDay: '天内',
+    agentEditStoreMobile: '禁止修改商户账号',
   },
   user: {
     message: '请填写旧密码',

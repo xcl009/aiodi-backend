@@ -45,7 +45,7 @@
               <el-form-item ref="userNickName" :label="$t('public.contacts')" prop="userNickName">
                 <el-input v-model="form.userNickName" :placeholder="$t('brand.message1')" />
               </el-form-item>
-              <el-form-item ref="userMobile" :label="$t('public.phone')" prop="userMobile">
+              <el-form-item ref="userMobile" :label="$t('public.phone')" prop="userMobile" v-if="!isAgent() || (isAgent() && !sysShows.agentEditStoreMobile)">
                 <el-input type="number" v-model="form.userMobile" :placeholder="$t('factory.phoneLoginAccount')" />
               </el-form-item>
               <el-form-item v-if="!storeId" :label="$t('public.loginPassword')">
@@ -425,6 +425,8 @@ export default {
 
       // 地图加载
       mapTrue: false,
+
+      sysShows: {}
     }
   },
   mounted() {
@@ -439,6 +441,14 @@ export default {
     this.getCategory()
     this.getCity()
     if (this.storeId > 0) {
+      if(this.isAgent()){
+        this.$store.dispatch('user/getOpenSettings', {
+          code: 'STORE_MONEY_SET',
+          brandId: this.agentInfo.brandId
+        }).then(res => {
+          this.sysShows = res
+        })
+      }
       this.getInfo()
     } else {
       if (storeDefaultConfig) {
