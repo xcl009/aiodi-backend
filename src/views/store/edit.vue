@@ -224,7 +224,7 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_freeTime`]" v-if="item.deviceTypeCode == 'PA'">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.freeTime"
                           :placeholder="$t('store.defaultTime')"
-                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_freeTime`] = checkDigit(v, 1, 1440, 0, true))">
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_freeTime`] = checkDigit(v, 0, 1440, 0, true))">
                           <template slot="append">{{ $t('public.minute') }}</template>
                         </el-input>
                       </el-form-item>
