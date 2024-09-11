@@ -1309,6 +1309,7 @@ export default {
     receiptRule: 'Paki-refine ang mga patakaran para sa panahon ng pagtanggap ng pondo',
     receiptDay: 'Sa loob ng araw',
     agentEditStoreMobile: 'Itigil ang pagbabago ng mga merchant account',
+    nearStoreRange: 'Malapit na kalawakan ng negosyante'
   },
   user: {
     message: 'Mangyaring punan ang iyong lumang password',

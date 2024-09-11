@@ -827,7 +827,7 @@ export default {
       // 	value: 0,
       // 	title: '小程序',
       // 	icon: 'icon-xiaochengxu text-six'
-      // }, 
+      // },
       {
         value: 1,
         title: '微信小程序',
@@ -841,7 +841,7 @@ export default {
       // 	value: 3,
       // 	title: '后台',
       // 	icon: 'icon-houtai8 text-gray'
-      // }, 
+      // },
       {
         value: 4,
         title: 'APP',
@@ -1319,7 +1319,7 @@ export default {
         params.agentId = ids[1]
         params.brandId = ids[2]
       }
-      if (this.lowerAgent != 'ALL') params.lowerAgent = this.lowerAgent || false
+      if (this.lowerAgent != 'ALL' && !this.isSaas()) params.lowerAgent = this.lowerAgent || false
       if (params.deviceTypeCode == 0) delete params.deviceTypeCode
       if (this.isSaas()) delete params.type
       delete params.status
@@ -1404,7 +1404,7 @@ export default {
         params.orderNoEndSix = params.orderNo
         delete params.orderNo
       }
-      if (this.lowerAgent != 'ALL') params.lowerAgent = this.lowerAgent || false
+      if (this.lowerAgent != 'ALL' && !this.isSaas()) params.lowerAgent = this.lowerAgent || false
       if (this.listQuery.sourceType == 'false') delete params.sourceType;
       if (this.listQuery.payType == 'false') delete params.payType;
       this.$get(url, params).then(res => {
@@ -1738,6 +1738,7 @@ export default {
       this.listLoading = true
       this.listQuery.size = 100
       this.list = []
+      this.$refs['toXlsx'].clearData()
       this.getList()
     },
 

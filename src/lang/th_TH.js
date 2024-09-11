@@ -1315,6 +1315,7 @@ export default {
     checkLoginSmsTitle: "เปิด CAPTCHA เข้าสู่ระบบ",
     checkLoginSmsDesc: "เพื่อความปลอดภัยของเงินทุนขอแนะนำให้เปิด CAPTCHA เข้าสู่ระบบ",
     agentEditStoreMobile: "ห้ามแก้ไขบัญชีผู้ค้า",
+    nearStoreRange: 'ช่วงร้านค้าใกล้เคียง',
     unCondomTemplate: "ซ่อนคุณสมบัติเทมเพลตสินค้าทดแทนอุปกรณ์",
     wxPaymentPoints: "คะแนน WeChat Pay",
     userCashPrompt: "เคล็ดลับการถอนเงินของผู้ใช้",

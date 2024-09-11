@@ -1316,6 +1316,7 @@ export default {
         receiptRule: 'Por favor, mejore las reglas de tiempo de llegada.',
         receiptDay: 'Dentro del día',
         agentEditStoreMobile: 'Prohibición de modificar la cuenta del comerciante',
+        nearStoreRange: 'Alcance de los comerciantes cercanos'
     },
     user: {
         message: 'Por favor, ingrese la contraseña antigua',

@@ -867,6 +867,7 @@ export default {
       this.listLoading = true
       this.listQuery.size = 100
       this.list = []
+      this.$refs['toXlsx'].clearData()
       this.getList()
     },
     /**

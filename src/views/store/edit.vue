@@ -147,7 +147,7 @@
                 </el-checkbox-group>
               </el-form-item> -->
 
-              <el-row class="radius-10" :gutter="20">
+              <el-row class="rel radius-10" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="20">
                 <el-col :sm="24" :lg="12" v-for="(name, xcx) in config.xcx_pay.default">
                   <div>
                     <div class="mb-10 text-dfs text-bold text-black">
@@ -426,7 +426,8 @@ export default {
       // 地图加载
       mapTrue: false,
 
-      sysShows: {}
+      sysShows: {},
+      agentPower: {}
     }
   },
   mounted() {
@@ -440,6 +441,15 @@ export default {
     }
     this.getCategory()
     this.getCity()
+    if(this.isAgent()){
+      this.$store.dispatch('user/getOpenSettings', {
+        code: 'AGENT_VIEW_POWER',
+        brandId: this.agentInfo.brandId,
+        agentId: this.agentInfo.agentId
+      }).then(res => {
+        this.agentPower = res
+      })
+    }
     if (this.storeId > 0) {
       if(this.isAgent()){
         this.$store.dispatch('user/getOpenSettings', {
@@ -931,12 +941,24 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 /deep/ .el-cascader {
   width: 100%;
 }
 
 /deep/ .input-with .el-input-group__prepend {
   padding: 0 0 0 5px;
+}
+
+/deep/ .disabled-box{
+  input{
+    pointer-events: none; /* 阻止鼠标事件 */
+    background-color: #e6e6e6; /* 添加背景色以改善视觉效果 */
+    cursor: not-allowed;
+  }
+
+  .el-select {
+    pointer-events: none;
+  }
 }
 </style>

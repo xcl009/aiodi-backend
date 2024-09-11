@@ -40,6 +40,14 @@ export default {
   },
   methods: {
     /**
+     * 清空上次保存的数据
+     */
+    clearData(){
+      this.wbout = []
+      this.wi = 0
+    },
+    
+    /**
      * 导出数据到表格
      */
     saveTableXlsx(end, pages, cbk) {

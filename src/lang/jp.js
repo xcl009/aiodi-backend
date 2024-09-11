@@ -1309,6 +1309,7 @@ export default {
     receiptRule: '入金時間ルールを整備してください',
     receiptDay: '天内',
     agentEditStoreMobile: 'マーチャントアカウントの修正は禁止されています',
+    nearStoreRange: '近隣業者の範囲'
   },
   user: {
     message: '古いパスワードを入力してください',

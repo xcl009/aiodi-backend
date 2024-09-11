@@ -355,6 +355,25 @@
           </div>
         </el-col>
 
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+          v-if="isBrand() && checkAbility(['AGENT_VIEW_POWER'], 3)">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="fuwu"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">{{ $t('rolesName.agent') + $t('public.permissionSettings') }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('rolesName.agent') + $t('public.permissionSettings') }}</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'AGENT_VIEW_POWER' }, 9)">{{
+        $t('public.setUp') }}</el-button>
+            </div>
+          </div>
+        </el-col>
+
         <el-col :span="24" class="pb-20 cursor">
           <div>{{ $t('system.development') }}</div>
         </el-col>
@@ -394,6 +413,9 @@
           <el-form-item :label="$t('system.displayStatus')">
             <el-switch v-model="dform.nearStore" :active-value="1" :inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('system.displayStatusText') }}</div>
+          </el-form-item>
+          <el-form-item :label="$t('system.nearStoreRange')">
+            <el-input v-model="dform.nearStoreRange"><template slot="append">m</template></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -470,7 +492,7 @@
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText6') }}</div>
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText9') }}</div>
           </el-form-item>
-          
+
 
           <el-tabs v-model="activeName" type="card" >
             <el-tab-pane :label="$t('public.refundOfDepositText2')" name="voluntarily">
@@ -504,6 +526,13 @@
             </el-tab-pane> -->
           </el-tabs>
 
+        </el-form>
+      </template>
+      <template v-if="dialogType == 9">
+        <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
+          <el-form-item :label="$t('public.edit') + $t('public.billingRules')">
+            <el-switch v-model="dform.editStoreFee" :active-value="0" :inactive-value="1" />
+          </el-form-item>
         </el-form>
       </template>
       <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
@@ -574,7 +603,8 @@ export default {
         5: this.$t('steal.delayedOrder'),
         6: this.$t('system.tiktok'),
         7: this.$t('system.checkTwoPwd'),
-        8: this.$t('public.refundOfDeposit')
+        8: this.$t('public.refundOfDeposit'),
+        9: this.$t('public.permissionSettings'),
       }
     }
   },
@@ -613,7 +643,7 @@ export default {
           this.dialogType = dialogType
           this.curRow = row
           this.curIdx = idx
-          if ([1, 2, 3, 4, 5, 6, 7, 8].indexOf(dialogType) > -1) {
+          if ([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(dialogType) > -1) {
             this.$get('iot-saas-basic/admin/settings/find', {
               code: row.code
             }).then(res => {
@@ -621,7 +651,6 @@ export default {
                 this.dform = JSON.parse(res.setting)
                 if(this.dialogType == 8){
                   this.activeName = this.dform.type
-                 
                 }
               } else {
                 switch (dialogType) {
@@ -656,15 +685,19 @@ export default {
                       closeTimeComplete: 0
                     }
                     break
-                    case 8:
+                  case 8:
                     this.dform = {
                       AUTO_REFUND_DEPOSIT: 0,
                       TIME_LIMITED_RELIEF:0,
                       AUTO_REFUND_DEPOSIT_VOLUNTARILY:0,
                       TIME_LIMITED_RELIEF_SHOW:0,
                     }
-                    console.log(this.dform,'this.dform')
                     break
+                  case 9:
+                    this.dform = {
+                      editStoreFee: 0
+                    }
+                  break
                 }
               }
             })
@@ -686,13 +719,13 @@ export default {
       if (this.clickSubmit) return
       this.clickSubmit = true
       switch (this.dialogType) {
-        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
           this.clickSubmit = false
           if (this.dialogType == 8) {
             params.type = this.activeName;
             if(params.TIME_LIMITED_RELIEF_SHOW == 0){
-                params.TIME_LIMITED_RELIEF = 0;
-                this.dform.TIME_LIMITED_RELIEF = 0;
+              params.TIME_LIMITED_RELIEF = 0;
+              this.dform.TIME_LIMITED_RELIEF = 0;
             }
           }
           this.$post('iot-saas-basic/admin/settings/save', {
