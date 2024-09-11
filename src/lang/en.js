@@ -1311,6 +1311,7 @@ export default {
     receiptRule: 'Please refine the rules for the time of receipt of funds',
     receiptDay: 'Within the day',
     agentEditStoreMobile: 'Prohibit modifying merchant accounts',
+    nearStoreRange: 'Nearby merchant range'
   },
   user: {
     message: 'Please fill in your old password',

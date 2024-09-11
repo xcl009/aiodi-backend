@@ -1310,6 +1310,7 @@ export default {
     receiptRule: '請完善到賬時間規則',
     receiptDay: '天內',
     agentEditStoreMobile: '禁止修改商戶帳號',
+    nearStoreRange: '附近商戶範圍'
   },
   user: {
     message: '請填寫舊密碼',

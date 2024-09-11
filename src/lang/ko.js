@@ -1309,6 +1309,7 @@ export default {
     receiptRule: '입금 시간 규칙을 완비하십시오.',
     receiptDay: '천내',
     agentEditStoreMobile: '상인 계정 수정 금지',
+    nearStoreRange: '인근 상가 범위'
   },
   user: {
     message: '이전 암호를 입력하십시오.',

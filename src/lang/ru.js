@@ -1310,6 +1310,7 @@ export default {
         receiptRule: 'Пожалуйста, уточните правила учета.',
         receiptDay: 'В течение дня',
         agentEditStoreMobile: 'Запрещается изменять аккаунты',
+        nearStoreRange: 'Ближайшие торговые точки'
     },
     user: {
         message: 'Заполните старый пароль.',
