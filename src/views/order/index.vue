@@ -827,7 +827,7 @@ export default {
       // 	value: 0,
       // 	title: '小程序',
       // 	icon: 'icon-xiaochengxu text-six'
-      // }, 
+      // },
       {
         value: 1,
         title: '微信小程序',
@@ -841,7 +841,7 @@ export default {
       // 	value: 3,
       // 	title: '后台',
       // 	icon: 'icon-houtai8 text-gray'
-      // }, 
+      // },
       {
         value: 4,
         title: 'APP',
