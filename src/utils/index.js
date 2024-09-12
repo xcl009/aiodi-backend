@@ -845,7 +845,7 @@ const util = {
   formatCurrency: (number) => {
   	if (!number) return 0
     if (number >= 1000) {
-      number = parseFloat((number / 1000).toFixed(1)) + 'K'
+      number = parseFloat((number / 1000)) + 'K'
     }
   	// 将数字转换为字符串
   	const numberStr = number.toString()
