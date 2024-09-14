@@ -236,7 +236,7 @@ export default {
         }
       })
       this.$get('iot-saas-basic/admin/brand/link/list').then(res => {
-        this.brandList = res
+        this.brandList = res || []
       })
     },
 

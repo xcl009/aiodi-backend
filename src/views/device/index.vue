@@ -151,7 +151,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="100" v-else-if="item.val && item.key == 'order'">
             <template slot-scope="scope">
-              {{ orderCount[scope.row.deviceSn] ? parseInt(orderCount[scope.row.deviceSn].wx) + parseInt(orderCount[scope.row.deviceSn].ali) : 0 }}
+              <!-- {{ orderCount[scope.row.deviceSn] ? parseInt(orderCount[scope.row.deviceSn].wx) + parseInt(orderCount[scope.row.deviceSn].ali) : 0 }} -->
               <!-- <div class="flex">
                 <div class="flex1">{{ $t('payType.wx') }}：{{ orderCount[scope.row.deviceSn] ?
                   orderCount[scope.row.deviceSn].wx : 0 }}</div>
@@ -1071,7 +1071,7 @@ export default {
         this.orderCount = {}
         return
       }
-      this.$get('iot-saas-order/admin/order/count/queryGroupCount', {
+      this.$get('iot-saas-order/admin/order/count/queryPayWayGroupCount', {
         countType: 'DEVICE',
         groupIds: sns.join(',')
       }).then(res => {
