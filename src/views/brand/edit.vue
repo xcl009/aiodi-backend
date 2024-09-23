@@ -35,7 +35,7 @@
           </el-form-item>
           <el-form-item :label="$t('brand.country')" prop="country">
             <el-select v-model="form.country" style="width: 100%;">
-              <el-option :label="item.chineseName" :value="item.name" v-for="(item, index) in countrys" />
+              <el-option :label="item.chineseName" :value="item.code" v-for="(item, index) in countrys" />
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('brand.linkBrand')">

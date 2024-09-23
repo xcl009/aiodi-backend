@@ -141,11 +141,11 @@
               </el-input>
               <div>押金在卡到期前一直冻结不可提现不可退款</div>
             </el-form-item>
-            <!-- <el-form-item :label="$t('membership.overTime')">
+            <el-form-item :label="$t('membership.overTime')">
               <el-input type="number" v-model="dform.overTime">
                 <template slot="append">{{ $t('public.huor') }}</template>
               </el-input>
-            </el-form-item> -->
+            </el-form-item>
           </template>
 
           <template v-if="dform.cardModul == 0">
@@ -211,14 +211,14 @@ export default {
           val: '0',
           key: 'storeId'
         },
-        {
+        /* {
           title: '代理会员',
           val: '1',
           key: 'agentId'
-        },
+        }, */
         {
           title: '商户会员',
-          val: '2',
+          val: 111111,
           key: 'storeId'
         }
       ],

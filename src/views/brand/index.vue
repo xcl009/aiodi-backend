@@ -251,9 +251,7 @@
       $t('brand.payConfig') }}</span>
               </div>
               <div class="mr-20 text-primary text-center" v-if="item.status == 'ENABLE'">
-                <span @click.stop="item.access = (item.access == 'ENABLE' ? 'DISABLE' : 'ENABLE')">{{ item.access ==
-      'ENABLE' ?
-      '已接入' : '开通中' }}</span>
+                <span @click.stop="item.access = (item.access == 'ENABLE' ? 'DISABLE' : 'ENABLE')">{{ item.access == 'ENABLE' ? '已接入' : '开通中' }}</span>
               </div>
               <el-checkbox v-model="item.status" true-label="ENABLE" false-label="DISABLE"></el-checkbox>
             </div>
@@ -277,7 +275,7 @@
             <el-input v-model="dform.appId"></el-input>
             <div class="generatebox generate" @click="generateChange()">没有APPID请点击生成</div>
             <!-- <div class="flex_j"> -->
-             
+
               <!-- <div class="generatebox generate" @click="generateChange()">没有APPID请点击生成</div> -->
             <!-- </div> -->
           </el-form-item>
@@ -664,7 +662,7 @@ export default {
           message: that.$t('public.operationSuccessful'),
           type: 'success'
         })
-        
+
 
       }).catch(() => {
       })
@@ -836,7 +834,7 @@ export default {
               bindId: row.id,
               sourceType: row.sourceType || 4,
               channelCode: row.code,
-              appId: content.appId || '',
+              appId: row.appId || '',
               content: row.content
             }
           } else if (dialogType == 14) {

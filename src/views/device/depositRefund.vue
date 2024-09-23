@@ -155,6 +155,13 @@ export default {
       params.deviceTypeCode = this.deviceTypeCode
       params.delayedRefundTime = params.refundTimeStatus == 1 ? params.delayedRefundTime : 0
       params.paymentRefundConfig = JSON.stringify(params.paymentRefundConfig)
+      if(params.delayedRefundTime > (1440 * 3)){
+        this.$message({
+          message: this.$t('device.extendTime') + this.$t('device.maxExtendTime'),
+          type: 'error'
+        })
+        return
+      }
       this.$post(`iot-saas-basic/admin/depositRefundConfig/v1/update`, params).then(res => {
         this.$message({
           message: that.$t('public.setSuccess'),
