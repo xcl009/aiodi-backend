@@ -260,6 +260,7 @@
                     <el-dropdown-item @click.native="setRows(3, scope.row, 10)" v-if="isBrand()">{{ $t('store.loginRecord') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
                       v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(3, scope.row, 10)">付费会员码</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>

@@ -1744,7 +1744,8 @@ export default {
     typeText2: '只分一级代理',
     restart: '重启',
     restartText: '确定要重启该设备吗？',
-    electricity: '电量'
+    electricity: '电量',
+    maxExtendTime: '不可大于3天'
   },
   cash: {
     withdrawalStatus: '提现状态',

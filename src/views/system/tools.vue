@@ -374,6 +374,23 @@
           </div>
         </el-col>
 
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="false">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="fuwu"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">付费会员卡设置</div>
+                <div class="mt-5 fs-s3 text-gray">平台会员卡、商户会员卡计费设置</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/store/membership` })">{{ $t('public.setUp') }}</el-button>
+            </div>
+          </div>
+        </el-col>
+
         <el-col :span="24" class="pb-20 cursor">
           <div>{{ $t('system.development') }}</div>
         </el-col>
@@ -506,7 +523,7 @@
               <img src="@/assets/img2.png" class="imgs" v-if="dform.AUTO_REFUND_DEPOSIT_VOLUNTARILY == 1 " />
              </div>
             </el-tab-pane>
-            <!-- <el-tab-pane :label="$t('public.refundOfDepositText4')" name="custom">
+           <!-- <el-tab-pane :label="$t('public.refundOfDepositText4')" name="custom">
               <div class="cash">
                  <div v-for="(item,index) in payList" :key="index" class="mt-10 paybox">
                      <div class="text-center">
@@ -522,7 +539,6 @@
                      </div>
                  </div>
               </div>
-
             </el-tab-pane> -->
           </el-tabs>
 

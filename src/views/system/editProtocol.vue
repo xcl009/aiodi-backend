@@ -7,6 +7,7 @@
           <el-tab-pane label="用户协议" name="userAgreement" />
           <el-tab-pane label="售后退款协议" name="salesRefund" />
           <el-tab-pane label="租借协议" name="leaseAgreement" />
+          <el-tab-pane label="会员权益规则" name="memberCardAgreement" />
         </el-tabs>
 
         <el-form ref="form" :model="form">

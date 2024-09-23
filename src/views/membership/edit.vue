@@ -1,14 +1,38 @@
 <template>
   <div>
     <div class="pl-20 pr-20 pb-10 bg-white">
-      <el-tabs class="mb-10 fs-b2" v-model="deviceTypeCode" @tab-click="getList">
+      <condition ref="condition" :clickSubmit="clickSubmit" @query="getList">
+        <template v-slot:tabs>
+          <div class="mb-10 flex align-center">
+            <div class="mr-10">{{ $t('public.deviceType') }}</div>
+            <el-tabs class="flex-1" v-model="deviceTypeCode" @tab-click="getList()">
+              <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
+            </el-tabs>
+          </div>
+          <div class="mb-10 flex align-center">
+            <div class="mr-10">会员类型</div>
+            <el-tabs class="flex-1" v-model="typeVal" @tab-click="getList()">
+              <el-tab-pane :label="item.title" :name="idx.toString()" v-for="(item, idx) in cardTypes" />
+            </el-tabs>
+          </div>
+        </template>
+        <template v-slot:defult>
+          <el-form-item label="会员卡名称">
+            <el-input v-model="form.remark" :placeholder="$t('public.remark')" />
+          </el-form-item>
+        </template>
+        <template v-slot:endButton>
+          <el-button size="small" type="primary"
+            @click="setRows(1, { ableState: 1, countCycle: 1, depositAmount: 99 }, 1)">{{ $t('membership.addMembershipCard')
+            }}</el-button>
+        </template>
+      </condition>
+
+     <!-- <el-tabs class="mb-10 fs-b2" v-model="deviceTypeCode" @tab-click="getList">
         <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
-      </el-tabs>
+      </el-tabs> -->
 
       <template v-if="Ability[`${deviceTypeCode}_MEMBER_XF`] || Ability[`${deviceTypeCode}_MEMBER_DQ`]">
-        <el-button class="mb-20" type="primary"
-          @click="setRows(1, { ableState: 1, countCycle: 1, depositAmount: 99 }, 1)">{{ $t('membership.addMembershipCard')
-          }}</el-button>
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
           element-loading-text="Loading">
           <el-table-column :label="$t('membership.serviceName')">
@@ -115,6 +139,7 @@
                   </el-popover>
                 </template>
               </el-input>
+              <div>押金在卡到期前一直冻结不可提现不可退款</div>
             </el-form-item>
             <el-form-item :label="$t('membership.overTime')">
               <el-input type="number" v-model="dform.overTime">
@@ -151,9 +176,10 @@
 
 <script>
 import { arrayToObj } from "@/utils/index"
+import condition from '@/components/condition/'
 export default {
   components: {
-
+    condition
   },
   props: {
     type: {
@@ -178,6 +204,25 @@ export default {
         size: 20
       },
       form: {},
+
+      cardTypes: [
+        {
+          title: '平台会员',
+          val: '0',
+          key: 'storeId'
+        },
+        /* {
+          title: '代理会员',
+          val: '1',
+          key: 'agentId'
+        }, */
+        {
+          title: '商户会员',
+          val: 111111,
+          key: 'storeId'
+        }
+      ],
+      typeVal: 0,
 
       // 弹出相关
       dialogType: 1,
@@ -273,7 +318,11 @@ export default {
         storeId: 0,
         agentId: 0
       }
-      params[this.userKey] = this.id
+      if(this.userKey){
+        params[this.userKey] = this.id
+      }else if(this.typeVal > 0){
+        params[this.cardTypes[this.typeVal].key] = this.cardTypes[this.typeVal].val
+      }
       this.$get('iot-saas-basic/brand/goods/v1/admin/list', params).then(res => {
         if (res && res.length > 0) {
           res.map(item => {
@@ -283,7 +332,7 @@ export default {
           })
           this.list = res
         } else {
-          this.list.push({
+          this.list = [{
             serviceName: this.$t('membership.message'),
             amount: '9.9',
             availableDay: 30,
@@ -297,7 +346,7 @@ export default {
             overTime: 0,
             depositAmount: 0,
             deviceTypeCode: this.deviceTypeCode
-          })
+          }]
         }
       })
     },
@@ -371,13 +420,17 @@ export default {
       let curRow = this.curRow,
         curIdx = this.curIdx,
         params = JSON.parse(JSON.stringify(this.dform))
-      if (this.clickSubmit) return
-      this.clickSubmit = true
+      // if (this.clickSubmit) return
+      // this.clickSubmit = true
       switch (this.dialogType) {
         case 1:
           this.$refs['cardForm'].validate((valid, object) => {
             if (valid) {
-              params[this.userKey] = this.id
+              if(this.userKey){
+                params[this.userKey] = this.id
+              }else{
+                params[this.cardTypes[this.typeVal].key] = this.cardTypes[this.typeVal].val
+              }
               if (params.cardType == 1) {
                 params.countCycle = params.availableDay
               } else if (params.cardType == 3) {
@@ -396,7 +449,8 @@ export default {
                 params.freeTime = 600000
                 params.overTime = parseFloat(params.overTime) * 60
               }
-              this.clickSubmit = false
+              console.log(params)
+              //return
               this.$post('iot-saas-basic/brand/goods/v1/save', params).then(res => {
                 this.$message({
                   message: that.$t('public.setSuccess'),
