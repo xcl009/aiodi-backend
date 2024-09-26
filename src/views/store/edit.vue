@@ -390,11 +390,11 @@ export default {
       return [
         {
           title: this.$t('public.oneHour'),
-          value: 60
+          value: '60'
         },
         {
           title: this.$t('public.halfHour'),
-          value: 30
+          value: '30'
         }
       ]
     },

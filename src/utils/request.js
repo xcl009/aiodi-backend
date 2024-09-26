@@ -112,7 +112,7 @@ service.interceptors.response.use(
           })
           setTimeout(() => {
             location.href = '/login'
-          }, 1500)
+          }, 1000)
         } else {
           Message({
             message: res.data.message || i18n.t('lang.message1'),
@@ -134,7 +134,7 @@ service.interceptors.response.use(
         })
         setTimeout(() => {
           location.href = '/login'
-        }, 1500)
+        }, 1000)
       } else if (['19876', 19876].indexOf(res.code) > -1) {
         router.push({
           path: '/user/checkPwd'

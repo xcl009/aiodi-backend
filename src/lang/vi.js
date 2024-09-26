@@ -1454,7 +1454,12 @@ export default {
         serviceName: 'Tên thẻ',
         orderAmount: 'Tiền thanh toán',
         storeName: 'Nhà cung cấp thẻ',
-        refundSuccessful: 'Hoàn lại thành công'
+        refundSuccessful: 'Hoàn lại thành công',
+        globalVip: 'Platform Thành viên',
+        storeVip: 'Thành viên Merchant',
+        overTimeNo: 'Tiền gửi trở lại số dư ví của người dùng khi hết hạn thẻ thành viên',
+        overTimeYes: 'Người dùng có đơn đặt hàng vượt quá [0] giờ chưa kết thúc, tiền đặt cọc không được hoàn lại, thẻ thành viên phải thanh toán lại tiền đặt cọc mới có thể sử dụng',
+        saveCode: 'Mã quét có thể mở thành viên, nhấp chuột phải để lưu mã 2 chiều cho người dùng'
     },
     market: {
         paymentType: 'Loại thanh toán',
@@ -1734,7 +1739,8 @@ export default {
         typeText2: 'Chỉ chia cho đại lý cấp 1',
         restart: 'Khởi động lại',
         restartText: 'Bạn có chắc chắn muốn khởi động lại thiết bị này?',
-        electricity: 'Năng lượng'
+        electricity: 'Năng lượng',
+				maxExtendTime: 'Không được lớn hơn 3 ngày'
     },
     cash: {
         withdrawalStatus: 'Trạng thái rút tiền',
