@@ -1469,7 +1469,8 @@ export default {
     storeVip: '商户会员',
     overTimeNo: '押金在会员卡到期后退回到用户钱包余额',
     overTimeYes: '用户有超[0]小时未结束的订单，押金不退还，会员卡需再次缴纳押金方可使用',
-    saveCode: '扫码可开通会员，右键保存二维码发给用户'
+    saveCode: '扫码可开通会员，右键保存二维码发给用户',
+    vipOpenCode: '会员开通码'
   },
   market: {
     paymentType: '付费类型',

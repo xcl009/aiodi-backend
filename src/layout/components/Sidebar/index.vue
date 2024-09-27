@@ -430,6 +430,7 @@ export default {
   }
 
   .vip-header {
+    height: 160px;
     background: url('../../../assets/vip_headbg.png'), -63px -72.85px / 115.108% 205.37% no-repeat;
     border-radius: 16px;
 

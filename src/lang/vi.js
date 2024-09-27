@@ -1459,7 +1459,8 @@ export default {
         storeVip: 'Thành viên Merchant',
         overTimeNo: 'Tiền gửi trở lại số dư ví của người dùng khi hết hạn thẻ thành viên',
         overTimeYes: 'Người dùng có đơn đặt hàng vượt quá [0] giờ chưa kết thúc, tiền đặt cọc không được hoàn lại, thẻ thành viên phải thanh toán lại tiền đặt cọc mới có thể sử dụng',
-        saveCode: 'Mã quét có thể mở thành viên, nhấp chuột phải để lưu mã 2 chiều cho người dùng'
+        saveCode: 'Mã quét có thể mở thành viên, nhấp chuột phải để lưu mã 2 chiều cho người dùng',
+        vipOpenCode: 'Thành viên mở mã'
     },
     market: {
         paymentType: 'Loại thanh toán',

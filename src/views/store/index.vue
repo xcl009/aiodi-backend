@@ -221,8 +221,8 @@
                         $t('store.onlineStatistics') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/store/membership?id=${scope.row.id}&userKey=storeId` })"
-                      v-if="checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">{{
-                        $t('store.membershipCard') }}</el-dropdown-item>
+                      v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'], 1, scope.row.storeDivisionConfig)">{{ $t('store.membershipCard') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push({ path: `/store/membership?id=${scope.row.id}&userKey=storeId` })" v-else-if="isAgent() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">{{ $t('membership.vipOpenCode') }}</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="$router.push({ path: `/store/steal?id=${scope.row.id}&userKey=storeId` })"
                       v-if="checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1, scope.row.storeDivisionConfig)">{{
@@ -260,7 +260,6 @@
                     <el-dropdown-item @click.native="setRows(3, scope.row, 10)" v-if="isBrand()">{{ $t('store.loginRecord') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
                       v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
-                    <el-dropdown-item @click.native="setRows(3, scope.row, 10)">付费会员码</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>

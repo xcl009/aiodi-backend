@@ -22,51 +22,51 @@
     <div class="pl-15 pr-15 pb-5 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
-        <el-table-column :label="$('public.image')" width="120">
+        <el-table-column :label="$t('public.image')" width="120">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="60" :src="scope.row.picture" fit="fill"
               icon="el-icon-picture-outline"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column :label="$('goods.productTitle')" width="250">
+        <el-table-column :label="$t('goods.productTitle')" width="250">
           <template slot-scope="scope">
             {{ scope.row.title }}
           </template>
         </el-table-column>
-        <el-table-column :label="$('goods.subtitle')">
+        <el-table-column :label="$t('goods.subtitle')">
           <template slot-scope="scope">
             {{ scope.row.subhead }}
           </template>
         </el-table-column>
-        <el-table-column :label="$('goods.costPrice')" width="120">
+        <el-table-column :label="$t('goods.costPrice')" width="120">
           <template slot-scope="scope">
             {{ scope.row.costPrice }}
           </template>
         </el-table-column>
-        <el-table-column :label="$('goods.retailPrice')" width="120">
+        <el-table-column :label="$t('goods.retailPrice')" width="120">
           <template slot-scope="scope">
             {{ scope.row.retailPrice }}
           </template>
         </el-table-column>
-        <el-table-column :label="$('public.inventory')" width="120">
+        <el-table-column :label="$t('public.inventory')" width="120">
           <template slot-scope="scope">
             {{ scope.row.stock }}
           </template>
         </el-table-column>
-        <el-table-column :label="$('goods.saleNum')" width="120">
+        <el-table-column :label="$t('goods.saleNum')" width="120">
           <template slot-scope="scope">
             {{ scope.row.saleNum }}
           </template>
         </el-table-column>
-        <el-table-column :label="$('public.status')" width="120">
+        <el-table-column :label="$t('public.status')" width="120">
           <template slot-scope="scope">
             <el-link :type="scope.row.status == 'CLOSE' ? 'danger' : 'primary'"> {{ scope.row.statusName }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column :label="$('public.operate')" width="120">
+        <el-table-column :label="$t('public.operate')" width="120">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" class="ml-0"
-              @click="$router.push({ path: `/goods/addGoods?id=${scope.row.id}` })">{{ $('goods.editShopping')
+              @click="$router.push({ path: `/goods/addGoods?id=${scope.row.id}` })">{{ $t('goods.editShopping')
               }}</el-button>
           </template>
         </el-table-column>
