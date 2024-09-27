@@ -13,7 +13,7 @@
           <el-form-item ref="mobile" :label="$t('store.storePhone')" prop="mobile">
             <el-input v-model="form.mobile" :placeholder="$t('store.storePhoneText')" />
           </el-form-item>
-          <el-form-item ref="catId" :label="$t('public.industry')" prop="catId">
+          <el-form-item ref="catId" :label="$t('public.industry')" prop="catId" v-if="false">
             <el-cascader v-model="form.catId" :options="catList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
           <el-form-item ref="lng" :label="$t('store.locationAddress')" prop="lng" v-if="mapTrue">
