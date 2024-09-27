@@ -54,20 +54,18 @@
     data() {
       return {
         clickSubmit: false,
-        id: this.$route.query.id || ''
+        id: this.$route.query.id || '',
+        form: {
+          pictures: [],
+          subhead: this.$t('goods.dataText'),
+          status: 'ENABLE'
+        },
       }
     },
     computed: {
       siteInfo() {
         const siteInfo = this.$store.getters.siteInfo
         return siteInfo
-      },
-      form(){
-        return {
-          pictures: [],
-          subhead: this.$t('goods.dataText'),
-          status: 'ENABLE'
-        }
       },
       rules(){
         return {
