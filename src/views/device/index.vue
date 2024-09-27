@@ -276,17 +276,16 @@
               <template v-else>
                 <el-button type="text" @click="setRows(3, scope.row, 8, scope.$index)" :disabled="scope.row.distribute">{{
                   $t('public.allocation') }}</el-button>
-                <!-- <el-button type="text" @click="$router.push({path: `/agent?deviceSns=${scope.row.deviceSn}`})" :disabled="scope.row.distribute">分配</el-button> -->
                 <el-button type="text" @click="setRows(3, scope.row, 10, scope.$index)"
                   :disabled="scope.row.distribute">{{ $t('public.distributionOfGoods') }}</el-button>
-                <!-- <el-button type="text" @click="$router.push({path: `/store?deviceSns=${scope.row.deviceSn}`})" :disabled="scope.row.distribute">铺货</el-button> -->
               </template>
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('device.message1')" @onConfirm="unboundStore(scope.row)">
                 <el-button type="text" :disabled="!scope.row.distribute" slot="reference">{{ $t('device.unbind')
                 }}</el-button>
               </el-popconfirm>
-              <el-button type="text" v-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.eject') }}</el-button>
+              <el-button type="text" v-if="scope.row.deviceType.code.indexOf('LK') > -1" slot="reference" @click="$router.push({path: `/user/cabinetDoor?deviceSn=${scope.row.deviceSn}`})">柜门列表</el-button>
+              <el-button type="text" v-else-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.eject') }}</el-button>
               <el-popconfirm
                 class="pop"
                 cancel-button-type=""
@@ -303,6 +302,7 @@
           </template>
         </el-table-column>
       </el-table>
+
       <div class="rel flex justify-center">
         <div class="abs flex pagination-left" v-if="!isSaas()">
           <template v-if="lowerDevice">

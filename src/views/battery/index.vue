@@ -182,7 +182,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
-import condition from '@/components/condition/'
+import condition from '@/components/condition/index'
 import selectSearch from '@/components/condition/selectSearch'
 import TableColumnSet from '@/components/TableColumnSet/index'
 import xlsx from '@/components/xlsx/'

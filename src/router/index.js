@@ -73,6 +73,22 @@ export const constantRoutes = [
         meta: {
           title: '安全验证'
         }
+      },
+      {
+        path: 'cabinetDoor',
+        name: 'cabinetDoor',
+        component: () => import('@/views/device/cabinetDoor'),
+        meta: {
+          title: '柜门列表'
+        }
+      },
+      {
+        path: 'chargingMode',
+        name: 'chargingMode',
+        component: () => import('@/views/device/chargingMode'),
+        meta: {
+          title: '收费模式'
+        }
       }
     ]
   },
