@@ -242,7 +242,7 @@
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))">
                               <template slot="append">{{ $t('public.minute') }}</template>
                             </el-input> -->
-                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.startingTime" class="flex1">
+                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.startingTime.toString()" class="flex1">
                               <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList"
                                 :key="index"></el-option>
                             </el-select>

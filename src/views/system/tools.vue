@@ -299,26 +299,7 @@
           </div>
         </el-col>
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
-          v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">
-          <div class="role-item flexv justify-between">
-            <div class="flex align-center">
-              <div class="icon-box flex align-center justify-center">
-                <svg-icon icon-class="fuwu"></svg-icon>
-              </div>
-              <div class="pl-20 flex1">
-                <div class="fs-b1">{{ $t('order.membershipOrder') }}</div>
-                <div class="mt-5 fs-s3 text-gray">{{ $t('store.membershipCard') }}</div>
-              </div>
-            </div>
-            <div class="text-right">
-              <el-button plain class="bg-body text-primary"
-                @click="$router.push({ path: `/store/openMemberRecord` })">{{
-        $t('userManage.viewOrder') }}</el-button>
-            </div>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
-          v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">
+          v-if="isBrand()">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
@@ -374,23 +355,26 @@
           </div>
         </el-col>
 
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+          v-if="isBrand() && checkAbility(['_MEMBER_XF', '_MEMBER_DQ'])">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
                 <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">会员卡设置</div>
-                <div class="mt-5 fs-s3 text-gray">平台会员卡、商户会员卡计费设置</div>
+                <div class="fs-b1">{{ $t('order.membershipOrder') }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('store.membershipCard') }}</div>
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/store/membership` })">{{ $t('public.setUp') }}</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/store/membership` })">{{ $t('membership.addMembershipCard') }}</el-button>
+              <el-button plain class="bg-body text-primary"
+                @click="$router.push({ path: `/store/openMemberRecord` })">{{
+        $t('userManage.viewOrder') }}</el-button>
             </div>
           </div>
         </el-col>
-
         <el-col :span="24" class="pb-20 cursor">
           <div>{{ $t('system.development') }}</div>
         </el-col>

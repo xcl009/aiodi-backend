@@ -48,7 +48,27 @@
               </el-form-item>
 
               <el-form-item :label="`${$t('device.defaultBalance')}`"></el-form-item>
-              <el-form-item :label="$t('public.front')">
+
+              <el-form-item :label="$t('public.freeTime')" v-if="billing.deviceTypeCode == 'PA'">
+                <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.freeTime" :placeholder="$t('store.defaultTime')">
+                  <template slot="append">{{ $t('public.minute') }}</template>
+                </el-input>
+              </el-form-item>
+              <el-form-item :label="$t('public.amount')">
+                <div class="flex">
+                  <div class="flex1">
+                    <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.startingAmount">
+                      <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                    </el-input>
+                  </div>
+                  <div class="pl-10 flex1 flex">
+                    <el-select v-model="billing[`${xcx}PayMode`].payModeDetails.startingTime.toString()" class="flex1">
+                      <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList" :key="index"></el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </el-form-item>
+              <!-- <el-form-item :label="$t('public.front')">
                 <div class="flex">
                   <div class="flex1">
                     <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.startingTime">
@@ -75,7 +95,7 @@
                     </el-input>
                   </div>
                 </div>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item :label="$t('public.capping')">
                 <div class="flex">
                   <div>
@@ -148,7 +168,19 @@ export default {
     },
     siteInfo() {
       return this.$store.getters.siteInfo
-    }
+    },
+    timeList() {
+      return [
+        {
+          title: this.$t('public.oneHour'),
+          value: '60'
+        },
+        {
+          title: this.$t('public.halfHour'),
+          value: '30'
+        }
+      ]
+    },
   },
   mounted() {
     this.deviceTypeCode = Object.keys(this.myDeviceId)[0]
@@ -186,8 +218,12 @@ export default {
      * 提交数据
      */
     onSubmit() {
-      let that = this;
+      let that = this
       let billing = JSON.parse(JSON.stringify(this.billing)), url = `iot-saas-basic/admin/billing/configs/save`
+      Object.keys(this.config.xcx_pay.default).map(key => {
+        billing[`${key}PayMode`].payModeDetails.unitPrice = billing[`${key}PayMode`].payModeDetails.startingAmount
+        billing[`${key}PayMode`].payModeDetails.overBillingUnit = billing[`${key}PayMode`].payModeDetails.startingTime
+      })
       let params = {
         deviceTypeCode: billing.deviceTypeCode,
         agentId: this.agentId,
@@ -196,7 +232,6 @@ export default {
         threeJson: JSON.stringify(billing.threePayMode),
         fourJson: JSON.stringify(billing.fourPayMode)
       }
-
       this.clickSubmit = true
       this.$post(url, params).then(res => {
         if (this.refresh == 1) {

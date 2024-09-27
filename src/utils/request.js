@@ -110,7 +110,8 @@ service.interceptors.response.use(
             message: res.data.message || i18n.t('lang.message1'),
             type: 'error'
           })
-          setTimeout(() => {
+          clearTimeout(window.loginTimeOut)
+          window.loginTimeOut = setTimeout(() => {
             location.href = '/login'
           }, 1000)
         } else {
@@ -132,7 +133,8 @@ service.interceptors.response.use(
           message: res.message,
           type: 'error'
         })
-        setTimeout(() => {
+        clearTimeout(window.loginTimeOut)
+        window.loginTimeOut = setTimeout(() => {
           location.href = '/login'
         }, 1000)
       } else if (['19876', 19876].indexOf(res.code) > -1) {

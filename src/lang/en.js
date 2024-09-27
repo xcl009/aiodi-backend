@@ -1437,7 +1437,8 @@ export default {
 		storeVip: 'Merchant Members',
 		overTimeNo: "The deposit will be refunded to the user's wallet balance upon expiration of the membership card",
 		overTimeYes: 'The user has orders that have not been completed for more than [0] hours, and the deposit will not be refunded. The membership card needs to pay the deposit again before it can be used',
-		saveCode: 'Scan the code to activate membership, right-click to save the QR code and send it to the user'
+		saveCode: 'Scan the code to activate membership, right-click to save the QR code and send it to the user',
+    vipOpenCode: 'Membership activation code'
   },
   market: {
     paymentType: 'Payment type',

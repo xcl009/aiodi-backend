@@ -6,8 +6,18 @@ import 'element-ui/lib/theme-chalk/index.css';
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import VueI18n from 'vue-i18n'
 import i18n from './lang/index'
-
 Vue.use(VueI18n)
+String.prototype.i18Format = function() {
+	// 数据长度为空，则直接返回
+	if (arguments.length == 0) {
+		return this
+	}
+	// 使用正则表达式，循环替换占位符数据
+	for (var result = this, i = 0; i < arguments.length; i++) {
+		result = result.replace(new RegExp("\\[" + i + "\\]", "g"), arguments[i])
+	}
+	return result
+}
 
 import '@/styles/index.scss' // global css
 import '@icon-park/vue/styles/index.css'

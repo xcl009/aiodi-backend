@@ -1,49 +1,45 @@
 <template>
   <div>
-    <div class="pl-20 pr-20 pb-10 bg-white">
+    <template v-if="isBrand()">
+      <condition ref="condition" :clickSubmit="clickSubmit" @query="getList">
+        <template v-slot:tabs>
+          <div class="mb-10 flex align-center">
+            <div class="mr-10">{{ $t('public.deviceType') }}</div>
+            <el-tabs class="flex-1" v-model="deviceTypeCode" @tab-click="getList()">
+              <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
+            </el-tabs>
+          </div>
+          <div class="mb-10 flex align-center" v-if="!userKey">
+            <div class="mr-10">{{ $t('public.type') }}</div>
+            <el-tabs class="flex-1" v-model="typeVal" @tab-click="getList()">
+              <el-tab-pane :label="item.title" :name="idx.toString()" v-for="(item, idx) in cardTypes" />
+            </el-tabs>
+          </div>
+        </template>
+        <template v-slot:defult>
+          <el-form-item :label="$t('membership.serviceName')">
+            <el-input v-model="form.serviceName" :placeholder="$t('public.enter')" />
+          </el-form-item>
+        </template>
+        <template v-slot:endButton>
+          <el-button size="small" type="primary" @click="setRows(1, { ableState: 1, countCycle: 1, depositAmount: 99 }, 1)">{{ $t('membership.addMembershipCard') }}</el-button>
+        </template>
+      </condition>
+    </template>
+    <template v-if="isAgent()">
+      <condition ref="condition" :clickSubmit="clickSubmit" :filterForm="false" @query="getList">
+        <template v-slot:tabs>
+          <div class="mb-10 flex align-center">
+            <div class="mr-10">{{ $t('public.deviceType') }}</div>
+            <el-tabs class="flex-1" v-model="deviceTypeCode" @tab-click="deviceCode()">
+              <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
+            </el-tabs>
+          </div>
+        </template>
+      </condition>
+    </template>
+    <div class="pl-10 pr-10 pb-10 bg-white">
       <template v-if="isBrand()">
-        <condition ref="condition" :clickSubmit="clickSubmit" @query="getList">
-          <template v-slot:tabs>
-            <div class="mb-10 flex align-center">
-              <div class="mr-10">{{ $t('public.deviceType') }}</div>
-              <el-tabs class="flex-1" v-model="deviceTypeCode" @tab-click="getList()">
-                <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
-              </el-tabs>
-            </div>
-            <div class="mb-10 flex align-center" v-if="!userKey">
-              <div class="mr-10">{{ $t('public.type') }}</div>
-              <el-tabs class="flex-1" v-model="typeVal" @tab-click="getList()">
-                <el-tab-pane :label="item.title" :name="idx.toString()" v-for="(item, idx) in cardTypes" />
-              </el-tabs>
-            </div>
-          </template>
-          <template v-slot:defult>
-            <el-form-item :label="$t('membership.serviceName')">
-              <el-input v-model="form.serviceName" :placeholder="$t('public.enter')" />
-            </el-form-item>
-          </template>
-          <template v-slot:endButton>
-            <el-button size="small" type="primary" @click="setRows(1, { ableState: 1, countCycle: 1, depositAmount: 99 }, 1)">{{ $t('membership.addMembershipCard') }}</el-button>
-          </template>
-        </condition>
-      </template>
-      <template v-if="isAgent()">
-        <condition ref="condition" :clickSubmit="clickSubmit" @query="getList">
-          <template v-slot:tabs>
-            <div class="mb-10 flex align-center">
-              <div class="mr-10">{{ $t('public.deviceType') }}</div>
-              <el-tabs class="flex-1" v-model="deviceTypeCode" @tab-click="deviceCode()">
-                <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
-              </el-tabs>
-            </div>
-          </template>
-        </condition>
-      </template>
-
-     <!-- <el-tabs class="mb-10 fs-b2" v-model="deviceTypeCode" @tab-click="getList">
-        <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
-      </el-tabs> -->
-      <template v-if="Ability[`${deviceTypeCode}_MEMBER_XF`] || Ability[`${deviceTypeCode}_MEMBER_DQ`] && isBrand()">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
           element-loading-text="Loading">
           <el-table-column :label="$t('membership.serviceName')">
