@@ -242,7 +242,7 @@
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))">
                               <template slot="append">{{ $t('public.minute') }}</template>
                             </el-input> -->
-                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.startingTime" class="flex1">
+                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.startingTime.toString()" class="flex1">
                               <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList"
                                 :key="index"></el-option>
                             </el-select>
@@ -292,7 +292,7 @@
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.deposit')"
-                        v-if="(item[`${xcx}PayMode`].modeType == 'DEPOSIT' || item[`${xcx}PayMode`].modeType == 'DEPOSIT_AND_FREE') && isBrand()"
+                        v-if="(item[`${xcx}PayMode`].modeType == 'DEPOSIT' || item[`${xcx}PayMode`].modeType == 'DEPOSIT_AND_FREE') && (isBrand() || agentPower.editStoreFeeDeposit === 0)"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
                         <el-input v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))">
@@ -390,11 +390,11 @@ export default {
       return [
         {
           title: this.$t('public.oneHour'),
-          value: 60
+          value: '60'
         },
         {
           title: this.$t('public.halfHour'),
-          value: 30
+          value: '30'
         }
       ]
     },

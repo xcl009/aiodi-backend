@@ -101,14 +101,19 @@ service.interceptors.response.use(
         break
       default:
         Message.closeAll(res.data.code)
-        if (['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1) {
+        if (['19876', 19876].indexOf(res.code) > -1) {
+          router.push({
+            path: '/user/checkPwd'
+          })
+        } else if (['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1) {
           Message({
             message: res.data.message || i18n.t('lang.message1'),
             type: 'error'
           })
-          setTimeout(() => {
+          clearTimeout(window.loginTimeOut)
+          window.loginTimeOut = setTimeout(() => {
             location.href = '/login'
-          }, 1500)
+          }, 1000)
         } else {
           Message({
             message: res.data.message || i18n.t('lang.message1'),
@@ -123,7 +128,16 @@ service.interceptors.response.use(
     Message.closeAll()
     if (error.response) {
       let res = error.response.data
-      if (['19876', 19876].indexOf(res.code) > -1) {
+      if (['10601', '10603', '10604', '10605'].indexOf(res.code) > -1) {
+        Message({
+          message: res.message,
+          type: 'error'
+        })
+        clearTimeout(window.loginTimeOut)
+        window.loginTimeOut = setTimeout(() => {
+          location.href = '/login'
+        }, 1000)
+      } else if (['19876', 19876].indexOf(res.code) > -1) {
         router.push({
           path: '/user/checkPwd'
         })

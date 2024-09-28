@@ -1433,6 +1433,12 @@ export default {
     orderAmount: 'Payment amount',
     storeName: 'Card Merchant',
     refundSuccessful: 'Refund successful',
+		globalVip: 'Platform Members',
+		storeVip: 'Merchant Members',
+		overTimeNo: "The deposit will be refunded to the user's wallet balance upon expiration of the membership card",
+		overTimeYes: 'The user has orders that have not been completed for more than [0] hours, and the deposit will not be refunded. The membership card needs to pay the deposit again before it can be used',
+		saveCode: 'Scan the code to activate membership, right-click to save the QR code and send it to the user',
+    vipOpenCode: 'Membership activation code'
   },
   market: {
     paymentType: 'Payment type',
@@ -1710,6 +1716,10 @@ export default {
     typeText: 'Normal division',
     typeText1: 'Only differentiate between superiors',
     typeText2: 'Only split into one level of agents',
+		restart: 'restart',
+		restartText: 'Are you sure you want to restart the device?',
+		electricity: 'Electricity level',
+		maxExtendTime: 'Cannot exceed 3 days',
   },
   cash: {
     withdrawalStatus: 'Withdrawal status',
@@ -1957,6 +1967,12 @@ export default {
     associatedGoods: 'Associated Goods',
     addTemp: 'add template',
   },
+	payMode: {
+	  weixin: 'Weixin',
+	  alipay: 'Alipay',
+	  three: 'APP',
+	  four: 'Other',
+	},
 
   activity: {
     typeName: 'Activity Type',

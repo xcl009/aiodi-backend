@@ -685,9 +685,9 @@ const util = {
         ],
         laundryMode: laundryMode,
         payModeDetails: {
-          startingTime: 60,
+          startingTime: '60',
           startingAmount: 3,
-          overBillingUnit: 60,
+          overBillingUnit: '60',
           unitPrice: 3,
           maxBillingTimeUnit: 1440,
           maxBillingTimePrice: 20,
@@ -711,9 +711,9 @@ const util = {
         ],
         laundryMode: laundryMode,
         payModeDetails: {
-          startingTime: 60,
+          startingTime: '60',
           startingAmount: 3,
-          overBillingUnit: 60,
+          overBillingUnit: '60',
           unitPrice: 3,
           maxBillingTimeUnit: 1440,
           maxBillingTimePrice: 20,
@@ -737,9 +737,9 @@ const util = {
         ],
         laundryMode: laundryMode,
         payModeDetails: {
-          startingTime: 60,
+          startingTime: '60',
           startingAmount: 3,
-          overBillingUnit: 60,
+          overBillingUnit: '60',
           unitPrice: 3,
           maxBillingTimeUnit: 1440,
           maxBillingTimePrice: 20,
@@ -763,9 +763,9 @@ const util = {
         ],
         laundryMode: laundryMode,
         payModeDetails: {
-          startingTime: 60,
+          startingTime: '60',
           startingAmount: 3,
-          overBillingUnit: 60,
+          overBillingUnit: '60',
           unitPrice: 3,
           maxBillingTimeUnit: 1440,
           maxBillingTimePrice: 20,
@@ -845,7 +845,7 @@ const util = {
   formatCurrency: (number) => {
   	if (!number) return 0
     if (number >= 1000) {
-      number = parseFloat((number / 1000).toFixed(1)) + 'K'
+      number = parseFloat((number / 1000)) + 'K'
     }
   	// 将数字转换为字符串
   	const numberStr = number.toString()

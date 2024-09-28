@@ -1,14 +1,45 @@
 <template>
   <div>
-    <div class="pl-20 pr-20 pb-10 bg-white">
-      <el-tabs class="mb-10 fs-b2" v-model="deviceTypeCode" @tab-click="getList">
-        <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
-      </el-tabs>
-
-      <template v-if="Ability[`${deviceTypeCode}_MEMBER_XF`] || Ability[`${deviceTypeCode}_MEMBER_DQ`]">
-        <el-button class="mb-20" type="primary"
-          @click="setRows(1, { ableState: 1, countCycle: 1, depositAmount: 99 }, 1)">{{ $t('membership.addMembershipCard')
-          }}</el-button>
+    <template v-if="isBrand()">
+      <condition ref="condition" :clickSubmit="clickSubmit" @query="getList">
+        <template v-slot:tabs>
+          <div class="mb-10 flex align-center">
+            <div class="mr-10">{{ $t('public.deviceType') }}</div>
+            <el-tabs class="flex-1" v-model="deviceTypeCode" @tab-click="getList()">
+              <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
+            </el-tabs>
+          </div>
+          <div class="mb-10 flex align-center" v-if="!userKey">
+            <div class="mr-10">{{ $t('public.type') }}</div>
+            <el-tabs class="flex-1" v-model="typeVal" @tab-click="getList()">
+              <el-tab-pane :label="item.title" :name="idx.toString()" v-for="(item, idx) in cardTypes" />
+            </el-tabs>
+          </div>
+        </template>
+        <template v-slot:defult>
+          <el-form-item :label="$t('membership.serviceName')">
+            <el-input v-model="form.serviceName" :placeholder="$t('public.enter')" />
+          </el-form-item>
+        </template>
+        <template v-slot:endButton>
+          <el-button size="small" type="primary" @click="setRows(1, { ableState: 1, countCycle: 1, depositAmount: 99 }, 1)">{{ $t('membership.addMembershipCard') }}</el-button>
+        </template>
+      </condition>
+    </template>
+    <template v-if="isAgent()">
+      <condition ref="condition" :clickSubmit="clickSubmit" :filterForm="false" @query="getList">
+        <template v-slot:tabs>
+          <div class="mb-10 flex align-center">
+            <div class="mr-10">{{ $t('public.deviceType') }}</div>
+            <el-tabs class="flex-1" v-model="deviceTypeCode" @tab-click="deviceCode()">
+              <el-tab-pane :label="item.name" :name="item.deviceTypeCode" v-for="(item, name) in deviceType" />
+            </el-tabs>
+          </div>
+        </template>
+      </condition>
+    </template>
+    <div class="pl-10 pr-10 pb-10 bg-white">
+      <template v-if="isBrand()">
         <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
           element-loading-text="Loading">
           <el-table-column :label="$t('membership.serviceName')">
@@ -38,15 +69,14 @@
                   `${$t('membership.freeNum')}：${scope.row.cycleFreeTimes}${$t('public.few')}` }}
               </div>
               <div>
-                {{ scope.row.freeTime == 10000 ? $t('membership.unlimitedDuration') :
-                  `${$t('membership.singleFree')}：${scope.row.freeTime}${$t('public.huor')}` }}
+                {{ scope.row.freeTime == 10000 ? $t('membership.unlimitedDuration') : `${$t('membership.singleFree')}：${scope.row.freeTime}${$t('public.huor')}` }}
               </div>
             </template>
           </el-table-column>
           <el-table-column :label="$t('public.deposit')">
             <template slot-scope="scope">
               <div>{{ scope.row.depositAmount }}</div>
-              <div v-if="scope.row.depositAmount > 0">{{ $t('public.exceed') }}{{ scope.row.overTime }}{{ $t('membership.noRefund') }}</div>
+              <div v-if="scope.row.depositAmount > 0 && scope.row.overTime > 0">{{ $t('public.exceed') }}{{ scope.row.overTime }}{{ $t('membership.noRefund') }}</div>
             </template>
           </el-table-column>
           <el-table-column :label="$t('public.operate')">
@@ -58,6 +88,11 @@
           </el-table-column>
         </el-table>
       </template>
+
+      <div class="pl-20 pr-20 pt-20 pb-10 flexv align-center justify-center cursor" v-if="id">
+        <div class="access-url" :ref="`vip_code`" :id="`vip_code`"></div>
+        <div class="mt-10">{{ $t('membership.saveCode') }}</div>
+      </div>
     </div>
 
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :close-on-click-modal="false"
@@ -66,6 +101,11 @@
       <template v-if="dialogType == 1">
         <el-form class="custom-form pl-20 pr-20" label-width="110px" label-position="left" ref="cardForm"
           :rules="cardRules" :model="dform">
+          <el-form-item :label="$t('public.type')">
+            <el-radio-group v-model="typeVal" @input="getList">
+              <el-radio :label="idx.toString()" v-for="(item, idx) in cardTypes">{{ item.title }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item :label="$t('membership.serviceName')" ref="serviceName" prop="serviceName">
             <el-input v-model="dform.serviceName"></el-input>
           </el-form-item>
@@ -120,6 +160,7 @@
               <el-input type="number" v-model="dform.overTime">
                 <template slot="append">{{ $t('public.huor') }}</template>
               </el-input>
+               <div>{{ dform.overTime > 0 ? ($t('membership.overTimeYes')).i18Format(dform.overTime) : $t('membership.overTimeNo')}}</div>
             </el-form-item>
           </template>
 
@@ -151,9 +192,11 @@
 
 <script>
 import { arrayToObj } from "@/utils/index"
+import condition from '@/components/condition/'
+import QRCode from 'qrcodejs2'
 export default {
   components: {
-
+    condition
   },
   props: {
     type: {
@@ -178,6 +221,25 @@ export default {
         size: 20
       },
       form: {},
+
+      cardTypes: [
+        {
+          title: this.$t('membership.globalVip'),
+          val: '0',
+          key: 'storeId'
+        },
+        /* {
+          title: '代理会员',
+          val: '1',
+          key: 'agentId'
+        }, */
+        {
+          title: this.$t('membership.storeVip'),
+          val: 111111,
+          key: 'storeId'
+        }
+      ],
+      typeVal: 0,
 
       // 弹出相关
       dialogType: 1,
@@ -245,6 +307,20 @@ export default {
   },
   methods: {
     /**
+     * 设置二维码
+     */
+    deviceCode() {
+      this.$refs[`vip_code`].innerHTML = ''
+      this.$nextTick(() => {
+        new QRCode(this.$refs[`vip_code`], {
+          width: 150,
+          height: 150,
+          text: `${this.config.CODE_URL}${this.SITE_INFO.code}/GVIP?storeId=${this.id}&deviceTypeCode=${this.deviceTypeCode}`
+        })
+      })
+    },
+
+    /**
      * 获取设备
      */
     getDevice() {
@@ -260,7 +336,12 @@ export default {
         })
         this.deviceType = deviceType
         this.deviceTypeCode = deviceTypeCode
-        this.getList()
+        if(this.isAgent() || (this.isBrand() && this.id)){
+          this.deviceCode()
+        }
+        if(this.isBrand()){
+          this.getList()
+        }
       })
     },
 
@@ -273,7 +354,11 @@ export default {
         storeId: 0,
         agentId: 0
       }
-      params[this.userKey] = this.id
+      if(this.userKey){
+        params[this.userKey] = this.id
+      }else if(this.typeVal > 0){
+        params[this.cardTypes[this.typeVal].key] = this.cardTypes[this.typeVal].val
+      }
       this.$get('iot-saas-basic/brand/goods/v1/admin/list', params).then(res => {
         if (res && res.length > 0) {
           res.map(item => {
@@ -283,21 +368,21 @@ export default {
           })
           this.list = res
         } else {
-          this.list.push({
-            serviceName: this.$t('membership.message'),
-            amount: '9.9',
-            availableDay: 30,
-            countCycle: 30,
-            cycleFreeTimes: 60,
-            freeTime: 3,
-            ableState: 1,
-            storeId: 0,
-            agentId: 0,
-            freeTimeType: 1,
-            overTime: 0,
-            depositAmount: 0,
-            deviceTypeCode: this.deviceTypeCode
-          })
+          // this.list = [{
+          //   serviceName: this.$t('membership.message'),
+          //   amount: '9.9',
+          //   availableDay: 30,
+          //   countCycle: 30,
+          //   cycleFreeTimes: 60,
+          //   freeTime: 3,
+          //   ableState: 1,
+          //   storeId: 0,
+          //   agentId: 0,
+          //   freeTimeType: 1,
+          //   overTime: 0,
+          //   depositAmount: 0,
+          //   deviceTypeCode: this.deviceTypeCode
+          // }]
         }
       })
     },
@@ -328,7 +413,7 @@ export default {
               cardType: rows.cycleFreeTimes == this.cycleFreeTimes ? 3 : (((rows.availableDay == rows.countCycle) || (!rows.availableDay && rows.countCycle == 1)) ? 1 : 2),
               freeTime: rows.freeTime,
               freeTimeType: rows.freeTime == 10000 ? 1 : 0,
-              overTime: rows.overTime || 120,
+              overTime: rows.overTime || 0,
               depositAmount: rows.depositAmount || 0,
               cardModul: rows.depositAmount > 0 ? 1 : 0,
               ableState: rows.ableState,
@@ -377,7 +462,11 @@ export default {
         case 1:
           this.$refs['cardForm'].validate((valid, object) => {
             if (valid) {
-              params[this.userKey] = this.id
+              if(this.userKey){
+                params[this.userKey] = this.id
+              }else{
+                params[this.cardTypes[this.typeVal].key] = this.cardTypes[this.typeVal].val
+              }
               if (params.cardType == 1) {
                 params.countCycle = params.availableDay
               } else if (params.cardType == 3) {
@@ -396,7 +485,6 @@ export default {
                 params.freeTime = 600000
                 params.overTime = parseFloat(params.overTime) * 60
               }
-              this.clickSubmit = false
               this.$post('iot-saas-basic/brand/goods/v1/save', params).then(res => {
                 this.$message({
                   message: that.$t('public.setSuccess'),
@@ -418,7 +506,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/deep/ .el-dialog__body {
-  padding: 10px;
-}
+  /deep/ .el-dialog__body {
+    padding: 10px;
+  }
+  .access-url {
+    width: 150px;
+    height: 150px
+  }
 </style>

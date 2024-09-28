@@ -1443,8 +1443,8 @@ export default {
     text: '押金大于0时表示会员卡为押金模式,用户购买卡需缴纳押金,租借时无需缴纳押金',
     text1: '确定退还卡押金吗？',
     text2: '注：押金将退还用户小程序钱包中。',
-    overTime: '不退押金时长',
-    freeTime: '单次免费时长',
+    overTime: '不退押金',
+    freeTime: '单次免费',
     cardStatus: '卡状态',
     type: '次卡',
     type1: '周期卡',
@@ -1465,6 +1465,12 @@ export default {
     orderAmount: '支付金额',
     storeName: '卡商户',
     refundSuccessful: '退还成功',
+    globalVip: '平台会员',
+    storeVip: '商户会员',
+    overTimeNo: '押金在会员卡到期后退回到用户钱包余额',
+    overTimeYes: '用户有超[0]小时未结束的订单，押金不退还，会员卡需再次缴纳押金方可使用',
+    saveCode: '扫码可开通会员，右键保存二维码发给用户',
+    vipOpenCode: '会员开通码'
   },
   market: {
     paymentType: '付费类型',
@@ -1744,7 +1750,8 @@ export default {
     typeText2: '只分一级代理',
     restart: '重启',
     restartText: '确定要重启该设备吗？',
-    electricity: '电量'
+    electricity: '电量',
+    maxExtendTime: '不可大于3天'
   },
   cash: {
     withdrawalStatus: '提现状态',
