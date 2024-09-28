@@ -281,6 +281,7 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
+        if(params.modeId <= 0) delete params.modeId
         this.$get('iot-saas-device/admin/locker/stock/findPage', params).then((res = {}) => {
           this.list = res.rows || []
           if (this.outStatus) {
@@ -363,7 +364,7 @@
         this.clickSubmit = true
         switch (this.drawerType) {
           case 1:
-          
+
             break
         }
       },

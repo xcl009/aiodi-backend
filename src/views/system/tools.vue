@@ -525,13 +525,15 @@
               </div>
             </el-tab-pane> -->
           </el-tabs>
-
         </el-form>
       </template>
       <template v-if="dialogType == 9">
         <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
           <el-form-item :label="$t('public.edit') + $t('public.billingRules')">
             <el-switch v-model="dform.editStoreFee" :active-value="0" :inactive-value="1" />
+          </el-form-item>
+          <el-form-item :label="$t('public.edit') + $t('public.billingRules') + $t('public.deposit')">
+            <el-switch v-model="dform.editStoreFeeDeposit" :active-value="0" :inactive-value="1" />
           </el-form-item>
         </el-form>
       </template>
