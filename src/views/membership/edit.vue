@@ -315,7 +315,7 @@ export default {
         new QRCode(this.$refs[`vip_code`], {
           width: 150,
           height: 150,
-          text: `${this.config.CODE_URL}${this.SITE_INFO.code}/GVIP?storeId=${this.id}&deviceTypeCode=${this.deviceTypeCode}`
+          text: `${this.config.CODE_URL}${this.SITE_INFO.code}/GVIP/?storeId=${this.id}&deviceTypeCode=${this.deviceTypeCode}`
         })
       })
     },
