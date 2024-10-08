@@ -1,6 +1,6 @@
 <template>
   <div>
-    <condition ref="condition" :clickSubmit="clickSubmit" :filterForm="false" @reset="reset" @query="toQuery">
+    <condition ref="condition" :clickSubmit="clickSubmit" :filterForm="false" @query="toQuery">
       <template v-slot:tabs>
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">规格</div>
@@ -8,6 +8,7 @@
             <el-tab-pane :label="$t('public.all')" :name="''" />
             <el-tab-pane :label="`${item.name}`" :name="'' + item.val + ''" v-for="item in modeIds" />
           </el-tabs>
+          <el-button type="primary" size="small" @click="setRows(1, {}, 1)"><i class="el-icon-plus el-icon--left" />{{ $t('public.add') }}</el-button>
         </div>
       </template>
     </condition>
@@ -15,8 +16,8 @@
     <div class="pl-10 pr-10 bg-white">
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
-        <div class="ml-20 cursor line-1" :class="[selArr.length > 0 ? 'text-primary': 'text-gray']" @click="setRows(1, {}, 1)">批量设置规格</div>
-        <div class="ml-20 cursor line-1" :class="[selArr.length > 0 ? 'text-primary': 'text-gray']" @click="setRows(1, {}, 2)">批量设置收费模式</div>
+        <div class="ml-20 cursor line-1" :class="[selArr.length > 0 ? 'text-primary': 'text-gray']" @click="setRows(1, {}, 2)">批量设置规格</div>
+        <div class="ml-20 cursor line-1" :class="[selArr.length > 0 ? 'text-primary': 'text-gray']" @click="setRows(1, {}, 3)">批量设置收费模式</div>
         <table-column-set storageKey="doorTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
@@ -62,6 +63,36 @@
 
     <el-drawer :title="drawerTitle[drawerType]" :visible.sync="drawerStatus">
       <template v-if="drawerType == 1">
+        <el-form class="pl-20 pr-20 custom-form" label-width="auto" ref="dform" :model="dform" :rules="rules" @submit.native.prevent>
+          <el-form-item :label="'起始编号'" prop="sort">
+            <el-input v-model="dform.sort"></el-input>
+          </el-form-item>
+          <el-form-item :label="'柜门数量'" prop="num">
+            <el-input v-model="dform.num"></el-input>
+          </el-form-item>
+          <el-form-item :label="'编号前缀'" prop="slotNo">
+            <el-input v-model="dform.slotNo"></el-input>
+            <div>例：起始编号1，数量10，编号前缀L，生成10个柜门，编号为：L1-L10</div>
+          </el-form-item>
+          <el-form-item :label="'柜门规格'" prop="modeId">
+            <el-select v-model="dform.modeId">
+              <el-option :label="`${item.name}`" :value="item.val" v-for="(item, index) in modeIds" :key="index"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item :label="'收费模式'" prop="specId">
+            <el-select v-model="dform.specId">
+              <el-option :label="`${item.name}`" :value="item.val" v-for="(item, index) in modeIds" :key="index"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item :label="'柜门状态'">
+            <el-radio-group v-model="dform.status" size="medium">
+              <el-radio-button :label="0">{{ '启用' }}</el-radio-button>
+              <el-radio-button :label="1">{{ '禁用' }}</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="drawerType == 2">
         <div class="flex pl-20 pr-20">
           <div class="mr-20">规格</div>
           <div>
@@ -74,7 +105,7 @@
           </div>
         </div>
       </template>
-      <template v-if="drawerType == 2">
+      <template v-if="drawerType == 3">
         <div class="flex pl-20 pr-20">
           <div class="mr-20">收费模式</div>
           <div>
@@ -87,7 +118,7 @@
           </div>
         </div>
       </template>
-      <template v-if="[1, 2].indexOf(drawerType) > -1">
+      <template v-if="[1, 2, 3].indexOf(drawerType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -213,12 +244,30 @@
         drawerType: 1,
         drawerStatus: false,
         drawerTitle: {
-          1: '规格',
-          2: '收费模式'
+          1: '添加柜门',
+          2: '规格',
+          3: '收费模式'
         },
         curRow: {},
         curIdx: 0,
         dform: {},
+        rules: {
+          sort: [
+            { required: true, message: '此项必填', trigger: 'blur' }
+          ],
+          num: [
+            { required: true, message: '此项必填', trigger: 'blur' }
+          ],
+          slotNo: [
+            { required: true, message: '此项必选', trigger: 'blur' }
+          ],
+          modeId: [
+            { required: true, message: '此项必选', trigger: 'blur' }
+          ],
+          specId: [
+            { required: true, message: '此项必选', trigger: 'blur' }
+          ]
+        },
 
         /**
          * 列的配置化对象，存储配置信息
