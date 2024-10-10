@@ -274,15 +274,9 @@
           <el-form-item label="APPID">
             <el-input v-model="dform.appId"></el-input>
             <div class="generatebox generate" @click="generateChange()">没有APPID请点击生成</div>
-            <!-- <div class="flex_j"> -->
-
-              <!-- <div class="generatebox generate" @click="generateChange()">没有APPID请点击生成</div> -->
-            <!-- </div> -->
           </el-form-item>
           <el-form-item label="code">
             <el-input v-model="dform.channelCode" disabled></el-input>
-
-
           </el-form-item>
           <el-form-item :label="$t('public.content')">
             <el-input type="textarea" :autosize="{ minRows: 14, maxRows: 16 }" :placeholder="$t('public.content')"

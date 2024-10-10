@@ -420,7 +420,6 @@ export default {
     refundOfDepositText9:"当即时退款手续费大于0时，开启限时减免功能后即可抵扣手续费",
     currency:"币种",
     currencyText:'请选择币种',
-    generate:"没有APPID请点击生成",
     reserve: '保留',
     reserveEmpty: '清空'
   },

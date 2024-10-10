@@ -92,6 +92,11 @@
             width: 'auto',
           },
           {
+            key: 'state',
+            val: true,
+            name: '状态',
+          },
+          {
             key: 'operate',
             val: true,
             name: '操作',
@@ -121,16 +126,7 @@
         clickSubmit: false,
         tableMaxH: '250',
         list: [
-          {
-            name: '大柜门',
-            modeId: 'S',
-          },
-          {
-            name: '中柜门'
-          },
-          {
-            name: '小柜门'
-          },
+
         ],
         listLoading: false,
         listQuery: {
@@ -172,8 +168,8 @@
        * 获取列表
        */
       getList() {
-        this.$get('iot-saas-device/admin/locker/mode/loadAll').then((res = {}) => {
-          this.list = res.rows || []
+        this.$get('iot-saas-device/admin/locker/mode/loadAll').then((res = []) => {
+          this.list = res
           this.listLoading = false
           this.clickSubmit = false
           this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
@@ -200,7 +196,11 @@
             this.dform = {}
             switch (drawerType) {
               case 2:
-                this.dform = JSON.parse(JSON.stringify(row))
+                this.dform = {
+                  id: row.id,
+                  name: row.name,
+                  code: row.code
+                }
               break
             }
             break

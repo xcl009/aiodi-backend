@@ -21,7 +21,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('qrcode.numberOfWarehouses')"
-          v-if="form.deviceTypeCode && form.deviceTypeCode.indexOf('PA') > -1" ref="windosNumber" prop="windosNumber">
+          v-if="form.deviceTypeCode && (form.deviceTypeCode.indexOf('PA') > -1 || form.deviceTypeCode.indexOf('LK') > -1)" ref="windosNumber" prop="windosNumber">
           <el-input type="number" v-model="form.windosNumber" :placeholder="$t('qrcode.numberOfWarehousesText')" />
         </el-form-item>
         <el-form-item :label="$t('qrcode.numberOfWarehouses')"

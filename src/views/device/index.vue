@@ -284,7 +284,7 @@
                 <el-button type="text" :disabled="!scope.row.distribute" slot="reference">{{ $t('device.unbind')
                 }}</el-button>
               </el-popconfirm>
-              <el-button type="text" v-if="scope.row.deviceType.code.indexOf('LK') > -1" slot="reference" @click="$router.push({path: `/user/cabinetDoor?deviceSn=${scope.row.deviceSn}`})">柜门列表</el-button>
+              <el-button type="text" v-if="scope.row.deviceType.code.indexOf('LK') > -1" slot="reference" @click="$router.push({path: `/device/cabinetDoor?deviceSn=${scope.row.deviceSn}`})">柜门列表</el-button>
               <el-button type="text" v-else-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.eject') }}</el-button>
               <el-popconfirm
                 class="pop"
