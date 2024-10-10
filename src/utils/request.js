@@ -101,7 +101,7 @@ service.interceptors.response.use(
         break
       default:
         Message.closeAll(res.data.code)
-        if (['19876', 19876].indexOf(res.code) > -1) {
+        if (['19876', 19876].indexOf(res.data.code) > -1) {
           router.push({
             path: '/user/checkPwd'
           })
