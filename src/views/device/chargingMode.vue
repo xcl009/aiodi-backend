@@ -31,7 +31,7 @@
               <div class="flex flex-wrap operate">
                 <template>
                   <el-button type="text" @click="setRows(1, scope.row, 2)">{{ $t('public.edit') }}</el-button>
-                  <el-popconfirm
+                  <!-- <el-popconfirm
                     class="pop"
                     cancel-button-type=""
                     icon="el-icon-info"
@@ -40,7 +40,7 @@
                     @onConfirm="setRows(2, scope.row, 1, scope.$index)"
                   >
                     <el-button type="text" slot="reference"><span class="text-danger">{{ $t('public.delete') }}</span></el-button>
-                  </el-popconfirm>
+                  </el-popconfirm> -->
                 </template>
               </div>
             </template>
@@ -63,20 +63,20 @@
           </el-form-item>
           <template v-if="dform.method == '1'">
             <el-form-item :label="'计费金额'" prop="billingAmount" key="billingAmount1">
-              <el-input v-model="dform.billingAmount"><template slot="append">{{ siteInfo.currencySymbol }}</template></el-input>
+              <el-input type="number" v-model="dform.billingAmount"><template slot="append">{{ siteInfo.currencySymbol }}</template></el-input>
             </el-form-item>
           </template>
           <template v-if="['2', '3'].indexOf(dform.method) > -1">
             <el-form-item :label="'预付模式'">
               <el-switch v-model="dform.prepaidAmountSwitch" :active-value="1" :inactive-value="0" />
             </el-form-item>
-            <el-form-item :label="'预付金额'" prop="prepaidAmount" v-if="dform.prepaidAmountSwitch == 1">
+            <el-form-item type="number" :label="'预付金额'" prop="prepaidAmount" v-if="dform.prepaidAmountSwitch == 1">
               <el-input v-model="dform.prepaidAmount"><template slot="append">{{ siteInfo.currencySymbol }}</template></el-input>
             </el-form-item>
             <el-form-item :label="'免费时长'" prop="freeDuration">
-              <el-input v-model="dform.freeDuration"class="input-select">
+              <el-input v-model="dform.freeDuration" type="number" class="input-select">
                 <el-select v-model="dform.freeDurationType" slot="append">
-                  <el-option :label="v" :value="i" v-for="(v, i) in timeList" :key="i"></el-option>
+                  <el-option :label="v" :value="parseInt(i)" v-for="(v, i) in timeList" :key="i"></el-option>
                 </el-select>
               </el-input>
             </el-form-item>
@@ -91,9 +91,9 @@
                     </el-input>
                   </div>
                   <div>
-                    <el-input v-model="dform.initialDuration" class="ml-10 input-select">
+                    <el-input type="number" v-model="dform.initialDuration" class="ml-10 input-select">
                       <el-select v-model="dform.initialDurationType" slot="append">
-                        <el-option :label="v" :value="i" v-for="(v, i) in timeList" :key="i"></el-option>
+                        <el-option :label="v" :value="parseInt(i)" v-for="(v, i) in timeList" :key="i"></el-option>
                       </el-select>
                     </el-input>
                   </div>
@@ -112,18 +112,21 @@
                 <div>
                 <el-input type="number" v-model="dform.billingCycle" class="ml-10 input-select">
                   <el-select v-model="dform.billingCycleType" slot="append">
-                    <el-option :label="v" :value="i" v-for="(v, i) in timeList" :key="i"></el-option>
+                    <el-option :label="v" :value="parseInt(i)" v-for="(v, i) in timeList" :key="i"></el-option>
                   </el-select>
                 </el-input>
                 </div>
               </div>
             </el-form-item>
-            <el-form-item :label="'封顶金额'" prop="capAmount">
+            <el-form-item type="number" :label="'封顶金额'" prop="capAmount">
               <el-input type="number" v-model="dform.capAmount">
                 <template slot="append">
                   {{ siteInfo.currencySymbol }}
                 </template>
               </el-input>
+            </el-form-item>
+            <el-form-item :label="'状态'">
+              <el-switch v-model="dform.state" :active-value="0" :inactive-value="1" />
             </el-form-item>
           </template>
         </el-form>
@@ -209,9 +212,9 @@
       },
       timeList() {
         return {
-          '1': this.$t('public.minute'),
-          '2': this.$t('public.huor'),
-          '3': this.$t('public.day'),
+          1: this.$t('public.minute'),
+          2: this.$t('public.huor'),
+          3: this.$t('public.day'),
         }
       },
       method(){
@@ -319,15 +322,24 @@
               case 1:
                 this.dform = {
                   method: 1,
+                  freeDurationType: 1,
+                  billingCycleType: 1,
+                  initialDurationType: 1,
                   prepaidAmountSwitch: 1,
-                  freeDurationType: '1',
-                  billingCycleType: '1',
-                  initialDurationType: '1',
-                  freeDuration: 0
+                  freeDuration: 0,
+                  state: 0
                 }
               break
               case 2:
+                let timeKey = ['freeDuration','billingCycle','initialDuration']
+                timeKey.map(key => {
+                  if(row[key]){
+                    row[`${key}Type`] = this.getTimeUnit(row[key], 1)
+                    row[key] = this.getTimeUnit(row[key], 2)
+                  }
+                })
                 this.dform = JSON.parse(JSON.stringify(row))
+                console.log(this.dform)
               break
             }
             break
@@ -356,10 +368,16 @@
         this.clickSubmit = true
         switch (this.drawerType) {
           case 1: case 2:
-            console.log(params)
             this.$refs['dform'].validate((valid, object) => {
               if (valid) {
                 params.brandId = this.agentInfo.brandId
+                let timeKey = ['freeDuration','billingCycle','initialDuration']
+                timeKey.map(key => {
+                  if(params[key]){
+                    params[key] = parseInt(params[key]) * (params[`${key}Type`] == 3 ? 1440 : params[`${key}Type`] == 2 ? 60 : 1)
+                  }
+                })
+                console.log(params)
                 this.$post(`iot-saas-device/admin/locker/spec/${this.drawerType == 1 ? 'save' : 'update'}`, params).then(res => {
                   this.$message({
                     message: this.$t('public.operationSuccessful'),
@@ -390,13 +408,23 @@
             desc = `单次收费${this.formatCurrency(row.billingAmount, 1)}`
           break
           case 2:
-            desc = `免费${row.freeDuration}${this.timeList[row.freeDurationType]},${this.formatCurrency(row.billingAmount, 1)}/${row.billingCycle}${this.timeList[row.billingCycleType]},封顶${this.formatCurrency(row.capAmount, 1)}`
+            desc = `免费${this.getTimeUnit(row.freeDuration)},${this.getTimeUnit(row.billingCycle)}${this.formatCurrency(row.billingAmount, 1)},封顶${this.formatCurrency(row.capAmount, 1)}`
           break
           case 3:
-            desc = `免费${row.freeDuration}${this.timeList[row.freeDurationType]},前${row.initialDuration}${this.timeList[row.initialDurationType] || '分钟'}${this.formatCurrency(row.initialAmount, 1)},${this.timeList[row.freeDurationType]},${this.formatCurrency(row.billingAmount, 1)}/${row.billingCycle}${this.timeList[row.billingCycleType]},封顶${this.formatCurrency(row.capAmount, 1)}`
+            desc = `免费${this.getTimeUnit(row.freeDuration)},前${this.getTimeUnit(row.initialDuration)}${this.formatCurrency(row.initialAmount, 1)},${this.getTimeUnit(row.billingCycle)}${this.formatCurrency(row.billingAmount, 1)},封顶${this.formatCurrency(row.capAmount, 1)}`
           break
         }
         return desc
+      },
+
+      /**
+       * 根据分钟数判断单位
+       */
+      getTimeUnit(num, type = 0){
+        num = parseInt(num)
+        let timeMinute = {1: 1, 2: 60, 3: 1440}, timeType = (num == 0 ? 1 : num % 1440 == 0 ? 3 : num % 60 == 0 ? 2 : 1)
+        num = num / timeMinute[timeType]
+        return type == 2 ? num : type == 1 ? timeType : num + this.timeList[timeType]
       }
     }
   }

@@ -482,13 +482,13 @@
        */
       saveDoor(params, doorNum, idx = 1) {
         if (doorNum <= idx) {
+          this.loadObj.close()
           this.$message({
             message: '添加成功',
             type: 'success'
           })
-          this.toQuery()
-          this.loadObj.close()
           this.clickSubmit = false
+          this.toQuery()
           this.drawerStatus = false
           return
         }

@@ -11,26 +11,29 @@
       <el-table class="custom" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
         <template v-for="item in showColumn" v-if="item.val">
-          <el-table-column :label="item.name" :width="item.width || 110" v-if="item.key == 'slotNo'">
+          <el-table-column :label="item.name" :width="item.width || 110" v-if="item.key == 'state'">
             <template slot-scope="scope">
-              fdsfdsfs
+              {{ scope.row.state ? '禁用' : '正常'}}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :width="item.width || 110" v-else-if="item.key == 'operate'">
             <template slot-scope="scope">
               <div class="flex flex-wrap operate">
-                <template>
+                <template v-if="scope.row.state == 0">
                   <el-button type="text" @click="setRows(1, scope.row, 2)">{{ $t('public.edit') }}</el-button>
                   <el-popconfirm
                     class="pop"
                     cancel-button-type=""
                     icon="el-icon-info"
                     icon-color="#FF7D00"
-                    :title="'确定删除此规格吗？'"
+                    :title="'确定禁用此规格吗？'"
                     @onConfirm="setRows(2, scope.row, 1, scope.$index)"
                   >
-                    <el-button type="text" slot="reference"><span class="text-danger">{{ $t('public.delete') }}</span></el-button>
+                    <el-button type="text" slot="reference"><span class="text-danger">禁用</span></el-button>
                   </el-popconfirm>
+                </template>
+                <template v-if="scope.row.state == 1">
+                  <el-button type="text" @click="setRows(3, scope.row, 1)">恢复</el-button>
                 </template>
               </div>
             </template>
@@ -212,7 +215,19 @@
                 message: this.$t('public.operationSuccessful'),
                 type: 'success'
               })
-              this.list.splice(idx, 1)
+              row.state = 1
+            })
+          break
+          case 3:
+            this.$post('iot-saas-device/admin/locker/mode/update', {
+              id: row.id,
+              state: 0
+            }).then(res => {
+              this.$message({
+                message: this.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              row.state = 0
             })
           break
         }
