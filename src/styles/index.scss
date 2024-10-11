@@ -921,6 +921,7 @@ div:focus {
   }
   .el-button + .pop, .pop + .pop, .pop + .el-button{
     margin-left: 10px;
+    line-height: 100%;
   }
   .w-160{
     width: 160px;
@@ -997,6 +998,10 @@ div:focus {
   }
   .el-input__icon{
     line-height: 32px;
+  }
+  
+  .input-select .el-input-group__append{
+    width: 90px;
   }
 }
 
