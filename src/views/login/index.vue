@@ -170,7 +170,7 @@ export default {
     this.THEME = this.config.THEME[this.gid] || 'DEFAULT'
   },
   mounted() {
-    if (this.gid) this.getPlatformConfig()
+    if (this.gid && this.gid != 100000000) this.getPlatformConfig()
   },
   methods: {
     $_isMobile() {
