@@ -7,6 +7,7 @@
           <el-tab-pane :label="$t('system.shootingConfiguration')" name="freeVideoConfig" />
           <el-tab-pane :label="$t('system.hideConfiguration')" name="xcxMoneyConfig" />
           <el-tab-pane :label="$t('system.updateDetails')" name="systemUpdateDetails" />
+          <el-tab-pane label="设备软件升级配置" name="deviceUpdateConfig" />
         </el-tabs>
 
         <el-form ref="form" :model="form" label-width="130px" label-position="left">
@@ -58,6 +59,12 @@
               <tinymce v-model="form.updateDetails" :height="600" />
             </el-form-item>
           </template>
+          <template v-if="key == 'deviceUpdateConfig'">
+            <h4>设备软件升级配置</h4>
+            <el-form-item label="配置内容">
+              <el-input v-model="form.config" placeholder="例:天盘6口网关版本升级配置:{TP_6_1:{updateType:'1',domainUrl:'tjwl.oss-cn-shenzhen.aliyuncs.com',path:'/new_roms/TJ8051_T_6_24_PN_V1_241016_1-update.bin',md5:'218293312BF159D4ACDA90DE06F6A608',size:'61972',deviceVersion:'',fileVersion:'',}}" type="textarea" rows="10" />
+            </el-form-item>
+          </template>
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submit') }}</el-button>
           </el-form-item>
@@ -69,11 +76,9 @@
 
 <script>
   import Tinymce from '@/components/Tinymce'
-  import upload from '@/components/upload'
   export default {
     components: {
-      Tinymce,
-      upload
+      Tinymce
     },
     data() {
       return {
