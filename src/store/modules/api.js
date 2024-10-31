@@ -6,13 +6,13 @@ const actions = {
   /**
    * »ñÈ¡ÇøÓò
    */
-  getRegions(){
+  getRegions({ commit, state }, params = {}){
     return new Promise((resolve, reject) => {
       if(Vue.prototype.regions){
         resolve(Vue.prototype.regions)
         return
       }
-      getRegions().then(res => {
+      getRegions(params).then(res => {
         Vue.prototype.regions = res
         resolve(res)
       }).catch(error => {

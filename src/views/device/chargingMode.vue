@@ -11,9 +11,19 @@
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         :max-height="tableMaxH" element-loading-text="Loading">
         <template v-for="item in showColumn" v-if="item.val">
-          <el-table-column :label="item.name" :width="item.width || 110" v-if="item.key == 'specId'">
+          <el-table-column :label="item.name" :width="item.width || 110" v-if="item.key == 'method'">
             <template slot-scope="scope">
-              fdsfdsfs
+              {{ method[scope.row.method] }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" v-else-if="item.key == 'desc'">
+            <template slot-scope="scope">
+              {{ getMethodDesc(scope.row) }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" :width="item.width || 110" v-else-if="item.key == 'state'">
+            <template slot-scope="scope">
+              {{ scope.row.state ? '禁用' : '正常' }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :width="item.width || 110" v-else-if="item.key == 'operate'">
@@ -21,7 +31,7 @@
               <div class="flex flex-wrap operate">
                 <template>
                   <el-button type="text" @click="setRows(1, scope.row, 2)">{{ $t('public.edit') }}</el-button>
-                  <el-popconfirm
+                  <!-- <el-popconfirm
                     class="pop"
                     cancel-button-type=""
                     icon="el-icon-info"
@@ -30,7 +40,7 @@
                     @onConfirm="setRows(2, scope.row, 1, scope.$index)"
                   >
                     <el-button type="text" slot="reference"><span class="text-danger">{{ $t('public.delete') }}</span></el-button>
-                  </el-popconfirm>
+                  </el-popconfirm> -->
                 </template>
               </div>
             </template>
@@ -47,28 +57,26 @@
             <el-input v-model="dform.name"></el-input>
           </el-form-item>
           <el-form-item :label="'计费方式'">
-            <el-radio-group v-model="dform.method" size="medium" :disabled="drawerType == 2">
-              <el-radio-button :label="1">{{ '按次收费' }}</el-radio-button>
-              <el-radio-button :label="2">{{ '计时收费' }}</el-radio-button>
-              <el-radio-button :label="3">{{ '首期差异收费' }}</el-radio-button>
+            <el-radio-group v-model="dform.method" size="medium">
+              <el-radio-button :label="v" v-for="(i, v) in method">{{ i }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <template v-if="dform.method == 1">
+          <template v-if="dform.method == '1'">
             <el-form-item :label="'计费金额'" prop="billingAmount" key="billingAmount1">
-              <el-input v-model="dform.billingAmount"><template slot="append">{{ siteInfo.currencySymbol }}</template></el-input>
+              <el-input type="number" v-model="dform.billingAmount"><template slot="append">{{ siteInfo.currencySymbol }}</template></el-input>
             </el-form-item>
           </template>
-          <template v-if="[2, 3].indexOf(dform.method) > -1">
+          <template v-if="['2', '3'].indexOf(dform.method) > -1">
             <el-form-item :label="'预付模式'">
               <el-switch v-model="dform.prepaidAmountSwitch" :active-value="1" :inactive-value="0" />
             </el-form-item>
-            <el-form-item :label="'预付金额'" prop="prepaidAmount" v-if="dform.prepaidAmountSwitch == 1">
+            <el-form-item type="number" :label="'预付金额'" prop="prepaidAmount" v-if="dform.prepaidAmountSwitch == 1">
               <el-input v-model="dform.prepaidAmount"><template slot="append">{{ siteInfo.currencySymbol }}</template></el-input>
             </el-form-item>
             <el-form-item :label="'免费时长'" prop="freeDuration">
-              <el-input v-model="dform.freeDuration"class="input-select">
+              <el-input v-model="dform.freeDuration" type="number" class="input-select">
                 <el-select v-model="dform.freeDurationType" slot="append">
-                  <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList" :key="index"></el-option>
+                  <el-option :label="v" :value="parseInt(i)" v-for="(v, i) in timeList" :key="i"></el-option>
                 </el-select>
               </el-input>
             </el-form-item>
@@ -83,9 +91,9 @@
                     </el-input>
                   </div>
                   <div>
-                    <el-input v-model="dform.initialDuration" class="ml-10 input-select">
+                    <el-input type="number" v-model="dform.initialDuration" class="ml-10 input-select">
                       <el-select v-model="dform.initialDurationType" slot="append">
-                        <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList" :key="index"></el-option>
+                        <el-option :label="v" :value="parseInt(i)" v-for="(v, i) in timeList" :key="i"></el-option>
                       </el-select>
                     </el-input>
                   </div>
@@ -104,18 +112,21 @@
                 <div>
                 <el-input type="number" v-model="dform.billingCycle" class="ml-10 input-select">
                   <el-select v-model="dform.billingCycleType" slot="append">
-                    <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList" :key="index"></el-option>
+                    <el-option :label="v" :value="parseInt(i)" v-for="(v, i) in timeList" :key="i"></el-option>
                   </el-select>
                 </el-input>
                 </div>
               </div>
             </el-form-item>
-            <el-form-item :label="'封顶金额'" prop="capAmount">
+            <el-form-item type="number" :label="'封顶金额'" prop="capAmount">
               <el-input type="number" v-model="dform.capAmount">
                 <template slot="append">
                   {{ siteInfo.currencySymbol }}
                 </template>
               </el-input>
+            </el-form-item>
+            <el-form-item :label="'状态'">
+              <el-switch v-model="dform.state" :active-value="0" :inactive-value="1" />
             </el-form-item>
           </template>
         </el-form>
@@ -158,37 +169,39 @@
       defaultColumn(){
          return [
           {
-            key: 'slotNo',
-            val: true,
-            name: '模式名称',
-            width: 'auto',
-          },
-          {
-            key: 'modeId',
+            key: 'method',
             val: true,
             name: '计费方式',
           },
           {
-            key: 'status',
+            key: 'name',
             val: true,
-            name: '描述',
+            name: '模式名称',
+            width: 180,
           },
           {
-            key: 'specId',
+            key: 'desc',
+            val: true,
+            name: '说明',
+            width: 'auto',
+          },
+          {
+            key: 'updateTime',
             val: true,
             name: '修改时间',
+            width: 180,
           },
           {
-            key: 'userId',
+            key: 'state',
             val: true,
             name: '状态',
           },
-          {
-            key: 'startTime',
-            val: true,
-            name: '默认规格',
-            width: 150
-          },
+          // {
+          //   key: 'startTime',
+          //   val: true,
+          //   name: '默认规格',
+          //   width: 150
+          // },
           {
             key: 'operate',
             val: true,
@@ -198,57 +211,29 @@
         ]
       },
       timeList() {
-        return [
-          {
-            title: this.$t('public.minute'),
-            value: '1'
-          },
-          {
-            title: this.$t('public.huor'),
-            value: '60'
-          },
-          {
-            title: this.$t('public.day'),
-            value: '1440'
-          }
-        ]
+        return {
+          1: this.$t('public.minute'),
+          2: this.$t('public.huor'),
+          3: this.$t('public.day'),
+        }
+      },
+      method(){
+        return {
+          1: '按次收费',
+          2: '计时收费',
+          3: '首期差异收费',
+        }
       },
     },
     data() {
       return {
         clickSubmit: false,
         tableMaxH: '250',
-        list: [
-          {
-            aaaa: 66666,
-            modeId: 'S',
-          },
-          {
-            aaaa: 66666
-          },
-          {
-            aaaa: 66666
-          },
-        ],
+        list: [],
         listLoading: false,
         listTotal: 0,
         listQuery: {},
-        modeIds: [
-          {
-            val: 'S',
-            name: '小柜门'
-          },
-          {
-            val: 'M',
-            name: '中柜门'
-          },
-          {
-            val: 'L',
-            name: '大柜门'
-          }
-        ],
         form: {},
-        selArr: [],
 
         // 弹出相关
         drawerType: 1,
@@ -291,71 +276,26 @@
       }
     },
     mounted(options) {
-      //this.toQuery()
-      //this.getSpec()
+      this.getList()
     },
     methods: {
-      getSpec(){
-        this.$get('iot-saas-device/admin/locker/spec/findPage', {
-          page: 0,
-          size: 20,
-        }).then((res = {}) => {
-
-        })
-      },
-
-      /**
-       * 搜索查询
-       */
-      toQuery() {
-        if (this.clickSubmit) return
-        this.clickSubmit = true
-        this.listQuery.page = 1
-        this.listQuery.size = 20
-        this.getList()
-      },
-
-      /**
-       * 重置查询
-       */
-      reset() {
-        if (this.clickSubmit) return
-        this.clickSubmit = true
-        this.form = {
-
-        }
-        this.listQuery.page = 1
-        this.listQuery.size = 20
-        this.getList()
-      },
-
       /**
        * 获取列表
        */
       getList() {
-        this.$get('iot-saas-device/admin/locker/spec/loadAll').then((res = {}) => {
-          this.list = res.rows || []
+        this.$get('iot-saas-device/admin/locker/spec/loadAll').then((res) => {
+          this.list = res
           if (this.outStatus) {
-            let end = false
-            if (params.size > this.list.length) end = true
             this.$nextTick(() => {
-              this.$refs['toXlsx'].saveTableXlsx(end, Math.ceil(res.total / params.size),  () => {
-                if(end){
-                  this.outStatus = false
-                  this.toQuery()
-                }else{
-                  this.listQuery.page += 1
-                  this.getList()
-                }
+              this.$refs['toXlsx'].saveTableXlsx(true, 1,  () => {
+                this.outStatus = false
+                this.toQuery()
               })
             })
           }else{
             this.listLoading = false
             this.clickSubmit = false
-            if (params.page == 0) {
-              this.listTotal = res.total
-              this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
-            }
+            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
         }).catch(() => {
           this.clickSubmit = false
@@ -382,12 +322,24 @@
               case 1:
                 this.dform = {
                   method: 1,
+                  freeDurationType: 1,
+                  billingCycleType: 1,
+                  initialDurationType: 1,
                   prepaidAmountSwitch: 1,
-                  freeDurationType: '1',
-                  billingCycleType: '1',
-                  initialDurationType: '1',
-                  freeDuration: 0
+                  freeDuration: 0,
+                  state: 0
                 }
+              break
+              case 2:
+                let timeKey = ['freeDuration','billingCycle','initialDuration']
+                timeKey.map(key => {
+                  if(row[key]){
+                    row[`${key}Type`] = this.getTimeUnit(row[key], 1)
+                    row[key] = this.getTimeUnit(row[key], 2)
+                  }
+                })
+                this.dform = JSON.parse(JSON.stringify(row))
+                console.log(this.dform)
               break
             }
             break
@@ -416,15 +368,23 @@
         this.clickSubmit = true
         switch (this.drawerType) {
           case 1: case 2:
-            console.log(params)
             this.$refs['dform'].validate((valid, object) => {
               if (valid) {
+                params.brandId = this.agentInfo.brandId
+                let timeKey = ['freeDuration','billingCycle','initialDuration']
+                timeKey.map(key => {
+                  if(params[key]){
+                    params[key] = parseInt(params[key]) * (params[`${key}Type`] == 3 ? 1440 : params[`${key}Type`] == 2 ? 60 : 1)
+                  }
+                })
+                console.log(params)
                 this.$post(`iot-saas-device/admin/locker/spec/${this.drawerType == 1 ? 'save' : 'update'}`, params).then(res => {
                   this.$message({
-                    message: that.$t('public.operationSuccessful'),
+                    message: this.$t('public.operationSuccessful'),
                     type: 'success'
                   })
                   this.$set(curRow, 'remark', params.remark)
+                  this.getList()
                   this.drawerStatus = false
                   this.clickSubmit = false
                 }).catch(err => {
@@ -437,10 +397,38 @@
             break
         }
       },
+
+      /**
+       * 展示计费
+       */
+      getMethodDesc(row){
+        let desc = ''
+        switch(parseInt(row.method)){
+          case 1:
+            desc = `单次收费${this.formatCurrency(row.billingAmount, 1)}`
+          break
+          case 2:
+            desc = `免费${this.getTimeUnit(row.freeDuration)},${this.getTimeUnit(row.billingCycle)}${this.formatCurrency(row.billingAmount, 1)},封顶${this.formatCurrency(row.capAmount, 1)}`
+          break
+          case 3:
+            desc = `免费${this.getTimeUnit(row.freeDuration)},前${this.getTimeUnit(row.initialDuration)}${this.formatCurrency(row.initialAmount, 1)},${this.getTimeUnit(row.billingCycle)}${this.formatCurrency(row.billingAmount, 1)},封顶${this.formatCurrency(row.capAmount, 1)}`
+          break
+        }
+        return desc
+      },
+
+      /**
+       * 根据分钟数判断单位
+       */
+      getTimeUnit(num, type = 0){
+        num = parseInt(num)
+        let timeMinute = {1: 1, 2: 60, 3: 1440}, timeType = (num == 0 ? 1 : num % 1440 == 0 ? 3 : num % 60 == 0 ? 2 : 1)
+        num = num / timeMinute[timeType]
+        return type == 2 ? num : type == 1 ? timeType : num + this.timeList[timeType]
+      }
     }
   }
 </script>
-
 <style lang="scss" scoped>
 
 </style>

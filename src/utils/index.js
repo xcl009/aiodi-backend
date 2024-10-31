@@ -842,7 +842,7 @@ const util = {
     return url[0] + '?x-oss-process=image/resize,m_lfit' + wStr
   },
 
-  formatCurrency: (number) => {
+  formatCurrency: (number, type = 0) => {
   	if (!number) return 0
     if (number >= 1000) {
       number = parseFloat((number / 1000)) + 'K'
@@ -853,7 +853,7 @@ const util = {
   	const trimmedNumber = numberStr.replace(/\.00$/, '')
   	// 应用千位格式化
   	const formattedNumber = trimmedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  	return formattedNumber
+    return `${formattedNumber}${type > 0 ? currencySymbol : ''}`
   },
 }
 

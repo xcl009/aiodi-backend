@@ -6,7 +6,7 @@
           <div class="mr-10">规格</div>
           <el-tabs class="flex-1" v-model="listQuery.modeId" @tab-click="toQuery()">
             <el-tab-pane :label="$t('public.all')" :name="''" />
-            <el-tab-pane :label="`${item.name}`" :name="'' + item.val + ''" v-for="item in modeIds" />
+            <el-tab-pane :label="`${i.name}`" :name="'' + k + ''" v-for="(i, k) in modeIds" v-if="i.state == 0"/>
           </el-tabs>
           <el-button type="primary" size="small" @click="setRows(1, {}, 1)"><i class="el-icon-plus el-icon--left" />{{ $t('public.add') }}</el-button>
         </div>
@@ -16,8 +16,8 @@
     <div class="pl-10 pr-10 bg-white">
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
-        <div class="ml-20 cursor line-1" :class="[selArr.length > 0 ? 'text-primary': 'text-gray']" @click="setRows(1, {}, 2)">批量设置规格</div>
-        <div class="ml-20 cursor line-1" :class="[selArr.length > 0 ? 'text-primary': 'text-gray']" @click="setRows(1, {}, 3)">批量设置收费模式</div>
+        <div class="ml-20 cursor line-1" :class="[selArr.length > 0 ? 'text-primary': 'text-gray']" @click="setRows(1, {modeId: ''}, 2)">批量设置规格</div>
+        <div class="ml-20 cursor line-1" :class="[selArr.length > 0 ? 'text-primary': 'text-gray']" @click="setRows(1, {specId: ''}, 3)">批量设置收费模式</div>
         <table-column-set storageKey="doorTableColumn" :showColumn.sync="showColumn" :defaultColumn="defaultColumn"></table-column-set>
       </div>
 
@@ -25,17 +25,17 @@
         :max-height="tableMaxH" @selection-change="selList" element-loading-text="Loading">
         <el-table-column type="selection" :selectable="checkSel" width="50" />
         <template v-for="item in showColumn" v-if="item.val">
-          <el-table-column :label="item.name" :width="item.width || 110" v-if="item.key == 'slotNo'">
+          <el-table-column :label="item.name" :width="item.width || 110" v-if="item.key == 'status'">
             <template slot-scope="scope">
-              fdsfdsfs
+              {{ statusArr[scope.row.status] }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :width="item.width || 110" v-else-if="item.key == 'modeId'">
             <template slot-scope="scope">
               <el-dropdown trigger="click">
-                <span class="cursor text-primary">{{ scope.row.modeId || 'S' }}</span>
+                <span class="cursor text-primary">{{ scope.row.mode.name }}<i class="el-icon-arrow-down el-icon--right"></i></span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item v-for="item in modeIds" @click.native="command('modeId', scope.row, item.val)">{{ item.val }}</el-dropdown-item>
+                  <el-dropdown-item v-for="(i, k) in modeIds" @click.native="command('mode', scope.row, i)" v-if="i.state == 0">{{ i.name }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -43,11 +43,9 @@
           <el-table-column :label="item.name" :width="item.width || 110" v-else-if="item.key == 'specId'">
             <template slot-scope="scope">
               <el-dropdown trigger="click">
-                <span class="cursor text-primary">{{ scope.row.specId }}</span>
+                <span class="cursor text-primary">{{ scope.row.spec.name }}<i class="el-icon-arrow-down el-icon--right"></i></span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>S</el-dropdown-item>
-                  <el-dropdown-item>M</el-dropdown-item>
-                  <el-dropdown-item>L</el-dropdown-item>
+                  <el-dropdown-item v-for="(i, k) in specIds" @click.native="command('spec', scope.row, i)">{{ i.name }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -61,27 +59,20 @@
       </div>
     </div>
 
-    <el-drawer :title="drawerTitle[drawerType]" :visible.sync="drawerStatus">
+    <el-drawer :title="drawerTitle[drawerType]" :visible.sync="drawerStatus" :close-on-press-escape="[1].indexOf(drawerType) > -1" :wrapperClosable="[1].indexOf(drawerType) > -1">
       <template v-if="drawerType == 1">
         <el-form class="pl-20 pr-20 custom-form" label-width="auto" ref="dform" :model="dform" :rules="rules" @submit.native.prevent>
-          <el-form-item :label="'起始编号'" prop="sort">
-            <el-input v-model="dform.sort"></el-input>
-          </el-form-item>
-          <el-form-item :label="'柜门数量'" prop="num">
-            <el-input v-model="dform.num"></el-input>
-          </el-form-item>
-          <el-form-item :label="'编号前缀'" prop="slotNo">
-            <el-input v-model="dform.slotNo"></el-input>
-            <div>例：起始编号1，数量10，编号前缀L，生成10个柜门，编号为：L1-L10</div>
+          <el-form-item :label="'柜门数量'" prop="doorNum">
+            <el-input v-model="dform.doorNum" type="number"></el-input>
           </el-form-item>
           <el-form-item :label="'柜门规格'" prop="modeId">
             <el-select v-model="dform.modeId">
-              <el-option :label="`${item.name}`" :value="item.val" v-for="(item, index) in modeIds" :key="index"></el-option>
+              <el-option :label="`${i.name}`" :value="k" :key="k" v-for="(i, k) in modeIds" v-if="i.state == 0"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item :label="'收费模式'" prop="specId">
             <el-select v-model="dform.specId">
-              <el-option :label="`${item.name}`" :value="item.val" v-for="(item, index) in modeIds" :key="index"></el-option>
+              <el-option :label="`${i.name}`" :value="k" :key="k" v-for="(i, k) in specIds"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item :label="'柜门状态'">
@@ -97,9 +88,9 @@
           <div class="mr-20">规格</div>
           <div>
             <el-dropdown trigger="click">
-              <span class="cursor text-primary">{{ curRow.modeId || 'S' }}<i class="el-icon-arrow-down el-icon--right"></i></span>
+              <span class="cursor text-primary">{{ modeIds[curRow.modeId] ? modeIds[curRow.modeId].name : '请选择' }}<i class="el-icon-arrow-down el-icon--right"></i></span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="item in modeIds" @click.native="command('modeId', curRow, item.val)">{{ item.val }}</el-dropdown-item>
+                <el-dropdown-item v-for="(i, k) in modeIds" @click.native="curRow.modeId = i.id">{{ i.name }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -110,9 +101,9 @@
           <div class="mr-20">收费模式</div>
           <div>
             <el-dropdown trigger="click">
-              <span class="cursor text-primary">{{ curRow.modeId || 'S' }}<i class="el-icon-arrow-down el-icon--right"></i></span>
+              <span class="cursor text-primary">{{ specIds[curRow.specId] ? specIds[curRow.specId].name : '请选择' }}<i class="el-icon-arrow-down el-icon--right"></i></span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="item in modeIds" @click.native="command('modeId', curRow, item.val)">{{ item.val }}</el-dropdown-item>
+                <el-dropdown-item v-for="(i, k) in specIds" @click.native="curRow.specId = i.id">{{ i.name }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -136,6 +127,7 @@
   import condition from '@/components/condition/index'
   import xlsx from '@/components/xlsx/'
   import TableColumnSet from '@/components/TableColumnSet/index'
+  import { arrayToObj } from '@/utils/index'
   export default {
     name: 'income',
     components: {
@@ -153,9 +145,6 @@
       },
       Ability() {
         return this.$store.getters.Ability
-      },
-      myDeviceId() {
-        return this.$store.state.user.myDeviceId || {}
       },
       defaultColumn(){
          return [
@@ -198,45 +187,28 @@
             width: 180
           }
         ]
+      },
+      statusArr(){
+        return {
+          0: '未使用',
+          1: '已使用',
+          2: '已禁用'
+        }
       }
     },
     data() {
       return {
         clickSubmit: false,
         tableMaxH: '250',
-        list: [
-          {
-            aaaa: 66666,
-            modeId: 'S',
-          },
-          {
-            aaaa: 66666
-          },
-          {
-            aaaa: 66666
-          },
-        ],
+        list: [],
         listLoading: false,
         listTotal: 0,
         listQuery: {
           page: 1,
-          size: 20,
-          deviceSn: this.$route.query.deviceSn || '',
+          size: 20
         },
-        modeIds: [
-          {
-            val: 'S',
-            name: '小柜门'
-          },
-          {
-            val: 'M',
-            name: '中柜门'
-          },
-          {
-            val: 'L',
-            name: '大柜门'
-          }
-        ],
+        modeIds: {},
+        specIds: {},
         form: {},
         selArr: [],
 
@@ -252,14 +224,8 @@
         curIdx: 0,
         dform: {},
         rules: {
-          sort: [
+          doorNum: [
             { required: true, message: '此项必填', trigger: 'blur' }
-          ],
-          num: [
-            { required: true, message: '此项必填', trigger: 'blur' }
-          ],
-          slotNo: [
-            { required: true, message: '此项必选', trigger: 'blur' }
           ],
           modeId: [
             { required: true, message: '此项必选', trigger: 'blur' }
@@ -275,10 +241,57 @@
         showColumn: [],
       }
     },
+    beforeRouteEnter(to, from, next) {
+      to.meta.urlQuery = JSON.stringify(to.query)
+      if (from.name == '') {
+        to.meta.reload = true
+      } else {
+        to.meta.reload = false
+      }
+      next()
+    },
+    activated() {
+      let query = this.$route.query
+      this.queryKey = ['deviceSn']
+      console.log(query, this.queryKey)
+      for (var i in this.queryKey) {
+        if (query[this.queryKey[i]]) {
+          this.form[this.queryKey[i]] = query[this.queryKey[i]]
+        } else {
+          delete this.form[this.queryKey[i]]
+        }
+      }
+      console.log(this.form)
+      if (this.$route.meta.reload) {
+        this.getList()
+      } else if (this.urlQuery != this.$route.meta.urlQuery) {
+        this.toQuery()
+      }
+      this.urlQuery = this.$route.meta.urlQuery
+    },
     mounted(options) {
-      //this.toQuery()
+      this.getModes()
+      this.getSpecs()
     },
     methods: {
+      /**
+       * 获取规格
+       */
+      getModes() {
+        this.$get('iot-saas-device/admin/locker/mode/loadAll').then((res) => {
+          this.modeIds = arrayToObj(res, 'id')
+        })
+      },
+
+      /**
+       * 获取收费模式
+       */
+      getSpecs() {
+        this.$get('iot-saas-device/admin/locker/spec/loadAll').then((res) => {
+          this.specIds = arrayToObj(res, 'id')
+        })
+      },
+
       /**
        * 校验是否可选
        */
@@ -287,14 +300,14 @@
       },
 
       /**
-       * 选择设备
+       * 选择数据
        * @param {Array} list
        */
       selList(list) {
         let selArr = []
-        for (var i in list) {
-          selArr.push(1)
-        }
+        list.map(item => {
+          selArr.push(item)
+        })
         this.selArr = selArr
       },
 
@@ -315,9 +328,7 @@
       reset() {
         if (this.clickSubmit) return
         this.clickSubmit = true
-        this.form = {
-
-        }
+        this.form = {}
         this.listQuery.page = 1
         this.listQuery.size = 20
         this.getList()
@@ -352,6 +363,7 @@
             this.clickSubmit = false
             if (params.page == 0) {
               this.listTotal = res.total
+              if(!params.modeId) this.firstTotal = res.total
               this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
             }
           }
@@ -379,8 +391,11 @@
        * @param {Object|String|Number} val
        * @param {Object} row
        */
-      command(key, row, val){
-        this.$set(row, key, val)
+      command(key, row, vrow){
+        let params = {}
+        params[`${key}Id`] = vrow.id
+        this.updateDoor(params, [row])
+        this.$set(row, key, vrow)
       },
 
       /**
@@ -413,10 +428,120 @@
         this.clickSubmit = true
         switch (this.drawerType) {
           case 1:
-
+            this.$refs['dform'].validate((valid, object) => {
+              if (valid) {
+                this.loadObj = this.$loading({
+                  lock: true,
+                  text: '提交中',
+                  spinner: 'el-icon-loading'
+                })
+                let doorNum = parseInt(params.doorNum) + parseInt(this.firstTotal) + 1
+                delete params.doorNum
+                params.deviceSn = this.form.deviceSn
+                this.saveDoor(params, doorNum, parseInt(this.firstTotal) + 1)
+              } else {
+                this.clickSubmit = false
+              }
+            })
+            break
+          case 2:
+            if(!this.curRow.modeId){
+              this.$message({
+                message: '请选择规格',
+                type: 'error'
+              })
+              return
+            }
+            this.loadObj = this.$loading({
+              lock: true,
+              text: '提交中',
+              spinner: 'el-icon-loading'
+            })
+            this.updateDoor({ modeId: this.curRow.modeId }, this.selArr, 0, 1)
+            break
+          case 3:
+            if(!this.curRow.specId){
+              this.$message({
+                message: '请选择收费模式',
+                type: 'error'
+              })
+              return
+            }
+            this.loadObj = this.$loading({
+              lock: true,
+              text: '提交中',
+              spinner: 'el-icon-loading'
+            })
+            this.updateDoor({ specId: this.curRow.specId }, this.selArr, 0, 1)
             break
         }
       },
+
+      /**
+       * 新增柜门
+       */
+      saveDoor(params, doorNum, idx = 1) {
+        if (doorNum <= idx) {
+          this.loadObj.close()
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
+          this.clickSubmit = false
+          this.toQuery()
+          this.drawerStatus = false
+          return
+        }
+        params.slotNo = idx
+        this.$post('iot-saas-device/admin/locker/stock/save', params).then(res => {
+          idx++
+          this.saveDoor(params, doorNum, idx)
+        }).catch(err => {
+          this.clickSubmit = false
+          this.loadObj.close()
+        })
+      },
+
+      /**
+       * 更新柜门
+       */
+      updateDoor(params, ids, idx = 0, type = 0) {
+        if (ids.length == idx) {
+          if(type == 1){
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.clickSubmit = false
+            this.drawerStatus = false
+            this.getList()
+            this.loadObj.close()
+          }
+          return
+        }
+        let nparams = {
+          deviceSn: ids[idx].deviceSn,
+          slotNo: ids[idx].slotNo,
+          id: ids[idx].id,
+          status: ids[idx].status
+        }
+        if(params.modeId){
+          nparams.specId = ids[idx].specId
+          nparams.modeId = params.modeId
+        }else if(params.specId){
+          nparams.modeId = ids[idx].modeId
+          nparams.specId = params.specId
+        }
+        this.$post('iot-saas-device/admin/locker/stock/update', nparams).then(res => {
+          idx++
+          this.updateDoor(params, ids, idx, type)
+        }).catch(err => {
+          if(type == 1){
+            this.clickSubmit = false
+            this.loadObj.close()
+          }
+        })
+      }
     }
   }
 </script>

@@ -61,6 +61,9 @@
               <el-button type="text" size="small" v-else @click="form.linkBrandIds.splice(idx, 1)" class="text-danger">{{ $t('public.delete') }}</el-button>
             </div>
           </el-form-item>
+          <el-form-item label="二维码域名地址">
+            <el-input v-model="form.qrCodeDomain" placeholder="二维码域名地址" />
+          </el-form-item>
 
           <h4 class="pt-20">{{ $t('public.operationalProducts') }}</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">

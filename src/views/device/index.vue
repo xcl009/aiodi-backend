@@ -51,10 +51,9 @@
     <div class="pl-10 pr-10 bg-white">
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(4, {})" v-if="isSaas()">{{ $t('device.counting') }}
-        </div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord')
-        }}</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(4, {})" v-if="isSaas()">{{ $t('device.counting') }}</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord')}}</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas()">设备软件升级</div>
         <table-column-set storageKey="deviceTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
       </div>
@@ -284,7 +283,7 @@
                 <el-button type="text" :disabled="!scope.row.distribute" slot="reference">{{ $t('device.unbind')
                 }}</el-button>
               </el-popconfirm>
-              <el-button type="text" v-if="scope.row.deviceType.code.indexOf('LK') > -1" slot="reference" @click="$router.push({path: `/user/cabinetDoor?deviceSn=${scope.row.deviceSn}`})">柜门列表</el-button>
+              <el-button type="text" v-if="scope.row.deviceType.code.indexOf('LK') > -1" slot="reference" @click="$router.push({path: `/device/cabinetDoor?deviceSn=${scope.row.deviceSn}`})">柜门列表</el-button>
               <el-button type="text" v-else-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.eject') }}</el-button>
               <el-popconfirm
                 class="pop"
@@ -367,7 +366,7 @@
       </div>
     </el-dialog>
 
-    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus">
+    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :close-on-click-modal="[11].indexOf(dialogType) == -1" :wrapperClosable="[11].indexOf(dialogType) == -1">
       <template v-if="dialogType == 1 && deviceInfo[curRow.deviceSn]">
         <div class="owner-user">
           <template v-for="(item, idx) in deviceInfo[curRow.deviceSn].deviceOwnerUserList">
@@ -595,7 +594,51 @@
           </div>
         </div>
       </template>
-      <template v-if="[3, 6, 7].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 11">
+        <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()" style="width: 600px;">
+          <el-form-item label="设备二维码">
+            <el-input v-model="dform.deviceSns" placeholder="多设备英文逗号隔开" type="textarea" rows="4"></el-input>
+          </el-form-item>
+          <el-form-item label="设备工厂">
+            <el-select v-model="dform.factoryCode">
+              <template v-for="item in factoryList">
+                <el-option :label="item.name" :value="item.code"></el-option>
+              </template>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="设备口数">
+            <el-select v-model="dform.deviceSlot" @change="selSlot">
+              <template v-for="item in [4,6,8,12,16,20,24,28,32,36,40,48,52,56]">
+                <el-option :label="item + '口'" :value="item"></el-option>
+              </template>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="软件类型">
+            <el-radio-group v-model="dform.updateType" @change="selUpdateType">
+              <el-radio :label="key" v-for="(item, key) in {'1': '网关版', '10': '仓位版'}">{{ item }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="更新包地址">
+            <el-input v-model="dform.domainUrl" :placeholder="$t('public.enter')"></el-input>
+          </el-form-item>
+          <el-form-item label="更新包路径">
+            <el-input v-model="dform.path" :placeholder="$t('public.enter')"></el-input>
+          </el-form-item>
+          <el-form-item label="更新包md5">
+            <el-input v-model="dform.md5" :placeholder="$t('public.enter')"></el-input>
+          </el-form-item>
+          <el-form-item label="更新包大小">
+            <el-input v-model="dform.size" :placeholder="$t('public.enter')"><template slot="append">字节</template></el-input>
+          </el-form-item>
+          <el-form-item label="设备版本">
+            <el-input v-model="dform.deviceVersion" :placeholder="$t('public.enter')"></el-input>
+          </el-form-item>
+          <el-form-item label="包版本名称">
+            <el-input v-model="dform.fileVersion" :placeholder="$t('public.enter')"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[3, 6, 7, 11].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -740,7 +783,8 @@ export default {
         7: this.$t('device.address'),
         8: this.$t('device.distributionEquipment'),
         9: this.$t('device.switchBrand'),
-        10: this.$t('device.goodsToMerchants')
+        10: this.$t('device.goodsToMerchants'),
+        11: '设备软件升级',
       }
     },
     defaultColumn() {
@@ -826,6 +870,12 @@ export default {
           name: this.$t('device.signalValue')
         },
         {
+          key: 'romVer',
+          val: false,
+          name: 'RomVersion',
+          width: 350
+        },
+        {
           key: 'voice',
           val: false,
           name: this.$t('device.volume')
@@ -902,6 +952,7 @@ export default {
       showColumn: [],
       // 设备归属
       deviceInfo: {},
+      factoryList: [],
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -1210,6 +1261,12 @@ export default {
           if (this.agentList.list.length == 0) this.getAgentList()
         } else if (dialogType == 10) {
           if (this.storeList.list.length == 0) this.getStoreList()
+        } else if (dialogType == 11) {
+          this.getFactory()
+          this.dform = {
+            updateType: '1',
+            domainUrl: 'tjwl.oss-cn-shenzhen.aliyuncs.com'
+          }
         }
         break
       case 4:
@@ -1229,6 +1286,24 @@ export default {
         })
         break
       }
+    },
+
+    /**
+     * 获取工厂
+     */
+    getFactory() {
+      if(this.factoryList.length > 0) return
+      this.$get('iot-saas-basic/admin/factory/list').then(res => {
+        this.factoryList = res
+      })
+      this.$get('iot-saas-pay/open/pay/system/config', {
+        key: 'deviceUpdateConfig'
+      }).then(res => {
+        let deviceUpdateConfig = res.valueJson ? JSON.parse(res.valueJson) : {}
+        if(deviceUpdateConfig.config){
+          this.deviceUpdateConfig = JSON.parse(deviceUpdateConfig.config)
+        }
+      })
     },
 
     /**
@@ -1417,6 +1492,34 @@ export default {
             this.clickSubmit = false
           })
           break
+        case 11:
+          if(!params.deviceSns){
+            this.$message({
+              message: '设备二维码不能为空',
+              type: 'error'
+            })
+            this.clickSubmit = false
+            return
+          }
+          if(!params.domainUrl){
+            this.$message({
+              message: '更新包地址不能为空',
+              type: 'error'
+            })
+            this.clickSubmit = false
+            return
+          }
+          this.$post('iot-saas-device/admin/device/updateDeviceVersions', params).then(res => {
+            this.$message({
+              message: this.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.drawerStatus = false
+            this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
       }
     },
 
@@ -1491,7 +1594,59 @@ export default {
           this.storeList.query.page = params.page + 2
         }
       })
-    }
+    },
+    
+    /**
+     * 选择槽口数
+     */
+    selSlot(val){
+      let dform = this.dform
+      if(!dform.factoryCode){
+        this.$message({
+          message: '请先选择工厂',
+          type: 'error'
+        })
+        return
+      }
+      let key = `${dform.factoryCode}_${val}_${dform.updateType}`, obj = JSON.parse(JSON.stringify(this.dform))
+      if(this.deviceUpdateConfig[key]){
+        obj = Object.assign({}, this.dform, this.deviceUpdateConfig[key])
+      }else{
+        let keys = ['domainUrl','path','md5','size','deviceVersion','fileVersion']
+        for(var i in keys){
+          if(obj[keys[i]]){
+            delete obj[keys[i]]
+          }
+        }
+      }
+      this.dform = obj
+    },
+    
+    /**
+     * 选择更新类型
+     */
+    selUpdateType(val){
+      let dform = this.dform
+      if(!this.dform.factoryCode){
+        this.$message({
+          message: '请先选择工厂',
+          type: 'error'
+        })
+        return
+      }
+      let key = `${dform.factoryCode}_${dform.deviceSlot}_${val}`, obj = JSON.parse(JSON.stringify(this.dform))
+      if(this.deviceUpdateConfig[key]){
+        obj = Object.assign({}, this.dform, this.deviceUpdateConfig[key])
+      }else{
+        let keys = ['domainUrl','path','md5','size','deviceVersion','fileVersion']
+        for(var i in keys){
+          if(obj[keys[i]]){
+            delete obj[keys[i]]
+          }
+        }
+      }
+      this.dform = obj
+    },
   }
 }
 </script>
