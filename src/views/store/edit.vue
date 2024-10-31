@@ -440,7 +440,7 @@ export default {
       this.storeDefaultConfig = {}
     }
     this.getCategory()
-    this.getCity()
+    //this.getCity()
     if(this.isAgent()){
       this.$store.dispatch('user/getOpenSettings', {
         code: 'AGENT_VIEW_POWER',
@@ -598,7 +598,10 @@ export default {
      * 获取城市
      */
     getCity() {
-      this.$store.dispatch('api/getRegions').then(res => {
+      let country = 'CN'
+      this.$store.dispatch('api/getRegions', {
+        country: country
+      }).then(res => {
         let list = {}
         res.map(item => {
           if (item.level == 1) {
@@ -608,15 +611,26 @@ export default {
               children: {}
             }
           } else if (item.level == 2) {
-            let tag = item.tag.substring(0, 3)
+            let tag = ''
+            if(country == 'VN'){
+              tag = item.tag.substring(0, 2)
+            }else{
+              tag = item.tag.substring(0, 3)
+            }
             list[tag].children[item.tag] = {
               value: item.title,
               label: item.title,
               children: []
             }
           } else if (item.level == 3) {
-            let tag1 = item.tag.substring(0, 3),
+            let tag1, tag2
+            if(country == 'VN'){
+              tag1 = item.tag.substring(0, 2),
+              tag2 = item.tag.substring(0, 5)
+            }else{
+              tag1 = item.tag.substring(0, 3),
               tag2 = item.tag.substring(0, 6)
+            }
             list[tag1].children[tag2].children.push({
               value: item.title,
               label: item.title

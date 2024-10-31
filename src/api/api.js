@@ -1,7 +1,7 @@
 import { $post, $get } from '@/utils/request'
 
-export function getRegions() {
-  return $get('iot-saas-basic/admin/regions')
+export function getRegions(data) {
+  return $get('iot-saas-basic/admin/regions', data)
 }
 
 export function getServiceType() {
