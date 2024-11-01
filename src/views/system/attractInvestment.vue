@@ -137,7 +137,9 @@
       }
     },
     computed: {
-  
+      agentInfo() {
+      return this.$store.getters.agentInfo
+    },
     },
     mounted() {
   
@@ -171,7 +173,10 @@
         var params = Object.assign({}, this.form, this.listQuery, {
           page: this.listQuery.page - 1
         })
-        // params.brandId = '1185618533193441281';
+        if(this.agentInfo.userType !='admin'){
+          params.brandId = this.agentInfo.brandId;
+        }
+        
         this.$post('iot-saas-basic/admin/brand/quotation/query', params).then(res => {
           if (this.outStatus) {
             this.list = res ? res.rows : []
