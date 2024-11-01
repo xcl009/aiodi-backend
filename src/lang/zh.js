@@ -421,7 +421,10 @@ export default {
     currency:"币种",
     currencyText:'请选择币种',
     reserve: '保留',
-    reserveEmpty: '清空'
+    reserveEmpty: '清空',
+    chenghu:'称呼',
+    submitTime:'提交时间',
+    zsuserinfo:'招商客户信息'
   },
   // 分账关系
   reType: {

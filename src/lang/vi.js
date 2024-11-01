@@ -417,6 +417,9 @@ export default {
         currency:"Tiền tệ",
         currencyText:'Vui lòng chọn đồng tiền',
         generate:"Không có APPID, vui lòng tạo",
+        chenghu:'Giới thiệu',
+        submitTime:'Thời gian gửi',
+        zsuserinfo:'Thông tin khách hàng'
     },
     // 分账关系
     reType: {

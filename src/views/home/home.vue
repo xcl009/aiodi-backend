@@ -839,6 +839,9 @@ export default {
       })
       this.queryDeviceUseCount()
     }
+    // window.onresize = ()=>{
+    //   console.log(document.body.clientWidth,'clientwidth')
+    // }
   },
   methods: {
     /**
