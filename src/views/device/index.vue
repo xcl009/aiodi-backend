@@ -642,8 +642,12 @@
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
-          <el-button size="medium" type="primary" @click="dialogConfirm()"
-            :disabled="clickSubmit">{{ $t('public.confirm') }}</el-button>
+          <el-popconfirm
+            :title="dialogType == 11 ? '请仔细确认升级设备和软件类型及版本是否匹配，不匹配会导致设备出现异常' : '确定提交吗？'"
+            @onConfirm="dialogConfirm()"
+          >
+            <el-button size="medium" type="primary" :disabled="clickSubmit" slot="reference">{{ $t('public.confirm') }}</el-button>
+          </el-popconfirm>
         </div>
       </template>
     </el-drawer>
