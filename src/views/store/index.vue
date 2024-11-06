@@ -45,6 +45,13 @@
 
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
+        <el-table-column :label="$t('home.serialNumber')" align="center" width="50">
+          <template slot-scope="scope">
+              <div class="flex_c align-center" :style="{width:'100%'}">
+                {{ scope.$index + 1  }}
+              </div>
+            </template>
+        </el-table-column>
         <el-table-column :label="$t('public.brand')" width="150" prop="brandName" v-if="isSaas()"></el-table-column>
         <template v-for="item in showColumn">
           <el-table-column :label="item.name" min-width="120" v-if="item.val && item.key == 'name'">
