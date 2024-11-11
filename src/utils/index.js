@@ -665,6 +665,27 @@ const util = {
         ]
       }
     ];
+    let stepPayMode = {
+      depositAmount: 99,
+      unitPrice: 0.1,
+      overBillingUnit: 1,
+      stepList: [
+        {
+          startingTime: 0,
+          endTime: 600,
+          maxAmount: 3
+        },
+        {
+          startingTime: 601,
+          endTime: 1440,
+          maxAmount: 8
+        },
+        {
+          startingTime: 1441,
+          maxAmount: 15
+        }
+      ]
+    }
     let obj = {
       status: 1,
       closeType: '1',
@@ -684,6 +705,7 @@ const util = {
           }
         ],
         laundryMode: laundryMode,
+        stepPayMode: stepPayMode,
         payModeDetails: {
           startingTime: '60',
           startingAmount: 3,
@@ -710,6 +732,7 @@ const util = {
           }
         ],
         laundryMode: laundryMode,
+        stepPayMode: stepPayMode,
         payModeDetails: {
           startingTime: '60',
           startingAmount: 3,
@@ -736,6 +759,7 @@ const util = {
           }
         ],
         laundryMode: laundryMode,
+        stepPayMode: stepPayMode,
         payModeDetails: {
           startingTime: '60',
           startingAmount: 3,
@@ -762,6 +786,7 @@ const util = {
           }
         ],
         laundryMode: laundryMode,
+        stepPayMode: stepPayMode,
         payModeDetails: {
           startingTime: '60',
           startingAmount: 3,

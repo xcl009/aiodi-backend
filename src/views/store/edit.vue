@@ -158,8 +158,7 @@
 
                     <el-form-item :label="`${$t('store.paymentMode')}`">
                       <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
-                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode, xcx)"
-                          :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode), xcx)[0]">{{
+                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode, xcx)">{{
                            $t('public.' + key) }}</el-radio-button>
                       </el-radio-group>
                       <el-popover placement="right" title="" trigger="hover"
@@ -214,6 +213,65 @@
                               @click="item[`${xcx}PayMode`].laundryMode[lidx].package.push({tag: lpidx + 1})">添加</el-button>
                             <el-button type="text" size="small" v-else
                               @click="item[`${xcx}PayMode`].laundryMode[lidx].package.splice(lpidx, 1)" class="text-danger">删除</el-button> -->
+                          </div>
+                        </template>
+                      </el-form-item>s
+                    </template>
+
+                    <template v-else-if="item[`${xcx}PayMode`].modeType == 'STEPBILLING'">
+                      <el-form-item :label="$t('public.deposit')"
+                        v-if="(isBrand() || agentPower.editStoreFeeDeposit === 0)"
+                        :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
+                        <el-input v-model="item[`${xcx}PayMode`].stepPayMode.depositAmount"
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))">
+                          <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                        </el-input>
+                      </el-form-item>
+                      <el-form-item :label="$t('public.amount')"
+                        :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
+                        <div class="flex">
+                          <div class="flex1">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].stepPayMode.unitPrice"
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
+                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                            </el-input>
+                          </div>
+                          <div class="pl-10 flex1">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].stepPayMode.overBillingUnit"
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))">
+                              <template slot="append">{{ $t('public.minute') }}</template>
+                            </el-input>
+                          </div>
+                        </div>
+                      </el-form-item>
+
+                      <el-form-item label="分段明细" :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
+                        <template v-for="(plan, stepIdx) in item[`${xcx}PayMode`].stepPayMode.stepList">
+                          <div class="flex">
+                            <div class="flex1">
+                              <el-input type="number" v-model="plan.startingTime"
+                                @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))" disabled>
+                                <template slot="append">{{ $t('public.minute') }}{{ plan.endTime ? '' : '以上'}}</template>
+                              </el-input>
+                            </div>
+                            <template v-if="plan.endTime">
+                              <div class="pl-10 pr-10">-</div>
+                              <div class="flex1">
+                                <el-input type="number" v-model="plan.endTime" @input="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 1)">
+                                  <template slot="append">{{ $t('public.minute') }}</template>
+                                </el-input>
+                              </div>
+                            </template>
+                            <div class="pl-10 pr-10 flex1">
+                              <el-input type="number" v-model="plan.maxAmount"
+                                @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
+                                <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              </el-input>
+                            </div>
+                            <el-button type="text" size="small" v-if="stepIdx == 0"
+                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 2)">添加</el-button>
+                            <el-button type="text" size="small" v-else
+                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 3)" class="text-danger">删除</el-button>
                           </div>
                         </template>
                       </el-form-item>
@@ -530,6 +588,12 @@ export default {
               defaultDevice.alipayPayMode = JSON.parse(res.alipayJson)
               defaultDevice.threePayMode = res.threeJson ? JSON.parse(res.threeJson) : JSON.parse(res.wechatJson)
               defaultDevice.fourPayMode = res.fourJson ? JSON.parse(res.fourJson) : JSON.parse(res.wechatJson)
+              if(!defaultDevice.weixinPayMode.stepPayMode){
+                defaultDevice.weixinPayMode.stepPayMode = defaultFee(deviceTypeCode).weixinPayMode.stepPayMode
+                defaultDevice.alipayPayMode.stepPayMode = defaultFee(deviceTypeCode).alipayPayMode.stepPayMode
+                defaultDevice.threePayMode.stepPayMode = defaultFee(deviceTypeCode).threePayMode.stepPayMode
+                defaultDevice.fourPayMode.stepPayMode = defaultFee(deviceTypeCode).fourPayMode.stepPayMode
+              }
               if (!this.Ability[`${deviceTypeCode}_${defaultDevice.weixinPayMode.modeType}`]) {
                 defaultDevice.weixinPayMode.modeType = mode_way[0]
               }
@@ -774,6 +838,8 @@ export default {
                       return packItem.tag = packI + 1
                     })
                     item[`${key}PayMode`].payModeDetail = JSON.stringify(item[`${key}PayMode`].payModeDetail)
+                  } else if (item[`${key}PayMode`].modeType == 'STEPBILLING') {
+                    item[`${key}PayMode`].payModeDetail = item[`${key}PayMode`].stepPayMode
                   } else {
                     item[`${key}PayMode`].payModeDetails.unitPrice = item[`${key}PayMode`].payModeDetails.startingAmount
                     item[`${key}PayMode`].payModeDetails.overBillingUnit = item[`${key}PayMode`].payModeDetails.startingTime
@@ -807,6 +873,8 @@ export default {
               params.storeDivisionConfig.push(division)
             }
           }
+          console.log(params)
+          return
           if (error) {
             this.$message({
               message: error,
@@ -950,6 +1018,42 @@ export default {
           this.$post('iot-saas-basic/admin/billing/configs/save', params).then(res => { })
         }
       })
+    },
+
+    /**
+     * 修改分段计费信息
+     */
+    setStepList(stepList, idx, type = 1){
+      switch(type){
+        case 1:
+          let prevItem = {}
+          stepList.map((item, index) => {
+            console.log(prevItem)
+            if(index > idx && (item.startingTime != parseInt(prevItem.endTime) + 1 || item.endTime < item.startingTime)){
+              item.startingTime = parseInt(prevItem.endTime) + 1
+              if(item.endTime < item.startingTime){
+                item.endTime = parseInt(item.startingTime) + 179
+              }
+              prevItem = item
+              return item
+            }
+            prevItem = item
+          })
+        break
+        case 2:
+          let stepEnd = stepList[stepList.length - 1]
+          stepEnd.endTime = parseInt(stepEnd.startingTime) + 179
+          stepList[stepList.length - 1] = stepEnd
+          stepList.push({
+            startingTime: stepEnd.endTime + 1,
+            maxAmount: stepEnd.maxAmount
+          })
+        break
+        case 3:
+          stepList.splice(idx, 1)
+          this.setStepList(stepList, 0, 1)
+        break
+      }
     }
   }
 }

@@ -8,6 +8,7 @@ export default {
     DEPOSIT_FREE: '免押',
     DEPOSIT_AND_FREE: '免押+余额',
     DEPOSIT: '余额',
+    STEPBILLING: '分段',
     today: '今日',
     yesterday: '昨日',
     thisWeek: '本周',

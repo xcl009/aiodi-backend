@@ -25,7 +25,8 @@
       "余额": "DEPOSIT"
     },
     "PA": {
-      "余额": "DEPOSIT"
+      "余额": "DEPOSIT",
+      "分段": "STEPBILLING"
     },
     "WM": {
       "套餐": "PACKAGE"
