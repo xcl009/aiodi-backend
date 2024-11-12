@@ -751,7 +751,7 @@ export default {
       switch (type) {
         case 1:
           this.dialogType = dialogType
-          this.curRow = row
+          if([13].indexOf(dialogType) == -1) this.curRow = row
           this.curIdx = idx
           this.dform = {}
           if (dialogType == 2) {
