@@ -982,11 +982,13 @@ div:focus {
     width: 100%;
   }
   .el-input-group__append{
+    padding: 0 10px;
     border: none;
     border-left: thin solid #e5e6eb;
     color: #1D2129;
   }
   .el-input-group__prepend{
+    padding: 0 10px;
     border: none;
     border-right: thin solid #e5e6eb;
   }

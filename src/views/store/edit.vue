@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
-      <el-col :sm="24" :xl="16">
+      <el-col :lg="24"  :xl="16">
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="130px">
           <h3>{{ $t('public.basicInformation') }}</h3>
           <el-form-item :label="$t('public.doorstepPhoto')" class="up-img">
@@ -27,7 +27,13 @@
             <el-input v-model="form.address" :placeholder="$t('store.storeAddressText')" />
           </el-form-item>
           <el-form-item :label="$t('store.businessHours')">
-            <el-input v-model="form.businessTimeDes" :placeholder="$t('store.introduce')" />
+            <div class="flex align-center" v-for="(item, idx) in form.businessTimeDes">
+              <el-input v-model="form.businessTimeDes[idx]" />
+              <el-button type="text" size="small" v-if="idx == 0"
+                @click="form.businessTimeDes.push('')" class="set-btn">{{ $t('public.add') }}</el-button>
+              <el-button type="text" size="small" v-else
+                @click="form.businessTimeDes.splice(idx, 1)" class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
+            </div>
           </el-form-item>
           <el-form-item :label="$t('store.introduce')">
             <el-input v-model="form.introduce" :placeholder="$t('store.introduce')" type="textarea" :rows="3" />
@@ -147,7 +153,7 @@
                 </el-checkbox-group>
               </el-form-item> -->
 
-              <el-row class="rel radius-10" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="20">
+              <el-row class="rel radius-10 flex flex-wrap" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="20">
                 <el-col :sm="24" :lg="12" v-for="(name, xcx) in config.xcx_pay.default">
                   <div>
                     <div class="mb-10 text-dfs text-bold text-black">
@@ -190,11 +196,9 @@
                           </el-input>
                           <el-button type="text" size="small"
                             :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
-                            @click="item[`${xcx}PayMode`].payModeDetail.push({ time: (item.deviceTypeCode == 'WM' ? '46' : 60), money: 2, tag: index + 1 })">{{
-        $t('public.add') }}</el-button>
+                            @click="item[`${xcx}PayMode`].payModeDetail.push({ time: (item.deviceTypeCode == 'WM' ? '46' : 60), money: 2, tag: index + 1 })" class="set-btn">{{ $t('public.add') }}</el-button>
                           <el-button type="text" size="small" v-else
-                            @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="text-danger">{{
-        $t('public.delete') }}</el-button>
+                            @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
                         </div>
                       </el-form-item>
                       <el-form-item :label="`${$t('store.laundryDetergentSettings')}`"
@@ -215,7 +219,7 @@
                               @click="item[`${xcx}PayMode`].laundryMode[lidx].package.splice(lpidx, 1)" class="text-danger">删除</el-button> -->
                           </div>
                         </template>
-                      </el-form-item>s
+                      </el-form-item>
                     </template>
 
                     <template v-else-if="item[`${xcx}PayMode`].modeType == 'STEPBILLING'">
@@ -245,13 +249,13 @@
                         </div>
                       </el-form-item>
 
-                      <el-form-item label="分段明细" :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
+                      <el-form-item :label="$t('public.stepList')" :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
                         <template v-for="(plan, stepIdx) in item[`${xcx}PayMode`].stepPayMode.stepList">
                           <div class="flex">
                             <div class="flex1">
                               <el-input type="number" v-model="plan.startingTime"
                                 @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))" disabled>
-                                <template slot="append">{{ $t('public.minute') }}{{ plan.endTime ? '' : '以上'}}</template>
+                                <template slot="append">{{ $t('public.minute') }}</template>
                               </el-input>
                             </div>
                             <template v-if="plan.endTime">
@@ -265,13 +269,14 @@
                             <div class="pl-10 pr-10 flex1">
                               <el-input type="number" v-model="plan.maxAmount"
                                 @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
+                                <template slot="prepend">{{ $t('public.capping') }}</template>
                                 <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                               </el-input>
                             </div>
                             <el-button type="text" size="small" v-if="stepIdx == 0"
-                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 2)">添加</el-button>
+                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 2)" class="set-btn">{{ $t('public.add') }}</el-button>
                             <el-button type="text" size="small" v-else
-                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 3)" class="text-danger">删除</el-button>
+                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 3)" class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
                           </div>
                         </template>
                       </el-form-item>
@@ -381,7 +386,7 @@ import {
   arrayToObj
 } from '@/utils/index'
 import upload from '@/components/upload'
-import maps from '@/components/map'
+import maps from '@/components/map/baidu'
 export default {
   name: 'addStore',
   components: {
@@ -468,6 +473,7 @@ export default {
       form: {
         catId: [],
         province: [],
+        businessTimeDes: [''],
         divisionMode: 1,
         avatar: '',
         loginPassword: '123456',
@@ -742,9 +748,14 @@ export default {
                 if (item[`${key}PayMode`].modeType == 'PACKAGE') {
                   item[`${key}PayMode`].payModeDetail = JSON.parse(item[`${key}PayMode`].payModeDetail)
                   item[`${key}PayMode`].payModeDetails = JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`].payModeDetails))
+                  item[`${key}PayMode`].stepPayMode = JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`].stepPayMode))
+                } else if(item[`${key}PayMode`].modeType == 'STEPBILLING') {
+                  item[`${key}PayMode`].stepPayMode = JSON.parse(item[`${key}PayMode`].payModeDetail)
+                  item[`${key}PayMode`].payModeDetails = JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`][`payModeDetails`]))
                 } else {
                   item[`${key}PayMode`].payModeDetails = JSON.parse(item[`${key}PayMode`].payModeDetail)
                   item[`${key}PayMode`].payModeDetail = JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`][`payModeDetail`]))
+                  item[`${key}PayMode`].stepPayMode = JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`][`stepPayMode`]))
                 }
               } else {
                 item[`${key}PayMode`] = item.weixinPayMode ? JSON.parse(JSON.stringify(item.weixinPayMode)) : JSON.parse(JSON.stringify(this.defaultDevice[`${key}PayMode`]))
@@ -762,6 +773,7 @@ export default {
         info.userNickName = res.user.bindUserName
         info.userMobile = res.user.mobile
         info.province = [res.province, res.city, res.district]
+        info.businessTimeDes = info.businessTimeDes ? info.businessTimeDes.split(',') : ['']
         delete info.city
         delete info.district
         delete info.storeDivisionConfig
@@ -804,6 +816,7 @@ export default {
           if (params.catId && typeof params.catId == 'object') {
             params.catId = params.catId[params.catId.length - 1]
           }
+          params.businessTimeDes = params.businessTimeDes.filter(item => item).join(',')
           if (Array.isArray(params.province) && params.province.length > 0) {
             params.district = params.province[2]
             params.city = params.province[1]
@@ -839,7 +852,10 @@ export default {
                     })
                     item[`${key}PayMode`].payModeDetail = JSON.stringify(item[`${key}PayMode`].payModeDetail)
                   } else if (item[`${key}PayMode`].modeType == 'STEPBILLING') {
-                    item[`${key}PayMode`].payModeDetail = item[`${key}PayMode`].stepPayMode
+                    item[`${key}PayMode`].stepPayMode.stepList.map((packItem, packI) => {
+                      return packItem.tag = packI + 1
+                    })
+                    item[`${key}PayMode`].payModeDetail = JSON.stringify(item[`${key}PayMode`].stepPayMode)
                   } else {
                     item[`${key}PayMode`].payModeDetails.unitPrice = item[`${key}PayMode`].payModeDetails.startingAmount
                     item[`${key}PayMode`].payModeDetails.overBillingUnit = item[`${key}PayMode`].payModeDetails.startingTime
@@ -873,8 +889,6 @@ export default {
               params.storeDivisionConfig.push(division)
             }
           }
-          console.log(params)
-          return
           if (error) {
             this.$message({
               message: error,
@@ -1028,11 +1042,10 @@ export default {
         case 1:
           let prevItem = {}
           stepList.map((item, index) => {
-            console.log(prevItem)
             if(index > idx && (item.startingTime != parseInt(prevItem.endTime) + 1 || item.endTime < item.startingTime)){
-              item.startingTime = parseInt(prevItem.endTime) + 1
+              item.startingTime = parseInt(prevItem.endTime)
               if(item.endTime < item.startingTime){
-                item.endTime = parseInt(item.startingTime) + 179
+                item.endTime = parseInt(item.startingTime) + 180
               }
               prevItem = item
               return item
@@ -1042,15 +1055,18 @@ export default {
         break
         case 2:
           let stepEnd = stepList[stepList.length - 1]
-          stepEnd.endTime = parseInt(stepEnd.startingTime) + 179
+          stepEnd.endTime = parseInt(stepEnd.startingTime) + 180
           stepList[stepList.length - 1] = stepEnd
           stepList.push({
-            startingTime: stepEnd.endTime + 1,
+            startingTime: stepEnd.endTime,
             maxAmount: stepEnd.maxAmount
           })
         break
         case 3:
           stepList.splice(idx, 1)
+          if(idx == stepList.length){
+            delete stepList[idx - 1]['endTime']
+          }
           this.setStepList(stepList, 0, 1)
         break
       }
@@ -1078,5 +1094,8 @@ export default {
   .el-select {
     pointer-events: none;
   }
+}
+.set-btn{
+  min-width: 60px;
 }
 </style>

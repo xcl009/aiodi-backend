@@ -1224,14 +1224,13 @@ export default {
       })
     }
     this.$store.dispatch('api/getPayChannel').then(res => {
-      console.log(res, 'ressss')
       this.payChannel = res
-      let obj = {
-        name: this.$t('public.all'),
-        value: 0
-      }
-      let list = JSON.parse(JSON.stringify(res))
-      list[0] = obj
+      // let obj = {
+      //   name: this.$t('public.all'),
+      //   value: 0
+      // }
+      // let list = JSON.parse(JSON.stringify(res))
+      // list[0] = obj
       // this.payChannelList = list;
     })
     this.$get('/iot-saas-pay/admin/pay/channel/getQueryPayTypes',).then(res => {
