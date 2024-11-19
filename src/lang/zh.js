@@ -865,7 +865,7 @@ export default {
     message6: '确定将该用户移除押金名单吗？',
     message7: '移除',
     delTitle: '删除DD规则',
-    delText: '确定删除该DD规则吗？',
+    delText: '确定删除吗？',
     delayedOrder: '延时归还订单用户端展示状态',
     delayedOrderText: '配置延时归还订单在延时时间段内用户端订单展示状态',
     durationPerSession: '每次时长',
