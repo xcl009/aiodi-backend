@@ -237,7 +237,8 @@
               :class="{ 'act': item.status == 'ENABLE' }" v-for="item in brandChannels">
               <el-avatar class="block" :size="40" :src="item.logo" fit="cover" shape="square"></el-avatar>
               <div class="pl-10 pr-10 flex-1">
-                <div :class="{ 'text-bold text-black': item.status == 'ENABLE' }">{{ item.name }}</div>
+                <div :class="{ 'text-bold text-black': item.status == 'ENABLE' }" @click.stop="$set(item, 'editName', true)" v-show="!item.editName">{{ item.name }}</div>
+                <el-input v-model="item.name" autofocus @blur.stop="item.editName = false" size="mini" v-show="item.editName" />
                 <div class="mt-5 fs-s2">{{ item.code }}</div>
               </div>
               <div class="flex align-center sort-box text-center">
@@ -751,7 +752,7 @@ export default {
       switch (type) {
         case 1:
           this.dialogType = dialogType
-          this.curRow = row
+          if([13].indexOf(dialogType) == -1) this.curRow = row
           this.curIdx = idx
           this.dform = {}
           if (dialogType == 2) {
@@ -839,7 +840,7 @@ export default {
             })
           }
           this.drawerStatus = true
-          break
+        break
       }
     },
 
@@ -1019,6 +1020,7 @@ export default {
           let channels = []
           for (var i in this.brandChannels) {
             channels.push({
+              alias: this.brandChannels[i].name,
               channelId: this.brandChannels[i].channelId,
               status: this.brandChannels[i].status,
               sort: this.brandChannels[i].sort,

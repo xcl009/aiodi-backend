@@ -259,7 +259,7 @@ export default {
     withdrawalTime: 'Withdrawal time',
     withdrawalAmount: 'Withdrawal amount',
     commission: 'Handling fee',
-    name: 'Real name',
+    realName: 'Real name',
     withdrawal: 'Withdraw',
     cardNo: 'Bank card number',
     bankName: 'Opening bank',

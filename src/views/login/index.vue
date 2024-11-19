@@ -333,7 +333,7 @@ $light_gray: #eee;
     }
     
     .el-input__inner {
-      width: 360px;
+      min-width: 360px;
       background: var(--bodyBg);
       border: none;
     }
