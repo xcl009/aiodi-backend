@@ -1,11 +1,13 @@
 <template>
   <div>
     <div class="p-15 bg-white">
-      <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-        :title="$t('device.areYouPopUpAll')" @onConfirm="allEject()">
-        <el-button class="mb-15" type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{
-          allEjectStatus ? $t('public.popUp') : $t('public.popUpAll') }} </el-button>
-      </el-popconfirm>
+      <div class="mb-15">
+        <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+          :title="$t('device.areYouPopUpAll')" @onConfirm="allEject()">
+          <el-button type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ? $t('public.popUp') : $t('public.popUpAll') }} </el-button>
+        </el-popconfirm>
+        <el-button type="primary" size="medium" class="ml-10" :disabled="refreshStatus" @click="refreshStatus = true; getBattery()">{{ $t('public.refresh') }} </el-button>
+      </div>
       <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" highlight-current-row>
         <el-table-column :label="$t('public.slot')">
@@ -76,7 +78,8 @@ export default {
       listLoading: false,
       deviceSn: this.$route.query.deviceSn || '',
       allEjectStatus: false,
-      factoryCode: ''
+      factoryCode: '',
+      refreshStatus: false
     }
   },
   mounted(options) {
@@ -117,9 +120,15 @@ export default {
         this.list = res
         this.listLoading = false
         this.clickSubmit = false
+        setTimeout(() => {
+          this.refreshStatus = false
+        }, 2000)
       }).catch(() => {
         this.clickSubmit = false
         this.listLoading = false
+        setTimeout(() => {
+          this.refreshStatus = false
+        }, 2000)
       })
     },
 
