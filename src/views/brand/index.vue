@@ -360,6 +360,10 @@
       </template>
       <template v-if="dialogType == 14">
         <div class="pl-20 pr-20 channel-box" v-if="loginChannel.length > 0">
+          <!-- <el-radio-group v-model="dform.sourceType" @change="getBrandLoginCannel(curRow.id)">
+            <el-radio-button :label="key" v-for="(item, key) in Constant.SourceType">{{ item }}</el-radio-button>
+          </el-radio-group> -->
+          
           <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor"
             :class="{ 'act': brandLoginChannels[item.loginCode] }" v-for="item in loginChannel"
             @click="dialogConfirm(brandLoginChannels[item.loginCode] || item)">
@@ -833,7 +837,9 @@ export default {
               content: row.content
             }
           } else if (dialogType == 14) {
-            this.dform = {}
+            this.dform = {
+              sourceType: 4
+            }
             this.$get('iot-saas-user/admin/queryAllLoginChannel').then(res => {
               this.loginChannel = res
               this.getBrandLoginCannel(row.id)
@@ -865,6 +871,7 @@ export default {
     getBrandLoginCannel(id) {
       this.$get('iot-saas-user/open/api/queryLoginChannelByBrands', {
         brandId: id,
+        sourceType: this.dform.sourceType
       }).then(res => {
         let brandChannels = {}
         res.map(item => {
