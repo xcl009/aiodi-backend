@@ -477,7 +477,7 @@
           <el-form-item :label="$t('system.userWalletCash')">
             <el-switch v-model="dform.userWalletCash" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item :label="$t('system.userWalletRecharge')">
+          <el-form-item :label="$t('system.userWalletRecharge')" v-if="checkAbility(['RECHARGESET'], 3)">
             <el-switch v-model="dform.userWalletRecharge" :active-value="1" :inactive-value="0" />
           </el-form-item>
         </el-form>

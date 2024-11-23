@@ -58,8 +58,8 @@
         </el-table-column>
         <el-table-column :label="$t('public.device')" width="100">
           <template slot-scope="scope">
-            <div v-for="(item, index ) in myDevice" :key="index">
-              <div v-if="item.code == scope.row.deviceTypeCode">{{ item.name }}</div>
+            <div v-for="(item, key) in myDeviceName" :key="key">
+              <div v-if="item == scope.row.deviceTypeCode">{{ key }}</div>
             </div>
           </template>
         </el-table-column>
@@ -258,8 +258,11 @@ export default {
     init() {
       let url = 'iot-saas-basic/admin/guide/config/findTypes';
       this.$get(url, {}).then(res => {
-        this.dataList = res;
-        this.listLoading = false;
+        if(this.isBrand()){
+          res = res.filter(item => ['BRAND','ADMIN','AGENT','STORE'].indexOf(item.userType) == -1)
+        }
+        this.dataList = res
+        this.listLoading = false
       }).catch(() => {
         this.listLoading = false
       })
