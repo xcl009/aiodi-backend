@@ -1404,6 +1404,9 @@ export default {
      * 设备统计
      */
     getDeviceStat() {
+      /* this.$get('iot-saas-order/statistics/store/divide/count/queryStoreDivideCount').then(res => {
+
+      }) */
       this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
         this.deviceStat = res
         let deviceChartData = {}, idx = 0, colors = ['#2A9F9F', '#224278', '#82A8C6', '#9DA5B2', '#82B869', '#A01E57', '#E1B44F', '#D65C5C', '#4C65B2']

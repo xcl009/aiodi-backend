@@ -8,6 +8,7 @@ export default {
     DEPOSIT_FREE: '免押',
     DEPOSIT_AND_FREE: '免押+余额',
     DEPOSIT: '余额',
+    STEPBILLING: '分段',
     today: '今日',
     yesterday: '昨日',
     thisWeek: '本周',
@@ -424,7 +425,10 @@ export default {
     reserveEmpty: '清空',
     chenghu:'称呼',
     submitTime:'提交时间',
-    zsuserinfo:'招商客户信息'
+    zsuserinfo:'招商客户信息',
+    stepList: '分段明细',
+    stepList1: '[0]分钟最高[1]，',
+    stepList2: '[0]分钟以上[1]'
   },
   // 分账关系
   reType: {
@@ -1306,8 +1310,8 @@ export default {
     frequencyLimitText: '配置用户免押可租借次数',
     setMap: '地图图标及附近商户展示设置',
     setMapText: '配置地图展示图标和附近商户是否展示状态',
-    statisticalSettings: '代理、商户查看数据相关设置',
-    statisticalSettingsText: '配置代理、商户收益明细、月(日)统计、查看订单相关设置',
+    statisticalSettings: '相关角色部分查看权限及部分功能按钮显示设置',
+    statisticalSettingsText: '如：代理、商户收益明细、月(日)统计、查看订单等权限',
     development: '更多功能开发中，请持续关注',
     wxText: '开启表示微信用户登录需授权手机号码',
     borrowableTimes: '可借次数',
@@ -1341,7 +1345,9 @@ export default {
     receiptRule: '请完善到账时间规则',
     receiptDay: '天内',
     agentEditStoreMobile: '禁止修改商户账号',
-    nearStoreRange: '附近商户范围'
+    nearStoreRange: '附近商户范围',
+    userWalletCash: '余额提现',
+    userWalletRecharge: '余额充值',
   },
   user: {
     message: '请填写旧密码',

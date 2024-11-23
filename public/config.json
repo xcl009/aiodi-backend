@@ -25,16 +25,19 @@
       "余额": "DEPOSIT"
     },
     "PA": {
-      "余额": "DEPOSIT"
+      "余额": "DEPOSIT",
+      "分段": "STEPBILLING"
     },
     "WM": {
       "套餐": "PACKAGE"
     },
     "PA_three": {
-      "余额": "DEPOSIT"
+      "余额": "DEPOSIT",
+      "分段": "STEPBILLING"
     },
     "PA_four": {
-      "余额": "DEPOSIT"
+      "余额": "DEPOSIT",
+      "分段": "STEPBILLING"
     }
   },
   "xcx_pay": {
