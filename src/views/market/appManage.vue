@@ -284,7 +284,7 @@ export default {
             brandId: this.brandId
           }).then(res => {
             this.$message({
-              message: that.$t('market.operationSuccessful'),
+              message: that.$t('public.operationSuccessful'),
               type: 'success'
             })
             this.drawerStatus = false

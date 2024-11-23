@@ -472,6 +472,14 @@
           <el-form-item :label="$t('system.agentEditStoreMobile')">
             <el-switch v-model="dform.agentEditStoreMobile" :active-value="1" :inactive-value="0" />
           </el-form-item>
+
+          <h4>{{ $t('public.user') }}</h4>
+          <el-form-item :label="$t('system.userWalletCash')">
+            <el-switch v-model="dform.userWalletCash" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item :label="$t('system.userWalletRecharge')" v-if="checkAbility(['RECHARGESET'], 3)">
+            <el-switch v-model="dform.userWalletRecharge" :active-value="1" :inactive-value="0" />
+          </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 5">
@@ -620,7 +628,7 @@ export default {
         1: this.$t('system.userLoginPhone'),
         2: this.$t('system.frequencyLimit'),
         3: this.$t('system.setMap'),
-        4: this.$t('system.setStore'),
+        4: this.$t('system.statisticalSettings'),
         5: this.$t('steal.delayedOrder'),
         6: this.$t('system.tiktok'),
         7: this.$t('system.checkTwoPwd'),
@@ -699,6 +707,8 @@ export default {
                       checkOrder: 0,
                       checkMouthStatAgent: 1,
                       checkMouthStatSpAgent: 0,
+                      userWalletCash: 1,
+                      userWalletRecharge: 0
                     }
                     break
                   case 5:

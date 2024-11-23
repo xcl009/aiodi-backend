@@ -584,6 +584,20 @@ const util = {
         return `${window.config.washing_package[mode.time].title}(${mode.money}${userType != 'admin' ? currencySymbol:''}`
       }
       return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${mode.money}${ userType != 'admin' ? currencySymbol:''}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}` : `${mode.time}${i18n.t('public.minute')}${mode.money}${userType != 'admin' ? currencySymbol:''}`
+    } else if(type == 5){
+      let fee = `${mode.overBillingUnit}${i18n.t('public.minute')}${mode.unitPrice}${userType != 'admin' ? currencySymbol:''}`, stepStr = ''
+      if (stype == 2) {
+        stepStr += '，'
+        mode.stepList.map(item => {
+          if(item.endTime){
+            stepStr += (i18n.t('public.stepList1')).i18Format(item.endTime, util.formatCurrency(item.maxAmount, 1))
+          }else{
+            stepStr += (i18n.t('public.stepList2')).i18Format(item.startingTime, util.formatCurrency(item.maxAmount, 1))
+          }
+        })
+        fee = fee + stepStr
+      }
+      return fee
     } else {
       let fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${userType != 'admin' ? currencySymbol:''}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}`
       if (mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice) {
@@ -665,6 +679,27 @@ const util = {
         ]
       }
     ];
+    let stepPayMode = {
+      depositAmount: 99,
+      unitPrice: 0.1,
+      overBillingUnit: 1,
+      stepList: [
+        {
+          startingTime: 0,
+          endTime: 600,
+          maxAmount: 3
+        },
+        {
+          startingTime: 600,
+          endTime: 1440,
+          maxAmount: 8
+        },
+        {
+          startingTime: 1440,
+          maxAmount: 15
+        }
+      ]
+    }
     let obj = {
       status: 1,
       closeType: '1',
@@ -684,6 +719,7 @@ const util = {
           }
         ],
         laundryMode: laundryMode,
+        stepPayMode: stepPayMode,
         payModeDetails: {
           startingTime: '60',
           startingAmount: 3,
@@ -710,6 +746,7 @@ const util = {
           }
         ],
         laundryMode: laundryMode,
+        stepPayMode: stepPayMode,
         payModeDetails: {
           startingTime: '60',
           startingAmount: 3,
@@ -736,6 +773,7 @@ const util = {
           }
         ],
         laundryMode: laundryMode,
+        stepPayMode: stepPayMode,
         payModeDetails: {
           startingTime: '60',
           startingAmount: 3,
@@ -762,6 +800,7 @@ const util = {
           }
         ],
         laundryMode: laundryMode,
+        stepPayMode: stepPayMode,
         payModeDetails: {
           startingTime: '60',
           startingAmount: 3,

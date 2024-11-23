@@ -61,7 +61,7 @@
               <el-button type="text" size="small" v-else @click="form.linkBrandIds.splice(idx, 1)" class="text-danger">{{ $t('public.delete') }}</el-button>
             </div>
           </el-form-item>
-          <el-form-item label="二维码域名地址">
+          <el-form-item label="二维码域名地址" prop="qrCodeDomain">
             <el-input v-model="form.qrCodeDomain" placeholder="二维码域名地址" />
           </el-form-item>
 
@@ -157,7 +157,10 @@ export default {
         ],
         country:[
            { required: true, message: this.$t('brand.countryText'), trigger: 'blur' }
-        ]
+        ],
+        qrCodeDomain: [
+           { required: true, message: 'Cannot be empty', trigger: 'blur' }
+        ],
       }
     },
   },
@@ -219,7 +222,8 @@ export default {
           companyPhoneNum: res.companyPhoneNum,
           currency: res.currency,
           country: res.country,
-          linkBrandIds: linkBrandIds
+          linkBrandIds: linkBrandIds,
+          qrCodeDomain: res.qrCodeDomain
         }
       })
     },
