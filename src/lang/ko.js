@@ -700,6 +700,7 @@ export default {
     countryText: '운영 국가를 선택하십시오.',
     linkBrand: '관련 브랜드',
     switchCountry: '국가 전환',
+    countryPhone: '관 사이즈',
   },
   userManage: {
     userSource: '사용자 소스',

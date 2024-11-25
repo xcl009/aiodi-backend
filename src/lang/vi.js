@@ -475,7 +475,7 @@ export default {
         allOrderNum: 'Tổng số đơn hàng',
         allDevicesNum: 'Tổng số thiết bị',
         allAgentNum: 'Tổng số đại lý',
-        allStoreNum: 'Tổng số thương hùa',
+        allStoreNum: 'Cửa hàng',
         createOrder: 'Nhấn vào số phòng để tạo đơn hàng',
         room: 'Số phòng',
         contrast: 'So sánh dữ liệu giao dịch',
@@ -722,6 +722,7 @@ export default {
         countryText: 'Vui lòng chọn quốc gia hoạt động',
         linkBrand: 'Thương hiệu liên kết',
         switchCountry: 'Chuyển đổi quốc gia',
+        countryPhone: 'Mã Vương miện',
     },
     userManage: {
         userSource: 'Nguồn người dùng',

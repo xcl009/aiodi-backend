@@ -730,7 +730,8 @@ export default {
     country: '运营国家',
     countryText: '请选择运营国家',
     linkBrand: '关联品牌',
-    switchCountry: '切换国家'
+    switchCountry: '切换国家',
+    countryPhone: '手机冠号'
   },
   userManage: {
     userSource: '用户来源',

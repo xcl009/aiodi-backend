@@ -703,6 +703,7 @@ export default {
         countryText: 'Por favor, elija el país de operación',
         linkBrand: 'Marcas asociadas',
         switchCountry: 'Cambiar de país',
+        countryPhone: 'Crown code',
     },
     userManage: {
         userSource: 'Origen del usuario',

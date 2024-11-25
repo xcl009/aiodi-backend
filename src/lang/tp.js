@@ -700,6 +700,7 @@ export default {
     countryText: 'Mangyaring piliin ang bansa na gumaganap',
     linkBrand: 'Mga kaugnayang marka',
     switchCountry: 'Mga bansa na nagpapalit',
+    countryPhone: 'Crown code',
   },
   userManage: {
     userSource: 'Pagkakaroon ng gumagamit',
