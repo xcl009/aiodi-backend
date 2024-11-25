@@ -700,6 +700,7 @@ export default {
         countryText: 'Выберите страну эксплуатации',
         linkBrand: 'Связанные марки',
         switchCountry: 'Переключить страну',
+        countryPhone: 'Корона',
     },
     userManage: {
         userSource: 'Источник пользователя',

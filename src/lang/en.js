@@ -701,7 +701,8 @@ export default {
     country: 'Operating country',
     countryText: 'Please select the operating country',
     linkBrand: 'Related brands',
-    switchCountry: 'Switching countries'
+    switchCountry: 'Switching countries',
+    countryPhone: 'Crown code',
   },
   userManage: {
     userSource: 'User Source',

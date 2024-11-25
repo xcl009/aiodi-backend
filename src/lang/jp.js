@@ -700,6 +700,7 @@ export default {
     countryText: '運営国を選択してください',
     linkBrand: '関連ブランド',
     switchCountry: '国の切り替え',
+    countryPhone: 'クラウンコード',
   },
   userManage: {
     userSource: 'ユーザーソース',

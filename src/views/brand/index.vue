@@ -148,6 +148,7 @@
                     }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 14)">{{ $t('brand.loginChannel')
                     }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 16)">{{ $t('brand.countryPhone') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{
       $t('brand.deleteBrand') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>{{
@@ -363,11 +364,11 @@
           <!-- <el-radio-group v-model="dform.sourceType" @change="getBrandLoginCannel(curRow.id)">
             <el-radio-button :label="key" v-for="(item, key) in Constant.SourceType">{{ item }}</el-radio-button>
           </el-radio-group> -->
-          
+
           <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor"
             :class="{ 'act': brandLoginChannels[item.loginCode] }" v-for="item in loginChannel"
             @click="dialogConfirm(brandLoginChannels[item.loginCode] || item)">
-            <el-avatar class="block" :size="35" :src="item.loginLogo" :fit="cover" shape="square"></el-avatar>
+            <el-avatar class="block" :size="35" :src="item.loginLogo" fit="cover" shape="square"></el-avatar>
             <div class="pl-15 pr-15 flex-1">
               <div :class="{ 'text-bold text-black': brandLoginChannels[item.loginCode] }">{{ item.loginName }} {{
       item.loginExt || '' }}</div>
@@ -408,7 +409,21 @@
           </template>
         </el-form>
       </template>
-      <template v-if="[1, 3, 11, 12, 13, 15].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 16">
+        <div class="pl-20 pr-20 channel-box country-phone" v-if="countryPhone.length > 0">
+          <draggable v-model="countryPhone">
+            <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{ 'act': brandCountryPhone[item.crownCode] }" v-for="item in countryPhone" @click="$set(brandCountryPhone, item.crownCode, !brandCountryPhone[item.crownCode])">
+              <el-avatar class="block" :size="35" :src="item.icon" fit="cover" shape="square"></el-avatar>
+              <div class="pl-15 pr-15 flex-1">
+                <div :class="{ 'text-bold text-black': brandCountryPhone[item.crownCode] }">{{ item.chineseName }}</div>
+                <div class="mt-5 fs-s2">{{ item.name }}</div>
+              </div>
+              <div class="text-primary">+{{ item.crownCode }}</div>
+            </div>
+          </draggable>
+        </div>
+      </template>
+      <template v-if="[1, 3, 11, 12, 13, 15, 16].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -426,7 +441,8 @@ import upload from '@/components/upload'
 import Pagination from '@/components/Pagination'
 import condition from '@/components/condition/'
 import {
-  copyText
+  copyText,
+  arrayToObj
 } from '@/utils/index'
 import {
   getToken,
@@ -434,14 +450,15 @@ import {
   removeToken
 } from '@/utils/auth'
 import TableColumnSet from '@/components/TableColumnSet/index'
-
+import draggable from 'vuedraggable'
 export default {
   name: 'brand',
   components: {
     upload,
     TableColumnSet,
     Pagination,
-    condition
+    condition,
+    draggable
   },
   data() {
     return {
@@ -479,7 +496,11 @@ export default {
 
       //登录通道
       loginChannel: [],
-      brandLoginChannels: {}
+      brandLoginChannels: {},
+
+      //国家冠号
+      countryPhone: [],
+      brandCountryPhone: {}
     }
   },
   defaultColumn() {
@@ -622,6 +643,7 @@ export default {
         13: this.$t('brand.payConfig'),
         14: this.$t('brand.loginChannel'),
         15: this.$t('brand.loginConfig'),
+        16: this.$t('brand.countryPhone')
       }
     },
     sort_type() {
@@ -844,10 +866,47 @@ export default {
               this.loginChannel = res
               this.getBrandLoginCannel(row.id)
             })
+          } else if (dialogType == 16) {
+            this.getCountrys().then(countryPhone => {
+              this.$get('iot-saas-basic/admin/settings/find', {
+                brandId: row.id,
+                code: 'COUNTRY_PHONE'
+              }).then(res => {
+                if (res && res.setting) {
+                  let countrys = JSON.parse(res.setting).countrys || [], countrysArr = []
+                  this.brandCountryPhone = arrayToObj(countrys, 'crownCode', 'chineseName')
+                  countryPhone = arrayToObj(countryPhone, 'crownCode')
+                  countrys.map(item => {
+                    countrysArr.push(countryPhone[item.crownCode])
+                    delete countryPhone[item.crownCode]
+                  })
+                  this.countryPhone = countrysArr.concat(Object.values(countryPhone))
+                } else {
+                  this.brandCountryPhone = {}
+                  this.countryPhone = countryPhone
+                }
+              })
+            })
+            this.dform = {}
           }
           this.drawerStatus = true
         break
       }
+    },
+
+    /**
+     * 获取国家手机冠号
+     */
+    getCountrys() {
+      return new Promise((resolve) => {
+        if(this.countryPhone.length > 0){
+          resolve(this.countryPhone)
+          return
+        }
+        this.$get('iot-saas-user//open/sendSms/countrys').then(res => {
+          resolve(res)
+        })
+      })
     },
 
     /**
@@ -1095,6 +1154,29 @@ export default {
             this.clickSubmit = false
           })
           break
+        case 16:
+          let countryPhone = []
+          this.countryPhone.map(item => {
+            if(this.brandCountryPhone[item.crownCode]){
+              countryPhone.push(item)
+            }
+          })
+          params.brandId = curRow.id
+          params.code = 'COUNTRY_PHONE'
+          params.setting = JSON.stringify({
+            countrys: countryPhone
+          })
+          this.$post('iot-saas-basic/admin/settings/save', params).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.drawerStatus = false
+            this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
       }
     },
 
@@ -1188,6 +1270,12 @@ export default {
 
   .pay-config {
     width: 90px;
+  }
+}
+
+.country-phone{
+  .channel-item {
+    cursor: move;
   }
 }
 

@@ -700,7 +700,8 @@ export default {
     country: '運營國家',
     countryText: '請選擇運營國家',
     linkBrand: '關聯品牌',
-    switchCountry: '切換國家'
+    switchCountry: '切換國家',
+    countryPhone: '冠碼'
   },
   userManage: {
     userSource: '用户来源',

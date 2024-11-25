@@ -699,7 +699,8 @@ export default {
     country: "ประเทศที่ดำเนินการ",
     countryText: "กรุณาเลือกประเทศที่ดำเนินการ",
     linkBrand: "แบรนด์ที่เกี่ยวข้อง",
-    switchCountry: "สลับประเทศ"
+    switchCountry: "สลับประเทศ",
+    countryPhone: 'รหัสมงกุฎ',
   },
   userManage: {
     userSource: "แหล่งที่มาของผู้ใช้",
