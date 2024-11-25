@@ -946,6 +946,7 @@ div:focus {
     color: #1D2129;
   }
   .el-input__inner, .el-textarea__inner{
+    min-width: 60px;
     height: 32px;
     border: none;
     border-radius: 2px;
