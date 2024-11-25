@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
-      <el-col :lg="24"  :xl="16">
+      <el-col :lg="24" :xl="20">
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="130px">
           <h3>{{ $t('public.basicInformation') }}</h3>
           <el-form-item :label="$t('public.doorstepPhoto')" class="up-img">
