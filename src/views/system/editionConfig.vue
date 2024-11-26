@@ -8,6 +8,7 @@
           <el-tab-pane :label="$t('system.hideConfiguration')" name="xcxMoneyConfig" />
           <el-tab-pane :label="$t('system.updateDetails')" name="systemUpdateDetails" />
           <el-tab-pane label="设备软件升级配置" name="deviceUpdateConfig" />
+          <el-tab-pane label="品牌商相关配置" name="brandDomainConfig" />
         </el-tabs>
 
         <el-form ref="form" :model="form" label-width="130px" label-position="left">
@@ -65,6 +66,17 @@
               <el-input v-model="form.config" placeholder="例:天盘6口网关版本升级配置:{TP_6_1:{updateType:'1',domainUrl:'tjwl.oss-cn-shenzhen.aliyuncs.com',path:'/new_roms/TJ8051_T_6_24_PN_V1_241016_1-update.bin',md5:'218293312BF159D4ACDA90DE06F6A608',size:'61972',deviceVersion:'',fileVersion:'',}}" type="textarea" rows="10" />
             </el-form-item>
           </template>
+          <template v-if="key == 'brandDomainConfig'">
+            <h4>品牌商相关配置</h4>
+            <div style="min-height: 70vh;">
+              <vue-json-editor
+                v-model="form"
+                :showBtns="false"
+                :mode="'code'"
+                lang="zh"
+              />
+            </div>
+          </template>
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submit') }}</el-button>
           </el-form-item>
@@ -76,9 +88,11 @@
 
 <script>
   import Tinymce from '@/components/Tinymce'
+  import vueJsonEditor from 'vue-json-editor'
   export default {
     components: {
-      Tinymce
+      Tinymce,
+      vueJsonEditor
     },
     data() {
       return {
@@ -102,7 +116,14 @@
         this.$get('iot-saas-pay/open/pay/system/config', {
           key: this.key
         }).then(res => {
-          this.form = res.valueJson ? JSON.parse(res.valueJson) : {}
+          let valueJson = res.valueJson ? JSON.parse(res.valueJson) : {}
+          if(this.key == 'brandDomainConfig'){
+            this.form = {
+              val: valueJson
+            }
+          }else{
+            this.form = valueJson
+          }
         })
       },
 
@@ -111,8 +132,12 @@
        */
       onSubmit() {
         let that = this;
-        let params = {}, url = 'iot-saas-pay/admin/pay/system/config'
-        params.valueJson = JSON.stringify(this.form)
+        let params = {}, url = 'iot-saas-pay/admin/pay/system/config', json = JSON.parse(JSON.stringify(this.form))
+        if(this.key == 'brandDomainConfig'){
+          params.valueJson = JSON.stringify(json.val)
+        }else{
+          params.valueJson = JSON.stringify(json)
+        }
         params.key = this.key
         this.clickSubmit = true
         this.$refs['form'].validate((valid) => {
@@ -139,5 +164,8 @@
 <style scoped>
   .line {
     text-align: center;
+  }
+  /deep/ .jsoneditor-vue{
+    height: 75vh;
   }
 </style>
