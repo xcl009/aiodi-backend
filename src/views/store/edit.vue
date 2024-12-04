@@ -386,7 +386,7 @@ import {
   arrayToObj
 } from '@/utils/index'
 import upload from '@/components/upload'
-import maps from '@/components/map/baidu'
+import maps from '@/components/map/index'
 export default {
   name: 'addStore',
   components: {

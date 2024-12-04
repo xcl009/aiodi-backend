@@ -92,9 +92,7 @@ export default {
         contacts: [
           { required: true, message: this.$t('factory.message3'), trigger: 'blur' }
         ],
-        province: [
-          { required: true, message: this.$t('factory.message4'), trigger: 'blur' }
-        ],
+        
         address: [
           { required: true, message: this.$t('factory.message5'), trigger: 'blur' }
         ]
