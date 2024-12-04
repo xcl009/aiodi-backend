@@ -12,6 +12,7 @@ import jp from './jp'; //日语
 import es from './es'; //西班牙语
 import km_MM from './km_MM'; //高棉语
 import th_TH from './th_TH'; //泰语
+import pt_PT from './pt'; //葡萄牙语
 
 /* let keys = [], values = []
 for(var i in zh){
@@ -53,7 +54,7 @@ import km_MMLocale from 'element-ui/lib/locale/lang/km'; //element 高棉语
 import th_THLocale from 'element-ui/lib/locale/lang/th'; //element 泰语
 Vue.use(VueI18n);
 let lang = localStorage.getItem('lang')
-lang = ['zh_CN', 'en_US', 'zh_HK','ja_JP','ko_KR','en_PH','ru_RU','vi_VN','es_ES','km_MM','th_TH'].indexOf(lang) > -1 ? lang : 'zh_CN'
+lang = ['zh_CN', 'en_US', 'zh_HK','ja_JP','ko_KR','en_PH','ru_RU','vi_VN','es_ES','km_MM','th_TH','pt-PT'].indexOf(lang) > -1 ? lang : 'zh_CN'
 localStorage.setItem('lang', lang)
 const i18n = new VueI18n({
   locale: lang,//将语言标识存入localStorage或sessionStorage中，页面刷新不会默认中文显示
@@ -101,7 +102,11 @@ const i18n = new VueI18n({
     'th_TH': {
       ...th_TH,
       ...th_THLocale
-    }, // 太晕
+    }, // 泰语
+    'pt-PT': {
+      ...pt_PT,
+      ...enLocale
+    }, // 葡萄牙语
   },
   silentTranslationWarn:true//解决vue-i18n黄色警告"value of key 'xxx' is not a string"和"cannot translate the value of keypath 'xxx'.use the value of keypath as default",可忽略
 });
