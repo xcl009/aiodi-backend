@@ -122,6 +122,36 @@
     },
     methods: {
       init() {
+        let lang =  localStorage.getItem('lang');
+        let language = '';
+        if(lang == 'zh_CN'){
+          language = 'zh-CN'
+        }else if(lang == 'zh_HK'){
+           language = 'zh-TW'
+        }else if(lang == 'en_US'){
+           language = 'en'
+        }else if(lang == 'vi_VN'){
+           language = 'vi'
+        }else if(lang == 'ru_RU'){
+           language = 'ru'
+        }else if(lang == 'ko_KR'){
+           language = 'ko'
+        }else if(lang == 'en_PH'){
+           language = 'fil'
+        }else if(lang == 'ja_JP'){
+           language = 'ja'
+        }else if(lang == 'es_ES'){
+           language = 'es'
+        }else if(lang == 'pt-PT'){
+           language = 'pt-BR'
+        }else if(lang == 'de-DE'){
+           language = 'de'
+        }else if(lang == 'th_TH'){
+           language = 'th'
+        }else if(lang == 'km_MM'){
+           language = 'en'
+        }
+        console.log(lang,'lang')
         this.$nextTick(() => {
           try{
             const loader = new Loader({
@@ -129,7 +159,7 @@
               version: "weekly", //版本
               libraries: ["places", "drawing"], //插件库places为基础库 drawing为绘制工具库
               region: "Canada",
-              //language: "en",
+              language: language,
             })
 
             const mapOptions = {
