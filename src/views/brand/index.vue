@@ -361,18 +361,16 @@
       </template>
       <template v-if="dialogType == 14">
         <div class="pl-20 pr-20 channel-box" v-if="loginChannel.length > 0">
-          <el-radio-group v-model="dform.sourceType" @change="getBrandLoginCannel(curRow.id)">
-            <el-radio-button :label="key" v-for="(item, key) in Constant.SourceType">{{ item }}</el-radio-button>
-          </el-radio-group>
-          <div class="flex align-center p-10 mt-15 mb-15 channel-item radius-10 cursor"
-            :class="{ 'act': brandLoginChannels[item.loginCode] && brandLoginChannels[item.loginCode].status == 1 }" v-for="item in loginChannel"
-            @click="postLoginChannel(brandLoginChannels[item.loginCode] || item, 1)">
-            <el-avatar class="block" :size="35" :src="item.loginLogo" fit="cover" shape="square"></el-avatar>
+          <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor"
+            :class="{ 'act': brandLoginChannels[item.loginCode] }" v-for="item in loginChannel"
+            @click="dialogConfirm(brandLoginChannels[item.loginCode] || item)">
+            <el-avatar class="block" :size="35" :src="item.loginLogo" :fit="cover" shape="square"></el-avatar>
             <div class="pl-15 pr-15 flex-1">
-              <div :class="{ 'text-bold text-black': brandLoginChannels[item.loginCode] && brandLoginChannels[item.loginCode].status == 1 }">{{ item.loginName }} {{ item.loginExt || '' }}</div>
+              <div :class="{ 'text-bold text-black': brandLoginChannels[item.loginCode] }">{{ item.loginName }} {{
+      item.loginExt || '' }}</div>
               <div class="mt-5 fs-s2">{{ item.loginCode }}</div>
             </div>
-            <div class="text-primary" v-if="item.loginCode != 'USERNAME' && brandLoginChannels[item.loginCode] && brandLoginChannels[item.loginCode].status == 1" @click.stop="dialogConfirm(brandLoginChannels[item.loginCode])">{{ $t('brand.loginConfig') }}</div>
+            <div class="text-primary">{{ $t('brand.loginConfig') }}</div>
           </div>
         </div>
       </template>
@@ -381,20 +379,30 @@
           <el-form-item>
             <i class="text-primary el-icon-arrow-left cursor fs-a1" @click="dialogType = 14"></i>
           </el-form-item>
+          <el-form-item :label="$t('brand.appType')">
+            <el-select v-model="dform.soureType" class="tfixed">
+              <el-option :label="item" :value="parseInt(key)" v-for="(item, key) in Constant.SourceType" />
+            </el-select>
+          </el-form-item>
           <el-form-item :label="$t('public.status')">
             <el-select v-model="dform.status" class="tfixed">
               <el-option :label="$t('brand.effective')" :value="1" />
               <el-option :label="$t('brand.invalid')" :value="2" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('public.content')">
-            <vue-json-editor
-              v-model="dform.content"
-              :showBtns="false"
-              :mode="'code'"
-              lang="zh"
-            />
-          </el-form-item>
+          <template v-if="dform.loginCode == 'WECHAT'">
+            <el-form-item label="APPID">
+              <el-input v-model="dform.content.appId"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.xcxAPPSECRET')">
+              <el-input v-model="dform.content.appSecret"></el-input>
+            </el-form-item>
+          </template>
+          <template v-if="dform.loginCode == 'GOOGLE'">
+            <el-form-item label="clientId">
+              <el-input v-model="dform.content.clientId"></el-input>
+            </el-form-item>
+          </template>
         </el-form>
       </template>
       <template v-if="dialogType == 16">

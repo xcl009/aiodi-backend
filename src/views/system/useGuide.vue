@@ -86,7 +86,7 @@
         <el-table-column :label="$t('public.operate')" width="140">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <template v-if="isSaas()">
+              <template v-if="isSaas() || isBrand()">
                 <el-button type="text" @click="showDialog(scope.row)">{{ $t('public.edit') }}</el-button>
                 <el-button type="text" class="text-danger" @click="del(scope.row, scope.$index)">{{ $t('public.delete')
                 }}</el-button>
