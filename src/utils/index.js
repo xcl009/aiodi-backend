@@ -683,6 +683,7 @@ const util = {
       depositAmount: 99,
       unitPrice: 0.1,
       overBillingUnit: 1,
+      initialAmount: 0,
       stepList: [
         {
           startingTime: 0,
