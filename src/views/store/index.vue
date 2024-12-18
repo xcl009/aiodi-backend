@@ -63,6 +63,11 @@
               </div>
             </template>
           </el-table-column>
+          <el-table-column :label="item.name" v-if="item.val && item.key == 'address'">
+            <template slot-scope="scope">
+              <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
+            </template>
+          </el-table-column>
           <el-table-column :label="item.name" width="180" v-else-if="item.val && item.key == 'device'">
             <template slot-scope="scope">
               <div class="row-device_stat" v-if="deviceCount[scope.row.id]">
