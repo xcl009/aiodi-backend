@@ -231,6 +231,18 @@
                           <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
+                      <el-form-item :label="$t('public.minimumAmount')">
+                        <el-input
+                          type="number"
+                          v-model="
+                            item[`${xcx}PayMode`].stepPayMode.initialAmount
+                          "
+                        >
+                          <template slot="append">{{
+                            siteInfo.currencySymbol
+                          }}</template>
+                        </el-input>
+                      </el-form-item>
                       <el-form-item :label="$t('public.amount')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
                         <div class="flex">
