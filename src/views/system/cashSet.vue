@@ -276,7 +276,7 @@ export default {
       let sType = this.arrayKeys(supportType, 'type')
       val.map(item => {
         if (sType.indexOf(item) == -1) {
-          supportType.push(this.getSupportDefault())
+          supportType.push(this.getSupportDefault(item))
         }
       })
       this.form.supportType = supportType
@@ -287,23 +287,21 @@ export default {
      * @param {Object} type
      */
     getSupportDefault(type){
-      return [
-        {
-          status: 1,
-          type: type,
+      return {
+        status: 1,
+        type: type,
+        taxRate: 0,
+        handlingFee: 0,
+        minAmount: 0,
+        maxAmount: 999999,
+        needApprovalAmount: 0,
+        orderRefundInd: false,
+        receipt: [{
+          day: 1,
           taxRate: 0,
           handlingFee: 0,
-          minAmount: 0,
-          maxAmount: 999999,
-          needApprovalAmount: 0,
-          orderRefundInd: false,
-          receipt: [{
-            day: 1,
-            taxRate: 0,
-            handlingFee: 0,
-          }]
-        }
-      ]
+        }]
+      }
     },
 
     /**
@@ -330,14 +328,16 @@ export default {
             weeks = dayas
           }
           res.supportType.map(item => {
+            item.type = item.type || '5'
             if(!item.receipt){
-              return item.receipt = [{
+              item.receipt = [{
                 day: [2,4,5].indexOf(parseInt(item.type)) > -1 ? 1 : 0,
                 name: '',
                 taxRate: item.taxRate,
                 handlingFee: item.handlingFee,
               }]
             }
+            return item
           })
           res.timeLimit.days = days
           res.timeLimit.weeks = weeks
@@ -366,7 +366,9 @@ export default {
               days: [{val: 1}],
               weeks: [{val: 1}]
             },
-            supportType: this.getSupportDefault(),
+            supportType: [
+              this.getSupportDefault('5')
+            ],
             days: [{ val: 1 }],
             weeks: [{ val: 1 }]
           }
