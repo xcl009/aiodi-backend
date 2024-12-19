@@ -232,6 +232,7 @@
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.minimumAmount')">
+<<<<<<< HEAD
                         <el-input
                           type="number"
                           v-model="
@@ -241,6 +242,10 @@
                           <template slot="append">{{
                             siteInfo.currencySymbol
                           }}</template>
+=======
+                        <el-input type="number" v-model="item[`${xcx}PayMode`].stepPayMode.initialAmount">
+                          <template slot="append">{{ siteInfo.currencySymbol }}</template>
+>>>>>>> 580de296f5dd7913e0156593ea19b771b2d39203
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.amount')"
