@@ -46,16 +46,16 @@
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || ''" v-else></el-table-column>
         </template>
-        <el-table-column :label="$t('public.operate')" width="110">
+        <el-table-column :label="$t('public.operate')" width="160">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <!-- <el-button type="text" @click="setRows(3, scope.row, 2, scope.$index)">{{ $t('public.edit') }}</el-button>
-              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-                :title="$t('system.deleteDictionary')" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
-                <el-button type="text" class="text-danger" slot="reference">{{ $t('public.delete') }}</el-button>
-              </el-popconfirm> -->
+              <!-- <el-button type="text" @click="setRows(3, scope.row, 2, scope.$index)">{{ $t('public.edit') }}</el-button> -->
               <el-button type="text" @click="$router.push({path: `/userManage?couponId=${scope.row.id}`})">赠送</el-button>
               <el-button type="text" @click="$router.push({path: `/money/couponUser?couponId=${scope.row.id}`})">领取记录</el-button>
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+                :title="'确定禁用该优惠券吗？'" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
+                <el-button type="text" class="text-danger" slot="reference">禁用</el-button>
+              </el-popconfirm>
             </div>
           </template>
         </el-table-column>
@@ -148,7 +148,7 @@ import upload from '@/components/upload'
 import TableColumnSet from '@/components/TableColumnSet/index'
 import { arrayToObj } from '@/utils/index'
 export default {
-  name: 'useGuide',
+  name: 'coupon',
   components: {
     condition,
     selectSearch,
@@ -184,8 +184,7 @@ export default {
         size: 20
       },
 
-      couponDists: {}, // 语言
-      modules: {}, // 模块
+      couponDists: {}, // 券类型
 
       // 弹出相关
       dialogType: 1,
@@ -236,11 +235,6 @@ export default {
           val: true,
           name: '名称'
         },
-        // {
-        //   key: 'couponOrderType',
-        //   val: true,
-        //   name: '使用订单类型'
-        // },
         {
           key: 'couponDeviceType',
           val: true,
@@ -302,7 +296,7 @@ export default {
   },
   methods: {
     /**
-     * 获取语言类型和模板
+     * 获取类型和模板
      */
     getConfig() {
       this.$post('iot-saas-basic/admin/sys/dict/query', {
@@ -342,7 +336,7 @@ export default {
     },
 
     /**
-     * 国际化列表数据
+     * 列表数据
      */
     getList() {
       let url = 'iot-saas-basic/admin/couponManage/list'
@@ -364,9 +358,9 @@ export default {
 
     /**
      * 操作行
-     * @param {Object} type 1 dialog类型  2 删除字典 3 drawer类型
+     * @param {Object} type 1 dialog类型  2 删除  3 drawer类型
      * @param {Object} row 选择当前数据
-     * @param {Object} dialogType dialog内容显示类型 1: '添加字典' 2: '修改字典'
+     * @param {Object} dialogType dialog内容显示类型 1: '添加' 2: '修改'
      * @param {Object} idx 当前数据所在位置
      */
     setRows(type, row, dialogType, idx) {
@@ -376,14 +370,10 @@ export default {
 
           break
         case 2:
-          this.$post('iot-saas-basic/admin/lan/del', {
+          this.$post('iot-saas-basic/admin/couponManage/stop', {
             id: row.id
           }).then(res => {
-            this.$message({
-              message: that.$t('public.operationSuccessful'),
-              type: 'success'
-            })
-            this.list.splice(idx, 1)
+            row.status = 2
           })
           break
         case 3:
