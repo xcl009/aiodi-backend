@@ -1332,7 +1332,15 @@ export default {
     receiptTime: "เวลาที่เงินเข้าบัญชี",
     receiptNow: "เงินเข้าบัญชีทันที",
     receiptRule: "กรุณาเสริมและปรับปรุงกฎระเวลาที่เงินเข้าบัญชี",
-    receiptDay: "ภายในวัน"
+    receiptDay: "ภายในวัน",
+    agentEditStoreMobile: 'ห้ามแก้ไขหมายเลขบัญชีร้านค้า',
+    nearStoreRange: 'ช่วงร้านค้าใกล้เคียง',
+    userWalletCash: 'ถอนเงินสด',
+    userWalletRecharge: 'การเติมเงิน',
+    payCreatePage: 'หน้าเริ่มต้นการชำระเงิน',
+    payCreatePage1: 'ปริยาย',
+    payCreatePage2: 'หน้ารายละเอียดการเรียกเก็บเงิน',
+    payCreatePage3: 'หน้ารายละเอียดการเรียกเก็บเงิน (การชำระเงินโดยตรง)',
   },
   user: {
     message: "กรุณากรอกรหัสผ่านเก่า",

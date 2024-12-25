@@ -1310,7 +1310,13 @@ export default {
     receiptRule: '入金時間ルールを整備してください',
     receiptDay: '天内',
     agentEditStoreMobile: 'マーチャントアカウントの修正は禁止されています',
-    nearStoreRange: '近隣業者の範囲'
+    nearStoreRange: '近隣業者の範囲',
+    userWalletCash: '残高引当',
+    userWalletRecharge: '残高チャージ',
+    payCreatePage: '支払い開始ページ',
+    payCreatePage1: 'デフォルト',
+    payCreatePage2: '課金詳細ページ',
+    payCreatePage3: '課金詳細ページ（直接支払調整）',
   },
   user: {
     message: '古いパスワードを入力してください',

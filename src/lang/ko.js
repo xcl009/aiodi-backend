@@ -1310,7 +1310,13 @@ export default {
     receiptRule: '입금 시간 규칙을 완비하십시오.',
     receiptDay: '천내',
     agentEditStoreMobile: '상인 계정 수정 금지',
-    nearStoreRange: '인근 상가 범위'
+    nearStoreRange: '인근 상가 범위',
+    userWalletCash: '잔액 현금 인출',
+    userWalletRecharge: '잔액 충전',
+    payCreatePage: '결제 시작 페이지',
+    payCreatePage1: '기본',
+    payCreatePage2: '청구 상세 정보 페이지',
+    payCreatePage3: '청구 상세 정보 페이지 (지불 직접 조정)',
   },
   user: {
     message: '이전 암호를 입력하십시오.',
