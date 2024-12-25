@@ -1349,6 +1349,10 @@ export default {
     nearStoreRange: '附近商户范围',
     userWalletCash: '余额提现',
     userWalletRecharge: '余额充值',
+    payCreatePage: '支付发起页',
+    payCreatePage1: '默认',
+    payCreatePage2: '计费详情页',
+    payCreatePage3: '计费详情页(直接调起支付)',
   },
   user: {
     message: '请填写旧密码',

@@ -1312,7 +1312,13 @@ export default {
     receiptRule: 'Please refine the rules for the time of receipt of funds',
     receiptDay: 'Within the day',
     agentEditStoreMobile: 'Prohibit modifying merchant accounts',
-    nearStoreRange: 'Nearby merchant range'
+    nearStoreRange: 'Nearby merchant range',
+    userWalletCash: 'Withdrawal of balance',
+    userWalletRecharge: 'Balance recharge',
+    payCreatePage: 'Payment initiation page',
+    payCreatePage1: 'default',
+    payCreatePage2: 'Billing Details Page',
+    payCreatePage3: 'Billing Details Page (Directly Start Payment)',
   },
   user: {
     message: 'Please fill in your old password',

@@ -480,6 +480,13 @@
           <el-form-item :label="$t('system.userWalletRecharge')" v-if="checkAbility(['RECHARGESET'], 3)">
             <el-switch v-model="dform.userWalletRecharge" :active-value="1" :inactive-value="0" />
           </el-form-item>
+          <el-form-item :label="$t('system.payCreatePage')">
+            <el-radio-group v-model="dform.rentPagePay">
+              <el-radio-button :label="0">{{ $t('system.payCreatePage1') }}</el-radio-button>
+              <el-radio-button :label="1">{{ $t('system.payCreatePage2') }}</el-radio-button>
+              <el-radio-button :label="2">{{ $t('system.payCreatePage3') }}</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 5">
@@ -708,7 +715,8 @@ export default {
                       checkMouthStatAgent: 1,
                       checkMouthStatSpAgent: 0,
                       userWalletCash: 1,
-                      userWalletRecharge: 0
+                      userWalletRecharge: 0,
+                      rentPagePay: 0
                     }
                     break
                   case 5:

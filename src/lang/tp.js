@@ -1310,7 +1310,13 @@ export default {
     receiptRule: 'Paki-refine ang mga patakaran para sa panahon ng pagtanggap ng pondo',
     receiptDay: 'Sa loob ng araw',
     agentEditStoreMobile: 'Itigil ang pagbabago ng mga merchant account',
-    nearStoreRange: 'Malapit na kalawakan ng negosyante'
+    nearStoreRange: 'Nearby merchant range',
+    userWalletCash: 'Pagtanggal ng balanse',
+    userWalletRecharge: 'Balance recharge',
+    payCreatePage: 'Payment initiation page',
+    payCreatePage1: 'default',
+    payCreatePage2: 'Mga detalye sa Pagbabahagi ng Billing',
+    payCreatePage3: 'Pahina ng Detalyong Billing (Directly Start Payment)',
   },
   user: {
     message: 'Mangyaring punan ang iyong lumang password',

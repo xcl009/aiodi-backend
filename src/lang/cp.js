@@ -1311,7 +1311,13 @@ export default {
     receiptRule: '請完善到賬時間規則',
     receiptDay: '天內',
     agentEditStoreMobile: '禁止修改商戶帳號',
-    nearStoreRange: '附近商戶範圍'
+    nearStoreRange: '附近商戶範圍',
+    userWalletCash: '餘額提現',
+    userWalletRecharge: '餘額充值',
+    payCreatePage: '支付發起頁',
+    payCreatePage1: '默認',
+    payCreatePage2: '計費詳情頁',
+    payCreatePage3: '計費詳情頁（直接調起支付）',
   },
   user: {
     message: '請填寫舊密碼',

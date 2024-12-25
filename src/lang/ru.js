@@ -1311,7 +1311,13 @@ export default {
         receiptRule: 'Пожалуйста, уточните правила учета.',
         receiptDay: 'В течение дня',
         agentEditStoreMobile: 'Запрещается изменять аккаунты',
-        nearStoreRange: 'Ближайшие торговые точки'
+        nearStoreRange: 'Ближайшие торговые точки',
+        userWalletCash: 'Перевод остатка',
+        userWalletRecharge: 'Сальдо',
+        payCreatePage: 'Начальная страница платежа',
+        payCreatePage1: 'По умолчанию',
+        payCreatePage2: 'Подробная страница счетов',
+        payCreatePage3: 'Страница с подробной информацией о выставлении счетов (прямой перевод платежей)',
     },
     user: {
         message: 'Заполните старый пароль.',
