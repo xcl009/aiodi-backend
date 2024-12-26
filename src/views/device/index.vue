@@ -53,7 +53,7 @@
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(4, {})" v-if="isSaas()">{{ $t('device.counting') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord')}}</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas()">设备软件升级</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas() || isBrand()">设备软件升级</div>
         <table-column-set storageKey="deviceTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
       </div>
@@ -615,7 +615,7 @@
           </el-form-item>
           <el-form-item label="软件类型">
             <el-radio-group v-model="dform.updateType" @change="selUpdateType">
-              <el-radio :label="key" v-for="(item, key) in {'1': '网关版', '10': '仓位版'}">{{ item }}</el-radio>
+              <el-radio :label="key" v-for="(item, key) in {'1': '网关版', '10': '仓位版', '12': '仓位版(12)'}">{{ item }}</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="更新包地址">
@@ -1599,7 +1599,7 @@ export default {
         }
       })
     },
-    
+
     /**
      * 选择槽口数
      */
@@ -1625,7 +1625,7 @@ export default {
       }
       this.dform = obj
     },
-    
+
     /**
      * 选择更新类型
      */
