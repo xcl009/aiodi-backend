@@ -60,7 +60,7 @@
 
       <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" highlight-current-row @selection-change="selList" :max-height="tableMaxH">
-        <el-table-column type="selection" :selectable="checkSel" width="50" v-if="!isSaas()" />
+        <el-table-column type="selection" :selectable="checkSel" width="50" />
         <el-table-column :label="$t('public.brand')" width="150" v-if="isSaas()">
           <template slot-scope="scope">
             {{ scope.row.brand.name }}
@@ -321,6 +321,9 @@
           <!-- <el-button type="primary" size="medium"
             @click="setRows(1, {}, 7)">服务器地址
           </el-button> -->
+        </div>
+        <div class="abs flex pagination-left" v-else-if="isSaas()">
+          <el-button type="primary" size="mini" :disabled="selID.length == 0" @click="setRows(3, {}, 11)">设备软件升级</el-button>
         </div>
         <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
           @pagination="getList" />
@@ -615,26 +618,26 @@
           </el-form-item>
           <el-form-item label="软件类型">
             <el-radio-group v-model="dform.updateType" @change="selUpdateType">
-              <el-radio :label="key" v-for="(item, key) in {'1': '网关版', '10': '仓位版', '12': '仓位版(12)'}">{{ item }}</el-radio>
+              <el-radio :label="key" v-for="(item, key) in updateType">{{ item }}</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="更新包地址">
-            <el-input v-model="dform.domainUrl" :placeholder="$t('public.enter')"></el-input>
+            <el-input v-model="dform.domainUrl" :placeholder="$t('public.enter')" :disabled="updateDisabled"></el-input>
           </el-form-item>
           <el-form-item label="更新包路径">
-            <el-input v-model="dform.path" :placeholder="$t('public.enter')"></el-input>
+            <el-input v-model="dform.path" :placeholder="$t('public.enter')" :disabled="updateDisabled"></el-input>
           </el-form-item>
           <el-form-item label="更新包md5">
-            <el-input v-model="dform.md5" :placeholder="$t('public.enter')"></el-input>
+            <el-input v-model="dform.md5" :placeholder="$t('public.enter')" :disabled="updateDisabled"></el-input>
           </el-form-item>
           <el-form-item label="更新包大小">
-            <el-input v-model="dform.size" :placeholder="$t('public.enter')"><template slot="append">字节</template></el-input>
+            <el-input v-model="dform.size" :placeholder="$t('public.enter')" :disabled="updateDisabled"><template slot="append">字节</template></el-input>
           </el-form-item>
           <el-form-item label="设备版本">
-            <el-input v-model="dform.deviceVersion" :placeholder="$t('public.enter')"></el-input>
+            <el-input v-model="dform.deviceVersion" :placeholder="$t('public.enter')" :disabled="updateDisabled"></el-input>
           </el-form-item>
           <el-form-item label="包版本名称">
-            <el-input v-model="dform.fileVersion" :placeholder="$t('public.enter')"></el-input>
+            <el-input v-model="dform.fileVersion" :placeholder="$t('public.enter')" :disabled="updateDisabled"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -957,6 +960,8 @@ export default {
       // 设备归属
       deviceInfo: {},
       factoryList: [],
+      updateType: {'1': '网关版', '10': '仓位版(10)', '12': '仓位版(12)'},
+      updateDisabled: true,
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -1020,6 +1025,9 @@ export default {
      * 校验是否可选
      */
     checkSel(row) {
+      if(this.isSaas()){
+        return true
+      }
       return !row.distribute
     },
 
@@ -1267,9 +1275,13 @@ export default {
           if (this.storeList.list.length == 0) this.getStoreList()
         } else if (dialogType == 11) {
           this.getFactory()
+          let deviceSns = ''
+          if(this.selSnArr.length > 0){
+            deviceSns = this.selSnArr.join(',')
+          }
           this.dform = {
+            deviceSns: deviceSns,
             updateType: '1',
-            domainUrl: 'tjwl.oss-cn-shenzhen.aliyuncs.com'
           }
         }
         break
@@ -1298,14 +1310,23 @@ export default {
     getFactory() {
       if(this.factoryList.length > 0) return
       this.$get('iot-saas-basic/admin/factory/list').then(res => {
-        this.factoryList = res
+        this.factoryList = res.filter(item => item.deviceTypeList && JSON.stringify(item.deviceTypeList).indexOf('PA') > -1)
       })
       this.$get('iot-saas-pay/open/pay/system/config', {
         key: 'deviceUpdateConfig'
       }).then(res => {
         let deviceUpdateConfig = res.valueJson ? JSON.parse(res.valueJson) : {}
-        if(deviceUpdateConfig.config){
-          this.deviceUpdateConfig = JSON.parse(deviceUpdateConfig.config)
+        if (deviceUpdateConfig.config) {
+          let configObj = JSON.parse(deviceUpdateConfig.config)
+          if(configObj.updateType){
+            this.updateType = configObj.updateType
+            delete configObj.updateType
+          }
+          if(configObj.updateDisabled){
+            this.updateDisabled = configObj.updateDisabled == 1
+            delete configObj.updateDisabled
+          }
+          this.deviceUpdateConfig = configObj
         }
       })
     },
