@@ -101,7 +101,7 @@
       <template v-if="dialogType == 1">
         <el-form class="custom-form pl-20 pr-20" label-width="110px" label-position="left" ref="cardForm"
           :rules="cardRules" :model="dform">
-          <el-form-item :label="$t('public.type')">
+          <el-form-item :label="$t('public.type')" v-if="!userKey">
             <el-radio-group v-model="typeVal" @input="getList">
               <el-radio :label="idx.toString()" v-for="(item, idx) in cardTypes">{{ item.title }}</el-radio>
             </el-radio-group>
