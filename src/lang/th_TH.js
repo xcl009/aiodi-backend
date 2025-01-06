@@ -2023,5 +2023,22 @@ export default {
     prizeContent: "เนื้อหารางวัล",
     deletePrize: "แน่ใจนะว่าจะลบรางวัลนี้?",
     plaseImg: "กรุณาอัพโหลดรูปภาพสินค้า"
+  },
+  points: {
+  	points: 'Points',
+  	goldCoin: 'GoldCoins',
+  	daiCoin: 'DaiCoins',
+  	giftNumByOrder: 'สั่งซื้อของแถม',
+  	giftNumByAmount: 'การชำระเงิน',
+  	giftNumByAmount1: '[0] ส่ง 1 [1]',
+  	giftNumByRegister: 'ลงทะเบียนรับของขวัญ',
+  	giftNumByInvite: 'ชวนแจก',
+  	pointsUse: 'สามารถชดเชยได้',
+  	pointsUse1: 'ติ๊ก หมายถึง [0] หักจำนวนเงินที่ผู้ใช้สามารถเลือกได้เมื่อทำการชำระเงิน',
+  	pointsUse2: 'เช่าอุปกรณ์',
+  	pointsUse3: 'การเติมเงิน',
+  	pointsUse4: 'ซื้อสินค้า',
+  	pointsUseRule: '[0] กฎ',
+  	pointsUseRule1: 'ตั้งค่า [0] แจกกฎการใช้งาน',
   }
 }

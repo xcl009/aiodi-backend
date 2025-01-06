@@ -1994,5 +1994,22 @@ export default {
         prizeContent: 'Contenido del premio',
         deletePrize: '¿Está seguro de que desea eliminar esta recompensa?',
         plaseImg: 'Por favor, sube una imagen del producto'
+    },
+    points: {
+    	points: 'Points',
+    	goldCoin: 'GoldCoins',
+    	daiCoin: 'DaiCoins',
+    	giftNumByOrder: 'Hacer un pedido para regalar',
+    	giftNumByAmount: 'Pago',
+    	giftNumByAmount1: '[0] entrega 1 [1]',
+    	giftNumByRegister: 'Regalo de registro',
+    	giftNumByInvite: 'Invitación para regalar',
+    	pointsUse: 'Puede llegar',
+    	pointsUse1: 'La marca indica que el usuario puede elegir [0] deducir el monto del pago al pagar.',
+    	pointsUse2: 'Alquiler de equipos',
+    	pointsUse3: 'Recarga de saldo',
+    	pointsUse4: 'Comprar bienes',
+    	pointsUseRule: '[0] reglas',
+    	pointsUseRule1: 'Establecer [0] reglas de regalo y uso',
     }
 };

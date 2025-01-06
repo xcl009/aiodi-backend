@@ -29,7 +29,8 @@
     </condition>
 
     <div class="pl-10 pr-10 bg-white">
-      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" highlight-current-row @sort-change="sortChange">
+      <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list" :max-height="tableMaxH" element-loading-text="Loading" highlight-current-row @selection-change="selList" @sort-change="sortChange">
+        <el-table-column type="selection" width="50" v-if="query.couponId" />
         <el-table-column :label="$t('public.img')" width="60">
           <template slot-scope="scope">
             <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline" class="m-auto block"></el-avatar>
@@ -89,9 +90,14 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="flex justify-center">
-        <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
-          @pagination="getList" />
+      <div class="rel flex justify-center">
+        <div class="abs flex pagination-left" v-if="query.couponId">
+          <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+            :title="'确定赠送优惠券给选中用户吗？赠送后不可撤销'" @onConfirm="sendCoupon()">
+            <el-button type="primary" size="mini" :disabled="selUserIds.length == 0" slot="reference">赠送优惠券</el-button>
+          </el-popconfirm>
+        </div>
+        <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)" @pagination="getList" />
       </div>
     </div>
 
@@ -163,7 +169,9 @@
           page: 1,
           size: 20
         },
-        form: {}
+        form: {},
+        query: {},
+        selUserIds: []
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -176,10 +184,10 @@
       next()
     },
     activated() {
-      let queryKey = [],
+      let queryKey = ['couponId'],
         query = this.$route.query
       for (var i in queryKey) {
-        this[queryKey[i]] = query[queryKey[i]]
+        this.$set(this.query, queryKey[i], query[queryKey[i]])
       }
       if (this.$route.meta.reload) {
         this.getList()
@@ -333,7 +341,44 @@
         }).catch(err => {
           this.loadObj.close()
         })
-      }
+      },
+
+      /**
+       * 选择用户
+       * @param {Object} res
+       */
+      selList(list) {
+        let selUserIds = []
+        for (var i in list) {
+          selUserIds.push(list[i].id)
+        }
+        this.selUserIds = selUserIds
+      },
+
+      /**
+       * 设置会员
+       */
+      sendCoupon(){
+        let params = {
+          userList: this.selUserIds.join(','),
+          couponId: this.query.couponId
+        }
+        this.loadObj = this.$loading({
+          lock: true,
+          text: `${this.$t('public.submitting')}~~`,
+          spinner: 'el-icon-loading'
+        })
+        this.$post('iot-saas-basic/admin/couponUserManage/batchGiveCoupon', params).then(res => {
+          this.loadObj.close()
+          this.$message({
+            message: this.$t('public.operationSuccessful'),
+            type: 'success'
+          })
+          this.$router.go(-1)
+        }).catch(err => {
+          this.loadObj.close()
+        })
+      },
     }
   }
 </script>

@@ -1985,5 +1985,22 @@ export default {
         prizeContent: 'Описание приза',
         deletePrize: 'Вы уверены, что хотите удалить эту награду?',
         plaseImg: 'Пожалуйста, загрузите изображение товара'
+    },
+    points: {
+    	points: 'Points',
+    	goldCoin: 'GoldCoins',
+    	daiCoin: 'DaiCoins',
+    	giftNumByOrder: 'Подарить заказ',
+    	giftNumByAmount: 'Выплаты',
+    	giftNumByAmount1: '[0] Доставка 1 [1]',
+    	giftNumByRegister: 'Регистрация подарков',
+    	giftNumByInvite: 'Приглашение подарить',
+    	pointsUse: 'Поддерживается',
+    	pointsUse1: 'Отметка означает, что пользователь может выбрать [0] вычет суммы платежа при оплате',
+    	pointsUse2: 'Аренда оборудования',
+    	pointsUse3: 'Сальдо',
+    	pointsUse4: 'Приобретение товаров',
+    	pointsUseRule: '[0] Правило',
+    	pointsUseRule1: 'Настройка [0] Подарки, правила использования',
     }
 };
