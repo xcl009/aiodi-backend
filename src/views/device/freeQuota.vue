@@ -96,7 +96,7 @@
           </el-table-column>
           <el-table-column :label="$t('home.source')">
             <template slot-scope="scope">
-              {{ scope.row.userType == 'wechat' ? $t('payType.wx') : $t('payType.zfb') }}
+              {{ sourceType[scope.row.userType] ? sourceType[scope.row.userType].title : '' }}
             </template>
           </el-table-column>
           <el-table-column :label="$t('steal.createTime')" width="90">
@@ -228,6 +228,32 @@ export default {
   },
   data() {
     return {
+      sourceType: {
+        'wechat': {
+          title: this.$t('payType.wx'),
+          icon: 'icon-weixin1 text-green'
+        },
+        'alipay': {
+          title: this.$t('payType.zfb'),
+          icon: 'icon-zhifubao text-primary'
+        },
+        'app': {
+          title: 'APP',
+          icon: 'icon-app text-danger'
+        },
+        'GOOGLE': {
+          title: 'GOOGLE',
+          icon: 'icon-line-HTML5H5 text-primary'
+        },
+        'APPLE': {
+          title: 'APPLE',
+          icon: 'icon-line-HTML5H5 text-primary'
+        },
+        'ZALO': {
+          title: 'ZALO',
+          icon: 'icon-line-HTML5H5 text-primary'
+        }
+      },
       unixTime: unixTime,
       dealPhone: dealPhone,
       clickSubmit: false,

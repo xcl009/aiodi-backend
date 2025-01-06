@@ -82,8 +82,8 @@
           <el-table-column :label="$t('public.operate')">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="setRows(1, scope.row, 1)">{{ $t('public.edit') }}</el-button>
-              <el-button size="mini" type="danger" @click="setRows(2, scope.row, scope.$index)" v-if="scope.row.id">{{
-                $t('public.delete') }}</el-button>
+              <el-button size="mini" type="danger" @click="setRows(2, scope.row, scope.$index)" v-if="scope.row.id">{{ $t('public.delete') }}</el-button>
+              <!-- <el-button size="mini" type="danger" @click="setRows(1, scope.row, 2)" v-if="scope.row.id">{{ $t('membership.addMembershipCard') }}</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -95,8 +95,7 @@
       </div>
     </div>
 
-    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :close-on-click-modal="false"
-      width="560px">
+    <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" :close-on-click-modal="false" width="660px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 1">
         <el-form class="custom-form pl-20 pr-20" label-width="110px" label-position="left" ref="cardForm"
@@ -181,10 +180,56 @@
           </el-form-item>
         </el-form>
       </template>
+
+      <template v-if="dialogType == 2">
+        <div class="flex align-center">
+          <el-input :placeholder="$t('steal.userNameandId')" v-model="dform.nickname" class="flex-sub"
+            @keyup.enter.native="searchUser" />
+          <el-input :placeholder="$t('public.phone')" v-model="dform.mobile" class="flex-sub ml-15 mr-15"
+            @keyup.enter.native="searchUser" />
+          <el-button type="primary" @click="searchUser" :disabled="clickSubmit">{{ $t('steal.findUsers') }}</el-button>
+        </div>
+
+        <el-table class="mt-30 custom" :data="userList" :empty-text="$t('steal.notFound')" highlight-current-row
+          v-if="userList.length > 0 || searchStatus">
+          <el-table-column :label="$t('public.img')" width="60">
+            <template slot-scope="scope">
+              <el-avatar shape="square" :size="35" :src="scope.row.avatar" fit="fill" icon="el-icon-picture-outline"
+                class="m-auto block"></el-avatar>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('public.nickname')" width="120">
+            <template slot-scope="scope">
+              <el-link class="cursor">{{ scope.row.nickname || $t('public.noNickname') }}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('public.phone')">
+            <template slot-scope="scope">
+              <div>{{ dealPhone(scope.row.mobile) }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('home.source')">
+            <template slot-scope="scope">
+              {{ sourceType[scope.row.userType] ? sourceType[scope.row.userType].title : '' }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('steal.createTime')" width="90">
+            <template slot-scope="scope">
+              {{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('public.operate')">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" class="ml-0" @click="curRow = scope.row; dialogConfirm()">{{
+                $t('public.add') }}</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+
       <div class="pb-20 mt-30 text-center">
         <el-button size="medium" class="bg-body" @click="dialogStatus = false">{{ $t('public.cancel') }}</el-button>
-        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
-        }}</el-button>
+        <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit" v-if="[2].indexOf(dialogType) == -1">{{ $t('public.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -206,6 +251,32 @@ export default {
   },
   data() {
     return {
+      sourceType: {
+        'wechat': {
+          title: this.$t('payType.wx'),
+          icon: 'icon-weixin1 text-green'
+        },
+        'alipay': {
+          title: this.$t('payType.zfb'),
+          icon: 'icon-zhifubao text-primary'
+        },
+        'app': {
+          title: 'APP',
+          icon: 'icon-app text-danger'
+        },
+        'GOOGLE': {
+          title: 'GOOGLE',
+          icon: 'icon-line-HTML5H5 text-primary'
+        },
+        'APPLE': {
+          title: 'APPLE',
+          icon: 'icon-line-HTML5H5 text-primary'
+        },
+        'ZALO': {
+          title: 'ZALO',
+          icon: 'icon-line-HTML5H5 text-primary'
+        }
+      },
       userKey: this.$route.query.userKey || '',
       id: this.$route.query.id || 0,
       cycleFreeTimes: 999999,
@@ -247,6 +318,8 @@ export default {
       curRow: {},
       curIdx: 0,
       dform: {},
+      userList: [],
+      searchStatus: false
     }
   },
   computed: {
@@ -261,7 +334,8 @@ export default {
     },
     dialogTitle() {
       return {
-        1: this.$t('membership.addMembershipCard')
+        1: this.$t('membership.addMembershipCard'),
+        2: this.$t('membership.addMembershipCard')
       }
     },
     siteInfo() {
@@ -421,6 +495,10 @@ export default {
               agentId: rows.agentId,
               deviceTypeCode: rows.deviceTypeCode || this.deviceTypeCode
             }
+          } else if(dialogType == 2) {
+            this.dform = {
+              id: row.id
+            }
           } else {
             this.dform = {}
           }
@@ -499,8 +577,56 @@ export default {
             }
           })
           break
+        case 2:
+          this.$post('iot-saas-order/api/brand/goods/order/terminal/create', {
+            id: params.id,
+            userId: curRow.id
+          }).then(res => {
+            this.$message({
+              message: that.$t('public.setSuccess'),
+              type: 'success'
+            })
+            this.userList = []
+            this.dialogStatus = false
+            this.clickSubmit = false
+          })
+          break
       }
-    }
+    },
+
+    /**
+     * 搜索用户
+     */
+    searchUser() {
+      let that = this;
+      var params = {
+        nickname: this.dform.nickname,
+        mobile: this.dform.mobile,
+        page: 0,
+        size: 5
+      }
+      if (!params.nickname && !params.mobile) {
+        this.$message({
+          message: that.$t('steal.serchMessage'),
+          type: 'error'
+        })
+        return
+      }
+      if (params.nickname && !isNaN(params.nickname)) {
+        params.idLastNine = params.nickname
+        delete params.nickname
+      }
+      this.searchStatus = false
+      if (this.clickSubmit) return
+      this.clickSubmit = true
+      this.$get('iot-saas-user/api/user/query', params).then(res => {
+        this.userList = res.rows
+        this.searchStatus = true
+        this.clickSubmit = false
+      }).catch(err => {
+        this.clickSubmit = false
+      })
+    },
   }
 }
 </script>
