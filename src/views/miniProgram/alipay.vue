@@ -63,6 +63,7 @@
                 v-if="scope.row.appAuditStatus == 4">{{ $t('miniProgram.returnToDevelopment') }}</el-button>
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 2)"
               	v-if="scope.row.appAuditStatus == 1">{{ $t('miniProgram.experienceVersion') }}</el-button>
+              <!-- <el-button type="primary" size="mini" @click="setRows(8, scope.row, 1)">二维码规则</el-button> -->
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/system/alipayEdit?app_id=${scope.row.appId}` })" v-if="isBrand()">{{
                   $t('public.modifyingInformation') }}</el-button>
@@ -221,7 +222,7 @@ export default {
 
     /**
      * 操作
-     * @param {Object} type 1 dialog类型 1: '上传代码' 2: '提交审核' 3: '查询审核状态' 4: '发布代码' 5: '取消审核' 6: '回退开发'
+     * @param {Object} type 1 dialog类型 1: '上传代码' 2: '提交审核' 3: '查询审核状态' 4: '发布代码' 5: '取消审核' 6: '回退开发' 8: '二维码规则'
      * @param {Object} row 选择当前数据
      * @param {Object} dialogType dialog内容显示类型  2: '体验版本'
      * @param {Object} idx 当前数据所在位置
@@ -335,6 +336,32 @@ export default {
           		type: 'success'
           	})
           	this.dialogStatus = false
+          })
+          break
+        case 8:
+          if (this.clickSubmit) return
+          this.clickSubmit = true
+          this.$prompt('请输入二维码规则ID', '温馨提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          }).then(({
+          	value
+          }) => {
+            this.$post(`iot-saas-pay/alipay/qc/unbind`, {
+              appId: row.appId,
+              extEnable: true,
+              routeGroup: value
+            }).then(res => {
+              this.$message({
+                message: that.$t('public.operationSuccessful'),
+                type: 'success'
+              })
+              this.clickSubmit = false
+            }).catch(err => {
+              this.clickSubmit = false
+            })
+          }).catch(err => {
+            this.clickSubmit = false
           })
           break
       }

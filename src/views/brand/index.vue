@@ -149,6 +149,7 @@
                   <el-dropdown-item @click.native="setRows(1, scope.row, 14)">{{ $t('brand.loginChannel')
                     }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 16)">{{ $t('brand.countryPhone') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 17)">其他设置</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{
       $t('brand.deleteBrand') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>{{
@@ -361,18 +362,16 @@
       </template>
       <template v-if="dialogType == 14">
         <div class="pl-20 pr-20 channel-box" v-if="loginChannel.length > 0">
-          <el-radio-group v-model="dform.sourceType" @change="getBrandLoginCannel(curRow.id)">
-            <el-radio-button :label="key" v-for="(item, key) in Constant.SourceType">{{ item }}</el-radio-button>
-          </el-radio-group>
-          <div class="flex align-center p-10 mt-15 mb-15 channel-item radius-10 cursor"
-            :class="{ 'act': brandLoginChannels[item.loginCode] && brandLoginChannels[item.loginCode].status == 1 }" v-for="item in loginChannel"
-            @click="postLoginChannel(brandLoginChannels[item.loginCode] || item, 1)">
-            <el-avatar class="block" :size="35" :src="item.loginLogo" fit="cover" shape="square"></el-avatar>
+          <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor"
+            :class="{ 'act': brandLoginChannels[item.loginCode] }" v-for="item in loginChannel"
+            @click="dialogConfirm(brandLoginChannels[item.loginCode] || item)">
+            <el-avatar class="block" :size="35" :src="item.loginLogo" :fit="cover" shape="square"></el-avatar>
             <div class="pl-15 pr-15 flex-1">
-              <div :class="{ 'text-bold text-black': brandLoginChannels[item.loginCode] && brandLoginChannels[item.loginCode].status == 1 }">{{ item.loginName }} {{ item.loginExt || '' }}</div>
+              <div :class="{ 'text-bold text-black': brandLoginChannels[item.loginCode] }">{{ item.loginName }} {{
+      item.loginExt || '' }}</div>
               <div class="mt-5 fs-s2">{{ item.loginCode }}</div>
             </div>
-            <div class="text-primary" v-if="item.loginCode != 'USERNAME' && brandLoginChannels[item.loginCode] && brandLoginChannels[item.loginCode].status == 1" @click.stop="dialogConfirm(brandLoginChannels[item.loginCode])">{{ $t('brand.loginConfig') }}</div>
+            <div class="text-primary">{{ $t('brand.loginConfig') }}</div>
           </div>
         </div>
       </template>
@@ -381,20 +380,30 @@
           <el-form-item>
             <i class="text-primary el-icon-arrow-left cursor fs-a1" @click="dialogType = 14"></i>
           </el-form-item>
+          <el-form-item :label="$t('brand.appType')">
+            <el-select v-model="dform.soureType" class="tfixed">
+              <el-option :label="item" :value="parseInt(key)" v-for="(item, key) in Constant.SourceType" />
+            </el-select>
+          </el-form-item>
           <el-form-item :label="$t('public.status')">
             <el-select v-model="dform.status" class="tfixed">
               <el-option :label="$t('brand.effective')" :value="1" />
               <el-option :label="$t('brand.invalid')" :value="2" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('public.content')">
-            <vue-json-editor
-              v-model="dform.content"
-              :showBtns="false"
-              :mode="'code'"
-              lang="zh"
-            />
-          </el-form-item>
+          <template v-if="dform.loginCode == 'WECHAT'">
+            <el-form-item label="APPID">
+              <el-input v-model="dform.content.appId"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('miniProgram.xcxAPPSECRET')">
+              <el-input v-model="dform.content.appSecret"></el-input>
+            </el-form-item>
+          </template>
+          <template v-if="dform.loginCode == 'GOOGLE'">
+            <el-form-item label="clientId">
+              <el-input v-model="dform.content.clientId"></el-input>
+            </el-form-item>
+          </template>
         </el-form>
       </template>
       <template v-if="dialogType == 16">
@@ -411,7 +420,16 @@
           </draggable>
         </div>
       </template>
-      <template v-if="[1, 3, 11, 12, 13, 15, 16].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 17">
+        <el-form class="pl-20 pr-20 custom-form max-w" style="width: 600px;">
+          <el-form-item :label="'积分别称'">
+            <el-select v-model="dform.pointsAlias" class="tfixed">
+              <el-option :label="item.name" :value="item.value" v-for="item in pointsAlias" />
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1, 3, 11, 12, 13, 15, 16, 17].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -493,61 +511,61 @@ export default {
       brandCountryPhone: {}
     }
   },
-  defaultColumn() {
-    return [
-      {
-        key: 'name',
-        val: true,
-        name: this.$t('brand.brandInfo')
-      },
-      {
-        key: 'companyName',
-        val: false,
-        name: this.$t('brand.corporateName')
-      },
-      {
-        key: 'createTime',
-        val: true,
-        name: this.$t('brand.timeOfEntry'),
-        width: 260
-      },
-      {
-        key: 'isLeader',
-        val: true,
-        name: this.$t('brand.regimentalCommander')
-      },
-      {
-        key: 'fatherBrandName',
-        val: true,
-        name: this.$t('brand.inviter')
-      },
-      {
-        key: 'brandDeviceType',
-        val: true,
-        name: this.$t('brand.category')
-      },
-      {
-        key: 'deviceCount',
-        val: true,
-        name: this.$t('brand.numberOfDevices')
-      },
-      {
-        key: 'orderCount',
-        val: true,
-        name: this.$t('public.orderNum')
-      },
-      {
-        key: 'amount',
-        val: true,
-        name: `${this.$t('public.aTurnover')}`
-      },
-      {
-        key: 'expiresTime',
-        val: true,
-        name: `${this.$t('public.expirationTime')}`
-      }
-    ]
-  },
+  // defaultColumn() {
+  //   return [
+  //     {
+  //       key: 'name',
+  //       val: true,
+  //       name: this.$t('brand.brandInfo')
+  //     },
+  //     {
+  //       key: 'companyName',
+  //       val: false,
+  //       name: this.$t('brand.corporateName')
+  //     },
+  //     {
+  //       key: 'createTime',
+  //       val: true,
+  //       name: this.$t('brand.timeOfEntry'),
+  //       width: 260
+  //     },
+  //     {
+  //       key: 'isLeader',
+  //       val: true,
+  //       name: this.$t('brand.regimentalCommander')
+  //     },
+  //     {
+  //       key: 'fatherBrandName',
+  //       val: true,
+  //       name: this.$t('brand.inviter')
+  //     },
+  //     {
+  //       key: 'brandDeviceType',
+  //       val: true,
+  //       name: this.$t('brand.category')
+  //     },
+  //     {
+  //       key: 'deviceCount',
+  //       val: true,
+  //       name: this.$t('brand.numberOfDevices')
+  //     },
+  //     {
+  //       key: 'orderCount',
+  //       val: true,
+  //       name: this.$t('public.orderNum')
+  //     },
+  //     {
+  //       key: 'amount',
+  //       val: true,
+  //       name: `${this.$t('public.aTurnover')}`
+  //     },
+  //     {
+  //       key: 'expiresTime',
+  //       val: true,
+  //       name: `${this.$t('public.expirationTime')}`
+  //     }
+  //   ]
+  // },
   activated() {
     if (this.$route.meta.reload) {
       this.getList()
@@ -620,8 +638,7 @@ export default {
         key: 'amount',
         val: true,
         name: `${this.$t('public.aTurnover')}`
-      }
-      ]
+      }]
     },
     dialogTitle() {
       return {
@@ -633,7 +650,8 @@ export default {
         13: this.$t('brand.payConfig'),
         14: this.$t('brand.loginChannel'),
         15: this.$t('brand.loginConfig'),
-        16: this.$t('brand.countryPhone')
+        16: this.$t('brand.countryPhone'),
+        17: '其他设置'
       }
     },
     sort_type() {
@@ -659,6 +677,22 @@ export default {
       }
       ]
     },
+    pointsAlias() {
+      return [
+        {
+          name: '积分',
+          value: 'points'
+        },
+        {
+          name: '金币',
+          value: 'goldCoin'
+        },
+        {
+          name: '代币',
+          value: 'daiCoin'
+        },
+      ]
+    }
   },
   mounted() {
 
@@ -863,6 +897,27 @@ export default {
               })
             })
             this.dform = {}
+          } else if (dialogType == 17) {
+            this.$get('iot-saas-basic/admin/settings/find', {
+              brandId: row.id,
+              code: 'STORE_MONEY_SET'
+            }).then(res => {
+              if (res && res.setting) {
+                let info = JSON.parse(res.setting)
+                this.dform = info
+              } else {
+                this.dform = {
+                  checkIncome: 1,
+                  checkMouthStat: 1,
+                  checkMouthStatSp: 0,
+                  checkOrder: 0,
+                  checkMouthStatAgent: 1,
+                  checkMouthStatSpAgent: 0,
+                  userWalletCash: 1,
+                  userWalletRecharge: 0
+                }
+              }
+            })
           }
           this.drawerStatus = true
         break
@@ -1143,6 +1198,22 @@ export default {
             countrys: countryPhone
           })
           this.$post('iot-saas-basic/admin/settings/save', params).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.drawerStatus = false
+            this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 17:
+          this.$post('iot-saas-basic/admin/settings/save', {
+            brandId: curRow.id,
+            code: curRow.settingsCode || 'STORE_MONEY_SET',
+            setting: JSON.stringify(params)
+          }).then(res => {
             this.$message({
               message: that.$t('public.operationSuccessful'),
               type: 'success'

@@ -7,13 +7,12 @@
 
       <template v-if="checkAbility([`${deviceTypeCode}_DEPOSIT_DELAY`, `${deviceTypeCode}_DEPOSIT_MP`], 3)">
         <el-form ref="form" label-position="left" label-width="130px">
-          <el-form-item :label="$t('public.status')" v-if="id">
+          <el-form-item :label="$t('public.status')">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
               <span class="ml-10 fs-s3">{{ $t('system.text3') }}</span>
             </div>
           </el-form-item>
-
 
           <template v-if="checkAbility([`${deviceTypeCode}_DEPOSIT_MP`], 3)">
             <el-form-item :label="$t('device.returnWallet')">
@@ -120,7 +119,6 @@ export default {
         deviceTypeCode: this.deviceTypeCode
       }
       if(this.userKey && this.id) params[this.userKey] = this.id
-
       this.$get(`iot-saas-basic/admin/depositRefundConfig/v1/find`, params).then((res = {}) => {
         if (res.enable != undefined) {
           res.refundTimeStatus = res.delayedRefundTime > 0 ? 1 : 0

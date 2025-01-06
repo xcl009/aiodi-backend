@@ -1984,5 +1984,22 @@ export default {
     prizeContent: '景品内容',
     deletePrize: 'この報酬を本当に削除しますか？',
     plaseImg: '商品画像をアップロードしてください'
+  },
+  points: {
+  	points: 'Points',
+  	goldCoin: 'GoldCoins',
+  	daiCoin: 'DaiCoins',
+  	giftNumByOrder: '注文して贈る',
+  	giftNumByAmount: '支払い',
+  	giftNumByAmount1: '[0]送り1[1]',
+  	giftNumByRegister: 'プレゼントの登録',
+  	giftNumByInvite: '贈り物を招待する',
+  	pointsUse: 'に到着',
+  	pointsUse1: 'ユーザーが支払った場合に[0]控除支払金額を選択できることを示すチェック',
+  	pointsUse2: '設備リース',
+  	pointsUse3: '残高チャージ',
+  	pointsUse4: '商品を買う',
+  	pointsUseRule: '[0]規則',
+  	pointsUseRule1: '[0]贈与・使用規則の設定',
   }
 };

@@ -2002,5 +2002,22 @@ export default {
     prizeContent: 'Prize Details',
     deletePrize: 'Confirm to delete this reward?',
     plaseImg: 'Please upload a product image'
+  },
+  points: {
+    points: 'Points',
+    goldCoin: 'GoldCoins',
+    daiCoin: 'DaiCoins',
+    giftNumByOrder: 'Order and receive gifts',
+    giftNumByAmount: 'payment',
+    giftNumByAmount1: '[0] Get 1 [1]',
+    giftNumByRegister: 'Registration gift',
+    giftNumByInvite: 'Invitation to give away',
+    pointsUse: 'Can be offset',
+    pointsUse1: 'Checking indicates that users can choose [0] to deduct the payment amount when making a payment',
+    pointsUse2: 'Equipment leasing',
+    pointsUse3: 'Balance recharge',
+    pointsUse4: 'Purchase products',
+    pointsUseRule: '[0] Rule',
+    pointsUseRule1: 'Set [0] gift and usage rules',
   }
 };

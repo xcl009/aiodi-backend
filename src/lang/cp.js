@@ -1985,5 +1985,22 @@ export default {
     prizeContent: '獎品內容',
     deletePrize: '確定刪除此獎勵嗎？',
     plaseImg: '請上傳商品圖片'
-}
+  },
+  points: {
+    points: '積分',
+    goldCoin: '金幣',
+    daiCoin: '代幣',
+    giftNumByOrder: '下單贈送',
+    giftNumByAmount: '支付',
+    giftNumByAmount1: '[0] 送1[1]',
+    giftNumByRegister: '注册贈送',
+    giftNumByInvite: '邀請贈送',
+    pointsUse: '[0]可抵',
+    pointsUse1: '勾選表示用戶支付時可選擇[0]抵扣支付金額',
+    pointsUse2: '設備租賃',
+    pointsUse3: '餘額充值',
+    pointsUse4: '購買商品',
+    pointsUseRule: '[0]規則',
+    pointsUseRule1: '設定[0]贈送、使用規則',
+  }
 }

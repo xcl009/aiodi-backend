@@ -120,10 +120,10 @@
         <el-table-column :label="$t('public.operate')" width="235" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
-              <!-- <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('device.message1')" @onConfirm="unboundStore(scope.row)">
                 <el-button type="text" :disabled="!scope.row.distribute" slot="reference">{{ $t('device.unbind') }}</el-button>
-              </el-popconfirm> -->
+              </el-popconfirm>
               <el-button type="text" v-if="myDeviceId['PA'] && checkAbility(['eject'], 3)"
                 :disabled="['PA01', 'DC01'].indexOf(scope.row.deviceType.code) == -1" slot="reference"
                 @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.eject') }}</el-button>
@@ -774,6 +774,22 @@
           }
         }
         this.dform = obj
+      },
+      
+      /**
+       * 设备解绑
+       */
+      unboundStore(row) {
+        this.$post("iot-saas-device/admin/device/unbindStore", {
+          deviceIds: [row.id],
+        }).then((res) => {
+          this.$message({
+            message: this.$t("public.unbindSuccessful"),
+            type: "success",
+          });
+          row.distribute = false;
+          row.store = "";
+        });
       },
     }
   }

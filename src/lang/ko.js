@@ -1984,5 +1984,22 @@ export default {
     prizeContent: '상품 설명',
     deletePrize: '이 리워드를 삭제하시겠습니까?',
     plaseImg: '상품 이미지를 업로드해주세요'
+  },
+  points: {
+  	points: 'Points',
+  	goldCoin: 'GoldCoins',
+  	daiCoin: 'DaiCoins',
+  	giftNumByOrder: '주문 증정',
+  	giftNumByAmount: '지불',
+  	giftNumByAmount1: '[0] 배달 1 [1]',
+  	giftNumByRegister: '등록 증정',
+  	giftNumByInvite: '초대 증정',
+  	pointsUse: '저당 가능',
+  	pointsUse1: '체크는 사용자가 지불할 때 [0] 공제 지불 금액을 선택할 수 있음을 나타냅니다.',
+  	pointsUse2: '장비 임대',
+  	pointsUse3: '잔액 충전',
+  	pointsUse4: '상품 구매',
+  	pointsUseRule: '[0] 규칙',
+  	pointsUseRule1: '[0] 증정, 사용 규칙 설정',
   }
 };

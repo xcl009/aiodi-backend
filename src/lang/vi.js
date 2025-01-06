@@ -2026,5 +2026,22 @@ export default {
         prizeContent: 'Nội dung giải thưởng',
         deletePrize: 'Xác nhận xóa giải thưởng này?',
         plaseImg: 'Vui lòng tải lên hình ảnh sản phẩm'
+    },
+    points: {
+      points: 'Points',
+      goldCoin: 'GoldCoins',
+      daiCoin: 'DaiCoins',
+      giftNumByOrder: 'Đặt hàng tặng quà',
+      giftNumByAmount: 'Thanh toán',
+      giftNumByAmount1: '[0] Gửi 1 [1]',
+      giftNumByRegister: 'Đăng ký tặng quà',
+      giftNumByInvite: 'Lời mời tặng quà',
+      pointsUse: 'Có thể chống đỡ',
+      pointsUse1: 'Đánh dấu có nghĩa là [0] Số tiền thanh toán được khấu trừ có thể được chọn khi người dùng thanh toán',
+      pointsUse2: 'Cho thuê thiết bị',
+      pointsUse3: 'Số dư nạp',
+      pointsUse4: 'Mua hàng',
+      pointsUseRule: '[0] Quy định',
+      pointsUseRule1: 'Cài đặt [0] Quy tắc cho đi, sử dụng',
     }
 };

@@ -1984,5 +1984,22 @@ export default {
     prizeContent: ' nilalaman ng Premyo',
     deletePrize: 'Tiyakin na I-delete ang Premyo na ito?',
     plaseImg: 'Mag-upload ng Larawan ng Produkto'
+  },
+  points: {
+  	points: 'Points',
+  	goldCoin: 'GoldCoins',
+  	daiCoin: 'DaiCoins',
+  	giftNumByOrder: 'Order and receive gifts',
+  	giftNumByAmount: 'bayad',
+  	giftNumByAmount1: '[0] Get 1 [1]',
+  	giftNumByRegister: 'regalo ng rehistro',
+  	giftNumByInvite: 'Invitation to give away',
+  	pointsUse: 'Maaaring offset',
+  	pointsUse1: 'Ang pagsusuri ay nagpapahiwatig na ang mga gumagamit ay maaaring pumili ng [0] upang tanggalin ang halaga ng bayad kapag gumagawa ng bayad',
+  	pointsUse2: 'Leasing ng mga kagamitan',
+  	pointsUse3: 'Balance recharge',
+  	pointsUse4: 'Bili ng mga produkto',
+  	pointsUseRule: '[0] Rule',
+  	pointsUseRule1: 'Ilagay ang mga patakaran ng regalo at paggamit',
   }
 };

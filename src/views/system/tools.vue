@@ -376,6 +376,40 @@
           </div>
         </el-col>
 
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && pointsAlias && checkAbility(['POINTS'], 3)">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="fuwu"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">{{ ($t('points.pointsUseRule')).i18Format(pointsAlias) }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ ($t('points.pointsUseRule1')).i18Format(pointsAlias) }}</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="setRows(1, { code: 'POINTS_RULE' }, 12)">{{ $t('public.setUp') }}</el-button>
+            </div>
+          </div>
+        </el-col>
+
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor" v-if="isBrand() && checkAbility(['COUPON'], 3)">
+          <div class="role-item flexv justify-between">
+            <div class="flex align-center">
+              <div class="icon-box flex align-center justify-center">
+                <svg-icon icon-class="fuwu"></svg-icon>
+              </div>
+              <div class="pl-20 flex1">
+                <div class="fs-b1">优惠券</div>
+                <div class="mt-5 fs-s3 text-gray">管理优惠券</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/system/coupon` })">添加优惠券</el-button>
+            </div>
+          </div>
+        </el-col>
+
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
           v-if="isBrand() && myDeviceId['LK']">
           <div class="role-item flexv justify-between">
@@ -487,6 +521,12 @@
               <el-radio-button :label="2">{{ $t('system.payCreatePage3') }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
+          <el-form-item :label="pointsAlias" v-if="checkAbility(['POINTS'], 3)">
+            <el-switch v-model="dform.userPoints" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item :label="'优惠券'" v-if="checkAbility(['COUPON'], 3)">
+            <el-switch v-model="dform.userCoupon" :active-value="1" :inactive-value="0" />
+          </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 5">
@@ -571,6 +611,36 @@
           </el-form-item>
         </el-form>
       </template>
+      <template v-if="dialogType == 12">
+        <el-form class="custom-form pl-20 pr-20" :model="dform" label-width="auto">
+          <el-form-item :label="$t('points.giftNumByOrder')">
+            <el-input v-model="dform.giftNumByOrder">
+              <template slot="append">{{ pointsAlias }}</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item :label="$t('points.giftNumByAmount')">
+            <el-input v-model="dform.giftNumByAmount">
+              <template slot="append">{{ ($t('points.giftNumByAmount1')).i18Format(siteInfo.currencySymbol, pointsAlias) }}</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item :label="$t('points.giftNumByRegister')">
+            <el-input v-model="dform.giftNumByRegister">
+              <template slot="append">{{ pointsAlias }}</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item :label="$t('points.giftNumByInvite')">
+            <el-input v-model="dform.giftNumByInvite">
+              <template slot="append">{{ pointsAlias }}</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item :label="$t('points.pointsUse').i18Format(pointsAlias)" v-if="dform.pointsUse">
+            <el-checkbox-group v-model="dform.pointsUse">
+              <el-checkbox v-for="item in pointsUses" :label="item.key" :key="item.key">{{ item.name }}</el-checkbox>
+            </el-checkbox-group>
+            <div class="line-1">{{ ($t('points.pointsUse1')).i18Format(pointsAlias) }}</div>
+          </el-form-item>
+        </el-form>
+      </template>
       <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
         <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
         <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{ $t('public.confirm')
@@ -617,7 +687,25 @@ export default {
           name:"5-7 ngày làm việc",
           taxRate:0
         }
-      ]
+      ],
+
+      pointsUses: [
+        {
+          key: 'LEASE',
+          name: this.$t('points.pointsUse2')
+        },
+        {
+          key: 'WALLET_RECHARGE',
+          name: this.$t('points.pointsUse3')
+        },
+        {
+          key: 'BUY_GOODS',
+          name: this.$t('points.pointsUse4')
+        },
+      ],
+
+      sysShow: {},
+      pointsAlias: ''
     }
   },
   computed: {
@@ -630,6 +718,9 @@ export default {
     myDeviceId() {
       return this.$store.state.user.myDeviceId
     },
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
     dialogTitle() {
       return {
         1: this.$t('system.userLoginPhone'),
@@ -641,10 +732,18 @@ export default {
         7: this.$t('system.checkTwoPwd'),
         8: this.$t('public.refundOfDeposit'),
         9: this.$t('public.permissionSettings'),
+        12: (this.$t('points.pointsUseRule')).i18Format(this.pointsAlias),
       }
     }
   },
   mounted() {
+    this.$store.dispatch('user/getOpenSettings', {
+      code: 'STORE_MONEY_SET',
+      brandId: this.agentInfo.brandId
+    }).then(res => {
+      this.sysShows = res
+      this.pointsAlias = this.$t(`points.${res.pointsAlias}`)
+    })
     if (this.isBrand()) {
       this.vendorInfo = {
         operationMode: 'SELF_RUN',
@@ -679,15 +778,18 @@ export default {
           this.dialogType = dialogType
           this.curRow = row
           this.curIdx = idx
-          if ([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(dialogType) > -1) {
+          if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 12].indexOf(dialogType) > -1) {
             this.$get('iot-saas-basic/admin/settings/find', {
               code: row.code
             }).then(res => {
               if (res && res.code) {
-                this.dform = JSON.parse(res.setting)
+                let info = JSON.parse(res.setting)
                 if(this.dialogType == 8){
                   this.activeName = this.dform.type
+                }else if (this.dialogType == 12) {
+                  info.pointsUse = info.pointsUse ? info.pointsUse.split(',') : []
                 }
+                this.dform = info
               } else {
                 switch (dialogType) {
                   case 1:
@@ -737,6 +839,11 @@ export default {
                       editStoreFee: 0
                     }
                   break
+                  case 12:
+                    this.dform = {
+                      pointsUse: []
+                    }
+                  break
                 }
               }
             })
@@ -758,7 +865,7 @@ export default {
       if (this.clickSubmit) return
       this.clickSubmit = true
       switch (this.dialogType) {
-        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 12:
           this.clickSubmit = false
           if (this.dialogType == 8) {
             params.type = this.activeName;
@@ -766,6 +873,8 @@ export default {
               params.TIME_LIMITED_RELIEF = 0;
               this.dform.TIME_LIMITED_RELIEF = 0;
             }
+          }else if (this.dialogType == 12) {
+            params.pointsUse = params.pointsUse.join(',')
           }
           this.$post('iot-saas-basic/admin/settings/save', {
             code: curRow.code,
