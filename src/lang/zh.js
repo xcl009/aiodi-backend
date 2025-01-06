@@ -2035,5 +2035,21 @@ export default {
     prizeContent:"奖品内容",
     deletePrize:"确定删除此奖励吗？",
     plaseImg:'请上传商品图片'
+  },
+  points: {
+    points: '积分',
+    goldCoin: '金币',
+    giftNumByOrder: '下单赠送',
+    giftNumByAmount: '支付',
+    giftNumByAmount1: '[0] 送1[1]',
+    giftNumByRegister: '注册赠送',
+    giftNumByInvite: '邀请赠送',
+    pointsUse: '[0]可抵',
+    pointsUse1: '勾选表示用户支付时可选择[0]抵扣支付金额',
+    pointsUse2: '设备租赁',
+    pointsUse3: '余额充值',
+    pointsUse4: '购买商品',
+    pointsUseRule: '[0]规则',
+    pointsUseRule1: '设置[0]赠送、使用规则',
   }
-};
+}

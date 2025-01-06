@@ -149,6 +149,7 @@
                   <el-dropdown-item @click.native="setRows(1, scope.row, 14)">{{ $t('brand.loginChannel')
                     }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRows(1, scope.row, 16)">{{ $t('brand.countryPhone') }}</el-dropdown-item>
+                  <el-dropdown-item @click.native="setRows(1, scope.row, 17)">其他设置</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(1, scope.row, scope.$index)" v-if="scope.row.status == 1">{{
       $t('brand.deleteBrand') }}</el-dropdown-item>
                   <el-dropdown-item @click.native="setRow(2, scope.row, scope.$index)" v-else>{{
@@ -419,7 +420,16 @@
           </draggable>
         </div>
       </template>
-      <template v-if="[1, 3, 11, 12, 13, 15, 16].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 17">
+        <el-form class="pl-20 pr-20 custom-form max-w" style="width: 600px;">
+          <el-form-item :label="'积分别称'">
+            <el-select v-model="dform.pointsAlias" class="tfixed">
+              <el-option :label="item.name" :value="item.value" v-for="item in pointsAlias" />
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[1, 3, 11, 12, 13, 15, 16, 17].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -501,61 +511,61 @@ export default {
       brandCountryPhone: {}
     }
   },
-  defaultColumn() {
-    return [
-      {
-        key: 'name',
-        val: true,
-        name: this.$t('brand.brandInfo')
-      },
-      {
-        key: 'companyName',
-        val: false,
-        name: this.$t('brand.corporateName')
-      },
-      {
-        key: 'createTime',
-        val: true,
-        name: this.$t('brand.timeOfEntry'),
-        width: 260
-      },
-      {
-        key: 'isLeader',
-        val: true,
-        name: this.$t('brand.regimentalCommander')
-      },
-      {
-        key: 'fatherBrandName',
-        val: true,
-        name: this.$t('brand.inviter')
-      },
-      {
-        key: 'brandDeviceType',
-        val: true,
-        name: this.$t('brand.category')
-      },
-      {
-        key: 'deviceCount',
-        val: true,
-        name: this.$t('brand.numberOfDevices')
-      },
-      {
-        key: 'orderCount',
-        val: true,
-        name: this.$t('public.orderNum')
-      },
-      {
-        key: 'amount',
-        val: true,
-        name: `${this.$t('public.aTurnover')}`
-      },
-      {
-        key: 'expiresTime',
-        val: true,
-        name: `${this.$t('public.expirationTime')}`
-      }
-    ]
-  },
+  // defaultColumn() {
+  //   return [
+  //     {
+  //       key: 'name',
+  //       val: true,
+  //       name: this.$t('brand.brandInfo')
+  //     },
+  //     {
+  //       key: 'companyName',
+  //       val: false,
+  //       name: this.$t('brand.corporateName')
+  //     },
+  //     {
+  //       key: 'createTime',
+  //       val: true,
+  //       name: this.$t('brand.timeOfEntry'),
+  //       width: 260
+  //     },
+  //     {
+  //       key: 'isLeader',
+  //       val: true,
+  //       name: this.$t('brand.regimentalCommander')
+  //     },
+  //     {
+  //       key: 'fatherBrandName',
+  //       val: true,
+  //       name: this.$t('brand.inviter')
+  //     },
+  //     {
+  //       key: 'brandDeviceType',
+  //       val: true,
+  //       name: this.$t('brand.category')
+  //     },
+  //     {
+  //       key: 'deviceCount',
+  //       val: true,
+  //       name: this.$t('brand.numberOfDevices')
+  //     },
+  //     {
+  //       key: 'orderCount',
+  //       val: true,
+  //       name: this.$t('public.orderNum')
+  //     },
+  //     {
+  //       key: 'amount',
+  //       val: true,
+  //       name: `${this.$t('public.aTurnover')}`
+  //     },
+  //     {
+  //       key: 'expiresTime',
+  //       val: true,
+  //       name: `${this.$t('public.expirationTime')}`
+  //     }
+  //   ]
+  // },
   activated() {
     if (this.$route.meta.reload) {
       this.getList()
@@ -628,8 +638,7 @@ export default {
         key: 'amount',
         val: true,
         name: `${this.$t('public.aTurnover')}`
-      }
-      ]
+      }]
     },
     dialogTitle() {
       return {
@@ -641,7 +650,8 @@ export default {
         13: this.$t('brand.payConfig'),
         14: this.$t('brand.loginChannel'),
         15: this.$t('brand.loginConfig'),
-        16: this.$t('brand.countryPhone')
+        16: this.$t('brand.countryPhone'),
+        17: '其他设置'
       }
     },
     sort_type() {
@@ -667,6 +677,18 @@ export default {
       }
       ]
     },
+    pointsAlias() {
+      return [
+        {
+          name: '积分',
+          value: 'points'
+        },
+        {
+          name: '金币',
+          value: 'goldCoin'
+        },
+      ]
+    }
   },
   mounted() {
 
@@ -871,6 +893,27 @@ export default {
               })
             })
             this.dform = {}
+          } else if (dialogType == 17) {
+            this.$get('iot-saas-basic/admin/settings/find', {
+              brandId: row.id,
+              code: 'STORE_MONEY_SET'
+            }).then(res => {
+              if (res && res.setting) {
+                let info = JSON.parse(res.setting)
+                this.dform = info
+              } else {
+                this.dform = {
+                  checkIncome: 1,
+                  checkMouthStat: 1,
+                  checkMouthStatSp: 0,
+                  checkOrder: 0,
+                  checkMouthStatAgent: 1,
+                  checkMouthStatSpAgent: 0,
+                  userWalletCash: 1,
+                  userWalletRecharge: 0
+                }
+              }
+            })
           }
           this.drawerStatus = true
         break
@@ -1151,6 +1194,22 @@ export default {
             countrys: countryPhone
           })
           this.$post('iot-saas-basic/admin/settings/save', params).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
+            this.drawerStatus = false
+            this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 17:
+          this.$post('iot-saas-basic/admin/settings/save', {
+            brandId: curRow.id,
+            code: curRow.settingsCode || 'STORE_MONEY_SET',
+            setting: JSON.stringify(params)
+          }).then(res => {
             this.$message({
               message: that.$t('public.operationSuccessful'),
               type: 'success'

@@ -258,7 +258,7 @@
                                 <template slot="append">{{ $t('public.minute') }}</template>
                               </el-input>
                             </div>
-                            <template v-if="plan.endTime">
+                            <template v-if="plan.endTime || stepIdx < item[`${xcx}PayMode`].stepPayMode.stepList.length - 1">
                               <div class="pl-10 pr-10">-</div>
                               <div class="flex1">
                                 <el-input type="number" v-model="plan.endTime" @input="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 1)">
