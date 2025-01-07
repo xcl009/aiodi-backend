@@ -494,6 +494,9 @@
             </el-radio-group>
             <div class="mt-10 line-default fs-s3">{{ $t('system.checkOrderText') }}</div>
           </el-form-item>
+          <el-form-item :label="$t('brand.contractInformation')">
+            <el-switch v-model="dform.storeContract" :active-value="1" :inactive-value="0" />
+          </el-form-item>
 
           <h4>{{ $t('public.agent') }}</h4>
           <el-form-item :label="$t('system.monthlyAndDailyStatistics')">
