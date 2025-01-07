@@ -589,6 +589,8 @@ export default {
             this.userList = []
             this.dialogStatus = false
             this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
           })
           break
       }

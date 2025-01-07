@@ -270,6 +270,7 @@
                       }}</el-dropdown-item>
                     </template>
                     <el-dropdown-item @click.native="setRows(3, scope.row, 10)" v-if="isBrand()">{{ $t('store.loginRecord') }}</el-dropdown-item>
+                    <el-dropdown-item @click.native="setRows(3, scope.row, 13, 'STORE_CONTRACT')" v-if="sysShows.storeContract">{{ $t('brand.contractInformation') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
                       v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
                   </el-dropdown-menu>
@@ -549,7 +550,16 @@
           </el-form-item>
         </el-form>
       </template>
-      <template v-if="[1, 4, 6, 7, 9, 11, 12].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 13">
+        <div class="pl-20 pr-20">
+          <upload
+            :limit="9"
+            v-model="dform.contract"
+            :upObj="{ fileType: 'storePhoto' }"
+          />
+        </div>
+      </template>
+      <template v-if="[1, 4, 6, 7, 9, 11, 12, 13].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
@@ -580,7 +590,8 @@ import ImportData from '@/components/ImportData/'
 import selectSearch from '@/components/condition/selectSearch'
 import TableColumnSet from '@/components/TableColumnSet/index'
 import UpdateBlance from '@/components/UpdateBlance/'
-import xlsx from '@/components/xlsx/'
+import xlsx from '@/components/xlsx/index'
+import upload from '@/components/upload/index'
 export default {
   name: 'subShop',
   components: {
@@ -593,7 +604,8 @@ export default {
     ImportData,
     selectSearch,
     UpdateBlance,
-    xlsx
+    xlsx,
+    upload
   },
   props: {
     lowerStore: {
@@ -656,6 +668,8 @@ export default {
         newly: []
       },
       checkList: {},
+      
+      sysShows: {},
     }
   },
   computed: {
@@ -691,6 +705,7 @@ export default {
         10: this.$t('store.loginRecord'),
         11: this.$t('public.setLoginPassword'),
         12: this.$t('public.remark'),
+        13: this.$t('brand.contractInformation')
       }
     },
     defaultColumn() {
@@ -801,7 +816,12 @@ export default {
     this.urlQuery = this.$route.meta.urlQuery
   },
   mounted() {
-
+    this.$store.dispatch('user/getOpenSettings', {
+      code: 'STORE_MONEY_SET',
+      brandId: this.agentInfo.brandId
+    }).then(res => {
+      this.sysShows = res
+    })
   },
   methods: {
     // 分配事件
@@ -1168,6 +1188,19 @@ export default {
             this.dform = {
               remark: row.remark || ''
             }
+          } else if (dialogType == 13) {
+            this.$get('iot-saas-basic/admin/settings/find', {
+              brandId: row.brandId,
+              code: idx,
+              storeId: row.id,
+            }).then(res => {
+              if (res && res.setting) {
+                let info = JSON.parse(res.setting)
+                this.dform = info
+              }else{
+                this.dform = {}
+              }
+            })
           }
           if (type == 1) {
             this.dialogStatus = true
@@ -1375,6 +1408,38 @@ export default {
               type: 'success'
             })
             this.$set(curRow, 'remark', params.remark)
+            this.drawerStatus = false
+            this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
+        case 13:
+          if(curIdx == 'STORE_CONTRACT'){
+            let obj = []
+            if(params.contract){
+              params.contract.map(item => {
+                if(item.status == 'success'){
+                  obj.push({
+                    name: item.name,
+                    url: item.url
+                  })
+                }
+              })
+            }
+            params = {
+              contract: obj
+            }
+          }
+          this.$post('iot-saas-basic/admin/settings/save', {
+            storeId: curRow.id,
+            code: curIdx,
+            setting: JSON.stringify(params)
+          }).then(res => {
+            this.$message({
+              message: that.$t('public.operationSuccessful'),
+              type: 'success'
+            })
             this.drawerStatus = false
             this.clickSubmit = false
           }).catch(err => {

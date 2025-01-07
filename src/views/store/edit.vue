@@ -390,7 +390,7 @@ import {
   qqMapTransBMap,
   arrayToObj
 } from '@/utils/index'
-import upload from '@/components/upload'
+import upload from '@/components/upload/index'
 import maps from '@/components/map/index'
 export default {
   name: 'addStore',
