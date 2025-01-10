@@ -154,7 +154,7 @@
               </el-form-item> -->
 
               <el-row class="rel radius-10 flex flex-wrap" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="20">
-                <el-col :sm="24" :lg="12" v-for="(name, xcx) in config.xcx_pay.default">
+                <el-col :sm="24" :lg="screenWidth > 1450 ? 12 :24" v-for="(name, xcx) in config.xcx_pay.default">
                   <div>
                     <div class="mb-10 text-dfs text-bold text-black">
                       {{ $t('payMode.' + xcx) }}{{ $t('public.empty') }}{{ $t('store.billingSettings') }}
@@ -496,10 +496,12 @@ export default {
       mapTrue: false,
 
       sysShows: {},
-      agentPower: {}
+      agentPower: {},
+      screenWidth: window.innerWidth
     }
   },
   mounted() {
+    window.addEventListener('resize', this.updateScreenWidth);
     this.storeDfKey = 'storeDfKey'
     let storeDefaultConfig = localStorage.getItem(this.storeDfKey)
     if (storeDefaultConfig) {
@@ -547,6 +549,9 @@ export default {
     }
   },
   methods: {
+    updateScreenWidth() {
+      this.screenWidth = window.innerWidth;
+    },
     /**
      * 类型选择
      */
