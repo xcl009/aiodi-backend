@@ -105,6 +105,7 @@ service.interceptors.response.use(
           router.push({
             path: '/user/checkPwd'
           })
+          return Promise.reject(res.data)
         } else if (['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1) {
           Message({
             message: res.data.message || i18n.t('lang.message1'),
