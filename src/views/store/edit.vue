@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
-      <el-col :lg="24" :xl="20">
+      <el-col :lg="24" :xl="22">
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="130px">
           <h3>{{ $t('public.basicInformation') }}</h3>
           <el-form-item :label="$t('public.doorstepPhoto')" class="up-img">
@@ -153,8 +153,8 @@
                 </el-checkbox-group>
               </el-form-item> -->
 
-              <el-row class="rel radius-10 flex flex-wrap" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="20">
-                <el-col :sm="24" :lg="screenWidth > 1450 ? 12 :24" v-for="(name, xcx) in config.xcx_pay.default">
+              <el-row class="rel radius-10 flex flex-wrap" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="22">
+                <el-col :sm="24" :lg="screenWidth > 1700 ? 12 :24" v-for="(name, xcx) in config.xcx_pay.default">
                   <div>
                     <div class="mb-10 text-dfs text-bold text-black">
                       {{ $t('payMode.' + xcx) }}{{ $t('public.empty') }}{{ $t('store.billingSettings') }}
