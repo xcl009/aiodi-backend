@@ -109,12 +109,12 @@
             <el-input v-model="dform.serviceName"></el-input>
           </el-form-item>
           <el-form-item :label="$t('membership.cardAmount')" ref="amount" prop="amount">
-            <el-input type="number" v-model="dform.amount">
+            <el-input type="number" v-model="dform.amount" placeholder="Maximum 9999999" oninput="if(value.length > 7){value = value.slice(0,7)}">
               <template slot="append">{{ siteInfo.currencySymbol }}</template>
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('membership.cardTime')" ref="availableDay" prop="availableDay">
-            <el-input type="number" v-model="dform.availableDay">
+            <el-input type="number" v-model="dform.availableDay" placeholder="Maximum 9999" oninput="if(value.length > 4){value = value.slice(0,4)}">
               <template slot="append">{{ $t('public.day') }}</template>
             </el-input>
           </el-form-item>
@@ -146,7 +146,7 @@
           </el-form-item>
           <template v-if="dform.cardModul == 1">
             <el-form-item :label="$t('membership.cardDeposit')">
-              <el-input type="number" v-model="dform.depositAmount">
+              <el-input type="number" v-model="dform.depositAmount" :max="9999" :maxlength="7" oninput="if(value.length > 7){value = value.slice(0,7)}">
                 <template slot="append">
                   <el-popover placement="top" :title="$t('public.tips')" width="250" trigger="hover"
                     :content="$t('membership.text')">

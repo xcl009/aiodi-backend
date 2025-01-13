@@ -561,7 +561,7 @@
             <el-switch v-model="dform.AUTO_REFUND_DEPOSIT" active-value="1" inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText1') }}</div>
           </el-form-item>
-          <el-form-item :label="$t('public.refundOfDepositText7')">
+          <!-- <el-form-item :label="$t('public.refundOfDepositText7')">
             <el-switch v-model="dform.TIME_LIMITED_RELIEF_SHOW" active-value="1" inactive-value="0" />
             <div class="line-default fs-s3 min-width">{{ $t('public.refundOfDepositText8') }}</div>
           </el-form-item>
@@ -569,7 +569,7 @@
             <el-switch v-model="dform.TIME_LIMITED_RELIEF" active-value="1" inactive-value="0" />
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText6') }}</div>
             <div class="line-default fs-s3">{{ $t('public.refundOfDepositText9') }}</div>
-          </el-form-item>
+          </el-form-item> -->
 
 
           <el-tabs v-model="activeName" type="card" >

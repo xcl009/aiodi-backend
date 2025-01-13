@@ -9,6 +9,7 @@
         </template>
         <template v-slot:endButton>
           <el-button class="mb-10" type="primary" size="small" @click="refreshOpenToken" v-if="isSaas()">{{ $t('miniProgram.refreshToken') }}</el-button>
+					<el-button class="mb-10" type="primary" size="small" @click="$router.push({ path: `/system/wechatEdit` })">绑定小程序</el-button>
         </template>
       </condition>
 
@@ -49,10 +50,11 @@
             {{ parseTime(scope.row.updateTime) }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" align="center" width="245"
+        <el-table-column :label="$t('public.operate')" align="center" width="320"
           :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
+							<template v-if="scope.row.type == 0">
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">{{ $t('miniProgram.uploadCode')
               }}</el-button>
               <el-button type="primary" size="mini" @click="setRows(2, scope.row, 1)"
@@ -62,10 +64,10 @@
                 v-if="scope.row.appAuditStatus == 2">{{ $t('miniProgram.reviewStatus') }}</el-button>
               <el-button type="primary" size="mini" @click="setRows(4, scope.row, 1)"
                 v-if="scope.row.appAuditStatus == 3">{{ $t('miniProgram.publishCode') }}</el-button>
-              <el-button type="primary" size="mini" @click="setRows(5, scope.row)">{{ $t('miniProgram.privacySettings')
-              }}</el-button>
-              <el-button type="primary" size="mini"
-                @click="$router.push({ path: `/system/wechatEdit?app_id=${scope.row.appId}` })" v-if="isBrand()">{{
+              <el-button type="primary" size="mini" @click="setRows(5, scope.row)">{{ $t('miniProgram.privacySettings')}}</el-button>
+              </template>
+							<el-button type="primary" size="mini"
+                @click="$router.push({ path: `/system/wechatEdit?app_id=${scope.row.appId}&type=${scope.row.type}` })" v-if="isBrand()">{{
                   $t('public.modifyingInformation') }}</el-button>
               <el-button type="primary" size="mini" @click="setRows(6, scope.row, 1)" v-if="isSaas()">{{
                 $t('miniProgram.refreshTokenText') }}</el-button>
