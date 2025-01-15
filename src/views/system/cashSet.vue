@@ -249,7 +249,7 @@ export default {
       ]
     },
     week() {
-      return ['', this.$t('public.one'), this.$t('public.two'), this.$t('public.three'), this.$t('public.four'), this.$t('public.five'), this.$t('public.six'), this.$t('public.sunday')]
+      return [ this.$t('public.one'), this.$t('public.two'), this.$t('public.three'), this.$t('public.four'), this.$t('public.five'), this.$t('public.six'), this.$t('public.sunday')]
     },
     siteInfo() {
       return this.$store.getters.siteInfo
@@ -341,6 +341,7 @@ export default {
           })
           res.timeLimit.days = days
           res.timeLimit.weeks = weeks
+          console.log(weeks,'weeks')
           this.form = res
           this.sellType = this.arrayKeys(res.supportType, 'type')
           this.ruleAgent = {}

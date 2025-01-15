@@ -322,6 +322,8 @@ export default {
         params = Object.assign(params, this.wxQrcodeInfo)
       } else if (params.withdrawType == 4) {
         params = Object.assign(params, this.aliQrcodeInfo)
+      }else if(params.withdrawType == 5){
+        params = Object.assign(params, this.bindCardInfo)
       }
       if (this.cutStoreId) params.storeId = this.cutStoreId
       this.clickSubmit = true
