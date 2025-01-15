@@ -54,7 +54,7 @@
           :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
-							<template v-if="scope.row.type == 0">
+							<!-- <template v-if="scope.row.type == 0"> -->
               <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">{{ $t('miniProgram.uploadCode')
               }}</el-button>
               <el-button type="primary" size="mini" @click="setRows(2, scope.row, 1)"
@@ -65,7 +65,7 @@
               <el-button type="primary" size="mini" @click="setRows(4, scope.row, 1)"
                 v-if="scope.row.appAuditStatus == 3">{{ $t('miniProgram.publishCode') }}</el-button>
               <el-button type="primary" size="mini" @click="setRows(5, scope.row)">{{ $t('miniProgram.privacySettings')}}</el-button>
-              </template>
+              <!-- </template> -->
 							<el-button type="primary" size="mini"
                 @click="$router.push({ path: `/system/wechatEdit?app_id=${scope.row.appId}&type=${scope.row.type}` })" v-if="isBrand()">{{
                   $t('public.modifyingInformation') }}</el-button>
