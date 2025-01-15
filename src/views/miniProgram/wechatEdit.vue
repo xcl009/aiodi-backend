@@ -44,15 +44,33 @@
               <template slot="append">{{ $t('public.day') }}</template>
             </el-input>
           </el-form-item>
+					<el-form-item label="验签类型">
+					  <el-radio-group v-model="form.verificationMethod">
+					    <el-radio-button :label="1">公钥</el-radio-button>
+					    <el-radio-button :label="0">平台证书</el-radio-button>
+					  </el-radio-group>
+					</el-form-item>
           <el-form-item :label="$t('miniProgram.certName')">
             <div class="flex align-center">
               <upload :uploadText="$t('miniProgram.certNameText')" :raw="true" @getFile="getCert" />
               <div class="pl-15">{{ certName }}</div>
             </div>
           </el-form-item>
-          <el-form-item :label="$t('miniProgram.apiclientKey')">
+          <el-form-item label="apiclientKey">
             <el-input v-model="form.apiclientKey" type="textarea" :rows="6"></el-input>
           </el-form-item>
+					<el-form-item label="公钥" v-if="form.verificationMethod == 1">
+					  <el-input v-model="form.publicKey" type="textarea" :rows="6"></el-input>
+					</el-form-item>
+					<el-form-item label="公钥ID" v-if="form.verificationMethod == 1">
+					  <el-input v-model="form.publicKeyId"></el-input>
+					</el-form-item>
+					<!-- <el-form-item label="商户类型">
+					  <el-radio-group v-model="form.type">
+					    <el-radio-button :label="0">正常商户</el-radio-button>
+					    <el-radio-button :label="1">押金商户</el-radio-button>
+					  </el-radio-group>
+					</el-form-item> -->
           <el-form-item>
             <el-button type="primary" @click="onSubmit" :disabled="clickSubmit">{{ $t('public.submit') }}</el-button>
           </el-form-item>
@@ -75,7 +93,10 @@ export default {
       form: {
         maxDividePercent: 30,
         settlementCycle: 1,
+				type: 0,
+				verificationMethod: 1,
       },
+			type: this.$route.query.type || 0,
       certName: ''
     }
   },
@@ -93,9 +114,10 @@ export default {
      */
     getInfo() {
       this.$post('iot-saas-pay/admin/pay/config/wechat/detail', {
-        appId: this.$route.query.app_id
+        appId: this.$route.query.app_id,
+        type: this.type
       }).then(res => {
-        this.form = this.pick(res, [
+        let params = this.pick(res, [
           'appName',
           'appId',
           'appSecret',
@@ -107,8 +129,15 @@ export default {
           'apiclientKey',
           'serviceId',
           'maxDividePercent',
-          'settlementCycle'
+          'settlementCycle',
+          'verificationMethod',
+          'publicKey',
+          'publicKeyId',
         ])
+				if(params.publicKey){
+				  params.publicKey = atob(params.publicKey)
+				}
+				this.form = params
       })
     },
 
@@ -119,6 +148,9 @@ export default {
       let that = this;
       let url = 'iot-saas-pay/admin/pay/config/wechat/save',
         params = JSON.parse(JSON.stringify(this.form))
+			if(params.publicKey){
+				params.publicKey = btoa(params.publicKey)
+			}
       this.clickSubmit = true
       this.$post(url, params).then(res => {
         this.$message({

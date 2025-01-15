@@ -136,7 +136,7 @@
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 7)" v-if="isSaas() || isBrand()">{{
       $t('order.DDRecovery') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 11)" v-if="isSaas()">{{
-      $t('order.refundRetry') }}</div>
+      $t('order.wxOrderRefundRetry') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 12)" v-if="isSaas()">{{
       $t('order.orderInquiry') }}</div>
         <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn"
@@ -1560,6 +1560,10 @@ export default {
             }).then(res => {
               this.$set(this.dform, 'list', res)
             })
+          }else if (dialogType == 11) {
+            this.dform = {
+              isDeposit: false
+            }
           }
           break
         case 3:

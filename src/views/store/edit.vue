@@ -164,8 +164,8 @@
 
                     <el-form-item :label="`${$t('store.paymentMode')}`">
                       <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
-                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode, xcx)">{{
-                           $t('public.' + key) }}</el-radio-button>
+                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode, xcx)">{{ $t('public.' + key) }}</el-radio-button>
+                         <!-- :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode, xcx))[0]" -->
                       </el-radio-group>
                       <el-popover placement="right" title="" trigger="hover"
                         v-if="getModeType(item.deviceTypeCode, xcx)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode, xcx)['DEPOSIT']">
@@ -404,7 +404,6 @@ export default {
       return agentInfo
     },
     Ability() {
-      console.log(this.$store.getters.Ability)
       return this.$store.getters.Ability
     },
     myDevice() {

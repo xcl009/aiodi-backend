@@ -408,6 +408,13 @@ export default {
         })
         return
       }
+      if(supportType.length == 0){
+        this.$message({
+          message: that.$t('moeny.pleaseSelect') + that.$t('moeny.withdrawalMethod'),
+          type: 'error'
+        })
+        return
+      }
       params.supportType = supportType
       params.userType = this.userType
       if (params.timeLimit.type == 'WEEK') {
