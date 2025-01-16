@@ -22,14 +22,13 @@
           $t('qrcode.generateCode') }}</el-button>
         <el-button size="medium" type="primary" @click="$router.push({ path: `/device/qrAddRecord` })">{{
           $t('qrcode.generatedRecords') }}</el-button>
-        <el-button size="medium" type="primary" :disabled="selSnArr.length == 0" @click="downloadImg()">{{
-          $t('qrcode.batchDownload') }}</el-button>
+        <el-button size="medium" type="primary" :disabled="selSnUrl.length == 0" @click="downloadImg()">{{ $t('qrcode.batchDownload') }}</el-button>
         <import-data name="files" :uploadText="$t('components.importDevice')" btnSize="medium" class="ml-10"></import-data>
       </div>
       <el-table id="table_box" ref="table_box" v-loading="listLoading" :data="list" element-loading-text="Loading"
         highlight-current-row :max-height="tableMaxH" @selection-change="selSb">
         <el-table-column type="selection" width="50"></el-table-column>
-        <el-table-column :label="$t('public.number')" width="200">
+        <el-table-column :label="$t('public.number')" width="250">
           <template slot-scope="scope">
             {{ scope.row.deviceSn }}
           </template>
@@ -46,7 +45,25 @@
         </el-table-column>
         <el-table-column :label="$t('qrcode.codeContent')">
           <template slot-scope="scope">
-            {{ scope.row.content || '--' }}
+            <el-popover trigger="hover">
+              <div class="access-url" :ref="`sn_${scope.row.deviceSn}`" :id="`sn_${scope.row.deviceSn}`"></div>
+              <div class="text-cut cursor" slot="reference" @mouseover="deviceCode(scope.row.deviceSn, scope.row.content)">
+                {{ scope.row.content || '--' }}
+              </div>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column label="VIETQR" v-if="token1">
+          <template slot-scope="scope">
+            <el-popover trigger="hover">
+              <div class="viet-qr">
+                <div class="mb-5">{{ scope.row.secondContent }}</div>
+                <div class="flex justify-center">
+                  <div class="access-url" :ref="`sn1_${scope.row.deviceSn}`" :id="`sn1_${scope.row.deviceSn}`"></div>
+                </div>
+              </div>
+              <div class="text-cut cursor" v-if="scope.row.secondContent" slot="reference" @mouseover="deviceCode1(scope.row.deviceSn, scope.row.content)">{{ scope.row.secondContent }}</div>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column :label="$t('qrcode.generationTime')" width="160">
@@ -54,21 +71,62 @@
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('qrcode.download')" width="80">
+        <el-table-column :label="$t('qrcode.download')" width="160">
           <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" :content="$t('qrcode.downloadText')" placement="top"
-              v-if="scope.row.accessUrl">
-              <el-link :href=" scope.row.accessUrl " target="_blank" type="primary">{{ $t('qrcode.download') }}</el-link>
+            <el-tooltip class="item" effect="dark" :content="$t('qrcode.downloadText')" placement="top" v-if="scope.row.accessUrl">
+              <el-link :href=" scope.row.accessUrl" target="_blank" type="primary">{{ $t('qrcode.download') }}</el-link>
             </el-tooltip>
+            <span class="text-primary cursor" @click="setRows(3, scope.row, 1)" v-if="token1">生成VIETQR</span>
           </template>
         </el-table-column>
       </el-table>
 
-      <div class="flex justify-center">
-        <pagination v-show=" listTotal > 0" :page.sync=" listQuery.page " :limit.sync=" listQuery.size "
-          :total=" parseInt(listTotal) " @pagination=" getList " />
+      <div class="rel flex justify-center">
+        <div class="abs flex pagination-left" v-if="token1">
+          <el-button type="primary" size="mini" :disabled="selSnArr.length == 0" @click="setRows(3, {}, 1)">批量生成VIETQR</el-button>
+        </div>
+        <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)" @pagination="getList" />
       </div>
     </div>
+
+    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus">
+      <template v-if="dialogType == 1">
+        <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()" style="width: 600px;">
+          <el-form-item label="设备二维码">
+            <el-input v-model="dform.deviceSn" placeholder="多设备英文逗号隔开" type="textarea" rows="4" :disabled="true"></el-input>
+          </el-form-item>
+          <el-form-item label="押金金额">
+            <el-input v-model="dform.amount" :placeholder="$t('public.enter')"><template slot="append">{{ siteInfo.currencySymbol }}</template></el-input>
+          </el-form-item>
+          <el-form-item label="类型">
+            <el-input v-model="dform.type" :placeholder="$t('public.enter')" :disabled="true"></el-input>
+          </el-form-item>
+          <el-form-item label="支付通道ID">
+            <el-input v-model="dform.configId" :placeholder="$t('public.enter')" :disabled="true"></el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template>
+        <div class="p-15 mt-30 abs bfixed text-right l-t">
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
+          <el-button size="medium" type="primary" @click="dialogConfirm()" :disabled="clickSubmit">{{
+            $t('public.confirm') }}</el-button>
+        </div>
+      </template>
+
+      <template v-if="[1].indexOf(dialogType) > -1">
+        <div style="height: 66px;"></div>
+        <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
+          <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
+          <el-popconfirm
+            :title="'确定提交吗？'"
+            @onConfirm="dialogConfirm()"
+          >
+            <el-button size="medium" type="primary" :disabled="clickSubmit" slot="reference">{{ $t('public.confirm') }}</el-button>
+          </el-popconfirm>
+        </div>
+      </template>
+    </el-drawer>
   </div>
 </template>
 
@@ -76,10 +134,11 @@
 import Pagination from '@/components/Pagination'
 import condition from '@/components/condition/'
 import ImportData from '@/components/ImportData/'
-
+import QRCode from 'qrcodejs2'
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
+import { getToken } from '@/utils/auth'
 export default {
   name: 'qrcode',
   components: {
@@ -97,9 +156,18 @@ export default {
     xlsxName(){
       return this.$t('qrcode.codeList')
     },
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
+    dialogTitle() {
+      return {
+        1: 'VIETQR',
+      }
+    },
   },
   data() {
     return {
+      token1: getToken('token1') || '',
       clickSubmit: false,
       form: {},
       tableMaxH: '250',
@@ -118,7 +186,14 @@ export default {
       wbout: {},
       wi: 0,
       agent_name: {},
-      deviceList: {}
+      deviceList: {},
+
+      // 弹出相关
+      dialogType: 1,
+      drawerStatus: false,
+      curRow: {},
+      curIdx: 0,
+      dform: {},
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -137,6 +212,7 @@ export default {
       this.toQuery()
     }
     this.urlQuery = this.$route.meta.urlQuery
+    this.getPayChannel()
   },
   mounted(options) {
 
@@ -163,6 +239,14 @@ export default {
       this.listQuery.page = 1
       this.listQuery.size = 20
       this.getList()
+    },
+
+    getPayChannel(){
+      this.$get('iot-saas-pay/api/pay/channel', {
+        sourceType: 3
+      }).then(res => {
+
+      })
     },
 
     /**
@@ -198,8 +282,8 @@ export default {
     selSb(list) {
       let selSnArr = [], selSnUrl = []
       for (var i in list) {
+        selSnArr.push(list[i].deviceSn)
         if (list[i].accessUrl) {
-          selSnArr.push(list[i].deviceSn)
           selSnUrl.push(list[i].accessUrl)
         }
       }
@@ -259,9 +343,115 @@ export default {
         }
         image.src = arr[i]
       }
+    },
+
+    /**
+     * 操作行
+     * @param {Object} type 3 drawer类型
+     * @param {Object} row 选择当前数据
+     * @param {Object} dialogType dialog内容显示类型
+     * @param {Object} idx 当前数据所在位置
+     */
+    setRows(type, row, dialogType, idx) {
+      switch (type) {
+        case 3:
+          this.dialogType = dialogType
+          this.curRow = row
+          this.curIdx = idx
+          this.drawerStatus = true
+          this.dform = {}
+          if (dialogType == 1) {
+            this.dform = {
+              deviceSn: row.deviceSn || this.selSnArr.join(','),
+              brandId: row.brandId || this.agentInfo.brandId,
+              amount: 350000,
+              type: 'VIETQR',
+              configId: '1328026287167524864'
+            }
+          }
+        break
+      }
+    },
+
+    /**
+     * 弹窗确认
+     */
+    dialogConfirm(row = {}) {
+      let curRow = this.curRow,
+        curIdx = this.curIdx,
+        params = JSON.parse(JSON.stringify(this.dform))
+      if (this.clickSubmit) return
+      this.clickSubmit = true
+      switch (this.dialogType) {
+        case 1:
+          this.deviceSns = params.deviceSn.split(',')
+          this.createViteQr(params, 0)
+          break
+      }
+    },
+
+    /**
+     * 提交生成viteQr
+     */
+    createViteQr(params, i){
+      params.deviceSn = this.deviceSns[i]
+      this.$post('iot-saas-device/admin/qrcode/second', params).then(res => {
+        if(i == this.deviceSns.length - 1){
+          this.$message({
+            message: this.$t('public.operationCompleted'),
+            type: 'success'
+          })
+          this.getList()
+          this.drawerStatus = false
+          this.clickSubmit = false
+        } else {
+          i++
+          this.createViteQr(params, i)
+        }
+      }).catch(err => {
+        this.clickSubmit = false
+      })
+    },
+
+    /**
+     * 设置二维码
+     */
+    deviceCode(sn, url) {
+      let deviceCodeIds = this.deviceCodeIds || {}
+      if (deviceCodeIds[sn]) return
+      deviceCodeIds[sn] = sn
+      this.$refs[`sn_${sn}`].innerHTML = ''
+      this.$nextTick(() => {
+        new QRCode(this.$refs[`sn_${sn}`], {
+          width: 150,
+          height: 150,
+          text: url
+        })
+      })
+    },
+
+    /**
+     * 设置二维码
+     */
+    deviceCode1(sn, url) {
+      let deviceCodeIds = this.deviceCodeIds || {}
+      if (deviceCodeIds[sn]) return
+      deviceCodeIds[sn] = sn
+      this.$refs[`sn1_${sn}`].innerHTML = ''
+      this.$nextTick(() => {
+        new QRCode(this.$refs[`sn1_${sn}`], {
+          width: 150,
+          height: 150,
+          text: url
+        })
+      })
     }
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .viet-qr{
+    width: 420px;
+  }
+</style>
