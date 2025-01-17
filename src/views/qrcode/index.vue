@@ -102,7 +102,7 @@
             <el-input v-model="dform.type" :placeholder="$t('public.enter')" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="支付通道ID">
-            <el-input v-model="dform.configId" :placeholder="$t('public.enter')" :disabled="true"></el-input>
+            <el-input v-model="dform.configId" :placeholder="$t('public.enter')"></el-input>
           </el-form-item>
         </el-form>
       </template>
