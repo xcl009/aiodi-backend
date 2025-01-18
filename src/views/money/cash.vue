@@ -522,4 +522,7 @@ export default {
 .line {
   text-align: center;
 }
+.el-select{
+  width:100%;
+}
 </style>
