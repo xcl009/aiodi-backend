@@ -79,13 +79,13 @@
               <el-input v-model="bindCardInfo.branchName" :placeholder="$t('echarge.text6')" />
             </el-form-item>
             <el-form-item :label="$t('echarge.text3')">
-              <el-input v-model="bindCardInfo.number"  />
+              <el-input v-model="bindCardInfo.cardNo"  />
               <div style="margin-left:20px">
                 *{{ $t('echarge.text7') }}
               </div>
             </el-form-item>
             <el-form-item :label="$t('echarge.text4')">
-              <el-input v-model="bindCardInfo.userName" :placeholder="$t('echarge.text8')" />
+              <el-input v-model="bindCardInfo.cardName" :placeholder="$t('echarge.text8')" />
             </el-form-item>
             <el-form-item :label="$t('echarge.text5')">
               <el-input v-model="bindCardInfo.accountName" :placeholder="$t('echarge.text9')" />

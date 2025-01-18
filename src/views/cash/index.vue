@@ -144,12 +144,12 @@
            </div>
            <div v-else>
             <div v-if="scope.row.withdrawType == 5">
-              <div>{{$t('echarge.text')}}:{{ scope.row.bankName || '' }}</div>
-              <div>{{$t('echarge.text1')}}:{{ scope.row.accountType || '' }}</div>
-              <div>{{$t('echarge.text2')}}:{{ scope.row.branchName || '' }}</div>
-              <div>{{$t('echarge.text3')}}:{{ scope.row.cardNo || '' }}</div>
-              <div>{{$t('echarge.text4')}}:{{ scope.row.cardName || '' }}</div>
-              <div>{{$t('echarge.text5')}}:{{ scope.row.accountName || '' }}</div>
+              <div>{{$t('echarge.text')}}：{{ scope.row.bankName || '' }}</div>
+              <div>{{$t('echarge.text1')}}：{{ scope.row.accountType || '' }}</div>
+              <div>{{$t('echarge.text2')}}：{{ scope.row.branchName || '' }}</div>
+              <div>{{$t('echarge.text3')}}：{{ scope.row.cardNo || '' }}</div>
+              <div>{{$t('echarge.text4')}}：{{ scope.row.cardName || '' }}</div>
+              <div>{{$t('echarge.text5')}}：{{ scope.row.accountName || '' }}</div>
               <!-- <div>{{ scope.row.cardName }}</div>
               <div>{{ scope.row.bankName }}<span class="ml-10">{{ scope.row.branchName }}</span></div>
               <div>{{ scope.row.cardNo }}</div> -->
