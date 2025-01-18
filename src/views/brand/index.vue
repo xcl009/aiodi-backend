@@ -278,7 +278,7 @@
             <el-input v-model="dform.appId"></el-input>
             <div class="generatebox generate" @click="generateChange()">没有APPID请点击生成</div>
           </el-form-item>
-          <el-form-item label="code">
+          <el-form-item :label="`code${dform.id ? '（'+ dform.id +'）' : ''}`">
             <el-input v-model="dform.channelCode" disabled></el-input>
           </el-form-item>
           <el-form-item :label="$t('public.content')">
