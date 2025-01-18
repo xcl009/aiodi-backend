@@ -1352,6 +1352,7 @@ export default {
     payCreatePage1: '默认',
     payCreatePage2: '计费详情页',
     payCreatePage3: '计费详情页(直接调起支付)',
+    submittext:'提现申请'
   },
   user: {
     message: '请填写旧密码',

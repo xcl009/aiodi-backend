@@ -1317,6 +1317,7 @@ export default {
     payCreatePage1: 'デフォルト',
     payCreatePage2: '課金詳細ページ',
     payCreatePage3: '課金詳細ページ（直接支払調整）',
+    submittext:'現金引き出し申請'
   },
   user: {
     message: '古いパスワードを入力してください',
