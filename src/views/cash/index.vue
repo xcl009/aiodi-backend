@@ -117,7 +117,9 @@
           </template>
         </el-table-column>
         <el-table-column :label="$t('moeny.toAccount')" width="220">
-          <template slot-scope="scope">
+          <template slot-scope="scope" >
+            
+           <div v-if="agentInfo.brandId != '1273675260975865857'">
             <div v-if="scope.row.withdrawType == 5">
               <div>{{ scope.row.cardName }}</div>
               <div>{{ scope.row.bankName }}<span class="ml-10">{{ scope.row.branchName }}</span></div>
@@ -139,6 +141,36 @@
               <el-avatar size="small" :src="scope.row.wechatHeadUrl || scope.row.userAvatar"></el-avatar>
               <div class="pl-10">{{ scope.row.wechatNickname || scope.row.userNickName }}</div>
             </div>
+           </div>
+           <div v-else>
+            <div v-if="scope.row.withdrawType == 5">
+              <div>{{$t('echarge.text')}}:{{ scope.row.bankName || '' }}</div>
+              <div>{{$t('echarge.text1')}}:{{ scope.row.accountType || '' }}</div>
+              <div>{{$t('echarge.text2')}}:{{ scope.row.branchName || '' }}</div>
+              <div>{{$t('echarge.text3')}}:{{ scope.row.cardNo || '' }}</div>
+              <div>{{$t('echarge.text4')}}:{{ scope.row.cardName || '' }}</div>
+              <div>{{$t('echarge.text5')}}:{{ scope.row.accountName || '' }}</div>
+              <!-- <div>{{ scope.row.cardName }}</div>
+              <div>{{ scope.row.bankName }}<span class="ml-10">{{ scope.row.branchName }}</span></div>
+              <div>{{ scope.row.cardNo }}</div> -->
+            </div>
+            <div class="flex align-center" v-else-if="scope.row.withdrawType == 2 || scope.row.withdrawType == 4">
+              <div class="mr-10">
+                <div>{{ scope.row.userName }}</div>
+                <div class="fs-s2">{{ $t('public.qrcode') }}</div>
+              </div>
+              <el-image class="pay-code" :src="scope.row.qrcode" fit="scale-down" :preview-src-list="[scope.row.qrcode]">
+              </el-image>
+            </div>
+            <div class="flex align-center" v-else-if="scope.row.withdrawType == 3">
+              <el-avatar size="small" :src="scope.row.aliHeadUrl || scope.row.userAvatar"></el-avatar>
+              <div class="pl-10">{{ scope.row.aliNickname || scope.row.userNickName }}</div>
+            </div>
+            <div class="flex align-center" v-else>
+              <el-avatar size="small" :src="scope.row.wechatHeadUrl || scope.row.userAvatar"></el-avatar>
+              <div class="pl-10">{{ scope.row.wechatNickname || scope.row.userNickName }}</div>
+            </div>
+           </div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.name')" width="120">
@@ -268,6 +300,7 @@ export default {
       return this.$store.getters.siteInfo
     },
     agentInfo() {
+      console.log(this.$store.getters.agentInfo,'this.$store.getters.agentInfo')
       return this.$store.getters.agentInfo
     },
     device() {

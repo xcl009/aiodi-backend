@@ -2055,5 +2055,17 @@ export default {
     pointsUse4: '购买商品',
     pointsUseRule: '[0]规则',
     pointsUseRule1: '设置[0]赠送、使用规则',
+  },
+  echarge:{
+    text:'银行名',
+    text1:'账号种类',
+    text2:'支行号',
+    text3:'账号',
+    text4:'账户名（姓）',
+    text5:'账户名（名）',
+    text6:'（例）123数字３位',
+    text7:'账号不满7位数时在前面加0',
+    text8:'（例）山田',
+    text9:'（例）阿雅'
   }
 }

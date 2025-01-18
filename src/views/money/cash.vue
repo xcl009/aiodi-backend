@@ -54,7 +54,7 @@
             </div>
             <div class="flex align-center" v-else>{{ $t('moeny.nowx') }}</div>
           </el-form-item>
-          <div v-show="form.withdrawType == 5">
+          <div v-show="form.withdrawType == 5 && agentInfo.brandId != '1273675260975865857'">
             <el-form-item :label="$t('public.fullName')">
               <el-input v-model="bindCardInfo.cardName" :placeholder="$t('moeny.youName')" />
             </el-form-item>
@@ -67,6 +67,42 @@
             <el-form-item :label="$t('public.branchName')">
               <el-input v-model="bindCardInfo.branchName" :placeholder="$t('public.branchName')" />
             </el-form-item>
+          </div>
+          <div v-show="form.withdrawType == 5 && agentInfo.brandId == '1273675260975865857'">
+            <el-form-item :label="$t('echarge.text')">
+              <el-input v-model="bindCardInfo.bankName"  />
+            </el-form-item>
+            <el-form-item :label="$t('echarge.text1')">
+              <el-input v-model="bindCardInfo.accountType"  />
+            </el-form-item>
+            <el-form-item :label="$t('echarge.text2')">
+              <el-input v-model="bindCardInfo.branchName" :placeholder="$t('echarge.text6')" />
+            </el-form-item>
+            <el-form-item :label="$t('echarge.text3')">
+              <el-input v-model="bindCardInfo.number"  />
+              <div style="margin-left:20px">
+                *{{ $t('echarge.text7') }}
+              </div>
+            </el-form-item>
+            <el-form-item :label="$t('echarge.text4')">
+              <el-input v-model="bindCardInfo.userName" :placeholder="$t('echarge.text8')" />
+            </el-form-item>
+            <el-form-item :label="$t('echarge.text5')">
+              <el-input v-model="bindCardInfo.accountName" :placeholder="$t('echarge.text9')" />
+            </el-form-item>
+
+            <!-- <el-form-item :label="$t('public.fullName')">
+              <el-input v-model="bindCardInfo.cardName" :placeholder="$t('moeny.youName')" />
+            </el-form-item>
+            <el-form-item :label="$t('public.cardNo')">
+              <el-input v-model="bindCardInfo.cardNo" :placeholder="$t('public.cardNo')" />
+            </el-form-item>
+            <el-form-item :label="$t('public.bankName')">
+              <el-input v-model="bindCardInfo.bankName" :placeholder="$t('public.bankName')" />
+            </el-form-item>
+            <el-form-item :label="$t('public.branchName')">
+              <el-input v-model="bindCardInfo.branchName" :placeholder="$t('public.branchName')" />
+            </el-form-item> -->
           </div>
           <div v-show="form.withdrawType == 2">
             <el-form-item :label="$t('public.fullName')">
