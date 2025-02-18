@@ -777,6 +777,10 @@ export default {
           title: this.$t('public.deviceSn'),
           type: 'input'
         },
+        positionQty: {
+          title: '槽口数',
+          type: 'input'
+        },
       }
     },
     dialogTitle() {
