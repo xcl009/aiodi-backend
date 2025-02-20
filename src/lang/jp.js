@@ -1317,6 +1317,7 @@ export default {
     payCreatePage1: 'デフォルト',
     payCreatePage2: '課金詳細ページ',
     payCreatePage3: '課金詳細ページ（直接支払調整）',
+    submittext:'現金引き出し申請'
   },
   user: {
     message: '古いパスワードを入力してください',
@@ -2001,5 +2002,17 @@ export default {
   	pointsUse4: '商品を買う',
   	pointsUseRule: '[0]規則',
   	pointsUseRule1: '[0]贈与・使用規則の設定',
+  },
+  echarge:{
+    text:'銀行',
+    text1:'口座種別',
+    text2:'支店コード',
+    text3:'口座番号',
+    text4:'口座名義（セイ）',
+    text5:'口座名義（メイ）',
+    text6:'（例）123数字３桁',
+    text7:'口座番号は7桁未満の場合は先頭に０をつけてください',
+    text8:'（例）ヤマダ',
+    text9:'（例）アヤ'
   }
 };
