@@ -521,7 +521,7 @@
               </el-form-item>
               <el-form-item :label="`${$t('public.refundAmount')}:`">
                 <el-input v-model="dform.amount"
-                  :placeholder="`${$t('public.max')}${dform.refundType != 3 ? curRow.amount || 0 : curRow.amountEnable || 0}`">
+                  :placeholder="`${$t('public.max')}${dform.refundType != 3 ? curRow.amount || 0 : curRow.amountEnable || 0}`" :disabled="checkRefundAmount()">
                   <span slot="append">{{ siteInfo.currencySymbol }}</span>
                 </el-input>
               </el-form-item>
@@ -1938,6 +1938,18 @@ export default {
           })
           break
       }
+    },
+
+    /**
+     * 检测校验退款金额是否可修改
+     */
+    checkRefundAmount(){
+      let val = false
+      if([612].indexOf(this.curRow.payType) > -1){
+        val = true
+        this.dform.amount = this.dform.refundType != 3 ? this.curRow.amount || 0 : this.curRow.amountEnable || 0
+      }
+      return val
     }
   }
 }

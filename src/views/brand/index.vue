@@ -362,17 +362,20 @@
       </template>
       <template v-if="dialogType == 14">
         <div class="pl-20 pr-20 channel-box" v-if="loginChannel.length > 0">
-          <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor"
-            :class="{ 'act': brandLoginChannels[item.loginCode] }" v-for="item in loginChannel"
-            @click="dialogConfirm(brandLoginChannels[item.loginCode] || item)">
-            <el-avatar class="block" :size="35" :src="item.loginLogo" :fit="cover" shape="square"></el-avatar>
-            <div class="pl-15 pr-15 flex-1">
-              <div :class="{ 'text-bold text-black': brandLoginChannels[item.loginCode] }">{{ item.loginName }} {{
-      item.loginExt || '' }}</div>
-              <div class="mt-5 fs-s2">{{ item.loginCode }}</div>
+          <el-radio-group v-model="dform.sourceType" @change="getBrandLoginCannel(curRow.id)">
+            <el-radio-button :label="key" v-for="(item, key) in Constant.SourceType">{{ item }}</el-radio-button>
+          </el-radio-group>
+
+          <template v-for="item in loginChannel">
+            <div class="flex align-center p-10 mt-15 channel-item radius-10 cursor" :class="{ 'act': brandLoginChannels[item.loginCode] && brandLoginChannels[item.loginCode].status == 1 }" @click="dialogConfirm(brandLoginChannels[item.loginCode] || item)">
+              <el-avatar class="block" :size="35" :src="item.loginLogo" fit="cover" shape="square"></el-avatar>
+              <div class="pl-15 pr-15 flex-1">
+                <div :class="{ 'text-bold text-black': brandLoginChannels[item.loginCode] }">{{ item.loginName }} {{ item.loginExt || '' }}</div>
+                <div class="mt-5 fs-s2">{{ item.loginCode }}</div>
+              </div>
+              <div class="text-primary">{{ $t('brand.loginConfig') }}</div>
             </div>
-            <div class="text-primary">{{ $t('brand.loginConfig') }}</div>
-          </div>
+          </template>
         </div>
       </template>
       <template v-if="dialogType == 15">
@@ -381,7 +384,7 @@
             <i class="text-primary el-icon-arrow-left cursor fs-a1" @click="dialogType = 14"></i>
           </el-form-item>
           <el-form-item :label="$t('brand.appType')">
-            <el-select v-model="dform.soureType" class="tfixed">
+            <el-select v-model="dform.soureType" class="tfixed" disabled>
               <el-option :label="item" :value="parseInt(key)" v-for="(item, key) in Constant.SourceType" />
             </el-select>
           </el-form-item>
@@ -391,19 +394,11 @@
               <el-option :label="$t('brand.invalid')" :value="2" />
             </el-select>
           </el-form-item>
-          <template v-if="dform.loginCode == 'WECHAT'">
-            <el-form-item label="APPID">
-              <el-input v-model="dform.content.appId"></el-input>
-            </el-form-item>
-            <el-form-item :label="$t('miniProgram.xcxAPPSECRET')">
-              <el-input v-model="dform.content.appSecret"></el-input>
-            </el-form-item>
-          </template>
-          <template v-if="dform.loginCode == 'GOOGLE'">
-            <el-form-item label="clientId">
-              <el-input v-model="dform.content.clientId"></el-input>
-            </el-form-item>
-          </template>
+          <el-form-item :label="$t('public.content')">
+            <el-input type="textarea" :autosize="{ minRows: 14, maxRows: 16 }" :placeholder="$t('public.content')"
+              v-model="dform.content">
+            </el-input>
+          </el-form-item>
         </el-form>
       </template>
       <template v-if="dialogType == 16">
@@ -865,7 +860,7 @@ export default {
               sourceType: row.sourceType || 4,
               channelCode: row.code,
               appId: row.appId || '',
-              content: row.content
+              content: row.content || {}
             }
           } else if (dialogType == 14) {
             this.dform = {
@@ -1156,18 +1151,18 @@ export default {
           this.dform = {
             id: row.brandId ? row.id : '',
             brandId: row.brandId || '',
-            soureType: row.soureType ? parseInt(row.soureType) : this.dform.sourceType,
-            sourceType: this.dform.sourceType,
+            soureType: row.soureType ? parseInt(row.soureType) : parseInt(this.dform.sourceType),
+            sourceType: parseInt(this.dform.sourceType),
             status: row.status ? parseInt(row.status) : 1,
             loginCode: row.loginCode,
             loginChannelId: row.loginChannelId || row.id,
-            content: row.content ? JSON.parse(row.content) : {}
+            content: row.content || '{}'
           }
+          console.log(this.dform)
           this.dialogType = 15
           this.clickSubmit = false
           break
         case 15:
-          params.content = JSON.stringify(params.content)
           let url15 = 'iot-saas-user/admin/updateLoginChannelByBrands'
           if (!params.brandId) {
             params.brandId = this.curRow.id
@@ -1238,7 +1233,7 @@ export default {
         status: row.brandId && row.status ? parseInt(row.status) : 0,
         loginCode: row.loginCode,
         loginChannelId: row.loginChannelId || row.id,
-        content: row.content ? JSON.stringify(row.content) : JSON.stringify({})
+        content: row.content
       }
       if(type == 1){
         params.status = params.status == 1 ? 2 : 1
