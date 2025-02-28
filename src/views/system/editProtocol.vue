@@ -28,6 +28,9 @@
 
 <script>
   import Tinymce from '@/components/Tinymce'
+  import {
+  currentTime
+} from '@/utils/index'
   export default {
     components: {
       Tinymce
@@ -87,6 +90,14 @@
         }).catch(err => {
           this.clickSubmit = false
         })
+        if(this.form.value == 'companyNotice' || this.form.value == 'marketActivities'  || this.form.value == 'notice'){
+          this.$post('iot-saas-basic/admin/settings/save', {
+          code: 'notice',
+          setting:  JSON.stringify(this.currentTime())
+        }).then(res => {
+        }).catch(err => {
+        })
+        }
       }
     }
   }
