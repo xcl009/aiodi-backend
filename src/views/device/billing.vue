@@ -62,7 +62,7 @@
                     </el-input>
                   </div>
                   <div class="pl-10 flex1 flex">
-                    <el-select v-model="billing[`${xcx}PayMode`].payModeDetails.startingTime.toString()" class="flex1">
+                    <el-select v-model="billing[`${xcx}PayMode`].payModeDetails.startingTime" class="flex1">
                       <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList" :key="index"></el-option>
                     </el-select>
                   </div>

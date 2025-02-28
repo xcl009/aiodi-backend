@@ -31,6 +31,7 @@
             <el-radio-group v-model="form.expandMode">
               <el-radio-button :label="1">{{ $t('advert.extendedLongGraph') }}</el-radio-button>
               <el-radio-button :label="2">{{ $t('advert.jumpAdvertisement') }}</el-radio-button>
+              <el-radio-button :label="3" v-if="checkAbility(['INVESTMENT'], 3) || isSaas()">招商加盟</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item :label="$t('advert.extendedLongGraph')" class="up-img" v-if="form.expandMode == 1">
