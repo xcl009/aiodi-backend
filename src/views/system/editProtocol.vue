@@ -39,7 +39,8 @@
       return {
         clickSubmit: false,
         form: {},
-        code: 'privacy'
+        code: 'privacy',
+        updateTime:{}
       }
     },
     computed: {
@@ -69,6 +70,16 @@
             this.$refs.tinymce.setContent('')
           }
         })
+        if(this.code == 'companyNotice' || this.code == 'marketActivities'  || this.code == 'notice'){
+           this.$get('iot-saas-basic/admin/settings/find', {
+          code: 'updateTime'
+        }).then(res => {
+          if(res && res.code){
+            console.log(res,'ressss')
+              this.updateTime =  JSON.parse(res.setting)|| {}
+          }
+        })
+        }
       },
 
       /**
@@ -90,10 +101,20 @@
         }).catch(err => {
           this.clickSubmit = false
         })
-        if(this.form.value == 'companyNotice' || this.form.value == 'marketActivities'  || this.form.value == 'notice'){
+        if(this.code == 'companyNotice' || this.code == 'marketActivities'  || this.code == 'notice'){
+          if(this.code == 'companyNotice'){
+            this.updateTime['companyNoticeTime'] = this.currentTime();
+          }
+          if(this.code == 'marketActivities'){
+            this.updateTime['marketActivitiesTime'] = this.currentTime();
+          }
+          if(this.code == 'notice'){
+            this.updateTime['noticeTime'] = this.currentTime();
+          }
+          console.log(this.updateTime,'this.updateTime')
           this.$post('iot-saas-basic/admin/settings/save', {
-          code: 'notice',
-          setting:  JSON.stringify(this.currentTime())
+          code: 'updateTime',
+          setting:  JSON.stringify(this.updateTime)
         }).then(res => {
         }).catch(err => {
         })
