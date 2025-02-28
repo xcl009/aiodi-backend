@@ -8,6 +8,9 @@
           <el-tab-pane label="售后退款协议" name="salesRefund" />
           <el-tab-pane label="租借协议" name="leaseAgreement" />
           <el-tab-pane label="会员权益规则" name="memberCardAgreement" />
+          <el-tab-pane label="公司通知" name="companyNotice" />
+          <el-tab-pane label="市场活动" name="marketActivities" />
+          <el-tab-pane label="公告" name="notice" />
         </el-tabs>
 
         <el-form ref="form" :model="form">
@@ -25,6 +28,9 @@
 
 <script>
   import Tinymce from '@/components/Tinymce'
+  import {
+  currentTime
+} from '@/utils/index'
   export default {
     components: {
       Tinymce
@@ -33,7 +39,8 @@
       return {
         clickSubmit: false,
         form: {},
-        code: 'privacy'
+        code: 'privacy',
+        updateTime:{}
       }
     },
     computed: {
@@ -63,6 +70,16 @@
             this.$refs.tinymce.setContent('')
           }
         })
+        if(this.code == 'companyNotice' || this.code == 'marketActivities'  || this.code == 'notice'){
+           this.$get('iot-saas-basic/admin/settings/find', {
+          code: 'updateTime'
+        }).then(res => {
+          if(res && res.code){
+            console.log(res,'ressss')
+              this.updateTime =  JSON.parse(res.setting)|| {}
+          }
+        })
+        }
       },
 
       /**
@@ -84,6 +101,24 @@
         }).catch(err => {
           this.clickSubmit = false
         })
+        if(this.code == 'companyNotice' || this.code == 'marketActivities'  || this.code == 'notice'){
+          if(this.code == 'companyNotice'){
+            this.updateTime['companyNoticeTime'] = this.currentTime();
+          }
+          if(this.code == 'marketActivities'){
+            this.updateTime['marketActivitiesTime'] = this.currentTime();
+          }
+          if(this.code == 'notice'){
+            this.updateTime['noticeTime'] = this.currentTime();
+          }
+          console.log(this.updateTime,'this.updateTime')
+          this.$post('iot-saas-basic/admin/settings/save', {
+          code: 'updateTime',
+          setting:  JSON.stringify(this.updateTime)
+        }).then(res => {
+        }).catch(err => {
+        })
+        }
       }
     }
   }
