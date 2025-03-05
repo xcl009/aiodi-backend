@@ -136,6 +136,13 @@
         identity: []
       }
     },
+    watch: {
+      drawerStatus(newValue, oldValue) {
+        if(!newValue){
+          this.$refs.tinymce.setContent('')
+        }
+    }
+  },
     computed: {
       device() {
         return this.$store.state.app.device
@@ -279,7 +286,7 @@
             this.drawerStatus = true
             this.dform = {
               status: 1,
-              targetTypes: [],
+              targetTypes: ["user"],
               typeCode: 'MSG_NOTICE'
             }
             break
@@ -317,6 +324,7 @@
           this.getList();
           this.drawerStatus = false
           this.clickSubmit = false
+          
         }).catch(err => {
           this.clickSubmit = false
         })

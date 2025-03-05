@@ -8,9 +8,9 @@
           <el-tab-pane label="售后退款协议" name="salesRefund" />
           <el-tab-pane label="租借协议" name="leaseAgreement" />
           <el-tab-pane label="会员权益规则" name="memberCardAgreement" />
-          <el-tab-pane label="公司通知" name="companyNotice" />
+          <!-- <el-tab-pane label="公司通知" name="companyNotice" />
           <el-tab-pane label="市场活动" name="marketActivities" />
-          <el-tab-pane label="公告" name="notice" />
+          <el-tab-pane label="公告" name="notice" /> -->
         </el-tabs>
 
         <el-form ref="form" :model="form">
