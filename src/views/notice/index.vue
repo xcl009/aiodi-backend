@@ -68,8 +68,10 @@
             <el-input v-model="dform.title" :placeholder="$t('notice.noticeContentText')" />
           </el-form-item>
           <el-form-item :label="$t('notice.noticeContent')">
-            <el-input v-model="dform.recodeContent" :placeholder="$t('notice.noticeContentText')" type="textarea"
-              :rows="4" />
+            <!-- <el-input v-model="dform.recodeContent" :placeholder="$t('notice.noticeContentText')" type="textarea"
+              :rows="4" /> -->
+
+              <tinymce ref="tinymce" v-model="dform.recodeContent" :height="600" />
           </el-form-item>
         </el-form>
       </template>
@@ -91,6 +93,7 @@
   import selectSearch from '@/components/condition/selectSearch'
   import Pagination from '@/components/Pagination'
   import upload from '@/components/upload'
+  import Tinymce from '@/components/Tinymce'
   import {
     parseTime,
   } from '@/utils/index'
@@ -100,7 +103,8 @@
       condition,
       selectSearch,
       Pagination,
-      upload
+      upload,
+      Tinymce
     },
     data() {
       return {
