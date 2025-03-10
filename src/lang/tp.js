@@ -2001,5 +2001,29 @@ export default {
   	pointsUse4: 'Bili ng mga produkto',
   	pointsUseRule: '[0] Rule',
   	pointsUseRule1: 'Ilagay ang mga patakaran ng regalo at paggamit',
-  }
+  },
+  echarge: {
+    "text": "Nome do banco",
+    "text1": "Tipo de conta",
+    "text2": "Código da agência",
+    "text3": "Número da conta",
+    "text4": "Nome do titular da conta (sobrenome)",
+    "text5": "Nome do titular da conta (nome)",
+    "text6": "(Exemplo) 123 dígitos, 3 casas",
+    "text7": "Se o número da conta tiver menos de 7 dígitos, adicione 0 no início",
+    "text8": "(Exemplo) Yamada",
+    "text9": "(Exemplo) Aya",
+    "text10": "Nome da empresa/Nome pessoal",
+    "text11": "CEP",
+    "text12": "Endereço",
+    "text13": "Nome do responsável",
+    "text14": "Gênero",
+    "text15": "Masculino",
+    "text16": "Feminino",
+    "text17": "Idade",
+    "text18": "Número de telefone",
+    "text19": "Área de representação",
+    "text20": "Requisitos",
+    "text21": "Nome da loja"
+}
 };
