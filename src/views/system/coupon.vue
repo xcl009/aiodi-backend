@@ -2,13 +2,13 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-form-item :label="'券名称'">
+        <el-form-item :label="$t('coupon.coupon')">
           <el-input v-model="form.couponName" />
         </el-form-item>
       </template>
       <template v-slot:endButton>
-        <el-button type="primary" size="small" @click="setRows(3, {}, 1)"><i class="el-icon-plus el-icon--left" />{{ '添加优惠券' }}</el-button>
-        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/system/couponUser`})">{{ '领取记录' }}</el-button>
+        <el-button type="primary" size="small" @click="setRows(3, {}, 1)"><i class="el-icon-plus el-icon--left" />{{ $t('coupon.couponAdd') }}</el-button>
+        <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/system/couponUser`})">{{ $t('coupon.couponGrantRecord') }}</el-button>
       </template>
     </condition>
 
@@ -46,16 +46,16 @@
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || ''" v-else></el-table-column>
         </template>
-        <el-table-column :label="$t('public.operate')" width="160">
+        <el-table-column :label="$t('public.operate')" width="200">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <!-- <el-button type="text" @click="setRows(3, scope.row, 2, scope.$index)">{{ $t('public.edit') }}</el-button> -->
-              <el-button type="text" @click="$router.push({path: `/userManage?couponId=${scope.row.id}`})">赠送</el-button>
-              <el-button type="text" @click="$router.push({path: `/system/couponUser?couponId=${scope.row.id}`})">领取记录</el-button>
-              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-                :title="'确定禁用该优惠券吗？'" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
-                <el-button type="text" class="text-danger" slot="reference">禁用</el-button>
-              </el-popconfirm>
+              <el-button type="text" @click="$router.push({path: `/userManage?couponId=${scope.row.id}`})">{{ $t('coupon.couponGrant') }}</el-button>
+              <el-button type="text" @click="$router.push({path: `/system/couponUser?couponId=${scope.row.id}`})">{{ $t('coupon.couponGrantRecord') }}</el-button>
+              <!-- <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+                :title="$t('coupon.couponDisableText')" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
+                <el-button type="text" class="text-danger" slot="reference">{{ $t('coupon.couponDisable') }}</el-button>
+              </el-popconfirm> -->
             </div>
           </template>
         </el-table-column>
@@ -69,20 +69,25 @@
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
       <template v-if="dialogType == 1 || dialogType == 2">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()" label-position="left" label-width="100px" style="width: 500px;">
-          <el-form-item :label="'优惠方式'">
+          <el-form-item :label="$t('coupon.couponWay')">
             <el-select v-model="dform.couponDiscountType">
               <el-option :label="item.distLable" :value="parseInt(item.distValue)" :key="index" v-for="(item, index) in couponDists" />
             </el-select>
           </el-form-item>
           <template v-if="dform.couponDiscountType == 1">
-            <el-form-item :label="'优惠时长'">
-              <el-input v-model="dform.couponDiscountDetail.timeDedution" :placeholder="$t('public.enter')">
+            <el-form-item :label="$t('coupon.couponTime')">
+              <el-input v-model="dform.couponDiscountDetail.timeDiscount" :placeholder="$t('public.enter')">
                 <template slot="append">{{ $t('public.minute') }}</template>
               </el-input>
             </el-form-item>
           </template>
           <template v-if="dform.couponDiscountType == 2">
-            <el-form-item :label="'满'">
+            <el-form-item :label="$t('coupon.couponMoney')">
+              <el-input v-model="dform.couponDiscountDetail.priceDiscount" :placeholder="$t('public.enter')">
+                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+              </el-input>
+            </el-form-item>
+            <!-- <el-form-item :label="'满'">
               <div class="flex">
                 <el-input v-model="dform.couponDiscountDetail.maxMoney" :placeholder="$t('public.enter')">
                   <template slot="append">元减</template>
@@ -91,7 +96,7 @@
                   <template slot="append">元</template>
                 </el-input>
               </div>
-            </el-form-item>
+            </el-form-item> -->
           </template>
           <template v-if="dform.couponDiscountType == 3">
             <el-form-item :label="'优惠'">
@@ -100,29 +105,29 @@
               </el-input>
             </el-form-item>
           </template>
-          <el-form-item :label="'可用设备'">
+          <el-form-item :label="$t('coupon.couponDevice')">
             <el-select v-model="dform.couponDeviceType">
               <el-option :label="item" :value="idx" :key="idx" v-for="(item, idx) in myDeviceId" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="'名称'">
+          <el-form-item :label="$t('public.name')">
             <el-input v-model="dform.couponName" :placeholder="$t('public.enter')"></el-input>
           </el-form-item>
-          <el-form-item :label="'描述'">
+          <el-form-item :label="$t('shopping.description')">
             <el-input v-model="dform.couponDescription" :placeholder="$t('public.enter')"></el-input>
           </el-form-item>
-          <el-form-item :label="'总份数'">
+          <el-form-item :label="$t('coupon.couponTotal')">
             <el-input v-model="dform.couponMaxCount" :placeholder="$t('public.enter')"></el-input>
           </el-form-item>
-          <el-form-item :label="'领取开始时间'">
+          <el-form-item :label="$t('coupon.couponGrantTime')">
             <el-date-picker v-model="dform.couponReceiveStartTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="`${$t('public.pleaseTime')}`" :picker-options="pickerOptionsStart" >
             </el-date-picker>
           </el-form-item>
-          <el-form-item :label="'使用开始时间'">
+          <el-form-item :label="$t('coupon.couponUseStart')">
             <el-date-picker v-model="dform.couponStartTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="`${$t('public.pleaseTime')}`" :picker-options="pickerOptionsStart">
             </el-date-picker>
           </el-form-item>
-          <el-form-item :label="'使用结束时间'">
+          <el-form-item :label="$t('coupon.couponUseEnd')">
             <el-date-picker v-model="dform.conponEndTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="`${$t('public.pleaseTime')}`" :picker-options="pickerOptionsStart">
             </el-date-picker>
           </el-form-item>
@@ -191,8 +196,8 @@ export default {
       dialogStatus: false,
       drawerStatus: false,
       dialogTitle: {
-        1: '添加优惠券',
-        2: '编辑优惠券'
+        1: this.$t('coupon.couponAdd'),
+        2: this.$t('coupon.couponAdd')
       },
       curRow: {},
       curIdx: 0,
@@ -219,6 +224,9 @@ export default {
     }
   },
   computed: {
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
     device() {
       return this.$store.state.app.device
     },
@@ -233,54 +241,54 @@ export default {
         {
           key: 'couponName',
           val: true,
-          name: '名称'
+          name: this.$t('public.name')
         },
         {
           key: 'couponDeviceType',
           val: true,
-          name: '可使用设备'
+          name: this.$t('coupon.couponDevice')
         },
         {
           key: 'couponDiscountType',
           val: true,
-          name: '优惠方式'
+          name: this.$t('coupon.couponWay')
         },
-        {
-          key: 'couponDiscountDetail',
-          val: true,
-          name: '优惠详情'
-        },
+        // {
+        //   key: 'couponDiscountDetail',
+        //   val: true,
+        //   name: this.$t('public.particulars')
+        // },
         {
           key: 'couponDescription',
           val: true,
-          name: '描述'
+          name: this.$t('shopping.description')
         },
         {
           key: 'couponMaxCount',
           val: true,
-          name: '总份数'
+          name: this.$t('coupon.couponTotal')
         },
         {
           key: 'couponCount',
           val: true,
-          name: '剩余份数'
+          name: this.$t('coupon.couponSurplus')
         },
         {
           key: 'couponReceiveStartTime',
           val: true,
-          name: '开始领取时间',
+          name: this.$t('coupon.couponGrantTime'),
           width: 200
         },
         {
           key: 'couponStartTime',
           val: true,
-          name: '使用时间',
+          name: this.$t('public.usageTime'),
           width: 200
         },
         {
           key: 'createTime',
           val: true,
-          name: '操作时间',
+          name: this.$t('role.operateTime'),
           width: 200
         },
         {
@@ -370,7 +378,7 @@ export default {
 
           break
         case 2:
-          this.$post('iot-saas-basic/admin/couponManage/stop', {
+          this.$get('iot-saas-basic/admin/couponManage/stop', {
             id: row.id
           }).then(res => {
             row.status = 2

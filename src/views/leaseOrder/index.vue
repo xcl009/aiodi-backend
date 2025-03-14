@@ -414,6 +414,9 @@ export default {
     device() {
       return this.$store.state.app.device
     },
+    siteInfo() {
+      return this.$store.getters.siteInfo
+    },
     queryObj() {
       return {
         orderNo: {
