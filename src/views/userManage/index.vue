@@ -93,8 +93,8 @@
       <div class="rel flex justify-center">
         <div class="abs flex pagination-left" v-if="query.couponId">
           <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-            :title="'确定赠送优惠券给选中用户吗？赠送后不可撤销'" @onConfirm="sendCoupon()">
-            <el-button type="primary" size="mini" :disabled="selUserIds.length == 0" slot="reference">赠送优惠券</el-button>
+            :title="$t('coupon.couponGrantText')" @onConfirm="sendCoupon()">
+            <el-button type="primary" size="mini" :disabled="selUserIds.length == 0" slot="reference">{{ $t('coupon.couponGrant') }}</el-button>
           </el-popconfirm>
         </div>
         <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)" @pagination="getList" />

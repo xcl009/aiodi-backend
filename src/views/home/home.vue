@@ -16,7 +16,7 @@
             <div class="flex align-center fs-b5 baby-blue"><count-to :start-val="0"
                 :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" />{{ siteInfo.currencySymbol }}</div>
             <div class="mt-5 fs-c1 text-white">{{ $t('home.transactionAmount') }}</div>
-            <el-image class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')"></el-image>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')" alt="" />
           </div>
         </div>
         <div class="dodge-icon b"></div>
@@ -27,7 +27,7 @@
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
                 :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">{{ $t('home.allOrderNum') }}</div>
-            <el-image class="mt-10 type-icon" :src="require('@/assets/home/order.svg')"></el-image>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/order.svg')" alt="" />
           </div>
         </div>
         <div class="dodge-icon y"></div>
@@ -38,7 +38,7 @@
             <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
                 :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">{{ $t('home.allDevicesNum') }}</div>
-            <el-image class="mt-10 type-icon" :src="require('@/assets/home/device.svg')"></el-image>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/device.svg')" alt="" />
           </div>
         </div>
         <div class="dodge-icon b"></div>
@@ -49,7 +49,7 @@
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)"
                 :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">{{ $t('home.allAgentNum') }}</div>
-            <el-image class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')"></el-image>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')" alt="" />
           </div>
         </div>
         <div class="dodge-icon y"></div>
@@ -60,7 +60,7 @@
             <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)"
                 :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">{{ $t('home.allStoreNum') }}</div>
-            <el-image class="mt-10 type-icon" :src="require('@/assets/home/store.svg')"></el-image>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/store.svg')" alt="" />
           </div>
         </div>
         <div class="dodge-icon b"></div>

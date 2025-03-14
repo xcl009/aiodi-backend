@@ -400,12 +400,12 @@
                 <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">优惠券</div>
-                <div class="mt-5 fs-s3 text-gray">管理优惠券</div>
+                <div class="fs-b1">{{ $t('coupon.coupon') }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('coupon.coupon') }}</div>
               </div>
             </div>
             <div class="text-right">
-              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/system/coupon` })">添加优惠券</el-button>
+              <el-button plain class="bg-body text-primary" @click="$router.push({ path: `/system/coupon` })">{{ $t('coupon.couponAdd') }}</el-button>
             </div>
           </div>
         </el-col>

@@ -2,7 +2,7 @@
   <div>
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
       <template v-slot:defult>
-        <el-form-item :label="'券名称'">
+        <el-form-item :label="$t('coupon.coupon')">
           <el-input v-model="form.couponName" />
         </el-form-item>
       </template>
@@ -35,7 +35,7 @@
             <template slot-scope="scope">
               {{ couponDists[scope.row.couponDiscountType] ? couponDists[scope.row.couponDiscountType].distLable : '' }}
             </template>
-          </el-table-column>          
+          </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'couponStartTime'">
             <template slot-scope="scope">
               <div>{{ scope.row.couponStartTime }}</div>
@@ -48,15 +48,20 @@
               <div class="text-danger">{{ scope.row.updateTime }}</div>
             </template>
           </el-table-column>
+          <el-table-column :label="item.name" v-else-if="item.key == 'couponState'">
+            <template slot-scope="scope">
+              {{ couponState[scope.row.couponState] }}
+            </template>
+          </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || ''" v-else></el-table-column>
         </template>
-        <el-table-column :label="$t('public.operate')" width="110">
+        <!-- <el-table-column :label="$t('public.operate')" width="110">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
 
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <div class="flex justify-center">
         <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
@@ -137,8 +142,13 @@ export default {
       dform: {},
       langForm: {},
       obtainType: {
-        1: '赠送',
-        2: '领取'
+        1: this.$t('coupon.grantType1'),
+        2: this.$t('coupon.grantType2')
+      },
+      couponState: {
+        1: this.$t('coupon.couponState1'),
+        2: this.$t('coupon.couponState2'),
+        3: this.$t('coupon.couponState3')
       },
 
 
@@ -188,37 +198,37 @@ export default {
         {
           key: 'couponName',
           val: true,
-          name: '用户'
+          name: this.$t('public.user')
         },
         {
           key: 'obtainType',
           val: true,
-          name: '获得方式'
+          name: this.$t('coupon.grantTypeName')
         },
         {
-          key: 'couponId',
+          key: 'couponName',
           val: true,
-          name: '券名称'
+          name: this.$t('coupon.coupon')
         },
         {
           key: 'couponReceiveTime',
           val: true,
-          name: '领取时间'
+          name: this.$t('role.operateTime')
         },
         {
           key: 'couponUseTime',
           val: true,
-          name: '使用时间'
+          name: this.$t('public.usageTime')
         },
         {
           key: 'couponUseOrderNo',
           val: true,
-          name: '订单号'
+          name: this.$t('public.orderNo')
         },
         {
           key: 'couponState',
           val: true,
-          name: '状态'
+          name: this.$t('public.status')
         },
         {
           key: 'remark',

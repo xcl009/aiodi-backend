@@ -239,7 +239,13 @@ export default {
         }, */
         {
           type: '5',
-          name: this.$t('payType.card')
+          name: this.$t('payType.card'),
+          userType: 'agent'
+        },
+        {
+          type: '5',
+          name: this.$t('payType.card'),
+          userType: 'store'
         },
         {
           type: '6',
@@ -353,7 +359,9 @@ export default {
             })
           }
         } else {
-          this.sellType = ['5']
+          let sType = '5'
+          if(this.userType == 'user') sType = '6'
+          this.sellType = [sType]
           this.form = {
             enable: 2,
             timeLimit: {
@@ -368,7 +376,7 @@ export default {
               weeks: [{val: 1}]
             },
             supportType: [
-              this.getSupportDefault('5')
+              this.getSupportDefault(sType)
             ],
             days: [{ val: 1 }],
             weeks: [{ val: 1 }]

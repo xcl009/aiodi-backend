@@ -261,6 +261,10 @@
                       }}</span>
                   </el-link>
                   <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
+                  <template v-if="orderCoupon[scope.row.orderNo]">
+                    <span class="text-danger" v-if="orderCoupon[scope.row.orderNo].couponDiscountType == 1">{{ $t('coupon.coupon') }}({{ orderCoupon[scope.row.orderNo].couponDiscountDetail.timeDiscount }}{{ $t('public.minute') }})</span>
+                    <span class="text-danger" v-if="orderCoupon[scope.row.orderNo].couponDiscountType == 2">{{ $t('coupon.coupon') }}({{ formatCurrency(orderCoupon[scope.row.orderNo].couponDiscountDetail.priceDiscount) }})</span>
+                  </template>
                 </div>
               </template>
             </el-table-column>
@@ -774,7 +778,8 @@ import {
   unixTime,
   accAdd,
   accSub,
-  formatSeconds
+  formatSeconds,
+  arrayToObj
 } from '@/utils/index'
 
 export default {
@@ -1156,6 +1161,7 @@ export default {
       form: {},
       order: {},
       selID: [],
+      orderCoupon: {},
 
       // 弹出相关
       dialogType: 1,
@@ -1249,19 +1255,18 @@ export default {
   },
   methods: {
     padZero(m) {
-				return m < 10 ? '0' + m : m
-			},
+			return m < 10 ? '0' + m : m
+		},
     format(timestamp) {
-				var	date = new Date(timestamp);
-				var year = date.getFullYear();
-				var month = date.getMonth() + 1; // 月份是从0开始的，所以需要+1
-				var day = date.getDate();
-				var hours = date.getHours();
-				var minutes = date.getMinutes();
-				var seconds = date.getSeconds();
-					return year + '-' + this.padZero(month) + '-' + this.padZero(day)+' ' + this.padZero(hours) + ':' + this.padZero(minutes) + ':' + this.padZero(seconds)
-
-			},
+      var	date = new Date(timestamp);
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1; // 月份是从0开始的，所以需要+1
+      var day = date.getDate();
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var seconds = date.getSeconds();
+        return year + '-' + this.padZero(month) + '-' + this.padZero(day)+' ' + this.padZero(hours) + ':' + this.padZero(minutes) + ':' + this.padZero(seconds)
+		},
     getSystemTimeInChina(dates) {
       // const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       // const date = new Date();
@@ -1424,6 +1429,9 @@ export default {
           })
         } else {
           this.list = res ? res.rows : []
+          if(this.list.length > 0 && this.checkAbility(['COUPON'], 3)){
+            this.getOrderUseCoupon(this.arrayKeys(res.rows, 'orderNo'))
+          }
           this.listLoading = false
           this.clickSubmit = false
           if (params.page == 0) {
@@ -1434,6 +1442,20 @@ export default {
       }).catch(() => {
         this.listLoading = false
         this.clickSubmit = false
+      })
+    },
+
+    /**
+     * 获取优惠券使用
+     */
+    getOrderUseCoupon(orderNo) {
+      this.$post('iot-saas-basic/admin/couponManage/findList', {
+        orderNo: orderNo.join(',')
+      }).then(res => {
+        res.map(item => {
+          return item.couponDiscountDetail = JSON.parse(item.couponDiscountDetail)
+        })
+        this.orderCoupon = arrayToObj(res, 'couponUseOrderNo')
       })
     },
 
