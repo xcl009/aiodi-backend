@@ -2067,7 +2067,19 @@ export default {
     text6:'（例）123数字３位',
     text7:'账号不满7位数时在前面加0',
     text8:'（例）山田',
-    text9:'（例）阿雅'
+    text9:'（例）阿雅',
+    text10:'公司名/个人名',
+    text11:'邮政编码',
+    text12:'地址',
+    text13:'负责人姓名',
+    text14:'性别',
+    text15:'男',
+    text16:'女',
+    text17:'年龄',
+    text18:'电话号码',
+    text19:'代理区域',
+    text20:'要求',
+    text21:'店名',
   },
   coupon: {
     coupon: '优惠券',
@@ -2091,6 +2103,6 @@ export default {
     grantTypeName: '获得方式',
     couponState1: '待使用',
     couponState2: '已使用',
-    couponState3: '已过期',
+    couponState3: '已过期'
   }
 }

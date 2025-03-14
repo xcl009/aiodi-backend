@@ -2071,6 +2071,18 @@ export default {
     text7: 'Kapag ang account ay mas mababa sa 7 na numero, idagdag ang 0 sa harap nito',
     text8: '(Halimbawa) Yamada',
     text9: '(Halimbawa) Aya',
+    text10: "Nome da empresa/Nome pessoal",
+    text11: "CEP",
+    text12: "Endereço",
+    text13: "Nome do responsável",
+    text14: "Gênero",
+    text15: "Masculino",
+    text16: "Feminino",
+    text17: "Idade",
+    text18: "Número de telefone",
+    text19: "Área de representação",
+    text20: "Requisitos",
+    text21: "Nome da loja"
   },
   coupon: {
     coupon: 'kupon',

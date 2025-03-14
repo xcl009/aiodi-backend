@@ -12,7 +12,7 @@
         </template>
       </condition>
   
-      <div class="pl-15 pr-15 pb-5 bg-white">
+      <div class="pl-15 pr-15 pb-5 bg-white" v-if="agentInfo.brandId != '1273675260975865857'">
         <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
           element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
           <el-table-column :label="$t('public.chenghu')" width="150">
@@ -28,6 +28,80 @@
           <el-table-column :label="$t('public.address')" min-width="250">
             <template slot-scope="scope">
               {{ scope.row.quotationContent }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('public.submitTime')" width="170">
+            <template slot-scope="scope">
+              {{ scope.row.createTime }}
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="flex justify-center">
+          <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
+            @pagination="getList" />
+        </div>
+      </div>
+      <div class="pl-15 pr-15 pb-5 bg-white" v-else>
+        <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
+          element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
+          <el-table-column :label="$t('echarge.text10')" width="150">
+            <template slot-scope="scope">
+              {{ scope.row.corporateName }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text11')" width="150">
+            <template slot-scope="scope">
+              {{ scope.row.postalCode }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text12')" min-width="250">
+            <template slot-scope="scope">
+              {{ scope.row.address }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text13')" min-width="150">
+            <template slot-scope="scope">
+              {{ scope.row.name }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text14')" min-width="50">
+            <template slot-scope="scope">
+              <div v-if="scope.row.gender == 1">
+                {{$t('echarge.text15')}}
+            </div>
+            <div v-if="scope.row.gender == 2">
+                {{$t('echarge.text16')}}
+            </div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text17')" min-width="50">
+            <template slot-scope="scope">
+              {{ scope.row.age }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text18')" min-width="150">
+            <template slot-scope="scope">
+              {{ scope.row.telephone }}
+            </template>
+          </el-table-column>
+          <el-table-column label="E-Mail" min-width="250">
+            <template slot-scope="scope">
+              {{ scope.row.mail }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text19')" min-width="250">
+            <template slot-scope="scope">
+              {{ scope.row.proxyAddress }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text21')" min-width="250">
+            <template slot-scope="scope">
+              {{ scope.row.industry }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('echarge.text20')" min-width="250">
+            <template slot-scope="scope">
+              {{ scope.row.description }}
             </template>
           </el-table-column>
           <el-table-column :label="$t('public.submitTime')" width="170">

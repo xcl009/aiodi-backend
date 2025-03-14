@@ -2071,6 +2071,18 @@ export default {
     text7: '계좌번호 7자리 미만이면 앞에 0 추가.',
     text8: '(예)야마다',
     text9: '(예) 아야',
+    text10: "회사명/개인명",
+    text11: "우편번호",
+    text12: "주소",
+    text13: "담당자 이름",
+    text14: "성별",
+    text15: "남성",
+    text16: "여성",
+    text17: "나이",
+    text18: "전화번호",
+    text19: "대리 지역",
+    text20: "요구사항",
+    text21: "상호명"
   },
   coupon: {
     coupon: '쿠폰',
