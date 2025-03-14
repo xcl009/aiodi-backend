@@ -428,7 +428,10 @@ export default {
     zsuserinfo:'招商客户信息',
     stepList: '分段明细',
     stepList1: '[0]分钟最高[1]，',
-    stepList2: '[0]分钟以上[1]'
+    stepList2: '[0]分钟以上[1]',
+    segmentationtext: '小时不到',
+		segmentationtext1: '之后的24小时',
+		segmentationtext2: '移动电池丢失或损坏时，将产生赔偿金',
   },
   // 分账关系
   reType: {

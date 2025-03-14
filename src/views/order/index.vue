@@ -224,8 +224,11 @@
             </el-table-column> -->
             <el-table-column :label="item.name" width="250" v-else-if="item.val && item.key == 'feeMode'">
               <template slot-scope="scope">
-                <div>{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode)
+                <div v-if="scope.row.modeType != 'STEPBILLING'">{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode)
                   }}</div>
+                <div v-else>
+                   {{segmentationInfoChange(scope.row.weixinPayMode.payModeDetail)}}
+                </div>
               </template>
             </el-table-column>
             <el-table-column :label="item.name" width="85" v-else-if="item.val && item.key == 'amount'">
@@ -1254,6 +1257,45 @@ export default {
     localStorage.setItem('formKey_order', JSON.stringify(this.formKey))
   },
   methods: {
+    segmentationInfoChange(e) {
+				e = JSON.parse(e);
+				let currencyCoin = this.siteInfo.currencySymbol;
+				let arr = [];
+				console.log(e,'eee')
+				if(e.length <= 0) return
+				e.stepList.forEach((res, index) => {
+					let obj = {
+						maxAmountText: '',
+						text: '',
+					}
+					let text = '';
+					if (index == 0) {
+						text = `${res.endTime / 60}${this.$t('public.segmentationtext')}`
+					} else if (index == e.stepList.length - 1) {
+						text = this.$t('public.segmentationtext1')
+					} else {
+						text =
+							`${res.startingTime / 60}${this.$t('public.hour')}-${res.endTime / 60}${this.$t('public.segmentationtext')}`
+			
+					}
+					if (index == e.stepList.length - 1) {
+						obj.maxAmountText = `${res.maxAmount}${currencyCoin}`
+					} else {
+						obj.maxAmountText = `${res.maxAmount}${currencyCoin}`
+					}
+					obj.text = text;
+					let nums = res.startingTime / 60
+					if (nums < 24 || (index == e.stepList.length - 1)) {
+						arr.push(obj);
+					}
+			
+				})
+				let text = '';
+				arr.forEach((res,index)=>{
+					text += `${res.text}:${res.maxAmountText},`
+				})
+				return text;
+			},
     padZero(m) {
 			return m < 10 ? '0' + m : m
 		},
