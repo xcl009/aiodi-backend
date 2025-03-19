@@ -132,8 +132,9 @@
             <el-input v-model="dform.guideTitle" :placeholder="$t('system.guideTitle')" style="width: 600px;"></el-input>
           </el-form-item>
           <el-form-item :label="$t('system.guideContent')">
-            <el-input v-model="dform.guideContent" :placeholder="$t('system.guideContentText')" type="textarea"
-              :rows="4" />
+            <!-- <el-input v-model="dform.guideContent" :placeholder="$t('system.guideContentText')" type="textarea"
+              :rows="4" /> -->
+              <tinymce ref="tinymce" v-model="dform.guideContent" :height="600" />
           </el-form-item>
           <el-form-item :label="$t('system.guideDesc')">
             <el-input v-model="dform.guideDesc" type="textarea" :rows="4" />
@@ -157,13 +158,15 @@ import condition from '@/components/condition/'
 import selectSearch from '@/components/condition/selectSearch'
 import Pagination from '@/components/Pagination'
 import upload from '@/components/upload'
+import Tinymce from '@/components/Tinymce'
 export default {
   name: 'useGuide',
   components: {
     condition,
     selectSearch,
     Pagination,
-    upload
+    upload,
+    Tinymce
   },
   data() {
     return {
@@ -251,6 +254,13 @@ export default {
     this.getList();
     this.init();
   },
+  watch: {
+      drawerStatus(newValue, oldValue) {
+        if(!newValue){
+          // this.$refs.tinymce.setContent('')
+        }
+    }
+  },
   methods: {
     /**
     * 获取指南对象数据
@@ -273,6 +283,9 @@ export default {
     showDialog(row) {
       this.drawerStatus = true
       this.dform = Object.assign({}, row)
+      setTimeout(()=>{
+        this.$refs.tinymce.setContent(row.guideContent);
+      },1000)
     },
 
     /**
@@ -365,10 +378,12 @@ export default {
 
           break
         case 3:
+       
           this.dialogType = dialogType
           this.curRow = row
           this.curIdx = idx
           this.drawerStatus = true
+          this.$refs.tinymce.setContent('');
           this.dform = {}
           break
       }
