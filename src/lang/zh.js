@@ -2083,6 +2083,10 @@ export default {
     text19:'代理区域',
     text20:'要求',
     text21:'店名',
+    text22:'使用方法',
+    text23:'租借时的麻烦',
+    text24:'付款',
+    text25:'移动电池的规格'
   },
   coupon: {
     coupon: '优惠券',

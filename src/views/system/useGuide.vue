@@ -215,19 +215,19 @@ export default {
       return [
         {
           value: '1',
-          title: this.$t('public.use')
+          title: agentInfo.brandId == '1273675260975865857' ? this.$t('echarge.text22') : this.$t('public.use')
         },
         {
           value: '2',
-          title: this.$t('public.payment')
+          title:agentInfo.brandId == '1273675260975865857' ? this.$t('echarge.text23') : this.$t('public.payment')
         },
         {
           value: '3',
-          title: this.$t('public.return')
+          title: agentInfo.brandId == '1273675260975865857' ? this.$t('echarge.text24') : this.$t('public.return')
         },
         {
           value: '4',
-          title: this.$t('public.refund')
+          title: agentInfo.brandId == '1273675260975865857' ? this.$t('echarge.text25') : this.$t('public.refund')
         }
       ]
     },

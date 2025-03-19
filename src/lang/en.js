@@ -429,6 +429,9 @@ export default {
     stepList: 'Segmented Details',
     stepList1: '[0] minutes highest [1],',
     stepList2: '[0] minutes or more [1]',
+    segmentationtext: 'Less than an hour',
+		segmentationtext1: 'Next 24 hours',
+		segmentationtext2: 'Compensation will be incurred when the mobile battery is lost or damaged',
   },
   // 分账关系
   reType: {
@@ -2082,6 +2085,10 @@ export default {
     text19: "Agency Area",
     text20: "Requirements",
     text21: "Store Name",
+    text22:'Usage',
+    text23:'Troubles during rental',
+    text24:'payment',
+    text25:'Specification of Mobile Battery'
   },
   coupon: {
     coupon: 'coupon',

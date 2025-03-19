@@ -414,7 +414,10 @@ export default {
     zsuserinfo: "企業誘致リスト",
     stepList: "分段明細",
     stepList1: "[0]分最大[1]",
-    stepList2: "[0]分以上[1]"
+    stepList2: "[0]分以上[1]",
+    segmentationtext: '時間未満',
+		segmentationtext1: 'その後24時間につき',
+		segmentationtext2: 'モバイルバッテリ-を紛失したり破損したりした場合,補償金',
   },
   reType: {
     STORE: "店長",
@@ -2051,6 +2054,10 @@ export default {
     text19:'代理する地域',
     text20:'その他、ご要望',
     text21:'導入する店名',
+    text22:'使い方',
+    text23:'レンタル時のトラブル',
+    text24:'お支払い',
+    text25:'モバイルバッテリーのスペック'
   },
   coupon: {
     coupon: 'クーポン券',

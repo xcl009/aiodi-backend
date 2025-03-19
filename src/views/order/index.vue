@@ -224,10 +224,10 @@
             </el-table-column> -->
             <el-table-column :label="item.name" width="250" v-else-if="item.val && item.key == 'feeMode'">
               <template slot-scope="scope">
-                <div v-if="scope.row.modeType != 'STEPBILLING'">{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode)
+                <div v-if="scope.row.feeType != 5">{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode)
                   }}</div>
                 <div v-else>
-                   {{segmentationInfoChange(scope.row.weixinPayMode.payModeDetail)}}
+                   {{segmentationInfoChange(scope.row.feeMode)}}
                 </div>
               </template>
             </el-table-column>
@@ -1275,7 +1275,7 @@ export default {
 						text = this.$t('public.segmentationtext1')
 					} else {
 						text =
-							`${res.startingTime / 60}${this.$t('public.hour')}-${res.endTime / 60}${this.$t('public.segmentationtext')}`
+							`${res.startingTime / 60}${this.$t('public.huor')}-${res.endTime / 60}${this.$t('public.segmentationtext')}`
 			
 					}
 					if (index == e.stepList.length - 1) {
