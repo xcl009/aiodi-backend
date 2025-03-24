@@ -36,7 +36,7 @@
         </el-table-column>
         <el-table-column :label="$t('public.operate')" v-if="checkAbility(['eject'], 3)">
           <template slot-scope="scope">
-            <div class="flex flex-wrap operate">
+            <div class="flex flex-wrap operate" v-if="!allEjectStatus">
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('device.popUpThisMouth')" @onConfirm="singleEject(scope.row)">
                 <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? $t('public.popUp') :
@@ -102,6 +102,7 @@ export default {
           return
         }
         this.factoryCode = res.factoryCode
+        this.positionQty = res.positionQty
         this.getBattery()
       }).catch(err => {
         setTimeout(() => {
@@ -158,7 +159,7 @@ export default {
      * 单弹
      */
     singleEject(row, type = 1) {
-      let that = this;
+      let that = this
       if (this.clickSubmit) return
       this.clickSubmit = true
       row.onlineStatus = 2
@@ -207,6 +208,7 @@ export default {
             resolve()
           }
         }).catch(err => {
+          this.clickSubmit = false
           reject()
         })
       })
@@ -221,7 +223,7 @@ export default {
       this.clickSubmit = true
       this.allEjectStatus = true
       switch (this.factoryCode) {
-        case 'WS': case 'TP': case 'ZD':
+        case 'WS': case 'TP': case 'ZD': case 'PS':
           this.$get('iot-saas-device/admin/device/batchPopup', {
             deviceSn: this.deviceSn
           }).then((res = {}) => {
@@ -229,15 +231,17 @@ export default {
               message: that.$t('public.commandSent'),
               type: 'success'
             })
+            let time = this.positionQty ? this.positionQty * 2000 : 10000
             setTimeout(() => {
               this.getBattery()
               this.allEjectStatus = false
-            }, 10000)
+            }, time)
           }).catch(err => {
             this.clickSubmit = false
+            this.allEjectStatus = false
           })
           break
-        case 'HY': case 'XC': case 'DD': case 'OT':
+        default:
           this.$message({
             message: that.$t('public.commandSent'),
             type: 'success'

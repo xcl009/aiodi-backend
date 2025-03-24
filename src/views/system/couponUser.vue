@@ -26,6 +26,12 @@
               {{ myDeviceId[scope.row.couponDeviceType] || '' }}
             </template>
           </el-table-column>
+          <el-table-column :label="item.name" v-else-if="item.key == 'userName'">
+            <template slot-scope="scope">
+              {{ scope.row.user.nickname }}
+              <div>{{ dealPhone(scope.row.user.mobile) }}</div>
+            </template>
+          </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'obtainType'">
             <template slot-scope="scope">
               {{ obtainType[scope.row.obtainType] }}
@@ -196,7 +202,7 @@ export default {
     defaultColumn() {
       return [
         {
-          key: 'couponName',
+          key: 'userName',
           val: true,
           name: this.$t('public.user')
         },
@@ -305,11 +311,12 @@ export default {
         let list = res.rows || []
         if(list.length > 0){
           let uList = this.arrayKeys(list, 'userId')
-          await this.getOtherData('iot-saas-user/admin/user/findByIds', {
+          await this.getOtherData('iot-saas-user/admin/user/findByUserIds', {
             userIds: uList.join(',')
           }).then(ares => {
             list.map(item => {
-
+              item.user = ares[item.userId]
+              return item
             })
           })
         }
