@@ -49,7 +49,7 @@
               <div v-if="unixTime(scope.row.couponEndTime) <= currentTime()">已过期</div>
               <div v-else-if="scope.row.couponCount <= 0">已领完</div>
             </template>
-          </el-table-column>          
+          </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || ''" v-else></el-table-column>
         </template>
         <el-table-column :label="$t('public.operate')" width="200">
@@ -74,21 +74,21 @@
 
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :wrapperClosable="false">
       <template v-if="dialogType == 1 || dialogType == 2">
-        <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()" label-position="left" label-width="100px" style="width: 500px;">
-          <el-form-item :label="$t('coupon.couponWay')">
+        <el-form class="custom-form pl-20 pr-20" ref="couponForm" :model="dform" :rules="couponRules" @submit.native.prevent="dialogConfirm()" label-position="left" label-width="100px" style="width: 500px;">
+          <el-form-item :label="$t('coupon.couponWay')" prop="couponDiscountType">
             <el-select v-model="dform.couponDiscountType">
               <el-option :label="item.distLable" :value="parseInt(item.distValue)" :key="index" v-for="(item, index) in couponDists" />
             </el-select>
           </el-form-item>
           <template v-if="dform.couponDiscountType == 1">
-            <el-form-item :label="$t('coupon.couponTime')">
+            <el-form-item :label="$t('coupon.couponTime')" prop="couponDiscountDetail.timeDiscount">
               <el-input v-model="dform.couponDiscountDetail.timeDiscount" :placeholder="$t('public.enter')">
                 <template slot="append">{{ $t('public.minute') }}</template>
               </el-input>
             </el-form-item>
           </template>
           <template v-if="dform.couponDiscountType == 2">
-            <el-form-item :label="$t('coupon.couponMoney')">
+            <el-form-item :label="$t('coupon.couponMoney')" prop="couponDiscountDetail.priceDiscount">
               <el-input v-model="dform.couponDiscountDetail.priceDiscount" :placeholder="$t('public.enter')">
                 <template slot="append">{{ siteInfo.currencySymbol }}</template>
               </el-input>
@@ -105,36 +105,36 @@
             </el-form-item> -->
           </template>
           <template v-if="dform.couponDiscountType == 3">
-            <el-form-item :label="'优惠'">
+            <el-form-item :label="'优惠'" prop="couponDiscountDetail.priceDiscount">
               <el-input v-model="dform.couponDiscountDetail.discount" :placeholder="$t('public.enter')">
                 <template slot="append">% off</template>
               </el-input>
             </el-form-item>
           </template>
-          <el-form-item :label="$t('coupon.couponDevice')">
+          <el-form-item :label="$t('coupon.couponDevice')" prop="couponDeviceType">
             <el-select v-model="dform.couponDeviceType">
               <el-option :label="item" :value="idx" :key="idx" v-for="(item, idx) in myDeviceId" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('public.name')">
+          <el-form-item :label="$t('public.name')" prop="couponName">
             <el-input v-model="dform.couponName" :placeholder="$t('public.enter')"></el-input>
           </el-form-item>
-          <el-form-item :label="$t('shopping.description')">
+          <el-form-item :label="$t('shopping.description')" prop="couponDescription">
             <el-input v-model="dform.couponDescription" :placeholder="$t('public.enter')"></el-input>
           </el-form-item>
-          <el-form-item :label="$t('coupon.couponTotal')">
+          <el-form-item :label="$t('coupon.couponTotal')" prop="couponMaxCount">
             <el-input v-model="dform.couponMaxCount" :placeholder="$t('public.enter')"></el-input>
           </el-form-item>
-          <el-form-item :label="$t('coupon.couponGrantTime')">
+          <el-form-item :label="$t('coupon.couponGrantTime')" prop="couponReceiveStartTime">
             <el-date-picker v-model="dform.couponReceiveStartTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="`${$t('public.pleaseTime')}`" :picker-options="pickerOptionsStart" >
             </el-date-picker>
           </el-form-item>
-          <el-form-item :label="$t('coupon.couponUseStart')">
+          <el-form-item :label="$t('coupon.couponUseStart')" prop="couponStartTime">
             <el-date-picker v-model="dform.couponStartTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="`${$t('public.pleaseTime')}`" :picker-options="pickerOptionsStart">
             </el-date-picker>
           </el-form-item>
-          <el-form-item :label="$t('coupon.couponUseEnd')">
-            <el-date-picker v-model="dform.conponEndTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="`${$t('public.pleaseTime')}`" :picker-options="pickerOptionsStart">
+          <el-form-item :label="$t('coupon.couponUseEnd')" prop="couponEndTime">
+            <el-date-picker v-model="dform.couponEndTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="`${$t('public.pleaseTime')}`" :picker-options="pickerOptionsStart">
             </el-date-picker>
           </el-form-item>
         </el-form>
@@ -210,7 +210,41 @@ export default {
       curIdx: 0,
       dform: {},
       langForm: {},
-
+      couponRules: {
+        couponDiscountType: [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'change' }
+        ],
+        couponDeviceType: [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'change' }
+        ],
+        couponName: [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'blur' }
+        ],
+        couponDescription: [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'blur' }
+        ],
+        couponMaxCount: [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'blur' }
+        ],
+        couponReceiveStartTime: [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'change' }
+        ],
+        couponStartTime: [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'change' }
+        ],
+        couponEndTime: [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'change' }
+        ],
+        'couponDiscountDetail.timeDiscount': [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'change' }
+        ],
+        'couponDiscountDetail.discount': [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'change' }
+        ],
+        'couponDiscountDetail.priceDiscount': [
+          { required: true, message: this.$t('public.required', '此项必填'), trigger: 'change' }
+        ]
+      },
 
       /**
        * 列的配置化对象，存储配置信息
@@ -399,6 +433,7 @@ export default {
           this.dform = {}
           if (dialogType == 1) {
             this.dform = {
+              couponDiscountType: 1,
               couponDiscountDetail: {}
             }
           }else if (dialogType == 2) {
@@ -424,16 +459,22 @@ export default {
         params = JSON.parse(JSON.stringify(this.dform))
       switch (this.dialogType) {
         case 1:
-          this.$post('iot-saas-basic/admin/couponManage/save', params).then(res => {
-            this.$message({
-              message: this.$t('public.operationSuccessful'),
-              type: 'success'
-            })
-            this.getList()
-            this.drawerStatus = false
-            this.clickSubmit = false
-          }).catch(err => {
-            this.clickSubmit = false
+          this.$refs['couponForm'].validate((valid) => {
+            if (valid) {
+              this.$post('iot-saas-basic/admin/couponManage/save', params).then(res => {
+                this.$message({
+                  message: this.$t('public.operationSuccessful'),
+                  type: 'success'
+                })
+                this.getList()
+                this.drawerStatus = false
+                this.clickSubmit = false
+              }).catch(err => {
+                this.clickSubmit = false
+              })
+            } else {
+              this.clickSubmit = false
+            }
           })
           break
         case 2:
