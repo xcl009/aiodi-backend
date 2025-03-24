@@ -266,7 +266,7 @@
                   <el-link type="danger" v-if="scope.row.remark">{{ scope.row.remark }}</el-link>
                   <template v-if="orderCoupon[scope.row.orderNo]">
                     <span class="text-danger" v-if="orderCoupon[scope.row.orderNo].couponDiscountType == 1">{{ $t('coupon.coupon') }}({{ orderCoupon[scope.row.orderNo].couponDiscountDetail.timeDiscount }}{{ $t('public.minute') }})</span>
-                    <span class="text-danger" v-if="orderCoupon[scope.row.orderNo].couponDiscountType == 2">{{ $t('coupon.coupon') }}({{ formatCurrency(orderCoupon[scope.row.orderNo].couponDiscountDetail.priceDiscount) }})</span>
+                    <span class="text-danger" v-if="orderCoupon[scope.row.orderNo].couponDiscountType == 2">{{ $t('coupon.coupon') }}({{ formatCurrency(orderCoupon[scope.row.orderNo].couponDiscountDetail.priceDiscount, 2) }})</span>
                   </template>
                 </div>
               </template>
@@ -1275,8 +1275,7 @@ export default {
 						text = this.$t('public.segmentationtext1')
 					} else {
 						text =
-							`${res.startingTime / 60}${this.$t('public.huor')}-${res.endTime / 60}${this.$t('public.segmentationtext')}`
-			
+							`${res.startingTime / 60}${this.$t('public.hour')}-${res.endTime / 60}${this.$t('public.segmentationtext')}`
 					}
 					if (index == e.stepList.length - 1) {
 						obj.maxAmountText = `${res.maxAmount}${currencyCoin}`
@@ -1288,7 +1287,7 @@ export default {
 					if (nums < 24 || (index == e.stepList.length - 1)) {
 						arr.push(obj);
 					}
-			
+
 				})
 				let text = '';
 				arr.forEach((res,index)=>{
@@ -1471,7 +1470,7 @@ export default {
           })
         } else {
           this.list = res ? res.rows : []
-          if(this.list.length > 0 && this.checkAbility(['COUPON'], 3)){
+          if(this.list.length > 0 && (this.checkAbility(['COUPON'], 3) || this.isSaas())){
             this.getOrderUseCoupon(this.arrayKeys(res.rows, 'orderNo'))
           }
           this.listLoading = false

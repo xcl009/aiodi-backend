@@ -35,7 +35,7 @@
           <el-table-column :label="item.name" v-else-if="item.key == 'couponStartTime'">
             <template slot-scope="scope">
               <div>{{ scope.row.couponStartTime }}</div>
-              <div class="text-danger">{{ scope.row.conponEndTime }}</div>
+              <div class="text-danger">{{ scope.row.couponEndTime }}</div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'createTime'">
@@ -44,13 +44,19 @@
               <div class="text-danger">{{ scope.row.updateTime }}</div>
             </template>
           </el-table-column>
+          <el-table-column :label="item.name" v-else-if="item.key == 'status'">
+            <template slot-scope="scope">
+              <div v-if="unixTime(scope.row.couponEndTime) <= currentTime()">已过期</div>
+              <div v-else-if="scope.row.couponCount <= 0">已领完</div>
+            </template>
+          </el-table-column>          
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || ''" v-else></el-table-column>
         </template>
         <el-table-column :label="$t('public.operate')" width="200">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <!-- <el-button type="text" @click="setRows(3, scope.row, 2, scope.$index)">{{ $t('public.edit') }}</el-button> -->
-              <el-button type="text" @click="$router.push({path: `/userManage?couponId=${scope.row.id}`})">{{ $t('coupon.couponGrant') }}</el-button>
+              <el-button type="text" @click="$router.push({path: `/userManage?couponId=${scope.row.id}`})" v-if="unixTime(scope.row.couponEndTime) > currentTime()">{{ $t('coupon.couponGrant') }}</el-button>
               <el-button type="text" @click="$router.push({path: `/system/couponUser?couponId=${scope.row.id}`})">{{ $t('coupon.couponGrantRecord') }}</el-button>
               <!-- <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('coupon.couponDisableText')" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
@@ -151,7 +157,7 @@ import selectSearch from '@/components/condition/selectSearch'
 import Pagination from '@/components/Pagination'
 import upload from '@/components/upload'
 import TableColumnSet from '@/components/TableColumnSet/index'
-import { arrayToObj } from '@/utils/index'
+import { arrayToObj, unixTime } from '@/utils/index'
 export default {
   name: 'coupon',
   components: {
@@ -177,6 +183,7 @@ export default {
           }
         }
       },
+      unixTime: unixTime,
 
       clickSubmit: false,
       form: {},
@@ -285,16 +292,16 @@ export default {
           name: this.$t('public.usageTime'),
           width: 200
         },
+        // {
+        //   key: 'createTime',
+        //   val: true,
+        //   name: this.$t('role.operateTime'),
+        //   width: 200
+        // },
         {
-          key: 'createTime',
+          key: 'status',
           val: true,
-          name: this.$t('role.operateTime'),
-          width: 200
-        },
-        {
-          key: 'remark',
-          val: true,
-          name: this.$t('public.remark')
+          name: this.$t('public.status')
         }
       ]
     }

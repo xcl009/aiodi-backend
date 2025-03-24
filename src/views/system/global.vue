@@ -25,6 +25,10 @@
         <el-form-item :label="$t('system.languageEncoding')">
           <el-input v-model="form.lanLable" />
         </el-form-item>
+        <el-form-item :label="$t('system.contextCode')">
+          <el-input v-model="form.contextCode" />
+        </el-form-item>
+
       </template>
       <template v-slot:endButton>
         <el-button type="primary" size="small" class="mr-10" @click="setRows(3, {}, 1)"><i
