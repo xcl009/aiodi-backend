@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
-      <el-col :xs="24" :sm="18" :md="16" :lg="14" :xl="12">
+      <el-col :xs="24" :sm="24" :md="18" :lg="16" :xl="14">
         <el-tabs class="mb-15 bg-white" :value="key" @tab-click="getInfo">
           <el-tab-pane :label="$t('system.miniProgramConfiguration')" name="systemConfig" />
           <el-tab-pane :label="$t('system.shootingConfiguration')" name="freeVideoConfig" />
@@ -11,7 +11,7 @@
           <el-tab-pane label="品牌商相关配置" name="brandDomainConfig" />
         </el-tabs>
 
-        <el-form ref="form" :model="form" label-width="130px" label-position="left">
+        <el-form ref="form" :model="form" label-width="150px" label-position="left">
           <template v-if="key == 'systemConfig'">
             <h4>{{ $t('system.miniProgramConfiguration') }}</h4>
             <el-form-item :label="$t('system.wxId')">
@@ -49,6 +49,9 @@
             <h4>{{ $t('system.xcxMoneyConfig') }}</h4>
             <el-form-item :label="$t('system.appid')">
               <el-input v-model="form.appid" :placeholder="$t('system.appidText')" />
+            </el-form-item>
+            <el-form-item label="管理员登录入口隐藏">
+              <el-input v-model="form.brandId" placeholder="请填写品牌ID" />
             </el-form-item>
           </template>
           <template v-if="key == 'systemUpdateDetails'">
@@ -147,6 +150,9 @@
                 message: that.$t('public.operationSuccessful'),
                 type: 'success'
               })
+              setTimeout(() => {
+                this.clickSubmit = false
+              }, 1000)
             }).catch( err => {
               setTimeout(() => {
                 this.clickSubmit = false
