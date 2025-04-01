@@ -461,6 +461,7 @@ export default {
         case 1:
           this.$refs['couponForm'].validate((valid) => {
             if (valid) {
+              params.couponDiscountDetail = JSON.stringify(params.couponDiscountDetail)
               this.$post('iot-saas-basic/admin/couponManage/save', params).then(res => {
                 this.$message({
                   message: this.$t('public.operationSuccessful'),
