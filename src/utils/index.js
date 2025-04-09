@@ -3,6 +3,7 @@ import {
 } from 'element-ui'
 import { parse } from 'qs'
 import i18n from '../lang'
+
 const util = {
   /**
    * @param {string} url
@@ -30,6 +31,14 @@ const util = {
    */
   checkRoles: (roles = [], type = 1) => {
     return roles.indexOf(agentInfo.level_key) > -1;
+  },
+  currencySymbolposition:() => {
+    if(agentInfo.brandId.indexOf(['1185618533193441281']) == '-1'){
+      return false;
+    }else{
+      return true;
+    }
+    
   },
 
   /**
@@ -579,13 +588,15 @@ const util = {
     if (!mode) return ''
     type = type || 1
     mode = JSON.parse(mode)
+    const types = util.currencySymbolposition();
+
     if (type == 1) {
       if (deviceTypeCode && deviceTypeCode.indexOf('WM') > -1) {
-        return `${window.config.washing_package[mode.time].title}(${mode.money}${userType != 'admin' ? currencySymbol:''}`
+        return `${window.config.washing_package[mode.time].title}${types ? (userType != 'admin' ? currencySymbol:''):''}(${mode.money}${types ? '' :  (userType != 'admin' ? currencySymbol:'')}`
       }
-      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${mode.money}${ userType != 'admin' ? currencySymbol:''}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}` : `${mode.time}${i18n.t('public.minute')}${mode.money}${userType != 'admin' ? currencySymbol:''}`
+      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.money}${types ? '': (userType != 'admin' ? currencySymbol:'')}，${i18n.t('public.dailyCapping')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.maxBillingTimePrice || 19.9}${types ? '':(userType != 'admin' ? currencySymbol:'') }` : `${mode.time}${i18n.t('public.minute')}${types?(userType != 'admin' ? currencySymbol:''):''}${mode.money}${types ? '':(userType != 'admin' ? currencySymbol:'') }`
     } else if(type == 5){
-      let fee = `${mode.overBillingUnit}${i18n.t('public.minute')}${mode.unitPrice}${userType != 'admin' ? currencySymbol:''}`, stepStr = ''
+      let fee = `${mode.overBillingUnit}${i18n.t('public.minute')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.unitPrice}${types ? '':(userType != 'admin' ? currencySymbol:'') }`, stepStr = ''
       if (stype == 2) {
         stepStr += '，'
         mode.stepList.map(item => {
@@ -599,12 +610,12 @@ const util = {
       }
       return fee
     } else {
-      let fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${userType != 'admin' ? currencySymbol:''}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}`
+      let fee = `${mode.startingTime}${i18n.t('public.minute')}${types ? (userType != 'admin' ? currencySymbol:''):'' }${mode.startingAmount}${types ?'':(userType != 'admin' ? currencySymbol:'') }，${i18n.t('public.dailyCapping')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.maxBillingTimePrice || 19.9}${types ? '': (userType != 'admin' ? currencySymbol:'') }`
       if (mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice) {
-        fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${userType != 'admin' ? currencySymbol:''}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}`
+        fee = `${mode.startingTime}${i18n.t('public.minute')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.startingAmount}${types ? '':(userType != 'admin' ? currencySymbol:'') }，${i18n.t('public.dailyCapping')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.maxBillingTimePrice || 19.9}${types ? '':(userType != 'admin' ? currencySymbol:'') }`
       }
       if (stype == 2) {
-        fee = fee + `${mode.maxBillingTimeUnit == 1440 ? `，${i18n.t('public.dailyCap')}` + (mode.maxBillingTimePrice || 19.9) + (userType != 'admin' ? currencySymbol:'') : '，' + mode.maxBillingTimeUnit + `${i18n.t('public.minCap')}` + mode.maxBillingTimePrice + (userType != 'admin' ? currencySymbol:'')}，${i18n.t('public.totalCapping')}${mode.maxAmount}${userType != 'admin' ? currencySymbol:''}`
+        fee = fee + `${mode.maxBillingTimeUnit == 1440 ? `，${i18n.t('public.dailyCap')}` + (types ? (userType != 'admin' ? currencySymbol:'') :'') + (mode.maxBillingTimePrice || 19.9) + (types ? '': (userType != 'admin' ? currencySymbol:'')) : '，' + mode.maxBillingTimeUnit + `${i18n.t('public.minCap')}` + (types ? (userType != 'admin' ? currencySymbol:''):'') +mode.maxBillingTimePrice + (types ? '' :(userType != 'admin' ? currencySymbol:''))}，${i18n.t('public.totalCapping')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.maxAmount}${types ? '':(userType != 'admin' ? currencySymbol:'')}`
       }
       if(mode.feeTime > 0){
         fee = `${i18n.t('public.free')}${mode.feeTime}${i18n.t('public.minute')}${fee}`
@@ -887,13 +898,14 @@ const util = {
     if (number >= 1000) {
       number = parseFloat((number / 1000)) + 'K'
     }
+    const types = util.currencySymbolposition();
   	// 将数字转换为字符串
   	const numberStr = number.toString()
   	// 使用正则表达式去除末尾的 .00
   	const trimmedNumber = numberStr.replace(/\.00$/, '')
   	// 应用千位格式化
   	const formattedNumber = trimmedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    return `${formattedNumber}${type > 0 ? currencySymbol : ''}`
+    return `${types ? (type > 0 ? currencySymbol : ''):''}${formattedNumber}${types ? '':  (type > 0 ? currencySymbol : '') }`
   },
 }
 
@@ -938,3 +950,4 @@ export const checkDigit = util.checkDigit
 export const trim = util.trim
 export const ossThumbnail = util.ossThumbnail
 export const formatCurrency = util.formatCurrency
+export const currencySymbolposition = util.currencySymbolposition
