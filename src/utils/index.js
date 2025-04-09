@@ -33,7 +33,7 @@ const util = {
     return roles.indexOf(agentInfo.level_key) > -1;
   },
   currencySymbolposition:() => {
-    if(agentInfo.brandId.indexOf(['1185618533193441281']) == '-1'){
+    if(agentInfo.brandId.indexOf(['1320720054202933249']) == '-1'){
       return false;
     }else{
       return true;
