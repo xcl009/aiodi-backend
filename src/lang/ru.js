@@ -83,7 +83,7 @@ export default {
         orderList: 'Запись заказа',
         all: 'Все.',
         progress: 'В настоящее время',
-        today: 'Заказы сегодня',
+        todayOrder: 'Заказы сегодня',
         overtimeOrder: 'Сверхурочный заказ',
         leaseFailed: 'Аренда провалилась',
         deductionFailed: 'Неудачный вычет',

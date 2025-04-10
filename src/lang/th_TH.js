@@ -82,6 +82,7 @@ export default {
     orderList: "บันทึกการสั่งซื้อ",
     all: "ทั้งหมด",
     progress: "กำลังดำเนินการ",
+    todayOrder: 'สั่งซื้อวันน',
     overtimeOrder: "คำสั่งซื้อหมดเวลา",
     leaseFailed: "ความล้มเหลวในการให้ยืม",
     deductionFailed: "การหักเงินล้มเหลว",

@@ -83,7 +83,7 @@ export default {
     orderList: '订单记录',
     all: '全部',
     progress: '进行中',
-    today: '今日订单',
+    todayOrder: '今日订单',
     overtimeOrder: '超时订单',
     leaseFailed: '租借失败',
     deductionFailed: '扣款失败',

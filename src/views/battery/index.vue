@@ -101,6 +101,7 @@
       <div class="flex align-center pt-15 mb-15 l-t">
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 1)">{{ $t('public.createOrderText') }}</div>
+        <div v-show="false">{{ screenfull }}</div>
         <table-column-set storageKey="leaseOrderTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
       </div>
@@ -212,6 +213,12 @@ export default {
     },
     device() {
       return this.$store.state.app.device
+    },
+    screenfull() {
+      if(this.list.length > 0){
+        this.setTableMaxH()
+      }
+      return this.$store.state.app.screenfull
     },
     onlineStatus() {
       return [
@@ -599,13 +606,16 @@ export default {
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
           }
         }
       }).catch(() => {
         this.clickSubmit = false
         this.listLoading = false
       })
+    },
+    
+    setTableMaxH(){
+      this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
     },
 
     /**

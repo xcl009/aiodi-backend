@@ -363,14 +363,18 @@ const util = {
   /**
    ** 秒 转 天-时-分-秒
    **/
-  formatSeconds: (value, cFormat = 'd-h-m-s', type = 1) => {
+  formatSeconds: (value, cFormat = 'd-h-m-s', type = 1, strObj = {}) => {
     var theTime = parseInt(value),
       middle = 0,
       hour = 0,
       day = 0,
       result = ''
     if (theTime > 60) {
-      middle = parseInt(theTime / 60)
+      if(type == 3){
+        middle = Math.ceil(theTime / 60);
+      }else{
+        middle = parseInt(theTime / 60)
+      }
       theTime = parseInt(theTime % 60)
       if (middle > 60) {
         hour = parseInt(middle / 60)
@@ -380,18 +384,20 @@ const util = {
           hour = parseInt(hour / 24)
         }
       }
+    }else if(type == 3 && theTime > 0){
+      middle = 1
     }
     if (cFormat.indexOf('s') > -1 && (theTime > 0 || type == 2)) {
-      result = '' + parseInt(theTime) + i18n.t('public.second')
+      result = '' + parseInt(theTime) + (strObj.s || i18n.t('public.second'))
     }
     if (cFormat.indexOf('m') > -1 && (middle > 0 || type == 2)) {
-      result = '' + parseInt(middle) + i18n.t('public.branch') + result
+      result = '' + parseInt(middle) + (strObj.m || i18n.t('public.branch')) + result
     }
     if (cFormat.indexOf('h') > -1 && (hour > 0 || type == 2)) {
-      result = '' + parseInt(hour) + i18n.t('public.times') + result
+      result = '' + parseInt(hour) + (strObj.h || i18n.t('public.times')) + result
     }
     if (cFormat.indexOf('d') > -1 && (day > 0 || type == 2)) {
-      result = '' + parseInt(day) + i18n.t('public.day') + result
+      result = '' + parseInt(day) + (strObj.d || i18n.t('public.day')) + result
     }
     return result
   },
@@ -599,11 +605,12 @@ const util = {
       }
       return fee
     } else {
-      let fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${userType != 'admin' ? currencySymbol:''}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}`
-      if (mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice) {
-        fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${userType != 'admin' ? currencySymbol:''}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}`
-      }
+      let fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${userType != 'admin' ? currencySymbol:''}`
       if (stype == 2) {
+        fee = fee + `${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}`
+        if (mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice) {
+          fee = `${mode.startingTime}${i18n.t('public.minute')}${mode.startingAmount}${userType != 'admin' ? currencySymbol:''}，${i18n.t('public.dailyCapping')}${mode.maxBillingTimePrice || 19.9}${userType != 'admin' ? currencySymbol:''}`
+        }
         fee = fee + `${mode.maxBillingTimeUnit == 1440 ? `，${i18n.t('public.dailyCap')}` + (mode.maxBillingTimePrice || 19.9) + (userType != 'admin' ? currencySymbol:'') : '，' + mode.maxBillingTimeUnit + `${i18n.t('public.minCap')}` + mode.maxBillingTimePrice + (userType != 'admin' ? currencySymbol:'')}，${i18n.t('public.totalCapping')}${mode.maxAmount}${userType != 'admin' ? currencySymbol:''}`
       }
       if(mode.feeTime > 0){

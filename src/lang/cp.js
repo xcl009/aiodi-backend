@@ -83,7 +83,7 @@ export default {
     orderList: '訂單記錄',
     all: '全部',
     progress: '進行中',
-    today: '今日訂單',
+    todayOrder: '今日訂單',
     overtimeOrder: '超時訂單',
     leaseFailed: '租借失敗',
     deductionFailed: '扣款失敗',

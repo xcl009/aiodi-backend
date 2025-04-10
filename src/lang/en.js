@@ -83,7 +83,7 @@ export default {
     orderList: 'records',
     all: 'All',
     progress: 'In progress',
-    today: "Today's",
+    todayOrder: "Today's",
     overtimeOrder: 'Timed out',
     leaseFailed: 'Lease failed',
     deductionFailed: 'Deduction failed',
