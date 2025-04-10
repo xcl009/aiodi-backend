@@ -83,7 +83,7 @@ export default {
     orderList: '주문 기록',
     all: '모두',
     progress: '진행 중',
-    today: '오늘 주문',
+    todayOrder: '오늘 주문',
     overtimeOrder: '시간 초과 주문',
     leaseFailed: '대여 실패',
     deductionFailed: '공제 실패',

@@ -203,6 +203,10 @@ export default {
   mounted() {
     if (this.isBrand()) this.getConfigs()
     this.getLang()
+    this.screenFull()
+  },
+  beforeDestroy(){
+    window.removeEventListener('keydown', this.KeyDown)
   },
   methods: {
     /**
@@ -425,11 +429,26 @@ export default {
       })
     },
 
+    screenFull(){
+      window.addEventListener('keydown', this.KeyDown)
+    },
+
+    KeyDown(event){
+      if(event.key === 'F11' || event.keyCode === 122){
+        event.preventDefault();
+      }
+    },
+
     handleScreen() {
       if (!screenfull.isEnabled) {
         return false
       }
       screenfull.toggle()
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.$store.dispatch('app/toggleFull')
+        }, 1000)
+      })
     },
 
     waitOnLine(e) {

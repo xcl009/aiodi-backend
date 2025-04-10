@@ -54,6 +54,7 @@
         <div class="ml-20 text-primary cursor line-1" @click="setRows(4, {})" v-if="isSaas()">{{ $t('device.counting') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord')}}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas() || isBrand()">设备软件升级</div>
+        <div v-show="false">{{ screenfull }}</div>
         <table-column-set storageKey="deviceTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
       </div>
@@ -704,6 +705,12 @@ export default {
     Ability() {
       return this.$store.getters.Ability
     },
+    screenfull() {
+      if(this.list.length > 0){
+        this.setTableMaxH()
+      }
+      return this.$store.state.app.screenfull
+    },
     haveBind() {
       return [
         {
@@ -1119,7 +1126,6 @@ export default {
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
             this.deviceCount = res.ext || {}
           }
         }
@@ -1128,6 +1134,10 @@ export default {
         this.clickSubmit = false
         this.listLoading = false
       })
+    },
+
+    setTableMaxH(){
+      this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
     },
 
     /**

@@ -139,6 +139,7 @@
       $t('order.wxOrderRefundRetry') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 12)" v-if="isSaas()">{{
       $t('order.orderInquiry') }}</div>
+        <div v-show="false">{{ screenfull }}</div>
         <table-column-set storageKey="orderTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
       </div>
@@ -211,24 +212,32 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column :label="item.name" width="160" v-else-if="item.val && item.key == 'chargeStartTime'">
+            <el-table-column :label="item.name" :width="item.width" v-else-if="item.val && item.key == 'chargeStartTime'">
               <template slot-scope="scope">
                 <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
                 <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
               </template>
             </el-table-column>
+            <el-table-column :label="item.name" :width="item.width" v-else-if="item.val && item.key == 'useTime'">
+              <template slot-scope="scope">
+                <span v-if="scope.row.chargeEndTime">{{ formatSeconds(unixTime(scope.row.chargeEndTime) - unixTime(scope.row.chargeStartTime), 'h-m', 3, {h: 'h', m: 'm'}) }}</span>
+                <span v-else-if="scope.row.status == 'R'">{{ formatSeconds(currentTime() - unixTime(scope.row.chargeStartTime), 'h-m', 3, {h: 'h', m: 'm'}) }}</span>
+              </template>
+            </el-table-column>
+
             <!-- <el-table-column label="套餐类型" width="100" v-if="showColumn.feeType">
               <template slot-scope="scope">
                 {{ showFeeName(scope.row.feeType) }}<span v-if="scope.row.feeType == 3">({{ scope.row.amountPaid }}元)</span>
               </template>
             </el-table-column> -->
-            <el-table-column :label="item.name" width="250" v-else-if="item.val && item.key == 'feeMode'">
+            <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'feeMode'">
               <template slot-scope="scope">
-                <div v-if="scope.row.feeType != 5">{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode)
-                  }}</div>
-                <div v-else>
-                   {{segmentationInfoChange(scope.row.feeMode)}}
-                </div>
+                <el-tooltip :content="showFeeMode(scope.row.feeType, scope.row.feeMode, 2)" placement="top">
+                  <div v-if="scope.row.feeType != 5">{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode) }}</div>
+                  <div v-else>
+                     {{segmentationInfoChange(scope.row.feeMode)}}
+                  </div>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column :label="item.name" width="85" v-else-if="item.val && item.key == 'amount'">
@@ -246,6 +255,15 @@
                 <el-link :type="scope.row.status > 2 || scope.row.order_status == -1 ? 'danger' : 'success'">
                   {{ Constant.OrderStatus ? Constant.OrderStatus[scope.row.status] : "--" }}
                 </el-link>
+              </template>
+            </el-table-column>
+            <el-table-column :label="item.name" :width="item.width" v-else-if="item.val && item.key == 'transactionNo'">
+              <template slot-scope="scope">
+                <el-tooltip :content="scope.row.transactionNo" placement="top">
+                  <div class="cursor text-cut_two">
+                    {{ scope.row.transactionNo }}
+                  </div>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column :label="item.name" min-width="150" v-else-if="item.val && item.key == 'remark'">
@@ -825,6 +843,12 @@ export default {
     Ability() {
       return this.$store.getters.Ability
     },
+    screenfull() {
+      if(this.list.length > 0){
+        this.setTableMaxH()
+      }
+      return this.$store.state.app.screenfull
+    },
     sourceList() {
       return [{
         value: 'false',
@@ -897,7 +921,7 @@ export default {
       },
       {
         value: 'today',
-        title: this.$t('public.today'),
+        title: this.$t('public.todayOrder'),
         nkey: 'todayNumber'
       },
       {
@@ -1038,7 +1062,14 @@ export default {
       {
         key: 'chargeStartTime',
         val: true,
-        name: this.$t('public.time')
+        name: this.$t('public.time'),
+        width: 160
+      },
+      {
+        key: 'useTime',
+        val: false,
+        name: this.$t('battery.usageDuration'),
+        width: 90
       },
       {
         key: 'deviceSn',
@@ -1103,6 +1134,7 @@ export default {
   },
   data() {
     return {
+      unixTime: unixTime,
       formatSeconds: formatSeconds,
       dealPhone: dealPhone,
       showFeeMode: showFeeMode,
@@ -1145,7 +1177,7 @@ export default {
       ],
 
       tableMaxH: '250',
-      listLoading: false,
+      listLoading: true,
       listTotal: 0,
       statInfo: {},
       list: [],
@@ -1477,13 +1509,16 @@ export default {
           this.clickSubmit = false
           if (params.page == 0) {
             this.listTotal = res.total
-            this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 55
           }
         }
       }).catch(() => {
         this.listLoading = false
         this.clickSubmit = false
       })
+    },
+
+    setTableMaxH(){
+      this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 55
     },
 
     /**
@@ -2125,4 +2160,22 @@ export default {
 ::v-deep .el-select{
 	width:100% !important;
 }
+
+// ::v-deep .el-table th>.cell {
+//   white-space: nowrap; /* 禁止换行 */
+// }
+
+// ::v-deep .el-table th>.cell {
+//   white-space: nowrap;
+//   &:hover {
+//     top: 0;
+//     position: absolute;
+//     width: 300px;
+//     background: red;
+//     height: 100%;
+//     display: flex;
+//     align-items: center;
+//     z-index: 32;
+//   }
+// }
 </style>

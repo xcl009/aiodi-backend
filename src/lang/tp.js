@@ -83,7 +83,7 @@ export default {
     orderList: 'Record ng order',
     all: 'buong',
     progress: 'Sa pag-unlad',
-    today: 'Ang order ngayon',
+    todayOrder: 'Ang order ngayon',
     overtimeOrder: 'Overtime orders',
     leaseFailed: 'Nabigo ang Lease',
     deductionFailed: 'Nabigo ang Deduction',

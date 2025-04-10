@@ -83,7 +83,7 @@ export default {
     orderList: 'Danh sách đơn hàng',
     all: 'Tất cả',
     progress: 'Đang tiến hành',
-    today: 'Đơn hàng hôm nay',
+    todayOrder: 'Đơn hàng hôm nay',
     overtimeOrder: 'Đơn hàng quá hạn',
     leaseFailed: 'Thuê thất bại',
     deductionFailed: 'Ghi nợ thất bại',

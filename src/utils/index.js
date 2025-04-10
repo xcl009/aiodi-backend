@@ -38,7 +38,7 @@ const util = {
     }else{
       return true;
     }
-    
+
   },
 
   /**
@@ -372,14 +372,18 @@ const util = {
   /**
    ** 秒 转 天-时-分-秒
    **/
-  formatSeconds: (value, cFormat = 'd-h-m-s', type = 1) => {
+  formatSeconds: (value, cFormat = 'd-h-m-s', type = 1, strObj = {}) => {
     var theTime = parseInt(value),
       middle = 0,
       hour = 0,
       day = 0,
       result = ''
     if (theTime > 60) {
-      middle = parseInt(theTime / 60)
+      if(type == 3){
+        middle = Math.ceil(theTime / 60);
+      }else{
+        middle = parseInt(theTime / 60)
+      }
       theTime = parseInt(theTime % 60)
       if (middle > 60) {
         hour = parseInt(middle / 60)
@@ -389,18 +393,20 @@ const util = {
           hour = parseInt(hour / 24)
         }
       }
+    }else if(type == 3 && theTime > 0){
+      middle = 1
     }
     if (cFormat.indexOf('s') > -1 && (theTime > 0 || type == 2)) {
-      result = '' + parseInt(theTime) + i18n.t('public.second')
+      result = '' + parseInt(theTime) + (strObj.s || i18n.t('public.second'))
     }
     if (cFormat.indexOf('m') > -1 && (middle > 0 || type == 2)) {
-      result = '' + parseInt(middle) + i18n.t('public.branch') + result
+      result = '' + parseInt(middle) + (strObj.m || i18n.t('public.branch')) + result
     }
     if (cFormat.indexOf('h') > -1 && (hour > 0 || type == 2)) {
-      result = '' + parseInt(hour) + i18n.t('public.times') + result
+      result = '' + parseInt(hour) + (strObj.h || i18n.t('public.times')) + result
     }
     if (cFormat.indexOf('d') > -1 && (day > 0 || type == 2)) {
-      result = '' + parseInt(day) + i18n.t('public.day') + result
+      result = '' + parseInt(day) + (strObj.d || i18n.t('public.day')) + result
     }
     return result
   },
@@ -584,19 +590,24 @@ const util = {
    * 套餐显示
    */
   showFeeMode: (type, mode, stype = 1, deviceTypeCode = '') => {
-    let userType  = localStorage.getItem('userType');
     if (!mode) return ''
     type = type || 1
     mode = JSON.parse(mode)
-    const types = util.currencySymbolposition();
-
+    let userType  = localStorage.getItem('userType'), currencySymbolL = '', currencySymbolR = ''
+    if(userType != 'admin'){
+      if(util.currencySymbolposition()){
+        currencySymbolL = currencySymbol
+      } else {
+        currencySymbolR = currencySymbol
+      }
+    }
     if (type == 1) {
       if (deviceTypeCode && deviceTypeCode.indexOf('WM') > -1) {
-        return `${window.config.washing_package[mode.time].title}${types ? (userType != 'admin' ? currencySymbol:''):''}(${mode.money}${types ? '' :  (userType != 'admin' ? currencySymbol:'')}`
+        return `${window.config.washing_package[mode.time].title}${currencySymbolL}(${mode.money}${currencySymbolR}`
       }
-      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.money}${types ? '': (userType != 'admin' ? currencySymbol:'')}，${i18n.t('public.dailyCapping')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.maxBillingTimePrice || 19.9}${types ? '':(userType != 'admin' ? currencySymbol:'') }` : `${mode.time}${i18n.t('public.minute')}${types?(userType != 'admin' ? currencySymbol:''):''}${mode.money}${types ? '':(userType != 'admin' ? currencySymbol:'') }`
+      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${currencySymbolL}${mode.money}${currencySymbolR}，${i18n.t('public.dailyCapping')}${currencySymbolL}${mode.maxBillingTimePrice || 19.9}${currencySymbolR}` : `${mode.time}${i18n.t('public.minute')}${types?(userType != 'admin' ? currencySymbol:''):''}${mode.money}${currencySymbolR}`
     } else if(type == 5){
-      let fee = `${mode.overBillingUnit}${i18n.t('public.minute')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.unitPrice}${types ? '':(userType != 'admin' ? currencySymbol:'') }`, stepStr = ''
+      let fee = `${mode.overBillingUnit}${i18n.t('public.minute')}${currencySymbolL}${mode.unitPrice}${currencySymbolR}`, stepStr = ''
       if (stype == 2) {
         stepStr += '，'
         mode.stepList.map(item => {
@@ -610,12 +621,12 @@ const util = {
       }
       return fee
     } else {
-      let fee = `${mode.startingTime}${i18n.t('public.minute')}${types ? (userType != 'admin' ? currencySymbol:''):'' }${mode.startingAmount}${types ?'':(userType != 'admin' ? currencySymbol:'') }，${i18n.t('public.dailyCapping')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.maxBillingTimePrice || 19.9}${types ? '': (userType != 'admin' ? currencySymbol:'') }`
-      if (mode.startingTime == mode.overBillingUnit && mode.startingAmount == mode.unitPrice) {
-        fee = `${mode.startingTime}${i18n.t('public.minute')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.startingAmount}${types ? '':(userType != 'admin' ? currencySymbol:'') }，${i18n.t('public.dailyCapping')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.maxBillingTimePrice || 19.9}${types ? '':(userType != 'admin' ? currencySymbol:'') }`
+      let fee = `${mode.startingTime}${i18n.t('public.minute')}${currencySymbolL}${mode.startingAmount}${currencySymbolR}`
+      if (mode.startingTime != mode.overBillingUnit || mode.startingAmount != mode.unitPrice) {
+        fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${currencySymbolL}${mode.startingAmount}${currencySymbolR}，${i18n.t('public.afterExceeding')}${mode.overBillingUnit}${i18n.t('public.minute')}${currencySymbolL}${mode.unitPrice}${currencySymbolR}`
       }
       if (stype == 2) {
-        fee = fee + `${mode.maxBillingTimeUnit == 1440 ? `，${i18n.t('public.dailyCap')}` + (types ? (userType != 'admin' ? currencySymbol:'') :'') + (mode.maxBillingTimePrice || 19.9) + (types ? '': (userType != 'admin' ? currencySymbol:'')) : '，' + mode.maxBillingTimeUnit + `${i18n.t('public.minCap')}` + (types ? (userType != 'admin' ? currencySymbol:''):'') +mode.maxBillingTimePrice + (types ? '' :(userType != 'admin' ? currencySymbol:''))}，${i18n.t('public.totalCapping')}${types ? (userType != 'admin' ? currencySymbol:''):''}${mode.maxAmount}${types ? '':(userType != 'admin' ? currencySymbol:'')}`
+        fee = `${fee}，${mode.maxBillingTimeUnit == 1440 ? i18n.t('public.dailyCapping') : mode.maxBillingTimeUnit + i18n.t('public.minCap')}${currencySymbolL}${mode.maxBillingTimePrice || 19.9}${currencySymbolR}，${i18n.t('public.totalCapping')}${currencySymbolL}${mode.maxAmount}${currencySymbolR}`
       }
       if(mode.feeTime > 0){
         fee = `${i18n.t('public.free')}${mode.feeTime}${i18n.t('public.minute')}${fee}`

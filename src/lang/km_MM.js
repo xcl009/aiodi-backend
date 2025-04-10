@@ -82,6 +82,7 @@ export default {
     orderList: "លំដាប់​ថត",
     all: "ទាំងមូល",
     progress: "មាន​ដៃ",
+    todayOrder: "លំដាប់​ថ្ងៃនេះ‌",
     overtimeOrder: "លំដាប់​ផុត​កំណត់",
     leaseFailed: "បាន​បរាជ័យ​ក្នុង​ការ​បង្ហាញ",
     deductionFailed: "បាន​បរាជ័យ​ក្នុង​ការ​បន្ថយ",

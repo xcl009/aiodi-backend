@@ -83,7 +83,7 @@ export default {
     orderList: "Registro de pedidos",
     all: "Todos",
     progress: "Em andamento",
-    today: "Pedidos de hoje",
+    todayOrder: "Pedidos de hoje",
     overtimeOrder: "Pedido atrasado",
     leaseFailed: "Falha no aluguel",
     deductionFailed: "Falha na dedução",
