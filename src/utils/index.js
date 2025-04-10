@@ -605,7 +605,7 @@ const util = {
       if (deviceTypeCode && deviceTypeCode.indexOf('WM') > -1) {
         return `${window.config.washing_package[mode.time].title}${currencySymbolL}(${mode.money}${currencySymbolR}`
       }
-      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${currencySymbolL}${mode.money}${currencySymbolR}，${i18n.t('public.dailyCapping')}${currencySymbolL}${mode.maxBillingTimePrice || 19.9}${currencySymbolR}` : `${mode.time}${i18n.t('public.minute')}${types?(userType != 'admin' ? currencySymbol:''):''}${mode.money}${currencySymbolR}`
+      return mode.time >= 60 ? `${mode.time / 60}${i18n.t('public.huor')}${currencySymbolL}${mode.money}${currencySymbolR}` : `${mode.time}${i18n.t('public.minute')}${currencySymbolL}${mode.money}${currencySymbolR}`
     } else if(type == 5){
       let fee = `${mode.overBillingUnit}${i18n.t('public.minute')}${currencySymbolL}${mode.unitPrice}${currencySymbolR}`, stepStr = ''
       if (stype == 2) {
