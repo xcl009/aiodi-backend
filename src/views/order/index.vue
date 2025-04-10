@@ -182,7 +182,11 @@
             </el-table-column>
             <el-table-column :label="item.name" min-width="180" v-else-if="item.val && item.key == 'storeName'">
               <template slot-scope="scope">
-                <div>{{ scope.row.storeName || '--' }}</div>
+                <el-tooltip :content="scope.row.storeName" placement="top">
+                  <div class="text-cut_two">
+                    {{ scope.row.storeName }}
+                  </div>
+                </el-tooltip>
                 <!-- <div>{{ scope.row.back_store || '--' }}</div> -->
               </template>
             </el-table-column>
@@ -212,7 +216,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column :label="item.name" :width="item.width" v-else-if="item.val && item.key == 'chargeStartTime'">
+            <el-table-column :label="item.name" :width="item.width || 160" v-else-if="item.val && item.key == 'chargeStartTime'">
               <template slot-scope="scope">
                 <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
                 <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
@@ -230,11 +234,11 @@
                 {{ showFeeName(scope.row.feeType) }}<span v-if="scope.row.feeType == 3">({{ scope.row.amountPaid }}元)</span>
               </template>
             </el-table-column> -->
-            <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'feeMode'">
+            <el-table-column :label="item.name" width="150" v-else-if="item.val && item.key == 'feeMode'">
               <template slot-scope="scope">
                 <el-tooltip :content="showFeeMode(scope.row.feeType, scope.row.feeMode, 2)" placement="top">
-                  <div v-if="scope.row.feeType != 5">{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode) }}</div>
-                  <div v-else>
+                  <div v-if="scope.row.feeType != 5" class="text-cut_two">{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode) }}</div>
+                  <div v-else class="text-cut_two">
                     {{ segmentationInfoChange(scope.row.feeMode) }}
                   </div>
                 </el-tooltip>
