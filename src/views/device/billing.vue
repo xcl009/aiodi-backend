@@ -35,7 +35,7 @@
                       v-for="time in config[`plan_time`]"></el-option>
                   </el-select>
                   <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
-                    <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                    <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                   </el-input>
                   <el-button type="text" size="small" :disabled="billing[`${xcx}PayMode`].payModeDetail.length == 4"
                     v-if="index == 0"
@@ -58,7 +58,7 @@
                 <div class="flex">
                   <div class="flex1">
                     <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.startingAmount">
-                      <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                      <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
                   <div class="pl-10 flex1 flex">
@@ -106,19 +106,19 @@
                   </div>
                   <div class="pl-10 flex1">
                     <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice">
-                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                      <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
                 </div>
               </el-form-item>
               <el-form-item :label="$t('public.totalCapping')">
                 <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.maxAmount">
-                  <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                  <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                 </el-input>
               </el-form-item>
               <el-form-item :label="$t('public.deposit')">
                 <el-input type="number" v-model="billing[`${xcx}PayMode`].payModeDetails.depositAmount">
-                  <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                  <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                 </el-input>
               </el-form-item>
             </template>
@@ -144,7 +144,7 @@
 </template>
 
 <script>
-import { defaultFee } from '@/utils/index'
+import { defaultFee,currencySymbolposition } from '@/utils/index'
 export default {
   components: {
 
@@ -156,7 +156,8 @@ export default {
       billing: {},
       refresh: false,
       agentId: this.$route.query.agentId || 0,
-      defaultDevice: defaultFee()
+      defaultDevice: defaultFee(),
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -183,6 +184,7 @@ export default {
     },
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.deviceTypeCode = Object.keys(this.myDeviceId)[0]
     this.getConfig()
   },

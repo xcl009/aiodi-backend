@@ -224,7 +224,7 @@
             <el-form-item :label="$t('public.totalAmount')" :error="ferror.amountTotal">
               <el-input type="number" v-model="dform.amountTotal" :placeholder="$t('leaseOrder.totalAmount')"
                 @input="(v) => (ferror.amountTotal = checkDigit(v, 1, 9999999))">
-                <template slot="append">{{ siteInfo.currencySymbol}}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol}}</template>
               </el-input>
             </el-form-item>
             <el-form-item :label="$t('leaseOrder.periodicDeductions')" :error="ferror.deductionAmount">
@@ -235,7 +235,7 @@
                   <el-option :label="$t('public.weekly')" :value="7"></el-option>
                   <el-option :label="$t('public.monthly')" :value="30"></el-option>
                 </el-select>
-                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </el-form-item>
             <el-form-item :label="$t('leaseOrder.kkStartTime')">
@@ -292,7 +292,7 @@
               </div>
               <div class="flex mb-10">
                 <div class="label-text">{{ $t('leaseOrder.deductionPeriod') }}:</div>
-                <div>{{ curRow.deductionAmount }}{{ siteInfo.currencySymbol }}/{{ curRow.deductionCycle == 1 ? '' :
+                <div>{{currencySymbolpositionType ?  siteInfo.currencySymbol: ''  }}{{ curRow.deductionAmount }}{{currencySymbolpositionType ?  '': siteInfo.currencySymbol }}/{{ curRow.deductionCycle == 1 ? '' :
                   curRow.deductionCycle }}{{ $t('public.day') }}</div>
               </div>
               <div class="flex">
@@ -386,7 +386,8 @@ import {
   accSub,
   formatSeconds,
   unixTime,
-  arrayToObj
+  arrayToObj,
+  currencySymbolposition
 } from '@/utils/index'
 
 export default {
@@ -703,6 +704,7 @@ export default {
        * 列的配置化对象，存储配置信息
        */
       showColumn: [],
+      currencySymbolpositionType:false
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -732,7 +734,7 @@ export default {
     this.urlQuery = this.$route.meta.urlQuery
   },
   mounted(options) {
-
+    this.currencySymbolpositionType =  currencySymbolposition();
   },
   methods: {
     /**

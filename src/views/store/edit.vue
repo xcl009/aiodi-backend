@@ -192,7 +192,7 @@
                               v-for="time in config[`plan_time`]"></el-option>
                           </el-select>
                           <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
-                            <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                            <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                           </el-input>
                           <el-button type="text" size="small"
                             :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
@@ -211,7 +211,7 @@
                               <template slot="append">ml</template>
                             </el-input>
                             <el-input type="number" v-model="lpi.money" class="flex1 mr-10">
-                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                             <!-- <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].laundryMode[lidx].package.length == 3" v-if="lpidx == 0"
                               @click="item[`${xcx}PayMode`].laundryMode[lidx].package.push({tag: lpidx + 1})">添加</el-button>
@@ -228,12 +228,12 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
                         <el-input v-model="item[`${xcx}PayMode`].stepPayMode.depositAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))">
-                          <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.minimumAmount')">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].stepPayMode.initialAmount">
-                          <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.amount')"
@@ -242,7 +242,7 @@
                           <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].stepPayMode.unitPrice"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
-                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1">
@@ -275,7 +275,7 @@
                               <el-input type="number" v-model="plan.maxAmount"
                                 @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
                                 <template slot="prepend">{{ $t('public.capping') }}</template>
-                                <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                                <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                               </el-input>
                             </div>
                             <el-button type="text" size="small" v-if="stepIdx == 0"
@@ -302,7 +302,7 @@
                           <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
-                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1 flex">
@@ -347,7 +347,7 @@
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`] = checkDigit(v, 0, 100000000))">
                               <template slot="prepend">{{ $t('public.dailyCap') }}</template>
-                              <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                         </div>
@@ -356,7 +356,7 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`]">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`] = checkDigit(v, 0, 100000000))">
-                          <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.deposit')"
@@ -364,7 +364,7 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
                         <el-input v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))">
-                          <template slot="append">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                     </template>
@@ -388,7 +388,8 @@ import {
   defaultFee,
   bMapTransQQMap,
   qqMapTransBMap,
-  arrayToObj
+  arrayToObj,
+  currencySymbolposition
 } from '@/utils/index'
 import upload from '@/components/upload/index'
 import maps from '@/components/map/index'
@@ -496,10 +497,12 @@ export default {
 
       sysShows: {},
       agentPower: {},
-      screenWidth: window.innerWidth
+      screenWidth: window.innerWidth,
+      currencySymbolpositionType:false
     }
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     window.addEventListener('resize', this.updateScreenWidth);
     this.storeDfKey = 'storeDfKey'
     let storeDefaultConfig = localStorage.getItem(this.storeDfKey)

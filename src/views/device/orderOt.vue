@@ -9,7 +9,7 @@
         <el-form ref="form" label-position="left" label-width="130px">
           <el-form-item :label="$t('device.deviceCost')">
             <el-input v-model="form.deviceCost" type="number">
-              <template slot="append">{{ siteInfo.currencySymbol }}</template>
+              <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
             </el-input>
           </el-form-item>
 
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { pickKeys } from "@/utils/index"
+import { pickKeys,currencySymbolposition } from "@/utils/index"
 export default {
   name: 'steal',
   data() {
@@ -52,7 +52,8 @@ export default {
       roleType: this.$route.query.roleType || '',
       deviceTypeCode: '',
 
-      update: false
+      update: false,
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -67,6 +68,7 @@ export default {
     }
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.deviceTypeCode = Object.keys(this.myDeviceId)[0]
     this.getInfo()
   },
