@@ -90,7 +90,7 @@
           <template v-if="dform.couponDiscountType == 2">
             <el-form-item :label="$t('coupon.couponMoney')" prop="couponDiscountDetail.priceDiscount">
               <el-input v-model="dform.couponDiscountDetail.priceDiscount" :placeholder="$t('public.enter')">
-                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </el-form-item>
             <!-- <el-form-item :label="'满'">
@@ -157,7 +157,7 @@ import selectSearch from '@/components/condition/selectSearch'
 import Pagination from '@/components/Pagination'
 import upload from '@/components/upload'
 import TableColumnSet from '@/components/TableColumnSet/index'
-import { arrayToObj, unixTime } from '@/utils/index'
+import { arrayToObj, unixTime,currencySymbolposition } from '@/utils/index'
 export default {
   name: 'coupon',
   components: {
@@ -250,6 +250,7 @@ export default {
        * 列的配置化对象，存储配置信息
        */
       showColumn: [],
+      currencySymbolpositionType:false
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -341,7 +342,7 @@ export default {
     }
   },
   mounted() {
-
+    this.currencySymbolpositionType =  currencySymbolposition();
   },
   methods: {
     /**

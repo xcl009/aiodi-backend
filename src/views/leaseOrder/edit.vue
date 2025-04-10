@@ -27,7 +27,7 @@
               <div class="pl-10 flex1">
                 <el-input type="number" v-model="form.deductionAmount">
                   <template slot="prepend">{{ $t('leaseOrder.deduction') }}</template>
-                  <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                  <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                 </el-input>
               </div>
             </div>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { unixTime } from '@/utils/index'
+import { unixTime,currencySymbolposition } from '@/utils/index'
 export default {
   data() {
     return {
@@ -60,6 +60,7 @@ export default {
         deductionId: this.$route.query.deductionId,
         deductionTimeStr: (this.currentTime() + 86400) * 1000
       },
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -99,6 +100,7 @@ export default {
     },
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     if (this.orderId) {
       this.getInfo()
     }

@@ -92,8 +92,8 @@
           </el-table-column>
           <el-table-column :label="$t('goods.buyDetails')" width="150">
             <template slot-scope="scope">
-              {{ $t('goods.costPrice') }}:{{ scope.row.buyDetail.costPrice }}{{ siteInfo.currencySymbol }}，{{
-                $t('goods.retailPrice') }}:{{ scope.row.buyDetail.retailPrice }}{{ siteInfo.currencySymbol }}，{{
+              {{ $t('goods.costPrice') }}:{{currencySymbolpositionType ? siteInfo.currencySymbol:'' }} {{ scope.row.buyDetail.costPrice }}{{currencySymbolpositionType ? '': siteInfo.currencySymbol }}，{{
+                $t('goods.retailPrice') }}:{{currencySymbolpositionType ? siteInfo.currencySymbol:'' }}{{ scope.row.buyDetail.retailPrice }}{{currencySymbolpositionType ? '': siteInfo.currencySymbol }}，{{
     scope.row.buyDetail.position }}{{ $t('public.numCard') }}
             </template>
           </el-table-column>
@@ -196,7 +196,7 @@
           </el-form-item>
           <el-form-item :label="$t('public.refundAmount')">
             <el-input v-model="dform.amount" :placeholder="`${$t('public.max')}${curRow.amount}`">
-              <span slot="append">{{ siteInfo.currencySymbol }}</span>
+              <span :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</span>
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('order.reasonForRefund')">
@@ -217,6 +217,9 @@
 import condition from '@/components/condition/'
 import selectSearch from '@/components/condition/selectSearch'
 import Pagination from '@/components/Pagination'
+import {
+  currencySymbolposition
+} from '@/utils/index'
 export default {
   components: {
     condition,
@@ -272,7 +275,8 @@ export default {
       dialogStatus: false,
       curRow: {},
       curIdx: 0,
-      dform: {}
+      dform: {},
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -296,6 +300,7 @@ export default {
     }
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.toQuery(1)
   },
   methods: {
