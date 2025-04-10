@@ -235,7 +235,7 @@
                 <el-tooltip :content="showFeeMode(scope.row.feeType, scope.row.feeMode, 2)" placement="top">
                   <div v-if="scope.row.feeType != 5">{{ showFeeMode(scope.row.feeType, scope.row.feeMode, 1, scope.row.deviceTypeCode) }}</div>
                   <div v-else>
-                     {{segmentationInfoChange(scope.row.feeMode)}}
+                    {{ segmentationInfoChange(scope.row.feeMode) }}
                   </div>
                 </el-tooltip>
               </template>
