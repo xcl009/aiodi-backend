@@ -13,8 +13,10 @@
       <el-col :span="24" class="rel">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({ path: `/money/monthMoney` })">
-            <div class="flex align-center fs-b5 baby-blue"><count-to :start-val="0"
-                :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" />{{ siteInfo.currencySymbol }}</div>
+            <div class="flex align-center fs-b5 baby-blue">
+              {{currencySymbolpositionType ?  siteInfo.currencySymbol: ''  }}
+              <count-to :start-val="0"
+                :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" />{{currencySymbolpositionType ?  '': siteInfo.currencySymbol }}</div>
             <div class="mt-5 fs-c1 text-white">{{ $t('home.transactionAmount') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')" alt="" />
           </div>
@@ -503,7 +505,8 @@ import {
   formatSeconds,
   accAdd,
   accMul,
-  copyText
+  copyText,
+  currencySymbolposition
 } from '@/utils/index'
 import DateUtil from '@/utils/date'
 import CountTo from 'vue-count-to'
@@ -659,6 +662,7 @@ export default {
       tableMaxH: '250',
       isadd: false,
       copyText: copyText,
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -819,6 +823,7 @@ export default {
     this.getList()
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.getList()
     this.getOrderStat()
     this.getQuerHistogram()

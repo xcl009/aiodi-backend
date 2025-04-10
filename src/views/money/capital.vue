@@ -6,7 +6,7 @@
         <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
           <div class="fs-s3 text-black">{{ $t('brand.withdrawableAmount') }}（{{ $t('public.freezeAmount') }}：{{ money.frozenBalance || 0.00 }}）</div>
           <div class="mt-15 mb-15 cursor">
-            <span class="text-primary khcoin">{{ money.balance || 0.00 }}{{ siteInfo.currencySymbol }}</span>
+            <span class="text-primary khcoin">{{currencySymbolpositionType ?  siteInfo.currencySymbol: ''  }}{{ money.balance || 0.00 }}{{currencySymbolpositionType ?  '': siteInfo.currencySymbol }}</span>
           </div>
           <div v-if="!isBrand() && Ability['cash']">
             <el-button type="primary" size="small" class="fs-s3" @click="$router.push({path: `/money/cash`})">{{ $t('public.withdrawal') }}</el-button>
@@ -120,6 +120,10 @@
 </template>
 
 <script>
+import {
+  parseTime,
+  currencySymbolposition
+} from '@/utils/index'
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
   import RechargeKhyCoin from '@/components/RechargeKhyCoin/'
@@ -180,10 +184,12 @@
           page: 1,
           size: 20
         },
-        storeMoneySetInfo: {}
+        storeMoneySetInfo: {},
+        currencySymbolpositionType:false
       }
     },
     mounted(options) {
+      this.currencySymbolpositionType =  currencySymbolposition();
       if(this.isStore()){
         this.getSettingsFind()
       } else {
