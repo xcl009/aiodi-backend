@@ -1355,7 +1355,10 @@ export default {
     payCreatePage1: '默认',
     payCreatePage2: '计费详情页',
     payCreatePage3: '计费详情页(直接调起支付)',
-    submittext:'提现申请'
+    submittext: '提现申请',
+    orderingTtile: '租借订单限制',
+    orderingNum: '使用中订单数',
+    orderWaitNum: '待付款订单数'
   },
   user: {
     message: '请填写旧密码',
