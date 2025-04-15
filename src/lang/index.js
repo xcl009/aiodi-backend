@@ -122,7 +122,7 @@ const i18n = new VueI18n({
   },
   silentTranslationWarn:true,//解决vue-i18n黄色警告"value of key 'xxx' is not a string"和"cannot translate the value of keypath 'xxx'.use the value of keypath as default",可忽略
   missing: (locale, key, vm, values) => {
-  	return values[0] || ''
+  	return values[0] && values[0][0] ? values[0][0] : ''
   }
 });
 export default i18n;

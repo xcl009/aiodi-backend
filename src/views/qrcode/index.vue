@@ -96,7 +96,7 @@
             <el-input v-model="dform.deviceSn" placeholder="多设备英文逗号隔开" type="textarea" rows="4" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="押金金额">
-            <el-input v-model="dform.amount" :placeholder="$t('public.enter')"><template slot="append">{{ siteInfo.currencySymbol }}</template></el-input>
+            <el-input v-model="dform.amount" :placeholder="$t('public.enter')"><template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template></el-input>
           </el-form-item>
           <el-form-item label="类型">
             <el-input v-model="dform.type" :placeholder="$t('public.enter')" :disabled="true"></el-input>
@@ -139,6 +139,9 @@ import JSZip from 'jszip'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 import { getToken } from '@/utils/auth'
+import {
+  currencySymbolposition
+} from '@/utils/index'
 export default {
   name: 'qrcode',
   components: {
@@ -194,6 +197,7 @@ export default {
       curRow: {},
       curIdx: 0,
       dform: {},
+      currencySymbolpositionType:false
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -215,7 +219,7 @@ export default {
     this.getPayChannel()
   },
   mounted(options) {
-
+    this.currencySymbolpositionType =  currencySymbolposition();
   },
   methods: {
     /**

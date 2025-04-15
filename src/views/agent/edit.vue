@@ -13,9 +13,9 @@
           <el-form-item :label="$t('public.loginPassword')" v-if="!agentId">
             <el-input v-model="form.password" :placeholder="$t('factory.agentLogonPassword')" />
           </el-form-item>
-          <el-form-item :label="$t('public.operatingArea')">
+          <!-- <el-form-item :label="$t('public.operatingArea')">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
-          </el-form-item>
+          </el-form-item> -->
 
           <h4 class="pt-20">{{ $t('public.operationalProducts') }}</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">

@@ -56,7 +56,7 @@
 
           <el-form-item :label="$t('public.walletBalance')">
             <el-input type="number" v-model="form.walletBalance">
-              <template slot="append">{{ siteInfo.currencySymbol }}</template>
+              <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
             </el-input>
             <div>
               {{ $t('system.userMoeny') }}{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}{{ $t('system.freeOfChargeLease') }}
@@ -77,7 +77,8 @@
 
 <script>
   import {
-    pickKeys
+    pickKeys,
+    currencySymbolposition
   } from "@/utils/index"
   export default {
     name: 'steal',
@@ -87,6 +88,7 @@
         deviceTypeCode: '',
         id: this.$route.query.id || '',
         userKey: this.$route.query.userKey || '',
+        currencySymbolpositionType:false
       }
     },
     computed: {
@@ -101,6 +103,7 @@
       },
     },
     mounted() {
+      this.currencySymbolpositionType =  currencySymbolposition();
       this.deviceTypeCode = Object.keys(this.myDeviceId)[0]
       this.getInfo()
     },

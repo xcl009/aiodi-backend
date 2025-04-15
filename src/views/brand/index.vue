@@ -171,7 +171,7 @@
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
           <el-form-item :label="$t('brand.voucherAmount')">
             <el-input v-model="dform.amount">
-              <template slot="append">{{ siteInfo.currencySymbol }}</template>
+              <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
             </el-input>
           </el-form-item>
           <el-form-item>
@@ -444,7 +444,8 @@ import condition from '@/components/condition/'
 import vueJsonEditor from 'vue-json-editor'
 import {
   copyText,
-  arrayToObj
+  arrayToObj,
+  currencySymbolposition
 } from '@/utils/index'
 import {
   getToken,
@@ -503,7 +504,8 @@ export default {
 
       //国家冠号
       countryPhone: [],
-      brandCountryPhone: {}
+      brandCountryPhone: {},
+      currencySymbolpositionType:false
     }
   },
   // defaultColumn() {
@@ -690,7 +692,7 @@ export default {
     }
   },
   mounted() {
-
+    this.currencySymbolpositionType =  currencySymbolposition();
   },
   methods: {
     generateChange() {

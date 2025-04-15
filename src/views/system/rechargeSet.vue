@@ -16,11 +16,11 @@
           <el-form-item :label="`${$t('public.recharge')}`" v-if="form.currencyType == 'RMB'">
             <div class="mb-10 flex align-center flex-wrap" v-for="(item, index) in form.configList">
               <el-input type="number" v-model="item.amount" class="flex1 mr-10">
-                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
               <div>{{ $t('public.give') }}</div>
               <el-input type="number" v-model="item.giftAmount" class="flex1 ml-10 mr-10">
-                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
               <el-button type="text" size="small" :disabled="form.configList.length == 6" v-if="index == 0"
                 @click="form.configList.push({ amount: '', giftAmount: '' })">{{ $t('public.add') }}</el-button>
@@ -57,6 +57,9 @@
 
 <script>
 import condition from '@/components/condition/'
+import {
+  currencySymbolposition
+} from '@/utils/index'
 export default {
   components: {
     condition
@@ -69,7 +72,8 @@ export default {
         configList: [
 
         ]
-      }
+      },
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -78,6 +82,7 @@ export default {
     }
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.getInfo()
   },
   methods: {

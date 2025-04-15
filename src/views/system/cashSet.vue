@@ -135,7 +135,7 @@
                     </el-input>
                     <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('system.singleStroke')}}</div>
                     <el-input type="number" v-model="ritem.handlingFee" class="flex1 ml-10 mr-10">
-                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                      <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                     <el-button type="text" size="small" :disabled="item.receipt.length == 4" v-if="rindex == 0" @click="item.receipt.push({})" class="mr-10">{{ $t('public.add') }}</el-button>
                     <el-button type="text" size="small" v-else @click="item.receipt.splice(rindex, 1)" class="mr-10 text-danger">{{ $t('public.delete') }}</el-button>
@@ -145,11 +145,11 @@
                 <el-form-item :label="$t('system.minMoeny')">
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.minAmount" class="flex1 mr-10">
-                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                      <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                     <div class="ml-30">{{ $t('system.maxMoeny') }}</div>
                     <el-input type="number" v-model="item.maxAmount" class="flex1 ml-10 mr-10">
-                      <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                      <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
                   </div>
                 </el-form-item>
@@ -157,7 +157,7 @@
                   <el-form-item :label="$t('system.needApprovalAmount')">
                     <div class="flex align-center flex-wrap">
                       <el-input type="number" v-model="item.needApprovalAmount" class="flex1 mr-10">
-                        <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                        <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                       </el-input>
                     </div>
                   </el-form-item>
@@ -194,7 +194,7 @@
 </template>
 
 <script>
-import { arrayToObj, swapItems } from '@/utils/index'
+import { arrayToObj, swapItems,currencySymbolposition } from '@/utils/index'
 export default {
   components: {
 
@@ -215,7 +215,8 @@ export default {
       userType: this.$route.query.userKey == 'storeId' ? 'store' : 'agent',
       id: this.$route.query.id || '',
       userKey: this.$route.query.userKey || '',
-      ruleAgent: {}
+      ruleAgent: {},
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -262,6 +263,7 @@ export default {
     }
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.withdrawType = arrayToObj(this.withdrawTypes, 'type')
     this.getInfo()
   },

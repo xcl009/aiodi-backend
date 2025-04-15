@@ -110,7 +110,7 @@
           </el-form-item>
           <el-form-item :label="$t('membership.cardAmount')" ref="amount" prop="amount">
             <el-input type="number" v-model="dform.amount" placeholder="Maximum 9999999" oninput="if(value.length > 7){value = value.slice(0,7)}">
-              <template slot="append">{{ siteInfo.currencySymbol }}</template>
+              <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('membership.cardTime')" ref="availableDay" prop="availableDay">
@@ -236,7 +236,7 @@
 </template>
 
 <script>
-import { arrayToObj } from "@/utils/index"
+import { arrayToObj,currencySymbolposition } from "@/utils/index"
 import condition from '@/components/condition/'
 import QRCode from 'qrcodejs2'
 export default {
@@ -319,7 +319,8 @@ export default {
       curIdx: 0,
       dform: {},
       userList: [],
-      searchStatus: false
+      searchStatus: false,
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -377,6 +378,7 @@ export default {
     },
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.getDevice()
   },
   methods: {

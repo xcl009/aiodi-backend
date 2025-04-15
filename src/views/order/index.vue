@@ -551,7 +551,7 @@
               <el-form-item :label="`${$t('public.refundAmount')}:`">
                 <el-input v-model="dform.amount"
                   :placeholder="`${$t('public.max')}${dform.refundType != 3 ? curRow.amount || 0 : curRow.amountEnable || 0}`" :disabled="checkRefundAmount()">
-                  <span slot="append">{{ siteInfo.currencySymbol }}</span>
+                  <span :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</span>
                 </el-input>
               </el-form-item>
               <el-form-item :label="`${$t('order.reasonForRefund')}:`">
@@ -804,7 +804,8 @@ import {
   accAdd,
   accSub,
   formatSeconds,
-  arrayToObj
+  arrayToObj,
+  currencySymbolposition
 } from '@/utils/index'
 
 export default {
@@ -1217,6 +1218,7 @@ export default {
       payChannellist: [],
       sourceTypeIndex: 0,
       serchShow: false,
+      currencySymbolpositionType:false
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -1251,6 +1253,7 @@ export default {
     }
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.queryObj.payType.selectArr = this.Constant.PayType
     this.queryObj.sourceType.selectArr = this.Constant.SourceType
     if ((this.checkAbility(['_DD_END', '_DD_HIDE', '_DD_RATIO', '_DD_TIME', '_DD_FAIL'], 1) && this.isBrand()) || this.isSaas()) {
@@ -1314,9 +1317,9 @@ export default {
 							`${res.startingTime / 60}${this.$t('public.hour')}-${res.endTime / 60}${this.$t('public.segmentationtext')}`
 					}
 					if (index == e.stepList.length - 1) {
-						obj.maxAmountText = `${res.maxAmount}${currencyCoin}`
+						obj.maxAmountText = `${this.currencySymbolpositionType ? currencyCoin :''}${res.maxAmount}${this.currencySymbolpositionType ? '' :currencyCoin}`
 					} else {
-						obj.maxAmountText = `${res.maxAmount}${currencyCoin}`
+						obj.maxAmountText = `${this.currencySymbolpositionType ? currencyCoin :''}${res.maxAmount}${this.currencySymbolpositionType ? '' :currencyCoin}`
 					}
 					obj.text = text;
 					let nums = res.startingTime / 60

@@ -20,14 +20,14 @@
           <el-table-column :label="$t('goods.costPrice')" width="200">
             <template slot-scope="scope">
               <el-input type="number" v-model="scope.row.costPrice" :placeholder="$t('goods.costPrice')" disabled>
-                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </template>
           </el-table-column>
           <el-table-column :label="$t('goods.retailPrice')" width="200">
             <template slot-scope="scope">
               <el-input type="number" v-model="scope.row.retailPrice" :placeholder="$t('goods.retailPrice')">
-                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </template>
           </el-table-column>
@@ -87,6 +87,9 @@
 
 <script>
 import Pagination from '@/components/Pagination'
+import {
+  currencySymbolposition
+} from '@/utils/index'
 export default {
   components: {
     Pagination
@@ -111,7 +114,8 @@ export default {
       dialogStatus: false,
       curRow: {},
       curIdx: 0,
-      dform: {}
+      dform: {},
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -125,6 +129,7 @@ export default {
     }
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.getInfo()
     this.getGoods()
   },

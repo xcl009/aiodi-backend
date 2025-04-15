@@ -110,7 +110,7 @@
 
           <el-form-item :label="$t('public.walletBalance')">
             <el-input type="number" v-model="form.walletBalance">
-              <template slot="append">{{ siteInfo.currencySymbol }}</template>
+              <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
             </el-input>
             <div>
               {{ $t('system.userMoeny') }}{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}{{
@@ -146,6 +146,9 @@
 </template>
 
 <script>
+import {
+  currencySymbolposition
+} from '@/utils/index'
 export default {
   name: 'toolsConfig',
   data() {
@@ -167,6 +170,7 @@ export default {
       curRow: {},
       curIdx: 0,
       dform: {},
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -206,6 +210,7 @@ export default {
     if (['DIVIDE_ACCOUNTS'].indexOf(this.code) > -1) {
       this.getWechatList()
     }
+    this.currencySymbolpositionType =  currencySymbolposition();
   },
   methods: {
     /**

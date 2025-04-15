@@ -154,7 +154,7 @@
             </el-form-item>
             <el-form-item :label="`${$t('steal.leakageAmount')}：`">
               <el-input type="number" v-model="form.complateRule.startAmount">
-                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </el-form-item>
             <el-form-item :label="`${$t('steal.afterOffline')}：`" class="ml-10">
@@ -240,7 +240,7 @@
             </el-form-item>
             <el-form-item :label="`${$t('steal.leakageAmount')}：`">
               <el-input type="number" v-model="form.failRule.startAmount">
-                <template slot="append">{{ siteInfo.currencySymbol }}</template>
+                <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </el-form-item>
           </div>
@@ -256,7 +256,7 @@
 </template>
 
 <script>
-import { pickKeys } from "@/utils/index"
+import { pickKeys,currencySymbolposition } from "@/utils/index"
 export default {
   name: 'steal',
   data() {
@@ -280,6 +280,7 @@ export default {
       userKey: this.$route.query.userKey || '',
       deviceTypeCode: '',
       deviceType: '',
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -294,6 +295,7 @@ export default {
     },
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     this.getDevice()
   },
   methods: {

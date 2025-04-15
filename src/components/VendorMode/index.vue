@@ -25,7 +25,7 @@
       </template>
       <el-form-item :label="$t('components.managementFees')" v-if="dform.operationMode == 'SELF_RUN'">
         <el-input v-model="dform.poundage" :placeholder="$t('components.managementFeesText')">
-          <span slot="append">{{ siteInfo.currencySymbol }}</span>
+          <span :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</span>
         </el-input>
         <div class="mt-10 fs-s3 line-default">
           {{ $t('components.text4') }}
@@ -41,6 +41,9 @@
 </template>
 
 <script>
+import {
+  currencySymbolposition
+} from '@/utils/index'
 export default {
   name: 'VendorMode',
   data() {
@@ -51,7 +54,8 @@ export default {
         operationMode: 'SELF_RUN',
         rebateRatio: 100
       }, // 售货机运营信息
-      dform: {}
+      dform: {},
+      currencySymbolpositionType:false
     }
   },
   computed: {
@@ -63,6 +67,7 @@ export default {
     }
   },
   mounted() {
+    this.currencySymbolpositionType =  currencySymbolposition();
     if (!this.isBrand()) {
       this.getVendorInfo()
     }
