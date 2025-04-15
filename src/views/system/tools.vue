@@ -226,7 +226,7 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
+        <!-- <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
           v-if="isBrand() && checkAbility(['RENT_LIMIT'], 3)">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
@@ -243,7 +243,7 @@
         $t('public.setUp') }}</el-button>
             </div>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
           v-if="isBrand() && checkAbility(['NEAR_STORE'], 3)">
           <div class="role-item flexv justify-between">
@@ -306,8 +306,8 @@
                 <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">{{ $t('system.checkTwoPwd') }} </div>
-                <div class="mt-5 fs-s3 text-gray">{{ $t('system.setCheckTwoPwd') }} </div>
+                <div class="fs-b1">{{ $t('system.checkTwoPwd') }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('system.setCheckTwoPwd') }}</div>
               </div>
             </div>
             <div class="text-right">
@@ -430,15 +430,15 @@
         </el-col>
 
         <el-col :xs="24" :sm="12" :lg="8" :xl="6" class="pb-20 cursor"
-          v-if="isBrand() && false">
+          v-if="isBrand() && checkAbility(['RENT_LIMIT'], 3)">
           <div class="role-item flexv justify-between">
             <div class="flex align-center">
               <div class="icon-box flex align-center justify-center">
                 <svg-icon icon-class="fuwu"></svg-icon>
               </div>
               <div class="pl-20 flex1">
-                <div class="fs-b1">租借订单限制</div>
-                <div class="mt-5 fs-s3 text-gray">租借订单限制</div>
+                <div class="fs-b1">{{ $t('system.orderingTtile') || 'Limit on the number of rental orders' }}</div>
+                <div class="mt-5 fs-s3 text-gray">{{ $t('system.orderingTtile') || 'Limit on the number of rental orders' }}</div>
               </div>
             </div>
             <div class="text-right">
@@ -545,7 +545,7 @@
           <el-form-item :label="pointsAlias" v-if="checkAbility(['POINTS'], 3)">
             <el-switch v-model="dform.userPoints" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item :label="'优惠券'" v-if="checkAbility(['COUPON'], 3)">
+          <el-form-item :label="$t('coupon.coupon')" v-if="checkAbility(['COUPON'], 3)">
             <el-switch v-model="dform.userCoupon" :active-value="1" :inactive-value="0" />
           </el-form-item>
         </el-form>
@@ -664,11 +664,11 @@
       </template>
       <template v-if="dialogType == 13">
         <el-form class="custom-form pl-20 pr-20" label-width="auto" :model="dform">
-          <el-form-item :label="'使用中订单数'">
-            <el-input v-model="dform.rentingLimit"></el-input>
+          <el-form-item :label="$t('system.orderingNum') || 'In use orders'">
+            <el-input v-model="dform.rentingLimit" type="number"></el-input>
           </el-form-item>
-          <el-form-item :label="'待付款订单数'">
-            <el-input v-model="dform.waitingPaymentLimit"></el-input>
+          <el-form-item :label="$t('system.orderWaitNum') || 'Pending payment order'">
+            <el-input v-model="dform.waitingPaymentLimit" type="number"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -764,7 +764,7 @@ export default {
         8: this.$t('public.refundOfDeposit'),
         9: this.$t('public.permissionSettings'),
         12: (this.$t('points.pointsUseRule')).i18Format(this.pointsAlias),
-        13: '租借订单限制',
+        13: this.$t('system.orderingTtile') || 'Limit on the number of rental orders',
       }
     }
   },

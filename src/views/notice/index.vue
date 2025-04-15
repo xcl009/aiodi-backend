@@ -10,7 +10,7 @@
         highlight-current-row :max-height="tableMaxH">
         <el-table-column :label="$t('notice.noticeType')" show-overflow-tooltip  v-if="isSaas()">
           <template slot-scope="scope">
-            <div>{{ scope.row.noticeTypeVO.typeName || '--' }}</div>
+            <div>{{ scope.row.noticeTypeVO ? scope.row.noticeTypeVO.typeName : '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('notice.userType')" show-overflow-tooltip>
