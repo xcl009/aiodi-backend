@@ -871,11 +871,11 @@ export default {
                   } else {
                     item[`${key}PayMode`].payModeDetails.unitPrice = item[`${key}PayMode`].payModeDetails.startingAmount
                     item[`${key}PayMode`].payModeDetails.overBillingUnit = item[`${key}PayMode`].payModeDetails.startingTime
-                    if (item[`${key}PayMode`].payModeDetails.maxAmount > item[`${key}PayMode`].payModeDetails.depositAmount && (item[`${key}PayMode`].modeType == 'DEPOSIT' || item[`${key}PayMode`].modeType == 'DEPOSIT_AND_FREE')) {
+                    /* if (item[`${key}PayMode`].payModeDetails.maxAmount > item[`${key}PayMode`].payModeDetails.depositAmount && (item[`${key}PayMode`].modeType == 'DEPOSIT' || item[`${key}PayMode`].modeType == 'DEPOSIT_AND_FREE')) {
                       error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message7')}`
                     } else if (item[`${key}PayMode`].modeType == 'DEPOSIT_FREE') {
                       item[`${key}PayMode`].payModeDetails.depositAmount = item[`${key}PayMode`].payModeDetails.maxAmount
-                    }
+                    } */
                     moneyKeyArr.map(moneyKey => {
                     	if(item[`${key}PayMode`].payModeDetails[moneyKey] < this.siteInfo.currencyMin){
                     		error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message21')}${this.formatCurrency(this.siteInfo.currencyMin)}`
