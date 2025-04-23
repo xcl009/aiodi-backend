@@ -287,6 +287,70 @@
                       </el-form-item>
                     </template>
 
+                    <template v-else-if="item[`${xcx}PayMode`].modeType == 'LOW_DEPOSIT'">
+                      <el-form-item :label="$t('public.minimumAmount')"
+                        :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
+                        <div class="flex">
+                          <div class="flex1">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
+                              <template :slot="currencySymbolpositionType ? 'prepend' : 'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                            </el-input>
+                          </div>
+                          <div class="pl-10 flex1 flex">
+                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.startingTime" class="flex1">
+                              <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList"
+                                :key="index"></el-option>
+                            </el-select>
+                          </div>
+                        </div>
+                      </el-form-item>
+                      <el-form-item :label="$t('public.afterExceeding')"
+                        :error="ferror[`${item.deviceTypeCode}_${xcx}_overBillingUnit`]">
+                        <div class="flex">
+                          <div class="flex1">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice"
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
+                              <template :slot="currencySymbolpositionType ? 'prepend' : 'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                            </el-input>
+                          </div>
+                          <div class="pl-10 flex1 flex">
+                            <el-select v-model="item[`${xcx}PayMode`].payModeDetails.overBillingUnit" class="flex1">
+                              <el-option :label="`${wp.title}`" :value="wp.value" v-for="(wp, index) in timeList"
+                                :key="index"></el-option>
+                            </el-select>
+                          </div>
+                        </div>
+                      </el-form-item>
+                      <el-form-item :label="$t('public.capping')"
+                        :error="ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`]">
+                        <div class="flex">
+                          <div class="flex1">
+                            <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice"
+                              @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`] = checkDigit(v, 0, 100000000))">
+                              <template slot="prepend">{{ $t('public.dailyCap') }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                            </el-input>
+                          </div>
+                        </div>
+                      </el-form-item>
+                      <el-form-item :label="$t('public.totalCapping')"
+                        :error="ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`]">
+                        <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount"
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`] = checkDigit(v, 0, 100000000))">
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                        </el-input>
+                      </el-form-item>
+                      <el-form-item :label="$t('public.deposit')"
+                        v-if="(isBrand() || agentPower.editStoreFeeDeposit === 0)"
+                        :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
+                        <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))" disabled>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                        </el-input>
+                      </el-form-item>
+                    </template>
+
                     <template v-else>
                       <el-form-item :label="$t('public.freeTime')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_freeTime`]" v-if="item.deviceTypeCode == 'PA'">
@@ -857,7 +921,7 @@ export default {
                 if (item[`${key}PayMode`].payModeDetail) {
                   if (item[`${key}PayMode`].modeType == 'PACKAGE') {
                     item[`${key}PayMode`].payModeDetail.map((packItem, packI) => {
-                      if(packItem.money < this.siteInfo.currencyMin){
+                      if(parseFloat(packItem.money) < parseFloat(this.siteInfo.currencyMin)){
                       	error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message21')}${this.siteInfo.currencyMin}`
                       }
                       return packItem.tag = packI + 1
@@ -869,15 +933,27 @@ export default {
                     })
                     item[`${key}PayMode`].payModeDetail = JSON.stringify(item[`${key}PayMode`].stepPayMode)
                   } else {
-                    item[`${key}PayMode`].payModeDetails.unitPrice = item[`${key}PayMode`].payModeDetails.startingAmount
-                    item[`${key}PayMode`].payModeDetails.overBillingUnit = item[`${key}PayMode`].payModeDetails.startingTime
+                    console.log(item[`${key}PayMode`].modeType)
+                    if(item[`${key}PayMode`].modeType == 'LOW_DEPOSIT'){
+                      item[`${key}PayMode`].payModeDetails.freeTime = 0
+                      item[`${key}PayMode`].payModeDetails.depositAmount = item[`${key}PayMode`].payModeDetails.startingAmount
+
+                      console.log(item[`${key}PayMode`].payModeDetails.maxAmount)
+                      console.log(item[`${key}PayMode`].payModeDetails.depositAmount)
+                      if (parseFloat(item[`${key}PayMode`].payModeDetails.maxAmount) < parseFloat(item[`${key}PayMode`].payModeDetails.depositAmount)) {
+                        error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
+                      }
+                    }else{
+                      item[`${key}PayMode`].payModeDetails.unitPrice = item[`${key}PayMode`].payModeDetails.startingAmount
+                      item[`${key}PayMode`].payModeDetails.overBillingUnit = item[`${key}PayMode`].payModeDetails.startingTime
+                    }
                     /* if (item[`${key}PayMode`].payModeDetails.maxAmount > item[`${key}PayMode`].payModeDetails.depositAmount && (item[`${key}PayMode`].modeType == 'DEPOSIT' || item[`${key}PayMode`].modeType == 'DEPOSIT_AND_FREE')) {
                       error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message7')}`
                     } else if (item[`${key}PayMode`].modeType == 'DEPOSIT_FREE') {
                       item[`${key}PayMode`].payModeDetails.depositAmount = item[`${key}PayMode`].payModeDetails.maxAmount
                     } */
                     moneyKeyArr.map(moneyKey => {
-                    	if(item[`${key}PayMode`].payModeDetails[moneyKey] < this.siteInfo.currencyMin){
+                    	if(parseFloat(item[`${key}PayMode`].payModeDetails[moneyKey]) < parseFloat(this.siteInfo.currencyMin)){
                     		error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message21')}${this.formatCurrency(this.siteInfo.currencyMin)}`
                     	}
                     })

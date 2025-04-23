@@ -9,6 +9,7 @@ export default {
     DEPOSIT_AND_FREE: "Isento de depósito + saldo",
     DEPOSIT: "Saldo",
     STEPBILLING: "Faturamento em etapas",
+    LOW_DEPOSIT: 'Depósito baixo',
     today: "Hoje",
     yesterday: "Ontem",
     thisWeek: "Esta semana",
@@ -1178,8 +1179,8 @@ export default {
     message6Title: "2.1 Situação de inconsistência na divisão de lucros:",
     message6:
       "Após a transferência, a proporção de divisão de lucros do comerciante atual será, por padrão, mantida conforme a proporção original do comerciante",
-    message7: "O valor do depósito não pode ser menor que o valor máximo total",
-    message8: "O valor do depósito não pode ser menor que o valor máximo total",
+    message7: "O valor do depósito não pode ser inferior ao montante total limitado",
+    message8: "O montante máximo total não pode ser inferior ao montante mínimo",
     storeList: "Registro de comerciantes",
     assignAgents: "Atribuir agentes",
     storeAddress: "Endereço do comerciante",
