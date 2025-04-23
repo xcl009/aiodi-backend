@@ -937,9 +937,6 @@ export default {
                     if(item[`${key}PayMode`].modeType == 'LOW_DEPOSIT'){
                       item[`${key}PayMode`].payModeDetails.freeTime = 0
                       item[`${key}PayMode`].payModeDetails.depositAmount = item[`${key}PayMode`].payModeDetails.startingAmount
-
-                      console.log(item[`${key}PayMode`].payModeDetails.maxAmount)
-                      console.log(item[`${key}PayMode`].payModeDetails.depositAmount)
                       if (parseFloat(item[`${key}PayMode`].payModeDetails.maxAmount) < parseFloat(item[`${key}PayMode`].payModeDetails.depositAmount)) {
                         error = `${this.myDeviceId[item.deviceTypeCode]}${this.$t('store.message8')}`
                       }
