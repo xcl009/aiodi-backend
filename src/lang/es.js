@@ -2108,5 +2108,6 @@ export default {
       couponState1: 'Pendiente de uso',
       couponState2: 'Se ha utilizado',
       couponState3: 'Caducado',
+      text:'deaktiviert'
     }
 }

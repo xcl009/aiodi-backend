@@ -2084,5 +2084,6 @@ export default {
     couponState1: '使用中',
     couponState2: '使用済み',
     couponState3: '期限切れ',
+    text:'無効'
   }
 }

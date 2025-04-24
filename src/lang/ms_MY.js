@@ -2073,6 +2073,7 @@ export default {
     grantTypeName: "Kaedah penagihan",
     couponState1: "Untuk digunakan",
     couponState2: "Sudah digunakan",
-    couponState3: "Mati"
+    couponState3: "Mati",
+    text:'dilumpuhkan'
   }
 }
