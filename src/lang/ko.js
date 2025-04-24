@@ -2107,6 +2107,7 @@ export default {
     grantTypeName: '획득 방법',
     couponState1: '보류 중',
     couponState2: '사용',
-    couponState3: '만료됨,'
+    couponState3: '만료됨,',
+    text:'비활성화'
   }
 }

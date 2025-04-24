@@ -2077,5 +2077,6 @@ export default {
     couponState1: 'เพื่อใช้งาน',
     couponState2: 'ใช้แล้ว',
     couponState3: 'หมดอายุ',
+    text:'ปิดการใช้งาน'
   }
 }

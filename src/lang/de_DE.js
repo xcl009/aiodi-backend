@@ -2073,6 +2073,7 @@ export default {
     grantTypeName: "Erwerbsmethode",
     couponState1: "Zu verwenden",
     couponState2: "Bereits verwendet",
-    couponState3: "Abgelaufen"
+    couponState3: "Abgelaufen",
+    text:'deaktiviert'
   }
 }

@@ -2114,5 +2114,6 @@ export default {
     couponState1: 'To be used',
     couponState2: 'Used already',
     couponState3: 'Expired',
+    text:'disabled'
   }
 }
