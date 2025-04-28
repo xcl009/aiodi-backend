@@ -1300,8 +1300,8 @@ export default {
 				e = JSON.parse(e);
 				let currencyCoin = this.siteInfo.currencySymbol;
 				let arr = [];
-				console.log(e,'eee')
 				if(e.length <= 0) return
+        if(!e.stepList) return
 				e.stepList.forEach((res, index) => {
 					let obj = {
 						maxAmountText: '',

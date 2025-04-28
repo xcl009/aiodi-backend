@@ -610,6 +610,8 @@ const util = {
       let fee = `${mode.overBillingUnit}${i18n.t('public.minute')}${currencySymbolL}${mode.unitPrice}${currencySymbolR}`, stepStr = ''
       if (stype == 2) {
         stepStr += '，'
+        console.log( mode,' mode.stepList')
+       if(mode.stepList){
         mode.stepList.map(item => {
           if(item.endTime){
             stepStr += (i18n.t('public.stepList1')).i18Format(item.endTime, util.formatCurrency(item.maxAmount, 1))
@@ -617,6 +619,7 @@ const util = {
             stepStr += (i18n.t('public.stepList2')).i18Format(item.startingTime, util.formatCurrency(item.maxAmount, 1))
           }
         })
+       }
         fee = fee + stepStr
       }
       return fee
