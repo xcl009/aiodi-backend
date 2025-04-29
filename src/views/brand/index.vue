@@ -235,29 +235,34 @@
 
           <template v-if="brandChannels.length > 0">
             <div class="mt-15 mb-15">排序值越大越靠前</div>
-            <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor"
-              :class="{ 'act': item.status == 'ENABLE' }" v-for="item in brandChannels">
-              <el-avatar class="block" :size="40" :src="item.logo" fit="cover" shape="square"></el-avatar>
-              <div class="pl-10 pr-10 flex-1">
-                <div :class="{ 'text-bold text-black': item.status == 'ENABLE' }" @click.stop="$set(item, 'editName', true)" v-show="!item.editName">{{ item.name }}</div>
-                <el-input v-model="item.name" autofocus @blur.stop="item.editName = false" size="mini" v-show="item.editName" />
-                <div class="mt-5 fs-s2">{{ item.code }}</div>
-              </div>
-              <div class="flex align-center sort-box text-center">
-                <template v-if="item.status == 'ENABLE'">
-                  <span class="mr-5">排序值</span>
-                  <el-input class="flex-1" v-model="item.sort" type="number" />
-                </template>
-              </div>
-              <div class="pay-config text-primary text-center">
-                <span v-if="item.status == 'ENABLE' && item.code != 'BALANCE' && item.id" @click.stop="setRows(1, item, 13)">{{
-      $t('brand.payConfig') }}</span>
-              </div>
-              <div class="mr-20 text-primary text-center" v-if="item.status == 'ENABLE'">
-                <span @click.stop="item.access = (item.access == 'ENABLE' ? 'DISABLE' : 'ENABLE')">{{ item.access == 'ENABLE' ? '已接入' : '开通中' }}</span>
-              </div>
-              <el-checkbox v-model="item.status" true-label="ENABLE" false-label="DISABLE"></el-checkbox>
+            <div class="flex mb-15">
+              <el-input v-model="channelQuery.payChannelName" :placeholder="'通道名称'" class="mr-10 flex-1"></el-input>
+              <el-input v-model="channelQuery.payChannelCode" :placeholder="'通道编码'" class="flex-1"></el-input>
             </div>
+            <template v-for="item in brandChannels">
+              <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{ 'act': item.status == 'ENABLE' }" v-show="checkShowPayChannel(item)">
+                <el-avatar class="block" :size="40" :src="item.logo" fit="cover" shape="square"></el-avatar>
+                <div class="pl-10 pr-10 flex-1">
+                  <div :class="{ 'text-bold text-black': item.status == 'ENABLE' }" @click.stop="$set(item, 'editName', true)" v-show="!item.editName">{{ item.name }}</div>
+                  <el-input v-model="item.name" autofocus @blur.stop="item.editName = false" size="mini" v-show="item.editName" />
+                  <div class="mt-5 fs-s2">{{ item.code }}</div>
+                </div>
+                <div class="flex align-center sort-box text-center">
+                  <template v-if="item.status == 'ENABLE'">
+                    <span class="mr-5">排序值</span>
+                    <el-input class="flex-1" v-model="item.sort" type="number" />
+                  </template>
+                </div>
+                <div class="pay-config text-primary text-center">
+                  <span v-if="item.status == 'ENABLE' && item.code != 'BALANCE' && item.id" @click.stop="setRows(1, item, 13)">{{
+        $t('brand.payConfig') }}</span>
+                </div>
+                <div class="mr-20 text-primary text-center" v-if="item.status == 'ENABLE'">
+                  <span @click.stop="item.access = (item.access == 'ENABLE' ? 'DISABLE' : 'ENABLE')">{{ item.access == 'ENABLE' ? '已接入' : '开通中' }}</span>
+                </div>
+                <el-checkbox v-model="item.status" true-label="ENABLE" false-label="DISABLE"></el-checkbox>
+              </div>
+            </template>
           </template>
           <template v-else>
             <div class="mt-15 mb-15">暂无可配置通道</div>
@@ -403,15 +408,21 @@
       </template>
       <template v-if="dialogType == 16">
         <div class="pl-20 pr-20 channel-box country-phone" v-if="countryPhone.length > 0">
+          <div class="flex mb-15">
+            <el-input v-model="channelQuery.phoneChannelName" :placeholder="'国家中文名'" class="mr-10 flex-1"></el-input>
+            <el-input v-model="channelQuery.phoneChannelCode" :placeholder="'冠号'" class="flex-1"></el-input>
+          </div>
           <draggable v-model="countryPhone">
-            <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{ 'act': brandCountryPhone[item.crownCode] }" v-for="item in countryPhone" @click="$set(brandCountryPhone, item.crownCode, !brandCountryPhone[item.crownCode])">
-              <el-avatar class="block" :size="35" :src="item.icon" fit="cover" shape="square"></el-avatar>
-              <div class="pl-15 pr-15 flex-1">
-                <div :class="{ 'text-bold text-black': brandCountryPhone[item.crownCode] }">{{ item.chineseName }}</div>
-                <div class="mt-5 fs-s2">{{ item.name }}</div>
+            <template v-for="item in countryPhone">
+              <div class="flex align-center p-10 mb-15 channel-item radius-10 cursor" :class="{ 'act': brandCountryPhone[item.crownCode] }"  v-show="checkShowPhoneChannel(item)" @click="$set(brandCountryPhone, item.crownCode, !brandCountryPhone[item.crownCode])">
+                <el-avatar class="block" :size="35" :src="item.icon" fit="cover" shape="square"></el-avatar>
+                <div class="pl-15 pr-15 flex-1">
+                  <div :class="{ 'text-bold text-black': brandCountryPhone[item.crownCode] }">{{ item.chineseName }}</div>
+                  <div class="mt-5 fs-s2">{{ item.name }}</div>
+                </div>
+                <div class="text-primary">+{{ item.crownCode }}</div>
               </div>
-              <div class="text-primary">+{{ item.crownCode }}</div>
-            </div>
+            </template>
           </draggable>
         </div>
       </template>
@@ -493,6 +504,7 @@ export default {
       dform: {},
       twoDform:{},
 
+      channelQuery: {},
       //支付通道
       payChannel: [],
       channels: {},
@@ -505,7 +517,7 @@ export default {
       //国家冠号
       countryPhone: [],
       brandCountryPhone: {},
-      currencySymbolpositionType:false
+      currencySymbolpositionType:false,
     }
   },
   // defaultColumn() {
@@ -1314,7 +1326,26 @@ export default {
           type: 'success'
         })
       })
-    }
+    },
+
+    /**
+     *
+     */
+    checkShowPayChannel(item){
+      let val = true, name = this.channelQuery.payChannelName || '', code = this.channelQuery.payChannelCode || ''
+      if((name && item.name.toLowerCase().indexOf(name) == -1) || (code && item.code.toLowerCase().indexOf(code) == -1)){
+        val = false
+      }
+      return val
+    },
+
+    checkShowPhoneChannel(item){
+      let val = true, name = this.channelQuery.phoneChannelName || '', code = this.channelQuery.phoneChannelCode || ''
+      if((name && item.chineseName.indexOf(name) == -1) || (code && item.crownCode.indexOf(code) == -1)){
+        val = false
+      }
+      return val
+    },
   },
 }
 </script>
