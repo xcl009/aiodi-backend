@@ -2108,5 +2108,6 @@ export default {
       couponState1: 'Будут использованы',
       couponState2: 'Используется',
       couponState3: 'Срок годности истек',
+      text:'Запрещено'
     }
 };

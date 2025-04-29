@@ -2114,6 +2114,7 @@ export default {
     grantTypeName: '获得方式',
     couponState1: '待使用',
     couponState2: '已使用',
-    couponState3: '已过期'
+    couponState3: '已过期',
+    text:'已禁用'
   }
 }

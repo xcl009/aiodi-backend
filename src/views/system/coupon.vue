@@ -58,10 +58,11 @@
               <!-- <el-button type="text" @click="setRows(3, scope.row, 2, scope.$index)">{{ $t('public.edit') }}</el-button> -->
               <el-button type="text" @click="$router.push({path: `/userManage?couponId=${scope.row.id}`})" v-if="unixTime(scope.row.couponEndTime) > currentTime()">{{ $t('coupon.couponGrant') }}</el-button>
               <el-button type="text" @click="$router.push({path: `/system/couponUser?couponId=${scope.row.id}`})">{{ $t('coupon.couponGrantRecord') }}</el-button>
-              <!-- <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
+              <div style="color:'#ccc';margin-left:6px" v-if="unixTime(scope.row.couponEndTime) <= currentTime()">已禁用</div>
+              <el-popconfirm v-else :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('coupon.couponDisableText')" @onConfirm="setRows(2, scope.row, 1, scope.$index)">
                 <el-button type="text" class="text-danger" slot="reference">{{ $t('coupon.couponDisable') }}</el-button>
-              </el-popconfirm> -->
+              </el-popconfirm>
             </div>
           </template>
         </el-table-column>
@@ -423,6 +424,7 @@ export default {
           this.$get('iot-saas-basic/admin/couponManage/stop', {
             id: row.id
           }).then(res => {
+            this.getList()
             row.status = 2
           })
           break
