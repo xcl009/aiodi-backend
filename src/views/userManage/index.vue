@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column :label="$t('public.phone')">
           <template slot-scope="scope">
-            <div>{{ dealPhone(scope.row.mobile) }}</div>
+            <div>{{ scope.row.mobile || '' }}</div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('home.source')">
