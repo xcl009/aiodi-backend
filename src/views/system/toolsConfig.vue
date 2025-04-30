@@ -125,8 +125,7 @@
       </template>
 
       <template v-else>
-        <div class="pb-20 cursor" @click="$router.push({ path: `/market/appList` })">{{ $t('public.zwPurchase') }}，<span
-            class="text-primary">{{ $t('public.goBuy') }}</span></div>
+        <div class="pb-20 cursor">{{ $t('public.zwPurchase') }}</div>
       </template>
     </div>
 

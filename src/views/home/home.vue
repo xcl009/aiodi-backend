@@ -396,7 +396,11 @@
             </el-table-column>
             <el-table-column :label="`${$t('home.equipmentCategory')}`" width="100">
               <template slot-scope="scope">
-                {{ scope.row.deviceType }}
+                <el-tooltip :content="myDeviceId[scope.row.deviceTypeCode]" placement="top">
+                  <div class="text-cut">
+                    {{ myDeviceId[scope.row.deviceTypeCode] || '' }}
+                  </div>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('home.source')}`" width="150">

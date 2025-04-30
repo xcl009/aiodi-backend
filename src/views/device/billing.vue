@@ -15,7 +15,7 @@
                   <el-radio-button :label="item"
                     v-for="(item, key) in (config.mode_way[billing.deviceTypeCode] ? config.mode_way[billing.deviceTypeCode] : config.mode_way.default)"
                     :disabled="!Ability[`${billing.deviceTypeCode}_${item}`] && item != Object.values((config.mode_way[billing.deviceTypeCode] ? config.mode_way[billing.deviceTypeCode] : config.mode_way.default))[0]">{{
-                      key }}</el-radio-button>
+                      $t('public.' + item) }}</el-radio-button>
                 </el-radio-group>
                 <el-popover placement="right" title="" width="400" trigger="hover">
                   <div>
@@ -134,8 +134,7 @@
             </el-form-item>
           </template>
           <template v-else>
-            <div class="cursor" @click="$router.push({ path: `/market/appList` })">{{ $t('public.zwPurchase') }}，<span
-                class="text-primary">{{ $t('public.goBuy') }}</span></div>
+            <div>{{ $t('public.zwPurchase') }}</div>
           </template>
         </el-form>
       </el-col>

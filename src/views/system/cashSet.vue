@@ -185,8 +185,7 @@
           </el-form>
         </template>
         <template v-else>
-          <div class="cursor" @click="$router.push({ path: `/market/appList` })">{{ $t('public.zwPurchase') }}，<span
-              class="text-primary">{{ $t('public.goBuy') }}</span></div>
+          <div class="cursor">{{ $t('public.zwPurchase') }}</div>
         </template>
       </el-col>
     </el-row>

@@ -111,6 +111,15 @@
               </el-tooltip>
             </template>
           </el-table-column>
+          <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'deviceType'">
+            <template slot-scope="scope">
+              <el-tooltip :content="myDeviceId[scope.row.deviceTypeCode]" placement="top">
+                <div class="text-cut_two">
+                  {{ myDeviceId[scope.row.deviceTypeCode] || '' }}
+                </div>
+              </el-tooltip>
+            </template>
+          </el-table-column>
           <el-table-column :label="item.name" :width="item.width || 120" v-else-if="item.key.indexOf('Time') > -1">
             <template slot-scope="scope">
               {{ parseTime(scope.row[item.key]) }}

@@ -91,10 +91,7 @@
                         {{ $t('store.text7') }}<br>
                         {{ $t('store.text8') }}
                       </div>
-                      <div class="mt-20">{{ $t('store.text9') }}<el-link type="primary" :underline="false"
-                          @click="$router.push({ path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=分成方式` })">{{
-        $t('store.text10') }}</el-link>
-                      </div>
+                      <!-- <div class="mt-20">{{ $t('store.text9') }}</div> -->
                     </div>
                     <el-link type="danger" slot="reference" :underline="false"
                       class="ml-10 el-icon-question fs-c1"></el-link>
@@ -170,9 +167,7 @@
                       <el-popover placement="right" title="" trigger="hover"
                         v-if="getModeType(item.deviceTypeCode, xcx)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode, xcx)['DEPOSIT']">
                         <div>
-                          {{ $t('store.text11') }}<el-link type="primary" :underline="false"
-                            @click="$router.push({ path: `/market/appList?deviceTypeCode=${item.deviceTypeCode}&serviceName=计费模式` })">{{
-        $t('store.text10') }}</el-link>
+                          {{ $t('store.text11') }}
                         </div>
                         <el-link type="danger" :underline="false" slot="reference"
                           class="ml-10 el-icon-question fs-c1"></el-link>

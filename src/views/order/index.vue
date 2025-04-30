@@ -180,6 +180,15 @@
                 </template>
               </template>
             </el-table-column>
+            <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'deviceType'">
+              <template slot-scope="scope">
+                <el-tooltip :content="myDeviceId[scope.row.deviceTypeCode]" placement="top">
+                  <div class="text-cut_two">
+                    {{ myDeviceId[scope.row.deviceTypeCode] || '' }}
+                  </div>
+                </el-tooltip>
+              </template>
+            </el-table-column>
             <el-table-column :label="item.name" min-width="180" v-else-if="item.val && item.key == 'storeName'">
               <template slot-scope="scope">
                 <el-tooltip :content="scope.row.storeName" placement="top">
@@ -451,7 +460,7 @@
               </div>
               <div class="flex mb-10">
                 <div class="label-text">{{ $t('public.deviceType') }}:</div>
-                <div>{{ curRow.deviceType }}</div>
+                <div>{{ myDeviceId[curRow.deviceTypeCode] }}</div>
               </div>
               <div class="flex mb-10">
                 <div class="label-text">{{ $t('public.payType') }}:</div>
@@ -526,7 +535,7 @@
               </div>
               <div class="flex mb-10">
                 <div class="label-text">{{ $t('public.deviceType') }}:</div>
-                <div>{{ curRow.deviceType }}</div>
+                <div>{{ myDeviceId[curRow.deviceTypeCode] }}</div>
               </div>
               <div class="flex mb-10">
                 <div class="label-text">{{ $t('public.statrtTime') }}:</div>
@@ -602,7 +611,7 @@
                   </div>
                   <div class="flex mb-10">
                     <div class="label-text">{{ $t('public.deviceType') }}:</div>
-                    <div>{{ curRow.deviceType }}</div>
+                    <div>{{ myDeviceId[curRow.deviceTypeCode] }}</div>
                   </div>
                   <div class="flex mb-10">
                     <div class="label-text">{{ $t('public.deviceCode') }}:</div>
@@ -633,6 +642,10 @@
                       </el-tooltip>
                     </div>
                   </div>
+                  <div class="flex mb-10" v-if="curRow.status.indexOf('W') > -1">
+                    <div class="label-text">待付款:</div>
+                    <div>{{ accSub(curRow.amountPaid, curRow.amount) }}</div>
+                  </div>
                   <div class="flex">
                     <div class="label-text">{{ $t('public.refund') }}:</div>
                     <div>{{ curRow.amountRefund || '0.00' }}</div>
@@ -652,7 +665,7 @@
                   <div class="flex mb-10">
                     <div class="label-text" v-if="curRow.deviceTypeCode.indexOf('PA') > -1">{{
       $t('public.sn') }}:</div>
-                    <div class="label-text" v-else>其他:</div>
+                    <div class="label-text" v-else>Other:</div>
                     <div class="cursor">{{ curRow.terminalId || '--' }}</div>
                   </div>
                   <div class="flex" v-if="curRow.returnStore">
