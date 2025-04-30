@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             <template v-for="(item, index) in scope.row.agentDeviceType">
               <div class="cursor" v-if="index < 2">
-                {{ item.name }}
+                {{ myDeviceId[item.code] || '' }}
               </div>
             </template>
           </template>
@@ -81,7 +81,7 @@
             <div class="inline text-left">
               <template v-for="(item, index) in scope.row.agentDeviceType">
                 <div v-if="index < 2">
-                  {{ item.name }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
+                  {{ myDeviceId[item.code] }}&nbsp;&nbsp;{{ item.profitRatio || '0' }}%
                 </div>
               </template>
             </div>
@@ -153,8 +153,8 @@
                     <el-dropdown-item @click.native="setRows(1, cashStat[scope.row.id], 5)"
                       v-if="checkAbility(['FROZEN_BALANCE'], 3)">{{ $t('public.freezeAmount') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(8, scope.row, 11)" v-if="isBrand()">{{ $t('public.setLoginPassword') }}</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
-                      v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
+                    <!-- <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
+                      v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item> -->
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>

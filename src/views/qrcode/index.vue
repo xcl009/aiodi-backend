@@ -40,7 +40,7 @@
         </el-table-column>
         <el-table-column :label="$t('public.deviceType')">
           <template slot-scope="scope">
-            {{ scope.row.deviceType.name }}
+            {{ myDeviceId[scope.row.deviceType.code] || '' }}
           </template>
         </el-table-column>
         <el-table-column :label="$t('qrcode.codeContent')">
@@ -76,14 +76,14 @@
             <el-tooltip class="item" effect="dark" :content="$t('qrcode.downloadText')" placement="top" v-if="scope.row.accessUrl">
               <el-link :href=" scope.row.accessUrl" target="_blank" type="primary">{{ $t('qrcode.download') }}</el-link>
             </el-tooltip>
-            <span class="text-primary cursor" @click="setRows(3, scope.row, 1)" v-if="token1">生成VIETQR</span>
+            <span class="text-primary cursor" @click="setRows(3, scope.row, 1)" v-if="token1">create VIETQR</span>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="rel flex justify-center">
         <div class="abs flex pagination-left" v-if="token1">
-          <el-button type="primary" size="mini" :disabled="selSnArr.length == 0" @click="setRows(3, {}, 1)">批量生成VIETQR</el-button>
+          <el-button type="primary" size="mini" :disabled="selSnArr.length == 0" @click="setRows(3, {}, 1)">Batch creation VIETQR</el-button>
         </div>
         <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)" @pagination="getList" />
       </div>
@@ -150,6 +150,9 @@ export default {
     ImportData
   },
   computed: {
+    myDeviceId() {
+      return this.$store.state.user.myDeviceId
+    },
     myDeviceName() {
       return this.$store.state.user.myDeviceName
     },

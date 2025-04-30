@@ -34,7 +34,7 @@
     </condition>
 
     <div v-infinite-scroll="loadPage" class="pb-20 load-box">
-      <div class="p-30 text-center bg-white text-primary cursor" @click="$router.push({path: `/market/appList`})" v-if="listTotal == 0">
+      <div class="p-30 text-center bg-white text-primary cursor"  v-if="listTotal == 0">
         {{ $t('market.text') }}
       </div>
       <el-row :gutter="20">

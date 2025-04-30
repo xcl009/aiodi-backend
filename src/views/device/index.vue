@@ -53,7 +53,7 @@
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(4, {})" v-if="isSaas()">{{ $t('device.counting') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord')}}</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas() || isBrand()">设备软件升级</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas() || isBrand()">{{ $t('device.deviceUpdate') || 'Device Upgrade'}}</div>
         <div v-show="false">{{ screenfull }}</div>
         <table-column-set storageKey="deviceTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
@@ -70,7 +70,7 @@
         <template v-for="item in showColumn">
           <el-table-column :label="item.name" width="100" v-if="item.val && item.key == 'deviceType'">
             <template slot-scope="scope">
-              {{ scope.row.deviceType.name || '' }}
+              {{ myDeviceId[scope.row.deviceType.code] || '' }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="240" v-else-if="item.val && item.key == 'deviceSn'">
@@ -829,11 +829,11 @@ export default {
           hidden: !this.checkAbility(['PA'], 2),
           name: this.$t('device.lendableReturnable')
         },
-        {
-          key: 'deviceFactory',
-          val: true,
-          name: this.$t('public.deviceProperties')
-        },
+        // {
+        //   key: 'deviceFactory',
+        //   val: true,
+        //   name: this.$t('public.deviceProperties')
+        // },
         {
           key: 'distribute',
           val: true,

@@ -5,7 +5,7 @@
         element-loading-text="Loading" highlight-current-row>
         <el-table-column :label="$t('public.type')">
           <template slot-scope="scope">
-            <div>{{ scope.row.advertTypeName }}</div>
+            <div>{{ myDeviceId[scope.row.advertTypeCode] || 'System Advertising' }}</div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.number')">

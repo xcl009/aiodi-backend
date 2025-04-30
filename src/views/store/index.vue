@@ -141,10 +141,8 @@
                     <div>
                       <span v-if="scope.row.divisionMode == 1">
                         <span v-if="isStore()">{{ item.promised || item.live }}%</span>
-                        <span v-else-if="item.closeType == 3">{{ $t('public.commitment') }}{{ item.promised
-                        }}%，{{ $t('public.relative') }}{{ item.relative }}%({{
-  config.closeType[item.closeType] }})</span>
-                        <span v-else>{{ item.live }}%({{ config.closeType[item.closeType] }})</span>
+                        <span v-else-if="item.closeType == 3">{{ $t('public.commitment') }}{{ item.promised }}%，{{ $t('public.relative') }}{{ item.relative }}%({{ $t(`store.closeType${item.closeType}`) }})</span>
+                        <span v-else>{{ item.live }}%</span>
                       </span>
                       <span v-else>{{ $t('public.undivided') }}</span>
                     </div>
@@ -159,12 +157,12 @@
               {{ scope.row.city }}
               {{ scope.row.district }}
             </template>
-          </el-table-column> -->
+          </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'catId'">
             <template slot-scope="scope">
               {{ cateObj[scope.row.catId] ? cateObj[scope.row.catId].catName : '--' }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'supUser'">
             <template slot-scope="scope">
               <div>{{ supUser[scope.row.agentId] ? supUser[scope.row.agentId].name : '' }}</div>
@@ -272,8 +270,8 @@
                     </template>
                     <el-dropdown-item @click.native="setRows(3, scope.row, 10)" v-if="isBrand()">{{ $t('store.loginRecord') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="setRows(3, scope.row, 13, 'STORE_CONTRACT')" v-if="sysShows.storeContract">{{ $t('brand.contractInformation') }}</el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
-                      v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item>
+                    <!-- <el-dropdown-item @click.native="$router.push({ path: `/market/appList` })"
+                      v-if="isBrand()">{{ $t('public.moreApplications') }}</el-dropdown-item> -->
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -669,7 +667,7 @@ export default {
         newly: []
       },
       checkList: {},
-      
+
       sysShows: {},
     }
   },
@@ -781,11 +779,11 @@ export default {
         //   val: true,
         //   name: this.$t('store.cityRegion')
         // },
-        {
-          key: 'catId',
-          val: true,
-          name: this.$t('public.industry')
-        },
+        // {
+        //   key: 'catId',
+        //   val: true,
+        //   name: this.$t('public.industry')
+        // },
         {
           key: 'remark',
           val: false,
@@ -958,7 +956,7 @@ export default {
         this.listLoading = false
       })
     },
-    
+
     setTableMaxH(){
       this.tableMaxH = window.innerHeight - this.$refs.list_table.$el.offsetTop - 60
     },

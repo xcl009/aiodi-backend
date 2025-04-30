@@ -45,10 +45,10 @@
   },
   "xcx_pay": {
     "default": {
-      "weixin": "微信",
-      "alipay": "支付宝",
+      "weixin": "WeChat",
+      "alipay": "Alipay",
       "three": "APP",
-      "four": "其他"
+      "four": "Other"
     }
   },
   "xcx_page": {

@@ -12,7 +12,7 @@
               <el-input v-model="form.remark" :placeholder="$t('role.roleDescriptionText')" />
             </el-form-item>
             <el-form-item>
-              <div>温馨提示：添加自定义角色选择功能权限，账号在移动端登录时，不是所有勾选的页面、功能权限都已开放</div>
+              <div>Reminder: Add custom role selection function permissions. When the account logs in on the mobile end, not all selected pages and function permissions are already open</div>
             </el-form-item>
           </el-col>
         </el-row>

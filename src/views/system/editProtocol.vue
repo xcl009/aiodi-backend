@@ -3,11 +3,11 @@
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="14" :xl="12">
         <el-tabs class="mb-15 bg-white" :value="code" @tab-click="getInfo">
-          <el-tab-pane label="隐私政策" name="privacy" />
-          <el-tab-pane label="用户协议" name="userAgreement" />
-          <el-tab-pane label="售后退款协议" name="salesRefund" />
-          <el-tab-pane label="租借协议" name="leaseAgreement" />
-          <el-tab-pane label="会员权益规则" name="memberCardAgreement" />
+          <el-tab-pane :label="$t('system.privacyPolicy') || 'Privacy Policy'" name="privacy" />
+          <el-tab-pane :label="$t('system.userAgreement') || 'User Agreement'" name="userAgreement" />
+          <el-tab-pane :label="$t('system.refundAgreement') || 'After sales refund agreement'" name="salesRefund" />
+          <el-tab-pane :label="$t('system.leaseAgreement') || 'Lease Agreement'" name="leaseAgreement" />
+          <el-tab-pane :label="$t('system.membershipRules') || 'Membership Benefits Rules'" name="memberCardAgreement" />
           <!-- <el-tab-pane label="公司通知" name="companyNotice" />
           <el-tab-pane label="市场活动" name="marketActivities" />
           <el-tab-pane label="公告" name="notice" /> -->
