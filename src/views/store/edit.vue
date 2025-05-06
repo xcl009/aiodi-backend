@@ -62,7 +62,7 @@
 
           <h3 class="pt-20">{{ $t('public.operationalProducts') }}</h3>
           <el-checkbox-group v-model="selDevice" @change="changeDevice" class="pl-10">
-            <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
+            <el-checkbox v-for="(code, name) in myDeviceName" :label="code">{{ name }}</el-checkbox>
           </el-checkbox-group>
 
           <div>
@@ -472,6 +472,9 @@ export default {
     },
     myDeviceId() {
       return this.$store.getters.myDeviceId || { PA: this.$t('public.powerBank') }
+    },
+    myDeviceName() {
+      return this.$store.getters.myDeviceName
     },
     siteInfo() {
       let siteInfo = this.$store.getters.siteInfo
