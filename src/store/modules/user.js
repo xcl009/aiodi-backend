@@ -278,7 +278,7 @@ const actions = {
               myDeviceName[d.name] = d.deviceTypeCode
               myProfitRatio[d.deviceTypeCode] = d.profitRatio
             }
-             myDeviceId[d.deviceTypeCode] = d.name
+            myDeviceId[d.deviceTypeCode] = d.name
             myDevice.push(d)
           }
           commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({
