@@ -637,13 +637,12 @@
                     <div class="label-text">{{ $t('public.package') }}:</div>
                     <div class="text-cut">
                       <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
-                        <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1,
-      curRow.deviceTypeCode) }}</span>
+                        <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode) }}</span>
                       </el-tooltip>
                     </div>
                   </div>
                   <div class="flex mb-10" v-if="curRow.status.indexOf('W') > -1">
-                    <div class="label-text">待付款:</div>
+                    <div class="label-text">WaitPay:</div>
                     <div>{{ accSub(curRow.amountPaid, curRow.amount) }}</div>
                   </div>
                   <div class="flex">
@@ -684,12 +683,12 @@
                       <el-avatar :src="payChannel[curRow.payType].logo" :size="15" v-if="payChannel[curRow.payType]"
                         class="mr-5 radius-15"></el-avatar>
                       <span v-if="curRow.orderAmount > 0 && curRow.feeType == 3 && (isBrand() || isSaas())">({{
-      formatCurrency(curRow.orderAmount) }})</span>
+      formatCurrency(curRow.orderAmount, 1) }})</span>
                     </div>
                   </div>
                   <div class="flex mb-10">
                     <div class="label-text">{{ $t('public.income') }}:</div>
-                    <div>{{ formatCurrency(curRow.amount) || '0.00' }}</div>
+                    <div>{{ formatCurrency(curRow.amount, 1) || '0.00' }}</div>
                   </div>
                   <div class="flex">
                     <div class="label-text">{{ $t('public.remark') }}:</div>

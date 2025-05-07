@@ -68,11 +68,11 @@
             <div>{{ scope.row.guideTitle }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('system.guideContent')" show-overflow-tooltip>
+        <!-- <el-table-column :label="$t('system.guideContent')" show-overflow-tooltip>
           <template slot-scope="scope">
             <div>{{ scope.row.guideContent }}</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column :label="$t('system.guideDesc')" show-overflow-tooltip>
           <template slot-scope="scope">
             <div>{{ scope.row.guideDesc }}</div>

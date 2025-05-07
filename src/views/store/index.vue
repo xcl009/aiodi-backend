@@ -64,7 +64,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="item.name" v-if="item.val && item.key == 'address'">
+          <el-table-column :label="item.name" v-else-if="item.val && item.key == 'address'">
             <template slot-scope="scope">
               <div class="text-cut_two">{{ scope.row.address || '--' }}</div>
             </template>
@@ -87,21 +87,21 @@
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'amount'">
             <template slot-scope="scope">
-              {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
+              {{ formatCurrency(orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00', 1) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'amountDivide'">
             <template slot-scope="scope">
-              {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}
+              {{ formatCurrency(orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00', 1) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'balance'">
             <template slot-scope="scope">
               <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(cashStat[scope.row.id] || {})" v-if="checkAbility(['WD_MODIFY'], 3)">
-                {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+                {{ formatCurrency(cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00', 1) }}
               </div>
               <div class="cursor" v-else>
-                {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+                {{ formatCurrency(cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00', 1) }}
               </div>
             </template>
           </el-table-column>
@@ -166,12 +166,12 @@
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'supUser'">
             <template slot-scope="scope">
               <div>{{ supUser[scope.row.agentId] ? supUser[scope.row.agentId].name : '' }}</div>
-              <div>{{ supUser[scope.row.agentId] ? dealPhone(supUser[scope.row.agentId].mobile) : '' }}</div>
+              <div>{{ supUser[scope.row.agentId] ? supUser[scope.row.agentId].mobile : '' }}</div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'remark'">
             <template slot-scope="scope">
-              <div class="cursor text-primary" @click="setRows(3, scope.row, 12)">{{ scope.row.remark || '无' }}</div>
+              <div class="cursor text-primary" @click="setRows(3, scope.row, 12)">{{ scope.row.remark || '' }}</div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.val" :prop="item.key"></el-table-column>

@@ -12,7 +12,7 @@
               <el-input v-model="form.remark" :placeholder="$t('role.roleDescriptionText')" />
             </el-form-item>
             <el-form-item>
-              <div>Reminder: Add custom role selection function permissions. When the account logs in on the mobile end, not all selected pages and function permissions are already open</div>
+              <div>{{ $t('role.roleTips') || 'Reminder: Add custom role selection function permissions. When the account logs in on the mobile end, not all selected pages and function permissions are already open' }}</div>
             </el-form-item>
           </el-col>
         </el-row>

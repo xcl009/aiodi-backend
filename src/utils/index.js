@@ -624,12 +624,12 @@ const util = {
       }
       return fee
     } else {
-      let fee = `${mode.startingTime}${i18n.t('public.minute')}${currencySymbolL}${mode.startingAmount}${currencySymbolR}`
+      let fee = `${mode.startingTime}${i18n.t('public.minute')}${util.formatCurrency(mode.startingAmount, 1)}`
       if (mode.startingTime != mode.overBillingUnit || mode.startingAmount != mode.unitPrice) {
-        fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${currencySymbolL}${mode.startingAmount}${currencySymbolR}，${i18n.t('public.afterExceeding')}${mode.overBillingUnit}${i18n.t('public.minute')}${currencySymbolL}${mode.unitPrice}${currencySymbolR}`
+        fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${util.formatCurrency(mode.startingAmount, 1)}，${i18n.t('public.afterExceeding')}${mode.overBillingUnit}${i18n.t('public.minute')}${util.formatCurrency(mode.unitPrice,1)}`
       }
       if (stype == 2) {
-        fee = `${fee}，${mode.maxBillingTimeUnit == 1440 ? i18n.t('public.dailyCapping') : mode.maxBillingTimeUnit + i18n.t('public.minCap')}${currencySymbolL}${mode.maxBillingTimePrice || 19.9}${currencySymbolR}，${i18n.t('public.totalCapping')}${currencySymbolL}${mode.maxAmount}${currencySymbolR}`
+        fee = `${fee}，${mode.maxBillingTimeUnit == 1440 ? i18n.t('public.dailyCapping') : mode.maxBillingTimeUnit + i18n.t('public.minCap')}${util.formatCurrency(currencySymbolL, 1)}${util.formatCurrency(mode.maxBillingTimePrice || 19.9, 1)}，${i18n.t('public.totalCapping')}${util.formatCurrency(mode.maxAmount, 1)}`
       }
       if(mode.feeTime > 0){
         fee = `${i18n.t('public.free')}${mode.feeTime}${i18n.t('public.minute')}${fee}`
@@ -909,7 +909,7 @@ const util = {
 
   formatCurrency: (number, type = 0) => {
   	if (!number) return 0
-    if (number >= 1000) {
+    if (number >= 1000 && type == 0) {
       number = parseFloat((number / 1000)) + 'K'
     }
     const types = util.currencySymbolposition();
@@ -918,7 +918,7 @@ const util = {
   	// 使用正则表达式去除末尾的 .00
   	const trimmedNumber = numberStr.replace(/\.00$/, '')
   	// 应用千位格式化
-  	const formattedNumber = trimmedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  	const formattedNumber = trimmedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     return `${types ? (type > 0 ? currencySymbol : ''):''}${formattedNumber}${types ? '':  (type > 0 ? currencySymbol : '') }`
   },
 }

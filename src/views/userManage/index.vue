@@ -58,16 +58,16 @@
         </el-table-column>
         <el-table-column :label="$t('userManage.totalAmount')">
           <template slot-scope="scope">
-            {{ scope.row.totalConsumption || '0.00' }}
+            {{ formatCurrency(scope.row.totalConsumption || '0.00', 1) }}
           </template>
         </el-table-column>
         <el-table-column :label="$t('public.walletBalance')" v-if="isSaas() || isBrand()" column-key="orderByBalance" sortable>
           <template slot-scope="scope">
             <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(scope.row)" v-if="checkAbility(['WD_MODIFY'], 3)">
-              {{ scope.row.accountBalance || '0.00' }}
+              {{ formatCurrency(scope.row.accountBalance || '0.00', 1) }}
             </div>
             <div class="cursor" v-else>
-              {{ scope.row.accountBalance || '0.00' }}
+              {{ formatCurrency(scope.row.accountBalance || '0.00', 1) }}
             </div>
           </template>
         </el-table-column>
