@@ -7,8 +7,8 @@
           <div class="rel p-50 flexv justify-between login-left text-white">
             <div class="rel pt-30">
               <div class="title text-bold">
-                {{ siteInfo.appName || $t('public.companyName') }}<br>
-                {{ !siteInfo.appName ? 'SaaS' : '' }}{{ $t('public.adminService') }}
+                <span v-if="siteInfo.appName">{{ siteInfo.appName }}<br></span>
+                {{ $t('public.adminService') }}
               </div>
               <div class="mt-15 flex align-center fs-c1">
                 <div>{{ $t('login.text4') }}</div>
@@ -18,15 +18,15 @@
                 <div>{{ $t('login.text6') }}</div>
               </div>
             </div>
-            <img class="rel" width="100" :src="siteInfo.appLogo || '/logo.png'" alt="">
+            <img class="rel" width="100" :src="siteInfo.appLogo" alt="" v-if="gid && gid != 100000000">
+            <img class="rel" width="100" :src="'/logo.png'" alt="" v-else>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="12">
           <div class="flex align-center justify-center form-box bg-white" :class="{ 'mobile': $_isMobile() }">
             <div class="pb-40">
               <div class="hello">{{ $t('login.hello') }}！</div>
-              <div class="mb-30 desc fs-b2 text-gray">{{ $t('login.welcomeToLogin') }}{{ siteInfo.appName }}{{
-                $t('public.adminService') }}</div>
+              <div class="mb-30 desc fs-b2 text-gray">{{ $t('public.adminServices') || ($t('login.welcomeToLogin') + $t('public.adminService')) }}</div>
               <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
                 <el-form-item prop="username">
                   <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1"
@@ -327,11 +327,11 @@ $light_gray: #eee;
     .hello {
       font-size: 36px;
     }
-    
+
     .desc{
       width: 360px;
     }
-    
+
     .el-input__inner {
       min-width: 360px;
       background: var(--bodyBg);

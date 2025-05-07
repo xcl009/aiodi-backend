@@ -53,7 +53,7 @@
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(4, {})" v-if="isSaas()">{{ $t('device.counting') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord')}}</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas() || isBrand()">{{ $t('device.deviceUpdate') || 'Device Upgrade'}}</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas()">{{ $t('device.deviceUpdate') || 'Device Upgrade'}}</div>
         <div v-show="false">{{ screenfull }}</div>
         <table-column-set storageKey="deviceTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
@@ -162,7 +162,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.val && item.key == 'amount'">
             <template slot-scope="scope">
-              {{ orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00' }}
+              {{ formatCurrency(orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00', 1) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || 120"

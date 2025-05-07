@@ -6,13 +6,13 @@
         <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
           <div class="fs-s3 text-black">{{ $t('brand.withdrawableAmount') }}（{{ $t('public.freezeAmount') }}：{{ money.frozenBalance || 0.00 }}）</div>
           <div class="mt-15 mb-15 cursor">
-            <span class="text-primary khcoin">{{currencySymbolpositionType ?  siteInfo.currencySymbol: ''  }}{{ money.balance || 0.00 }}{{currencySymbolpositionType ?  '': siteInfo.currencySymbol }}</span>
+            <span class="text-primary khcoin">{{ formatCurrency(money.balance, 1) }}</span>
           </div>
           <div v-if="!isBrand() && Ability['cash']">
             <el-button type="primary" size="small" class="fs-s3" @click="$router.push({path: `/money/cash`})">{{ $t('public.withdrawal') }}</el-button>
           </div>
         </el-col>
-        <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
+        <!-- <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
           <div class="fs-s3 text-black">
             {{ $t('payType.khbMoeny') }}
             <span class="ml-10 fs-s3 text-gray cursor" @click="khyCoinIntroDialog = true" v-if="isBrand()">{{ $t('moeny.whyKhb') }}</span>
@@ -29,7 +29,7 @@
             <span class="text-primary khcoin">{{ money.happyCurrencyNum || 0.00 }}</span>
           </div>
           <el-button type="primary" size="small" class="fs-s3" @click="$refs.rechargeCoin.show()">{{ $t('moeny.goRecharge') }}</el-button>
-        </el-col>
+        </el-col> -->
       </el-row>
     </div>
 
@@ -44,7 +44,7 @@
             <el-form-item :label="$t('public.moenyType')">
               <el-select v-model="form.capitalType" :placeholder="$t('public.moenyType')" @change="toQuery()">
                 <el-option :label="$t('payType.regularWallet')" value="RMB" />
-                <el-option :label="$t('payType.khbMoeny')" value="KHB" />
+                <!-- <el-option :label="$t('payType.khbMoeny')" value="KHB" /> -->
               </el-select>
             </el-form-item>
           </template>
@@ -142,7 +142,7 @@ import {
       },
       agentInfo() {
         return this.$store.getters.agentInfo
-      },      
+      },
       Ability() {
         return this.$store.getters.Ability
       },

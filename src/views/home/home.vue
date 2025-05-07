@@ -171,9 +171,10 @@
                     scope.$index + 1 }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('public.storeName')" min-width="90">
+            <el-table-column :label="$t('public.storeName')" min-width="120">
               <template slot-scope="scope">
-                <span class="y-yellow">{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
+                <span class="y-yellow" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
+                <span class="y-yellow" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.orderNum')" min-width="90">
@@ -183,23 +184,22 @@
             </el-table-column>
             <el-table-column :label="$t('public.aTurnover')" min-width="120">
               <template slot-scope="scope">
-                {{ scope.row.amount || 0 }}
+                {{ formatCurrency(scope.row.amount, 1) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('public.income')" min-width="90">
               <template slot-scope="scope">
-                {{ scope.row.amountDivide || 0 }}
+                {{ formatCurrency(scope.row.amountDivide, 1) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.seizuresNum')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
-                {{ scope.row.amountDeposit || 0 }}
+                {{ formatCurrency(scope.row.amountDeposit, 1) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.alldeposit')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
-                {{ scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) -
-                  Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0 }}
+                {{ formatCurrency(scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) - Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0, 1) }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.allRefunded')" min-width="160" v-if="isSaas() || isBrand()">
@@ -318,9 +318,10 @@
                       scope.$index + 1 }}</span>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('public.storeName')" min-width="90">
+              <el-table-column :label="$t('public.storeName')" min-width="120">
                 <template slot-scope="scope">
-                  <span class="y-yellow">{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
+                  <span class="y-yellow" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
+                  <span class="y-yellow" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('home.orderNum')" min-width="90" column-key="orderAllNumber" sortable>
@@ -384,9 +385,9 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.store')}`" width="80">
+            <el-table-column :label="`${$t('public.store')}`" width="120">
               <template slot-scope="scope">
-                <span>{{ scope.row.storeName ? scope.row.storeName.substring(0, 1) : '' }}***</span>
+                <span>{{ scope.row.storeName }}</span>
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.user')}`" width="80">

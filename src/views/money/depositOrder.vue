@@ -8,7 +8,7 @@
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('home.alldeposit') }}</div>
-            <div><span class="mr-5 fs-b3 text-bold">{{ delComma(accSub(totalStat.allAmount, totalStat.amount)) || 0 }}</span></div>
+            <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency(accSub(totalStat.allAmount, totalStat.amount), 1) || 0 }}</span></div>
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
@@ -39,7 +39,7 @@
           </div>
           <div class="flex1 ml-30">
             <div class="mb-5">{{ $t('moeny.refundedAmount') }}</div>
-            <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.refundedAmount || 0 }}</span>
+            <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency(totalStat.refundedAmount || 0, 1) }}</span>
             </div>
           </div>
           <div class="flex1 ml-30">
@@ -127,7 +127,7 @@
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'lAmount'">
             <template slot-scope="scope">
-              {{ accSub(scope.row.depositAmount, scope.row.amount) }}
+              {{ formatCurrency(accSub(scope.row.depositAmount, scope.row.amount), 1) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'rStatus'">
@@ -138,7 +138,12 @@
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'rAmount'">
             <template slot-scope="scope">
-              {{ accSub(accSub(scope.row.depositAmount, scope.row.amount), scope.row.amountEnable) }}
+              {{ formatCurrency(accSub(accSub(scope.row.depositAmount, scope.row.amount), scope.row.amountEnable), 1) }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="item.name" v-else-if="item.key.indexOf('mount')">
+            <template slot-scope="scope">
+              {{ formatCurrency(scope.row[item.key], 1) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || 120" v-else></el-table-column>
