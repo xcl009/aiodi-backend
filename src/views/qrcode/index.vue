@@ -102,7 +102,7 @@
             <el-input v-model="dform.type" :placeholder="$t('public.enter')" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="支付通道ID">
-            <el-input v-model="dform.configId" :placeholder="$t('public.enter')"></el-input>
+            <el-input v-model="dform.configId" :placeholder="$t('public.enter')" :disabled="vietQrConfigId ? true : false"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -200,6 +200,7 @@ export default {
       curRow: {},
       curIdx: 0,
       dform: {},
+      vietQrConfigId: '',
       currencySymbolpositionType:false
     }
   },
@@ -219,7 +220,7 @@ export default {
       this.toQuery()
     }
     this.urlQuery = this.$route.meta.urlQuery
-    this.getPayChannel()
+    //this.getPayChannel()
   },
   mounted(options) {
     this.currencySymbolpositionType =  currencySymbolposition();
@@ -373,7 +374,12 @@ export default {
               brandId: row.brandId || this.agentInfo.brandId,
               amount: 350000,
               type: 'VIETQR',
-              configId: '1328026287167524864'
+              configId: ''
+            }
+            if(!this.vietQrConfigId){
+              this.getVietQrId()
+            }else{
+              this.dform.configId = this.vietQrConfigId
             }
           }
         break
@@ -392,9 +398,25 @@ export default {
       switch (this.dialogType) {
         case 1:
           this.deviceSns = params.deviceSn.split(',')
+          if(!params.configId){
+            this.clickSubmit = false
+            return
+          }
           this.createViteQr(params, 0)
           break
       }
+    },
+
+    /**
+     * 获取viteQr支付配置id
+     */
+    getVietQrId(){
+      this.$get('iot-saas-pay/admin/pay/channel/getConfigIdByBrandId', {
+        channelCode: 'VIETQR'
+      }).then((res = {}) => {
+        this.vietQrConfigId = res.id || ''
+        this.dform.configId = this.vietQrConfigId
+      })
     },
 
     /**
