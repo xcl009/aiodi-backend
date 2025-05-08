@@ -531,6 +531,7 @@ export default {
     averageATurnover: '平均交易额',
     resetPassword: '重置密码',
     storeList: '商户数据统计',
+    allUserNum: '总用户数'
   },
   order: {
     failedOrdersNum: '刷新扣款失败订单数',

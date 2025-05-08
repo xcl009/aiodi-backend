@@ -514,7 +514,8 @@ export default {
     successNum: "完了したオーダー",
     averageATurnover: "取引額の平均",
     resetPassword: "パスワードを再設定",
-    storeList: "店舗データを統計"
+    storeList: "店舗データを統計",
+    allUserNum: 'ユーザーの合計数'
   },
   order: {
     failedOrdersNum: "決済失敗したオーダーを更新",

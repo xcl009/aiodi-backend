@@ -529,7 +529,8 @@ export default {
     successNum: 'Số đơn thành công',
     averageATurnover: 'Doanh thu bình quân',
     resetPassword: 'Đặt lại mật khẩu',
-    storeList: 'Thống kê thống kê thương giaa'
+    storeList: 'Thống kê thống kê thương giaa',
+    allUserNum: 'Tổng số người dùng'
   },
   order: {
     failedOrdersNum: 'Số đơn hàng khấu trừ thất bại',

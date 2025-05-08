@@ -67,6 +67,17 @@
         </div>
         <div class="dodge-icon b"></div>
       </el-col>
+      <el-col :span="24" class="rel" v-if="isBrand() || isSaas()">
+        <div class="abs p-all flex justify-center">
+          <div class="o-v card-panel cursor">
+            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber)"
+                :duration="2600" /></div>
+            <div class="mt-5 fs-c1 text-white">{{ $t('home.allUserNum') || 'Total Users' }}</div>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/users.svg')" alt="" />
+          </div>
+        </div>
+        <div class="dodge-icon b"></div>
+      </el-col>
     </el-row>
 
     <div class="pl-20 pr-20 trapezoid-box">
@@ -131,7 +142,7 @@
                 <div class="label">
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
                     <div>
-                      {{ index == 0 ? querHistogram[key].amount: index == 1 ? querHistogram[key].orderNumber : querHistogram[key].unitPrice }}
+                      {{ index == 0 ? formatCurrency(querHistogram[key].amount, 1): index == 1 ? querHistogram[key].orderNumber : formatCurrency(querHistogram[key].unitPrice, 1) }}
                     </div>
                   </template>
                 </div>
@@ -837,9 +848,10 @@ export default {
     if (this.Ability['order']) {
       this.getOrderList()
     }
-    if (this.isSaas()) {
+    if (this.isBrand() || this.isSaas()) {
       this.getUserStat()
-    } else if (this.isStore()) {
+    }
+    if (this.isStore()) {
       this.getDeviceList()
       this.getBalance()
     }

@@ -540,6 +540,7 @@ export default {
     averageATurnover: "Média de valor de transação",
     resetPassword: "Redefinir senha",
     storeList: "Estatísticas de dados de comerciantes",
+    allUserNum: 'Total Users'
   },
   order: {
     failedOrdersNum: "Atualizar número de pedidos com falha na cobrança",

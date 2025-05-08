@@ -511,7 +511,8 @@ export default {
     successNum: "จบเอกพจน์",
     averageATurnover: "ปริมาณการซื้อขายเฉลี่ย",
     resetPassword: "รีเซ็ตรหัสผ่าน",
-    storeList: "สถิติข้อมูลร้านค้า"
+    storeList: "สถิติข้อมูลร้านค้า",
+    allUserNum: "จำนวนสมาชิกทั้งหมด"
   },
   order: {
     failedOrdersNum: "รีเฟรชยอดการสั่งซื้อที่ล้มเหลว",

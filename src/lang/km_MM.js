@@ -511,7 +511,8 @@ export default {
     successNum: "លេខ​តែ​មួយ​បញ្ចប់",
     averageATurnover: "ចំនួន​ការ​បម្លែង​មធ្យម",
     resetPassword: "កំណត់​ពាក្យ​សម្ងាត់​ឡើង​វិញ",
-    storeList: "ស្ថិតិ​ទិន្នន័យ​សាកល្បង"
+    storeList: "ស្ថិតិ​ទិន្នន័យ​សាកល្បង",
+    allUserNum: "ចំនួន​អ្នក​ប្រើ​សរុប"
   },
   order: {
     failedOrdersNum: "ធ្វើ​ឲ្យ​ចំនួន​លំដាប់​ចេញ​បាន​បរាជ័យ​ថ្មី",

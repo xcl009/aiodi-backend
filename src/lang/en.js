@@ -531,6 +531,7 @@ export default {
     averageATurnover: 'Average GMV',
     resetPassword: 'Reset password',
     storeList: 'Merchant data statistics',
+    allUserNum: 'Total Users'
   },
   order: {
     failedOrdersNum: 'Refresh the number of failed deduction orders',

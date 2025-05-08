@@ -528,6 +528,7 @@ export default {
     averageATurnover: '平均交易額',
     resetPassword: '重置密碼',
     storeList: '商戶數據統計',
+    allUserNum: '總用戶數'
   },
   order: {
     failedOrdersNum: '刷新扣款失敗訂單數',
