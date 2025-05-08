@@ -509,7 +509,8 @@ export default {
     successNum: "Nombor tunggal lengkap",
     averageATurnover: "Volum transaksi rata-rata",
     resetPassword: "reset kata laluan",
-    storeList: "Statistik data perdagangan"
+    storeList: "Statistik data perdagangan",
+    allUserNum: 'Total Users'
   },
   order: {
     failedOrdersNum: "Segar semula bilangan perintah deduksi gagal",

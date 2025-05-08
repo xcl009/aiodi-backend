@@ -528,6 +528,7 @@ export default {
     averageATurnover: '평균 거래액',
     resetPassword: '비밀번호 재설정',
     storeList: '사업자 데이터 통계',
+    allUserNum: '총 사용자 수'
   },
   order: {
     failedOrdersNum: '갱신 공제 실패 주문 수',

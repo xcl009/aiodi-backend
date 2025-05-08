@@ -528,6 +528,7 @@ export default {
     averageATurnover: 'Karaniwang dami ng transaksyon',
     resetPassword: 'reset password',
     storeList: 'Statistika ng mga datos ng mga tindera',
+    allUserNum: 'Total Users'
   },
   order: {
     failedOrdersNum: 'Bilangan ng mga nabigong order para sa refreshing deduction',

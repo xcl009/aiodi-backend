@@ -528,6 +528,7 @@ export default {
         averageATurnover: 'Средний объем операций',
         resetPassword: 'Сбросить пароль',
         storeList: 'Статистика торговых данных',
+        allUserNum: 'Общее число пользователей'
     },
     order: {
         failedOrdersNum: 'Количество неудачных заказов',
@@ -2014,7 +2015,7 @@ export default {
         associatedGoods: 'Ассоциированные товары',
         addTemp: 'Добавить шаблон',
     },
-    
+
     payMode: {
       weixin: 'Микросхема',
       alipay: 'Платежное сокровище',

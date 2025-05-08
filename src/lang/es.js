@@ -528,6 +528,7 @@ export default {
         averageATurnover: 'Promedio de transacciones',
         resetPassword: 'Restablecer contraseña',
         storeList: 'Estadísticas de comercios',
+        allUserNum: 'Total Users'
     },
     order: {
         failedOrdersNum: 'Número de órdenes de débito fallidas actualizadas',
@@ -2014,7 +2015,7 @@ export default {
         associatedGoods: 'Productos asociados',
         addTemp: 'Agregar plantilla'
     },
-    
+
     payMode: {
       weixin: 'Wechat',
       alipay: 'Alipay',
