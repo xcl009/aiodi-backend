@@ -1145,7 +1145,6 @@ export default {
           })
           break
         case 13:
-          this.clickSubmit = false
           // params.content.appId = JSON.parse(params.content).appId
           // params.content = JSON.parse(params.content)
           this.$post('iot-saas-pay/admin/pay/channel/saveAppConfig', params).then(res => {

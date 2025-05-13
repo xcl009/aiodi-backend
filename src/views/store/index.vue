@@ -785,6 +785,16 @@ export default {
         //   name: this.$t('public.industry')
         // },
         {
+          key: 'createTime',
+          val: false,
+          name: this.$t('public.creationTime')
+        },
+        {
+          key: 'updateTime',
+          val: false,
+          name: this.$t('public.uploadTime')
+        },
+        {
           key: 'remark',
           val: false,
           name: this.$t('public.remark')

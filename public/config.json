@@ -27,7 +27,8 @@
     "PA": {
       "余额": "DEPOSIT",
       "分段": "STEPBILLING",
-      "低押金": "LOW_DEPOSIT"
+      "低押金": "LOW_DEPOSIT",
+      "免押+余额": "DEPOSIT_AND_FREE"
     },
     "WM": {
       "套餐": "PACKAGE"
