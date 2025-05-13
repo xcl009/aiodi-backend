@@ -234,7 +234,7 @@ export default {
     processed: '已处理完成',
     orderTime: '下单时间',
     payTime: '支付时间',
-    deliveryTime: '收货时间',
+    deliveryTime: '铺货时间',
     particulars: '详情',
     unitPrice: '单价',
     number: '数量',
@@ -1360,7 +1360,9 @@ export default {
     submittext: '提现申请',
     orderingTtile: '租借订单限制',
     orderingNum: '使用中订单数',
-    orderWaitNum: '待付款订单数'
+    orderWaitNum: '待付款订单数',
+    sortValues: '排序值',
+    channelSort: '排序值倒序'
   },
   user: {
     message: '请填写旧密码',

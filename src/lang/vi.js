@@ -530,7 +530,9 @@ export default {
     averageATurnover: 'Doanh thu bình quân',
     resetPassword: 'Đặt lại mật khẩu',
     storeList: 'Thống kê thống kê thương giaa',
-    allUserNum: 'Tổng số người dùng'
+    allUserNum: 'Tổng số người dùng',
+    sortValues: 'Giá trị sắp xếp',
+    channelSort: 'Sắp xếp giá trị đảo ngược'
   },
   order: {
     failedOrdersNum: 'Số đơn hàng khấu trừ thất bại',

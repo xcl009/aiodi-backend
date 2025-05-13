@@ -70,7 +70,7 @@
       <el-col :span="24" class="rel" v-if="isBrand() || isSaas()">
         <div class="abs p-all flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber)"
+            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber || 0)"
                 :duration="2600" /></div>
             <div class="mt-5 fs-c1 text-white">{{ $t('home.allUserNum') || 'Total Users' }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/users.svg')" alt="" />

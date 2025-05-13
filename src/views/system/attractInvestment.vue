@@ -11,7 +11,7 @@
           </el-form-item>
         </template>
       </condition>
-  
+
       <div class="pl-15 pr-15 pb-5 bg-white" v-if="agentInfo.brandId != '1273675260975865857'">
         <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
           element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
@@ -35,6 +35,15 @@
               {{ scope.row.createTime }}
             </template>
           </el-table-column>
+          <!-- <el-table-column :label="$t('public.operate')" width="170">
+            <template slot-scope="scope">
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')"
+                class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00" :title="$t('steal.delText')"
+                @onConfirm="del(scope.row, scope.$index)">
+                <el-button type="text" :disabled="scope.row.distribute" slot="reference"><span class="text-danger">{{ $t('public.delete') }}</span></el-button>
+              </el-popconfirm>
+            </template>
+          </el-table-column> -->
         </el-table>
         <div class="flex justify-center">
           <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
@@ -109,15 +118,24 @@
               {{ scope.row.createTime }}
             </template>
           </el-table-column>
+          <!-- <el-table-column :label="$t('public.operate')" width="170">
+            <template slot-scope="scope">
+              <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')"
+                class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00" :title="$t('steal.delText')"
+                @onConfirm="del(scope.row, scope.$index)">
+                <el-button type="text" :disabled="scope.row.distribute" slot="reference"><span class="text-danger">{{ $t('public.delete') }}</span></el-button>
+              </el-popconfirm>
+            </template>
+          </el-table-column> -->
         </el-table>
         <div class="flex justify-center">
           <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
             @pagination="getList" />
         </div>
       </div>
-  
+
       <xlsx ref="toXlsx" :fileName="$t('public.zsuserinfo')"></xlsx>
-  
+
       <!-- <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus">
         <template v-if="dialogType == 1">
           <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
@@ -146,7 +164,7 @@
       </el-drawer> -->
     </div>
   </template>
-  
+
   <script>
   import Pagination from '@/components/Pagination'
   import condition from '@/components/condition/'
@@ -182,7 +200,7 @@
           3: '已接入',
           4: '已放弃'
         },
-  
+
         // 弹出相关
         dialogType: 1,
         drawerStatus: false,
@@ -216,7 +234,7 @@
     },
     },
     mounted() {
-  
+
     },
     methods: {
       /**
@@ -229,7 +247,7 @@
         this.listQuery.size = 20
         this.getList()
       },
-  
+
       /**
        * 重置查询
        */
@@ -239,7 +257,7 @@
         this.listQuery.size = 20
         this.getList()
       },
-  
+
       /**
        * 获取列表
        */
@@ -250,7 +268,7 @@
         if(this.agentInfo.userType !='admin'){
           params.brandId = this.agentInfo.brandId;
         }
-        
+
         this.$post('iot-saas-basic/admin/brand/quotation/query', params).then(res => {
           if (this.outStatus) {
             this.list = res ? res.rows : []
@@ -281,7 +299,7 @@
           this.listLoading = false
         })
       },
-  
+
       /**
        * 导出
        */
@@ -293,7 +311,7 @@
         this.$refs['toXlsx'].clearData()
         this.getList()
       },
-  
+
       /**
        * 操作商户
        * @param {Object} type 1 dialog类型  2  3 drawer类型
@@ -326,7 +344,7 @@
             break
         }
       },
-  
+
       /**
        * 弹窗确认
        */
@@ -361,6 +379,5 @@
     }
   }
   </script>
-  
+
   <style lang="scss" scoped></style>
-  

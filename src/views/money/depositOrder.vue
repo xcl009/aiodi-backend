@@ -141,7 +141,7 @@
               {{ formatCurrency(accSub(accSub(scope.row.depositAmount, scope.row.amount), scope.row.amountEnable), 1) }}
             </template>
           </el-table-column>
-          <el-table-column :label="item.name" v-else-if="item.key.indexOf('mount')">
+          <el-table-column :label="item.name" v-else-if="item.key.indexOf('mount') > -1">
             <template slot-scope="scope">
               {{ formatCurrency(scope.row[item.key], 1) }}
             </template>
