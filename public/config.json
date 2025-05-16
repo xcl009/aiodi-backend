@@ -1,6 +1,6 @@
 {
   "project_names": "物享云联",
-  "BASE_URL": "https://kaka.test.api.iotgx.cn/",
+  "BASE_URL": "https://kaka.api.iotgx.cn/",
   "CODE_URL": "http://code.iotgx.cn/",
   "baidu_map_ak": "S6AzfAvWgf3o64xueWzebqTd2Eyr3Fot",
   "baidu_statistics": "var _hmt = _hmt || []; (function() { var hm = document.createElement('script'); hm.src = 'https://hm.baidu.com/hm.js?a0e7eb33d7402b459976e556af7b143c';var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(hm, s)})()",
@@ -64,7 +64,8 @@
     "WF": "pagesA/pages/wifi/wifiNew",
     "WM": "pagesA/pages/washing/index",
     "HU": "pagesA/pages/humidifier/index",
-    "DC": "pagesA/pages/desktopCharge/index"
+    "DC": "pagesA/pages/desktopCharge/index",
+    "EH": "pagesA/pages/electricHair/index"
   },
   "roomDevice": {
     "BD": "震动大床房",
@@ -84,7 +85,7 @@
     "1022449265681321985": "MONKEYBOOS"
   },
   "day_unit": [300,360,480,600,720,840,900,960,1080,1200,1320,1440],
-  "plan_time": [30,60,120,180,240,300,360,420,480,540,600,660,720,1440],
+  "plan_time": [3,5,6,8,10,12,15,20,30,60,120,180,240,300,360,420,480,540,600,660,720,1440],
   "washing_package": {
     "46": {
       "title": "加强洗",

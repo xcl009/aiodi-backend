@@ -183,7 +183,7 @@
                               v-for="wp in config[`washing_package`]"></el-option>
                           </el-select>
                           <el-select v-model="plan.time" v-else>
-                            <el-option :label="`${time / 60}${$t('public.huor')}`" :value="time"
+                            <el-option :label="`${time >= 60 ? (time / 60) + $t('public.huor') : time + $t('public.minute')}`" :value="time"
                               v-for="time in config[`plan_time`]"></el-option>
                           </el-select>
                           <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
