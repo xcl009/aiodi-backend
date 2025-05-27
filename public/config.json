@@ -1,7 +1,7 @@
 {
-  "project_names": "物享云联",
-  "BASE_URL": "https://kaka.api.iotgx.cn/",
-  "CODE_URL": "http://code.iotgx.cn/",
+  "project_names": "g-hoost",
+  "BASE_URL": "https://api.g-hoost.com/",
+  "CODE_URL": "http://code.g-hoost.com/",
   "baidu_map_ak": "S6AzfAvWgf3o64xueWzebqTd2Eyr3Fot",
   "baidu_statistics": "var _hmt = _hmt || []; (function() { var hm = document.createElement('script'); hm.src = 'https://hm.baidu.com/hm.js?a0e7eb33d7402b459976e556af7b143c';var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(hm, s)})()",
   "ICP": "",
@@ -81,9 +81,6 @@
     "2": "微信收款码",
     "4": "支付宝收款码"
   },
-  "THEME": {
-    "1022449265681321985": "MONKEYBOOS"
-  },
   "day_unit": [300,360,480,600,720,840,900,960,1080,1200,1320,1440],
   "plan_time": [3,5,6,8,10,12,15,20,30,60,120,180,240,300,360,420,480,540,600,660,720,1440],
   "washing_package": {
@@ -105,6 +102,6 @@
     }
   },
   "bed_order_time": [1,2,3,4,5,6,8,9,10,11,12,24],
-  "wx_auth_url": "http://authorize.api.iotgx.cn/index.html",
-  "ali_auth_url": "https://openauth.alipay.com/oauth2/appToAppBatchAuth.htm?app_id=2021004142610109&application_type=TINYAPP&redirect_uri=https%3A%2F%2Fkaka.api.iotgx.cn%2Fiot-saas-pay%2Fopen%2Falipay%2Fauth%2Fcallback"
+  "wx_auth_url": "",
+  "ali_auth_url": ""
 }

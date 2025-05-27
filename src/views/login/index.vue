@@ -155,7 +155,7 @@ export default {
       redirect: undefined,
 
       gid: this.$route.params.gid || getToken('brandId') || '',
-      THEME: ''
+      THEME: 'DEFAULT'
     }
   },
   watch: {
@@ -167,7 +167,7 @@ export default {
     }
   },
   created() {
-    this.THEME = this.config.THEME[this.gid] || 'DEFAULT'
+    
   },
   mounted() {
     if (this.gid && this.gid != 100000000) this.getPlatformConfig()
