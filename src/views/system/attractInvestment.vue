@@ -35,7 +35,7 @@
               {{ scope.row.createTime }}
             </template>
           </el-table-column>
-          <!-- <el-table-column :label="$t('public.operate')" width="170">
+          <el-table-column :label="$t('public.operate')" width="170">
             <template slot-scope="scope">
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')"
                 class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00" :title="$t('steal.delText')"
@@ -43,7 +43,7 @@
                 <el-button type="text" :disabled="scope.row.distribute" slot="reference"><span class="text-danger">{{ $t('public.delete') }}</span></el-button>
               </el-popconfirm>
             </template>
-          </el-table-column> -->
+          </el-table-column>
         </el-table>
         <div class="flex justify-center">
           <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
@@ -376,6 +376,21 @@
             break
         }
       },
+
+      /**
+       * 删除
+       */
+      del(row, index) {
+        this.$post(`iot-saas-basic/admin/brand/quotation/delete`, {
+          id: row.id
+        }).then(res => {
+          this.$message({
+            message: this.$t('public.deleteSuccess'),
+            type: 'success'
+          })
+          this.list.splice(index, 1)
+        })
+      }
     }
   }
   </script>

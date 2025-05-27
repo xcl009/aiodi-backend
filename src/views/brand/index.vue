@@ -50,6 +50,11 @@
               </div>
             </template>
           </el-table-column>
+          <el-table-column :label="item.name" width="160" v-else-if="item.key == 'country'">
+            <template slot-scope="scope">
+              {{ countrys[scope.row.country] ? countrys[scope.row.country].chineseName : '' }}
+            </template>
+          </el-table-column>
           <el-table-column :label="item.name" width="130" v-else-if="item.key == 'createTime'">
             <template slot-scope="scope">
               {{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}
@@ -171,7 +176,7 @@
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
           <el-form-item :label="$t('brand.voucherAmount')">
             <el-input v-model="dform.amount">
-              <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
+              <template>{{ siteInfo.currencySymbol }}</template>
             </el-input>
           </el-form-item>
           <el-form-item>
@@ -455,8 +460,7 @@ import condition from '@/components/condition/'
 import vueJsonEditor from 'vue-json-editor'
 import {
   copyText,
-  arrayToObj,
-  currencySymbolposition
+  arrayToObj
 } from '@/utils/index'
 import {
   getToken,
@@ -517,7 +521,8 @@ export default {
       //国家冠号
       countryPhone: [],
       brandCountryPhone: {},
-      currencySymbolpositionType:false,
+
+      countrys: {}
     }
   },
   // defaultColumn() {
@@ -613,6 +618,11 @@ export default {
         name: this.$t('brand.corporateName')
       },
       {
+        key: 'country',
+        val: true,
+        name: this.$t('brand.country')
+      },
+      {
         key: 'createTime',
         val: true,
         name: this.$t('brand.timeOfEntry'),
@@ -704,21 +714,15 @@ export default {
     }
   },
   mounted() {
-    this.currencySymbolpositionType =  currencySymbolposition();
+    this.getSymbol()
   },
   methods: {
-    generateChange() {
-      let that = this;
-      let channel = this.dform.channelCode.split('_')
-      this.$get('iot-saas-pay/api/pay/app/getAppId', { channel: channel[0] }).then(res => {
-        this.dform.appId = res;
-        this.$message({
-          message: that.$t('public.operationSuccessful'),
-          type: 'success'
-        })
-      }).catch(() => {
+    getSymbol() {
+      this.$get('iot-saas-user/open/countrys').then(res => {
+        this.countrys = arrayToObj(res, 'code')
       })
     },
+
     /**
      * 搜索查询
      */
@@ -1265,6 +1269,22 @@ export default {
         this.clickSubmit = false
       }).catch(err => {
         this.clickSubmit = false
+      })
+    },
+
+    /**
+     * appid生成
+     */
+    generateChange() {
+      let that = this;
+      let channel = this.dform.channelCode.split('_')
+      this.$get('iot-saas-pay/api/pay/app/getAppId', { channel: channel[0] }).then(res => {
+        this.dform.appId = res;
+        this.$message({
+          message: that.$t('public.operationSuccessful'),
+          type: 'success'
+        })
+      }).catch(() => {
       })
     },
 
