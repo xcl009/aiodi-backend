@@ -1362,7 +1362,10 @@ export default {
     orderingNum: '使用中订单数',
     orderWaitNum: '待付款订单数',
     sortValues: '排序值',
-    channelSort: '排序值倒序'
+    channelSort: '排序值倒序',
+    withdrawalText:'私人账户',
+    withdrawalText1:'公司账户',
+    withdrawalText2:'YAPE',
   },
   user: {
     message: '请填写旧密码',

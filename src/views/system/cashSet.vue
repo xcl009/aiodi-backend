@@ -37,7 +37,7 @@
 
             <el-form-item :label="$t('moeny.withdrawalMethod')">
               <el-checkbox-group v-model="sellType" @change="change">
-                <el-checkbox :label="item.type" v-for="(item, key) in withdrawTypes" v-if="!item.userType || (item.userType && item.userType == userType)">{{ item.name }}</el-checkbox>
+                <el-checkbox :label="item.type" v-for="(item, key) in withdrawTypesList">{{ item.name }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
 
@@ -102,7 +102,7 @@
             <template v-for="(item, idx) in form.supportType">
               <template v-if="item.status != 0">
                 <h4 class="flex align-center">
-                  <span>{{ withdrawType[item.type] ? withdrawType[item.type].name : item.type }}{{ $t('public.commission') }}</span>
+                  <span v-for="(item1,index1) in withdrawTypesList" v-if="item.type == item1.type">{{ item1.name }}{{ $t('public.commission') }}</span>
                   <i class="ml-5 el-icon-top fs-b3 cursor text-primary" v-if="idx > 0"
                     @click="swapItems(form.supportType, idx, idx - 1)"></i>
                 </h4>
@@ -215,7 +215,10 @@ export default {
       id: this.$route.query.id || '',
       userKey: this.$route.query.userKey || '',
       ruleAgent: {},
-      currencySymbolpositionType:false
+      currencySymbolpositionType:false,
+      withdrawTypesList:[],
+      priceCode:'WD_AGENT',
+      marketList:{},
     }
   },
   computed: {
@@ -259,14 +262,56 @@ export default {
     },
     siteInfo() {
       return this.$store.getters.siteInfo
-    }
+    },
+    agentInfo() {
+      return this.$store.getters.agentInfo
+    },
   },
   mounted() {
     this.currencySymbolpositionType =  currencySymbolposition();
     this.withdrawType = arrayToObj(this.withdrawTypes, 'type')
     this.getInfo()
+    this.initMarket();
+    
   },
   methods: {
+    initMarket(code = 'WD_AGENT'){
+      let params = {
+              page:0,
+              size:24,
+              priceCode:code,
+            }
+          this.$get('iot-saas-basic/client/service/market/record/findPage', params).then((res = {}) => {
+            let arr = [];
+            let obj = {
+                  userType:this.userType,
+                  type: '5',
+                  name:  this.$t('payType.card') ,
+                }
+                arr.push(obj);
+                this.withdrawTypesList = arr;
+            this.marketList = res.rows[0];
+            let list = JSON.parse(res.rows[0].payType);
+           
+             if(list.length > 0){
+              list.forEach((list1,index1)=>{
+                let obj = {
+                  userType:this.userType,
+                  type:list1.type,
+                  name: list1.type == 5 ? this.$t('payType.card') : list1.type == 8 ? this.$t('system.withdrawalText1') :list1.type == 7 ? this.$t('system.withdrawalText2') :'',
+                }
+                if(list1.type != 5){
+                  arr.push(obj);
+                }
+              });
+             }else{
+              
+             }
+              this.withdrawTypesList = arr;
+        }).catch(() => {
+          
+        })
+    },
     /**
      * 选择提现方式
      * @param {Object} val
@@ -286,6 +331,7 @@ export default {
           supportType.push(this.getSupportDefault(item))
         }
       })
+      console.log(supportType,'supportType')
       this.form.supportType = supportType
     },
 
@@ -319,6 +365,10 @@ export default {
         userType: this.userType
       }
       if(this.userKey && this.id) params[this.userKey] = this.id
+      let code = `WD_${this.userType.toUpperCase()}`
+      this.priceCode = code;
+      this.withdrawTypesList = [];
+      this.initMarket(code);
       this.$get('iot-saas-basic/api/withdraw/config/v1/find', params).then((res = {}) => {
         if(res.enable){
           let days = [{val: 1}], weeks = [{val: 1}], dayas = []
@@ -396,6 +446,10 @@ export default {
 
     onSubmit() {
       let that = this;
+      console.log(this.sellType,'sellType')
+     
+
+
       let url = 'iot-saas-basic/admin/withdraw/config/v1/update',
         params = JSON.parse(JSON.stringify(this.form)),
         supportType = [],
@@ -445,9 +499,21 @@ export default {
           message: that.$t('public.submittedSuccess'),
           type: 'success'
         })
+        this.$post('iot-saas-basic/admin/service/market/give', {
+            priceCode: this.priceCode,
+            khbPrice: '',
+            giveEndDatetime: this.parseTime(this.currentTime() + 30 * 86400, '{y}-{m}-{d}') + ' 23:59:59',
+            serviceMarketId: this.marketList.serviceId,
+            brandId: this.agentInfo.brandId,
+            payType: this.marketList.payType,
+            checkPayType: this.sellType.join(','),
+          }).then(res => {
+          }).catch(err => {
+          })
       }).catch(err=>{
         this.clickSubmit = false
       })
+     
     },
 
     del(){

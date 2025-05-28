@@ -509,7 +509,10 @@ export default {
     successNum: "Vollständige Singularzahl",
     averageATurnover: "Durchschnittliches Transaktionsvolumen",
     resetPassword: "Passwort zurücksetzen",
-    storeList: "Handelsdatenstatistiken"
+    storeList: "Handelsdatenstatistiken",
+    "withdrawalText": "Persönliches Konto",
+    "withdrawalText1": "Firmenkonto",
+    "withdrawalText2": "YAPE"
   },
   order: {
     failedOrdersNum: "Aktualisieren der Anzahl der fehlgeschlagenen Abzugsaufträge",
@@ -2074,6 +2077,6 @@ export default {
     couponState1: "Zu verwenden",
     couponState2: "Bereits verwendet",
     couponState3: "Abgelaufen",
-    text:'deaktiviert'
+    text: 'deaktiviert'
   }
 }

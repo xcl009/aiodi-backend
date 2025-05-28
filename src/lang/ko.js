@@ -528,7 +528,10 @@ export default {
     averageATurnover: '평균 거래액',
     resetPassword: '비밀번호 재설정',
     storeList: '사업자 데이터 통계',
-    allUserNum: '총 사용자 수'
+    allUserNum: '총 사용자 수',
+    "withdrawalText": "개인 계좌",
+    "withdrawalText1": "회사 계좌",
+    "withdrawalText2": "YAPE"
   },
   order: {
     failedOrdersNum: '갱신 공제 실패 주문 수',
@@ -2046,21 +2049,21 @@ export default {
     plaseImg: '상품 이미지를 업로드해주세요'
   },
   points: {
-  	points: 'Points',
-  	goldCoin: 'GoldCoins',
-  	daiCoin: 'DaiCoins',
-  	giftNumByOrder: '주문 증정',
-  	giftNumByAmount: '지불',
-  	giftNumByAmount1: '[0] 배달 1 [1]',
-  	giftNumByRegister: '등록 증정',
-  	giftNumByInvite: '초대 증정',
-  	pointsUse: '저당 가능',
-  	pointsUse1: '체크는 사용자가 지불할 때 [0] 공제 지불 금액을 선택할 수 있음을 나타냅니다.',
-  	pointsUse2: '장비 임대',
-  	pointsUse3: '잔액 충전',
-  	pointsUse4: '상품 구매',
-  	pointsUseRule: '[0] 규칙',
-  	pointsUseRule1: '[0] 증정, 사용 규칙 설정',
+    points: 'Points',
+    goldCoin: 'GoldCoins',
+    daiCoin: 'DaiCoins',
+    giftNumByOrder: '주문 증정',
+    giftNumByAmount: '지불',
+    giftNumByAmount1: '[0] 배달 1 [1]',
+    giftNumByRegister: '등록 증정',
+    giftNumByInvite: '초대 증정',
+    pointsUse: '저당 가능',
+    pointsUse1: '체크는 사용자가 지불할 때 [0] 공제 지불 금액을 선택할 수 있음을 나타냅니다.',
+    pointsUse2: '장비 임대',
+    pointsUse3: '잔액 충전',
+    pointsUse4: '상품 구매',
+    pointsUseRule: '[0] 규칙',
+    pointsUseRule1: '[0] 증정, 사용 규칙 설정',
   },
   echarge: {
     text: '은행명',
@@ -2109,6 +2112,6 @@ export default {
     couponState1: '보류 중',
     couponState2: '사용',
     couponState3: '만료됨,',
-    text:'비활성화'
+    text: '비활성화'
   }
 }

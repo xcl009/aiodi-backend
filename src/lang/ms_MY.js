@@ -510,7 +510,10 @@ export default {
     averageATurnover: "Volum transaksi rata-rata",
     resetPassword: "reset kata laluan",
     storeList: "Statistik data perdagangan",
-    allUserNum: 'Total Users'
+    allUserNum: 'Total Users',
+    "withdrawalText": "Akaun Peribadi",
+    "withdrawalText1": "Akaun Syarikat",
+    "withdrawalText2": "YAPE"
   },
   order: {
     failedOrdersNum: "Segar semula bilangan perintah deduksi gagal",
