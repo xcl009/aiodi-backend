@@ -532,7 +532,10 @@ export default {
     storeList: 'Thống kê thống kê thương giaa',
     allUserNum: 'Tổng số người dùng',
     sortValues: 'Giá trị sắp xếp',
-    channelSort: 'Sắp xếp giá trị đảo ngược'
+    channelSort: 'Sắp xếp giá trị đảo ngược',
+    "withdrawalText": "Tài khoản cá nhân",
+    "withdrawalText1": "Tài khoản công ty",
+    "withdrawalText2": "YAPE"
   },
   order: {
     failedOrdersNum: 'Số đơn hàng khấu trừ thất bại',
