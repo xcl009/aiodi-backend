@@ -1312,8 +1312,8 @@ export default {
 				e = JSON.parse(e);
 				let currencyCoin = this.siteInfo.currencySymbol;
 				let arr = [];
-				console.log(e,'eee')
 				if(e.length <= 0) return
+        if(!e.stepList) return
 				e.stepList.forEach((res, index) => {
 					let obj = {
 						maxAmountText: '',
@@ -1327,7 +1327,6 @@ export default {
 					} else {
 						text =
 							`${res.startingTime / 60}${this.$t('public.hour')}-${res.endTime / 60}${this.$t('public.segmentationtext')}`
-
 					}
 					if (index == e.stepList.length - 1) {
 						obj.maxAmountText = `${this.currencySymbolpositionType ? currencyCoin :''}${res.maxAmount}${this.currencySymbolpositionType ? '' :currencyCoin}`

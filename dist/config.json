@@ -26,26 +26,30 @@
     },
     "PA": {
       "余额": "DEPOSIT",
-      "分段": "STEPBILLING"
+      "分段": "STEPBILLING",
+      "低押金": "LOW_DEPOSIT",
+      "免押+余额": "DEPOSIT_AND_FREE"
     },
     "WM": {
       "套餐": "PACKAGE"
     },
     "PA_three": {
       "余额": "DEPOSIT",
-      "分段": "STEPBILLING"
+      "分段": "STEPBILLING",
+      "低押金": "LOW_DEPOSIT"
     },
     "PA_four": {
       "余额": "DEPOSIT",
-      "分段": "STEPBILLING"
+      "分段": "STEPBILLING",
+      "低押金": "LOW_DEPOSIT"
     }
   },
   "xcx_pay": {
     "default": {
-      "weixin": "微信",
-      "alipay": "支付宝",
+      "weixin": "WeChat",
+      "alipay": "Alipay",
       "three": "APP",
-      "four": "其他"
+      "four": "Other"
     }
   },
   "xcx_page": {
@@ -60,7 +64,8 @@
     "WF": "pagesA/pages/wifi/wifiNew",
     "WM": "pagesA/pages/washing/index",
     "HU": "pagesA/pages/humidifier/index",
-    "DC": "pagesA/pages/desktopCharge/index"
+    "DC": "pagesA/pages/desktopCharge/index",
+    "EH": "pagesA/pages/electricHair/index"
   },
   "roomDevice": {
     "BD": "震动大床房",
@@ -80,7 +85,7 @@
     "1022449265681321985": "MONKEYBOOS"
   },
   "day_unit": [300,360,480,600,720,840,900,960,1080,1200,1320,1440],
-  "plan_time": [30,60,120,180,240,300,360,420,480,540,600,660,720,1440],
+  "plan_time": [3,5,6,8,10,12,15,20,30,60,120,180,240,300,360,420,480,540,600,660,720,1440],
   "washing_package": {
     "46": {
       "title": "加强洗",
