@@ -178,7 +178,10 @@
                       <el-form-item :label="`${$t('store.packageSettings')}`">
                         <div class="mb-5 flex align-center flex-wrap"
                           v-for="(plan, index) in item[`${xcx}PayMode`].payModeDetail">
-                          <el-select v-model="plan.time" v-if="item.deviceTypeCode == 'WM'">
+                          <el-input type="number" v-model="plan.time" :min="1" class="flex1 mr-10" v-if="item.deviceTypeCode == 'EH'" @wheel.native="handleWheel(plan.time)">
+                            <template slot="append">{{ $t('public.minute') }}</template>
+                          </el-input>
+                          <el-select v-model="plan.time" v-else-if="item.deviceTypeCode == 'WM'">
                             <el-option :label="`${wp.title}`" :value="wp.value"
                               v-for="wp in config[`washing_package`]"></el-option>
                           </el-select>
@@ -1153,7 +1156,11 @@ export default {
           this.setStepList(stepList, 0, 1)
         break
       }
-    }
+    },
+
+    handleWheel(val) {
+      
+    },
   }
 }
 </script>

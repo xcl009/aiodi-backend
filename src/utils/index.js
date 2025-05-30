@@ -908,7 +908,7 @@ const util = {
   },
 
   formatCurrency: (number, type = 0) => {
-  	if (!number) return 0
+  	if (!number) number = 0
     if(agentInfo && agentInfo.brandId.indexOf(['1299125168689397761']) > '-1'){
       type = 1
     }
