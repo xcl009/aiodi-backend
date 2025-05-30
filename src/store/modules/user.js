@@ -215,7 +215,9 @@ const actions = {
             2: i18n.t('payType.wxCode'),
             3: i18n.t('payType.zfbWithdrawal'),
             4: i18n.t('payType.zfbCode'),
-            5: i18n.t('payType.card')
+            5: i18n.t('payType.card'),
+            7: i18n.t('system.withdrawalText'),
+            8: i18n.t('system.withdrawalText1')
           }
           Vue.prototype.SITE_INFO = data
           resolve(data)
