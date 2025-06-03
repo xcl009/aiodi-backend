@@ -84,6 +84,12 @@
               <el-input v-model="dform.khbPrice" />
               <div>{{ $t('market.khbText') }}</div>
             </el-form-item>
+
+            <el-form-item :label="$t('moeny.withdrawalMethod')" v-if="dform.id == '1022452979607490560'">
+              <el-checkbox-group v-model="dform.sellTypes" @change="change">
+                <el-checkbox :label="key" v-for="(item, key) in withdrawTypes" v-if="(dform.priceCode == 'WD_AGENT' && item.userType == 'agent') || (dform.priceCode == 'WD_STORE' && item.userType == 'store') || (dform.priceCode == 'WD_USER' && item.userType == 'user')">{{ item.name }}</el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
           </el-form>
         </div>
       </template>
@@ -132,7 +138,7 @@ export default {
       drawerStatus: false,
       curRow: {},
       curIdx: 0,
-      dform: {}
+      dform: {},
     }
   },
   activated() {
@@ -165,6 +171,45 @@ export default {
         1: this.$t('public.giftService')
       }
     },
+    withdrawTypes() {
+      return [
+        {
+          type: '5',
+          name: this.$t('payType.card'),
+          userType: 'agent'
+        },
+        {
+          type: '8',
+          name: this.$t('system.withdrawalText1'),
+          userType: 'agent'
+        },
+        {
+          type: '7',
+          name: this.$t('system.withdrawalText2'),
+          userType: 'agent'
+        },
+        {
+          type: '5',
+          name: this.$t('payType.card'),
+          userType: 'store'
+        },
+        {
+          type: '8',
+          name: this.$t('system.withdrawalText1'),
+          userType: 'store'
+        },
+        {
+          type: '7',
+          name: this.$t('system.withdrawalText2'),
+          userType: 'store'
+        },
+        {
+          type: '6',
+          name: this.$t('payType.orderRefund'),
+          userType: 'user'
+        }
+      ]
+    },
   },
   mounted() {
     this.$store.dispatch('api/getServiceType').then(res => {
@@ -172,6 +217,9 @@ export default {
     })
   },
   methods: {
+    change(e){
+      console.log(e,'eeee')
+    },
     /**
      * 搜索查询
      */
@@ -248,10 +296,13 @@ export default {
           this.dform = {}
           if (dialogType == 1) {
             this.dform = {
+              id:row.id,
+              sellTypes:[],
               priceCode: row.priceSettings[0].priceCode,
               giveEndDatetime: this.parseTime(this.currentTime() + 30 * 86400, '{y}-{m}-{d}')
             }
           }
+
           this.drawerStatus = true
           break
       }
@@ -276,12 +327,22 @@ export default {
             })
             return
           }
+          let payTypeList = [];
+          this.withdrawTypes.forEach((list,index)=>{
+            this.dform.sellTypes.forEach((list1,index1)=>{
+              if(list1 == index){
+                payTypeList.push(list);
+              }
+            })
+          })
+          payTypeList = JSON.stringify(payTypeList);
           this.$post('iot-saas-basic/admin/service/market/give', {
             priceCode: params.priceCode,
             khbPrice: params.khbPrice || '',
             giveEndDatetime: params.giveEndDatetime + ' 23:59:59',
             serviceMarketId: this.curRow.id,
-            brandId: this.brandId
+            brandId: this.brandId,
+            payType:payTypeList
           }).then(res => {
             this.$message({
               message: that.$t('public.operationSuccessful'),

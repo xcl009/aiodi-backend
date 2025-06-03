@@ -512,7 +512,10 @@ export default {
     averageATurnover: "ปริมาณการซื้อขายเฉลี่ย",
     resetPassword: "รีเซ็ตรหัสผ่าน",
     storeList: "สถิติข้อมูลร้านค้า",
-    allUserNum: "จำนวนสมาชิกทั้งหมด"
+    allUserNum: "จำนวนสมาชิกทั้งหมด",
+    "withdrawalText": "บัญชีส่วนตัว",
+    "withdrawalText1": "บัญชีบริษัท",
+    "withdrawalText2": "YAPE"
   },
   order: {
     failedOrdersNum: "รีเฟรชยอดการสั่งซื้อที่ล้มเหลว",
@@ -2015,21 +2018,21 @@ export default {
     plaseImg: "กรุณาอัพโหลดรูปภาพสินค้า"
   },
   points: {
-  	points: 'Points',
-  	goldCoin: 'GoldCoins',
-  	daiCoin: 'DaiCoins',
-  	giftNumByOrder: 'สั่งซื้อของแถม',
-  	giftNumByAmount: 'การชำระเงิน',
-  	giftNumByAmount1: '[0] ส่ง 1 [1]',
-  	giftNumByRegister: 'ลงทะเบียนรับของขวัญ',
-  	giftNumByInvite: 'ชวนแจก',
-  	pointsUse: 'สามารถชดเชยได้',
-  	pointsUse1: 'ติ๊ก หมายถึง [0] หักจำนวนเงินที่ผู้ใช้สามารถเลือกได้เมื่อทำการชำระเงิน',
-  	pointsUse2: 'เช่าอุปกรณ์',
-  	pointsUse3: 'การเติมเงิน',
-  	pointsUse4: 'ซื้อสินค้า',
-  	pointsUseRule: '[0] กฎ',
-  	pointsUseRule1: 'ตั้งค่า [0] แจกกฎการใช้งาน',
+    points: 'Points',
+    goldCoin: 'GoldCoins',
+    daiCoin: 'DaiCoins',
+    giftNumByOrder: 'สั่งซื้อของแถม',
+    giftNumByAmount: 'การชำระเงิน',
+    giftNumByAmount1: '[0] ส่ง 1 [1]',
+    giftNumByRegister: 'ลงทะเบียนรับของขวัญ',
+    giftNumByInvite: 'ชวนแจก',
+    pointsUse: 'สามารถชดเชยได้',
+    pointsUse1: 'ติ๊ก หมายถึง [0] หักจำนวนเงินที่ผู้ใช้สามารถเลือกได้เมื่อทำการชำระเงิน',
+    pointsUse2: 'เช่าอุปกรณ์',
+    pointsUse3: 'การเติมเงิน',
+    pointsUse4: 'ซื้อสินค้า',
+    pointsUseRule: '[0] กฎ',
+    pointsUseRule1: 'ตั้งค่า [0] แจกกฎการใช้งาน',
   },
   echarge: {
     text: 'ชื่อธนาคาร',
@@ -2078,6 +2081,6 @@ export default {
     couponState1: 'เพื่อใช้งาน',
     couponState2: 'ใช้แล้ว',
     couponState3: 'หมดอายุ',
-    text:'ปิดการใช้งาน'
+    text: 'ปิดการใช้งาน'
   }
 }

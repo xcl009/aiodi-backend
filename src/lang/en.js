@@ -431,8 +431,8 @@ export default {
     stepList1: '[0] minutes highest [1],',
     stepList2: '[0] minutes or more [1]',
     segmentationtext: 'Less than an hour',
-		segmentationtext1: 'Next 24 hours',
-		segmentationtext2: 'Compensation will be incurred when the mobile battery is lost or damaged',
+    segmentationtext1: 'Next 24 hours',
+    segmentationtext2: 'Compensation will be incurred when the mobile battery is lost or damaged',
   },
   // 分账关系
   reType: {
@@ -531,7 +531,10 @@ export default {
     averageATurnover: 'Average GMV',
     resetPassword: 'Reset password',
     storeList: 'Merchant data statistics',
-    allUserNum: 'Total Users'
+    allUserNum: 'Total Users',
+    "withdrawalText": "Personal Account",
+    "withdrawalText1": "Company Account",
+    "withdrawalText2": "YAPE"
   },
   order: {
     failedOrdersNum: 'Refresh the number of failed deduction orders',
@@ -1484,11 +1487,11 @@ export default {
     orderAmount: 'Payment amount',
     storeName: 'Card Merchant',
     refundSuccessful: 'Refund successful',
-		globalVip: 'Platform Members',
-		storeVip: 'Merchant Members',
-		overTimeNo: "The deposit will be refunded to the user's wallet balance upon expiration of the membership card",
-		overTimeYes: 'The user has orders that have not been completed for more than [0] hours, and the deposit will not be refunded. The membership card needs to pay the deposit again before it can be used',
-		saveCode: 'Scan the code to activate membership, right-click to save the QR code and send it to the user',
+    globalVip: 'Platform Members',
+    storeVip: 'Merchant Members',
+    overTimeNo: "The deposit will be refunded to the user's wallet balance upon expiration of the membership card",
+    overTimeYes: 'The user has orders that have not been completed for more than [0] hours, and the deposit will not be refunded. The membership card needs to pay the deposit again before it can be used',
+    saveCode: 'Scan the code to activate membership, right-click to save the QR code and send it to the user',
     vipOpenCode: 'Membership activation code'
   },
   market: {
@@ -1767,10 +1770,10 @@ export default {
     typeText: 'Normal division',
     typeText1: 'Only differentiate between superiors',
     typeText2: 'Only split into one level of agents',
-		restart: 'restart',
-		restartText: 'Are you sure you want to restart the device?',
-		electricity: 'Electricity level',
-		maxExtendTime: 'Cannot exceed 3 days',
+    restart: 'restart',
+    restartText: 'Are you sure you want to restart the device?',
+    electricity: 'Electricity level',
+    maxExtendTime: 'Cannot exceed 3 days',
   },
   cash: {
     withdrawalStatus: 'Withdrawal status',
@@ -2018,12 +2021,12 @@ export default {
     associatedGoods: 'Associated Goods',
     addTemp: 'add template',
   },
-	payMode: {
-	  weixin: 'Weixin',
-	  alipay: 'Alipay',
-	  three: 'APP',
-	  four: 'Other',
-	},
+  payMode: {
+    weixin: 'Weixin',
+    alipay: 'Alipay',
+    three: 'APP',
+    four: 'Other',
+  },
 
   activity: {
     typeName: 'Activity Type',
@@ -2087,10 +2090,10 @@ export default {
     text19: "Agency Area",
     text20: "Requirements",
     text21: "Store Name",
-    text22:'Usage',
-    text23:'Troubles during rental',
-    text24:'payment',
-    text25:'Specification of Mobile Battery'
+    text22: 'Usage',
+    text23: 'Troubles during rental',
+    text24: 'payment',
+    text25: 'Specification of Mobile Battery'
   },
   coupon: {
     coupon: 'coupon',
@@ -2115,6 +2118,6 @@ export default {
     couponState1: 'To be used',
     couponState2: 'Used already',
     couponState3: 'Expired',
-    text:'disabled'
+    text: 'disabled'
   }
 }

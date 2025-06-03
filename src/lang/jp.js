@@ -1,11 +1,11 @@
 export default {
   public: {
-		empty: ' ',
+    empty: ' ',
     weixin: "WeChat",
     alipay: "Alipay",
     PACKAGE: "セット",
-		DEPOSIT_FREE: '抵当免除',
-		DEPOSIT_AND_FREE: '抵当免除+残高',
+    DEPOSIT_FREE: '抵当免除',
+    DEPOSIT_AND_FREE: '抵当免除+残高',
     DEPOSIT: "残高",
     STEPBILLING: "分段",
     LOW_DEPOSIT: '低残高',
@@ -418,13 +418,13 @@ export default {
     stepList1: "[0]分最大[1]",
     stepList2: "[0]分以上[1]",
     segmentationtext: '時間未満',
-		segmentationtext1: 'その後24時間につき',
-		segmentationtext2: 'モバイルバッテリ-を紛失したり破損したりした場合,補償金',
+    segmentationtext1: 'その後24時間につき',
+    segmentationtext2: 'モバイルバッテリ-を紛失したり破損したりした場合,補償金',
   },
   reType: {
     STORE: "店長",
     STAFF: "従業員",
-		STORE_OWNER: '店主',
+    STORE_OWNER: '店主',
     PARTNER: "パートナー",
     HEADQUARTER: "本部",
     BRAND: "メーカー側",
@@ -515,7 +515,10 @@ export default {
     averageATurnover: "取引額の平均",
     resetPassword: "パスワードを再設定",
     storeList: "店舗データを統計",
-    allUserNum: 'ユーザーの合計数'
+    allUserNum: 'ユーザーの合計数',
+    "withdrawalText": "個人口座",
+    "withdrawalText1": "会社口座",
+    "withdrawalText2": "YAPE"
   },
   order: {
     failedOrdersNum: "決済失敗したオーダーを更新",
@@ -2045,22 +2048,22 @@ export default {
     text7: 'アカウントが7桁未満の場合は前に0を加算',
     text8: '（例）山田',
     text9: '（例）アヤ',
-    text10:'会社名/個人名',
-    text11:'郵便番号',
-    text12:'住 所',
-    text13:'担当者樣の氏名',
-    text14:'性 别',
-    text15:'男',
-    text16:'女',
-    text17:'年 齢',
-    text18:'電話番号',
-    text19:'代理する地域',
-    text20:'その他、ご要望',
-    text21:'導入する店名',
-    text22:'使い方',
-    text23:'レンタル時のトラブル',
-    text24:'お支払い',
-    text25:'モバイルバッテリーのスペック'
+    text10: '会社名/個人名',
+    text11: '郵便番号',
+    text12: '住 所',
+    text13: '担当者樣の氏名',
+    text14: '性 别',
+    text15: '男',
+    text16: '女',
+    text17: '年 齢',
+    text18: '電話番号',
+    text19: '代理する地域',
+    text20: 'その他、ご要望',
+    text21: '導入する店名',
+    text22: '使い方',
+    text23: 'レンタル時のトラブル',
+    text24: 'お支払い',
+    text25: 'モバイルバッテリーのスペック'
   },
   coupon: {
     coupon: 'クーポン券',
@@ -2085,6 +2088,6 @@ export default {
     couponState1: '使用中',
     couponState2: '使用済み',
     couponState3: '期限切れ',
-    text:'無効'
+    text: '無効'
   }
 }

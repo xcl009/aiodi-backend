@@ -116,10 +116,12 @@ service.interceptors.response.use(
             location.href = '/login'
           }, 1000)
         } else {
-          Message({
-            message: res.data.message || i18n.t('lang.message1'),
-            type: 'error'
-          })
+          if(!res.config.params.noErrTips){
+            Message({
+              message: res.data.message || i18n.t('lang.message1'),
+              type: 'error'
+            })
+          }
           return Promise.reject(res.data)
         }
         break
@@ -129,6 +131,7 @@ service.interceptors.response.use(
     Message.closeAll()
     if (error.response) {
       let res = error.response.data
+
       if (['10601', '10603', '10604', '10605'].indexOf(res.code) > -1) {
         Message({
           message: res.message,

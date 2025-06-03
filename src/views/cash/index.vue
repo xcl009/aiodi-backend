@@ -124,6 +124,7 @@
               <div>{{ scope.row.cardName }}</div>
               <div>{{ scope.row.bankName }}<span class="ml-10">{{ scope.row.branchName }}</span></div>
               <div>{{ scope.row.cardNo }}</div>
+              <div v-if="scope.row.icc">{{ scope.row.icc }}</div>
             </div>
             <div class="flex align-center" v-else-if="scope.row.withdrawType == 2 || scope.row.withdrawType == 4">
               <div class="mr-10">
@@ -136,6 +137,18 @@
             <div class="flex align-center" v-else-if="scope.row.withdrawType == 3">
               <el-avatar size="small" :src="scope.row.aliHeadUrl || scope.row.userAvatar"></el-avatar>
               <div class="pl-10">{{ scope.row.aliNickname || scope.row.userNickName }}</div>
+            </div>
+            <div class="flex align-center" v-else-if="scope.row.withdrawType == 7">
+              
+              <div >{{ scope.row.cardName || scope.row.cardName }}</div>
+              <div class="pl-10">{{ scope.row.cardNo || scope.row.cardNo }}</div>
+            </div>
+            <div v-else-if="scope.row.withdrawType == 8">
+              <div>{{ scope.row.cardName }}</div>
+              <div>{{ scope.row.cardNo }}</div>
+              <div>{{ scope.row.bankName }}</div>
+              <div>{{ scope.row.branchName }}</div>
+              <div v-if="scope.row.icc">{{ scope.row.icc }}</div>
             </div>
             <div class="flex align-center" v-else>
               <el-avatar size="small" :src="scope.row.wechatHeadUrl || scope.row.userAvatar"></el-avatar>
@@ -165,6 +178,14 @@
             <div class="flex align-center" v-else-if="scope.row.withdrawType == 3">
               <el-avatar size="small" :src="scope.row.aliHeadUrl || scope.row.userAvatar"></el-avatar>
               <div class="pl-10">{{ scope.row.aliNickname || scope.row.userNickName }}</div>
+            </div>
+            <div class="flex align-center" v-else-if="scope.row.withdrawType == 7">
+              <el-avatar size="small" :src="scope.row.aliHeadUrl || scope.row.userAvatar"></el-avatar>
+              <div class="pl-10">{{ $t('system.withdrawalText') }}</div>
+            </div>
+            <div class="flex align-center" v-else-if="scope.row.withdrawType == 8">
+              <el-avatar size="small" :src="scope.row.aliHeadUrl || scope.row.userAvatar"></el-avatar>
+              <div class="pl-10">{{ $t('system.withdrawalText1') }}</div>
             </div>
             <div class="flex align-center" v-else>
               <el-avatar size="small" :src="scope.row.wechatHeadUrl || scope.row.userAvatar"></el-avatar>
@@ -297,6 +318,7 @@ export default {
   },
   computed: {
     siteInfo() {
+      console.log(this.$store.getters.siteInfo,'this.$store.getters.siteInfo')
       return this.$store.getters.siteInfo
     },
     agentInfo() {
