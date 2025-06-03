@@ -16,12 +16,14 @@ import pt_PT from './pt'; //葡萄牙语
 import de_DE from './de_DE'; //德语
 // import yn_ID from './yn_ID'; //印尼语
 import ms_MY from './ms_MY'; //马来西亚语
+import fr_FR from './fr_FR'; //法语
+import nl_NL from './nl_NL'; //荷兰语
 
 /* let keys = [], values = []
-for(var i in en){
-	for(var s in en[i]){
+for(var i in zh){
+	for(var s in zh[i]){
 		keys.push(`${i}_${s}`)
-		values.push(en[i][s])
+		values.push(zh[i][s])
 	}
 }
 console.log('keys====', keys)
@@ -56,9 +58,11 @@ import km_MMLocale from 'element-ui/lib/locale/lang/km'; //element 高棉语
 import th_THLocale from 'element-ui/lib/locale/lang/th'; //element 泰语
 import de_DELocale from 'element-ui/lib/locale/lang/de'; //element 德语
 import pt_PTLocale from 'element-ui/lib/locale/lang/pt'; //element 葡萄牙语
+import fr_FRLocale from 'element-ui/lib/locale/lang/nl'; //element 荷兰语
+import nl_NLLocale from 'element-ui/lib/locale/lang/fr'; //element 法语
 Vue.use(VueI18n);
 let lang = localStorage.getItem('lang')
-lang = ['zh_CN', 'en_US', 'zh_HK','ja_JP','ko_KR','en_PH','ru_RU','vi_VN','es_ES','km_MM','th_TH','pt-PT','de_DE','ms_MY'].indexOf(lang) > -1 ? lang : 'zh_CN'
+lang = ['zh_CN', 'en_US', 'zh_HK','ja_JP','ko_KR','en_PH','ru_RU','vi_VN','es_ES','km_MM','th_TH','pt-PT','de_DE','ms_MY','fr_FR','nl_NL'].indexOf(lang) > -1 ? lang : 'zh_CN'
 localStorage.setItem('lang', lang)
 const i18n = new VueI18n({
   locale: lang,//将语言标识存入localStorage或sessionStorage中，页面刷新不会默认中文显示
@@ -119,8 +123,16 @@ const i18n = new VueI18n({
       ...ms_MY,
       ...enLocale
     }, // 马来语
+    'fr_FR': {
+      ...fr_FR,
+      ...fr_FRLocale
+    }, // 法语
+    'nl_NL': {
+      ...nl_NL,
+      ...nl_NLLocale
+    }, // 荷兰语
   },
-  silentTranslationWarn:true,//解决vue-i18n黄色警告"value of key 'xxx' is not a string"和"cannot translate the value of keypath 'xxx'.use the value of keypath as default",可忽略
+  silentTranslationWarn: true,//解决vue-i18n黄色警告"value of key 'xxx' is not a string"和"cannot translate the value of keypath 'xxx'.use the value of keypath as default",可忽略
   missing: (locale, key, vm, values) => {
   	return values[0] && values[0][0] ? values[0][0] : ''
   }

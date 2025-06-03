@@ -53,7 +53,7 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column label="VIETQR" v-if="token1">
+        <el-table-column label="VIETQR" v-if="vietQrConfigId">
           <template slot-scope="scope">
             <el-popover trigger="hover">
               <div class="viet-qr">
@@ -62,7 +62,7 @@
                   <div class="access-url" :ref="`sn1_${scope.row.deviceSn}`" :id="`sn1_${scope.row.deviceSn}`"></div>
                 </div>
               </div>
-              <div class="text-cut cursor" v-if="scope.row.secondContent" slot="reference" @mouseover="deviceCode1(scope.row.deviceSn, scope.row.content)">{{ scope.row.secondContent }}</div>
+              <div class="text-cut cursor" v-if="scope.row.secondContent" slot="reference" @mouseover="deviceCode1(scope.row.deviceSn, scope.row.secondContent)">{{ scope.row.secondContent }}</div>
             </el-popover>
           </template>
         </el-table-column>
@@ -76,13 +76,13 @@
             <el-tooltip class="item" effect="dark" :content="$t('qrcode.downloadText')" placement="top" v-if="scope.row.accessUrl">
               <el-link :href=" scope.row.accessUrl" target="_blank" type="primary">{{ $t('qrcode.download') }}</el-link>
             </el-tooltip>
-            <span class="text-primary cursor" @click="setRows(3, scope.row, 1)" v-if="token1">create VIETQR</span>
+            <span class="text-primary cursor" @click="setRows(3, scope.row, 1)" v-if="vietQrConfigId">create VIETQR</span>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="rel flex justify-center">
-        <div class="abs flex pagination-left" v-if="token1">
+        <div class="abs flex pagination-left" v-if="vietQrConfigId">
           <el-button type="primary" size="mini" :disabled="selSnArr.length == 0" @click="setRows(3, {}, 1)">Batch creation VIETQR</el-button>
         </div>
         <pagination v-show="listTotal > 0" :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)" @pagination="getList" />
@@ -173,7 +173,6 @@ export default {
   },
   data() {
     return {
-      token1: getToken('token1') || '',
       clickSubmit: false,
       form: {},
       tableMaxH: '250',
@@ -220,6 +219,7 @@ export default {
       this.toQuery()
     }
     this.urlQuery = this.$route.meta.urlQuery
+    this.getVietQrId()
     //this.getPayChannel()
   },
   mounted(options) {
@@ -412,7 +412,8 @@ export default {
      */
     getVietQrId(){
       this.$get('iot-saas-pay/admin/pay/channel/getConfigIdByBrandId', {
-        channelCode: 'VIETQR'
+        channelCode: 'VIETQR',
+        noErrTips: '1'
       }).then((res = {}) => {
         this.vietQrConfigId = res.id || ''
         this.dform.configId = this.vietQrConfigId
