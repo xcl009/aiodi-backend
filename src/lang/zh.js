@@ -1387,7 +1387,9 @@ export default {
     defaultStore: '默认商户ID',
     defaultStoreText: '注：设备未铺货时，用户租借订单取此商户的计费规则，商户ID可在商户列表查到。',
     text1: '注：状态开启时，首页、设备列表、订单列表、商户列表的统计数据会在当前基础上乘以设置的倍数。',
-    code: '验证码'
+    code: '验证码',
+    checkWay: '验证方式',
+    passwordSignature: '密保'
   },
   miniProgram: {
     refreshToken: '刷新第三方平台token',

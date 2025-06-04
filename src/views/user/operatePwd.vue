@@ -2,18 +2,28 @@
   <el-row type="flex" justify="center" class="p-30  custom-form bg-white">
     <el-col :xs="24" :sm="12" :md="6" :lg="6">
       <el-form ref="form" :model="form" :rules="rules">
-        <!-- <el-form-item label="用户名">
-          <el-input v-model="agentInfo.mobile" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="验证码" ref="verificationCode" prop="verificationCode">
-          <el-input v-model="form.verificationCode">
-            <auth-code ref="authCode" slot="append" @authCode="getAuthCode"></auth-code>
-          </el-input>
-        </el-form-item> -->
-        <el-form-item :label="$t('public.id')">
-          <el-input v-model="form.cardCode" :placeholder="$t('public.id')"></el-input>
-          <div class="text-danger">{{ $t('user.idText') }}</div>
-        </el-form-item>
+        <template v-if="!agentInfo.cardCodeInd">
+          <el-form-item :label="$t('user.checkWay') || 'Authentication'">
+            <div>
+              <el-radio-group v-model="checkType" size="medium">
+                <el-radio-button :label="2" v-if="!agentInfo.cardNoInd">{{ $t('user.passwordSignature') || 'Security question' }}</el-radio-button>
+                <el-radio-button :label="1" v-if="!agentInfo.towPassWordInd">{{ $t('public.oldPassword') }}</el-radio-button>
+              </el-radio-group>
+            </div>
+          </el-form-item>
+          <el-form-item :label="$t('user.passwordSignature') || 'Security question'" v-show="checkType == 2">
+            <el-input v-model="form.cardCode" :placeholder="$t('user.passwordSignature') || 'Security question'"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('public.oldPassword')" ref="oldPassword" prop="oldPassword" v-show="checkType == 1">
+            <el-input v-model="form.oldPassword" show-password></el-input>
+          </el-form-item>
+        </template>
+        <template v-else>
+          <el-form-item :label="$t('user.passwordSignature') || 'Security question'">
+            <el-input v-model="form.cardCode" :placeholder="$t('user.passwordSignature') || 'Security question'"></el-input>
+            <div class="text-danger">{{ $t('user.idText') }}</div>
+          </el-form-item>
+        </template>
         <el-form-item :label="$t('public.newPassword')" ref="newPassword" prop="newPassword">
           <el-input v-model="form.newPassword" show-password></el-input>
         </el-form-item>
@@ -40,7 +50,8 @@ export default {
   data() {
     return {
       clickSubmit: false,
-      form: {}
+      form: {},
+      checkType: 2
     }
   },
   computed: {

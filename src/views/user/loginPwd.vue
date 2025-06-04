@@ -5,9 +5,28 @@
         <el-form-item :label="$t('public.userName')">
           <el-input v-model="agentInfo.username" disabled></el-input>
         </el-form-item>
-        <el-form-item :label="$t('public.oldPassword')" ref="oldPassword" prop="oldPassword">
-          <el-input v-model="form.oldPassword" show-password></el-input>
-        </el-form-item>
+        <template v-if="!agentInfo.cardCodeInd">
+          <el-form-item :label="$t('user.checkWay') || 'Authentication'">
+            <div>
+              <el-radio-group v-model="checkType" size="medium">
+                <el-radio-button :label="2" v-if="!agentInfo.cardNoInd">{{ $t('user.passwordSignature') || 'Security question' }}</el-radio-button>
+                <el-radio-button :label="1" v-if="!agentInfo.passWordInd">{{ $t('public.oldPassword') }}</el-radio-button>
+              </el-radio-group>
+            </div>
+          </el-form-item>
+          <el-form-item :label="$t('user.passwordSignature') || 'Security question'" v-show="checkType == 2">
+            <el-input v-model="form.cardCode" :placeholder="$t('user.passwordSignature') || 'Security question'"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('public.oldPassword')" ref="oldPassword" prop="oldPassword" v-show="checkType == 1">
+            <el-input v-model="form.oldPassword" show-password></el-input>
+          </el-form-item>
+        </template>
+        <template v-else>
+          <el-form-item :label="$t('user.passwordSignature') || 'Security question'">
+            <el-input v-model="form.cardCode" :placeholder="$t('user.passwordSignature') || 'Security question'"></el-input>
+            <div class="text-danger">{{ $t('user.idText') }}</div>
+          </el-form-item>
+        </template>
         <el-form-item :label="$t('public.newPassword')" ref="newPassword" prop="newPassword">
           <el-input v-model="form.newPassword" show-password></el-input>
         </el-form-item>
@@ -33,7 +52,8 @@ export default {
   data() {
     return {
       clickSubmit: false,
-      form: {}
+      form: {},
+      checkType: 2
     }
   },
   computed: {
@@ -42,13 +62,6 @@ export default {
     },
     rules() {
       return {
-        oldPassword: [
-          {
-            required: true,
-            message: this.$t('user.message'),
-            trigger: 'blur'
-          },
-        ],
         newPassword: [
           {
             required: true,
