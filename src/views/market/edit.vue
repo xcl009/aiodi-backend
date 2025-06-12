@@ -1,6 +1,6 @@
 <template>
   <el-row class="pt-30 pl-30 pr-30 custom-form bg-white">
-    <el-col :xs="24" :sm="18" :md="12" :lg="10">
+    <el-col :xs="24" :sm="24" :md="18" :lg="16">
       <el-form ref="form" :rules="rules" :model="form" label-width="auto">
         <el-form-item :label="$t('public.serviceType')">
           <el-select :placeholder="$t('market.inputText')" v-model="form.serviceTypeCode">
@@ -9,7 +9,7 @@
         </el-form-item>
         <el-form-item :label="$t('public.deviceType')">
           <el-select :placeholder="$t('market.inputText1')" v-model="form.deviceTypeCode">
-            <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
+            <el-option v-for="(code, item) in myDeviceName" :label="item" :value="code">{{ item }}</el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('market.serverName')">
@@ -17,12 +17,6 @@
         </el-form-item>
         <el-form-item :label="$t('market.theService')">
           <el-input v-model="form.brief" type="textarea" :placeholder="$t('market.inputText3')" />
-        </el-form-item>
-        <el-form-item :label="$t('market.serviceDetails')">
-          <tinymce v-model="form.description" :height="300" />
-        </el-form-item>
-        <el-form-item :label="$t('market.serviceCases')">
-          <tinymce v-model="form.successfulCase" :height="300" />
         </el-form-item>
         <el-form-item :label="$t('market.imageDetails')" class="up-img">
           <upload v-model="form.fileUrls" :limit="5" />
@@ -51,6 +45,12 @@
             <el-button type="text" size="small" v-if="index > 0 || form.priceSettings.length > 1"
               @click="form.priceSettings.splice(index, 1)" class="text-danger">{{ $t('public.delete') }}</el-button>
           </div>
+        </el-form-item>
+        <el-form-item :label="$t('market.serviceDetails')">
+          <tinymce v-model="form.description" :height="300" />
+        </el-form-item>
+        <el-form-item :label="$t('market.serviceCases')">
+          <tinymce v-model="form.successfulCase" :height="300" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submit')
@@ -98,6 +98,9 @@ export default {
     }
   },
   computed: {
+    myDeviceName() {
+      return this.$store.getters.myDeviceName
+    },
     myDeviceId() {
       return this.$store.getters.myDeviceId
     },

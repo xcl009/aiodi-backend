@@ -6,7 +6,7 @@
           <h4>{{ $t('public.basicInformation') }}</h4>
           <el-form-item :label="$t('public.deviceType')">
             <el-checkbox-group v-model="form.deviceTypeCodes" prop="deviceTypeCodes" class="pl-10">
-              <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
+              <el-checkbox v-for="(code, name) in myDeviceName" :label="code">{{ name }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item :label="$t('public.contactName')" prop="contacts">
@@ -75,6 +75,9 @@ export default {
     }
   },
   computed: {
+    myDeviceName() {
+      return this.$store.getters.myDeviceName
+    },
     myDeviceId() {
       return this.$store.getters.myDeviceId
     },

@@ -484,6 +484,7 @@ export default {
       this.parseTime(this.currentTime(), '{y}-{m}-{d}'),
     ]
     console.log(this.listQuery)
+    
     this.getTotalStat()
     this.toQuery()
   },

@@ -17,7 +17,7 @@
         </el-form-item>
         <el-form-item :label="$t('public.deviceType')">
           <el-select :placeholder="$t('public.deviceType')" v-model="form.deviceTypeCode" @change="toQuery()">
-            <el-option v-for="(item, code) in myDeviceId" :label="item" :value="code">{{ item }}</el-option>
+            <el-option v-for="(code, item) in myDeviceName" :label="item" :value="code">{{ item }}</el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('market.cycleType')">
