@@ -1,4 +1,3 @@
-// zn.js
 export default {
   public: {
     empty: ' ',

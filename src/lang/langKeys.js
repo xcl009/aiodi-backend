@@ -1,5 +1,6 @@
 export default {
   keys: [
+    "public_empty",
     "public_weixin",
     "public_alipay",
     "public_PACKAGE",
@@ -1327,6 +1328,8 @@ export default {
     "user_defaultStoreText",
     "user_text1",
     "user_code",
+    "user_checkWay",
+    "user_passwordSignature",
     "miniProgram_refreshToken",
     "miniProgram_refreshTokenText",
     "miniProgram_latestTemplate",
@@ -2018,6 +2021,6 @@ export default {
     "coupon_couponState1",
     "coupon_couponState2",
     "coupon_couponState3",
-    "coupon_text",
+    "coupon_text"
   ]
 }
