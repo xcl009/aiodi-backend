@@ -256,9 +256,9 @@ const actions = {
             let d = res[i]
             if (!d.fatherCode) {
               myDeviceName[d.name] = d.code
-              myDeviceId[d.code] = d.name
               myProfitRatio[d.code] = 100
             }
+            myDeviceId[d.code] = d.name
             myDevice.push(d)
           }
           commit('SET_AGENT_DEVICE', JSON.parse(JSON.stringify({

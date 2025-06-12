@@ -67,7 +67,7 @@
 
           <h4 class="pt-20">{{ $t('public.operationalProducts') }}</h4>
           <el-checkbox-group v-model="selDevice" class="pl-10">
-            <el-checkbox v-for="(name, code) in myDeviceId" :label="code">{{ name }}</el-checkbox>
+            <el-checkbox v-for="(code, name) in myDeviceName" :label="code">{{ name }}</el-checkbox>
           </el-checkbox-group>
 
           <template>
