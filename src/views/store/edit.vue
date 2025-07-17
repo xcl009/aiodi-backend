@@ -151,7 +151,7 @@
               </el-form-item> -->
 
               <el-row class="rel radius-10 flex flex-wrap" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="22">
-                <el-col :sm="24" :lg="screenWidth > 1700 ? 12 :24" v-for="(name, xcx) in config.xcx_pay.default">
+                <el-col :sm="24" :lg="screenWidth > 1700 ? 12 :24" v-for="(name, xcx) in config.xcx_pay.default" v-show="xcx == 'three'">
                   <div>
                     <div class="mb-10 text-dfs text-bold text-black">
                       {{ $t('payMode.' + xcx) }}{{ $t('public.empty') }}{{ $t('store.billingSettings') }}

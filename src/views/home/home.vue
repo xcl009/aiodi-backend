@@ -2134,7 +2134,7 @@ export default {
 
     .el-table__body-wrapper::-webkit-scrollbar {
       width: 0;
-      height: 0;
+      // height: 0;
     }
   }
 }
