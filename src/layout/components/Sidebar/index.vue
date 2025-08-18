@@ -1,22 +1,12 @@
 <template>
   <div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <div v-if="sidebar.opened" class="pt-15 mb-10 text-center text-white cursor">
-        <el-avatar :size="40" :src="agentInfo.avatar" mode="cover"></el-avatar>
-        <!-- <div class="mt-5 pl-10 pr-10 fs-c1 text-cut">{{ agentInfo.nickname }}</div> -->
-        <!-- <div class="mt-10 fs-s4" v-if="isBrand()" @click="$router.push({ path: `/money` })">
-          {{ $t('payType.khb') }}: <span class="text-white">{{ money.happyCurrencyNum || 0 }}</span>
-          <el-tooltip class="item" effect="dark" :content="$t('layout.text3')" placement="right"
-            v-if="money.happyCurrencyNum < vipPrice[dform.mthPrice]">
-            <i class="el-icon-warning-outline text-danger"></i>
-          </el-tooltip>
-        </div> -->
-        <!-- <div class="mt-5 fs-s4" v-if="isBrand()" @click="setRows(1, {}, 1)">
-          <template v-if="vipInfo.expiresDatetime"><span :class="vipInfo.status > 0 ? 'text-danger' : ''">{{
-            vipInfo.expiresStr ? vipInfo.expiresStr :
-            `${$t('public.expirationTime')}:${parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span></template>
-          <template v-else><span class="text-danger">{{ $t('layout.noVip') }}</span></template>
-        </div> -->
+      <div v-if="sidebar.opened" class="pt-5 pl-10 mb-5 cursor">
+        <img :height="35" src="@/assets/logo/ghoost-black.svg" class="sidebar-logo" />
+
+      </div>
+      <div v-if="!sidebar.opened" class="p-10 pt-15 text-center cursor">
+        <img :height="35" src="@/assets/logo/ghoost-black-sm.svg" class="sidebar-logo" />
       </div>
       <el-menu :default-active="activeMenu" :collapse="isCollapse" :background-color="variables.menuBg"
         :text-color="variables.menuText" :unique-opened="false" :active-text-color="variables.menuActiveText"
@@ -380,6 +370,7 @@ export default {
 
 .el-scrollbar {
   position: relative;
+  border-right: 1px solid var(--primary-color)
 }
 
 .hamburger-container {

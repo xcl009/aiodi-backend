@@ -97,13 +97,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  @import "~@/styles/variables.scss";
+
   /deep/ .el-menu-item:not(.submenu-title-noDropdown){
     padding: 0 0 0 30px !important;
   }
   /deep/ .el-submenu .el-submenu__title, .el-menu-item.submenu-title-noDropdown{
     padding: 0 0 0 10px !important;
     &.is-active{
-      background: linear-gradient(90deg, #0089FB 0%, rgba(0, 137, 251, 0) 100%) !important;
+    background-color: $menuActiveBg !important;
       font-weight: 600;
     }
   }
