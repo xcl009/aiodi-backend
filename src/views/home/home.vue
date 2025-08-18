@@ -1469,6 +1469,7 @@ export default {
 
     /**
      * 设备图表初始化
+     * Device Chart Initialization
      */
     deviceChart() {
       this.deviceChartInit = echarts.init(this.$refs.chart_device)
