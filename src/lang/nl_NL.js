@@ -1907,9 +1907,9 @@ export default {
     message1: "Het netwerk zit vast, vernieuw het."
   },
   layout: {
-    admins: "Beheer Backend",
-    fullScreen: "volledig scherm",
-    me: "de mijne",
+    admins: "Beheerpaneel",
+    fullScreen: "Volledig scherm",
+    me: "Profiel",
     personalSettings: "Persoonlijke instellingen",
     userinfo: "persoonlijke informatie",
     langSelect: "Taalselectie",

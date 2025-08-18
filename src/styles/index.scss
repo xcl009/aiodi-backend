@@ -22,7 +22,7 @@ body {
   --red: #e54d42;
   --orange: #FF644F;
   --yellow: #FFA32B;
-  --olive: #165DFF;
+  --olive: #165DFF; /* olive should be green */
   --green: #07C160;
   /* --green: rgba(32, 172, 123, 1); */
   --cyan: #00D9EB;
@@ -135,13 +135,13 @@ div:focus {
 ::-webkit-scrollbar-thumb
 {
   border-radius: 4px;  /*滚动条的圆角*/
-  background-color: #e9e9ea;/*滚动条的背景颜色*/
+  background-color: var(--primary-color);/*滚动条的背景颜色*/
 }
 
 ::-moz-scrollbar-thumb
 {
   border-radius: 4px;  /*滚动条的圆角*/
-  background-color: #e9e9ea;/*滚动条的背景颜色*/
+  background-color: var(--primary-color);/*滚动条的背景颜色*/
 }
 
 .clearfix {
@@ -687,7 +687,7 @@ div:focus {
 }
 
 .text-primary{
-  color: var(--olive);
+  color: var(--primary-color);
 }
 
 .text-white{

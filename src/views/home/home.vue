@@ -1,12 +1,6 @@
 <template>
   <div class="rel pb-20 home-box mb-20">
 
-    <el-image class="abs quadrangle tl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
-    <el-image class="abs quadrangle tr" :src="require('@/assets/home/quadrangle.svg')"></el-image>
-    <el-image class="abs quadrangle bl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
-    <el-image class="abs quadrangle br" :src="require('@/assets/home/quadrangle.svg')"></el-image>
-    <el-image class="abs pieces l" :src="require('@/assets/home/pieces.svg')"></el-image>
-    <el-image class="abs pieces r" :src="require('@/assets/home/pieces.svg')"></el-image>
 
     <div class="abs blur-box"></div>
     <el-row :gutter="10" type="flex" class="stat-box text-center">
@@ -17,7 +11,7 @@
               {{currencySymbolpositionType ?  siteInfo.currencySymbol: ''  }}
               <count-to :start-val="0"
                 :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" />{{currencySymbolpositionType ?  '': siteInfo.currencySymbol }}</div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.transactionAmount') }}</div>
+            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.transactionAmount') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')" alt="" />
           </div>
         </div>
@@ -28,7 +22,7 @@
           <div class="o-v card-panel cursor" @click="Ability['order'] ? $router.push({ path: `/order/allOrder` }) : ''">
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allOrderNum') }}</div>
+            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allOrderNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/order.svg')" alt="" />
           </div>
         </div>
@@ -39,7 +33,7 @@
           <div class="o-v card-panel cursor" @click="$router.push({ path: isSaas() ? `/device` : `/device` })">
             <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allDevicesNum') }}</div>
+            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allDevicesNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/device.svg')" alt="" />
           </div>
         </div>
@@ -50,7 +44,7 @@
           <div class="o-v card-panel cursor">
             <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allAgentNum') }}</div>
+            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allAgentNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')" alt="" />
           </div>
         </div>
@@ -61,7 +55,7 @@
           <div class="o-v card-panel cursor">
             <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allStoreNum') }}</div>
+            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allStoreNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/store.svg')" alt="" />
           </div>
         </div>
@@ -72,7 +66,7 @@
           <div class="o-v card-panel cursor">
             <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber || 0)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allUserNum') || 'Total Users' }}</div>
+            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allUserNum') || 'Total Users' }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/users.svg')" alt="" />
           </div>
         </div>
@@ -108,7 +102,7 @@
       </template>
     </el-row>
 
-    <el-row :gutter="20" type="flex" class="two-box  location flex-wrap mt-20 pl-20 pr-20 text-white"
+    <el-row :gutter="20" type="flex" class="two-box location flex-wrap mt-20 pl-20 pr-20"
       v-show="!isStoreType">
       <el-col :sm="24" :lg="(checkHotel() && isStore()) || !isStore() ? 8 : 12">
         <div class="p-20 item-box">
@@ -121,6 +115,7 @@
             </div>
           </div>
           <el-carousel height="300px" ref="contrastCarusel" @change="contrastChange" v-if="querHistogram.today">
+            <!-- todo: disable autoscroll -->
             <el-carousel-item v-for="(item, index) in contrast_arr" :interval="5000" :initial-index="contrast_type">
               <div class="flex">
                 <div class="label">
@@ -157,22 +152,25 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.statisticsNum') }}</div>
           </div>
+          <!-- todo: Flat 2D donut chart -->
+          <!-- todo: 100% of the devices will be "Powerbank". Let's show the charging status instead-->
           <div class="chart-device" ref="chart_device" style="height: 330px;"></div>
         </div>
       </el-col>
 
       <el-col :sm="24" :lg="8" v-if="!isStore()">
-
+        
         <div class="pl-20 pr-20 pt-20 item-box ">
           <div class="flex align-center">
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.storeStatistics') }}</div>
-            <div class="cursor flex_c" style="color:rgba(255, 255, 255, 0.80);" @click="isCheckChange(true)"><img
+            <!-- todo: change color of SVG -->
+            <div class="cursor flex_c" @click="isCheckChange(true)"><img
                 :src="require('@/assets/home/unfild.svg')" class="mr-10" /> {{ $t('public.adds') }}</div>
           </div>
-          <el-table class="store-table text-white" :highlight-current-row="false"
+          <el-table class="store-table" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
-            :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
+            :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
             :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="storeList"
             style="background:none">
             <el-table-column :label="$t('home.ranking')" width="70">
@@ -250,12 +248,13 @@
         <el-row v-show="isadd">
           <div class="pl-10 pr-10 " :class="{ 'pt-15': isStore() }">
             <div class=" align-center pt-15 mb-15">
-              <div class="flex fs-c1 text-white">
+              <div class="flex fs-c1">
                 <div class="flex pl-10">
                   <div class="line"></div>
                   <div>{{ $t('home.storeStatistics') }}</div>
                 </div>
-                <div class="m_l_a mr-20 cursor" style="color:rgba(255, 255, 255, 0.80);" @click="isStoreType = false">
+                <div class="m_l_a mr-20 cursor" @click="isStoreType = false">
+                  <!-- todo: Change color of SVG -->
                   <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
@@ -298,6 +297,7 @@
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item>
+                    <!-- todo: colors -->
                    <div class="checkType">
                     <el-radio-group v-model="form.dates" @input="toQuery(1)">
                       <el-radio-button :label="0">{{ $t('public.today') }}</el-radio-button>
@@ -377,7 +377,7 @@
       </transition>
     </div>
 
-    <el-row :gutter="20" type="flex" class="three-box flex-wrap mt-20 pl-20 pr-20 text-white"
+    <el-row :gutter="20" type="flex" class="three-box flex-wrap mt-20 pl-20 pr-20"
       v-show="Ability['order'] && !isStoreType">
       <el-col :md="24" :lg="12">
         <div class="pl-20 pr-20 pt-20 item-box">
@@ -385,10 +385,12 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.orderNumDetails') }}</div>
           </div>
-          <el-table ref="orderTable" class="order-table text-white" height="460px" :highlight-current-row="false"
+          <!-- todo: Disable autoscroll -->
+          <!-- todo: Delete unneeded columns -->
+          <el-table ref="orderTable" class="order-table" height="460px" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
-            :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
-            :row-style="{ background: '#0D2749' }" :cell-style="{ border: 'none' }" :data="orderList"
+            :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
+            :row-style="{ background: 'rgba(0, 0, 0, 0.2)' }" :cell-style="{ border: 'none' }" :data="orderList"
             style="background:none">
             <el-table-column :label="`${$t('home.serialNumber')}`" width="60">
               <template slot-scope="scope">
@@ -1245,6 +1247,7 @@ export default {
           animationEasing: 'quadraticOut'
         }
         ]
+      // todo: Change white vertical line to gray | 将白色竖线改为灰色
       this.dayChartInit.setOption({
         color: ['#3CA1FE', '#FFA32B', '#07C160', '#FF5353'],
         xAxis: {
@@ -1256,7 +1259,7 @@ export default {
           axisLabel: { //x轴文字的配置
             show: true,
             textStyle: {
-              color: "#fff",
+              color: "#000",
             }
           },
         },
@@ -1273,14 +1276,13 @@ export default {
         },
         yAxis: {
           type: 'value',
-          axisLabel: { //x轴文字的配置
+          axisLabel: { //y轴文字的配置
             show: true,
             textStyle: {
-              color: "#fff",
+              color: "#000",
             }
           },
         },
-
         legend: {
           bottom: 20,
           data: legend,
@@ -1288,7 +1290,7 @@ export default {
             width: 0
           },
           textStyle: {
-            color: 'rgba(255, 255, 255, 0.6)'
+            color: '#000'
           }
         },
         series: series
@@ -1856,59 +1858,6 @@ export default {
 .home-box {
   margin: -2px 2px 0;
   padding-top: 2px;
-  border: 2px solid #1166B1;
-
-  .quadrangle {
-    width: 102px;
-    height: 102px;
-    z-index: 1099;
-
-    &.tl {
-      top: 0;
-      left: -6px;
-    }
-
-    &.tr {
-      top: 0;
-      right: -6px;
-      transform: rotate(90deg);
-    }
-
-    &.bl {
-      bottom: -6px;
-      left: -6px;
-      transform: rotate(-90deg);
-    }
-
-    &.br {
-      bottom: -6px;
-      right: -6px;
-      transform: rotate(180deg);
-    }
-
-    /deep/ .el-image__placeholder {
-      display: none;
-    }
-  }
-
-  .pieces {
-    width: 23px;
-    height: 231px;
-    bottom: 296px;
-
-    &.l {
-      left: -23px;
-    }
-
-    &.r {
-      transform: rotate(180deg);
-      right: -23px;
-    }
-
-    /deep/ .el-image__placeholder {
-      display: none;
-    }
-  }
 
   .blur-box {
     height: 213px;
@@ -1940,14 +1889,6 @@ export default {
     margin: 12px auto 0;
     width: 154px;
     height: 167px;
-
-    &.b {
-      animation: animateDodgeB 1s linear infinite;
-    }
-
-    &.y {
-      animation: animateDodgeY 1s linear infinite;
-    }
   }
 
   .type-icon {
@@ -1957,50 +1898,6 @@ export default {
     /deep/ .el-image__placeholder {
       display: none;
     }
-  }
-}
-
-@keyframes animateDodgeB {
-  0% {
-    background: url('../../assets/home/blue_dodge_05.svg') 100%;
-  }
-
-  45% {
-    background: url('../../assets/home/blue_dodge_05.svg') 100%;
-  }
-
-  50% {
-    background: url('../../assets/home/blue_dodge_1.svg') 100%;
-  }
-
-  95% {
-    background: url('../../assets/home/blue_dodge_1.svg') 100%;
-  }
-
-  100% {
-    background: url('../../assets/home/blue_dodge_05.svg') 100%;
-  }
-}
-
-@keyframes animateDodgeY {
-  0% {
-    background: url('../../assets/home/yellow_dodge_05.svg') 100%;
-  }
-
-  45% {
-    background: url('../../assets/home/yellow_dodge_05.svg') 100%;
-  }
-
-  50% {
-    background: url('../../assets/home/yellow_dodge_1.svg') 100%;
-  }
-
-  95% {
-    background: url('../../assets/home/yellow_dodge_1.svg') 100%;
-  }
-
-  100% {
-    background: url('../../assets/home/yellow_dodge_05.svg') 100%;
   }
 }
 
@@ -2024,13 +1921,13 @@ export default {
   .btn {
     margin-right: -1px;
     padding: 7px 16px;
-    background: rgba(17, 102, 177, 0.1);
-    border: 1px solid #1166B1;
-    color: rgba(255, 255, 255, 0.8);
+    background: #ffffff;
+    border: 1px solid var(--primary-color);
+    color: #000000;
 
     &.act {
-      box-shadow: inset 0 0 12px #1166B1;
-      color: #1CB9FB;
+      background-color: var(--primary-color);
+      color: #ffffff;
     }
   }
 }
@@ -2039,13 +1936,13 @@ export default {
 .three-box {
   .item-box {
     height: 100%;
-    border: 2px solid #1166B1;
+    border: 2px solid var(--primary-color);
 
     .line {
       margin-right: 8px;
       width: 5px;
       height: 20px;
-      background: #1CB9FB;
+      background: var(--primary-color);
     }
 
     .progress {
@@ -2263,9 +2160,9 @@ export default {
 }
 
 /deep/.el-radio-button__inner {
-  background-color: rgba(17, 102, 177, 0.1) !important;
-  border: 1px solid #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+  background-color: '#fff' !important;
+  border: 1px solid var(--primary-color) !important;
+  color: #000 !important;
 }
 
 /deep/.butCheck {
@@ -2276,7 +2173,7 @@ export default {
     margin-right: 8px;
     width: 5px;
     height: 20px;
-    background: #1CB9FB;
+    background: var(--primary-color);
   }
 
 }

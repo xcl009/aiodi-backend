@@ -1,18 +1,16 @@
 <template>
-  <div class="rel flex navbar" style="overflow: initial;">
-    <div class="abs pt-10 pb-10 pl-20 pr-20 cursor line-1" @click="toggleSideBar">
-      <svg-icon slot="prefix" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
-    </div>
+  <div class="rel flex navbar align-center" style="overflow: initial;">
+    <!-- <div class="abs pt-10 pb-10 pl-20 pr-20 cursor line-1" @click="toggleSideBar">
+      <svg-icon slot="prefix" class="text-white" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
+    </div> -->
     <div class="flex1 title-box text-center text-white">
-      <div>
-        <div class="cn">{{ agentInfo.nickname }}{{ $t('layout.admins') }}</div>
-      </div>
+      {{ agentInfo.nickname }} {{ $t('layout.admins') }}
     </div>
     <div class="abs right-menu flex align-center">
       <template v-if="device != 'mobile'">
         <!-- <div class="pl-30 pr-30 flex align-center text-primary cursor l-r" v-if="isBrand()" @click="getJoinCode">
         <svg-icon icon-class="head_link" class="mr-10 head_new"></svg-icon>
-        邀请链接获取
+        邀请链接获取 | Invite link
       </div> -->
         <el-dropdown class="mr-10 hover-effect" trigger="click"  v-if="brandList.length > 0 && isBrand()">
           <div class="pl-15 pr-15 menu-item flex align-center">
@@ -465,33 +463,23 @@ export default {
   height: 40px;
   overflow: hidden;
   position: relative;
-  background-color: #01183A;
   z-index: 2;
+  background-color: var(--primary-color);
 
   .title-box {
-    height: 65px;
-    background-image: url('../../assets/head_bg.svg');
-    background-size: auto 100%;
-    background-position: center;
-
-    .cn {
-      margin-top: 12px;
       font-size: 25px;
-    }
   }
 
   .right-menu {
     right: 0;
     top: 0;
     height: 100%;
-    line-height: 36px;
 
     &:focus {
       outline: none;
     }
 
     .menu-item {
-      height: 60px;
       position: relative;
       cursor: pointer;
 
@@ -515,6 +503,7 @@ export default {
   }
 
   /deep/ .news-dot {
+    height: 20px; 
     .is-dot {
       top: 8px;
     }
