@@ -146,9 +146,8 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.statisticsNum') }}</div>
           </div>
-          <!-- todo: Flat 2D donut chart -->
           <!-- todo: 100% of the devices will be "Powerbank". Let's show the charging status instead-->
-          <div class="chart-device" ref="chart_device" style="height: 330px;"></div>
+          <div class="chart-device" ref="chart_device" style="height: 350px;"></div>
         </div>
       </el-col>
 
@@ -1421,7 +1420,7 @@ export default {
       }) */
       this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
         this.deviceStat = res
-        let deviceChartData = {}, idx = 0, colors = ['#2A9F9F', '#224278', '#82A8C6', '#9DA5B2', '#82B869', '#A01E57', '#E1B44F', '#D65C5C', '#4C65B2']
+        let deviceChartData = {}, idx = 0, colors = ['#ca0414', '#E78F97', '#F3C7CB', '#999999']
         if (res.deviceTypeDetail) {
           for (var i in res.deviceTypeDetail) {
             if (this.myDeviceId[i.substr(0, 2)]) {
@@ -1463,8 +1462,7 @@ export default {
      */
     deviceChart() {
       this.deviceChartInit = echarts.init(this.$refs.chart_device)
-      // 传入数据生成 option ; getPie3D(数据，透明的空心占比（调节中间空心范围的0就是普通饼1就很镂空）)
-      this.deviceChartOption = this.getPie3D(this.deviceChartData, 0.85);
+      this.deviceChartOption = this.getPie2D(this.deviceChartData, 0.55);
       //将配置项设置进去
       this.deviceChartInit.setOption(this.deviceChartOption);
       //鼠标移动上去特效效果
@@ -1586,244 +1584,78 @@ export default {
     },
 
     /**
-     * 配置构建 pieData 饼图数据 internalDiameterRatio:透明的空心占比
-     * @param {Object} pieData
-     * @param {Object} internalDiameterRatio
+     * 2D Device Chart | 2D设备图表
+     * @param {Array<{name:string,value:number,itemStyle?:{color?:string,opacity?:number}}>} pieData
+     * @param {number} internalDiameterRatio
      */
-    getPie3D(pieData, internalDiameterRatio) {
-      let that = this;
-      let series = [];
-      let sumValue = 0;
-      let startValue = 0;
-      let endValue = 0;
-      let legendData = [];
-      let legendBfb = [];
-      let k = 1 - internalDiameterRatio;
-      pieData.sort((a, b) => {
-        return (b.value - a.value);
+    getPie2D(pieData, internalDiameterRatio = 0) {
+      const data = (pieData || []).map(d => ({ ...d })).sort((a, b) => b.value - a.value);
+
+      const sumValue = data.reduce((s, d) => s + (d.value || 0), 0);
+      const legendNames = data.map(d => d.name);
+
+      // Radius
+      const outer = 70;
+      const inner = Math.max(0, Math.min(95, Math.round(outer * internalDiameterRatio)));
+
+      // Colors
+      const seriesData = data.map(d => {
+        const item = {
+          name: d.name,
+          value: d.value
+        };
+        if (d.itemStyle && (d.itemStyle.color || d.itemStyle.opacity != null)) {
+          item.itemStyle = {};
+          if (d.itemStyle.color) item.itemStyle.color = d.itemStyle.color;
+          if (d.itemStyle.opacity != null) item.itemStyle.opacity = d.itemStyle.opacity;
+        }
+        return item;
       });
-      // 为每一个饼图数据，生成一个 series-surface(参数曲面) 配置
-      for (let i = 0; i < pieData.length; i++) {
-        sumValue += pieData[i].value;
-        let seriesItem = {
-          //系统名称
-          name: typeof pieData[i].name === 'undefined' ? `series${i}` : pieData[i].name,
-          type: 'surface',
-          //是否为参数曲面（是）
-          parametric: true,
-          //曲面图网格线（否）上面一根一根的
-          wireframe: {
-            show: false
-          },
-          pieData: pieData[i],
-          pieStatus: {
-            selected: false,
-            hovered: false,
-            k: k
+
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: params => {
+            // params: {name, value, percent, marker}
+            return `${params.name}<br/>${params.marker}${params.value} (${params.percent}%)`;
           }
-        }
-        //曲面的颜色、不透明度等样式。
-        if (typeof pieData[i].itemStyle != 'undefined') {
-          let itemStyle = {};
-          typeof pieData[i].itemStyle.color != 'undefined' ? itemStyle.color = pieData[i].itemStyle.color : null;
-          typeof pieData[i].itemStyle.opacity != 'undefined' ? itemStyle.opacity = pieData[i].itemStyle.opacity :
-            null;
-          seriesItem.itemStyle = itemStyle;
-        }
-        series.push(seriesItem);
-      }
-      // 使用上一次遍历时，计算出的数据和 sumValue，调用 getParametricEquation 函数，
-      // 向每个 series-surface 传入不同的参数方程 series-surface.parametricEquation，也就是实现每一个扇形。
-      legendData = [];
-      legendBfb = [];
-      for (let i = 0; i < series.length; i++) {
-        endValue = startValue + series[i].pieData.value;
-        series[i].pieData.startRatio = startValue / sumValue;
-        series[i].pieData.endRatio = endValue / sumValue;
-        series[i].parametricEquation = this.getParametricEquation(series[i].pieData.startRatio, series[i].pieData
-          .endRatio,
-          false, false, k, series[i].pieData.value);
-        startValue = endValue;
-        let bfb = that.fomatFloat(series[i].pieData.value / sumValue, 4);
-        legendData.push({
-          name: series[i].name,
-          value: bfb
-        });
-        legendBfb.push({
-          name: series[i].name,
-          value: bfb
-        });
-      }
-      //(第二个参数可以设置你这个环形的高低程度)
-      let boxHeight = this.getHeight3D(series, 20); //通过传参设定3d饼/环的高度
-      let option = {
-        //图例组件
+        },
         legend: {
           show: true,
           bottom: 0,
-          data: legendData,
-          //图例列表的布局朝向。
           orient: 'horizontal',
-          //图例文字每项之间的间隔
           itemGap: 15,
-          textStyle: {
-            color: '#A1E2FF',
+          data: legendNames,
+          textStyle: { color: '#000000' },
+          formatter: name => {
+            const item = data.find(d => d.name === name);
+            const value = item ? item.value : 0;
+            return `${name}(${value})`;
+          }
+        },
+        series: [{
+          name: 'pie2d',
+          type: 'pie',
+          radius: [`${inner}%`, `${outer}%`],
+          center: ['50%', '45%'],
+          avoidLabelOverlap: true,
+          stillShowZeroSum: false,
+          selectedMode: false,
+          label: {
+            show: false,
           },
-          //icon: "circle",
-          formatter: (name) => {
-            var target;
-            for (var i = 0, l = pieData.length; i < l; i++) {
-              if (pieData[i].name == name) {
-                target = pieData[i].value;
-              }
-            }
-            return `${name}(${target})`;
-          }
-          // 这个可以显示百分比那种（可以根据你想要的来配置）
-          //   formatter: function(param) {
-          //       let item = legendBfb.filter(item => item.name == param)[0];
-          //       let bfs = that.fomatFloat(item.value * 100, 2) + "%";
-          //       console.log(item.name)
-          //       return `${item.name} :${bfs}`;
-          //   }
-        },
-        //移动上去提示的文本内容
-        tooltip: {
-          formatter: params => {
-            if (params.seriesName !== 'mouseoutSeries' && params.seriesName !== 'pie2d') {
-              return `${params.seriesName}<br/>` +
-                `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>` +
-                `${option.series[params.seriesIndex].pieData.value}`;
-            }
-          }
-        },
-        //这个可以变形
-        xAxis3D: {
-          min: -1,
-          max: 1
-        },
-        yAxis3D: {
-          min: -1,
-          max: 1
-        },
-        zAxis3D: {
-          min: -1,
-          max: 1
-        },
-        //此处是修改样式的重点
-        grid3D: {
-          show: false,
-          boxHeight: boxHeight, //圆环的高度
-          top: -40,
-          //这是饼图的位置
-          viewControl: { //3d效果可以放大、旋转等，请自己去查看官方配置
-            alpha: 30, //角度(这个很重要 调节角度的)
-            distance: 150, //调整视角到主体的距离，类似调整zoom(这是整体大小)
-            rotateSensitivity: 1, //设置为0无法旋转
-            zoomSensitivity: 0, //设置为0无法缩放
-            panSensitivity: 1, //设置为0无法平移
-            autoRotate: false //自动旋转
-          }
-        },
-        series: series
+          labelLine: { show: false },
+          // kleine “depth” look met randje (optioneel)
+          emphasis: {
+            scale: true,
+            scaleSize: 6,
+            label: { show: true, fontWeight: 'bold' }
+          },
+          data: seriesData
+        }]
       };
+
       return option;
-    },
-    /**
-     * 获取3d图的最高扇区的高度
-     * @param {Object} series
-     * @param {Object} height
-     */
-    getHeight3D(series, height) {
-      series.sort((a, b) => {
-        return (b.pieData.value - a.pieData.value)
-      })
-      let h = height * 25 / series[0].pieData.value
-      return h > 50 ? 50 : h
-    },
-
-    // 生成扇形的曲面参数方程，用于 series-surface.parametricEquation
-    getParametricEquation(startRatio, endRatio, isSelected, isHovered, k, h) {
-      // 计算
-      let midRatio = (startRatio + endRatio) / 2;
-      let startRadian = startRatio * Math.PI * 2;
-      let endRadian = endRatio * Math.PI * 2;
-      let midRadian = midRatio * Math.PI * 2;
-      // 如果只有一个扇形，则不实现选中效果。
-      if (startRatio === 0 && endRatio === 1) {
-        isSelected = false;
-      }
-      // 通过扇形内径/外径的值，换算出辅助参数 k（默认值 1/3）
-      k = typeof k !== 'undefined' ? k : 1 / 3;
-      // 计算选中效果分别在 x 轴、y 轴方向上的位移（未选中，则位移均为 0）
-      let offsetX = isSelected ? Math.cos(midRadian) * 0.1 : 0;
-      let offsetY = isSelected ? Math.sin(midRadian) * 0.1 : 0;
-      // 计算高亮效果的放大比例（未高亮，则比例为 1）
-      let hoverRate = isHovered ? 1.05 : 1;
-      // 返回曲面参数方程
-      return {
-        u: {
-          min: -Math.PI,
-          max: Math.PI * 3,
-          step: Math.PI / 32
-        },
-        v: {
-          min: 0,
-          max: Math.PI * 2,
-          step: Math.PI / 20
-        },
-        x: (u, v) => {
-          if (u < startRadian) {
-            return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
-          }
-          if (u > endRadian) {
-            return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
-          }
-          return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
-        },
-        y: (u, v) => {
-          if (u < startRadian) {
-            return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
-          }
-          if (u > endRadian) {
-            return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
-          }
-          return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
-        },
-        z: (u, v) => {
-          if (u < -Math.PI * 0.5) {
-            return Math.sin(u);
-          }
-          if (u > Math.PI * 2.5) {
-            return Math.sin(u) * h * .1;
-          }
-          return Math.sin(v) > 0 ? 1 * h * .1 : -1;
-        }
-      };
-    },
-
-    /**
-     * 自定义计算的方法
-     * @param {Object} num
-     * @param {Object} n
-     */
-    fomatFloat(num, n) {
-      var f = parseFloat(num);
-      if (isNaN(f)) {
-        return false;
-      }
-      f = Math.round(num * Math.pow(10, n)) / Math.pow(10, n); // n 幂
-      var s = f.toString();
-      var rs = s.indexOf('.');
-      //判定如果是整数，增加小数点再补0
-      if (rs < 0) {
-        rs = s.length;
-        s += '.';
-      }
-      while (s.length <= rs + n) {
-        s += '0';
-      }
-      return s;
     },
 
     checkHotel() {
