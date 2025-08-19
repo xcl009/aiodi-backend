@@ -1,57 +1,40 @@
 <template>
   <el-row type="flex" align="middle" class="pb-30 login-container flex-wrap">
-    <el-image class="abs p-all" :src="require('@/assets/LOGIN_' + THEME + '.jpg')" fit="cover"></el-image>
+    <!-- todo: CHANGE BEFORE GOING TO PRODUCTION. WE DO NOT HAVE THE RIGHTS FOR THIS IMAGE -->
+    <!-- 待办事项：在投入生产前进行修改。我们没有此图像的使用权 -->
+    <div >
+      <el-image class="abs p-all" :src="require('@/assets/login-screen.jpg')" fit="cover"></el-image>
+      <div class="abs p-all" style="background-color: rgba(0, 0, 0, 0.3)"></div>
+    </div>
     <div class="login-form">
-      <el-row :gutter="0" v-if="THEME == 'DEFAULT'">
-        <el-col :xs="24" :sm="24" :md="12" class="hidden-sm-and-down">
-          <div class="rel p-50 flexv justify-between login-left text-white">
-            <div class="rel pt-30">
-              <div class="title text-bold">
-                <span v-if="siteInfo.appName">{{ siteInfo.appName }}<br></span>
-                {{ $t('public.adminService') }}
-              </div>
-              <div class="mt-15 flex align-center fs-c1">
-                <div>{{ $t('login.text4') }}</div>
-                <div class="ml-10 mr-10 dot"></div>
-                <div>{{ $t('login.text5') }}</div>
-                <div class="ml-10 mr-10 dot"></div>
-                <div>{{ $t('login.text6') }}</div>
-              </div>
-            </div>
-            <img class="rel" width="100" :src="siteInfo.appLogo" alt="" v-if="gid && gid != 100000000">
-            <img class="rel" width="100" :src="'/logo.png'" alt="" v-else>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="12">
-          <div class="flex align-center justify-center form-box bg-white" :class="{ 'mobile': $_isMobile() }">
-            <div class="pb-40">
-              <div class="hello">{{ $t('login.hello') }}！</div>
-              <div class="mb-30 desc fs-b2 text-gray">{{ $t('public.adminServices') || ($t('login.welcomeToLogin') + $t('public.adminService')) }}</div>
-              <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
-                <el-form-item prop="username">
-                  <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1"
-                    autocomplete="on" :placeholder="$t('login.inputText8')">
-                    <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
-                  </el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                  <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
-                    name="password" tabindex="2" autocomplete="on" :placeholder="$t('login.inputText9')"
-                    @keyup.enter.native="handleLogin">
-                    <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
-                  </el-input>
-                  <span class="show-pwd" @click="showPwd">
-                    <preview-close-one theme="outline" size="16" fill="#4E5969" v-if="passwordType === 'password'" />
-                    <preview-open theme="outline" size="16" fill="#4E5969" v-else />
-                  </span>
-                </el-form-item>
-                <el-button class="mt-20 login-btn" type="primary" :loading="loading"
-                  @click.native.prevent="handleLogin">{{ $t('public.login') }}</el-button>
-              </el-form>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
+      <div class="flex align-center justify-center form-box bg-white p-50" :class="{ 'mobile': $_isMobile() }">
+        <div class="pb-40 flexv">
+          <img class="logo" src="@/assets/logo/ghoost-black.svg" alt="" />
+          <span class="title text-primary">{{ $t('public.adminService') }}</span>
+          <div class="mb-30 desc fs-b2 text-gray">{{ $t('login.logInToContinue') }}</div>
+          <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
+            <el-form-item prop="username">
+              <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1"
+                autocomplete="on" :placeholder="$t('login.username')">
+                <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
+                name="password" tabindex="2" autocomplete="on" :placeholder="$t('login.password')"
+                @keyup.enter.native="handleLogin">
+                <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
+              </el-input>
+              <span class="show-pwd" @click="showPwd">
+                <preview-close-one theme="outline" size="16" fill="#4E5969" v-if="passwordType === 'password'" />
+                <preview-open theme="outline" size="16" fill="#4E5969" v-else />
+              </span>
+            </el-form-item>
+            <el-button class="mt-20 login-btn" type="primary" :loading="loading"
+              @click.native.prevent="handleLogin">{{ $t('public.login') }}</el-button>
+          </el-form>
+        </div>
+      </div>
       <div class="flex justify-center align-end login-monkeyboos" v-if="THEME == 'MONKEYBOOS'">
         <el-image class="left-img hidden-sm-and-down" :src="require('@/assets/MONKEYBOOS.png')" fit="contain"></el-image>
         <div class="right-box bg-white">
@@ -59,18 +42,18 @@
             <div class="flex flexv align-center justify-around h-100 bg-white">
               <div>
                 <div class="hello text-center text-bold">{{ $t('login.hello') }}！</div>
-                <div class="title fs-b2 text-grey">{{ $t('login.welcomeToLogin') }}{{ $t('public.adminService') }}</div>
+                <div class="title fs-b2 text-grey">{{ $t('login.logInToContinue') }}</div>
               </div>
               <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" class="">
                 <el-form-item prop="username">
                   <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1"
-                    autocomplete="on" :placeholder="$t('login.inputText8')">
+                    autocomplete="on" :placeholder="$t('login.username')">
                     <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
                   </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                   <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
-                    name="password" tabindex="2" autocomplete="on" :placeholder="$t('login.inputText9')"
+                    name="password" tabindex="2" autocomplete="on" :placeholder="$t('login.password')"
                     @keyup.enter.native="handleLogin">
                     <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
                   </el-input>
@@ -105,14 +88,14 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!value || value.length < 1) {
-        callback(new Error(this.$t('login.inputText10')))
+        callback(new Error(this.$t('login.emptyUsername')))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (!value || value.length < 5) {
-        callback(new Error(this.$t('login.inputText9')))
+        callback(new Error(this.$t('login.emptyPassword')))
       } else {
         callback()
       }
@@ -248,6 +231,10 @@ $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 
+.logo {
+  width: 50%;
+}
+
 .login-container {
   min-height: 100%;
   width: 100%;
@@ -272,9 +259,6 @@ $light_gray: #eee;
       max-height: 90vh;
       max-width: 100%;
 
-      .title {
-        font-size: 56px;
-      }
 
       .rel {
         z-index: 9;
@@ -319,10 +303,12 @@ $light_gray: #eee;
   }
 
   .form-box {
-    width: 596px;
+    width: 400px;
     height: 692px;
     max-height: 90vh;
     max-width: 100%;
+    box-shadow: 0px 0px 20px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 
     .hello {
       font-size: 36px;
@@ -340,6 +326,7 @@ $light_gray: #eee;
 
     .login-btn {
       width: 100%;
+      border-radius: 4px;
     }
 
     &.mobile {
@@ -403,5 +390,9 @@ $light_gray: #eee;
       background: #ED1E79;
       border-color: #ED1E79;
     }
+  }
+  
+  .title {
+    font-size: 32px;
   }
 }</style>
