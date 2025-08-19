@@ -430,6 +430,7 @@ export default {
         stepList: 'Разбивка по сегментам',
         stepList1: '[0] Максимальная минута [1],',
         stepList2: '[0] Более минуты [1]',
+        appTitle: "共享设备Saas系统-管理后台",
     },
     // 分账关系
     reType: {

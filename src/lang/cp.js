@@ -430,6 +430,7 @@ export default {
     stepList: "分段明細",
     stepList1: "[0]分鐘最高[1]，",
     stepList2: "[0]分鐘以上[1]",
+    appTitle: "共享设备Saas系统-管理后台",
   },
   // 分賬關係
   reType: {

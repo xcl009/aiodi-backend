@@ -432,6 +432,7 @@ export default {
     segmentationtext: '小时不到',
 		segmentationtext1: '之后的24小时',
 		segmentationtext2: '移动电池丢失或损坏时，将产生赔偿金',
+    appTitle: "共享设备Saas系统-管理后台",
   },
   // 分账关系
   reType: {

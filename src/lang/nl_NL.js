@@ -417,7 +417,9 @@ export default {
     stepList2: "[0]Minuten of meer[1]",
     segmentationtext: "Minder dan een uur",
     segmentationtext1: "Volgende 24 uur",
-    segmentationtext2: "Er wordt een schadevergoeding in rekening gebracht wanneer de batterij van de mobiele telefoon verloren gaat of beschadigd raakt"
+    segmentationtext2: "Er wordt een schadevergoeding in rekening gebracht wanneer de batterij van de mobiele telefoon verloren gaat of beschadigd raakt",
+    appTitle: "G-Hoost Beheerpaneel",
+  
   },
   reType: {
     STORE: "winkelier",

@@ -430,6 +430,7 @@ export default {
     stepList: '세그먼트 명세',
     stepList1: '[0] 분 최대 [1],',
     stepList2: '[0] 분 이상 [1]',
+    appTitle: "共享设备Saas系统-管理后台",
   },
   // 分账关系
   reType: {

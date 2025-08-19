@@ -417,6 +417,7 @@ export default {
     stepList: 'សេចក្ដី​លម្អិត​ដែល​បាន​ចម្រៀក',
     stepList1: '[0] នាទី ខ្ពស់​បំផុត [1],',
     stepList2: '[0] នាទី ឬ​ច្រើន [1]',
+    appTitle: "共享设备Saas系统-管理后台",
   },
   reType: {
     STORE: "shopkeeper",

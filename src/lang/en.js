@@ -437,6 +437,7 @@ export default {
     xq7:"Sunday",
     viporder:"Paid",
     noviporder:"Member",
+    appTitle: "G-Hoost Management Panel",
   },
   // 分账关系
   reType: {

@@ -437,6 +437,7 @@ export default {
     stepList: "Detalhamento por etapas",
     stepList1: "[0] minutos no máximo [1],",
     stepList2: "acima de [0] minutos [1]",
+    appTitle: "共享设备Saas系统-管理后台",
   },
   // 分账关系
   reType: {

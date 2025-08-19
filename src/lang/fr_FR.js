@@ -417,7 +417,8 @@ export default {
         stepList2: "[0]Minutes ou plus[1]",
         segmentationtext: "Moins d'une heure",
         segmentationtext1: "Prochaines 24 heures",
-        segmentationtext2: "Une indemnisation sera versée en cas de perte ou de dommage de la batterie du téléphone portable."
+        segmentationtext2: "Une indemnisation sera versée en cas de perte ou de dommage de la batterie du téléphone portable.",
+        appTitle: "共享设备Saas系统-管理后台",
     },
     reType: {
         STORE: "commerçant",

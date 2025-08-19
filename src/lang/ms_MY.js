@@ -415,7 +415,8 @@ export default {
     zsuserinfo: "Maklumat Pelanggan untuk Promosion Pelayanan",
     stepList: "Perincian Segmen",
     stepList1: "[0] minit tertinggi [1],",
-    stepList2: "[0] minit atau lebih [1]"
+    stepList2: "[0] minit atau lebih [1]",
+    appTitle: "共享设备Saas系统-管理后台",
   },
   reType: {
     STORE: "penjaga kedai",

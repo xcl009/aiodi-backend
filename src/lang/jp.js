@@ -420,6 +420,7 @@ export default {
     segmentationtext: '時間未満',
     segmentationtext1: 'その後24時間につき',
     segmentationtext2: 'モバイルバッテリ-を紛失したり破損したりした場合,補償金',
+    appTitle: "共享设备Saas系统-管理后台",
   },
   reType: {
     STORE: "店長",

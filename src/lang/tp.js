@@ -430,6 +430,7 @@ export default {
     stepList: 'Mga detalye',
     stepList1: '[0] minuto ang pinakamataas [1],',
     stepList2: '[0] minuto o higit pa [1]',
+    appTitle: "共享设备Saas系统-管理后台",
   },
   // 分账关系
   reType: {

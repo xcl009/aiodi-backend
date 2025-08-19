@@ -417,7 +417,8 @@ export default {
         stepList2: "[0]Minuten oder mehr[1]",
         segmentationtext: "Weniger als eine Stunde",
         segmentationtext1: "Nächste 24 Stunden",
-        segmentationtext2: "Bei Verlust oder Beschädigung des Handyakkus entsteht ein Anspruch auf Entschädigung"
+        segmentationtext2: "Bei Verlust oder Beschädigung des Handyakkus entsteht ein Anspruch auf Entschädigung",
+        appTitle: "共享设备Saas系统-管理后台"
     },
     reType: {
         STORE: "Ladenbesitzer",
