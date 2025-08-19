@@ -52,7 +52,7 @@
                 <div>{{ $t('layout.langSelect') }}</div>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="waitOnLine(item.distValue)" v-for="item in range">{{ item.distLable }}</el-dropdown-item>
-                  <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item>
+                  <!-- <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -214,7 +214,10 @@ export default {
     	this.$post('iot-saas-basic/open/sys/dict/query', {
     		key: 'SYSTEM_INTERNATION_LAN'
     	}).then(res => {
-    		this.range = res
+    		this.range = res;
+        this.range = this.range.filter(item => {
+          return ['zh_CN', 'en_US', 'nl_NL'].indexOf(item.distValue) > -1
+        }) // Filtering out languages currently not supported in the app | 过滤掉当前应用不支持的语言 
     	})
     },
 
