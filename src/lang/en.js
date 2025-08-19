@@ -1968,7 +1968,7 @@ export default {
     me: "Profile",
     personalSettings: "Personal settings",
     userinfo: "Personal Information",
-    langSelect: "language selection",
+    langSelect: "Language",
     chineseVersion: "中文版本(简体)",
     chineseVersion1: "中文版本(繁體)",
     englishVersion: "English",

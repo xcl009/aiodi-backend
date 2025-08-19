@@ -1935,7 +1935,7 @@ export default {
         me: 'Мой.',
         personalSettings: 'Индивидуальные настройки',
         userinfo: 'Личная информация',
-        langSelect: 'Выбор языка',
+        langSelect: 'Выбор языка (Language)',
         chineseVersion: '中文版本(简体)',
         chineseVersion1: '中文版本(繁體)',
         englishVersion: '英文版本',

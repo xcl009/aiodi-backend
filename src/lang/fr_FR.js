@@ -1913,7 +1913,7 @@ export default {
         me: "le mien",
         personalSettings: "Paramètres personnels",
         userinfo: "informations personnelles",
-        langSelect: "Sélection de la langue",
+        langSelect: "Sélection de la langue (Language)",
         chineseVersion: "Version chinoise (simplifiée)",
         chineseVersion1: "Version chinoise (traditionnelle)",
         englishVersion: "version anglaise",

@@ -1941,7 +1941,7 @@ export default {
     me: 'Cá nhân',
     personalSettings: 'Cài đặt cá nhân',
     userinfo: 'Thông tin cá nhân',
-    langSelect: 'Chọn ngôn ngữ',
+    langSelect: 'Chọn ngôn ngữ (Language)',
     chineseVersion: '中文版本(简体)',
     chineseVersion1: '中文版本(繁體)',
     englishVersion: 'Phiên bản Tiếng Anh',

@@ -1935,7 +1935,7 @@ export default {
     me: 'Aking',
     personalSettings: 'Mga Persyal na Pagsasaayos',
     userinfo: 'personal na impormasyon',
-    langSelect: 'Pagpili ng wika',
+    langSelect: 'Pagpili ng wika (Language)',
     chineseVersion: '中文版本(简体)',
     chineseVersion1: '中文版本(繁體)',
     englishVersion: '英文版本',

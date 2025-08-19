@@ -1943,7 +1943,7 @@ export default {
     me: '我的',
     personalSettings: '个人设置',
     userinfo: '个人信息',
-    langSelect: '语言选择',
+    langSelect: '语言选择 (Language)',
     chineseVersion: '中文版本(简体)',
     chineseVersion1: '中文版本(繁體)',
     englishVersion: '英文版本',

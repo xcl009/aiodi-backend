@@ -1935,7 +1935,7 @@ export default {
     me: '나의',
     personalSettings: '개인 설정',
     userinfo: '개인 설정',
-    langSelect: '언어 선택',
+    langSelect: '언어 선택 (Language)',
     chineseVersion: '中文版本(简体)',
     chineseVersion1: '中文版本(繁體)',
     englishVersion: '英文版本',

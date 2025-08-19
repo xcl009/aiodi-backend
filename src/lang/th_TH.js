@@ -1905,7 +1905,7 @@ export default {
     me: "ของฉัน",
     personalSettings: "การตั้งค่าส่วนบุคคล",
     userinfo: "ข้อมูลส่วนบุคคล",
-    langSelect: "การเลือกภาษา",
+    langSelect: "การเลือกภาษา (Language)",
     chineseVersion: "เวอร์ชั่นภาษาจีน (ประยุกต์)",
     chineseVersion1: "เวอร์ชั่นภาษาจีน (ดั้งเดิม)",
     englishVersion: "เวอร์ชั่นภาษาอังกฤษ",

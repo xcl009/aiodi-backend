@@ -1935,7 +1935,7 @@ export default {
         me: 'Mi cuenta',
         personalSettings: 'Configuración personal',
         userinfo: 'Información personal',
-        langSelect: 'Selección de idioma',
+        langSelect: 'Selección de idioma (Language)',
         chineseVersion: 'Versión de idioma chino (simplificado)',
         chineseVersion1: 'Versión de idioma chino (tradicional)',
         englishVersion: 'Versión en inglés',

@@ -1904,7 +1904,7 @@ export default {
     me: "saya",
     personalSettings: "Tetapan peribadi",
     userinfo: "Maklumat Peribadi",
-    langSelect: "Pilihan bahasa",
+    langSelect: "Pilihan bahasa (Language)",
     chineseVersion: "Versi Cina (Sederhana)",
     chineseVersion1: "Versi Cina (Cina Tradisional)",
     englishVersion: "versi bahasa Inggeris",

@@ -515,4 +515,10 @@ export default {
 
 .el-dropdown-menu {
   top: 35px !important;
-}</style>
+}
+
+.el-dropdown-menu__item:not(.is-disabled):hover .el-dropdown,
+.el-dropdown-menu__item:focus .el-dropdown {
+  color: var(--primary-color) !important;
+}
+</style>

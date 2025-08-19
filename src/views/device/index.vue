@@ -853,7 +853,7 @@ export default {
           key: 'bind',
           val: this.lowerDevice,
           hidden: !this.lowerDevice,
-          name: '归属'
+          name: this.$t('public.belongTo')
         },
         {
           key: 'place',

@@ -2109,7 +2109,7 @@ export default {
     me: "Meu",
     personalSettings: "Configurações pessoais",
     userinfo: "Informações pessoais",
-    langSelect: "Seleção de idioma",
+    langSelect: "Seleção de idioma (Language)",
     chineseVersion: "Versão em chinês (simplificado)",
     chineseVersion1: "Versão em chinês (tradicional)",
     englishVersion: "Versão em inglês",

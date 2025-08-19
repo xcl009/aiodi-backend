@@ -1906,7 +1906,7 @@ export default {
     me: "ខ្ញុំ",
     personalSettings: "ការ​កំណត់​ផ្ទាល់ខ្លួន",
     userinfo: "ព័ត៌មាន​ផ្ទាល់ខ្លួន",
-    langSelect: "ជម្រើស​ភាសា",
+    langSelect: "ជម្រើស​ភាសា (Language)",
     chineseVersion: "កំណែ​ចិន (ធម្មតា)",
     chineseVersion1: "កំណែ​ចិន (ចិន​បុរាណ)",
     englishVersion: "កំណែ​អង់គ្លេស",

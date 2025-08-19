@@ -1909,7 +1909,7 @@ export default {
     me: "マイページ",
     personalSettings: "個人設定",
     userinfo: "個人情報",
-    langSelect: "言語選択",
+    langSelect: "言語選択 (Language)",
     chineseVersion: "中国語版(簡体字)",
     chineseVersion1: "中国語版(繁体字)",
     englishVersion: "英語版",
