@@ -376,7 +376,7 @@ export default {
     refresh: "vernieuwen",
     position: "Locatie",
     select: "kiezen",
-    query: "Vraag",
+    query: "Zoeken",
     refuse: "afwijzen",
     cannotBeGreaterThan: "De starttijd kan niet groter zijn dan de eindtijd",
     pleaseTime: "Selecteer een tijd",

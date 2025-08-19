@@ -1,83 +1,78 @@
 <template>
   <div class="rel pb-20 home-box mb-20">
 
-
-    <div class="abs blur-box"></div>
-    <el-row :gutter="10" type="flex" class="stat-box text-center">
+    <el-row :gutter="10" type="flex" class="stat-box text-center mb-20">
+      <!-- Total "GMV" -->
       <el-col :span="24" class="rel">
-        <div class="abs p-all flex justify-center">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({ path: `/money/monthMoney` })">
-            <div class="flex align-center fs-b5 baby-blue">
+            <div class="flex align-center fs-b5 text-primary">
               {{currencySymbolpositionType ?  siteInfo.currencySymbol: ''  }}
               <count-to :start-val="0"
                 :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" />{{currencySymbolpositionType ?  '': siteInfo.currencySymbol }}</div>
-            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.transactionAmount') }}</div>
-            <img class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')" alt="" />
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.transactionAmount') }}</div>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/money-bag.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon b"></div>
       </el-col>
+      <!-- Orders -->
       <el-col :span="24" class="rel">
-        <div class="abs p-all flex justify-center">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="Ability['order'] ? $router.push({ path: `/order/allOrder` }) : ''">
-            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allOrderNum') }}</div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allOrderNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/order.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon y"></div>
       </el-col>
+      <!-- Cables -->
       <el-col :span="24" class="rel">
-        <div class="abs p-all flex justify-center">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({ path: isSaas() ? `/device` : `/device` })">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allDevicesNum') }}</div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allDevicesNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/device.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon b"></div>
       </el-col>
+      <!-- "Agents" -->
       <el-col :span="24" class="rel" v-if="!isStore()">
-        <div class="abs p-all flex justify-center">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allAgentNum') }}</div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allAgentNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon y"></div>
       </el-col>
+      <!-- Merchants -->
       <el-col :span="24" class="rel" v-if="!isStore()">
-        <div class="abs p-all flex justify-center">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allStoreNum') }}</div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allStoreNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/store.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon b"></div>
       </el-col>
+      <!-- Total Users -->
       <el-col :span="24" class="rel" v-if="isBrand() || isSaas()">
-        <div class="abs p-all flex justify-center">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber || 0)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber || 0)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-primary text-bold">{{ $t('home.allUserNum') || 'Total Users' }}</div>
-            <img class="mt-10 type-icon" :src="require('@/assets/home/users.svg')" alt="" />
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allUserNum') || 'Total Users' }}</div>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon b"></div>
       </el-col>
     </el-row>
 
-    <div class="pl-20 pr-20 trapezoid-box">
-      <div class="trapezoid"></div>
-      <div class="trapezoid-strip"></div>
-    </div>
+    <hr />
 
     <el-row :gutter="20" type="flex" class="two-box mt-20 pl-20 pr-20 text-white"
       v-if="roomList['BD'] || roomList['VG'] || roomList['AV']">
@@ -114,9 +109,8 @@
                 @click="contrast_type = index; $refs.contrastCarusel.setActiveItem(index)">{{ item }}</div>
             </div>
           </div>
-          <el-carousel height="300px" ref="contrastCarusel" @change="contrastChange" v-if="querHistogram.today">
-            <!-- todo: disable autoscroll -->
-            <el-carousel-item v-for="(item, index) in contrast_arr" :interval="5000" :initial-index="contrast_type">
+          <el-carousel height="300px" ref="contrastCarusel" arrow="never" :autoplay="false" @change="contrastChange" v-if="querHistogram.today">
+            <el-carousel-item v-for="(item, index) in contrast_arr" :initial-index="contrast_type">
               <div class="flex">
                 <div class="label">
                   <div>{{ $t('public.today') }}</div>
@@ -164,26 +158,23 @@
           <div class="flex align-center">
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.storeStatistics') }}</div>
-            <!-- todo: change color of SVG -->
             <div class="cursor flex_c" @click="isCheckChange(true)"><img
-                :src="require('@/assets/home/unfild.svg')" class="mr-10" /> {{ $t('public.adds') }}</div>
+                :src="require('@/assets/home/expand-bk.svg')" class="mr-10" /> {{ $t('public.adds') }}</div>
           </div>
           <el-table class="store-table" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
             :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
-            :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="storeList"
+            :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#ca0414' }" :data="storeList"
             style="background:none">
             <el-table-column :label="$t('home.ranking')" width="70">
               <template slot-scope="scope">
-                <span class="fs-c1 text-bold"
-                  :class="{ 'y-yellow': scope.$index == 0, 'baby-blue': scope.$index == 2, 'text-primary': scope.$index == 1 }">NO.{{
-                    scope.$index + 1 }}</span>
+                <span class="fs-c1 text-bold text-primary">NO. {{scope.$index + 1 }}</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('public.storeName')" min-width="120">
               <template slot-scope="scope">
-                <span class="y-yellow" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
-                <span class="y-yellow" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
+                <span class="text-primary" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
+                <span class="text-primary" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.orderNum')" min-width="90">
@@ -254,8 +245,7 @@
                   <div>{{ $t('home.storeStatistics') }}</div>
                 </div>
                 <div class="m_l_a mr-20 cursor" @click="isStoreType = false">
-                  <!-- todo: Change color of SVG -->
-                  <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
+                  <img :src="require('@/assets/home/shrink-bk.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
               <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
@@ -297,7 +287,6 @@
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item>
-                    <!-- todo: colors -->
                    <div class="checkType">
                     <el-radio-group v-model="form.dates" @input="toQuery(1)">
                       <el-radio-button :label="0">{{ $t('public.today') }}</el-radio-button>
@@ -317,22 +306,21 @@
                 :defaultColumn="defaultColumn"></table-column-set> -->
             </div>
 
-            <el-table class="store-table text-white" :highlight-current-row="false"
+            <!-- Expanded merchant table -->
+            <el-table class="store-table" :highlight-current-row="false"
               :header-row-style="{ background: 'none' }"
-              :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
-              :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="list"
+              :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
+              :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#ca0414' }" :data="list"
               style="background:none" @sort-change="sortChange">
               <el-table-column :label="$t('home.ranking')" width="120">
                 <template slot-scope="scope">
-                  <span class="fs-c1 text-bold"
-                    :class="{ 'y-yellow': scope.$index == 0, 'baby-blue': scope.$index == 2, 'text-primary': scope.$index == 1 }">NO.{{
-                      scope.$index + 1 }}</span>
+                  <span class="fs-c1 text-bold text-primary">NO. {{ scope.$index + 1 }}</span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('public.storeName')" min-width="120">
                 <template slot-scope="scope">
-                  <span class="y-yellow" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
-                  <span class="y-yellow" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
+                  <span class="text-primary" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
+                  <span class="text-primary" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('home.orderNum')" min-width="90" column-key="orderAllNumber" sortable>
@@ -390,7 +378,7 @@
           <el-table ref="orderTable" class="order-table" height="460px" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
             :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
-            :row-style="{ background: 'rgba(0, 0, 0, 0.2)' }" :cell-style="{ border: 'none' }" :data="orderList"
+            :row-style="{ background: 'rgba(0, 0, 0, 0.05)' }" :cell-style="{ border: 'none' }" :data="orderList"
             style="background:none">
             <el-table-column :label="`${$t('home.serialNumber')}`" width="60">
               <template slot-scope="scope">
@@ -1845,36 +1833,18 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.app-main {
-  &.is-home {
-    background-color: #001536;
-    background-image: url('../../assets/home_bg.png');
-    background-size: 100%;
-  }
-}
-</style>
 <style lang="scss" scoped>
 .home-box {
   margin: -2px 2px 0;
   padding-top: 2px;
+}
 
-  .blur-box {
-    height: 213px;
-    width: calc(100% - 40px);
-    left: 20px;
-    background: linear-gradient(180deg, rgba(0, 43, 81, 0) 0%, #002B51 100%);
-    filter: blur(15px);
-    transform: perspective(20px) rotateX(-1deg);
-  }
+hr {
+  border: 2px solid var(--primary-color);
 }
 
 .baby-blue {
   color: #08EFF0;
-}
-
-.y-yellow {
-  color: #FFD21D;
 }
 
 .stat-box {
@@ -1883,12 +1853,6 @@ export default {
 
   .abs {
     z-index: 3;
-  }
-
-  .dodge-icon {
-    margin: 12px auto 0;
-    width: 154px;
-    height: 167px;
   }
 
   .type-icon {
@@ -1937,6 +1901,7 @@ export default {
   .item-box {
     height: 100%;
     border: 2px solid var(--primary-color);
+    background-color: #ffffff;
 
     .line {
       margin-right: 8px;
@@ -1948,7 +1913,7 @@ export default {
     .progress {
       margin: 25px;
       padding: 3px;
-      border: 1px solid #38E5A5;
+      border: 1px solid var(--primary-color);
       border-radius: 42px;
 
       /deep/ .el-progress-bar__outer {
@@ -1956,12 +1921,18 @@ export default {
       }
 
       /deep/ .el-progress-bar__inner {
-        background: linear-gradient(90deg, #38E5A5 0%, #FEF880 100%);
+        background: var(--primary-color);
       }
     }
 
     /deep/ .el-carousel__indicators {
       display: none;
+    }
+
+    /deep/ .el-carousel__arrow--left,
+    /deep/ .el-carousel__arrow--right {
+      background-color: var(--primary-color) !important;
+
     }
 
     .label {
@@ -2041,7 +2012,6 @@ export default {
   .item-box {
     .box-grey {
       background: rgba(17, 102, 177, 0.1);
-      border: 1px solid #1166B1;
 
       /deep/ .el-input__inner {
         background: none;
@@ -2143,20 +2113,21 @@ export default {
 }
 
 /deep/.el-input__inner {
-  background: rgba(17, 102, 177, 0.1) !important;
-  border: 1px solid #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/deep/.el-range-input {
-  background: rgba(17, 102, 177, 0.1) !important;
+  background: #ffffff !important;
+  border: 1px solid #cccccc !important;
+  color: #000000 !important;
 }
 
 /deep/.el-button--primary,
-/deep/.icon-search.icon-refresh {
-  background-color: rgba(17, 102, 177, 0.1) !important;
-  border-color: #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+/deep/.icon-search.icon-refresh,
+/deep/.el-button--primary:hover,
+/deep/.icon-search.icon-refresh:hover,
+/deep/.el-button--primary:focus,
+/deep/.icon-search.icon-refresh:focus {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+  border-color: var(--primary-color) !important;
 }
 
 /deep/.el-radio-button__inner {
@@ -2164,9 +2135,15 @@ export default {
   border: 1px solid var(--primary-color) !important;
   color: #000 !important;
 }
+/deep/.el-radio-button__orig-radio:checked+.el-radio-button__inner {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: none !important;
+}
 
 /deep/.butCheck {
-  border: 2px solid #1166B1;
+  border: 2px solid var(--primary-color);
   margin: 20px;
 
   .line {
@@ -2183,13 +2160,6 @@ export default {
 //   box-shadow: 0px 0px 12px 0px #1166B1 inset !important;
 // }
 
-/deep/.el-pagination__total {
-  color: rgba(255, 255, 255, 0.80) !important;
-}
-
-// .storeBox {
-//   animation: bounce 5s reverse;
-// }
 .fade-enter-active {
   animation: bounce 3s reverse;
 }
@@ -2220,76 +2190,18 @@ export default {
   }
 }
 
-/* 模块上下浮动动画 module-move */
-@keyframes bounce {
-
-  //   from {width:150px;margin:0 auto;}
-  // to {width:2250px;margin:0 auto;}
-  // 0% {
-  //   width: 100%;
-  //   // transform-origin: 500px 500px;
-  // }
-
-  // 10% {
-  //   width: 90%;
-  //   // transform-origin: 600px 600px;
-  // }
-
-  // 20% {
-  //   width: 80%;
-  //   // transform-origin: 700px 700px;
-  // }
-
-  // 30% {
-  //   width: 70%;
-  //   // transform-origin: 800px 800px;
-  // }
-
-  // 40% {
-  //   width: 60%;
-  //   // transform-origin: 900px 900px;
-  // }
-
-  // 50% {
-  //   width: 50%;
-  //   // transform-origin: 1000px 1000px;
-  // }
-
-  // 60% {
-  //   width: 40%;
-  //   // transform-origin: 1100px 1100px;
-  // }
-
-  // 70% {
-  //   width: 30%;
-  //   // transform-origin: 1200px 1200px;
-  // }
-
-  // 80% {
-  //   width: 30%;
-  //   // transform-origin: 1300px 1300px;
-  // }
-
-  // 90% {
-  //   width: 30%;
-  //   // transform-origin: 1400px 1400px;
-  // }
-
-  // 100% {
-  //   width: 30%;/
-  //   // transform-origin: 1500px 1500px;
-  // }
-
-}
-
+/** What is this */
 /deep/.filterBox {
   max-height: 100% !important;
 }
 .checkType{
   /deep/.is-active{
-  box-shadow: inset 0 0 12px #1166B1;
-      color: #1CB9FB;
+  // box-shadow: inset 0 0 12px #1166B1;
+  color: #ffffff;
 }
+}
+.el-range-editor--small .el-range-separator {
+  line-height: 32px !important;
 }
 
 </style>

@@ -390,7 +390,7 @@ export default {
     refresh: "Refresh",
     position: "Location",
     select: "Select",
-    query: "Inquire",
+    query: "Search",
     refuse: "Refuse",
     cannotBeGreaterThan: "The start time cannot be greater than the end time",
     pleaseTime: "Please select a time",
