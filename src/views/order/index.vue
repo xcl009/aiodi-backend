@@ -1,17 +1,17 @@
 <template>
   <div>
-    <div v-if="!serchShow" class="serchBox" @click.stop="serchShow = !serchShow">
+    <div v-if="!serchShow" class="searchBox" @click.stop="serchShow = !serchShow">
       <div class=" text-bold fs-b5 ">
-        <div class="flex_c cursor">{{ $t('components.screen') }} <img src="@/assets/bottomIcon.png"
-            class="bottomIcon" />
+        <div class="flex_c cursor">{{ $t('components.filter') }} <img src="@/assets/filterIcon.svg"
+            class="filterIcon" />
         </div>
       </div>
 
     </div>
 
-    <div v-if="serchShow" @click="bing" class="serchBox">
+    <div v-if="serchShow" @click="bing" class="searchBox">
       <div class=" text-bold fs-b5 " @click.stop="serchShow = !serchShow">
-        <div class="flex_c cursor">{{ $t('public.hide') }} <img src="@/assets/topIcon.png" class="bottomIcon" />
+        <div class="flex_c cursor">{{ $t('public.close') }} <img src="@/assets/filterIcon.svg" class="filterIcon" />
         </div>
       </div>
       <div>
@@ -870,7 +870,6 @@ export default {
       return [{
         value: 'false',
         title: this.$t('public.all'),
-
       },
       //  {
       // 	value: 0,
@@ -879,11 +878,11 @@ export default {
       // },
       {
         value: 1,
-        title: '微信小程序',
+        title: this.$t('public.weixin'), // 手机应用
         icon: 'icon-weixin1 text-green'
       }, {
         value: 2,
-        title: '支付宝小程序',
+        title: this.$t('public.alipay'), // 支付宝小程序
         icon: 'icon-zhifubao text-primary'
       },
       //  {
@@ -891,13 +890,14 @@ export default {
       // 	title: '后台',
       // 	icon: 'icon-houtai8 text-gray'
       // },
+      /** @todo Split into Android/iOs | Chinese: 拆分为Android/iOS */
       {
         value: 4,
-        title: 'APP',
+        title: this.$t('public.mobileApp'), // 手机应用
         icon: 'icon-app text-danger'
       }, {
         value: 5,
-        title: 'H5',
+        title: this.$t('public.webBrowser'), // HTML5 App | 网页浏览器
         icon: 'icon-line-HTML5H5 text-primary'
       }]
     },
@@ -935,11 +935,6 @@ export default {
         value: 'R',
         title: this.$t('public.progress'),
         nkey: 'rentingNumber'
-      },
-      {
-        value: 'today',
-        title: this.$t('public.todayOrder'),
-        nkey: 'todayNumber'
       },
       {
         value: 'O',
@@ -2164,17 +2159,18 @@ export default {
   height: 20px;
 }
 
-.serchBox {
+.searchBox {
   background: #fff;
   margin: 10px 0 0;
   padding: 10px 20px;
-  border: 1px solid var(--olive);
-  color: var(--olive);
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
 }
 
-.bottomIcon {
+.filterIcon {
   width: 30px;
   height: 30px;
+  margin-left: 10px;
 }
 ::v-deep .el-select{
 	width:100% !important;

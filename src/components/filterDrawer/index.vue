@@ -1,7 +1,7 @@
 <template>
   <div v-if="device === 'mobile'">
     <div class="pt-10 pb-10 l-t el-dropdown-link bg-white text-center" @click="drawer = true">
-      {{ $t('components.screen') }}<i class="el-icon-arrow-down el-icon--right"></i>
+      {{ $t('components.filter') }}<i class="el-icon-arrow-down el-icon--right"></i>
     </div>
     <el-drawer :visible.sync="drawer" direction="ttb" :withHeader="false" size="inhert">
       <slot></slot>
@@ -32,5 +32,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped></style>
