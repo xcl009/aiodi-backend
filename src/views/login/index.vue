@@ -1,5 +1,5 @@
 <template>
-  <el-row type="flex" align="middle" class="pb-30 login-container flex-wrap">
+  <div class="flexv justify-center login-container flex-wrap">
     <!-- todo: CHANGE BEFORE GOING TO PRODUCTION. WE DO NOT HAVE THE RIGHTS FOR THIS IMAGE -->
     <!-- 待办事项：在投入生产前进行修改。我们没有此图像的使用权 -->
     <div >
@@ -35,43 +35,8 @@
           </el-form>
         </div>
       </div>
-      <div class="flex justify-center align-end login-monkeyboos" v-if="THEME == 'MONKEYBOOS'">
-        <el-image class="left-img hidden-sm-and-down" :src="require('@/assets/MONKEYBOOS.png')" fit="contain"></el-image>
-        <div class="right-box bg-white">
-          <div class="form-box">
-            <div class="flex flexv align-center justify-around h-100 bg-white">
-              <div>
-                <div class="hello text-center text-bold">{{ $t('login.hello') }}！</div>
-                <div class="title fs-b2 text-grey">{{ $t('login.logInToContinue') }}</div>
-              </div>
-              <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" class="">
-                <el-form-item prop="username">
-                  <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1"
-                    autocomplete="on" :placeholder="$t('login.username')">
-                    <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
-                  </el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                  <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
-                    name="password" tabindex="2" autocomplete="on" :placeholder="$t('login.password')"
-                    @keyup.enter.native="handleLogin">
-                    <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
-                  </el-input>
-                  <span class="show-pwd" @click="showPwd">
-                    <preview-close-one theme="outline" size="16" fill="#4E5969" v-if="passwordType === 'password'" />
-                    <preview-open theme="outline" size="16" fill="#4E5969" v-else />
-                  </span>
-                </el-form-item>
-                <el-button class="mt-20 login-btn" type="primary" :loading="loading"
-                  @click.native.prevent="handleLogin">{{ $t('public.login') }}</el-button>
-              </el-form>
-              <el-image :src="require('@/assets/MONKEYBOOS_LOGO.png')" class="mini-logo" fit="cover"></el-image>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </el-row>
+  </div>
 </template>
 
 <script>
@@ -346,50 +311,6 @@ $light_gray: #eee;
   .auth-code_btn {
     background: rgba(11, 161, 248, 0.4);
     color: #fff;
-  }
-
-  // 猴老板主题
-  .login-monkeyboos {
-    .right-box {
-      width: 574px;
-      max-height: 722px;
-      max-width: 98%;
-      padding: 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      border-radius: 20px;
-    }
-
-    .left-img {
-      margin-right: 160px;
-      height: 700px;
-      max-height: 90vh;
-    }
-
-    .form-box {
-      padding: 2px;
-      background-image: linear-gradient(to right, #EC1E79, #503EF9);
-      border-radius: 20px;
-
-      >div {
-        border-radius: 18px;
-      }
-    }
-
-    .hello {
-      color: #ED1E79;
-    }
-
-    // .el-form{
-    //   margin: 80px 0 130px;
-    // }
-    .mini-logo {
-      width: 184px;
-    }
-
-    .login-btn {
-      background: #ED1E79;
-      border-color: #ED1E79;
-    }
   }
   
   .title {
