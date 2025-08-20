@@ -381,7 +381,7 @@
             style="background:none">
             <el-table-column :label="`${$t('home.serialNumber')}`" width="60">
               <template slot-scope="scope">
-                <div class="fs-c1 text-bold idx text-center" :class="'idx_' + scope.$index % 3">{{ scope.$index + 1 }}
+                <div class="fs-c1 text-bold text-white idx text-center">{{ scope.$index + 1 }}
                 </div>
               </template>
             </el-table-column>
@@ -1803,17 +1803,7 @@ hr {
     width: 20px;
     height: 20px;
     border-radius: 47px;
-    line-height: 20px;
-    color: #0A1B36;
-    background: #FC5354;
-
-    &.idx_1 {
-      background: #F59A23;
-    }
-
-    &.idx_2 {
-      background: #FFFF00;
-    }
+    background: var(--primary-color);
   }
 
   /deep/ &.el-table {
