@@ -18,6 +18,7 @@
         <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
           @saveXlsx="saveXlsx">
           <template v-slot:tabs>
+            <!-- Device Type Filter | 设备类型筛选器 -->
             <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
               <div class="mr-10">{{ $t('public.deviceType') }}</div>
               <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
@@ -25,6 +26,7 @@
                 <el-tab-pane :label="index" :name="'' + item + ''" v-for="(item, index) in myDeviceName" />
               </el-tabs>
             </div>
+            <!-- Order Status | 订单状态 -->
             <div class="mb-10 flex align-center bg-white">
               <div class="mr-10">{{ $t('public.orderType') }}</div>
               <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
@@ -32,6 +34,7 @@
                   :name="'' + item.value + ''" v-for="item in orderTab" />
               </el-tabs>
             </div>
+            <!-- Order Source | 订单来源 -->
             <div class="mb-10 flex align-center bg-white">
               <div class="mr-10">{{ $t('order.orderSource') }}</div>
               <el-tabs class="flex-1" v-model="listQuery.sourceType" @tab-click="toQuery()">
@@ -48,6 +51,7 @@
                 </el-tab-pane>
               </el-tabs>
             </div>
+            <!-- Payment Method | 付款方式 -->
             <div class="mb-10 flex align-center bg-white">
               <div class="mr-10">{{ $t('public.payType') }}</div>
               <el-tabs class="flex-1" v-model="listQuery.payType" @tab-click="toQuery()">
@@ -201,10 +205,10 @@
             </el-table-column>
             <el-table-column :label="item.name" width="240" v-else-if="item.val && item.key == 'deviceSn'">
               <template slot-scope="scope">
-                <div>{{ $t('public.code') }}：{{ scope.row.deviceSn || "--" }}</div>
-                <!-- <div>设备SN：{{ scope.row.factorySn || "--" }}</div> -->
+                <div>{{ $t('public.code') }}: {{ scope.row.deviceSn || "--" }}</div>
+                <!-- <div>设备SN: {{ scope.row.factorySn || "--" }}</div> -->
                 <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
-                  @click="checkBao(scope.row.goods_sn)">{{ $t('public.sn') }}：{{ scope.row.goods_sn ||
+                  @click="checkBao(scope.row.goods_sn)">{{ $t('public.sn') }}: {{ scope.row.goods_sn ||
       "--" }}</div>
               </template>
             </el-table-column>
@@ -283,11 +287,11 @@
               <template slot-scope="scope">
                 <div class="remark-box">
                   <el-link type="danger" v-if="scope.row.freeTime > 0">
-                    <span v-if="scope.row.freeUser == 1">{{ $t('public.freeQuota') }}：{{
+                    <span v-if="scope.row.freeUser == 1">{{ $t('public.freeQuota') }}: {{
       (parseInt(scope.row.freeTime) /
         60).toFixed(1)
     }}{{ $t('public.huor') }}</span>
-                    <span v-else-if="scope.row.freeUser == 3">{{ $t('order.suspendBilling') }}：{{
+                    <span v-else-if="scope.row.freeUser == 3">{{ $t('order.suspendBilling') }}: {{
       parseInt(scope.row.freeTime) / 60 }}{{ $t('public.huor') }}</span>
                     <span v-else-if="scope.row.freeUser > 3">{{ scope.row.freeTime == 600000 ?
       `${$t('order.membershipOrder')}` :
@@ -566,7 +570,7 @@
               <el-form-item :label="`${$t('order.reasonForRefund')}:`">
                 <el-input v-model="dform.reason" :placeholder="`${$t('order.reasonForRefund')}`"></el-input>
                 <div class="flex mt-10 line-six text-danger" v-if="isBrand()">
-                  <div>{{ $t('public.tips') }}：</div>
+                  <div>{{ $t('public.tips') }}: </div>
                   <div>{{ $t('order.reasonForRefundText') }}</div>
                 </div>
               </el-form-item>
@@ -699,9 +703,9 @@
       curRow.afterLevel >= 0 ? curRow.afterLevel : curRow.level }}%)</span>
                       <template v-if="curRow.freeTime > 0">
                         <span class="mr-5" v-if="curRow.freeUser == 1">{{ $t('public.freeQuota')
-                          }}：{{ curRow.freeTime }}{{ $t('public.minute') }}</span>
+                          }}: {{ curRow.freeTime }}{{ $t('public.minute') }}</span>
                         <span class="mr-5" v-else-if="curRow.freeUser == 3">{{
-      $t('order.suspendBilling') }}：{{ curRow.freeTime }}{{
+      $t('order.suspendBilling') }}: {{ curRow.freeTime }}{{
       $t('public.minute') }}</span>
                         <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime ==
       600000 ? `${$t('order.membershipOrder')}` :
@@ -876,15 +880,15 @@ export default {
       // 	title: '小程序',
       // 	icon: 'icon-xiaochengxu text-six'
       // },
-      {
-        value: 1,
-        title: this.$t('public.weixin'), // 手机应用
-        icon: 'icon-weixin1 text-green'
-      }, {
-        value: 2,
-        title: this.$t('public.alipay'), // 支付宝小程序
-        icon: 'icon-zhifubao text-primary'
-      },
+      // {
+      //   value: 1,
+      //   title: this.$t('public.weixin'), // 手机应用
+      //   icon: 'icon-weixin1 text-green'
+      // }, {
+      //   value: 2,
+      //   title: this.$t('public.alipay'), // 支付宝小程序
+      //   icon: 'icon-zhifubao text-primary'
+      // },
       //  {
       // 	value: 3,
       // 	title: '后台',
@@ -926,6 +930,8 @@ export default {
       }]
     },
     orderTab() {
+      // These nkeys are defined in queryByUser. But all of them have a value of 0.
+      // 这些 nkeys 在 queryByUser 中定义，但它们的值都是 0。
       return [{
         value: 0,
         title: this.$t('public.all'),

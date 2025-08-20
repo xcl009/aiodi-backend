@@ -44,8 +44,8 @@
         <el-table-column :label="$t('brand.numberOfDevices')">
           <template slot-scope="scope">
             <div class="cursor inline text-left" @click="$router.push({ path: `/device?agentId=${scope.row.id}` })">
-              <div>{{ $t('public.all') }}：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) : 0}}</div>
-              <div>{{ $t('public.shipped') }}：{{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) : 0 }}</div>
+              <div>{{ $t('public.all') }}: {{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].deviceNumber) : 0}}</div>
+              <div>{{ $t('public.shipped') }}: {{ deviceCount[scope.row.id] ? parseFloat(deviceCount[scope.row.id].bindStoreNumber) : 0 }}</div>
             </div>
           </template>
         </el-table-column>
@@ -59,9 +59,9 @@
         <el-table-column :label="`${$t('public.amount')}`" width="150">
           <template slot-scope="scope">
             <div class="inline">
-              <div>{{ $t('public.aTurnover') }}：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
+              <div>{{ $t('public.aTurnover') }}: {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
               </div>
-              <div>{{ $t('public.totalRevenue') }}：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide :
+              <div>{{ $t('public.totalRevenue') }}: {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide :
                 '0.00' }}</div>
             </div>
           </template>
@@ -87,11 +87,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="235" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.actions')" width="235" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <template v-if="deviceSns">
-                <el-button type="text" @click="bindAgent(scope.row)">{{ $t('public.assignToTa')
+                <el-button type="text" @click="bindAgent(scope.row)">{{ $t('public.assign')
                 }}</el-button>
               </template>
               <template v-else>
@@ -188,8 +188,8 @@
           </div>
           <div class="pb-20" v-if="agentRow.id">
             <span>
-              {{ $t('public.name') }}：{{ agentRow.name }}</span>
-            <span class="ml-10">{{ $t('public.telephone') }}：{{ agentRow.mobile }}</span>
+              {{ $t('public.name') }}: {{ agentRow.name }}</span>
+            <span class="ml-10">{{ $t('public.telephone') }}: {{ agentRow.mobile }}</span>
           </div>
           <div class="flex justify-center align-center" v-if="!agentRow.id && lowerAgent">
             <div class="mr-10">{{ $t('public.assignToOneself') }}</div>
@@ -219,9 +219,9 @@
               @reset="agentList.query = { page: 1, size: 20 }; getAgentList(2)" @query="getAgentList(2)">
               <template v-slot:defult>
                 <el-form-item :label="$t('public.agentName')">
-                  <el-input :placeholder="$t('public.agentNameText')" v-model="agentList.query.name"></el-input>
+                  <el-input v-model="agentList.query.name"></el-input>
                 </el-form-item>
-                <el-form-item :label="$t('public.phone')">
+                <el-form-item :label="$t('public.phonenumberContactPerson')">
                   <el-input :placeholder="$t('public.phoneText')" type="tel" v-model="agentList.query.mobile"></el-input>
                 </el-form-item>
               </template>
@@ -241,7 +241,7 @@
                         <div class="mt-5 text-gray">{{ item.mobile }}</div>
                       </div>
                       <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{
-                        $t('public.assignToTa') }}</el-button>
+                        $t('public.assign') }}</el-button>
                     </div>
                     <div class="mt-5" v-if="item.agentDeviceType">
                       <span class="text-gray">{{ $t('public.deviceType') }}</span>
@@ -291,7 +291,7 @@
                         </div>
                         <div class="m_l_a">
                           <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{
-                            $t('public.assignToTa') }}</el-button>
+                            $t('public.assign') }}</el-button>
                         </div>
                       </div>
                     </div>

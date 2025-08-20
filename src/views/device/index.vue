@@ -3,6 +3,7 @@
     <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
       @saveXlsx="saveXlsx">
       <template v-slot:tabs>
+        <!-- Device Type -->
         <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
           <div class="mr-10">{{ $t('public.deviceType') }}</div>
           <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
@@ -10,6 +11,7 @@
             <el-tab-pane :label="index" :name="'' + item + ''" v-for="(item, index) in myDeviceName" />
           </el-tabs>
         </div>
+        <!-- Device Status -->
         <div class="mb-10 flex align-center bg-white">
           <div class="mr-10">{{ $t('public.deviceStatus') }}</div>
           <el-tabs class="flex-1" v-model="listQuery.haveBind" @tab-click="toQuery()">
@@ -19,28 +21,28 @@
         </div>
       </template>
 
+      <!-- Query Form -->
       <template v-slot:defult>
-        <el-form-item v-for="item in 2">
+        <el-form-item>
           <div class="flex combined">
-            <el-select v-model="formKey[`sel${item}`]" :placeholder="$t('public.pleaseSelect')">
+            <el-select v-model="formKey[`sel1`]" :placeholder="$t('public.pleaseSelect')">
               <template v-for="(q, key) in queryObj">
-                <el-option :label="q.title" :value="key" v-if="checkQueryRepeat(key, item, formKey)"></el-option>
+                <el-option :label="q.title" :value="key"></el-option>
               </template>
             </el-select>
-            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'input'">
-              <el-input :placeholder="`${$t('public.enter')}${queryObj[formKey[`sel${item}`]].title}`"
-                v-model="form[formKey[`sel${item}`]]"></el-input>
+            <template v-if="queryObj[formKey[`sel1`]] && queryObj[formKey[`sel1`]].type == 'input'">
+              <el-input v-model="form[formKey[`sel1`]]"></el-input>
             </template>
-            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'selectSearch'">
-              <selectSearch v-model="form[formKey[`sel${item}`]]" :type="queryObj[formKey[`sel${item}`]].sType"
-                :name="queryObj[formKey[`sel${item}`]].name" :placeholder="`${queryObj[formKey['sel' + item]].title}`"
+            <template v-if="queryObj[formKey[`sel1`]] && queryObj[formKey[`sel1`]].type == 'selectSearch'">
+              <selectSearch v-model="form[formKey[`sel1`]]" :type="queryObj[formKey[`sel1`]].sType"
+                :name="queryObj[formKey[`sel1`]].name"
                 @change="toQuery()"></selectSearch>
             </template>
-            <template v-if="queryObj[formKey[`sel${item}`]] && queryObj[formKey[`sel${item}`]].type == 'select'">
-              <el-select v-model="form[formKey[`sel${item}`]]" :placeholder="`${queryObj[formKey['sel' + item]].title}`"
+            <template v-if="queryObj[formKey[`sel1`]] && queryObj[formKey[`sel1`]].type == 'select'">
+              <el-select v-model="form[formKey[`sel1`]]" :placeholder="`${queryObj[formKey['sel1']].title}`"
                 clearable @change="toQuery()">
                 <el-option :label="item.label" :value="item.value"
-                  v-for="(item, key) in queryObj[formKey[`sel${item}`]].selectArr" />
+                  v-for="(item, key) in queryObj[formKey[`sel1`]].selectArr" />
               </el-select>
             </template>
           </div>
@@ -107,7 +109,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="150" v-else-if="item.val && item.key == 'bindStoreTime'">
             <template slot-scope="scope">
-              <div>{{ scope.row.distribute && scope.row.bindStoreTime ? parseTime(scope.row.bindStoreTime) : '--' }}</div>
+              <div>{{ scope.row.distribute && scope.row.bindStoreTime ? parseTime(scope.row.bindStoreTime, '{d}-{m}-{y} {h}:{i}') : '--' }}</div>
             </template>
           </el-table-column>
           <el-table-column :label="item.name" min-width="200" v-else-if="item.val && item.key == 'store'">
@@ -135,8 +137,8 @@
                   <div>{{ scope.row.updateTime }}</div>
                   <span class="cursor text-primary" slot="reference" v-if="scope.row.onlineStatus == 'ONLINE'">{{
                     $t('public.onLine') }}</span>
-                  <span class="cursor text-danger" slot="reference" v-else>{{ $t('public.offline') }}{{
-                    formatSeconds(currentTime() - unixTime(scope.row.updateTime), 'd') }}</span>
+                  <span class="cursor text-danger" slot="reference" v-else>{{ $t('public.offline') }} ({{
+                    formatSeconds(currentTime() - unixTime(scope.row.updateTime), 'd') }})</span>
                 </el-popover>
               </div>
               <div v-else>--</div>
@@ -153,9 +155,9 @@
             <template slot-scope="scope">
               {{ orderCount[scope.row.deviceSn] ? parseInt(orderCount[scope.row.deviceSn].wx) + parseInt(orderCount[scope.row.deviceSn].ali) : 0 }}
               <!-- <div class="flex">
-                <div class="flex1">{{ $t('payType.wx') }}：{{ orderCount[scope.row.deviceSn] ?
+                <div class="flex1">{{ $t('payType.wx') }}: {{ orderCount[scope.row.deviceSn] ?
                   orderCount[scope.row.deviceSn].wx : 0 }}</div>
-                <div class="pr-5 flex1">{{ $t('payType.zfb') }}：{{ orderCount[scope.row.deviceSn] ?
+                <div class="pr-5 flex1">{{ $t('payType.zfb') }}: {{ orderCount[scope.row.deviceSn] ?
                   orderCount[scope.row.deviceSn].ali : 0 }}</div>
               </div> -->
             </template>
@@ -203,7 +205,8 @@
           </template>
         </el-table-column>
 
-        <el-table-column :label="$t('public.operate')" align="center" width="100" v-if="isStore()">
+        <!-- todo: Dropdown for the actions -->
+        <el-table-column :label="$t('public.actions')" align="center" width="100" v-if="isStore()">
           <template slot-scope="scope">
             <el-row class="line-six">
               <el-col :span="24" v-if="checkAbility(['BD', 'VG', 'AV'], 2, [scope.row.deviceType])">
@@ -255,17 +258,17 @@
           </template>
         </el-table-column>
 
-        <el-table-column :label="$t('public.operate')" width="235" :fixed="device == 'desktop' ? 'right' : false"
+        <el-table-column :label="$t('public.actions')" width="235" :fixed="device == 'desktop' ? 'right' : false"
           v-if="!isStore()">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <template v-if="isSaas()">
-                <el-button type="text" @click="setRows(3, scope.row, 1)">{{ $t('public.belongTo') }}</el-button>
+                <el-button type="text" @click="setRows(3, scope.row, 1)">{{ $t('public.allocatedTo') }}</el-button>
                 <el-button type="text" @click="setRows(1, scope.row, 9)"
-                  :disabled="scope.row.distribute || scope.row.agentId">{{ $t('public.allocation') }}</el-button>
+                  :disabled="scope.row.distribute || scope.row.agentId">{{ $t('public.allocateToAgent') }}</el-button>
               </template>
               <template v-else-if="lowerDevice">
-                <el-button type="text" @click="setRows(3, scope.row, 1)">{{ $t('public.belongTo') }}</el-button>
+                <el-button type="text" @click="setRows(3, scope.row, 1)">{{ $t('public.allocatedTo') }}</el-button>
                 <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')"
                   class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00" :title="$t('device.message')"
                   @onConfirm="unbindAgent(scope.row, scope.$index)">
@@ -275,9 +278,9 @@
               </template>
               <template v-else>
                 <el-button type="text" @click="setRows(3, scope.row, 8, scope.$index)" :disabled="scope.row.distribute">{{
-                  $t('public.allocation') }}</el-button>
+                  $t('public.allocateToAgent') }}</el-button>
                 <el-button type="text" @click="setRows(3, scope.row, 10, scope.$index)"
-                  :disabled="scope.row.distribute">{{ $t('public.distributionOfGoods') }}</el-button>
+                  :disabled="scope.row.distribute">{{ $t('public.allocateToMerchant') }}</el-button>
               </template>
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('device.message1')" @onConfirm="unboundStore(scope.row)">
@@ -285,7 +288,7 @@
                 }}</el-button>
               </el-popconfirm>
               <el-button type="text" v-if="scope.row.deviceType.code.indexOf('LK') > -1" slot="reference" @click="$router.push({path: `/device/cabinetDoor?deviceSn=${scope.row.deviceSn}`})">柜门列表</el-button>
-              <el-button type="text" v-else-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.eject') }}</el-button>
+              <el-button type="text" v-else-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.ejectPowerbank') }}</el-button>
               <el-popconfirm
                 class="pop"
                 cancel-button-type=""
@@ -331,6 +334,7 @@
       </div>
     </div>
 
+    <!-- Dialog Drawers -->
     <el-dialog :visible.sync="dialogStatus" :center="true" :show-close="false" width="560px">
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 3">
@@ -395,7 +399,7 @@
       <template v-if="dialogType == 6">
         <div class="pl-20 pr-20">
           <div class="flex align-center justify-center">
-            <div>{{ $t('device.usageDuration') }}：</div>
+            <div>{{ $t('device.usageDuration') }}: </div>
             <el-select v-model="dform.duration" :placeholder="$t('public.freeTime')">
               <el-option :label="`${item}${$t('public.huor')}`" :value="item" v-for="item in config.bed_order_time" />
             </el-select>
@@ -447,7 +451,7 @@
               @reset="agentList.query = { page: 1, size: 20 }; getAgentList(2)" @query="getAgentList(2)">
               <template v-slot:defult>
                 <el-form-item :label="$t('public.agentName')">
-                  <el-input :placeholder="$t('public.agentNameText')" v-model="agentList.query.name"></el-input>
+                  <el-input v-model="agentList.query.name"></el-input>
                 </el-form-item>
                 <el-form-item :label="$t('public.phone')">
                   <el-input :placeholder="$t('public.phoneText')" type="tel" v-model="agentList.query.mobile"></el-input>
@@ -469,7 +473,7 @@
                         <div class="mt-5 text-gray">{{ item.mobile }}</div>
                       </div>
                       <el-button type="primary" plain size="mini"
-                        @click="dialogConfirm(item)">{{ $t('public.assignToTa') }}</el-button>
+                        @click="dialogConfirm(item)">{{ $t('public.assign') }}</el-button>
                     </div>
                     <div class="mt-5" v-if="item.agentDeviceType">
                       <span class="text-gray">{{ $t('public.deviceType') }}</span>
@@ -499,7 +503,7 @@
                         <div class="mt-5 text-gray">{{ item.mobile }}</div>
                       </div>
                       <el-button type="primary" plain size="mini"
-                        @click="dialogConfirm(item)">{{ $t('public.assignToTa') }}</el-button>
+                        @click="dialogConfirm(item)">{{ $t('public.assign') }}</el-button>
                     </div>
                     <div class="mt-5" v-if="item.agentDeviceType">
                       <span class="text-gray">{{ $t('public.deviceType') }}</span>
@@ -516,6 +520,7 @@
           </div>
         </div>
       </template>
+      <!-- Allocate to Merchant | 分配给商家 -->
       <template v-if="dialogType == 10">
         <div class="flexv pl-20 pr-20 text-black" style="height: 100%;">
           <div class="mb-20 pb-5 l-b">
@@ -523,10 +528,10 @@
               @reset="storeList.query = { page: 1, size: 20 }; getStoreList(2)" @query="getStoreList(2)">
               <template v-slot:defult>
                 <el-form-item :label="$t('public.storeName')">
-                  <el-input :placeholder="$t('device.pleaseStoreName')" v-model="storeList.query.name"></el-input>
+                  <el-input v-model="storeList.query.name"></el-input>
                 </el-form-item>
                 <el-form-item :label="$t('public.phone')">
-                  <el-input :placeholder="$t('public.phoneText')" type="tel" v-model="storeList.query.mobile"></el-input>
+                  <el-input type="tel" v-model="storeList.query.mobile"></el-input>
                 </el-form-item>
               </template>
             </condition>
@@ -547,7 +552,7 @@
                       </div>
                     </div>
                     <div class="mt-15 text-cut" v-if="item.user">
-                      <span class="text-gray">{{ $t('public.dividendPerson') }}</span>
+                      <span class="text-gray">{{ $t('public.contactPerson') }}</span>
                       <span class="ml-5">{{ item.user.nickname }}</span>
                       <span class="ml-5 text-gray">{{ $t('public.contactInformation') }}</span>
                       <span class="ml-5">{{ item.user.mobile }}</span>
@@ -556,7 +561,7 @@
                       <span class="text-gray">{{ $t('public.creationTime') }}</span>
                       <span class="flex1 ml-5">{{ item.createTime }}</span>
                       <el-button type="primary" plain size="mini"
-                        @click="dialogConfirm(item)">{{ $t('public.spreadToTa') }}</el-button>
+                        @click="dialogConfirm(item)">{{ $t('public.assign') }}</el-button>
                     </div>
                   </div>
                 </el-col>
@@ -580,7 +585,7 @@
                       </div>
                     </div>
                     <div class="mt-15 text-cut" v-if="item.user">
-                      <span class="text-gray">{{ $t('public.dividendPerson') }}</span>
+                      <span class="text-gray">{{ $t('public.contactPerson') }}</span>
                       <span class="ml-5">{{ item.user.nickname }}</span>
                       <span class="ml-5 text-gray">{{ $t('public.contactInformation') }}</span>
                       <span class="ml-5">{{ item.user.mobile }}</span>
@@ -589,7 +594,7 @@
                       <span class="text-gray">{{ $t('public.creationTime') }}</span>
                       <span class="flex1 ml-5">{{ item.createTime }}</span>
                       <el-button type="primary" plain size="mini"
-                        @click="dialogConfirm(item)">{{ $t('public.spreadToTa') }}</el-button>
+                        @click="dialogConfirm(item)">{{ $t('public.assign') }}</el-button>
                     </div>
                   </div>
                 </el-col>
@@ -720,12 +725,12 @@ export default {
         },
         {
           value: true,
-          title: this.$t('public.bound'),
+          title: this.$t('device.assignedToMerchant'),
           nkey: 'BIND'
         },
         {
           value: false,
-          title: this.$t('public.unbound'),
+          title: this.$t('device.notAssignedToMerchant'),
           nkey: 'UNBIND'
         },
         {
@@ -750,24 +755,25 @@ export default {
           title: this.$t('public.locationNotes'),
           type: 'input'
         },
-        haveAssociateDevice: {
-          title: this.$t('device.isItRelated'),
-          type: 'select',
-          selectArr: [
-            {
-              label: this.$t('public.all'),
-              value: null,
-            },
-            {
-              label: this.$t('device.associated'),
-              value: true,
-            },
-            {
-              label: this.$t('device.unassociated'),
-              value: false,
-            }
-          ]
-        },
+        // Currently not functional | 是否关联设备,
+        // haveAssociateDevice: {
+        //   title: this.$t('device.isItRelated'),
+        //   type: 'select',
+        //   selectArr: [
+        //     {
+        //       label: this.$t('public.all'),
+        //       value: null,
+        //     },
+        //     {
+        //       label: this.$t('device.associated'),
+        //       value: true,
+        //     },
+        //     {
+        //       label: this.$t('device.unassociated'),
+        //       value: false,
+        //     }
+        //   ]
+        // },
         storeId: {
           title: this.$t('public.storeName'),
           type: 'selectSearch',
@@ -781,13 +787,13 @@ export default {
           sType: 5
         },
         factorySn: {
-          title: this.$t('public.deviceSn'),
+          title: this.$t('device.serialNumber'),
           type: 'input'
         },
-        positionQty: {
-          title: '槽口数',
-          type: 'input'
-        },
+        // positionQty: {
+        //   title: '槽口数',
+        //   type: 'input'
+        // },
       }
     },
     dialogTitle() {
@@ -801,7 +807,7 @@ export default {
         7: this.$t('device.address'),
         8: this.$t('device.distributionEquipment'),
         9: this.$t('device.switchBrand'),
-        10: this.$t('device.goodsToMerchants'),
+        10: this.$t('public.allocateToMerchant'),
         11: '设备软件升级',
       }
     },
@@ -827,7 +833,7 @@ export default {
           key: 'tenantNumber',
           val: this.checkAbility(['PA'], 2),
           hidden: !this.checkAbility(['PA'], 2),
-          name: this.$t('device.lendableReturnable')
+          name: this.$t('device.available') + ' / ' +this.$t('device.inUse')
         },
         // {
         //   key: 'deviceFactory',
@@ -853,7 +859,7 @@ export default {
           key: 'bind',
           val: this.lowerDevice,
           hidden: !this.lowerDevice,
-          name: this.$t('public.belongTo')
+          name: this.$t('public.allocatedTo')
         },
         {
           key: 'place',
@@ -863,7 +869,7 @@ export default {
         {
           key: 'onlineStatus',
           val: true,
-          name: this.$t('public.presence')
+          name: this.$t('public.powerbankStatus')
         },
         {
           key: 'order',

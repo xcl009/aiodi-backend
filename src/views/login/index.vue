@@ -1,7 +1,7 @@
 <template>
   <div class="flexv justify-center login-container flex-wrap">
     <!-- todo: CHANGE BEFORE GOING TO PRODUCTION. WE DO NOT HAVE THE RIGHTS FOR THIS IMAGE -->
-    <!-- 待办事项：在投入生产前进行修改。我们没有此图像的使用权 -->
+    <!-- 待办事项: 在投入生产前进行修改。我们没有此图像的使用权 -->
     <div >
       <el-image class="abs p-all" :src="require('@/assets/login-screen.jpg')" fit="cover"></el-image>
       <div class="abs p-all" style="background-color: rgba(0, 0, 0, 0.3)"></div>

@@ -63,7 +63,7 @@
             <el-link :type="scope.row.status == 'CLOSE' ? 'danger' : 'primary'"> {{ scope.row.statusName }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="120">
+        <el-table-column :label="$t('public.actions')" width="120">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" class="ml-0"
               @click="$router.push({ path: `/goods/addGoods?id=${scope.row.id}` })">{{ $t('goods.editShopping')

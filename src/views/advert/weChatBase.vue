@@ -13,7 +13,7 @@
             <div>{{ scope.row.number }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')">
+        <el-table-column :label="$t('public.actions')">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="$router.push({path: `/advert/weChatList?category=${category}&advertTypeCode=${scope.row.advertTypeCode}&advertTypeName=${scope.row.advertTypeName}`})">{{ $t('public.advertisingSettings') }}</el-button>
           </template>

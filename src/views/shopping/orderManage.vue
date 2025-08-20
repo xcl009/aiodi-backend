@@ -218,9 +218,9 @@
                             </div>
                             <div class="ml-30">
                                 <div class="text-bold fs-b1">{{ $t('public.orderInformation') }}</div>
-                                <div class="mt-10">{{ $t('public.deviceType') }}： {{ myDeviceId[curRow.deviceTypeCode] }}</div>
-                                <div class="mt-10">{{ $t('public.equipmentAmount') }}： {{ curRow.productPrice }}</div>
-                                <div class="mt-10">{{ $t('public.orderTime') }}： {{ parseTime(curRow.orderTime) }}</div>
+                                <div class="mt-10">{{ $t('public.deviceType') }}:  {{ myDeviceId[curRow.deviceTypeCode] }}</div>
+                                <div class="mt-10">{{ $t('public.equipmentAmount') }}:  {{ curRow.productPrice }}</div>
+                                <div class="mt-10">{{ $t('public.orderTime') }}:  {{ parseTime(curRow.orderTime) }}</div>
                                 <div class="mt-10" v-if="curRow.payTime">{{ $t('shopping.offlinePaymentTime') }} {{ parseTime(curRow.payTime) }}</div>
                             </div>
                         </div>

@@ -4,7 +4,7 @@
       <div class="pb-20 text-black fs-c1">{{ $t('moeny.accountOverview') }}</div>
       <el-row class="stat-box line-1">
         <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
-          <div class="fs-s3 text-black">{{ $t('brand.withdrawableAmount') }}（{{ $t('public.freezeAmount') }}：{{ money.frozenBalance || 0.00 }}）</div>
+          <div class="fs-s3 text-black">{{ $t('brand.withdrawableAmount') }}（{{ $t('public.freezeAmount') }}: {{ money.frozenBalance || 0.00 }}）</div>
           <div class="mt-15 mb-15 cursor">
             <span class="text-primary khcoin">{{ formatCurrency(money.balance, 1) }}</span>
           </div>

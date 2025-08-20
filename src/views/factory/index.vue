@@ -54,7 +54,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
+          <el-table-column :label="$t('public.actions')" width="165" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <div class="flex flex-wrap">
                 <el-button type="primary" size="mini" @click="$router.push({name: 'addFactory', params: { info: scope.row }})">{{ $t('public.modifyingInformation') }}</el-button>
@@ -82,7 +82,7 @@
               {{ scope.row.name }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')">
+          <el-table-column :label="$t('public.actions')">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" round plain
                 @click="bindUI({son_id: curRow.aid, code: scope.row.code})" v-if="dform.code != scope.row.code">{{ $t('factory.bindTa') }}

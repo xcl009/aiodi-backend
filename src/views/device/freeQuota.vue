@@ -53,7 +53,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')">
+        <el-table-column :label="$t('public.actions')">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" class="ml-0" @click="setRows(1, scope.row, 2)">{{ $t('steal.timeNum')
             }}</el-button>
@@ -104,7 +104,7 @@
               {{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')">
+          <el-table-column :label="$t('public.actions')">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" class="ml-0" @click="curRow = scope.row; dialogConfirm()">{{
                 $t('public.add') }}</el-button>

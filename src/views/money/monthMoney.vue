@@ -43,7 +43,7 @@
             {{ scope.row.amountDivide }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" align="center">
+        <el-table-column :label="$t('public.actions')" align="center">
           <template slot-scope="scope">
             <el-link type="primary" @click="$router.push({ path: `/money/dayMoney?curMonth=${scope.row.countGroupDate}` })">
               {{ $t('moeny.viewDailyStatistics') }}

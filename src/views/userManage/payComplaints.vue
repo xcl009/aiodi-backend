@@ -28,8 +28,8 @@
           <template slot-scope="scope">
             <template v-if="scope.row.complaint_order_info && scope.row.complaint_order_info.length > 0">
               <div v-for="item in scope.row.complaint_order_info">
-                <span class="mr-10">{{ $t('public.transactionNum') }}：{{ item.transaction_id }}</span><br>
-                <span>{{ $t('public.orderMoeny') }}：{{ item.amount / 100 }}<a class="ml-10 text-blue"
+                <span class="mr-10">{{ $t('public.transactionNum') }}: {{ item.transaction_id }}</span><br>
+                <span>{{ $t('public.orderMoeny') }}: {{ item.amount / 100 }}<a class="ml-10 text-blue"
                     @click="copyText(item.transaction_id)">{{ $t('userManage.copyOrder') }}</a></span>
               </div>
             </template>
@@ -65,7 +65,7 @@
             <div class="text-danger">{{ scope.row.withdraw_reason || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="100">
+        <el-table-column :label="$t('public.actions')" width="100">
           <template slot-scope="scope">
             <el-button type="primary" size="mini"
               @click="$router.push({ path: `/userManage/PCDetail?complaintId=${scope.row.complaint_id}&appId=${form.appId}` })">{{

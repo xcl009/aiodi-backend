@@ -29,7 +29,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="150">
+        <el-table-column :label="$t('public.actions')" width="150">
           <template slot-scope="scope">
             <el-button class="ml-0" type="primary" size="mini" @click="setRows(1, scope.row, 2)">{{
               $t('miniProgram.bindWxUser') }}</el-button>
@@ -80,7 +80,7 @@
               {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}:{s}') }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" width="100">
+          <el-table-column :label="$t('public.actions')" width="100">
             <template slot-scope="scope">
               <el-button type="primary" size="small" @click="bindUser(scope.row)">{{ $t('factory.bindTa') }}</el-button>
             </template>
@@ -102,7 +102,7 @@
               {{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" width="100">
+          <el-table-column :label="$t('public.actions')" width="100">
             <template slot-scope="scope">
               <el-button class="ml-0" type="primary" size="mini" @click="delUser(scope.row, scope.$index)">{{
                 $t('public.delete') }}</el-button>

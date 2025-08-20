@@ -2,19 +2,19 @@
   <div class="p-10">
     <div class="p-30 bg-white flex justify-center">
       <el-form ref="form" :model="wForm" label-width="100px" style="width: 500px">
-        <el-form-item :label="`${$t('public.phone')}：`">
+        <el-form-item :label="`${$t('public.phone')}: `">
           <div>{{ agentInfo.phone }}</div>
         </el-form-item>
-        <el-form-item :label="`${$t('user.code')}：`">
+        <el-form-item :label="`${$t('user.code')}: `">
           <div class="flex">
             <el-input v-model="wForm.captche_num"></el-input>
             <auth-code ref="authCode" @authCode="getAuthCode()"></auth-code>
           </div>
         </el-form-item>
-        <el-form-item :label="`${$t('public.newPassword')}：`">
+        <el-form-item :label="`${$t('public.newPassword')}: `">
           <el-input v-model="wForm.cur_cash_pwd" type="password"></el-input>
         </el-form-item>
-        <el-form-item :label="`${$t('public.confirmPassword')}：`">
+        <el-form-item :label="`${$t('public.confirmPassword')}: `">
           <el-input v-model="wForm.re_cash_pwd" type="password"></el-input>
         </el-form-item>
         <el-form-item>

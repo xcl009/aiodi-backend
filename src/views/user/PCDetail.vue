@@ -9,18 +9,18 @@
       </div>
       <el-row class="fs-s4">
         <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-          <div class="mb-10">{{ $t('userManage.complainantId') }}：{{ info.payer_openid }}</div>
+          <div class="mb-10">{{ $t('userManage.complainantId') }}: {{ info.payer_openid }}</div>
         </el-col>
         <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-          <div class="mb-10">{{ $t('public.contactInformation') }}：{{ info.payer_phone }}</div>
+          <div class="mb-10">{{ $t('public.contactInformation') }}: {{ info.payer_phone }}</div>
         </el-col>
         <template v-for="item in info.complaint_order_info">
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-            <div class="mb-10">{{ $t('public.transactionNum') }}：{{ item.transaction_id }}</div>
-            <div class="mb-10">{{ $t('public.merchantTrackingNumber') }}：{{ item.out_trade_no }}</div>
+            <div class="mb-10">{{ $t('public.transactionNum') }}: {{ item.transaction_id }}</div>
+            <div class="mb-10">{{ $t('public.merchantTrackingNumber') }}: {{ item.out_trade_no }}</div>
           </el-col>
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-            <div class="mb-10">{{ $t('public.orderMoeny') }}：{{ item.amount }}</div>
+            <div class="mb-10">{{ $t('public.orderMoeny') }}: {{ item.amount }}</div>
           </el-col>
         </template>
       </el-row>

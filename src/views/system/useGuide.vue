@@ -83,7 +83,7 @@
             {{ orderStatus[scope.row.refundStatus] || '' }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="140">
+        <el-table-column :label="$t('public.actions')" width="140">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <template v-if="isSaas() || isBrand()">

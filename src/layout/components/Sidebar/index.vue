@@ -27,10 +27,10 @@
         <div class="vip-header flex align-center p-30 text-white">
           <el-avatar :size="50" :src="agentInfo.avatar"></el-avatar>
           <div class="flex1 pl-15">
-            <div class="mb-5 fs-c1">{{ $t('layout.openAnAccount') }}：{{ agentInfo.nickname }}</div>
+            <div class="mb-5 fs-c1">{{ $t('layout.openAnAccount') }}: {{ agentInfo.nickname }}</div>
             <div class="pl-10 pr-10 label-box fs-s2">
               <span class="label" v-if="vipInfo.expiresDatetime">{{ vipInfo.expiresStr ? vipInfo.expiresStr :
-                `${$t('public.expirationTime')}：${parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span>
+                `${$t('public.expirationTime')}: ${parseTime(vipInfo.expiresDatetime, '{y}-{m}-{d}')}` }}</span>
               <span class="label" v-else>{{ $t('layout.notOpened') }}</span>
             </div>
           </div>
@@ -72,7 +72,7 @@
               <div class="ml-5 text-black">{{ $t('payType.khb') }}{{ money.happyCurrencyNum < accSub(vipPrice[dform.mkey],
                 (vipCoupon[dform.mkey] || 0)) ? $t('payType.text') : '' }}</div>
                   <div class="ml-5 text-gray fs-s2">
-                    {{ $t('payType.balance') }}：<span class="text-black">{{ money.happyCurrencyNum || 0 }}</span>{{
+                    {{ $t('payType.balance') }}: <span class="text-black">{{ money.happyCurrencyNum || 0 }}</span>{{
                       $t('payType.khb') }}
                   </div>
               </div>

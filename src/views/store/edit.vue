@@ -10,8 +10,8 @@
           <el-form-item ref="name" :label="$t('public.storeName')" prop="name">
             <el-input v-model="form.name" :placeholder="$t('store.plseaseStoreName')" />
           </el-form-item>
-          <el-form-item ref="mobile" :label="$t('store.storePhone')" prop="mobile">
-            <el-input v-model="form.mobile" :placeholder="$t('store.storePhoneText')" />
+          <el-form-item ref="mobile" :label="$t('store.merchantPhone')" prop="mobile">
+            <el-input v-model="form.mobile" :placeholder="$t('store.merchantPhoneText')" />
           </el-form-item>
           <el-form-item ref="catId" :label="$t('public.industry')" prop="catId" v-if="false">
             <el-cascader v-model="form.catId" :options="catList" :props="{ expandTrigger: 'hover' }" />
@@ -23,8 +23,8 @@
           <!-- <el-form-item ref="province" :label="$t('store.area')" prop="province">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item> -->
-          <el-form-item ref="address" :label="$t('store.storeAddress')" prop="address">
-            <el-input v-model="form.address" :placeholder="$t('store.storeAddressText')" />
+          <el-form-item ref="address" :label="$t('store.merchantAddress')" prop="address">
+            <el-input v-model="form.address" :placeholder="$t('store.merchantAddressText')" />
           </el-form-item>
           <el-form-item :label="$t('store.businessHours')">
             <div class="flex align-center" v-for="(item, idx) in form.businessTimeDes">
@@ -48,10 +48,10 @@
               </el-radio-group>
             </el-form-item>
             <div v-if="form.divisionMode != 2 && !parentId && (!form.parentId || form.parentId == '0')">
-              <el-form-item ref="userNickName" :label="$t('public.contacts')" prop="userNickName">
-                <el-input v-model="form.userNickName" :placeholder="$t('brand.message1')" />
+              <el-form-item ref="userNickName" :label="$t('public.contactPerson')" prop="userNickName">
+                <el-input v-model="form.userNickName" :placeholder="$t('brand.enterContactName')" />
               </el-form-item>
-              <el-form-item ref="userMobile" :label="$t('public.phone')" prop="userMobile" v-if="!isAgent() || (isAgent() && !sysShows.agentEditStoreMobile)">
+              <el-form-item ref="userMobile" :label="$t('public.phonenumberContactPerson')" prop="userMobile" v-if="!isAgent() || (isAgent() && !sysShows.agentEditStoreMobile)">
                 <el-input type="number" v-model="form.userMobile" :placeholder="$t('factory.phoneLoginAccount')" />
               </el-form-item>
               <el-form-item v-if="!storeId" :label="$t('public.loginPassword')">
@@ -120,14 +120,14 @@
                 <template v-else-if="item.closeType == 2">
                   <el-form-item :label="$t('store.closeType1')" :error="ferror.live">
                     <el-input type="number" v-model="item.live"
-                      :placeholder="`${$t('store.max')}${myProfitRatio[item.deviceTypeCode]}%`"
+                      :placeholder="`${$t('store.max')} ${myProfitRatio[item.deviceTypeCode]}%`"
                       @input="(v) => (ferror.live = checkDigit(v))">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                   <el-form-item :label="$t('store.closeType2')" :error="ferror.relative">
                     <el-input type="number" v-model="item.relative"
-                      :placeholder="`${$t('store.max')}${item.live || 100}%`"
+                      :placeholder="`${$t('store.max')} {item.live || 100}%`"
                       @input="(v) => (ferror.relative = checkDigit(v, 0, item.live))">
                       <template slot="append">%</template>
                     </el-input>
@@ -136,7 +136,7 @@
                 <template v-else>
                   <el-form-item :label="$t('public.shareRatio')" :error="ferror.live">
                     <el-input class="input-with" type="number" v-model="item.live"
-                      :placeholder="`${$t('store.max')}${myProfitRatio[item.deviceTypeCode]}%`"
+                      :placeholder="`${$t('store.max')} ${myProfitRatio[item.deviceTypeCode]}%`"
                       @input="(v) => (ferror.live = checkDigit(v, 0, myProfitRatio[item.deviceTypeCode]))">
                       <template slot="append">%</template>
                     </el-input>
@@ -153,11 +153,11 @@
               <el-row class="rel radius-10 flex flex-wrap" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="22">
                 <el-col :sm="24" lg="24" v-for="(name, xcx) in config.xcx_pay.default" v-show="xcx == 'three'">
                   <div>
-                    <div class="mb-10 text-dfs text-bold text-black">
+                    <!-- <div class="mb-10 text-dfs text-bold text-black">
                       {{ $t('payMode.' + xcx) }}{{ $t('public.empty') }}{{ $t('store.billingSettings') }}
                       <span class="ml-10 text-primary cursor" v-if="xcx != 'weixin'" @click="setAlipayMode(item, xcx)">{{
         $t('store.synchronous') }}</span>
-                    </div>
+                    </div> -->
 
                     <el-form-item :label="`${$t('store.paymentMode')}`">
                       <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
@@ -234,7 +234,7 @@
                           <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
-                      <el-form-item :label="$t('public.amount')"
+                      <el-form-item :label="$t('public.costs')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
                         <div class="flex">
                           <div class="flex1">
@@ -358,7 +358,7 @@
                           <template slot="append">{{ $t('public.minute') }}</template>
                         </el-input>
                       </el-form-item>
-                      <el-form-item :label="$t('public.amount')"
+                      <el-form-item :label="$t('public.costs')"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
                         <div class="flex">
                           <div class="flex1">
@@ -495,7 +495,7 @@ export default {
         }],
         address: [{
           required: true,
-          message: this.$t('store.pleaseStoreAddress'),
+          message: this.$t('store.pleasemerchantAddress'),
           trigger: 'blur'
         }],
         userMobile: [{

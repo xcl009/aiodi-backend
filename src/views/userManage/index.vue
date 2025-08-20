@@ -81,7 +81,7 @@
             {{ parseTime(scope.row.registeredTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.actions')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
               <el-button type="primary" size="mini" @click="$router.push({path: `/order/allOrder?userId=${scope.row.id}`})">{{ $t('public.orderList') }}</el-button>

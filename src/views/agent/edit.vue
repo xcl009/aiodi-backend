@@ -5,7 +5,7 @@
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="100px">
           <h4>{{ $t('public.basicInformation') }}</h4>
           <el-form-item :label="$t('public.agentNickNames')" prop="name">
-            <el-input v-model="form.name" :placeholder="$t('public.agentNameText')" />
+            <el-input v-model="form.name" />
           </el-form-item>
           <el-form-item :label="$t('public.phone')" prop="mobile">
             <el-input type="tel" v-model="form.mobile" :placeholder="$t('brand.phoneText')" />
@@ -59,7 +59,7 @@
             { required: true, message: this.$t('brand.message'), trigger: 'change' }
           ],
           name: [
-            { required: true, message: this.$t('brand.message1'), trigger: 'blur' }
+            { required: true, message: this.$t('brand.enterContactName'), trigger: 'blur' }
           ],
           mobile: [
             { required: true, message: this.$t('brand.message3'), trigger: 'blur' }

@@ -8,16 +8,16 @@
     </div>
     <div class="rel flex justify-center custom-form o-v bg-white fs-c1 text-black line-1" style="border-radius: 16px;">
       <div class="pt-20 pb-40">
-        <div class="mb-20 text-bold">{{ $t('components.rechargeAccount') }}：{{ agentInfo.nickname }}</div>
+        <div class="mb-20 text-bold">{{ $t('components.rechargeAccount') }}: {{ agentInfo.nickname }}</div>
         <div class="mb-20 flex align-center">
-          <div class="text-bold">{{ $t('public.payType') }}：</div>
+          <div class="text-bold">{{ $t('public.payType') }}: </div>
           <el-radio-group v-model="dform.payType">
             <el-radio :label="1">{{ $t('components.weChatPayment') }}</el-radio>
             <el-radio :label="2" disabled>{{ $t('components.zfbPayment') }}</el-radio>
           </el-radio-group>
         </div>
         <div class="mb-30 flex align-center">
-          <div class="text-bold">{{ $t('components.rechargeQuantity') }}：</div>
+          <div class="text-bold">{{ $t('components.rechargeQuantity') }}: </div>
           <el-input :placeholder="$t('components.rechargeQuantityText')" v-model="dform.amount"
             @change.native="dform.payType = 1; getPayCode()">
             <span slot="append">个</span>

@@ -88,9 +88,9 @@
             <template slot-scope="scope">
               <div class="inline text-left" @click="$router.push({ path: `/device?brandId=${scope.row.id}` })">
                 <div>
-                  {{ $t('public.all') }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}
+                  {{ $t('public.all') }}: {{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}
                 </div>
-                <div>{{ $t('public.shipped') }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber
+                <div>{{ $t('public.shipped') }}: {{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber
       :
       '0' }}</div>
               </div>
@@ -106,8 +106,8 @@
           <!-- <el-table-column label="下级总数" width="150">
             <template slot-scope="scope">
               <div class="inline text-left">
-                <div class="mb-5">直属下级：{{ scope.row.child_agent_num || 0}}</div>
-                <div>间属下级：{{ scope.row.child_agent_num || 0}}</div>
+                <div class="mb-5">直属下级: {{ scope.row.child_agent_num || 0}}</div>
+                <div>间属下级: {{ scope.row.child_agent_num || 0}}</div>
               </div>
             </template>
           </el-table-column> -->
@@ -180,7 +180,7 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-            <div class="text-danger" style="width: 400px; max-width: 100%;">{{ $t('public.tips') }}：{{
+            <div class="text-danger" style="width: 400px; max-width: 100%;">{{ $t('public.tips') }}: {{
       $t('brand.renewText') }}{{ dform.amount || 0
               }}，{{ $t('brand.renewText1') }}{{ (dform.amount || 0) * 3 }}，{{ $t('brand.renewText2') }}。</div>
           </el-form-item>

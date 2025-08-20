@@ -117,7 +117,7 @@
           {
             key: 'operate',
             val: true,
-            name: this.$t('public.operate'),
+            name: this.$t('public.actions'),
             width: 180
           }
         ]

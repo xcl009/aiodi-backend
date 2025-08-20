@@ -119,7 +119,7 @@
               statusObj[scope.row.state] || $t('userManage.untreated') }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.actions')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="setRows(1, scope.row, 1)">{{ $t('public.detail') }}</el-button>
           </template>

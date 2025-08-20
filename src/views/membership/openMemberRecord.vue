@@ -63,7 +63,7 @@
             <el-tag class="normal fs-s4">{{ Constant.OrderStatus[scope.row.state] || "--" }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')">
+        <el-table-column :label="$t('public.actions')">
           <template slot-scope="scope">
             <el-button type="info" size="mini" plain @click="setRows(1, scope.row, 1)"
               v-if="scope.row.state == 'O' && scope.row.depositAmount > 0 && scope.row.amountRefund == 0">{{

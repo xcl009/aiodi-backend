@@ -46,13 +46,6 @@
 
       <el-table class="ptd-5" id="list_table" ref="list_table" highlight-current-row element-loading-text="Loading"
         v-loading="listLoading" :max-height="tableMaxH" :data="list">
-        <el-table-column :label="$t('home.serialNumber')" align="center" width="50">
-          <template slot-scope="scope">
-              <div class="flex_c align-center" :style="{width:'100%'}">
-                {{ scope.$index + 1  }}
-              </div>
-            </template>
-        </el-table-column>
         <el-table-column :label="$t('public.brand')" width="150" prop="brandName" v-if="isSaas()"></el-table-column>
         <template v-for="item in showColumn">
           <el-table-column :label="item.name" min-width="120" v-if="item.val && item.key == 'name'">
@@ -73,13 +66,13 @@
             <template slot-scope="scope">
               <div class="row-device_stat" v-if="deviceCount[scope.row.id]">
                 <template v-for="(item, i) in deviceCount[scope.row.id].deviceCountVOMap">
-                  {{ myDeviceId[i.substr(0, 2)] }}：{{ item.deviceNumber }}
+                  {{ myDeviceId[i.substr(0, 2)] }}: {{ item.deviceNumber }}
                 </template>
               </div>
               <div class="row-device_stat" v-else>
                 <template v-for="(item, index) in scope.row.storeDivisionConfig">
                   <div v-if="index < 2">
-                    {{ myDeviceId[item.deviceTypeCode] }}：0
+                    {{ myDeviceId[item.deviceTypeCode] }}: 0
                   </div>
                 </template>
               </div>
@@ -137,7 +130,7 @@
               <div class="row-device_stat">
                 <template v-for="(item, index) in scope.row.storeDivisionConfig">
                   <div class="flex line-1 item" v-if="index < 2">
-                    <div>{{ myDeviceId[item.deviceTypeCode] }}：</div>
+                    <div>{{ myDeviceId[item.deviceTypeCode] }}: </div>
                     <div>
                       <span v-if="scope.row.divisionMode == 1">
                         <span v-if="isStore()">{{ item.promised || item.live }}%</span>
@@ -177,7 +170,7 @@
           <el-table-column :label="item.name" v-else-if="item.val" :prop="item.key"></el-table-column>
         </template>
 
-        <el-table-column :label="$t('public.operate')" width="150" :fixed="device == 'desktop' ? 'right' : false"
+        <el-table-column :label="$t('public.actions')" width="150" :fixed="device == 'desktop' ? 'right' : false"
           v-if="isStore()">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
@@ -187,11 +180,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column :label="$t('public.operate')" width="235" :fixed="device == 'desktop' ? 'right' : false" v-else>
+        <el-table-column :label="$t('public.actions')" width="235" :fixed="device == 'desktop' ? 'right' : false" v-else>
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <template v-if="isSaas()">
-                <el-button type="text" @click="toLogin(scope.row)">{{ $t('store.storeManagement') }}</el-button>
+                <el-button type="text" @click="toLogin(scope.row)">{{ $t('store.merchantManagement') }}</el-button>
                 <el-button type="text" @click="setRows(6, scope.row)">{{ $t('public.setLoginPassword') }}</el-button>
               </template>
               <template v-else-if="form.deviceSns">
@@ -204,9 +197,9 @@
                   $t('public.permissionSettings') }}</el-button>
                 <el-button type="text"
                   @click="$router.push({ path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore ? 1 : 0}` })">{{
-                    $t('public.editStore') }}</el-button>
+                    $t('public.editMerchant') }}</el-button>
                 <el-button type="text" @click.native="setRows(1, scope.row, 3, scope.$index)"><span class="text-danger">{{
-                  $t('public.deleteStore') }}</span></el-button>
+                  $t('public.deleteMerchant') }}</span></el-button>
                 <el-button type="text" @click="$router.push({ path: `/store/addStore?parentId=${scope.row.id}` })"
                   v-if="scope.row.parentId == '0'">{{ $t('public.addBranch') }}</el-button>
                 <el-dropdown trigger="click">
@@ -324,8 +317,8 @@
           </el-form-item>
           <el-form-item>
             <div class="pb-20" v-if="agentRow.id">
-              <span>{{ $t('public.name') }}：{{ agentRow.name }}</span>
-              <span class="ml-10">{{ $t('public.telephone') }}：{{ agentRow.mobile }}</span>
+              <span>{{ $t('public.name') }}: {{ agentRow.name }}</span>
+              <span class="ml-10">{{ $t('public.telephone') }}: {{ agentRow.mobile }}</span>
             </div>
             <div class="flex justify-center align-center" v-if="!agentRow.id && lowerStore">
               <div class="mr-10">{{ $t('public.assignToOneself') }}</div>
@@ -366,7 +359,7 @@
               @reset="agentList.query = { page: 1, size: 20 }; getAgentList(2)" @query="getAgentList(2)">
               <template v-slot:defult>
                 <el-form-item :label="$t('public.agentName')">
-                  <el-input :placeholder="$t('public.agentNameText')" v-model="agentList.query.name"></el-input>
+                  <el-input v-model="agentList.query.name"></el-input>
                 </el-form-item>
                 <el-form-item :label="$t('public.phone')">
                   <el-input :placeholder="$t('public.phoneText')" type="tel" v-model="agentList.query.mobile"></el-input>
@@ -388,7 +381,7 @@
                         <div class="mt-5 text-gray">{{ item.mobile }}</div>
                       </div>
                       <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{
-                        $t('public.assignToTa') }}</el-button>
+                        $t('public.assign') }}</el-button>
                     </div>
                     <div class="mt-5" v-if="item.agentDeviceType">
                       <span class="text-gray">{{ $t('public.deviceType') }}</span>
@@ -438,7 +431,7 @@
                         </div>
                         <div class="m_l_a">
                           <el-button type="primary" plain size="mini" @click="allocation(1, item, 9)">{{
-                            $t('public.assignToTa') }}</el-button>
+                            $t('public.assign') }}</el-button>
                         </div>
                       </div>
                     </div>
@@ -700,7 +693,7 @@ export default {
       return {
         1: this.$t('public.bindDevice'),
         2: '',
-        3: this.$t('public.deleteStore'),
+        3: this.$t('public.deleteMerchant'),
         4: this.$t('store.assignMerchants'),
         5: this.$t('public.resetPassword'),
         6: this.$t('public.freezeAmount'),
@@ -723,12 +716,12 @@ export default {
         {
           key: 'address',
           val: true,
-          name: this.$t('store.storeAddress')
+          name: this.$t('public.address')
         },
         {
           key: 'device',
           val: true,
-          name: this.$t('public.device')
+          name: this.$t('public.devices')
         },
         {
           key: 'amount',
@@ -747,7 +740,7 @@ export default {
           name: `${this.$t('store.withdrawable')}`
         },
         {
-          key: 'order',
+          key: 'order', // todo: Currently always at 0
           val: this.checkAbility(['STORE_NUM_AMOUNT'], 3),
           hidden: !this.checkAbility(['STORE_NUM_AMOUNT'], 3),
           name: this.$t('home.orderNum')
@@ -760,7 +753,7 @@ export default {
         {
           key: 'user',
           val: true,
-          name: this.$t('public.dividendPerson')
+          name: this.$t('public.contactPerson')
         },
         {
           key: 'supUser',
@@ -772,7 +765,7 @@ export default {
           key: 'deviceDivision',
           val: !this.isStore(),
           hidden: this.isStore(),
-          name: this.$t('public.analysisMode')
+          name: this.$t('public.incomeDistribution')
         },
         // {
         //   key: 'province',

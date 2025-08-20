@@ -129,7 +129,7 @@
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || 120" v-else></el-table-column>
         </template>
-        <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.actions')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(3, scope.row, 2)">{{ $t('public.particulars') }}</el-button>
@@ -177,7 +177,7 @@
             <div class="flex" v-if="!curRow.id">
               <el-select class="max-select l-r" v-model="dform.createType">
                 <el-option :label="$t('leaseOrder.agentPhone')" :value="1"></el-option>
-                <el-option :label="$t('leaseOrder.storePhone')" :value="0"></el-option>
+                <el-option :label="$t('leaseOrder.merchantPhone')" :value="0"></el-option>
               </el-select>
               <selectSearch :type="dform.createType == 1 ? 5 : 3" :emitRow="true" name="mobile"
                 :placeholder="dform.createType == 1 ? $t('leaseOrder.inputText1') : $t('leaseOrder.inputText2')"
@@ -250,7 +250,7 @@
       <template v-if="dialogType == 2">
         <div class="pl-20 pr-20 text-black">
           <div class="mb-15">
-            {{ $t('leaseOrder.orderNo') }}：{{ curRow.orderNo }}
+            {{ $t('leaseOrder.orderNo') }}: {{ curRow.orderNo }}
             <el-tag class="ml-10" :type="(orderTab[curRow.status] ? orderTab[curRow.status].type : '')" size="mini"
               effect="dark">
               {{ orderTab[curRow.status] ? orderTab[curRow.status].title : '' }}
@@ -443,7 +443,7 @@ export default {
           sType: 3
         },
         deductionId2: {
-          title: this.$t('leaseOrder.storePhones'),
+          title: this.$t('leaseOrder.merchantPhones'),
           type: 'selectSearch',
           name: 'mobile',
           sType: 3

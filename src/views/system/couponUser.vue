@@ -61,7 +61,7 @@
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || ''" v-else></el-table-column>
         </template>
-        <!-- <el-table-column :label="$t('public.operate')" width="110">
+        <!-- <el-table-column :label="$t('public.actions')" width="110">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
 

@@ -107,7 +107,7 @@
           <el-form-item :label="$t('layout.storeId')">
             <el-input v-model="dform.storeId" :placeholder="$t('layout.storeId')"></el-input>
             <div class="mb-15 flex fs-c1" style="line-height: 1.8;">
-              <div>{{ $t('public.tips') }}：</div>
+              <div>{{ $t('public.tips') }}: </div>
               <div>{{ $t('layout.text') }}<br><span class="text-danger">{{ $t('layout.text1') }}</span></div>
             </div>
           </el-form-item>
@@ -119,7 +119,7 @@
           <el-form-item :label="$t('layout.doublingMultiple')">
             <el-input v-model="dform.multiple" :placeholder="$t('layout.doublingMultiple')"></el-input>
             <div class="flex fs-c1" style="line-height: 1.8;">
-              <div>{{ $t('public.tips') }}：</div>
+              <div>{{ $t('public.tips') }}: </div>
               <div>{{ $t('layout.text2') }}</div>
             </div>
           </el-form-item>

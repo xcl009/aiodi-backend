@@ -119,7 +119,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" min-width="120" :fixed="device == 'desktop' ? 'right' : false">
+          <el-table-column :label="$t('public.actions')" min-width="120" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="getDetail(scope.row)">{{ $t('public.orderDetail')
               }}</el-button>

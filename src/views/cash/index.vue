@@ -102,8 +102,8 @@
         </el-table-column>
         <el-table-column :label="`${$t('public.commission')}`">
           <template slot-scope="scope">
-            <div>{{ $t('system.singleStroke') }}：{{ scope.row.feeDeal || '0.00' }}</div>
-            <div>{{ $t('system.taxPoints') }}：{{ scope.row.feePercent || '0.00' }}</div>
+            <div>{{ $t('system.singleStroke') }}: {{ scope.row.feeDeal || '0.00' }}</div>
+            <div>{{ $t('system.taxPoints') }}: {{ scope.row.feePercent || '0.00' }}</div>
           </template>
         </el-table-column>
         <el-table-column :label="`${$t('cash.accountsReceivable')}`">
@@ -157,12 +157,12 @@
            </div>
            <div v-else>
             <div v-if="scope.row.withdrawType == 5">
-              <div>{{$t('echarge.text')}}：{{ scope.row.bankName || '' }}</div>
-              <div>{{$t('echarge.text1')}}：{{ scope.row.accountType || '' }}</div>
-              <div>{{$t('echarge.text2')}}：{{ scope.row.branchName || '' }}</div>
-              <div>{{$t('echarge.text3')}}：{{ scope.row.cardNo || '' }}</div>
-              <div>{{$t('echarge.text4')}}：{{ scope.row.cardName || '' }}</div>
-              <div>{{$t('echarge.text5')}}：{{ scope.row.accountName || '' }}</div>
+              <div>{{$t('echarge.text')}}: {{ scope.row.bankName || '' }}</div>
+              <div>{{$t('echarge.text1')}}: {{ scope.row.accountType || '' }}</div>
+              <div>{{$t('echarge.text2')}}: {{ scope.row.branchName || '' }}</div>
+              <div>{{$t('echarge.text3')}}: {{ scope.row.cardNo || '' }}</div>
+              <div>{{$t('echarge.text4')}}: {{ scope.row.cardName || '' }}</div>
+              <div>{{$t('echarge.text5')}}: {{ scope.row.accountName || '' }}</div>
               <!-- <div>{{ scope.row.cardName }}</div>
               <div>{{ scope.row.bankName }}<span class="ml-10">{{ scope.row.branchName }}</span></div>
               <div>{{ scope.row.cardNo }}</div> -->
@@ -216,7 +216,7 @@
         <el-table-column :label="$t('public.remark')" width="170">
           <template slot-scope="scope"><span class="text-danger">{{ scope.row.remark }}</span></template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.actions')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(1, scope.row, 2)" :disabled="scope.row.status != 0">{{

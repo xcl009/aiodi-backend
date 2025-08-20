@@ -264,18 +264,18 @@
       <template v-if="dialogType == 6">
         <div class="text-center">
           <div class="flex align-center justify-center">
-            <div>订单可使用时长：</div>
+            <div>订单可使用时长: </div>
             <el-select v-model="dform.duration" placeholder="免费时长">
               <el-option :label="`${item}小时`" :value="item" v-for="item in config.bed_order_time"/>
             </el-select>
           </div>
-          <div class="mt-15 fs-s3">注：提交后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
+          <div class="mt-15 fs-s3">注: 提交后，{{ dform.duration }}小时内用户可扫码直接启动设备。</div>
 
           <div class="mt-30 text-black">
-            <div class="cursor">当前剩余快活币：<span class="text-primary">{{ money.happyCurrencyNum }}</span><span class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span></div>
+            <div class="cursor">当前剩余快活币: <span class="text-primary">{{ money.happyCurrencyNum }}</span><span class="ml-20 text-primary cursor" @click="$router.push({path: `/money`})">快活币充值</span></div>
             <div class="mt-15" v-if="!createOrderConfig[dform.deviceTypeCode]">订单计费规则未配置，暂不可下单</div>
-            <div class="mt-15" v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">剩余赠送免费时间：{{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400) - currentTime())}}</div>
-            <div class="mt-15" v-else>创建订单将会扣除快活币：<span class="text-danger">{{ createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
+            <div class="mt-15" v-else-if="createOrderConfig[dform.deviceTypeCode].giftDays > 0 && currentTime() < unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400">剩余赠送免费时间: {{ formatSeconds((unixTime(curRow.bindStoreTime) + createOrderConfig[dform.deviceTypeCode].giftDays * 86400) - currentTime())}}</div>
+            <div class="mt-15" v-else>创建订单将会扣除快活币: <span class="text-danger">{{ createOrderConfig[dform.deviceTypeCode].amount }}</span></div>
           </div>
         </div>
       </template>
