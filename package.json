@@ -96,6 +96,9 @@
     },
     "@pawelgalazka/cli": {
       "lodash": "4.17.21"
+    },
+    "webpack-bundle-analyzer@": {
+      "ejs": "3.1.10"
     }
   },
   "engines": {
