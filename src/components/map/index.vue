@@ -36,8 +36,9 @@
         type: Object,
         default: () => {
           return {
-            lng: 114.02597366,
-            lat: 22.54605355
+            // Stadhoudersmolenweg 62, 7317 AW Apeldoorn, The Netherlands
+            lng: 5.97025183,
+            lat: 52.24274424
           }
         }
       },
@@ -177,11 +178,11 @@
                 )
                 this.googleMap = map
                 this.googleApi = google
-                // 自动完成请求 参考文档: https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service?hl=en
+                // 自动完成请求 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service?hl=en
                 searchBox = new google.maps.places.AutocompleteService()
-                // 搜索地点和检索地点详细信息 参考文档: https://developers.google.com/maps/documentation/javascript/reference/places-service?hl=en
+                // 搜索地点和检索地点详细信息 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-service?hl=en
                 service = new google.maps.places.PlacesService(map)
-                // 对请求进行地理编码 参考文档: https://developers.google.com/maps/documentation/javascript/reference/geocoder?hl=en
+                // 对请求进行地理编码 参考文档：https://developers.google.com/maps/documentation/javascript/reference/geocoder?hl=en
                 geocoder = new google.maps.Geocoder()
                 // marker = new google.maps.Marker({
                 //   map: map,
