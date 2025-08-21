@@ -89,7 +89,14 @@
     "vue-template-compiler": "^2.7.16"
   },
   "overrides": {
-    "node-gyp": "^10.2.0"
+    "node-gyp": "^10.2.0",
+    "lodash": "4.17.21",
+    "microcli": {
+      "lodash": "4.17.21"
+    },
+    "@pawelgalazka/cli": {
+      "lodash": "4.17.21"
+    }
   },
   "engines": {
     "node": ">=8.9",
