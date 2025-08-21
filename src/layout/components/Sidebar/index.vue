@@ -6,7 +6,7 @@
 
       </div>
       <div v-if="!sidebar.opened" class="p-10 pt-15 text-center cursor">
-        <img :height="35" src="@/assets/logo/ghoost-black-sm.svg" class="sidebar-logo" />
+        <img :height="20" src="@/assets/logo/ghoost-black-sm.svg" class="sidebar-logo" />
       </div>
       <el-menu :default-active="activeMenu" :collapse="isCollapse" :background-color="variables.menuBg"
         :text-color="variables.menuText" :unique-opened="false" :active-text-color="variables.menuActiveText"

@@ -100,7 +100,11 @@ export default {
   @import "~@/styles/variables.scss";
 
   /deep/ .el-menu-item:not(.submenu-title-noDropdown){
-    padding: 0 0 0 30px !important;
+    padding: 0 30px 0 30px !important;
+    &.is-active{
+    background-color: $menuActiveBg !important;
+      font-weight: 600;
+    }
   }
   /deep/ .el-submenu .el-submenu__title, .el-menu-item.submenu-title-noDropdown{
     padding: 0 0 0 10px !important;
