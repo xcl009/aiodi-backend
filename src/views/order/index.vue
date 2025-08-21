@@ -687,12 +687,12 @@
                       <el-avatar :src="payChannel[curRow.payType].logo" :size="15" v-if="payChannel[curRow.payType]"
                         class="mr-5 radius-15"></el-avatar>
                       <span v-if="curRow.orderAmount > 0 && curRow.feeType == 3 && (isBrand() || isSaas())">({{
-      formatCurrency(curRow.orderAmount, 1) }})</span>
+      formatCurrency(curRow.orderAmount) }})</span>
                     </div>
                   </div>
                   <div class="flex mb-10">
                     <div class="label-text">{{ $t('public.income') }}:</div>
-                    <div>{{ formatCurrency(curRow.amount, 1) || '0.00' }}</div>
+                    <div>{{ formatCurrency(curRow.amount) || '0.00' }}</div>
                   </div>
                   <div class="flex">
                     <div class="label-text">{{ $t('public.remark') }}:</div>

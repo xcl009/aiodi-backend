@@ -164,7 +164,7 @@
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.val && item.key == 'amount'">
             <template slot-scope="scope">
-              {{ formatCurrency(orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00', 1) }}
+              {{ formatCurrency(orderCount[scope.row.deviceSn] ? orderCount[scope.row.deviceSn].amount : '0.00') }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || 120"

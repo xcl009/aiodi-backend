@@ -131,7 +131,7 @@
                 <div class="label">
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
                     <div>
-                      {{ index == 0 ? formatCurrency(querHistogram[key].amount, 1): index == 1 ? querHistogram[key].orderNumber : formatCurrency(querHistogram[key].unitPrice, 1) }}
+                      {{ index == 0 ? formatCurrency(querHistogram[key].amount): index == 1 ? querHistogram[key].orderNumber : formatCurrency(querHistogram[key].unitPrice) }}
                     </div>
                   </template>
                 </div>
@@ -183,22 +183,22 @@
             </el-table-column>
             <el-table-column :label="$t('public.aTurnover')" min-width="120">
               <template slot-scope="scope">
-                {{ formatCurrency(scope.row.amount, 1) || 0 }}
+                {{ formatCurrency(scope.row.amount) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('public.income')" min-width="90">
               <template slot-scope="scope">
-                {{ formatCurrency(scope.row.amountDivide, 1) || 0 }}
+                {{ formatCurrency(scope.row.amountDivide) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.seizuresNum')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
-                {{ formatCurrency(scope.row.amountDeposit, 1) || 0 }}
+                {{ formatCurrency(scope.row.amountDeposit) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.alldeposit')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
-                {{ formatCurrency(scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) - Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0, 1) }}
+                {{ formatCurrency(scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) - Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0) }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.allRefunded')" min-width="160" v-if="isSaas() || isBrand()">

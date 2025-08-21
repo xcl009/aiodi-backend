@@ -405,13 +405,13 @@
         let desc = ''
         switch(parseInt(row.method)){
           case 1:
-            desc = `单次收费${this.formatCurrency(row.billingAmount, 1)}`
+            desc = `单次收费${this.formatCurrency(row.billingAmount)}`
           break
           case 2:
-            desc = `免费${this.getTimeUnit(row.freeDuration)},${this.getTimeUnit(row.billingCycle)}${this.formatCurrency(row.billingAmount, 1)},封顶${this.formatCurrency(row.capAmount, 1)}`
+            desc = `免费${this.getTimeUnit(row.freeDuration)},${this.getTimeUnit(row.billingCycle)}${this.formatCurrency(row.billingAmount)},封顶${this.formatCurrency(row.capAmount)}`
           break
           case 3:
-            desc = `免费${this.getTimeUnit(row.freeDuration)},前${this.getTimeUnit(row.initialDuration)}${this.formatCurrency(row.initialAmount, 1)},${this.getTimeUnit(row.billingCycle)}${this.formatCurrency(row.billingAmount, 1)},封顶${this.formatCurrency(row.capAmount, 1)}`
+            desc = `免费${this.getTimeUnit(row.freeDuration)},前${this.getTimeUnit(row.initialDuration)}${this.formatCurrency(row.initialAmount)},${this.getTimeUnit(row.billingCycle)}${this.formatCurrency(row.billingAmount)},封顶${this.formatCurrency(row.capAmount)}`
           break
         }
         return desc

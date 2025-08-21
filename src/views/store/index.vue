@@ -80,21 +80,21 @@
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'amount'">
             <template slot-scope="scope">
-              {{ formatCurrency(orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00', 1) }}
+              {{ formatCurrency(orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00') }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'amountDivide'">
             <template slot-scope="scope">
-              {{ formatCurrency(orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00', 1) }}
+              {{ formatCurrency(orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00') }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="120" v-else-if="item.val && item.key == 'balance'">
             <template slot-scope="scope">
               <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(cashStat[scope.row.id] || {})" v-if="checkAbility(['WD_MODIFY'], 3)">
-                {{ formatCurrency(cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00', 1) }}
+                {{ formatCurrency(cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00') }}
               </div>
               <div class="cursor" v-else>
-                {{ formatCurrency(cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00', 1) }}
+                {{ formatCurrency(cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00') }}
               </div>
             </template>
           </el-table-column>
