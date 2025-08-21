@@ -205,7 +205,7 @@
             </el-table-column>
             <el-table-column :label="item.name" width="240" v-else-if="item.val && item.key == 'deviceSn'">
               <template slot-scope="scope">
-                <div>{{ $t('public.code') }}: {{ scope.row.deviceSn || "--" }}</div>
+                <div>{{ scope.row.deviceSn || "--" }}</div>
                 <!-- <div>设备SN: {{ scope.row.factorySn || "--" }}</div> -->
                 <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
                   @click="checkBao(scope.row.goods_sn)">{{ $t('public.sn') }}: {{ scope.row.goods_sn ||
@@ -476,7 +476,7 @@
                 </div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{ $t('public.package') }}:</div>
+                <div class="label-text">{{ $t('public.paymentRule') }}:</div>
                 <div class="text-cut">
                   <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
                     <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode)
@@ -638,7 +638,7 @@
                     </div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{ $t('public.package') }}:</div>
+                    <div class="label-text">{{ $t('public.paymentRule') }}:</div>
                     <div class="text-cut">
                       <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
                         <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode) }}</span>
@@ -662,7 +662,7 @@
                     <div>{{ curRow.transactionNo || '--' }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{ $t('public.rentalMerchants') }}:</div>
+                    <div class="label-text">{{ $t('public.rentedAtMerchant') }}:</div>
                     <div>{{ curRow.storeName }}</div>
                   </div>
                   <div class="flex mb-10">
@@ -672,7 +672,7 @@
                     <div class="cursor">{{ curRow.terminalId || '--' }}</div>
                   </div>
                   <div class="flex" v-if="curRow.returnStore">
-                    <div class="label-text">{{ $t('public.returnToMerchant') }}:</div>
+                    <div class="label-text">{{ $t('public.returnedToMerchant') }}:</div>
                     <div>{{ curRow.returnStore.name }}</div>
                   </div>
                 </div>
@@ -1097,7 +1097,7 @@ export default {
       {
         key: 'feeMode',
         val: true,
-        name: this.$t('public.package')
+        name: this.$t('public.paymentRule')
       },
       {
         key: 'amount',

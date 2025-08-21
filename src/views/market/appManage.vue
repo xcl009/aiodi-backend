@@ -69,7 +69,7 @@
       <template v-if="dialogType == 1">
         <div class="flex justify-center">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item :label="$t('public.package')" v-if="curRow.priceSettings">
+            <el-form-item :label="$t('public.paymentRule')" v-if="curRow.priceSettings">
               <el-radio-group v-model="dform.priceCode">
                 <el-radio-button :label="item.priceCode" v-for="(item, key) in curRow.priceSettings">{{ item.priceName
                 }}</el-radio-button>

@@ -643,7 +643,7 @@ const util = {
    */
   showFeeName: (type) => {
     let obj = {
-      "1": i18n.t('public.package'),
+      "1": i18n.t('public.paymentRule'),
       "2": i18n.t('public.freeOfCharge'),
       "3": i18n.t('payType.balance')
     }
