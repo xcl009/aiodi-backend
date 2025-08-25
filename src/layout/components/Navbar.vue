@@ -1,8 +1,8 @@
 <template>
   <div class="rel flex navbar align-center" style="overflow: initial;">
-    <!-- <div class="abs pt-10 pb-10 pl-20 pr-20 cursor line-1" @click="toggleSideBar">
+    <div v-if="device == 'mobile'" class="abs pt-10 pb-10 pl-20 pr-20 cursor line-1" @click="toggleSideBar">
       <svg-icon slot="prefix" class="text-white" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
-    </div> -->
+    </div>
     <div class="flex1 title-box text-center text-white">
       {{ agentInfo.nickname }} {{ $t('layout.admins') }}
     </div>
