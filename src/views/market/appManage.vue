@@ -85,7 +85,7 @@
               <div>{{ $t('market.khbText') }}</div>
             </el-form-item>
 
-            <el-form-item :label="$t('moeny.withdrawalMethod')" v-if="dform.id == '1022452979607490560'">
+            <el-form-item :label="$t('money.withdrawalMethod')" v-if="dform.id == '1022452979607490560'">
               <el-checkbox-group v-model="dform.sellTypes" @change="change">
                 <el-checkbox :label="key" v-for="(item, key) in withdrawTypes" v-if="(dform.priceCode == 'WD_AGENT' && item.userType == 'agent') || (dform.priceCode == 'WD_STORE' && item.userType == 'store') || (dform.priceCode == 'WD_USER' && item.userType == 'user')">{{ item.name }}</el-checkbox>
               </el-checkbox-group>

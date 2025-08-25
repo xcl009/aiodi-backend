@@ -148,7 +148,7 @@
 
       <template v-if="orderDivide.length > 0">
         <el-table border :data="orderDivide" :span-method="fenRunSpanMethod" class="custom">
-          <el-table-column :label="$t('public.orderMoeny')" align="center">
+          <el-table-column :label="$t('public.orderMoney')" align="center">
             <template slot-scope="scope">
               {{ amountPaid }}
             </template>

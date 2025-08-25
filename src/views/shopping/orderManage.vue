@@ -418,7 +418,7 @@ export default {
                 {
                     key: 'productStandardDTO',
                     val: true,
-                    name: `${this.$t('public.orderMoeny')}`
+                    name: `${this.$t('public.orderMoney')}`
                 },
                 {
                     key: 'deviceTypeCode',

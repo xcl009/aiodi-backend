@@ -20,7 +20,7 @@
             <div class="mb-10">{{ $t('public.merchantTrackingNumber') }}: {{ item.out_trade_no }}</div>
           </el-col>
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-            <div class="mb-10">{{ $t('public.orderMoeny') }}: {{ item.amount }}</div>
+            <div class="mb-10">{{ $t('public.orderMoney') }}: {{ item.amount }}</div>
           </el-col>
         </template>
       </el-row>

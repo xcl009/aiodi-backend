@@ -12,9 +12,9 @@
       </template>
 
       <template v-slot:defult>
-        <el-form-item :label="$t('moeny.selectYear')">
+        <el-form-item :label="$t('money.selectYear')">
           <el-date-picker v-model="form.date" type="year" :picker-options="pickerOptionsEnd" range-separator="-"
-            :placeholder="$t('moeny.selectYear')" value-format="yyyy" @change="getTime">
+            :placeholder="$t('money.selectYear')" value-format="yyyy" @change="getTime">
           </el-date-picker>
         </el-form-item>
       </template>
@@ -23,7 +23,7 @@
     <div class="p-15 bg-white">
       <div class="chart-daystat" ref="chartDay"></div>
       <el-table class="custom" id="list_table" :data="tableList" border>
-        <el-table-column :label="$t('moeny.month')" align="center">
+        <el-table-column :label="$t('money.month')" align="center">
           <template slot-scope="scope">
             {{ scope.row.countGroupDate }}
           </template>
@@ -46,7 +46,7 @@
         <el-table-column :label="$t('public.actions')" align="center">
           <template slot-scope="scope">
             <el-link type="primary" @click="$router.push({ path: `/money/dayMoney?curMonth=${scope.row.countGroupDate}` })">
-              {{ $t('moeny.viewDailyStatistics') }}
+              {{ $t('money.viewDailyStatistics') }}
             </el-link>
           </template>
         </el-table-column>

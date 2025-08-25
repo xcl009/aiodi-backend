@@ -29,7 +29,7 @@
             <template v-if="scope.row.complaint_order_info && scope.row.complaint_order_info.length > 0">
               <div v-for="item in scope.row.complaint_order_info">
                 <span class="mr-10">{{ $t('public.transactionNum') }}: {{ item.transaction_id }}</span><br>
-                <span>{{ $t('public.orderMoeny') }}: {{ item.amount / 100 }}<a class="ml-10 text-blue"
+                <span>{{ $t('public.orderMoney') }}: {{ item.amount / 100 }}<a class="ml-10 text-blue"
                     @click="copyText(item.transaction_id)">{{ $t('userManage.copyOrder') }}</a></span>
               </div>
             </template>

@@ -10,7 +10,7 @@
               <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otgamountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.otgcountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -25,7 +25,7 @@
               <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otwamountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.otwcountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -40,7 +40,7 @@
               <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otdamountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.otdcountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -62,7 +62,7 @@
               <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositPendingAmountPaidSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.otgcountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -77,7 +77,7 @@
               <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositAfootAmountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.depositAfootCountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -345,7 +345,7 @@ export default {
         {
           key: 'chargeEndTime',
           val: true,
-          name: this.$t('moeny.completionTime'),
+          name: this.$t('money.completionTime'),
           width: 170
         },
         {

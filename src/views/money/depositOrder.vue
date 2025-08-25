@@ -11,7 +11,7 @@
             <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency(accSub(totalStat.allAmount, totalStat.amount)) || 0 }}</span></div>
           </div>
           <div class="flex1 ml-30">
-            <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+            <div class="mb-5">{{ $t('money.totalNumber') }}</div>
             <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.allNumber || 0 }}</span>{{ $t('public.pen') }}</div>
           </div>
         </div>
@@ -22,12 +22,12 @@
             <img :src="require('@/assets/lease/unrefund_amount.svg')" width="30">
           </div>
           <div class="flex1 ml-30">
-            <div class="mb-5">{{ $t('moeny.unreturnedAmount') }}</div>
+            <div class="mb-5">{{ $t('money.unreturnedAmount') }}</div>
             <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.unrefundAmount || 0.00 }}</span>
             </div>
           </div>
           <div class="flex1 ml-30">
-            <div class="mb-5">{{ $t('moeny.unreturnedTransactions') }}</div>
+            <div class="mb-5">{{ $t('money.unreturnedTransactions') }}</div>
             <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.unrefundNumber || 0 }}</span>{{ $t('public.pen') }}</div>
           </div>
         </div>
@@ -38,12 +38,12 @@
             <img :src="require('@/assets/lease/refunded_amount.svg')" width="30">
           </div>
           <div class="flex1 ml-30">
-            <div class="mb-5">{{ $t('moeny.refundedAmount') }}</div>
+            <div class="mb-5">{{ $t('money.refundedAmount') }}</div>
             <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency(totalStat.refundedAmount || 0) }}</span>
             </div>
           </div>
           <div class="flex1 ml-30">
-            <div class="mb-5">{{ $t('moeny.refundedNumber') }}</div>
+            <div class="mb-5">{{ $t('money.refundedNumber') }}</div>
             <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.refundedNumber || 0 }}</span>{{ $t('public.pen') }}</div>
           </div>
         </div>
@@ -250,7 +250,7 @@ export default {
         {
           key: 'chargeEndTime',
           val: true,
-          name: this.$t('moeny.completionTime'),
+          name: this.$t('money.completionTime'),
           width: 170
         },
         {
@@ -276,17 +276,17 @@ export default {
         {
           key: 'depositAmount',
           val: true,
-          name: `${this.$t('public.deposit')}(${this.$t('moeny.advanceDeposit')})`
+          name: `${this.$t('public.deposit')}(${this.$t('money.advanceDeposit')})`
         },
         {
           key: 'amount',
           val: true,
-          name: this.$t('public.orderMoeny')
+          name: this.$t('public.orderMoney')
         },
         {
           key: 'lAmount',
           val: true,
-          name: this.$t('moeny.retainedAmount')
+          name: this.$t('money.retainedAmount')
         },
         {
           key: 'rStatus',

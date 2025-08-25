@@ -736,7 +736,7 @@
             <template v-if="dform.orderDivide && dform.orderDivide.length > 0">
               <div class="mt-20 mb-15">{{ $t('order.dividedDetails') }}</div>
               <el-table border :data="dform.orderDivide" :span-method="fenRunSpanMethod" class="custom">
-                <el-table-column :label="$t('public.orderMoeny')" align="center">
+                <el-table-column :label="$t('public.orderMoney')" align="center">
                   <template slot-scope="scope">
                     {{ formatCurrency(dform.amountPaid) }}
                   </template>

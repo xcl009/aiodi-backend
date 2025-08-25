@@ -18,31 +18,31 @@
                 <div slot="content">
                   <div class="mb-20">
                     <span class="text-primary">{{
-                      $t("moeny.whyFrozenAmount")
+                      $t("money.whyFrozenAmount")
                     }}</span
                     ><br /><br />
-                    {{ $t("moeny.whyFrozenAmountText") }}
+                    {{ $t("money.whyFrozenAmountText") }}
                   </div>
                   <div class="mb-20">
                     <span class="text-primary">{{
-                      $t("moeny.frozenAmountHowIs")
+                      $t("money.frozenAmountHowIs")
                     }}</span
                     ><br /><br />
-                    {{ $t("moeny.frozenAmountHowIsText") }}
+                    {{ $t("money.frozenAmountHowIsText") }}
                   </div>
                   <div class="mb-20">
                     <span class="text-primary">{{
-                      $t("moeny.frozenAmountHowToThaw")
+                      $t("money.frozenAmountHowToThaw")
                     }}</span
                     ><br /><br />
-                    {{ $t("moeny.frozenAmountHowToThawText") }}
+                    {{ $t("money.frozenAmountHowToThawText") }}
                   </div>
                   <div class="mb-20">
                     <span class="text-primary">{{
-                      $t("moeny.frozenAmountFundSecurity")
+                      $t("money.frozenAmountFundSecurity")
                     }}</span
                     ><br /><br />
-                    {{ $t("moeny.frozenAmountFundSecurityText") }}
+                    {{ $t("money.frozenAmountFundSecurityText") }}
                   </div>
                 </div>
                 <i class="el-icon-question text-danger"></i>
@@ -53,10 +53,10 @@
             <el-input
               type="number"
               v-model="form.amount"
-              :placeholder="$t('moeny.pleaseAmount')"
+              :placeholder="$t('money.pleaseAmount')"
             />
           </el-form-item>
-          <el-form-item :label="$t('moeny.withdrawalMethod')">
+          <el-form-item :label="$t('money.withdrawalMethod')">
             <el-radio-group v-model="form.withdrawType">
               <el-radio-button
                 :label="item.val"
@@ -66,24 +66,24 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item
-            :label="$t('moeny.toAccount')"
+            :label="$t('money.toAccount')"
             v-show="form.withdrawType == 3"
           >
             <div class="flex align-center" v-if="bindAlipayInfo.aliUserId">
               <el-avatar size="medium" :src="bindAlipayInfo.avatar"></el-avatar>
               <div class="ml-10">{{ bindAlipayInfo.nickname }}</div>
             </div>
-            <div class="flex align-center" v-else>{{ $t("moeny.nozfb") }}</div>
+            <div class="flex align-center" v-else>{{ $t("money.nozfb") }}</div>
           </el-form-item>
           <el-form-item
-            :label="$t('moeny.toAccount')"
+            :label="$t('money.toAccount')"
             v-show="form.withdrawType == 1"
           >
             <div class="flex align-center" v-if="bindWechatInfo.wechatOpenid">
               <el-avatar size="medium" :src="bindWechatInfo.avatar"></el-avatar>
               <div class="ml-10">{{ bindWechatInfo.nickname }}</div>
             </div>
-            <div class="flex align-center" v-else>{{ $t("moeny.nowx") }}</div>
+            <div class="flex align-center" v-else>{{ $t("money.nowx") }}</div>
           </el-form-item>
           <div
             v-show="
@@ -94,7 +94,7 @@
             <el-form-item :label="$t('public.fullName')">
               <el-input
                 v-model="bindCardInfo.cardName"
-                :placeholder="$t('moeny.youName')"
+                :placeholder="$t('money.youName')"
               />
             </el-form-item>
             <el-form-item :label="$t('public.cardNo')">
@@ -158,7 +158,7 @@
             </el-form-item>
 
             <!-- <el-form-item :label="$t('public.fullName')">
-              <el-input v-model="bindCardInfo.cardName" :placeholder="$t('moeny.youName')" />
+              <el-input v-model="bindCardInfo.cardName" :placeholder="$t('money.youName')" />
             </el-form-item>
             <el-form-item :label="$t('public.cardNo')">
               <el-input v-model="bindCardInfo.cardNo" :placeholder="$t('public.cardNo')" />
@@ -174,7 +174,7 @@
             <el-form-item :label="$t('public.fullName')">
               <el-input
                 v-model="wxQrcodeInfo.userName"
-                :placeholder="$t('moeny.youName')"
+                :placeholder="$t('money.youName')"
               />
             </el-form-item>
             <el-form-item :label="$t('public.qrcode')">
@@ -188,7 +188,7 @@
             <el-form-item :label="$t('public.fullName')">
               <el-input
                 v-model="aliQrcodeInfo.userName"
-                :placeholder="$t('moeny.youName')"
+                :placeholder="$t('money.youName')"
               />
             </el-form-item>
             <el-form-item :label="$t('public.qrcode')">
@@ -199,7 +199,7 @@
             </el-form-item>
           </div>
           <el-form-item
-            :label="$t('moeny.withdrawableTime')"
+            :label="$t('money.withdrawableTime')"
             v-if="timeLimit.type"
           >
             <div class="flex" v-if="timeLimit.type == 'DAY'">
@@ -486,7 +486,7 @@ export default {
       let that = this;
       let params = JSON.parse(JSON.stringify(this.form));
       if (!params.amount) {
-        this.$message.error(this.$t("moeny.pleaseAmount"));
+        this.$message.error(this.$t("money.pleaseAmount"));
         return;
       } else if (parseFloat(params.amount) > parseFloat(this.money.balance)) {
         this.$message.error(this.$t("public.balanceNo"));

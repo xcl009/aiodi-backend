@@ -458,7 +458,7 @@ export default {
     wx: "WeChat",
     balance: "Saldo",
     regularWallet: "Carteira comum",
-    khbMoeny: "Carteira de KHB",
+    khbMoney: "Carteira de KHB",
     khb: "KHB",
     payKhb: "Pagar com KHB",
     monthlyPayment: "Pagamento mensal",
@@ -1018,7 +1018,7 @@ export default {
     lowToHigh: "Do menor para o maior",
     choose: "Selecionar",
   },
-  moeny: {
+  money: {
     rechargeTime: "Tempo de recarga",
     rechargeAmount: "Valor da recarga",
     actualReceipt: "Recebimento real",
@@ -1355,7 +1355,7 @@ export default {
     openRepresentation: "Ativar indica",
     noOrderPlaced:
       "Usuários que não fizeram pedidos nos últimos dias serão considerados na probabilidade",
-    userMoeny: "Saldo da carteira do usuário maior ou igual a",
+    userMoney: "Saldo da carteira do usuário maior ou igual a",
     freeOfChargeLease:
       "Quando o valor é ou mais, não será necessário calcular a probabilidade de depósito; o aluguel será gratuito",
     withdrawRule: "Regras de saque",
@@ -1370,8 +1370,8 @@ export default {
     delWdText: "Tem certeza de que deseja excluir esta regra de saque?",
     taxPoints: "Taxa de imposto",
     singleStroke: "Transação única",
-    minMoeny: "Valor mínimo",
-    maxMoeny: "Valor máximo",
+    minMoney: "Valor mínimo",
+    maxMoney: "Valor máximo",
     needApprovalAmount: "Montante que necessita de aprovação",
     orderRefundInd: "Usar reembolso de pedidos",
     orderRefundIndText:

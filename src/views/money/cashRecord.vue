@@ -22,7 +22,7 @@
             <div class="el-link">{{ scope.row.fee }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('moeny.receivedAmount')">
+        <el-table-column :label="$t('money.receivedAmount')">
           <template slot-scope="scope">
             <div class="el-link el-link--primary">{{ scope.row.amountReceived }}</div>
           </template>

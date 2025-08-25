@@ -19,8 +19,8 @@
             :end-placeholder="$t('public.endDate')" @change="toQuery()">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('moeny.withdrawalMethod')">
-          <el-select v-model="form.withdrawType" :placeholder="$t('moeny.withdrawalMethod')" @change="toQuery()">
+        <el-form-item :label="$t('money.withdrawalMethod')">
+          <el-select v-model="form.withdrawType" :placeholder="$t('money.withdrawalMethod')" @change="toQuery()">
             <el-option :label="$t('public.all')" value="" />
             <el-option :label="item" :value="index" v-for="(item, index) in siteInfo.withdrawType" />
           </el-select>
@@ -111,12 +111,12 @@
             {{ accSub(accSub(scope.row.amount, scope.row.feeDeal), scope.row.feePercent) }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('moeny.actualReceipt')}`">
+        <el-table-column :label="`${$t('money.actualReceipt')}`">
           <template slot-scope="scope">
             {{ scope.row.amountReceived || '0.00' }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('moeny.toAccount')" width="220">
+        <el-table-column :label="$t('money.toAccount')" width="220">
           <template slot-scope="scope" >
             
            <div v-if="agentInfo.brandId != '1273675260975865857'">
@@ -199,7 +199,7 @@
             <div class="el-link">{{ scope.row.userName || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('moeny.withdrawalMethod')" width="120">
+        <el-table-column :label="$t('money.withdrawalMethod')" width="120">
           <template slot-scope="scope">
             {{ siteInfo.withdrawType[scope.row.withdrawType] }}
           </template>

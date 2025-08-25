@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="p-20 bg-white">
-      <div class="pb-20 text-black fs-c1">{{ $t('moeny.accountOverview') }}</div>
+      <div class="pb-20 text-black fs-c1">{{ $t('money.accountOverview') }}</div>
       <el-row class="stat-box line-1">
         <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
           <div class="fs-s3 text-black">{{ $t('brand.withdrawableAmount') }}（{{ $t('public.freezeAmount') }}: {{ money.frozenBalance || 0.00 }}）</div>
@@ -14,37 +14,37 @@
         </el-col>
         <!-- <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
           <div class="fs-s3 text-black">
-            {{ $t('payType.khbMoeny') }}
-            <span class="ml-10 fs-s3 text-gray cursor" @click="khyCoinIntroDialog = true" v-if="isBrand()">{{ $t('moeny.whyKhb') }}</span>
+            {{ $t('payType.khbMoney') }}
+            <span class="ml-10 fs-s3 text-gray cursor" @click="khyCoinIntroDialog = true" v-if="isBrand()">{{ $t('money.whyKhb') }}</span>
             <el-popover
                 placement="top-start"
-                :title="$t('payType.khbMoeny')"
+                :title="$t('payType.khbMoney')"
                 width="300"
                 trigger="hover"
-                :content="$t('moeny.khbText')" v-else>
-                <span slot="reference" class="ml-10 fs-s3 text-gray cursor">{{ $t('moeny.whyKhb') }}</span>
+                :content="$t('money.khbText')" v-else>
+                <span slot="reference" class="ml-10 fs-s3 text-gray cursor">{{ $t('money.whyKhb') }}</span>
               </el-popover>
           </div>
           <div class="mt-15 mb-15 cursor">
             <span class="text-primary khcoin">{{ money.happyCurrencyNum || 0.00 }}</span>
           </div>
-          <el-button type="primary" size="small" class="fs-s3" @click="$refs.rechargeCoin.show()">{{ $t('moeny.goRecharge') }}</el-button>
+          <el-button type="primary" size="small" class="fs-s3" @click="$refs.rechargeCoin.show()">{{ $t('money.goRecharge') }}</el-button>
         </el-col> -->
       </el-row>
     </div>
 
     <div v-if="!isStore() || storeMoneySetInfo.checkIncome == 1">
       <div class="pt-10 pl-10 pr-10 bg-white">
-        <div class="mt-10 pb-10 pl-10 fs-c1 text-black">{{ $t('moeny.overview') }}</div>
+        <div class="mt-10 pb-10 pl-10 fs-c1 text-black">{{ $t('money.overview') }}</div>
       </div>
 
       <div class="pl-5 bg-white">
         <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true" @saveXlsx="saveXlsx">
           <template v-slot:defult>
-            <el-form-item :label="$t('public.moenyType')">
-              <el-select v-model="form.capitalType" :placeholder="$t('public.moenyType')" @change="toQuery()">
+            <el-form-item :label="$t('public.moneyType')">
+              <el-select v-model="form.capitalType" :placeholder="$t('public.moneyType')" @change="toQuery()">
                 <el-option :label="$t('payType.regularWallet')" value="RMB" />
-                <!-- <el-option :label="$t('payType.khbMoeny')" value="KHB" /> -->
+                <!-- <el-option :label="$t('payType.khbMoney')" value="KHB" /> -->
               </el-select>
             </el-form-item>
           </template>
@@ -66,7 +66,7 @@
           </el-table-column>
           <el-table-column :label="$t('public.amount')">
             <template slot-scope="scope">
-              <el-link :type="scope.row.amountChange > 0 ? 'primary' : 'danger'">{{ scope.row.amountChange || "0.00" }}</el-link>
+              <el-link :type="'black'">{{ formatCurrency(scope.row.amountChange) || "0.00" }}</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -86,15 +86,15 @@
         <div class="mb-20 flex">
           <div class="fs-c1">1、</div>
           <div>
-            <div class="mb-10 text-black">{{ $t('moeny.khbWhy') }}</div>
-            <div>{{ $t('moeny.khbWhyText') }}</div>
+            <div class="mb-10 text-black">{{ $t('money.khbWhy') }}</div>
+            <div>{{ $t('money.khbWhyText') }}</div>
           </div>
         </div>
         <div class="mb-20 flex">
           <div class="fs-c1">2、</div>
           <div>
-            <div class="mb-10 text-black">{{ $t('moeny.khbHowToAarn') }}</div>
-            <div>{{ $t('moeny.khbHowToAarnText') }}</div>
+            <div class="mb-10 text-black">{{ $t('money.khbHowToAarn') }}</div>
+            <div>{{ $t('money.khbHowToAarnText') }}</div>
           </div>
         </div>
         <div class="mb-20 flex">
@@ -104,18 +104,18 @@
             <div>快活币可提现。</div>
           </div> -->
           <div>
-            <div class="mb-10 text-black">{{ $t('moeny.khbHowToUseIt') }}</div>
-            <div>{{ $t('moeny.khbHowToUseItText') }}</div>
+            <div class="mb-10 text-black">{{ $t('money.khbHowToUseIt') }}</div>
+            <div>{{ $t('money.khbHowToUseItText') }}</div>
           </div>
         </div>
         <div>
-          <el-button type="primary" @click="khyCoinIntroDialog = false" style="margin-left: 25px;">{{ $t('moeny.understood') }}</el-button>
+          <el-button type="primary" @click="khyCoinIntroDialog = false" style="margin-left: 25px;">{{ $t('money.understood') }}</el-button>
         </div>
       </div>
     </el-dialog>
 
     <recharge-khy-coin ref="rechargeCoin"></recharge-khy-coin>
-    <xlsx ref="toXlsx" :fileName="$t('moeny.revenueRecords')"></xlsx>
+    <xlsx ref="toXlsx" :fileName="$t('money.revenueRecords')"></xlsx>
   </div>
 </template>
 
