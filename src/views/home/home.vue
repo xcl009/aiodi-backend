@@ -3,20 +3,19 @@
 
     <el-row :gutter="10" type="flex" class="stat-box text-center mb-20">
       <!-- Total "GMV" -->
-      <el-col :span="24" class="rel">
+      <el-col :span="12" class="rel mb-20">
         <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({ path: `/money/monthMoney` })">
-            <div class="flex align-center fs-b5 text-primary">
-              {{currencySymbolpositionType ?  siteInfo.currencySymbol: ''  }}
-              <count-to :start-val="0"
-                :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" />{{currencySymbolpositionType ?  '': siteInfo.currencySymbol }}</div>
+            <div class="fs-b5 text-primary">
+                {{ formatCurrency(orderStat.orderAmount) }}
+              </div>
             <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.transactionAmount') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/money-bag.svg')" alt="" />
           </div>
         </div>
       </el-col>
       <!-- Orders -->
-      <el-col :span="24" class="rel">
+      <el-col :span="12" class="rel mb-20">
         <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="Ability['order'] ? $router.push({ path: `/order/allOrder` }) : ''">
             <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
@@ -27,7 +26,7 @@
         </div>
       </el-col>
       <!-- Cables -->
-      <el-col :span="24" class="rel">
+      <el-col :span="12" class="rel mb-20">
         <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({ path: isSaas() ? `/device` : `/device` })">
             <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
@@ -38,7 +37,7 @@
         </div>
       </el-col>
       <!-- "Agents" -->
-      <el-col :span="24" class="rel" v-if="!isStore()">
+      <el-col :span="12" class="rel mb-20" v-if="!isStore()">
         <div class="flex justify-center">
           <div class="o-v card-panel cursor">
             <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)"
@@ -49,7 +48,7 @@
         </div>
       </el-col>
       <!-- Merchants -->
-      <el-col :span="24" class="rel" v-if="!isStore()">
+      <el-col :span="12" class="rel mb-20" v-if="!isStore()">
         <div class="flex justify-center">
           <div class="o-v card-panel cursor">
             <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)"
@@ -60,7 +59,7 @@
         </div>
       </el-col>
       <!-- Total Users -->
-      <el-col :span="24" class="rel" v-if="isBrand() || isSaas()">
+      <el-col :span="12" class="rel mb-20" v-if="isBrand() || isSaas()">
         <div class="flex justify-center">
           <div class="o-v card-panel cursor">
             <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber || 0)"
@@ -511,7 +510,8 @@ import {
   accAdd,
   accMul,
   copyText,
-  currencySymbolposition
+  currencySymbolposition,
+  formatCurrency
 } from '@/utils/index'
 import DateUtil from '@/utils/date'
 import CountTo from 'vue-count-to'
