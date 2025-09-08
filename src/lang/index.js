@@ -62,7 +62,7 @@ import fr_FRLocale from 'element-ui/lib/locale/lang/nl'; //element 荷兰语
 import nl_NLLocale from 'element-ui/lib/locale/lang/fr'; //element 法语
 Vue.use(VueI18n);
 let lang = localStorage.getItem('lang')
-lang = ['zh_CN', 'en_US', 'de_DE', 'fr_FR', 'nl_NL'].indexOf(lang) > -1 ? lang : 'zh_CN'
+lang = ['zh_CN', 'en_US', 'de_DE', 'fr_FR', 'nl_NL'].indexOf(lang) > -1 ? lang : 'nl_NL'
 localStorage.setItem('lang', lang)
 const i18n = new VueI18n({
   locale: lang,//将语言标识存入localStorage或sessionStorage中，页面刷新不会默认中文显示
