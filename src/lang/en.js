@@ -451,6 +451,7 @@ export default {
     viporder:"Paid",
     noviporder:"Member",
     appTitle: "G-Hoost Management Panel",
+    ghosttext:'Please select a withdrawal type'
   },
   // 分账关系
   reType: {

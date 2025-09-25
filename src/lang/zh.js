@@ -437,6 +437,7 @@ export default {
 		segmentationtext1: '之后的24小时',
 		segmentationtext2: '移动电池丢失或损坏时，将产生赔偿金',
     appTitle: "共享设备Saas系统-管理后台",
+    ghosttext:'请选择提现类型'
   },
   // 分账关系
   reType: {

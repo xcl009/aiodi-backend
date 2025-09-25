@@ -431,6 +431,7 @@ export default {
     segmentationtext1: "Volgende 24 uur",
     segmentationtext2: "Er wordt een schadevergoeding in rekening gebracht wanneer de batterij van de mobiele telefoon verloren gaat of beschadigd raakt",
     appTitle: "G-Hoost Beheerpaneel",
+    ghosttext:'Selecteer alstublieft een opname-type'
   
   },
   reType: {
