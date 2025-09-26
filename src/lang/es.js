@@ -1120,7 +1120,7 @@ export default {
         area: 'Área',
         businessHours: 'Horario de atención',
         businessHoursText: 'Ej: 09:00-21:00',
-        introduce: 'Presentación del comerciante',
+        description: 'Presentación del comerciante',
         dividendInformation: 'Información de distribución de beneficios',
         sharingMethod: 'Método de distribución',
         proportionalSharing: 'Distribución proporcional',

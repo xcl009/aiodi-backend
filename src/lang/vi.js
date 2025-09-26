@@ -1125,7 +1125,7 @@ export default {
     area: 'Khu vực',
     businessHours: 'Giờ mở cửa',
     businessHoursText: 'Ví dụ: 09:00-21:00',
-    introduce: 'Giới thiệu thương gia',
+    description: 'Giới thiệu thương gia',
     dividendInformation: 'Thông tin chia sẻ lợi nhuận',
     sharingMethod: 'Cách chia sẻ',
     proportionalSharing: 'Chia sẻ tỷ lệ',

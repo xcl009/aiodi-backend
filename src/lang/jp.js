@@ -1100,7 +1100,7 @@ export default {
     area: "所在地区",
     businessHours: "営業時間",
     businessHoursText: "例: 9:00 －21:00",
-    introduce: "店舗紹介",
+    description: "店舗紹介",
     dividendInformation: "利益分配情報",
     sharingMethod: "分配方法",
     proportionalSharing: "比率分配",

@@ -1120,7 +1120,7 @@ export default {
         area: 'Местонахождение',
         businessHours: 'Время работы',
         businessHoursText: 'Например: 09: 00 - 21: 00',
-        introduce: 'Представление продавца',
+        description: 'Представление продавца',
         dividendInformation: 'Распределение информации',
         sharingMethod: 'Порядок разделения',
         proportionalSharing: 'Распределение',

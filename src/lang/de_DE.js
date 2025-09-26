@@ -1094,7 +1094,7 @@ export default {
         area: "Standort",
         businessHours: "Öffnungszeiten",
         businessHoursText: "Beispiel: 09:00-21:00",
-        introduce: "Händlervorstellung",
+        description: "Händlervorstellung",
         dividendInformation: "Informationen zur Gewinnbeteiligung",
         sharingMethod: "Gewinnbeteiligungsmethode",
         proportionalSharing: "Anteil",

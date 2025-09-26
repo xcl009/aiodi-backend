@@ -2,30 +2,106 @@
   <div>
     <el-row class="pl-30 pr-30 custom-form bg-white">
       <el-col :lg="24" :xl="22">
-        <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="130px">
+        <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="250px">
           <h3>{{ $t('public.basicInformation') }}</h3>
-          <el-form-item :label="$t('public.doorstepPhoto')" class="up-img">
+
+          <el-form-item ref="avatar" prop="avatar" class="up-img">
+            <template #label>
+              {{ $t('public.doorstepPhoto') }}
+              <el-popover placement="right" title="" width="400" trigger="hover">
+                <div>
+                  <div>{{ $t('public.doorstepPhotoToolTip') }}</div>
+                </div>
+                <el-link type="danger" slot="reference" :underline="false"
+                  class="ml-10 el-icon-question fs-c1"></el-link>
+              </el-popover>
+            </template>
             <upload v-model="form.avatar" :upObj="{ fileType: 'storePhoto' }" />
           </el-form-item>
-          <el-form-item ref="name" :label="$t('public.storeName')" prop="name">
-            <el-input v-model="form.name" :placeholder="$t('store.plseaseStoreName')" />
+
+          <el-form-item ref="name" prop="name">
+            <template #label>
+              {{ $t('public.storeName') }}
+              <el-popover placement="right" title="" width="400" trigger="hover">
+                <div>
+                  <div class="mb-15">{{ $t('public.storeNameExampleTooltip') }}</div>
+                  <div>{{ $t('public.storeNamePlacementTooltip') }}</div>
+                </div>
+                <el-link type="danger" slot="reference" :underline="false"
+                  class="ml-10 el-icon-question fs-c1"></el-link>
+              </el-popover>
+            </template>
+            <el-input
+              v-model="form.name"
+              :placeholder="$t('store.plseaseStoreName')"
+            />
           </el-form-item>
-          <el-form-item ref="mobile" :label="$t('store.partnerPhone')" prop="mobile">
-            <el-input v-model="form.mobile" :placeholder="$t('store.partnerPhoneText')" />
+          <el-form-item ref="mobile" prop="mobile">
+            <template #label>
+              {{ $t('store.partnerPhone') }}
+              <el-popover placement="right" title="" width="400" trigger="hover">
+                <div>
+                  <div class="mb-15">{{ $t('store.partnerPhoneTooltip') }}</div>
+                  <div class="mb-15">{{ $t('store.partnerPhoneTooltip2') }}</div>
+                  <div>{{ $t('store.fieldSafetyTooltip') }}</div>
+                </div>
+                <el-link type="danger" slot="reference" :underline="false"
+                  class="ml-10 el-icon-question fs-c1"></el-link>
+              </el-popover>
+            </template>
+            <el-input
+              v-model="form.mobile"
+              :placeholder="$t('store.partnerPhoneText')"
+            />
           </el-form-item>
           <el-form-item ref="catId" :label="$t('public.industry')" prop="catId" v-if="false">
             <el-cascader v-model="form.catId" :options="catList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
-          <el-form-item ref="lng" :label="$t('store.locationAddress')" prop="lng" v-if="mapTrue">
+          <!-- <el-form-item ref="lng" :label="$t('store.locationAddress')" prop="lng" v-if="mapTrue">
+            <maps v-if="form.lng" :center="{ lng: form.lng, lat: form.lat }" @locationOk="locationOk" :zooms="18" />
+            <maps v-else @locationOk="locationOk" :zooms="18" />
+          </el-form-item> -->
+
+          <el-form-item ref="lng" prop="lng" v-if="mapTrue">
+            <template #label>
+              {{ $t('store.locationAddress') }}
+              <el-popover placement="right" title="" width="400" trigger="hover">
+                <div>
+                  <div class="mb-15">{{ $t('store.locationAddressTooltip') }}</div>
+                  <div>{{ $t('store.locationAddressTooltip2') }}</div>
+                </div>
+                <el-link type="danger" slot="reference" :underline="false"
+                  class="ml-10 el-icon-question fs-c1"></el-link>
+              </el-popover>
+            </template>
             <maps v-if="form.lng" :center="{ lng: form.lng, lat: form.lat }" @locationOk="locationOk" :zooms="18" />
             <maps v-else @locationOk="locationOk" :zooms="18" />
           </el-form-item>
+
           <!-- <el-form-item ref="province" :label="$t('store.area')" prop="province">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item> -->
-          <el-form-item ref="address" :label="$t('store.partnerAddress')" prop="address">
+
+          <!-- <el-form-item ref="address" :label="$t('store.partnerAddress')" prop="address">
+            <el-input v-model="form.address" :placeholder="$t('store.partnerAddressText')" />
+          </el-form-item> -->
+
+          <el-form-item ref="address" prop="address">
+            <template #label>
+              {{ $t('store.partnerAddress') }}
+              <el-popover placement="right" title="" width="400" trigger="hover">
+                <div>
+                  <div class="mb-15">{{ $t('store.partnerAddressTooltip') }}</div>
+                  <div>{{ $t('store.partnerAddressTooltip2') }}</div>
+                </div>
+                <el-link type="danger" slot="reference" :underline="false"
+                  class="ml-10 el-icon-question fs-c1"></el-link>
+              </el-popover>
+            </template>
             <el-input v-model="form.address" :placeholder="$t('store.partnerAddressText')" />
           </el-form-item>
+
+
           <el-form-item :label="$t('store.businessHours')">
             <div class="flex align-center" v-for="(item, idx) in form.businessTimeDes">
               <el-input v-model="form.businessTimeDes[idx]" />
@@ -35,9 +111,26 @@
                 @click="form.businessTimeDes.splice(idx, 1)" class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
             </div>
           </el-form-item>
-          <el-form-item :label="$t('store.introduce')">
-            <el-input v-model="form.introduce" :placeholder="$t('store.introduce')" type="textarea" :rows="3" />
+
+          <el-form-item ref="description" prop="description">
+            <template #label>
+              {{ $t('store.description') }}
+              <el-popover placement="right" title="" width="400" trigger="hover">
+                <div>
+                  <div class="mb-15">{{ $t('store.descriptionTooltip') }}</div>
+                  <div>{{ $t('store.fieldSafetyTooltip') }}</div>
+                </div>
+                <el-link type="danger" slot="reference" :underline="false"
+                  class="ml-10 el-icon-question fs-c1"></el-link>
+              </el-popover>
+            </template>
+            <el-input v-model="form.description" :placeholder="$t('store.description')" type="textarea" :rows="3" />
           </el-form-item>
+
+<!-- 
+          <el-form-item :label="$t('store.description')">
+            <el-input v-model="form.description" :placeholder="$t('store.description')" type="textarea" :rows="3" />
+          </el-form-item> -->
 
           <template>
             <h3>{{ $t('store.dividendInformation') }}</h3>
@@ -47,14 +140,57 @@
                 <el-radio-button :label="2">{{ $t('store.noShareGiven') }}</el-radio-button>
               </el-radio-group>
             </el-form-item>
+
+
             <div v-if="form.divisionMode != 2 && !parentId && (!form.parentId || form.parentId == '0')">
-              <el-form-item ref="userNickName" :label="$t('public.contactPerson')" prop="userNickName">
-                <el-input v-model="form.userNickName" :placeholder="$t('brand.enterContactName')" />
+
+              <el-form-item ref="userNickName" prop="userNickName">
+                <template #label>
+                  {{ $t('public.contactPerson') }}
+                  <el-popover placement="right" title="" width="400" trigger="hover">
+                    <div>
+                      <div class="mb-15">{{ $t('public.contactPersonTooltip') }}</div>
+                      <div>{{ $t('store.fieldSafetyTooltip') }}</div>
+                    </div>
+                    <el-link type="danger" slot="reference" :underline="false"
+                      class="ml-10 el-icon-question fs-c1"></el-link>
+                  </el-popover>
+                </template>
+                <el-input
+                  v-model="form.userNickName"
+                  :placeholder="$t('store.enterContactName')"
+                />
               </el-form-item>
-              <el-form-item ref="userMobile" :label="$t('public.phonenumberContactPerson')" prop="userMobile" v-if="!isAgent() || (isAgent() && !sysShows.agentEditStoreMobile)">
+
+              <el-form-item ref="userMobile" prop="userMobile" v-if="!isAgent() || (isAgent() && !sysShows.agentEditStoreMobile)">
+                <template #label>
+                  {{ $t('public.phonenumberContactPerson') }}
+                  <el-popover placement="right" title="" width="400" trigger="hover">
+                    <div>
+                      <div class="mb-15">{{ $t('public.phonenumberContactPersonTooltip1') }}</div>
+                      <div class="mb-15">{{ $t('public.phonenumberContactPersonTooltip2') }}</div>
+                      <div>{{ $t('store.fieldSafetyTooltip') }}</div>
+                    </div>
+                    <el-link type="danger" slot="reference" :underline="false"
+                      class="ml-10 el-icon-question fs-c1"></el-link>
+                  </el-popover>
+                </template>
                 <el-input type="number" v-model="form.userMobile" :placeholder="$t('factory.phoneLoginAccount')" />
               </el-form-item>
-              <el-form-item v-if="!storeId" :label="$t('public.loginPassword')">
+
+
+              <el-form-item ref="loginPassword" prop="loginPassword" v-if="!storeId">
+                <template #label>
+                  {{ $t('public.loginPassword') }}
+                  <el-popover placement="right" title="" width="400" trigger="hover">
+                    <div>
+                      <div class="mb-15">{{ $t('store.loginPasswordTooltip') }}</div>
+                      <div>{{ $t('store.loginPasswordTooltip2') }}</div>
+                    </div>
+                    <el-link type="danger" slot="reference" :underline="false"
+                      class="ml-10 el-icon-question fs-c1"></el-link>
+                  </el-popover>
+                </template>
                 <el-input v-model="form.loginPassword" :placeholder="$t('store.pleaseLoginPassword')" />
                 <el-button type="text" size="small" class="set-btn" @click="generateNewPassword(Math.random() * (16 - 12) + 12)">{{ $t('store.generateNewPassword') }}</el-button>
               </el-form-item>

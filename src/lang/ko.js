@@ -1120,7 +1120,7 @@ export default {
     area: '소재 지역',
     businessHours: '영업 시간',
     businessHoursText: '예: 09: 00-21: 00',
-    introduce: '상인 소개',
+    description: '상인 소개',
     dividendInformation: '분윤 정보',
     sharingMethod: '분할 방식',
     proportionalSharing: '비례 분할',

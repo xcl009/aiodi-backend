@@ -1096,7 +1096,7 @@ export default {
     area: "ภูมิภาค",
     businessHours: "เวลาทำการ",
     businessHoursText: "เช่น 09:00 - 21:00",
-    introduce: "แนะนำร้านค้า",
+    description: "แนะนำร้านค้า",
     dividendInformation: "ข้อมูลการแบ่งงาน",
     sharingMethod: "แบ่งวิธี",
     proportionalSharing: "การแบ่งสัดส่วน",

@@ -1120,7 +1120,7 @@ export default {
     area: 'Location',
     businessHours: 'Business hours',
     businessHoursText: 'Halimbawa: 09:00-21:00',
-    introduce: 'Pampapakilala ng Partner',
+    description: 'Pampapakilala ng Partner',
     dividendInformation: 'Informasyon tungkol sa mga dividendo',
     sharingMethod: 'Metodo ng pagbabahagi',
     proportionalSharing: 'Proporcional na pagbabahagi',

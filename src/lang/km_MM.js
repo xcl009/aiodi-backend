@@ -1097,7 +1097,7 @@ export default {
     area: "ទីតាំង & # 160; ៖",
     businessHours: "ម៉ោង​ការងារ",
     businessHoursText: "ឧទាហរណ៍ & # 160; ៖ 09: 00- 21: 00",
-    introduce: "សេចក្ដី​ណែនាំ​ការ​ជូនដំណឹង Partner",
+    description: "សេចក្ដី​ណែនាំ​ការ​ជូនដំណឹង Partner",
     dividendInformation: "ព័ត៌មាន Fenrun",
     sharingMethod: "វិធីសាស្ត្រ​ចែក",
     proportionalSharing: "ចែក​ផ្នែក",

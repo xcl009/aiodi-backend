@@ -1788,7 +1788,7 @@ export default {
     "filter",
     "Importeer apparatuur",
     "Import Succes",
-    "Voer het adres in om te zoeken",
+    "Voer het adres in om te zoeken, en sleep de map naar de juiste locatie",
     "Verificatie van het bedieningswachtwoord",
     "Ga naar Instellingen",
     "Verificatie succesvol",

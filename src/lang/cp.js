@@ -1129,7 +1129,7 @@ export default {
     area: '所在地區',
     businessHours: '營業時間',
     businessHoursText: '如:09:00-21:00',
-    introduce: '商戶介紹',
+    description: '商戶介紹',
     dividendInformation: '分潤信息',
     sharingMethod: '分成方式',
     proportionalSharing: '比例分成',

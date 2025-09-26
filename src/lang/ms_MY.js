@@ -1095,7 +1095,7 @@ export default {
     area: "area",
     businessHours: "jam bisnes",
     businessHoursText: "Contohnya: 09:00-21:00",
-    introduce: "Pengenalan Penghantar",
+    description: "Pengenalan Penghantar",
     dividendInformation: "Maklumat Fenrun",
     sharingMethod: "Kaedah bahagian",
     proportionalSharing: "Bahagian proporsional",
