@@ -174,7 +174,7 @@ const util = {
   /**
    * 手机号隐藏中间4位
    */
-  dealPhone: (tel, start = 3, end = 7, symbol = '****') => {
+  dealPhone: (tel, start = 0, end = 8, symbol = '*******') => {
     if (!tel) return tel
     tel = '' + tel
     return tel.substr(0, start) + symbol + tel.substring(end, tel.length)
@@ -285,7 +285,8 @@ const util = {
       return '--';
     }
 
-    const format = cFormat || '{y}-{m}-{d} {h}:{i}';
+    const format = cFormat || '{d}-{m}-{y} {h}:{i}';
+    // const format = cFormat || '{y}-{m}-{d} {h}:{i}';
     let date;
 
     if (typeof time === 'object') {

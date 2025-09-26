@@ -303,7 +303,7 @@ export default {
         {
           key: 'terminalId',
           val: true,
-          name: this.$t('public.sn'),
+          name: this.$t('public.powerbankId'),
           width: 150
         },
 
@@ -401,7 +401,7 @@ export default {
       clickSubmit: false,
       queryObj: {
         terminalId: {
-          title: this.$t('public.sn'),
+          title: this.$t('public.powerbankId'),
           type: 'input'
         },
         terminalSn: {

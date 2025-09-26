@@ -68,7 +68,7 @@
             <template slot-scope="scope">
               <div v-if="scope.row.apply_status == 1">
                 <el-button size="mini" type="primary" round @click="setRows(1, scope.row, 1, scope.$index)">
-                  {{ $t('public.passThrough') }}
+                  {{ $t('public.approve') }}
                 </el-button>
                 <el-button size="mini" type="primary" round @click="setRows(1, scope.row, 2, scope.$index)">
                   {{ $t('public.reject') }}

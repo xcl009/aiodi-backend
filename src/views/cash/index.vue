@@ -62,7 +62,7 @@
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" :max-height="tableMaxH">
-        <el-table-column :label="$t('cash.withdrawalNumber')" width="120">
+        <el-table-column :label="$t('money.requestId')" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.id || '--' }}</div>
           </template>
@@ -90,30 +90,30 @@
             <div>{{ scope.row.userMobile || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.withdrawalTime')" width="94">
+        <el-table-column :label="$t('money.requestedAt')" width="94">
           <template slot-scope="scope">
             {{ scope.row.createTime || '--' }}
           </template>
         </el-table-column>
         <el-table-column :label="`${$t('public.withdrawalAmount')}`">
           <template slot-scope="scope">
-            {{ scope.row.amount || '0.00' }}
+            {{ formatCurrency(scope.row.amount || '0.00') }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('public.commission')}`">
+        <el-table-column :label="`${$t('money.withdrawalFee')}`" width="100">
           <template slot-scope="scope">
-            <div>{{ $t('system.singleStroke') }}: {{ scope.row.feeDeal || '0.00' }}</div>
-            <div>{{ $t('system.taxPoints') }}: {{ scope.row.feePercent || '0.00' }}</div>
+            <div>{{ $t('money.withdrawalFee') }}: {{ formatCurrency(scope.row.feeDeal || '0.00') }}</div>
+            <div>{{ $t('system.tax') }}: {{ formatCurrency(scope.row.feePercent || '0.00') }}</div>
           </template>
         </el-table-column>
         <el-table-column :label="`${$t('cash.accountsReceivable')}`">
           <template slot-scope="scope">
-            {{ accSub(accSub(scope.row.amount, scope.row.feeDeal), scope.row.feePercent) }}
+            {{ formatCurrency(accSub(accSub(scope.row.amount, scope.row.feeDeal), scope.row.feePercent)) }}
           </template>
         </el-table-column>
         <el-table-column :label="`${$t('money.actualReceipt')}`">
           <template slot-scope="scope">
-            {{ scope.row.amountReceived || '0.00' }}
+            {{ formatCurrency(scope.row.amountReceived || '0.00') }}
           </template>
         </el-table-column>
         <el-table-column :label="$t('money.toAccount')" width="220">
@@ -220,10 +220,10 @@
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(1, scope.row, 2)" :disabled="scope.row.status != 0">{{
-                $t('public.passThrough') }}</el-button>
+                $t('public.approve') }}</el-button>
               <el-button type="text" @click="setRows(1, scope.row, 1)" :disabled="scope.row.status != 0">{{
                 $t('public.refuse') }}</el-button>
-              <el-button type="text" @click="copyText(scope.row.wechatOpenid)" :disabled="!scope.row.wechatOpenid">{{
+              <el-button type="text" @click="copyText(scope.row.wechatOpenid)" v-if="scope.row.wechatOpenid">{{
                 $t('cash.wxId') }}</el-button>
             </div>
           </template>
@@ -268,7 +268,8 @@ import selectSearch from '@/components/condition/selectSearch'
 import xlsx from '@/components/xlsx/'
 import {
   accSub,
-  copyText
+  copyText,
+  formatCurrency
 } from '@/utils/index'
 export default {
   name: 'agentWithdraw',

@@ -369,7 +369,7 @@
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">{{ $t('home.orderNumDetails') }}</div>
+            <div class="flex1 fs-b2">{{ $t('home.recentOrders') }}</div>
           </div>
           <!-- todo: Disable autoscroll -->
           <!-- todo: Delete unneeded columns -->
@@ -378,23 +378,23 @@
             :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
             :row-style="{ background: 'rgba(0, 0, 0, 0.05)' }" :cell-style="{ border: 'none' }" :data="orderList"
             style="background:none">
-            <el-table-column :label="`${$t('home.serialNumber')}`" width="60">
+            <el-table-column width="60">
               <template slot-scope="scope">
                 <div class="fs-c1 text-bold text-white idx text-center">{{ scope.$index + 1 }}
                 </div>
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.store')}`" width="120">
+            <el-table-column :label="`${$t('public.store')}`" width="120" v-if="isBrand() || isSaas()">
               <template slot-scope="scope">
                 <span>{{ scope.row.storeName }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.user')}`" width="80">
+            <el-table-column :label="`${$t('public.user')}`" width="100">
               <template slot-scope="scope">
-                {{ scope.row.userNickName ? scope.row.userNickName.substring(0, 1) : '' }}**
+                {{ scope.row.userNickName ? scope.row.userNickName.substring(0, 1) : '' }}*****
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('home.equipmentCategory')}`" width="100">
+            <el-table-column :label="`${$t('public.device')}`" width="100">
               <template slot-scope="scope">
                 <el-tooltip :content="myDeviceId[scope.row.deviceTypeCode]" placement="top">
                   <div class="text-cut">
@@ -405,22 +405,22 @@
             </el-table-column>
             <el-table-column :label="`${$t('home.source')}`" width="150">
               <template slot-scope="scope">
-                {{ Constant.PayType ? Constant.PayType[scope.row.payType] : '' }}
+                {{ customSourceMapping[scope.row.sourceType] || "--" }}
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.statrtTime')}`" width="180">
               <template slot-scope="scope">
-                {{ scope.row.chargeStartTime || "--" }}
+                {{ parseTime(scope.row.chargeStartTime) || "--" }}
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.endTime')}`" width="180">
               <template slot-scope="scope">
-                {{ scope.row.chargeEndTime || "--" }}
+                {{ parseTime(scope.row.chargeEndTime) || "--" }}
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.amount')}`">
+            <el-table-column :label="`${$t('public.income')}`" width="100">
               <template slot-scope="scope">
-                {{ scope.row.amount }}
+                {{ formatCurrency(scope.row.amount) }}
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.status')}`">
@@ -821,6 +821,12 @@ export default {
     dialogTitle() {
       return {
         6: this.$t('home.suggestionsText')
+      }
+    },
+    customSourceMapping() {
+      return {
+        4: this.$t('public.mobileApp'),
+        5: this.$t('public.webBrowser'),
       }
     },
   },

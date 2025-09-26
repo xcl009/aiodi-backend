@@ -2,7 +2,7 @@
   <div>
     <el-row class="pt-20 pb-10 pl-20 pr-20 custom-form bg-white">
       <el-col :xs="24" :sm="18" :md="16" :lg="12" :xl="8">
-        <el-form ref="form" :model="form" label-position="left" label-width="120px">
+        <el-form ref="form" :model="form" label-position="left" label-width="200px">
           <el-form-item :label="$t('brand.withdrawableAmount')">
             <div class="text-primary fs-b1">{{ money.balance || 0.0 }}</div>
           </el-form-item>
@@ -40,7 +40,7 @@
               </el-tooltip>
             </div>
           </el-form-item>
-          <el-form-item :label="$t('public.withdrawalAmount')">
+          <el-form-item :label="$t('public.withdrawalAmount')" required>
             <el-input type="number" v-model="form.amount" :placeholder="$t('money.pleaseAmount')" />
           </el-form-item>
           <el-form-item :label="$t('money.withdrawalMethod')">
@@ -65,18 +65,19 @@
           <div v-show="form.withdrawType == 5 &&
             agentInfo.brandId != '1273675260975865857'
             ">
-            <el-form-item :label="$t('public.fullName')">
-              <el-input v-model="bindCardInfo.cardName" :placeholder="$t('money.youName')" />
+            <el-form-item :label="$t('public.fullName')" required>
+              <el-input v-model="bindCardInfo.cardName" :placeholder="$t('money.bankAccountName')" />
             </el-form-item>
-            <el-form-item :label="$t('public.cardNo')">
-              <el-input v-model="bindCardInfo.cardNo" :placeholder="$t('public.cardNo')" />
+            {{ /** @todo Proper bankaccount formatting */ }}
+            <el-form-item :label="$t('public.bankAccountNo')" required>
+              <el-input v-model="bindCardInfo.cardNo" :placeholder="$t('public.bankAccountNo')" />
             </el-form-item>
-            <el-form-item :label="$t('public.bankName')">
+            <el-form-item :label="$t('public.bankName')" required>
               <el-input v-model="bindCardInfo.bankName" :placeholder="$t('public.bankName')" />
             </el-form-item>
-            <el-form-item :label="$t('public.branchName')">
+            <!-- <el-form-item :label="$t('public.branchName')">
               <el-input v-model="bindCardInfo.branchName" :placeholder="$t('public.branchName')" />
-            </el-form-item>
+            </el-form-item> -->
           </div>
           <div v-show="form.withdrawType == 5 &&
             agentInfo.brandId == '1273675260975865857'
@@ -110,8 +111,8 @@
             <!-- <el-form-item :label="$t('public.fullName')">
               <el-input v-model="bindCardInfo.cardName" :placeholder="$t('money.youName')" />
             </el-form-item>
-            <el-form-item :label="$t('public.cardNo')">
-              <el-input v-model="bindCardInfo.cardNo" :placeholder="$t('public.cardNo')" />
+            <el-form-item :label="$t('public.bankAccountNo')">
+              <el-input v-model="bindCardInfo.cardNo" :placeholder="$t('public.bankAccountNo')" />
             </el-form-item>
             <el-form-item :label="$t('public.bankName')">
               <el-input v-model="bindCardInfo.bankName" :placeholder="$t('public.bankName')" />
@@ -152,14 +153,17 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item :label="$t('system.submittext')">
+          <el-form-item :label="$t('system.submittext')" v-if="configList.length > 1">
             <el-select v-model="form.day">
               <el-option :label="wp.title" :value="wp.day" v-for="(wp, index) in configList" :key="index"></el-option>
-
             </el-select>
           </el-form-item>
+          <el-form-item style="line-height: 20px;">
+            <span>{{ $t("money.requestProcessDelayNotice") }}</span>
+            <span>{{ $t("money.requestProcessDelayNotice2") }}</span>
+          </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit" :disabled="clickSubmit || timeLimit.type">{{ $t("public.submit")
+            <el-button type="primary" @click="onSubmit" :disabled="clickSubmit || timeLimit.type">{{ $t("money.submitWithdrawalRequest")
               }}</el-button>
           </el-form-item>
         </el-form>
@@ -236,7 +240,7 @@ export default {
         let arr = [];
         list1.forEach((list, index) => {
           let obj = {
-            title: `${list.name},${this.$t('system.taxPoints')}:${list.taxRate}%,${this.$t('system.singleStroke')}:${list.handlingFee}${this.siteInfo.currencySymbol}`,
+            title: `${list.name}, ${this.$t('system.tax')}:${list.taxRate}%, ${this.$t('system.singleStroke')}:${list.handlingFee}${this.siteInfo.currencySymbol}`,
             day: list.day,
           };
           arr.push(obj);
@@ -309,6 +313,7 @@ export default {
         }
         this.form.withdrawType = withdrawType[0].val;
         this.withdrawType = withdrawType;
+        this.form.day = this.configList[0].day;
         let types = this.arrayKeys(withdrawType, "val");
         if (types.indexOf("2") > -1 || types.indexOf("4") > -1) {
           this.qrcodeInfo();
@@ -421,13 +426,18 @@ export default {
         params = Object.assign(params, this.aliQrcodeInfo);
       } else if (params.withdrawType == 5) {
         params = Object.assign(params, this.bindCardInfo);
+
+        if (!params.cardName || !params.cardNo || !params.bankName) {
+          this.$message.error(this.$t("money.missingBankDetails"));
+          return;
+        }
       }
       if (this.cutStoreId) params.storeId = this.cutStoreId;
       this.clickSubmit = true;
       this.$post("iot-saas-pay/api/pay/withdraw/apply", params)
         .then((res) => {
           this.$message({
-            message: this.$t("public.operationSuccessful"),
+            message: this.$t("money.withdrawalRequestSubmitted"),
             type: "success",
           });
           this.$router.push({ path: "/money/cashRecord" });

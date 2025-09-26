@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="p-20 bg-white">
-      <div class="pb-20 text-black fs-c1">{{ $t('money.accountOverview') }}</div>
+      <div class="pb-20 text-black fs-c1">{{ $t('money.financialOverview') }}</div>
       <el-row class="stat-box line-1">
         <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">
-          <div class="fs-s3 text-black">{{ $t('brand.withdrawableAmount') }}（{{ $t('public.freezeAmount') }}: {{ money.frozenBalance || 0.00 }}）</div>
+          <div class="fs-s3 text-black">{{ $t('brand.withdrawableAmount') }}（{{ $t('public.freezeAmount') }}: {{ formatCurrency(money.frozenBalance) || formatCurrency(0.00) }}）</div>
           <div class="mt-15 mb-15 cursor">
             <span class="text-primary khcoin">{{ formatCurrency(money.balance) }}</span>
           </div>
           <div v-if="!isBrand() && Ability['cash']">
-            <el-button type="primary" size="small" class="fs-s3" @click="$router.push({path: `/money/cash`})">{{ $t('public.withdrawal') }}</el-button>
+            <el-button type="primary" size="small" class="fs-s3" @click="$router.push({path: `/money/cash`})">{{ $t('public.requestWithdrawal') }}</el-button>
           </div>
         </el-col>
         <!-- <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="12">

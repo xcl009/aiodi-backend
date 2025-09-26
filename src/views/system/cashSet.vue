@@ -107,7 +107,7 @@
                     @click="swapItems(form.supportType, idx, idx - 1)"></i>
                 </h4>
 
-                <!-- <el-form-item :label="$t('system.taxPoints')">
+                <!-- <el-form-item :label="$t('system.tax')">
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.taxRate" class="flex1 mr-10">
                       <template slot="append">%</template>
@@ -129,7 +129,7 @@
                     </el-select>
                     <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('public.name') }}</div>
                     <el-input v-model="ritem.name" class="flex1 ml-10 mr-10"></el-input>
-                    <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('system.taxPoints')}}</div>
+                    <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('system.tax')}}</div>
                     <el-input type="number" v-model="ritem.taxRate" class="flex1 ml-10 mr-10">
                       <template slot="append">%</template>
                     </el-input>
