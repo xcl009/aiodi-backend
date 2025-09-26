@@ -388,7 +388,7 @@ export default {
     chargingCable: '充电线',
     companyName: '物享云联',
     adminService: '后台管理系统',
-    ghoostAdminService: 'G-Hoost 后台管理系统',
+    ghoostAdminService: 'G-HOOST 后台管理系统',
     login: '登录',
     agentText: '代理商',
     canceled: '已取消',

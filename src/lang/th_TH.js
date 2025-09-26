@@ -365,7 +365,7 @@ export default {
     chargingCable: "สายชาร์จ",
     companyName: "เครือข่ายคลาวด์ Enjoy of Things",
     adminService: "ระบบการจัดการพื้นหลัง",
-    ghoostAdminService: "G-Hoost ระบบการจัดการพื้นหลัง",
+    ghoostAdminService: "G-HOOST ระบบการจัดการพื้นหลัง",
     login: "เข้าสู่ระบบ",
     agentText: "ตัวแทน",
     canceled: "ยกเลิกแล้ว",

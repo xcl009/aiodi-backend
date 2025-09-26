@@ -378,7 +378,7 @@ export default {
     chargingCable: 'Nag-load ng cable',
     companyName: 'Wuxiang Yunlian',
     adminService: 'Sistemang pangpamahalaan ng backend',
-    ghoostAdminService: 'G-Hoost Sistemang pangpamahalaan ng backend',
+    ghoostAdminService: 'G-HOOST Sistemang pangpamahalaan ng backend',
     login: 'Login',
     agentText: 'agent',
     canceled: 'Stock label',

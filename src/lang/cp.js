@@ -387,7 +387,7 @@ export default {
     chargingCable: '充電線',
     companyName: '物享雲聯',
     adminService: '管理面板',
-    ghoostAdminService: 'G-Hoost 管理面板',
+    ghoostAdminService: 'G-HOOST 管理面板',
     login: '登錄',
     agentText: '代理商',
     canceled: '已取消',

@@ -363,7 +363,7 @@ export default {
         chargingCable: "Câble de charge",
         companyName: "WuXiangCloud",
         adminService: "Système de gestion des coulisses",
-        ghoostAdminService: "Système de gestion des coulisses des G-Hoost",
+        ghoostAdminService: "Système de gestion des coulisses des G-HOOST",
         login: "Se connecter",
         agentText: "Agents",
         canceled: "Annulé",

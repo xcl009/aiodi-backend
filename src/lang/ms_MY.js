@@ -364,7 +364,7 @@ export default {
     chargingCable: "Baris muat",
     companyName: "Sambungan Awan Wuxiang",
     adminService: "sistem pengurusan latar belakang",
-    ghoostAdminService: "G-Hoost sistem pengurusan latar belakang",
+    ghoostAdminService: "G-HOOST sistem pengurusan latar belakang",
     login: "log masuk",
     agentText: "ejen",
     canceled: "Dibatalkan",

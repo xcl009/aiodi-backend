@@ -378,7 +378,7 @@ export default {
     chargingCable: 'Dây sạc',
     companyName: '',
     adminService: 'QUẢN LÝ HỆ THỐNG PIN DI ĐỘNG',
-    ghoostAdminService: 'G-Hoost QUẢN LÝ HỆ THỐNG PIN DI ĐỘNG',
+    ghoostAdminService: 'G-HOOST QUẢN LÝ HỆ THỐNG PIN DI ĐỘNG',
     adminServices: 'Đăng nhập để quản trị hệ thống',
     login: 'Đăng nhập',
     agentText: 'Đại lý',

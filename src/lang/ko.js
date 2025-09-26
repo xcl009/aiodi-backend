@@ -378,7 +378,7 @@ export default {
     chargingCable: '충전 케이블',
     companyName: '물향운련',
     adminService: '백그라운드 관리 시스템',
-    ghoostAdminService: 'G-Hoost 백그라운드 관리 시스템',
+    ghoostAdminService: 'G-HOOST 백그라운드 관리 시스템',
     login: '로그인',
     agentText: '대리상',
     canceled: '취소됨',

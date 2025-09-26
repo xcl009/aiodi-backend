@@ -363,7 +363,7 @@ export default {
         chargingCable: "Ladekabel",
         companyName: "WuXiangCloud",
         adminService: "Backstage-Managementsystem",
-        ghoostAdminService: "G-Hoost Backstage-Managementsystem",
+        ghoostAdminService: "G-HOOST Backstage-Managementsystem",
         login: "Einloggen",
         agentText: "Agenten",
         canceled: "Abgesagt",

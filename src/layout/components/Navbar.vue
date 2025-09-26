@@ -4,7 +4,7 @@
       <svg-icon slot="prefix" class="text-white" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
     </div>
     <div class="flex1 title-box text-center text-white">
-      {{ agentInfo.nickname }} {{ $t('layout.admins') }}
+      {{ $t('layout.admins') }}
     </div>
     <div class="abs right-menu flex align-center">
       <template v-if="device != 'mobile'">

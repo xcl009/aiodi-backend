@@ -365,7 +365,7 @@ export default {
     chargingCable: "充電コード",
     companyName: "共享物联网",
     adminService: "バックグラウンド管理システム",
-    ghoostAdminService: "G-Hoost バックグラウンド管理システム",
+    ghoostAdminService: "G-HOOST バックグラウンド管理システム",
     login: "登録",
     agentText: "代理店",
     canceled: "取消済み",

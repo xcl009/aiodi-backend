@@ -381,7 +381,7 @@ export default {
     chargingCable: "Oplaadkabel",
     companyName: "WuXiangCloud",
     adminService: "Beheerpaneel",
-    ghoostAdminService: "G-Hoost Beheerpaneel",
+    ghoostAdminService: "G-HOOST Beheerpaneel",
     login: "Inloggen",
     agentText: "Agenten",
     canceled: "Geannuleerd",
@@ -436,7 +436,7 @@ export default {
     segmentationtext: "Minder dan een uur",
     segmentationtext1: "Volgende 24 uur",
     segmentationtext2: "Er wordt een schadevergoeding in rekening gebracht wanneer de batterij van de mobiele telefoon verloren gaat of beschadigd raakt",
-    appTitle: "G-Hoost Beheerpaneel",
+    appTitle: "G-HOOST Beheerpaneel",
     ghosttext:'Selecteer alstublieft een opname-type'
   
   },
@@ -1951,7 +1951,7 @@ export default {
     message1: "Het netwerk zit vast, vernieuw het."
   },
   layout: {
-    admins: "Beheerpaneel",
+    admins: "G-HOOST Partnerpanel",
     fullScreen: "Volledig scherm",
     me: "Profiel",
     personalSettings: "Persoonlijke instellingen",

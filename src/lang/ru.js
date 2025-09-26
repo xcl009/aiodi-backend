@@ -378,7 +378,7 @@ export default {
         chargingCable: 'Линия зарядки',
         companyName: 'Объединение материальных благ',
         adminService: 'Фоновая система управления',
-        ghoostAdminService: 'G-Hoost Фоновая система управления',
+        ghoostAdminService: 'G-HOOST Фоновая система управления',
         login: 'Регистрация',
         agentText: 'Агенты',
         canceled: 'Отменено',

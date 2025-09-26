@@ -378,7 +378,7 @@ export default {
         chargingCable: 'Cable de carga',
         companyName: 'Wuxiangyunlian',
         adminService: 'Sistema de administración de fondo',
-        ghoostAdminService: 'Sistema de administración de fondo de G-Hoost',
+        ghoostAdminService: 'Sistema de administración de fondo de G-HOOST',
         login: 'Iniciar sesión',
         agentText: 'Agente',
         canceled: 'Cancelado',

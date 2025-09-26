@@ -396,7 +396,7 @@ export default {
     chargingCable: "Charging cable",
     companyName: "IoT Cloud Connection",
     adminService: "Management Panel",
-    ghoostAdminService: "G-Hoost Management Panel",
+    ghoostAdminService: "G-HOOST Management Panel",
     login: "Login",
     agentText: "Agent",
     canceled: "Canceled",
@@ -456,7 +456,7 @@ export default {
     xq7:"Sunday",
     viporder:"Paid",
     noviporder:"Member",
-    appTitle: "G-Hoost Management Panel",
+    appTitle: "G-HOOST Management Panel",
     ghosttext:'Please select a withdrawal type'
   },
   // 分账关系
@@ -2002,7 +2002,7 @@ export default {
     message1: "The network is stuck, please refresh",
   },
   layout: {
-    admins: "Management Panel",
+    admins: "G-HOOST Partner Panel",
     fullScreen: "Fullscreen",
     me: "Profile",
     personalSettings: "Personal settings",

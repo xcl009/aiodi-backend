@@ -380,7 +380,7 @@ export default {
     chargingCable: "Cabos de carga",
     companyName: "Wuxiang Yunlian",
     adminService: "Sistema de gerenciamento de back-end",
-    ghoostAdminService: "Sistema de gerenciamento de back-end de G-Hoost",
+    ghoostAdminService: "Sistema de gerenciamento de back-end de G-HOOST",
     login: "Entrar",
     agentText: "Revendedor",
     canceled: "Cancelado",

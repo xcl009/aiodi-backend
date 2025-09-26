@@ -3,7 +3,7 @@ module.exports = {
   /**
    * @todo: Translate with i18n
    */
-  title: 'G-Hoost Admin Panel',
+  title: 'G-HOOST Admin Panel',
 
   /**
    * @type {boolean} true | false
