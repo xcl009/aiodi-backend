@@ -10,8 +10,8 @@
           <el-form-item ref="name" :label="$t('public.storeName')" prop="name">
             <el-input v-model="form.name" :placeholder="$t('store.plseaseStoreName')" />
           </el-form-item>
-          <el-form-item ref="mobile" :label="$t('store.merchantPhone')" prop="mobile">
-            <el-input v-model="form.mobile" :placeholder="$t('store.merchantPhoneText')" />
+          <el-form-item ref="mobile" :label="$t('store.partnerPhone')" prop="mobile">
+            <el-input v-model="form.mobile" :placeholder="$t('store.partnerPhoneText')" />
           </el-form-item>
           <el-form-item ref="catId" :label="$t('public.industry')" prop="catId" v-if="false">
             <el-cascader v-model="form.catId" :options="catList" :props="{ expandTrigger: 'hover' }" />
@@ -23,8 +23,8 @@
           <!-- <el-form-item ref="province" :label="$t('store.area')" prop="province">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item> -->
-          <el-form-item ref="address" :label="$t('store.merchantAddress')" prop="address">
-            <el-input v-model="form.address" :placeholder="$t('store.merchantAddressText')" />
+          <el-form-item ref="address" :label="$t('store.partnerAddress')" prop="address">
+            <el-input v-model="form.address" :placeholder="$t('store.partnerAddressText')" />
           </el-form-item>
           <el-form-item :label="$t('store.businessHours')">
             <div class="flex align-center" v-for="(item, idx) in form.businessTimeDes">
@@ -495,7 +495,7 @@ export default {
         }],
         address: [{
           required: true,
-          message: this.$t('store.pleasemerchantAddress'),
+          message: this.$t('store.pleasepartnerAddress'),
           trigger: 'blur'
         }],
         userMobile: [{

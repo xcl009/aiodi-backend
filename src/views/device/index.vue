@@ -280,7 +280,7 @@
                 <el-button type="text" @click="setRows(3, scope.row, 8, scope.$index)" :disabled="scope.row.distribute">{{
                   $t('public.allocateToAgent') }}</el-button>
                 <el-button type="text" @click="setRows(3, scope.row, 10, scope.$index)"
-                  :disabled="scope.row.distribute">{{ $t('public.allocateToMerchant') }}</el-button>
+                  :disabled="scope.row.distribute">{{ $t('public.allocateToPartner') }}</el-button>
               </template>
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
                 :title="$t('device.message1')" @onConfirm="unboundStore(scope.row)">
@@ -520,7 +520,7 @@
           </div>
         </div>
       </template>
-      <!-- Allocate to Merchant | 分配给商家 -->
+      <!-- Allocate to Partner | 分配给商家 -->
       <template v-if="dialogType == 10">
         <div class="flexv pl-20 pr-20 text-black" style="height: 100%;">
           <div class="mb-20 pb-5 l-b">
@@ -725,12 +725,12 @@ export default {
         },
         {
           value: true,
-          title: this.$t('device.assignedToMerchant'),
+          title: this.$t('device.assignedToPartner'),
           nkey: 'BIND'
         },
         {
           value: false,
-          title: this.$t('device.notAssignedToMerchant'),
+          title: this.$t('device.notAssignedToPartner'),
           nkey: 'UNBIND'
         },
         {
@@ -807,7 +807,7 @@ export default {
         7: this.$t('device.address'),
         8: this.$t('device.distributionEquipment'),
         9: this.$t('device.switchBrand'),
-        10: this.$t('public.allocateToMerchant'),
+        10: this.$t('public.allocateToPartner'),
         11: '设备软件升级',
       }
     },

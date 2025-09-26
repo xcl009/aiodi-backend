@@ -23,7 +23,7 @@
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
-        <el-table-column :label="$t('brand.brandMerchants')" width="120">
+        <el-table-column :label="$t('brand.brandPartners')" width="120">
           <template slot-scope="scope">
             <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].name : '--' }}</div>
             <el-tooltip class="item" effect="dark" :content="brandUser[scope.row.brandId].mobile" placement="top"

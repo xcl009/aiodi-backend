@@ -17,7 +17,7 @@
         <template v-for="item in info.complaint_order_info">
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
             <div class="mb-10">{{ $t('public.transactionNum') }}: {{ item.transaction_id }}</div>
-            <div class="mb-10">{{ $t('public.merchantTrackingNumber') }}: {{ item.out_trade_no }}</div>
+            <div class="mb-10">{{ $t('public.partnerTrackingNumber') }}: {{ item.out_trade_no }}</div>
           </el-col>
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
             <div class="mb-10">{{ $t('public.orderMoney') }}: {{ item.amount }}</div>

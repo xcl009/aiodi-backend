@@ -321,7 +321,7 @@
         return {
           7: this.$t('device.address'),
           9: this.$t('device.switchBrand'),
-          10: this.$t('device.goodsToMerchants'),
+          10: this.$t('device.goodsToPartners'),
           11: '设备软件升级',
           12: '系统状态设置'
         }

@@ -258,7 +258,7 @@ export default {
     feedbackType() {
       return {
         brand: this.$t('userManage.platformIssues'),
-        store: this.$t('userManage.merchantIssues'),
+        store: this.$t('userManage.partnerIssues'),
       }
     },
     statusObj() {

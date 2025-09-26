@@ -177,7 +177,7 @@
             <div class="flex" v-if="!curRow.id">
               <el-select class="max-select l-r" v-model="dform.createType">
                 <el-option :label="$t('leaseOrder.agentPhone')" :value="1"></el-option>
-                <el-option :label="$t('leaseOrder.merchantPhone')" :value="0"></el-option>
+                <el-option :label="$t('leaseOrder.partnerPhone')" :value="0"></el-option>
               </el-select>
               <selectSearch :type="dform.createType == 1 ? 5 : 3" :emitRow="true" name="mobile"
                 :placeholder="dform.createType == 1 ? $t('leaseOrder.inputText1') : $t('leaseOrder.inputText2')"
@@ -443,7 +443,7 @@ export default {
           sType: 3
         },
         deductionId2: {
-          title: this.$t('leaseOrder.merchantPhones'),
+          title: this.$t('leaseOrder.partnerPhones'),
           type: 'selectSearch',
           name: 'mobile',
           sType: 3

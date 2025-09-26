@@ -327,13 +327,13 @@
           </template>
           <template v-if="curRow.code == 'WECHAT_APP' && dform.content">
             <el-form-item label="MCHID">
-              <el-input v-model="dform.content.merchantId"></el-input>
+              <el-input v-model="dform.content.partnerId"></el-input>
             </el-form-item>
             <el-form-item label="apiV3Key">
               <el-input v-model="dform.content.apiV3Key"></el-input>
             </el-form-item>
-            <el-form-item label="merchantSerialNumber">
-              <el-input v-model="dform.content.merchantSerialNumber"></el-input>
+            <el-form-item label="partnerSerialNumber">
+              <el-input v-model="dform.content.partnerSerialNumber"></el-input>
             </el-form-item>
             <el-form-item label="apiclientKey">
               <el-input v-model="dform.content.apiclientKey" type="textarea" :rows="6"></el-input>

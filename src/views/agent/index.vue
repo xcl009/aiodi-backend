@@ -308,7 +308,7 @@
       </template>
       <template v-if="dialogType == 9">
         <div class="flexv pl-20 pr-20 text-black">
-          <div class="mb-15 fw6">{{ $t('store.merchantRecipient') }}</div>
+          <div class="mb-15 fw6">{{ $t('store.partnerRecipient') }}</div>
           <div class="flex align-center pb-20 l-b">
             <img :src="checkList.avatar || agentInfo.avatar" class="userimg" width="56" alt="">
             <div class="pl-20">
@@ -505,7 +505,7 @@ export default {
         1: '',
         2: this.$t('agent.deleteAgent'),
         3: '',
-        4: this.$t('store.assignMerchants'),
+        4: this.$t('store.assignPartners'),
         5: this.$t('public.freezeAmount'),
         8: this.$t('store.assignAgents'),
         9: this.$t('store.assignAgents'),

@@ -662,7 +662,7 @@
                     <div>{{ curRow.transactionNo || '--' }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{ $t('public.rentedAtMerchant') }}:</div>
+                    <div class="label-text">{{ $t('public.rentedAtPartner') }}:</div>
                     <div>{{ curRow.storeName }}</div>
                   </div>
                   <div class="flex mb-10">
@@ -672,7 +672,7 @@
                     <div class="cursor">{{ curRow.terminalId || '--' }}</div>
                   </div>
                   <div class="flex" v-if="curRow.returnStore">
-                    <div class="label-text">{{ $t('public.returnedToMerchant') }}:</div>
+                    <div class="label-text">{{ $t('public.returnedToPartner') }}:</div>
                     <div>{{ curRow.returnStore.name }}</div>
                   </div>
                 </div>

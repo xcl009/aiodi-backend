@@ -28,7 +28,7 @@
         </template>
         <template v-slot:endButton>
           <!-- <el-button type="primary" size="small" class="mr-10" @click="$router.push({path: `/store/addStore`})" v-if="!lowerStore && !isSaas() && !form.agentId"><i class="el-icon-plus el-icon--left" />添加商户</el-button> -->
-          <import-data :type="3" :uploadText="$t('store.importMerchants')"
+          <import-data :type="3" :uploadText="$t('store.importPartners')"
             v-if="isBrand() && !lowerStore && !form.agentId"></import-data>
         </template>
       </condition>
@@ -175,7 +175,7 @@
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(2, scope.row)"
-                v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">{{ $t('store.switchMerchant') }}</el-button>
+                v-if="agentInfo.storeIds && agentInfo.storeIds[0] != scope.row.id">{{ $t('store.switchPartner') }}</el-button>
             </div>
           </template>
         </el-table-column>
@@ -184,7 +184,7 @@
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <template v-if="isSaas()">
-                <el-button type="text" @click="toLogin(scope.row)">{{ $t('store.merchantManagement') }}</el-button>
+                <el-button type="text" @click="toLogin(scope.row)">{{ $t('store.partnerManagement') }}</el-button>
                 <el-button type="text" @click="setRows(6, scope.row)">{{ $t('public.setLoginPassword') }}</el-button>
               </template>
               <template v-else-if="form.deviceSns">
@@ -197,9 +197,9 @@
                   $t('public.permissionSettings') }}</el-button>
                 <el-button type="text"
                   @click="$router.push({ path: `/store/editStore?storeId=${scope.row.id}&lowerStore=${lowerStore ? 1 : 0}` })">{{
-                    $t('public.editMerchant') }}</el-button>
+                    $t('public.editPartner') }}</el-button>
                 <el-button type="text" @click.native="setRows(1, scope.row, 3, scope.$index)"><span class="text-danger">{{
-                  $t('public.deleteMerchant') }}</span></el-button>
+                  $t('public.deletePartner') }}</span></el-button>
                 <el-button type="text" @click="$router.push({ path: `/store/addStore?parentId=${scope.row.id}` })"
                   v-if="scope.row.parentId == '0'">{{ $t('public.addBranch') }}</el-button>
                 <el-dropdown trigger="click">
@@ -219,7 +219,7 @@
                           $t('store.roomDevice') }}</el-dropdown-item>
                     </template>
                     <el-dropdown-item @click.native="setRows(8, scope.row, 8)" v-if="isBrand()">{{
-                      $t('store.assignMerchants') }}</el-dropdown-item>
+                      $t('store.assignPartners') }}</el-dropdown-item>
                     <el-dropdown-item @click.native="$router.push({ path: `/device/bedStat?id=${scope.row.id}` })"
                       v-if="isBrand() && checkAbility(['BD', 'VG'], 2, scope.row.storeDivisionConfig)">{{
                         $t('store.onlineStatistics') }}</el-dropdown-item>
@@ -283,8 +283,8 @@
       <div class="mt-5 text-center text-black fs-c1 text-initial" slot="title">{{ dialogTitle[dialogType] }}</div>
       <template v-if="dialogType == 3">
         <div class="text-center">
-          <div class="text-black">{{ $t('store.deleteThisMerchant') }}</div>
-          <div class="mt-10 pl-40 pr-40 text-danger text-left">{{ $t('store.deleteThisMerchantText') }}</div>
+          <div class="text-black">{{ $t('store.deleteThisPartner') }}</div>
+          <div class="mt-10 pl-40 pr-40 text-danger text-left">{{ $t('store.deleteThisPartnerText') }}</div>
         </div>
       </template>
       <template v-if="dialogType == 5">
@@ -448,7 +448,7 @@
       </template>
       <template v-if="dialogType == 9">
         <div class="flexv pl-20 pr-20 text-black">
-          <div class="mb-15 fw6">{{ $t('store.merchantRecipient') }}</div>
+          <div class="mb-15 fw6">{{ $t('store.partnerRecipient') }}</div>
           <div class="flex align-center pb-20 l-b">
             <img :src="checkList.avatar || agentInfo.avatar" class="userimg" width="56" alt="">
             <div class="pl-20">
@@ -470,7 +470,7 @@
               </div>
             </div>
           </div>
-          <div class="mt-15 fw6">{{ $t('store.merchantDataChange') }}</div>
+          <div class="mt-15 fw6">{{ $t('store.partnerDataChange') }}</div>
 
           <div class="mt-30">
             <div class="flex">
@@ -693,13 +693,13 @@ export default {
       return {
         1: this.$t('public.bindDevice'),
         2: '',
-        3: this.$t('public.deleteMerchant'),
-        4: this.$t('store.assignMerchants'),
+        3: this.$t('public.deletePartner'),
+        4: this.$t('store.assignPartners'),
         5: this.$t('public.resetPassword'),
         6: this.$t('public.freezeAmount'),
         7: this.$t('store.sharedWIFI'),
-        8: this.$t('store.assignMerchants'),
-        9: this.$t('store.assignMerchants'),
+        8: this.$t('store.assignPartners'),
+        9: this.$t('store.assignPartners'),
         10: this.$t('store.loginRecord'),
         11: this.$t('public.setLoginPassword'),
         12: this.$t('public.remark'),

@@ -47,7 +47,7 @@
           </div>
         </div>
       </el-col>
-      <!-- Merchants -->
+      <!-- Partners -->
       <el-col :span="12" class="rel mb-20" v-if="!isStore()">
         <div class="flex justify-center">
           <div class="o-v card-panel cursor">
@@ -304,7 +304,7 @@
                 :defaultColumn="defaultColumn"></table-column-set> -->
             </div>
 
-            <!-- Expanded merchant table -->
+            <!-- Expanded partner table -->
             <el-table class="store-table" :highlight-current-row="false"
               :header-row-style="{ background: 'none' }"
               :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"

@@ -361,7 +361,7 @@ export default {
         {
           key: 'storeName',
           val: true,
-          name: this.$t('public.rentedAtMerchant'),
+          name: this.$t('public.rentedAtPartner'),
         },
         // {
         //   key: 'deductionCycle',
