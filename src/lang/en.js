@@ -1160,6 +1160,7 @@ export default {
     proportionalSharing: "Proportional",
     noShareGiven: "No profit sharing",
     pleaseLoginPassword: "Please fill in a login password",
+    generateNewPassword: "Generate new password",
     splitMode: "Split mode",
     inconsistentDivision: "Inconsistent division",
     divideIntoComments: "Divide into comments",

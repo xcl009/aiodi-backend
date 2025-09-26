@@ -1129,6 +1129,7 @@ export default {
     proportionalSharing: '比例分成',
     noShareGiven: '不给分成',
     pleaseLoginPassword: '请填写登录密码',
+    generateNewPassword: '生成新密码',
     splitMode: '分成模式',
     inconsistentDivision: '分成不一致',
     divideIntoComments: '分成注释',

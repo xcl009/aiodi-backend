@@ -56,6 +56,7 @@
               </el-form-item>
               <el-form-item v-if="!storeId" :label="$t('public.loginPassword')">
                 <el-input v-model="form.loginPassword" :placeholder="$t('store.pleaseLoginPassword')" />
+                <el-button type="text" size="small" class="set-btn" @click="generateNewPassword(Math.random() * (16 - 12) + 12)">{{ $t('store.generateNewPassword') }}</el-button>
               </el-form-item>
             </div>
           </template>
@@ -451,7 +452,8 @@ import {
   bMapTransQQMap,
   qqMapTransBMap,
   arrayToObj,
-  currencySymbolposition
+  currencySymbolposition,
+  randomPassword
 } from '@/utils/index'
 import upload from '@/components/upload/index'
 import maps from '@/components/map/index'
@@ -546,7 +548,7 @@ export default {
         businessTimeDes: [''],
         divisionMode: 1,
         avatar: '',
-        loginPassword: '123456',
+        loginPassword: randomPassword(Math.random() * (16 - 12) + 12), // 默认生成12-16位随机密码
         lng: '',
         address: ''
       },
@@ -647,7 +649,9 @@ export default {
       })
       this.deviceDataArr = deviceDataArr
     },
-
+    generateNewPassword(length = 12) {
+      this.form.loginPassword = randomPassword(length)
+    },
     /**
      * 获取信息
      */

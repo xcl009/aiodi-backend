@@ -924,6 +924,22 @@ const util = {
 
     return `${currencySymbol} ${formattedNumber}${isInteger ? ',-' : ''}`
   },
+
+  // 货币符号位置
+  randomPassword: (length = 12) => {
+    const allowSpecialCharacters = true; //是否允许特殊字符
+
+    const chars = allowSpecialCharacters
+      ? 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?'
+      : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+    let password = ''; 
+    for (let i = 0; i < length; i++) {
+      let randomIndex = Math.floor(Math.random() * chars.length);
+      password += chars[randomIndex];
+    }
+    return password;
+  }
 }
 
 export const param2Obj = util.param2Obj
@@ -968,3 +984,4 @@ export const trim = util.trim
 export const ossThumbnail = util.ossThumbnail
 export const formatCurrency = util.formatCurrency
 export const currencySymbolposition = util.currencySymbolposition
+export const randomPassword = util.randomPassword

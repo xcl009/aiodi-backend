@@ -1114,6 +1114,7 @@ export default {
     proportionalSharing: "Verhouding",
     noShareGiven: "Geen winstverdeling",
     pleaseLoginPassword: "Voer een inlogwachtwoord in",
+    generateNewPassword: "Genereer nieuw wachtwoord",
     splitMode: "Winstdelingsmodel",
     inconsistentDivision: "Inconsistent",
     divideIntoComments: "Verdeel in opmerkingen",
