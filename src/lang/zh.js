@@ -444,7 +444,11 @@ export default {
 		segmentationtext1: '之后的24小时',
 		segmentationtext2: '移动电池丢失或损坏时，将产生赔偿金',
     appTitle: "共享设备Saas系统-管理后台",
-    ghosttext:'请选择提现类型'
+    ghosttext:'请选择提现类型',
+    ghosttext1:'SIM卡电话号码',
+    ghosttext1message:'请输入SIM卡电话号码',
+    ghosttext2:'阿法斯客户编号',
+    ghosttext2message:'请输入阿法斯客户编号',
   },
   // 分账关系
   reType: {

@@ -54,6 +54,28 @@
               :placeholder="$t('store.partnerPhoneText')"
             />
           </el-form-item>
+
+          <el-form-item  prop="sim">
+            <template #label>
+              {{ $t('public.ghosttext1') }}
+             
+            </template>
+            <el-input
+              v-model="form.sim"
+              :placeholder="$t('public.ghosttext1message')"
+            />
+          </el-form-item>
+          <el-form-item  prop="afasClientNumber">
+            <template #label>
+              {{ $t('public.ghosttext2') }}
+             
+            </template>
+            <el-input
+              v-model="form.afasClientNumber"
+              :placeholder="$t('public.ghosttext2message')"
+            />
+          </el-form-item>
+
           <el-form-item ref="catId" :label="$t('public.industry')" prop="catId" v-if="false">
             <el-cascader v-model="form.catId" :options="catList" :props="{ expandTrigger: 'hover' }" />
           </el-form-item>
