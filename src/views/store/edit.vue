@@ -124,13 +124,23 @@
           </el-form-item>
 
 
+          {{ /** @todo Text field validation */}}
           <el-form-item :label="$t('store.businessHours')">
-            <div class="flex align-center" v-for="(item, idx) in form.businessTimeDes">
-              <el-input v-model="form.businessTimeDes[idx]" />
-              <el-button type="text" size="small" v-if="idx == 0"
-                @click="form.businessTimeDes.push('')" class="set-btn">{{ $t('public.add') }}</el-button>
-              <el-button type="text" size="small" v-else
-                @click="form.businessTimeDes.splice(idx, 1)" class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
+            <div class="flex align-start" v-for="(item, idx) in form.weekdays">
+              <el-form-item label-width="100px" :label="$t('public.' + item.day)" class="mr-50">
+                <el-radio-group v-model="item.open">
+                  <el-radio-button :label="'closed'">{{ $t('public.closed') }}</el-radio-button>
+                  <el-radio-button :label="'open'">{{ $t('public.open') }}</el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label-width="50px" style="max-width: 150px;" :label="$t('public.open')" class="mr-30"
+                v-if="item.open == 'open'">
+                <el-input v-model="item.openTime" />
+              </el-form-item>
+              <el-form-item label-width="70px" style="max-width: 150px;" :label="$t('public.closed')"
+                v-if="item.open == 'open'">
+                <el-input v-model="item.closeTime" />
+              </el-form-item>
             </div>
           </el-form-item>
 
@@ -703,7 +713,14 @@ export default {
       form: {
         catId: [],
         province: [],
-        businessTimeDes: [''],
+        weekdays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((item, idx) => {
+          return {
+            day: item,
+            open: 'closed',
+            openTime: '00:00',
+            closeTime: '23:59'
+          }
+        }),
         divisionMode: 1,
         avatar: '',
         loginPassword: randomPassword(Math.random() * (16 - 12) + 12), // 默认生成12-16位随机密码
@@ -1012,12 +1029,27 @@ export default {
         info.userNickName = res.user.bindUserName
         info.userMobile = res.user.mobile
         info.province = [res.province, res.city, res.district]
-        info.businessTimeDes = info.businessTimeDes ? info.businessTimeDes.split(',') : ['']
         delete info.city
         delete info.district
         delete info.storeDivisionConfig
         delete info.storePayConfig
         delete info.user
+
+        if (info.businessTimeDes) {
+          console.log(info.businessTimeDes);
+          const parsedOpeningHours = JSON.parse(info.businessTimeDes);
+          const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((item, idx) => {
+            return {
+              day: item,
+              open: parsedOpeningHours[idx].isActive ? 'open' : 'closed',
+              openTime: (parsedOpeningHours[idx].isActive && parsedOpeningHours[idx].text) ? parsedOpeningHours[idx].text.split("-")[0] : '00:00',
+              closeTime: (parsedOpeningHours[idx].isActive && parsedOpeningHours[idx].text) ? parsedOpeningHours[idx].text.split("-")[1] : '23:59',
+            }
+          })
+
+          info.weekdays = weekdays;
+        }
+
         this.form = info
         this.mapTrue = true
       })
@@ -1055,7 +1087,13 @@ export default {
           if (params.catId && typeof params.catId == 'object') {
             params.catId = params.catId[params.catId.length - 1]
           }
-          params.businessTimeDes = params.businessTimeDes.filter(item => item).join(',')
+          const businessTimeString = params.weekdays.map(item => {
+            return {
+              text: item.openTime+"-"+item.closeTime,
+              isActive: item.open === "open"
+            }
+          });
+          params.businessTimeDes = JSON.stringify(businessTimeString)
           if (Array.isArray(params.province) && params.province.length > 0) {
             params.district = params.province[2]
             params.city = params.province[1]
