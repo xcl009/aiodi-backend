@@ -20,7 +20,7 @@
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" :max-height="tableMaxH">
-        <el-table-column :label="$t('agent.agentInfo')" width="130">
+        <el-table-column :label="$t('public.agent')" width="130">
           <template slot-scope="scope">
             <div class="mb-5">{{ scope.row.name || $t('public.fullName') }}</div>
             <div>{{ scope.row.mobile || $t('public.phone') }}</div>
@@ -59,20 +59,19 @@
         <el-table-column :label="`${$t('public.amount')}`" width="150">
           <template slot-scope="scope">
             <div class="inline">
-              <div>{{ $t('public.aTurnover') }}: {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}
+              <div>{{ $t('public.aTurnover') }}: {{ formatCurrency(orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00') }}
               </div>
-              <div>{{ $t('public.totalRevenue') }}: {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide :
-                '0.00' }}</div>
+              <div>{{ $t('public.totalRevenue') }}: {{ formatCurrency(orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00') }}</div>
             </div>
           </template>
         </el-table-column>
         <el-table-column :label="`${$t('brand.withdrawableAmount')}`" width="120">
           <template slot-scope="scope">
             <div class="text-primary cursor" @click="$refs.UpdateBlances.setRows(cashStat[scope.row.id] || {})" v-if="checkAbility(['WD_MODIFY'], 3)">
-              {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+              {{ formatCurrency(cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00') }}
             </div>
             <div class="cursor" v-else>
-              {{ cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00' }}
+              {{ formatCurrency(cashStat[scope.row.id] ? cashStat[scope.row.id].balance : '0.00') }}
             </div>
           </template>
         </el-table-column>
@@ -386,7 +385,7 @@
 </template>
 
 <script>
-import { arrayToObj } from '@/utils/index'
+import { arrayToObj, formatCurrency } from '@/utils/index'
 import Pagination from '@/components/Pagination'
 import condition from '@/components/condition/'
 import VendorMode from '@/components/VendorMode/'

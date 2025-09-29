@@ -12,6 +12,7 @@
           </el-form-item>
           <el-form-item :label="$t('public.loginPassword')" v-if="!agentId">
             <el-input v-model="form.password" :placeholder="$t('factory.agentLogonPassword')" />
+            <el-button type="text" size="small" class="set-btn" @click="generateNewPassword(Math.random() * (16 - 12) + 12)">{{ $t('store.generateNewPassword') }}</el-button>
           </el-form-item>
           <!-- <el-form-item :label="$t('public.operatingArea')">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
@@ -43,6 +44,9 @@
 </template>
 
 <script>
+  import {
+    randomPassword
+  } from '@/utils/index'
   export default {
     components: {
 
@@ -51,7 +55,7 @@
       return {
         clickSubmit: false,
         form: {
-          password: '123456',
+          password: randomPassword(Math.random() * (16 - 12) + 12), // 默认生成12-16位随机密码
           deviceTypeProfitRatios: {}
         },
         rules: {
@@ -128,6 +132,9 @@
             province: [res.province, res.city, res.district]
           }
         })
+      },
+      generateNewPassword(length = 12) {
+        this.form.password = randomPassword(length)
       },
 
       /**

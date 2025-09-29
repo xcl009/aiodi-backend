@@ -717,7 +717,7 @@ export default {
     brandPartners: "Merken",
     agentInfo: "Vertegenwoordigerinfo",
     withdrawableAmount: "Opneembaar vermogen",
-    dividendRatio: "Winstdelingsratio",
+    dividendRatio: "Winstverdeling",
     agentManagement: "Vertegenwoordigerbeheer",
     brandLogo: "Merklogo",
     brandCode: "Merkcode",
@@ -1819,7 +1819,7 @@ export default {
     approved: "Aankomst"
   },
   agent: {
-    addAgent: "Een proxy toevoegen",
+    addAgent: "Vertegenwoordiger toevoegen",
     importAgent: "Vertegenwoordiger importeren",
     agentInfo: "Vertegenwoordigersinformatie",
     deleteAgent: "Vertegenwoordiger verwijderen",
