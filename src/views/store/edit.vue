@@ -31,10 +31,7 @@
                   class="ml-10 el-icon-question fs-c1"></el-link>
               </el-popover>
             </template>
-            <el-input
-              v-model="form.name"
-              :placeholder="$t('store.plseaseStoreName')"
-            />
+            <el-input v-model="form.name" :placeholder="$t('store.plseaseStoreName')" />
           </el-form-item>
           <el-form-item ref="mobile" prop="mobile">
             <template #label>
@@ -49,31 +46,22 @@
                   class="ml-10 el-icon-question fs-c1"></el-link>
               </el-popover>
             </template>
-            <el-input
-              v-model="form.mobile"
-              :placeholder="$t('store.partnerPhoneText')"
-            />
+            <el-input v-model="form.mobile" :placeholder="$t('store.partnerPhoneText')" />
           </el-form-item>
 
-          <el-form-item  prop="sim">
+          <el-form-item prop="sim">
             <template #label>
               {{ $t('public.ghosttext1') }}
-             
+
             </template>
-            <el-input
-              v-model="form.sim"
-              :placeholder="$t('public.ghosttext1message')"
-            />
+            <el-input v-model="form.sim" :placeholder="$t('public.ghosttext1message')" />
           </el-form-item>
-          <el-form-item  prop="afasClientNumber">
+          <el-form-item prop="afasClientNumber">
             <template #label>
               {{ $t('public.ghosttext2') }}
-             
+
             </template>
-            <el-input
-              v-model="form.afasClientNumber"
-              :placeholder="$t('public.ghosttext2message')"
-            />
+            <el-input v-model="form.afasClientNumber" :placeholder="$t('public.ghosttext2message')" />
           </el-form-item>
 
           <el-form-item ref="catId" :label="$t('public.industry')" prop="catId" v-if="false">
@@ -124,7 +112,27 @@
           </el-form-item>
 
 
+          {{ /** @todo Field */}}
           <el-form-item :label="$t('store.businessHours')">
+            <div class="flex align-start" v-for="(item, idx) in form.weekdays">
+              <el-form-item label-width="100px" :label="$t('public.' + item.day)" class="mr-50">
+                <el-radio-group v-model="item.open">
+                  <el-radio-button :label="'closed'">{{ $t('public.closed') }}</el-radio-button>
+                  <el-radio-button :label="'open'">{{ $t('public.open') }}</el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label-width="50px" style="max-width: 150px;" :label="$t('public.open')" class="mr-30"
+                v-if="item.open == 'open'">
+                <el-input v-model="item.openTime" />
+              </el-form-item>
+              <el-form-item label-width="70px" style="max-width: 150px;" :label="$t('public.closed')"
+                v-if="item.open == 'open'">
+                <el-input v-model="item.closeTime" />
+              </el-form-item>
+            </div>
+          </el-form-item>
+
+          <!-- <el-form-item :label="$t('store.businessHours')">
             <div class="flex align-center" v-for="(item, idx) in form.businessTimeDes">
               <el-input v-model="form.businessTimeDes[idx]" />
               <el-button type="text" size="small" v-if="idx == 0"
@@ -132,7 +140,7 @@
               <el-button type="text" size="small" v-else
                 @click="form.businessTimeDes.splice(idx, 1)" class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
             </div>
-          </el-form-item>
+          </el-form-item> -->
 
           <el-form-item ref="description" prop="description">
             <template #label>
@@ -149,7 +157,7 @@
             <el-input v-model="form.description" :placeholder="$t('store.description')" type="textarea" :rows="3" />
           </el-form-item>
 
-<!-- 
+          <!-- 
           <el-form-item :label="$t('store.description')">
             <el-input v-model="form.description" :placeholder="$t('store.description')" type="textarea" :rows="3" />
           </el-form-item> -->
@@ -178,13 +186,11 @@
                       class="ml-10 el-icon-question fs-c1"></el-link>
                   </el-popover>
                 </template>
-                <el-input
-                  v-model="form.userNickName"
-                  :placeholder="$t('store.enterContactName')"
-                />
+                <el-input v-model="form.userNickName" :placeholder="$t('store.enterContactName')" />
               </el-form-item>
 
-              <el-form-item ref="userMobile" prop="userMobile" v-if="!isAgent() || (isAgent() && !sysShows.agentEditStoreMobile)">
+              <el-form-item ref="userMobile" prop="userMobile"
+                v-if="!isAgent() || (isAgent() && !sysShows.agentEditStoreMobile)">
                 <template #label>
                   {{ $t('public.phonenumberContactPerson') }}
                   <el-popover placement="right" title="" width="400" trigger="hover">
@@ -214,7 +220,9 @@
                   </el-popover>
                 </template>
                 <el-input v-model="form.loginPassword" :placeholder="$t('store.pleaseLoginPassword')" />
-                <el-button type="text" size="small" class="set-btn" @click="generateNewPassword(Math.random() * (16 - 12) + 12)">{{ $t('store.generateNewPassword') }}</el-button>
+                <el-button type="text" size="small" class="set-btn"
+                  @click="generateNewPassword(Math.random() * (16 - 12) + 12)">{{ $t('store.generateNewPassword')
+                  }}</el-button>
               </el-form-item>
             </div>
           </template>
@@ -235,7 +243,7 @@
                   <el-radio-group v-model="item.closeType" @change="setCloseType">
                     <el-radio-button :label="cti" v-for="(ct, cti) in config.closeType"
                       :disabled="!Ability[`${item.deviceTypeCode}_CLOSETYPE_${cti}`] && cti != 1">{{
-        $t('store.closeType' + cti) }}</el-radio-button>
+                      $t('store.closeType' + cti) }}</el-radio-button>
                   </el-radio-group>
                   <el-popover placement="right" title="" width="400" trigger="hover">
                     <div>
@@ -309,7 +317,8 @@
                 </el-checkbox-group>
               </el-form-item> -->
 
-              <el-row class="rel radius-10 flex flex-wrap" :class="{'disabled-box': agentPower.editStoreFee == 1}" :gutter="22">
+              <el-row class="rel radius-10 flex flex-wrap" :class="{'disabled-box': agentPower.editStoreFee == 1}"
+                :gutter="22">
                 <el-col :sm="24" lg="24" v-for="(name, xcx) in config.xcx_pay.default" v-show="xcx == 'three'">
                   <div>
                     <!-- <div class="mb-10 text-dfs text-bold text-black">
@@ -320,8 +329,10 @@
 
                     <el-form-item :label="`${$t('store.paymentMode')}`">
                       <el-radio-group v-model="item[`${xcx}PayMode`].modeType" size="medium">
-                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode, xcx)" v-if="Ability[`${item.deviceTypeCode}_${key}`] || key == Object.values(getModeType(item.deviceTypeCode, xcx))[0]">{{ $t('public.' + key) }}</el-radio-button>
-                         <!-- :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode, xcx))[0]" -->
+                        <el-radio-button :label="key" v-for="(key, name) in getModeType(item.deviceTypeCode, xcx)"
+                          v-if="Ability[`${item.deviceTypeCode}_${key}`] || key == Object.values(getModeType(item.deviceTypeCode, xcx))[0]">{{
+                          $t('public.' + key) }}</el-radio-button>
+                        <!-- :disabled="!Ability[`${item.deviceTypeCode}_${key}`] && key != Object.values(getModeType(item.deviceTypeCode, xcx))[0]" -->
                       </el-radio-group>
                       <el-popover placement="right" title="" trigger="hover"
                         v-if="getModeType(item.deviceTypeCode, xcx)['DEPOSIT_FREE'] || getModeType(item.deviceTypeCode, xcx)['DEPOSIT']">
@@ -337,7 +348,8 @@
                       <el-form-item :label="`${$t('store.packageSettings')}`">
                         <div class="mb-5 flex align-center flex-wrap"
                           v-for="(plan, index) in item[`${xcx}PayMode`].payModeDetail">
-                          <el-input type="number" v-model="plan.time" :min="1" class="flex1 mr-10" v-if="item.deviceTypeCode == 'EH'" @wheel.native="handleWheel(plan.time)">
+                          <el-input type="number" v-model="plan.time" :min="1" class="flex1 mr-10"
+                            v-if="item.deviceTypeCode == 'EH'" @wheel.native="handleWheel(plan.time)">
                             <template slot="append">{{ $t('public.minute') }}</template>
                           </el-input>
                           <el-select v-model="plan.time" v-else-if="item.deviceTypeCode == 'WM'">
@@ -345,17 +357,21 @@
                               v-for="wp in config[`washing_package`]"></el-option>
                           </el-select>
                           <el-select v-model="plan.time" v-else>
-                            <el-option :label="`${time >= 60 ? (time / 60) + $t('public.huor') : time + $t('public.minute')}`" :value="time"
-                              v-for="time in config[`plan_time`]"></el-option>
+                            <el-option
+                              :label="`${time >= 60 ? (time / 60) + $t('public.huor') : time + $t('public.minute')}`"
+                              :value="time" v-for="time in config[`plan_time`]"></el-option>
                           </el-select>
                           <el-input type="number" v-model="plan.money" class="flex1 ml-10 mr-10">
-                            <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                            <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1
+                              ? '￥' : siteInfo.currencySymbol }}</template>
                           </el-input>
                           <el-button type="text" size="small"
                             :disabled="item[`${xcx}PayMode`].payModeDetail.length == 4" v-if="index == 0"
-                            @click="item[`${xcx}PayMode`].payModeDetail.push({ time: (item.deviceTypeCode == 'WM' ? '46' : 60), money: 2, tag: index + 1 })" class="set-btn">{{ $t('public.add') }}</el-button>
+                            @click="item[`${xcx}PayMode`].payModeDetail.push({ time: (item.deviceTypeCode == 'WM' ? '46' : 60), money: 2, tag: index + 1 })"
+                            class="set-btn">{{ $t('public.add') }}</el-button>
                           <el-button type="text" size="small" v-else
-                            @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
+                            @click="item[`${xcx}PayMode`].payModeDetail.splice(index, 1)" class="set-btn text-danger">{{
+                            $t('public.delete') }}</el-button>
                         </div>
                       </el-form-item>
                       <el-form-item :label="`${$t('store.laundryDetergentSettings')}`"
@@ -368,7 +384,8 @@
                               <template slot="append">ml</template>
                             </el-input>
                             <el-input type="number" v-model="lpi.money" class="flex1 mr-10">
-                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) >
+                                -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                             <!-- <el-button type="text" size="small" :disabled="item[`${xcx}PayMode`].laundryMode[lidx].package.length == 3" v-if="lpidx == 0"
                               @click="item[`${xcx}PayMode`].laundryMode[lidx].package.push({tag: lpidx + 1})">添加</el-button>
@@ -385,12 +402,14 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
                         <el-input v-model="item[`${xcx}PayMode`].stepPayMode.depositAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))">
-                          <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ [''].indexOf(xcx) > -1 ?
+                            '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.minimumAmount')">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].stepPayMode.initialAmount">
-                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ siteInfo.currencySymbol
+                            }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.costs')"
@@ -399,7 +418,8 @@
                           <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].stepPayMode.unitPrice"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
-                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) >
+                                -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1">
@@ -411,19 +431,23 @@
                         </div>
                       </el-form-item>
 
-                      <el-form-item :label="$t('public.stepList')" :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
+                      <el-form-item :label="$t('public.stepList')"
+                        :error="ferror[`${item.deviceTypeCode}_${xcx}_startingTime`]">
                         <template v-for="(plan, stepIdx) in item[`${xcx}PayMode`].stepPayMode.stepList">
                           <div class="flex">
                             <div class="flex1">
                               <el-input type="number" v-model="plan.startingTime"
-                                @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))" disabled>
+                                @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 1440, 0))"
+                                disabled>
                                 <template slot="append">{{ $t('public.minute') }}</template>
                               </el-input>
                             </div>
-                            <template v-if="plan.endTime || stepIdx < item[`${xcx}PayMode`].stepPayMode.stepList.length - 1">
+                            <template
+                              v-if="plan.endTime || stepIdx < item[`${xcx}PayMode`].stepPayMode.stepList.length - 1">
                               <div class="pl-10 pr-10">-</div>
                               <div class="flex1">
-                                <el-input type="number" v-model="plan.endTime" @input="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 1)">
+                                <el-input type="number" v-model="plan.endTime"
+                                  @input="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 1)">
                                   <template slot="append">{{ $t('public.minute') }}</template>
                                 </el-input>
                               </div>
@@ -432,13 +456,16 @@
                               <el-input type="number" v-model="plan.maxAmount"
                                 @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
                                 <template slot="prepend">{{ $t('public.capping') }}</template>
-                                <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                                <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx)
+                                  > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                               </el-input>
                             </div>
                             <el-button type="text" size="small" v-if="stepIdx == 0"
-                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 2)" class="set-btn">{{ $t('public.add') }}</el-button>
+                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 2)"
+                              class="set-btn">{{ $t('public.add') }}</el-button>
                             <el-button type="text" size="small" v-else
-                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 3)" class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
+                              @click="setStepList(item[`${xcx}PayMode`].stepPayMode.stepList, stepIdx, 3)"
+                              class="set-btn text-danger">{{ $t('public.delete') }}</el-button>
                           </div>
                         </template>
                       </el-form-item>
@@ -451,7 +478,8 @@
                           <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
-                              <template :slot="currencySymbolpositionType ? 'prepend' : 'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend' : 'append' ">{{ [''].indexOf(xcx)
+                                > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1 flex">
@@ -468,7 +496,8 @@
                           <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.unitPrice"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
-                              <template :slot="currencySymbolpositionType ? 'prepend' : 'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend' : 'append' ">{{ [''].indexOf(xcx)
+                                > -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1 flex">
@@ -486,7 +515,8 @@
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`] = checkDigit(v, 0, 100000000))">
                               <template slot="prepend">{{ $t('public.dailyCap') }}</template>
-                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) >
+                                -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                         </div>
@@ -495,15 +525,18 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`]">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`] = checkDigit(v, 0, 100000000))">
-                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ?
+                            '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.deposit')"
                         v-if="(isBrand() || agentPower.editStoreFeeDeposit === 0)"
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
                         <el-input v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
-                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))" disabled>
-                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))"
+                          disabled>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ?
+                            '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                     </template>
@@ -523,7 +556,8 @@
                           <div class="flex1">
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.startingAmount"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_startingTime`] = checkDigit(v, 0, 100000000))">
-                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) >
+                                -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                           <div class="pl-10 flex1 flex">
@@ -568,7 +602,8 @@
                             <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxBillingTimePrice"
                               @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxBillingTimePrice`] = checkDigit(v, 0, 100000000))">
                               <template slot="prepend">{{ $t('public.dailyCap') }}</template>
-                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                              <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) >
+                                -1 ? '￥' : siteInfo.currencySymbol }}</template>
                             </el-input>
                           </div>
                         </div>
@@ -577,7 +612,8 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`]">
                         <el-input type="number" v-model="item[`${xcx}PayMode`].payModeDetails.maxAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_maxAmount`] = checkDigit(v, 0, 100000000))">
-                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ?
+                            '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                       <el-form-item :label="$t('public.deposit')"
@@ -585,7 +621,8 @@
                         :error="ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`]">
                         <el-input v-model="item[`${xcx}PayMode`].payModeDetails.depositAmount"
                           @input="(v) => (ferror[`${item.deviceTypeCode}_${xcx}_depositAmount`] = checkDigit(v, 0, 100000000))">
-                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ? '￥' : siteInfo.currencySymbol }}</template>
+                          <template :slot="currencySymbolpositionType ? 'prepend':'append' ">{{ [''].indexOf(xcx) > -1 ?
+                            '￥' : siteInfo.currencySymbol }}</template>
                         </el-input>
                       </el-form-item>
                     </template>
@@ -596,7 +633,7 @@
           </div>
           <el-form-item>
             <el-button class="mt-10 mb-10" type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{
-        $t('public.submitNow') }}</el-button>
+              $t('public.submitNow') }}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -703,7 +740,15 @@ export default {
       form: {
         catId: [],
         province: [],
-        businessTimeDes: [''],
+        // businessTimeDes: [''],
+        weekdays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((item, idx) => {
+          return {
+            day: item,
+            open: 'closed',
+            openTime: '00:00',
+            closeTime: '23:59'
+          }
+        }),
         divisionMode: 1,
         avatar: '',
         loginPassword: randomPassword(Math.random() * (16 - 12) + 12), // 默认生成12-16位随机密码
@@ -1012,12 +1057,28 @@ export default {
         info.userNickName = res.user.bindUserName
         info.userMobile = res.user.mobile
         info.province = [res.province, res.city, res.district]
-        info.businessTimeDes = info.businessTimeDes ? info.businessTimeDes.split(',') : ['']
+        // info.businessTimeDes = info.businessTimeDes ? info.businessTimeDes.split(',') : ['']
         delete info.city
         delete info.district
         delete info.storeDivisionConfig
         delete info.storePayConfig
         delete info.user
+
+        if (info.businessTimeDes) {
+          console.log(info.businessTimeDes);
+          const parsedOpeningHours = JSON.parse(info.businessTimeDes);
+          const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((item, idx) => {
+            return {
+              day: item,
+              open: parsedOpeningHours[idx].isActive ? 'open' : 'closed',
+              openTime: (parsedOpeningHours[idx].isActive && parsedOpeningHours[idx].text) ? parsedOpeningHours[idx].text.split("-")[0] : '00:00',
+              closeTime: (parsedOpeningHours[idx].isActive && parsedOpeningHours[idx].text) ? parsedOpeningHours[idx].text.split("-")[1] : '23:59',
+            }
+          })
+
+          info.weekdays = weekdays;
+        }
+
         this.form = info
         this.mapTrue = true
       })
@@ -1055,7 +1116,14 @@ export default {
           if (params.catId && typeof params.catId == 'object') {
             params.catId = params.catId[params.catId.length - 1]
           }
-          params.businessTimeDes = params.businessTimeDes.filter(item => item).join(',')
+          const businessTimeString = params.weekdays.map(item => {
+            return {
+              text: item.openTime+"-"+item.closeTime,
+              isActive: item.open === "open"
+            }
+          });
+          //params.businessTimeDes = params.businessTimeDes.filter(item => item).join(',')
+          params.businessTimeDes = JSON.stringify(businessTimeString)
           if (Array.isArray(params.province) && params.province.length > 0) {
             params.district = params.province[2]
             params.city = params.province[1]
