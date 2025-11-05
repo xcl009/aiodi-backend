@@ -263,6 +263,7 @@ export default {
     return: "opbrengst",
     agent: "Vertegenwoordiger",
     open: "Open",
+    closed: "Gesloten",
     close: "Sluiten",
     content: "inhoud",
     withdrawalTime: "Terugtrekkingstijd",

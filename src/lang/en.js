@@ -272,6 +272,7 @@ export default {
     brand: "Brand",
     agent: "Agent",
     open: "Open",
+    closed: "Closed",
     close: "Close",
     content: "Content",
     withdrawalTime: "Withdrawal time",
