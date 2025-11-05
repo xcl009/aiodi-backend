@@ -285,7 +285,13 @@ export default {
     five: "vijf",
     six: "zes",
     seven: "zeven",
-    sunday: "dag",
+    monday: "Maandag",
+    tuesday: "Dinsdag",
+    wednesday: "Woensdag",
+    thursday: "Donderdag",
+    friday: "Vrijdag",
+    saturday: "Zaterdag",
+    sunday: "Zondag",
     balanceNo: "Onvoldoende saldo",
     saveInfo: "Informatie opslaan",
     editSuccess: "Wijziging succesvol",
@@ -1963,7 +1969,7 @@ export default {
     message1: "Het netwerk zit vast, vernieuw het."
   },
   layout: {
-    admins: "G-HOOST Partnerpanel",
+    admins: "G-HOOST Partnerportaal",
     fullScreen: "Volledig scherm",
     me: "Profiel",
     personalSettings: "Persoonlijke instellingen",
