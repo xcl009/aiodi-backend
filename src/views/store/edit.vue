@@ -192,7 +192,7 @@
               <el-form-item ref="userMobile" prop="userMobile"
                 v-if="!isAgent() || (isAgent() && !sysShows.agentEditStoreMobile)">
                 <template #label>
-                  {{ $t('public.phonenumberContactPerson') }}
+                  {{ $t('public.accountNumber') }}
                   <el-popover placement="right" title="" width="400" trigger="hover">
                     <div>
                       <div class="mb-15">{{ $t('public.phonenumberContactPersonTooltip1') }}</div>
@@ -203,7 +203,7 @@
                       class="ml-10 el-icon-question fs-c1"></el-link>
                   </el-popover>
                 </template>
-                <el-input type="number" v-model="form.userMobile" :placeholder="$t('factory.phoneLoginAccount')" />
+                <el-input  v-model="form.userMobile" :placeholder="$t('role.pleaseUserName')" />
               </el-form-item>
 
 
@@ -697,7 +697,7 @@ export default {
         }],
         userMobile: [{
           required: true,
-          message: this.$t('factory.message2'),
+          message: this.$t('role.pleaseUserName'),
           trigger: 'blur'
         }],
         catId: [{
@@ -1057,22 +1057,22 @@ export default {
         info.userNickName = res.user.bindUserName
         info.userMobile = res.user.mobile
         info.province = [res.province, res.city, res.district]
-        // info.businessTimeDes = info.businessTimeDes ? info.businessTimeDes.split(',') : ['']
+        info.businessTimeDes = info.businessTimeDes ? info.businessTimeDes.split(',') : ['']
         delete info.city
         delete info.district
         delete info.storeDivisionConfig
         delete info.storePayConfig
         delete info.user
-
+        // this.form = info
         if (info.businessTimeDes) {
           console.log(info.businessTimeDes);
-          const parsedOpeningHours = JSON.parse(info.businessTimeDes);
+          let parsedOpeningHours = info.businessTimeDes;
           const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((item, idx) => {
             return {
               day: item,
-              open: parsedOpeningHours[idx].isActive ? 'open' : 'closed',
-              openTime: (parsedOpeningHours[idx].isActive && parsedOpeningHours[idx].text) ? parsedOpeningHours[idx].text.split("-")[0] : '00:00',
-              closeTime: (parsedOpeningHours[idx].isActive && parsedOpeningHours[idx].text) ? parsedOpeningHours[idx].text.split("-")[1] : '23:59',
+              open:parsedOpeningHours[idx] && parsedOpeningHours[idx].isActive ? 'open' : 'closed',
+              openTime: (parsedOpeningHours[idx] && parsedOpeningHours[idx].isActive && parsedOpeningHours[idx].text) ? parsedOpeningHours[idx].text.split("-")[0] : '00:00',
+              closeTime: (parsedOpeningHours[idx] && parsedOpeningHours[idx].isActive && parsedOpeningHours[idx].text) ? parsedOpeningHours[idx].text.split("-")[1] : '23:59',
             }
           })
 

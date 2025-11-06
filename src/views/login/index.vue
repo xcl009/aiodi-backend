@@ -2,7 +2,7 @@
   <div class="flexv justify-center login-container flex-wrap">
     <!-- todo: CHANGE BEFORE GOING TO PRODUCTION. WE DO NOT HAVE THE RIGHTS FOR THIS IMAGE -->
     <!-- 待办事项: 在投入生产前进行修改。我们没有此图像的使用权 -->
-    <div >
+    <div>
       <el-image class="abs p-all" :src="require('@/assets/login-screen.jpg')" fit="cover"></el-image>
       <div class="abs p-all" style="background-color: rgba(0, 0, 0, 0.3)"></div>
     </div>
@@ -12,27 +12,55 @@
           <img class="logo" src="@/assets/logo/ghoost-black.svg" alt="" />
           <span class="title text-primary">{{ $t('public.adminService') }}</span>
           <div class="mb-30 desc fs-b2 text-gray">{{ $t('login.logInToContinue') }}</div>
-          <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
-            <el-form-item prop="username">
-              <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1"
-                autocomplete="on" :placeholder="$t('login.username')">
-                <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
-              </el-input>
-            </el-form-item>
-            <el-form-item prop="password">
-              <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
-                name="password" tabindex="2" autocomplete="on" :placeholder="$t('login.password')"
-                @keyup.enter.native="handleLogin">
-                <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
-              </el-input>
-              <span class="show-pwd" @click="showPwd">
-                <preview-close-one theme="outline" size="16" fill="#4E5969" v-if="passwordType === 'password'" />
-                <preview-open theme="outline" size="16" fill="#4E5969" v-else />
-              </span>
-            </el-form-item>
-            <el-button class="mt-20 login-btn" type="primary" :loading="loading"
-              @click.native.prevent="handleLogin">{{ $t('public.login') }}</el-button>
-          </el-form>
+
+          <el-tabs v-model="activeName" >
+            <el-tab-pane label="Email" name="email">
+              <el-form ref="emailForm" :model="emailForm" :rules="emailRules" label-position="left">
+                <el-form-item prop="email">
+                  <el-input ref="username" v-model="emailForm.email" type="text" name="email" tabindex="1"
+                    autocomplete="on" placeholder="email">
+                    <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
+                  </el-input>
+                </el-form-item>
+                <el-form-item ref="smsCode" prop="smsCode">
+                  <el-input v-model="emailForm.smsCode" :placeholder="$t('login.esmscs') || 'Email verification code'"
+                    @keyup.enter.native="emailLogin">
+                    <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
+                    <template slot="append"><auth-code ref="authCode" :isBtn="false" @authCode="getAuthCode()"
+                        class="text-primary"></auth-code></template>
+                  </el-input>
+                </el-form-item>
+                <el-button class="mt-20 login-btn" type="primary" :loading="loading"
+                  @click.native.prevent="emailLogin">{{
+                    $t('public.login') }}</el-button>
+              </el-form>
+            </el-tab-pane>
+            <el-tab-pane label="Password" name="password">
+              <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left">
+                <el-form-item prop="username">
+                  <el-input ref="username" v-model="loginForm.username" type="text" name="username" tabindex="1"
+                    autocomplete="on" :placeholder="$t('login.username')">
+                    <people class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
+                  </el-input>
+                </el-form-item>
+                <el-form-item prop="password">
+                  <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
+                    name="password" tabindex="2" autocomplete="on" :placeholder="$t('login.password')"
+                    @keyup.enter.native="handleLogin">
+                    <lock class="svg-i" slot="prefix" theme="outline" size="16" fill="#4E5969" />
+                  </el-input>
+                  <span class="show-pwd" @click="showPwd">
+                    <preview-close-one theme="outline" size="16" fill="#4E5969" v-if="passwordType === 'password'" />
+                    <preview-open theme="outline" size="16" fill="#4E5969" v-else />
+                  </span>
+                </el-form-item>
+                <el-button class="mt-20 login-btn" type="primary" :loading="loading"
+                  @click.native.prevent="handleLogin">{{
+                    $t('public.login') }}</el-button>
+              </el-form>
+            </el-tab-pane>
+          </el-tabs>
+
         </div>
       </div>
     </div>
@@ -40,6 +68,7 @@
 </template>
 
 <script>
+import AuthCode from '@/components/AuthCode/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { People, Lock, PreviewOpen, PreviewCloseOne } from '@icon-park/vue'
 export default {
@@ -48,7 +77,8 @@ export default {
     People,
     Lock,
     PreviewOpen,
-    PreviewCloseOne
+    PreviewCloseOne,
+    AuthCode
   },
   data() {
     const validateUsername = (rule, value, callback) => {
@@ -74,10 +104,36 @@ export default {
         callback()
       }
     }
+    const validateEmail = (rule, value, callback) => {
+      if (!value || value.length == 0) {
+        callback(new Error(this.$t('login.emailErr')))
+      } else if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(String(value).toLowerCase()))) {
+        callback(new Error(this.$t('login.emailErr')))
+      } else {
+        callback()
+      }
+    }
     return {
+      emailForm: {
+        loginType: 'ESMSC'
+      },
+      emailRules: {
+        email: [{
+          required: true,
+          trigger: 'blur',
+          validator: validateEmail
+        }],
+        smsCode: [{
+          required: true,
+          trigger: 'blur'
+        }],
+      },
+      activeName: 'email',
       siteInfo: {},
       loginType: '1',
-      loginForm: {},
+      loginForm: {
+        loginType: 'UP'
+      },
       loginRules: {
         username: [{
           required: true,
@@ -115,7 +171,7 @@ export default {
     }
   },
   created() {
-    
+
   },
   mounted() {
     if (this.gid && this.gid != 100000000) this.getPlatformConfig()
@@ -148,6 +204,45 @@ export default {
       }
       this.$nextTick(() => {
         this.$refs.password.focus()
+      })
+    },
+    /**
+     * 获取验证码
+     */
+    getAuthCode() {
+      this.$refs.emailForm.validateField('email', valid => {
+        if (valid) return false
+        this.$refs.authCode.getAuthCode({
+          email: this.emailForm.email,
+          scene: 'login',
+          brandId: this.gid || this.config.default_brand_id,
+          crownCode: '+86'
+        }, 'iot-saas-user/open/sendEmail')
+      })
+    },
+     /**
+     * 邮箱登录
+     */
+    emailLogin() {
+      this.$refs.emailForm.validate(valid => {
+        if (valid) {
+          console.log(valid,'valid')
+          this.loading = true
+          if (this.gid) this.emailForm.brandId = this.gid
+          this.$store.dispatch('user/login', this.emailForm).then(res => {
+            if (res.userType == 'factory') {
+              location.href = '/factoryEject'
+              this.loading = false
+            } else {
+              location.href = this.redirect || '/home'
+              this.loading = false
+            }
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          return false
+        }
       })
     },
 
@@ -279,12 +374,12 @@ $light_gray: #eee;
       font-size: 36px;
     }
 
-    .desc{
+    .desc {
       width: 360px;
     }
 
     .el-input__inner {
-      min-width: 360px;
+      // min-width: 360px;
       background: var(--bodyBg);
       border: none;
     }
@@ -312,8 +407,9 @@ $light_gray: #eee;
     background: rgba(11, 161, 248, 0.4);
     color: #fff;
   }
-  
+
   .title {
     font-size: 32px;
   }
-}</style>
+}
+</style>

@@ -261,6 +261,8 @@
         <el-table-column :label="$t('public.actions')" width="235" :fixed="device == 'desktop' ? 'right' : false"
           v-if="!isStore()">
           <template slot-scope="scope">
+            <el-button type="text" @click="setRows(3, scope.row, 10, scope.$index)"
+                  :disabled="scope.row.distribute">{{ $t('public.distributionOfGoods') }}</el-button>
             <div class="flex flex-wrap operate">
               <template v-if="isSaas()">
                 <el-button type="text" @click="setRows(3, scope.row, 1)">{{ $t('public.allocatedTo') }}</el-button>
@@ -286,6 +288,7 @@
                 :title="$t('device.message1')" @onConfirm="unboundStore(scope.row)">
                 <el-button type="text" :disabled="!scope.row.distribute" slot="reference">{{ $t('device.unbind')
                 }}</el-button>
+                
               </el-popconfirm>
               <el-button type="text" v-if="scope.row.deviceType.code.indexOf('LK') > -1" slot="reference" @click="$router.push({path: `/device/cabinetDoor?deviceSn=${scope.row.deviceSn}`})">柜门列表</el-button>
               <el-button type="text" v-else-if="myDeviceId['PA'] && checkAbility(['eject'], 3)" :disabled="scope.row.deviceType.code.indexOf('PA') == -1" slot="reference" @click="$router.push({path: `/device/eject?deviceSn=${scope.row.deviceSn}`})">{{ $t('public.ejectPowerbank') }}</el-button>

@@ -194,6 +194,11 @@
            </div>
           </template>
         </el-table-column>
+        <el-table-column label="Afas customer ID">
+          <template slot-scope="scope">
+            {{ scope.row.afasClientNumber || '' }}
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('public.name')" width="120">
           <template slot-scope="scope">
             <div class="el-link">{{ scope.row.userName || '--' }}</div>
