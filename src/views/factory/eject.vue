@@ -15,10 +15,10 @@
         <div class="mb-15">
           <el-button class="mr-15" type="primary" size="medium" @click="getInfo()">{{ $t('public.refresh') }}</el-button>
           <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-            :title="$t('device.areYouPopUpAll')" @onConfirm="allEject()"
+            :title="$t('device.areYouEjectAll')" @onConfirm="allEject()"
             v-if="factoryCode == 'WS' || factoryCode == 'TP'">
             <el-button type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ?
-              $t('public.popUp') : $t('public.popUpAll') }} </el-button>
+              $t('public.ejecting') : $t('public.ejectAll') }} </el-button>
           </el-popconfirm>
         </div>
         <el-table class="custom" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
@@ -28,25 +28,25 @@
               {{ scope.row.slot }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.terminalId')">
+          <el-table-column :label="$t('public.powerbankId')">
             <template slot-scope="scope">
               {{ scope.row.terminalId }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.presence')">
+          <el-table-column :label="$t('public.powerbankStatus')">
             <template slot-scope="scope">
-              <div v-if="scope.row.onlineStatus == 2">{{ $t('public.popUp') }}</div>
+              <div v-if="scope.row.onlineStatus == 2">{{ $t('public.ejecting') }}</div>
               <div v-else-if="scope.row.onlineStatus == 1">{{ $t('public.inTheSlot') }}（{{ scope.row.electricQuantity }}%）
               </div>
               <div v-else>{{ $t('public.ejected') }}</div>
               <view v-if="scope.row.onlineStatus == 0">{{ $t('public.noPacket') }}</view>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" width="60">
+          <el-table-column :label="$t('public.actions')" width="60">
             <template slot-scope="scope">
               <div class="flex flex-wrap operate">
                 <el-button type="text" :disabled="scope.row.distribute" @click="singleEject(scope.row)">{{
-                  scope.row.onlineStatus == 2 ? $t('public.popUp') : $t('public.eject') }}</el-button>
+                  scope.row.onlineStatus == 2 ? $t('public.ejecting') : $t('public.eject') }}</el-button>
               </div>
             </template>
           </el-table-column>

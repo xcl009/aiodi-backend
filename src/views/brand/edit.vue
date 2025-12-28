@@ -141,7 +141,7 @@ export default {
           { required: true, message: this.$t('brand.message'), trigger: 'change' }
         ],
         name: [
-          { required: true, message: this.$t('brand.message1'), trigger: 'blur' }
+          { required: true, message: this.$t('brand.enterContactName'), trigger: 'blur' }
         ],
         code: [
           { required: true, message: this.$t('brand.message2'), trigger: 'blur' }

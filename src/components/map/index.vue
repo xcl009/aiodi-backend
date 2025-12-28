@@ -36,8 +36,9 @@
         type: Object,
         default: () => {
           return {
-            lng: 114.02597366,
-            lat: 22.54605355
+            // Stadhoudersmolenweg 62, 7317 AW Apeldoorn, The Netherlands
+            lng: 5.97025183,
+            lat: 52.24274424
           }
         }
       },

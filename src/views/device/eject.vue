@@ -1,10 +1,12 @@
+<!-- Todo: Change route label in API -->
+
 <template>
   <div>
     <div class="p-15 bg-white">
       <div class="mb-15">
         <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-          :title="$t('device.areYouPopUpAll')" @onConfirm="allEject()">
-          <el-button type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ? $t('public.popUp') : $t('public.popUpAll') }} </el-button>
+          :title="$t('device.areYouEjectAll')" @onConfirm="allEject()">
+          <el-button type="primary" size="medium" slot="reference" :disabled="allEjectStatus">{{ allEjectStatus ? $t('public.ejecting') : $t('public.ejectAll') }} </el-button>
         </el-popconfirm>
         <el-button type="primary" size="medium" class="ml-10" :disabled="refreshStatus" @click="refreshStatus = true; getBattery()">{{ $t('public.refresh') }} </el-button>
       </div>
@@ -15,7 +17,7 @@
             {{ scope.row.slot }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.terminalId')">
+        <el-table-column :label="$t('public.powerbankId')">
           <template slot-scope="scope">
             {{ scope.row.terminalId }}
           </template>
@@ -25,34 +27,34 @@
             {{ scope.row.popupNum }}
           </template>
         </el-table-column> -->
-        <el-table-column :label="$t('public.presence')">
+        <el-table-column :label="$t('public.powerbankStatus')">
           <template slot-scope="scope">
-            <div v-if="scope.row.onlineStatus == 2">{{ $t('public.popUp') }}</div>
+            <div v-if="scope.row.onlineStatus == 2">{{ $t('public.ejecting') }}</div>
             <div v-else-if="scope.row.onlineStatus == 1">{{ $t('public.inTheSlot') }}（{{ scope.row.electricQuantity }}%）
             </div>
             <div v-else>{{ $t('public.ejected') }}</div>
             <view v-if="scope.row.onlineStatus == 0">{{ $t('public.noPacket') }}</view>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" v-if="checkAbility(['eject'], 3)">
+        <el-table-column :label="$t('public.actions')" v-if="checkAbility(['eject'], 3)">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate" v-if="!allEjectStatus">
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-                :title="$t('device.popUpThisMouth')" @onConfirm="singleEject(scope.row)">
-                <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? $t('public.popUp') :
-                  $t('public.eject') }}</el-button>
+                :title="$t('device.ejectForMainainanceConfirmation')" @onConfirm="singleEject(scope.row)">
+                <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? $t('public.ejecting') :
+                  $t('device.ejectForMaintainance') }}</el-button>
               </el-popconfirm>
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-                :title="`${scope.row.stats == 2 ? $t('device.rentable') : $t('device.notAvailableForLease')}`"
+                :title="`${scope.row.stats == 2 ? $t('device.unlockConfirmation') : $t('device.lockConfirmation')}`"
                 @onConfirm="lockChange(scope.row)">
                 <el-button type="text" :disabled="[0, 2].indexOf(scope.row.stats) == -1" slot="reference">{{
                   scope.row.stats == 2 ? $t('public.unlock') : $t('public.lock') }}</el-button>
               </el-popconfirm>
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
-                :title="$t('device.popUpThisTreasure')" @onConfirm="singleEject(scope.row, 3)"
+                :title="$t('device.ejectForMaintainanceConfirmation')" @onConfirm="singleEject(scope.row, 3)"
                 v-if="scope.row.terminalId">
-                <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? $t('public.popUp') :
-                  $t('device.danbao') }}</el-button>
+                <el-button type="text" slot="reference">{{ scope.row.onlineStatus == 2 ? $t('public.ejecting') :
+                  $t('device.ejectForUse') }}</el-button>
               </el-popconfirm>
             </div>
           </template>

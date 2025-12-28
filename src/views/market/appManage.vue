@@ -69,7 +69,7 @@
       <template v-if="dialogType == 1">
         <div class="flex justify-center">
           <el-form class="custom-form pl-20 pr-20" label-width="auto">
-            <el-form-item :label="$t('public.package')" v-if="curRow.priceSettings">
+            <el-form-item :label="$t('public.paymentRule')" v-if="curRow.priceSettings">
               <el-radio-group v-model="dform.priceCode">
                 <el-radio-button :label="item.priceCode" v-for="(item, key) in curRow.priceSettings">{{ item.priceName
                 }}</el-radio-button>
@@ -85,7 +85,7 @@
               <div>{{ $t('market.khbText') }}</div>
             </el-form-item>
 
-            <el-form-item :label="$t('moeny.withdrawalMethod')" v-if="dform.id == '1022452979607490560'">
+            <el-form-item :label="$t('money.withdrawalMethod')" v-if="dform.id == '1022452979607490560'">
               <el-checkbox-group v-model="dform.sellTypes" @change="change">
                 <el-checkbox :label="key" v-for="(item, key) in withdrawTypes" v-if="(dform.priceCode == 'WD_AGENT' && item.userType == 'agent') || (dform.priceCode == 'WD_STORE' && item.userType == 'store') || (dform.priceCode == 'WD_USER' && item.userType == 'user')">{{ item.name }}</el-checkbox>
               </el-checkbox-group>

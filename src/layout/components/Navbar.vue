@@ -1,18 +1,16 @@
 <template>
-  <div class="rel flex navbar" style="overflow: initial;">
-    <div class="abs pt-10 pb-10 pl-20 pr-20 cursor line-1" @click="toggleSideBar">
-      <svg-icon slot="prefix" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
+  <div class="rel flex navbar align-center" style="overflow: initial;">
+    <div v-if="device == 'mobile'" class="abs pt-10 pb-10 pl-20 pr-20 cursor line-1" @click="toggleSideBar">
+      <svg-icon slot="prefix" class="text-white" :icon-class="sidebar.opened ? 'fold' : 'unfold'" />
     </div>
     <div class="flex1 title-box text-center text-white">
-      <div>
-        <div class="cn">{{ agentInfo.nickname }}{{ $t('layout.admins') }}</div>
-      </div>
+      {{ $t('layout.admins') }}
     </div>
     <div class="abs right-menu flex align-center">
       <template v-if="device != 'mobile'">
         <!-- <div class="pl-30 pr-30 flex align-center text-primary cursor l-r" v-if="isBrand()" @click="getJoinCode">
         <svg-icon icon-class="head_link" class="mr-10 head_new"></svg-icon>
-        邀请链接获取
+        邀请链接获取 | Invite link
       </div> -->
         <el-dropdown class="mr-10 hover-effect" trigger="click"  v-if="brandList.length > 0 && isBrand()">
           <div class="pl-15 pr-15 menu-item flex align-center">
@@ -54,7 +52,7 @@
                 <div>{{ $t('layout.langSelect') }}</div>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="waitOnLine(item.distValue)" v-for="item in range">{{ item.distLable }}</el-dropdown-item>
-                  <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item>
+                  <!-- <el-dropdown-item >{{ $t('layout.otherLang') }}</el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -109,7 +107,7 @@
           <el-form-item :label="$t('layout.storeId')">
             <el-input v-model="dform.storeId" :placeholder="$t('layout.storeId')"></el-input>
             <div class="mb-15 flex fs-c1" style="line-height: 1.8;">
-              <div>{{ $t('public.tips') }}：</div>
+              <div>{{ $t('public.tips') }}: </div>
               <div>{{ $t('layout.text') }}<br><span class="text-danger">{{ $t('layout.text1') }}</span></div>
             </div>
           </el-form-item>
@@ -121,7 +119,7 @@
           <el-form-item :label="$t('layout.doublingMultiple')">
             <el-input v-model="dform.multiple" :placeholder="$t('layout.doublingMultiple')"></el-input>
             <div class="flex fs-c1" style="line-height: 1.8;">
-              <div>{{ $t('public.tips') }}：</div>
+              <div>{{ $t('public.tips') }}: </div>
               <div>{{ $t('layout.text2') }}</div>
             </div>
           </el-form-item>
@@ -216,7 +214,10 @@ export default {
     	this.$post('iot-saas-basic/open/sys/dict/query', {
     		key: 'SYSTEM_INTERNATION_LAN'
     	}).then(res => {
-    		this.range = res
+    		this.range = res;
+        this.range = this.range.filter(item => {
+          return ['zh_CN', 'en_US', 'nl_NL'].indexOf(item.distValue) > -1
+        }) // Filtering out languages currently not supported in the app | 过滤掉当前应用不支持的语言 
     	})
     },
 
@@ -462,36 +463,26 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 40px;
+  height: 45px;
   overflow: hidden;
   position: relative;
-  background-color: #01183A;
   z-index: 2;
+  background-color: var(--primary-color);
 
   .title-box {
-    height: 65px;
-    background-image: url('../../assets/head_bg.svg');
-    background-size: auto 100%;
-    background-position: center;
-
-    .cn {
-      margin-top: 12px;
       font-size: 25px;
-    }
   }
 
   .right-menu {
     right: 0;
     top: 0;
     height: 100%;
-    line-height: 36px;
 
     &:focus {
       outline: none;
     }
 
     .menu-item {
-      height: 60px;
       position: relative;
       cursor: pointer;
 
@@ -515,6 +506,7 @@ export default {
   }
 
   /deep/ .news-dot {
+    height: 20px; 
     .is-dot {
       top: 8px;
     }
@@ -523,4 +515,10 @@ export default {
 
 .el-dropdown-menu {
   top: 35px !important;
-}</style>
+}
+
+.el-dropdown-menu__item:not(.is-disabled):hover .el-dropdown,
+.el-dropdown-menu__item:focus .el-dropdown {
+  color: var(--primary-color) !important;
+}
+</style>

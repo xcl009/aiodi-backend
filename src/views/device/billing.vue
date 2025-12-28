@@ -122,11 +122,11 @@
                 </el-input>
               </el-form-item>
             </template>
-            <el-form-item :label="$t('public.updateAllMerchants')"
+            <el-form-item :label="$t('public.updateAllPartners')"
               v-if="checkAbility([`${deviceTypeCode}_BILLING_COVER`], 3)">
               <el-switch v-model="refresh" :active-value="1" :inactive-value="2" />
-              <div class="text-danger" v-if="agentId">{{ $t('public.updateAllMerchantsText') }}</div>
-              <div class="text-danger" v-else>{{ $t('public.updateAllMerchantsText1') }}</div>
+              <div class="text-danger" v-if="agentId">{{ $t('public.updateAllPartnersText') }}</div>
+              <div class="text-danger" v-else>{{ $t('public.updateAllPartnersText1') }}</div>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit('form')" :disabled="clickSubmit">{{ $t('public.submitNow')

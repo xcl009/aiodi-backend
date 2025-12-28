@@ -26,7 +26,7 @@
             <div>{{ scope.row.weChatAdvertPositionId || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')">
+        <el-table-column :label="$t('public.actions')">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" :plain="scope.row.statusCode != 'ENABLE'" @click="setStatus(scope.row)"
               v-if="isBrand() && scope.row.weChatAdvertPositionId">{{ scope.row.statusCode == 'ENABLE' ?

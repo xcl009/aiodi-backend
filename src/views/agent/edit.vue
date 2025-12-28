@@ -5,13 +5,14 @@
         <el-form ref="form" :rules="rules" :model="form" label-position="left" label-width="100px">
           <h4>{{ $t('public.basicInformation') }}</h4>
           <el-form-item :label="$t('public.agentNickNames')" prop="name">
-            <el-input v-model="form.name" :placeholder="$t('public.agentNameText')" />
+            <el-input v-model="form.name" />
           </el-form-item>
           <el-form-item :label="$t('public.phone')" prop="mobile">
             <el-input type="tel" v-model="form.mobile" :placeholder="$t('brand.phoneText')" />
           </el-form-item>
           <el-form-item :label="$t('public.loginPassword')" v-if="!agentId">
             <el-input v-model="form.password" :placeholder="$t('factory.agentLogonPassword')" />
+            <el-button type="text" size="small" class="set-btn" @click="generateNewPassword(Math.random() * (16 - 12) + 12)">{{ $t('store.generateNewPassword') }}</el-button>
           </el-form-item>
           <!-- <el-form-item :label="$t('public.operatingArea')">
             <el-cascader v-model="form.province" :options="cityList" :props="{ expandTrigger: 'hover' }" />
@@ -43,6 +44,9 @@
 </template>
 
 <script>
+  import {
+    randomPassword
+  } from '@/utils/index'
   export default {
     components: {
 
@@ -51,7 +55,7 @@
       return {
         clickSubmit: false,
         form: {
-          password: '123456',
+          password: randomPassword(Math.random() * (16 - 12) + 12), // 默认生成12-16位随机密码
           deviceTypeProfitRatios: {}
         },
         rules: {
@@ -59,7 +63,7 @@
             { required: true, message: this.$t('brand.message'), trigger: 'change' }
           ],
           name: [
-            { required: true, message: this.$t('brand.message1'), trigger: 'blur' }
+            { required: true, message: this.$t('brand.enterContactName'), trigger: 'blur' }
           ],
           mobile: [
             { required: true, message: this.$t('brand.message3'), trigger: 'blur' }
@@ -128,6 +132,9 @@
             province: [res.province, res.city, res.district]
           }
         })
+      },
+      generateNewPassword(length = 12) {
+        this.form.password = randomPassword(length)
       },
 
       /**

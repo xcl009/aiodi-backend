@@ -1,6 +1,9 @@
 module.exports = {
 
-  title: '共享设备Saas系统-管理后台',
+  /**
+   * @todo: Translate with i18n
+   */
+  title: 'G-HOOST Admin Panel',
 
   /**
    * @type {boolean} true | false

@@ -1,23 +1,24 @@
 <template>
   <div>
-    <div v-if="!serchShow" class="serchBox" @click.stop="serchShow = !serchShow">
+    <div v-if="!serchShow" class="searchBox" @click.stop="serchShow = !serchShow">
       <div class=" text-bold fs-b5 ">
-        <div class="flex_c cursor">{{ $t('components.screen') }} <img src="@/assets/bottomIcon.png"
-            class="bottomIcon" />
+        <div class="flex_c cursor">{{ $t('components.filter') }} <img src="@/assets/filterIcon.svg"
+            class="filterIcon" />
         </div>
       </div>
 
     </div>
 
-    <div v-if="serchShow" @click="bing" class="serchBox">
+    <div v-if="serchShow" @click="bing" class="searchBox">
       <div class=" text-bold fs-b5 " @click.stop="serchShow = !serchShow">
-        <div class="flex_c cursor">{{ $t('public.hide') }} <img src="@/assets/topIcon.png" class="bottomIcon" />
+        <div class="flex_c cursor">{{ $t('public.close') }} <img src="@/assets/filterIcon.svg" class="filterIcon" />
         </div>
       </div>
       <div>
         <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="true"
           @saveXlsx="saveXlsx">
           <template v-slot:tabs>
+            <!-- Device Type Filter | 设备类型筛选器 -->
             <div class="mb-10 flex align-center bg-white" v-if="myDeviceName">
               <div class="mr-10">{{ $t('public.deviceType') }}</div>
               <el-tabs class="flex-1" v-model="listQuery.deviceTypeCode" @tab-click="toQuery()">
@@ -25,6 +26,7 @@
                 <el-tab-pane :label="index" :name="'' + item + ''" v-for="(item, index) in myDeviceName" />
               </el-tabs>
             </div>
+            <!-- Order Status | 订单状态 -->
             <div class="mb-10 flex align-center bg-white">
               <div class="mr-10">{{ $t('public.orderType') }}</div>
               <el-tabs class="flex-1" v-model="listQuery.status" @tab-click="toQuery()">
@@ -32,6 +34,7 @@
                   :name="'' + item.value + ''" v-for="item in orderTab" />
               </el-tabs>
             </div>
+            <!-- Order Source | 订单来源 -->
             <div class="mb-10 flex align-center bg-white">
               <div class="mr-10">{{ $t('order.orderSource') }}</div>
               <el-tabs class="flex-1" v-model="listQuery.sourceType" @tab-click="toQuery()">
@@ -48,6 +51,7 @@
                 </el-tab-pane>
               </el-tabs>
             </div>
+            <!-- Payment Method | 付款方式 -->
             <div class="mb-10 flex align-center bg-white">
               <div class="mr-10">{{ $t('public.payType') }}</div>
               <el-tabs class="flex-1" v-model="listQuery.payType" @tab-click="toQuery()">
@@ -201,16 +205,17 @@
             </el-table-column>
             <el-table-column :label="item.name" width="240" v-else-if="item.val && item.key == 'deviceSn'">
               <template slot-scope="scope">
-                <div>{{ $t('public.code') }}：{{ scope.row.deviceSn || "--" }}</div>
-                <!-- <div>设备SN：{{ scope.row.factorySn || "--" }}</div> -->
+                <div>{{ scope.row.deviceSn || "--" }}</div>
+                <!-- <div>设备SN: {{ scope.row.factorySn || "--" }}</div> -->
                 <div class="text-cut cursor text-blue" v-if="scope.row.depend_type == 0"
-                  @click="checkBao(scope.row.goods_sn)">{{ $t('public.sn') }}：{{ scope.row.goods_sn ||
+                  @click="checkBao(scope.row.goods_sn)">{{ $t('public.powerbankId') }}: {{ scope.row.goods_sn ||
       "--" }}</div>
               </template>
             </el-table-column>
             <el-table-column :label="item.name" width="50" v-else-if="item.val && item.key == 'sourceType'">
               <template slot-scope="scope">
-                <el-tooltip :content="Constant.SourceType ? Constant.SourceType[scope.row.sourceType] : '--'">
+                <!-- <el-tooltip :content="Constant.SourceType ? Constant.SourceType[scope.row.sourceType] : '--'"> CHINESE TEKST HIER -->
+                <el-tooltip :content="customSourceMapping[scope.row.sourceType]">
                   <i :class="'fs-a1 iconfont fs-size ' + sourceType[scope.row.sourceType]"></i>
                 </el-tooltip>
               </template>
@@ -227,8 +232,8 @@
             </el-table-column>
             <el-table-column :label="item.name" :width="item.width || 160" v-else-if="item.val && item.key == 'chargeStartTime'">
               <template slot-scope="scope">
-                <div class="text-green">{{ scope.row.chargeStartTime || "--" }}</div>
-                <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div>
+                <div>{{ scope.row.chargeStartTime || "--" }}</div>
+                <!-- <div class="text-danger">{{ scope.row.chargeEndTime || "--" }}</div> -->
               </template>
             </el-table-column>
             <el-table-column :label="item.name" :width="item.width" v-else-if="item.val && item.key == 'useTime'">
@@ -283,11 +288,11 @@
               <template slot-scope="scope">
                 <div class="remark-box">
                   <el-link type="danger" v-if="scope.row.freeTime > 0">
-                    <span v-if="scope.row.freeUser == 1">{{ $t('public.freeQuota') }}：{{
+                    <span v-if="scope.row.freeUser == 1">{{ $t('public.freeQuota') }}: {{
       (parseInt(scope.row.freeTime) /
         60).toFixed(1)
     }}{{ $t('public.huor') }}</span>
-                    <span v-else-if="scope.row.freeUser == 3">{{ $t('order.suspendBilling') }}：{{
+                    <span v-else-if="scope.row.freeUser == 3">{{ $t('order.suspendBilling') }}: {{
       parseInt(scope.row.freeTime) / 60 }}{{ $t('public.huor') }}</span>
                     <span v-else-if="scope.row.freeUser > 3">{{ scope.row.freeTime == 600000 ?
       `${$t('order.membershipOrder')}` :
@@ -458,7 +463,7 @@
                   <i :class="'fs-c1 iconfont ' + sourceType[curRow.sourceType]"></i>
                 </div>
               </div>
-              <div class="flex mb-10">
+              <div class="flex mb-10" v-if="isSaas() || isBrand()">
                 <div class="label-text">{{ $t('public.deviceType') }}:</div>
                 <div>{{ myDeviceId[curRow.deviceTypeCode] }}</div>
               </div>
@@ -472,7 +477,7 @@
                 </div>
               </div>
               <div class="flex mb-10">
-                <div class="label-text">{{ $t('public.package') }}:</div>
+                <div class="label-text">{{ $t('public.paymentRule') }}:</div>
                 <div class="text-cut">
                   <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
                     <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode)
@@ -566,7 +571,7 @@
               <el-form-item :label="`${$t('order.reasonForRefund')}:`">
                 <el-input v-model="dform.reason" :placeholder="`${$t('order.reasonForRefund')}`"></el-input>
                 <div class="flex mt-10 line-six text-danger" v-if="isBrand()">
-                  <div>{{ $t('public.tips') }}：</div>
+                  <div>{{ $t('public.tips') }}: </div>
                   <div>{{ $t('order.reasonForRefundText') }}</div>
                 </div>
               </el-form-item>
@@ -598,8 +603,7 @@
               {{ $t('public.orderInformation') }}
               <el-tag class="ml-10" :type="curRow.status > 2 || curRow.status == -1 ? 'danger' : 'success'" size="mini"
                 effect="dark">
-                {{ Constant.OrderStatus ? Constant.OrderStatus[curRow.status] :
-      `${$t('public.completed')}` }}
+                {{ Constant.OrderStatus ? Constant.OrderStatus[curRow.status] : `${$t('public.completed')}` }}
               </el-tag>
             </div>
             <div class="flex pb-20 l-b">
@@ -617,7 +621,7 @@
                     <div class="label-text">{{ $t('public.deviceCode') }}:</div>
                     <div>{{ curRow.deviceSn }}</div>
                   </div>
-                  <div class="flex" v-if="curRow.afterDeviceSn">
+                  <div class="flex" v-if="curRow.afterDeviceSn && (isBrand() || isSaas())">
                     <div class="label-text">{{ $t('order.returningEquipment') }}:</div>
                     <div>{{ curRow.afterDeviceSn || '--' }}</div>
                   </div>
@@ -634,7 +638,7 @@
                     </div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{ $t('public.package') }}:</div>
+                    <div class="label-text">{{ $t('public.paymentRule') }}:</div>
                     <div class="text-cut">
                       <el-tooltip :content="showFeeMode(curRow.feeType, curRow.feeMode, 2)" placement="top">
                         <span>{{ showFeeMode(curRow.feeType, curRow.feeMode, 1, curRow.deviceTypeCode) }}</span>
@@ -653,22 +657,22 @@
               </div>
               <div>
                 <div class="pl-20 pb-10 l-b-dashed">
-                  <div class="flex mb-10">
+                  <div class="flex mb-10" v-if="isSaas() || isBrand()">
                     <div class="label-text">{{ $t('public.transactionNum') }}:</div>
                     <div>{{ curRow.transactionNo || '--' }}</div>
                   </div>
                   <div class="flex mb-10">
-                    <div class="label-text">{{ $t('public.rentalMerchants') }}:</div>
+                    <div class="label-text">{{ $t('public.rentedAtPartner') }}:</div>
                     <div>{{ curRow.storeName }}</div>
                   </div>
                   <div class="flex mb-10">
                     <div class="label-text" v-if="curRow.deviceTypeCode.indexOf('PA') > -1">{{
-      $t('public.sn') }}:</div>
+      $t('public.powerbankId') }}:</div>
                     <div class="label-text" v-else>Other:</div>
                     <div class="cursor">{{ curRow.terminalId || '--' }}</div>
                   </div>
-                  <div class="flex" v-if="curRow.returnStore">
-                    <div class="label-text">{{ $t('public.returnToMerchant') }}:</div>
+                  <div class="flex" v-if="curRow.returnStore && (isBrand() || isSaas())">
+                    <div class="label-text">{{ $t('public.returnedToPartner') }}:</div>
                     <div>{{ curRow.returnStore.name }}</div>
                   </div>
                 </div>
@@ -682,13 +686,14 @@
                     <div class="flex align-center">
                       <el-avatar :src="payChannel[curRow.payType].logo" :size="15" v-if="payChannel[curRow.payType]"
                         class="mr-5 radius-15"></el-avatar>
-                      <span v-if="curRow.orderAmount > 0 && curRow.feeType == 3 && (isBrand() || isSaas())">({{
-      formatCurrency(curRow.orderAmount, 1) }})</span>
+                      <span v-if="curRow.orderAmount > 0 && curRow.feeType == 3 && (isBrand() || isSaas())">
+                        ({{ formatCurrency(curRow.orderAmount) }})
+                      </span>
                     </div>
                   </div>
                   <div class="flex mb-10">
                     <div class="label-text">{{ $t('public.income') }}:</div>
-                    <div>{{ formatCurrency(curRow.amount, 1) || '0.00' }}</div>
+                    <div>{{ formatCurrency(curRow.amount) || '0.00' }}</div>
                   </div>
                   <div class="flex">
                     <div class="label-text">{{ $t('public.remark') }}:</div>
@@ -699,9 +704,9 @@
       curRow.afterLevel >= 0 ? curRow.afterLevel : curRow.level }}%)</span>
                       <template v-if="curRow.freeTime > 0">
                         <span class="mr-5" v-if="curRow.freeUser == 1">{{ $t('public.freeQuota')
-                          }}：{{ curRow.freeTime }}{{ $t('public.minute') }}</span>
+                          }}: {{ curRow.freeTime }}{{ $t('public.minute') }}</span>
                         <span class="mr-5" v-else-if="curRow.freeUser == 3">{{
-      $t('order.suspendBilling') }}：{{ curRow.freeTime }}{{
+      $t('order.suspendBilling') }}: {{ curRow.freeTime }}{{
       $t('public.minute') }}</span>
                         <span class="mr-5" v-else-if="curRow.freeUser > 3">{{ curRow.freeTime ==
       600000 ? `${$t('order.membershipOrder')}` :
@@ -732,7 +737,7 @@
             <template v-if="dform.orderDivide && dform.orderDivide.length > 0">
               <div class="mt-20 mb-15">{{ $t('order.dividedDetails') }}</div>
               <el-table border :data="dform.orderDivide" :span-method="fenRunSpanMethod" class="custom">
-                <el-table-column :label="$t('public.orderMoeny')" align="center">
+                <el-table-column :label="$t('public.orderMoney')" align="center">
                   <template slot-scope="scope">
                     {{ formatCurrency(dform.amountPaid) }}
                   </template>
@@ -870,36 +875,42 @@ export default {
       return [{
         value: 'false',
         title: this.$t('public.all'),
-
       },
       //  {
       // 	value: 0,
       // 	title: '小程序',
       // 	icon: 'icon-xiaochengxu text-six'
       // },
-      {
-        value: 1,
-        title: '微信小程序',
-        icon: 'icon-weixin1 text-green'
-      }, {
-        value: 2,
-        title: '支付宝小程序',
-        icon: 'icon-zhifubao text-primary'
-      },
+      // {
+      //   value: 1,
+      //   title: this.$t('public.weixin'), // 手机应用
+      //   icon: 'icon-weixin1 text-green'
+      // }, {
+      //   value: 2,
+      //   title: this.$t('public.alipay'), // 支付宝小程序
+      //   icon: 'icon-zhifubao text-primary'
+      // },
       //  {
       // 	value: 3,
       // 	title: '后台',
       // 	icon: 'icon-houtai8 text-gray'
       // },
+      /** @todo Split into Android/iOs | Chinese: 拆分为Android/iOS */
       {
         value: 4,
-        title: 'APP',
+        title: this.$t('public.mobileApp'), // 手机应用
         icon: 'icon-app text-danger'
       }, {
         value: 5,
-        title: 'H5',
+        title: this.$t('public.webBrowser'), // HTML5 App | 网页浏览器
         icon: 'icon-line-HTML5H5 text-primary'
       }]
+    },
+    customSourceMapping() {
+      return {
+        4: this.$t('public.mobileApp'),
+        5: this.$t('public.webBrowser'),
+      }
     },
     payChannelList() {
       return [{
@@ -926,6 +937,8 @@ export default {
       }]
     },
     orderTab() {
+      // These nkeys are defined in queryByUser. But all of them have a value of 0.
+      // 这些 nkeys 在 queryByUser 中定义，但它们的值都是 0。
       return [{
         value: 0,
         title: this.$t('public.all'),
@@ -935,11 +948,6 @@ export default {
         value: 'R',
         title: this.$t('public.progress'),
         nkey: 'rentingNumber'
-      },
-      {
-        value: 'today',
-        title: this.$t('public.todayOrder'),
-        nkey: 'todayNumber'
       },
       {
         value: 'O',
@@ -1052,7 +1060,7 @@ export default {
       },
       {
         key: 'userMobile',
-        val: true,
+        val: this.isBrand() || this.isSaas(),
         name: this.$t('public.phone')
       },
       {
@@ -1063,7 +1071,7 @@ export default {
       },
       {
         key: 'storeName',
-        val: true,
+        val: this.isBrand() || this.isSaas(),
         name: this.$t('public.storeName')
       },
       {
@@ -1072,8 +1080,8 @@ export default {
         name: this.$t('order.source')
       },
       {
-        key: 'PayType',
-        val: true,
+        key: 'PayType', /** @todo Hide for partners */
+        val: this.isBrand() || this.isSaas(),
         name: this.$t('public.payType')
       },
       {
@@ -1084,7 +1092,7 @@ export default {
       },
       {
         key: 'useTime',
-        val: false,
+        val: true,
         name: this.$t('battery.usageDuration'),
         width: 90
       },
@@ -1094,9 +1102,9 @@ export default {
         name: this.$t('public.code')
       },
       {
-        key: 'feeMode',
-        val: true,
-        name: this.$t('public.package')
+        key: 'feeMode', /** @todo Hide for partners */
+        val: this.isBrand() || this.isSaas(),
+        name: this.$t('public.paymentRule')
       },
       {
         key: 'amount',
@@ -1125,8 +1133,8 @@ export default {
         width: 140
       },
       {
-        key: 'transactionNo',
-        val: true,
+        key: 'transactionNo', /** @todo Hide for partners */
+        val: this.isBrand() || this.isSaas(),
         name: this.$t('public.transactionNum'),
         width: 160
       },
@@ -2164,17 +2172,18 @@ export default {
   height: 20px;
 }
 
-.serchBox {
+.searchBox {
   background: #fff;
   margin: 10px 0 0;
   padding: 10px 20px;
-  border: 1px solid var(--olive);
-  color: var(--olive);
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
 }
 
-.bottomIcon {
+.filterIcon {
   width: 30px;
   height: 30px;
+  margin-left: 10px;
 }
 ::v-deep .el-select{
 	width:100% !important;

@@ -7,10 +7,10 @@
           <div class="flex">
             <div class="flex1">
               <div class="mb-5">总金额</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otgamountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otgamountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.otgcountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -22,10 +22,10 @@
           <div class="flex">
             <div class="flex1">
               <div class="mb-5">总金额</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otwamountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otwamountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.otwcountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -37,10 +37,10 @@
           <div class="flex">
             <div class="flex1">
               <div class="mb-5">总金额</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otdamountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.otdamountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.otdcountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -55,14 +55,14 @@
           <div class="flex">
             <div class="flex1">
               <div class="mb-5">租借总额</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositPendingAmountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositPendingAmountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
               <div class="mb-5">可扣总额</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositPendingAmountPaidSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositPendingAmountPaidSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.otgcountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -74,10 +74,10 @@
           <div class="flex">
             <div class="flex1">
               <div class="mb-5">可扣总额</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositAfootAmountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositAfootAmountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
-              <div class="mb-5">{{ $t('moeny.totalNumber') }}</div>
+              <div class="mb-5">{{ $t('money.totalNumber') }}</div>
               <div><span class="mr-5 fs-b3 text-bold">{{ totalStat.depositAfootCountSum || 0 }}</span>{{ $t('public.pen') }}</div>
             </div>
           </div>
@@ -92,15 +92,15 @@
           <div class="flex">
             <div class="flex1">
               <div class="mb-5">已交押金({{ totalStat.depositSubmittedAmountCount }}{{ $t('public.pen') }})</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositSubmittedAmountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositSubmittedAmountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
               <div class="mb-5">退回余额({{ totalStat.depositRefundedBalanceAmountCount }}{{ $t('public.pen') }})</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositRefundedBalanceAmountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositRefundedBalanceAmountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
               <div class="mb-5">原路退回({{ totalStat.depositRefundedAmountCount }}{{ $t('public.pen') }})</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositRefundedAmountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.depositRefundedAmountSum || 0.00)) }}</span></div>
             </div>
           </div>
         </div>
@@ -111,11 +111,11 @@
           <div class="flex">
             <div class="flex1">
               <div class="mb-5">租借总额</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.rentAmountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.rentAmountSum || 0.00)) }}</span></div>
             </div>
             <div class="flex1 ml-15">
               <div class="mb-5">已退款({{ totalStat.rentRefundedAmountCount }}{{ $t('public.pen') }})</div>
-              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.rentRefundedAmountSum || 0.00), 1) }}</span></div>
+              <div><span class="mr-5 fs-b3 text-bold">{{ formatCurrency((totalStat.rentRefundedAmountSum || 0.00)) }}</span></div>
             </div>
           </div>
         </div>
@@ -206,7 +206,7 @@
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key == 'lAmount' && item.type.indexOf(listQuery.type) > -1">
             <template slot-scope="scope">
-              {{ formatCurrency(scope.row.amountEnable, 1) }}
+              {{ formatCurrency(scope.row.amountEnable) }}
             </template>
           </el-table-column>
           <!-- <el-table-column :label="item.name" v-else-if="item.key == 'rStatus'">
@@ -216,12 +216,12 @@
           </el-table-column> -->
           <el-table-column :label="item.name" v-else-if="item.key == 'rAmount' && item.type.indexOf(listQuery.type) > -1">
             <template slot-scope="scope">
-              {{ formatCurrency(accSub(accSub(scope.row.orderAmount, scope.row.amount), scope.row.amountEnable), 1) }}
+              {{ formatCurrency(accSub(accSub(scope.row.orderAmount, scope.row.amount), scope.row.amountEnable)) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" v-else-if="item.key.indexOf('mount') > -1 && item.type.indexOf(listQuery.type) > -1">
             <template slot-scope="scope">
-              {{ formatCurrency(scope.row[item.key], 1) }}
+              {{ formatCurrency(scope.row[item.key]) }}
             </template>
           </el-table-column>
           <el-table-column :label="item.name" width="90" v-else-if="item.val && item.key == 'status'">
@@ -345,7 +345,7 @@ export default {
         {
           key: 'chargeEndTime',
           val: true,
-          name: this.$t('moeny.completionTime'),
+          name: this.$t('money.completionTime'),
           width: 170
         },
         {
@@ -361,7 +361,7 @@ export default {
         {
           key: 'storeName',
           val: true,
-          name: this.$t('public.rentalMerchants'),
+          name: this.$t('public.rentedAtPartner'),
         },
         // {
         //   key: 'deductionCycle',

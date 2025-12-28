@@ -190,7 +190,7 @@ export default {
       background-color: #F2F3F5;
       border-radius: 100px;
       font-weight: 550;
-      color: var(--olive);
+      color: var(--primary-color);
     }
 
     .el-tabs__nav-wrap::after {

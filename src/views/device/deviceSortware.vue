@@ -117,7 +117,7 @@
           <el-table-column :label="item.name" :prop="item.key" :width="item.width || 150"
             v-else-if="item.val"></el-table-column>
         </template>
-        <el-table-column :label="$t('public.operate')" width="235" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.actions')" width="235" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-popconfirm :confirm-button-text="$t('public.confirm')" :cancel-button-text="$t('public.cancel')" class="pop" cancel-button-type="" icon="el-icon-info" icon-color="#FF7D00"
@@ -321,7 +321,7 @@
         return {
           7: this.$t('device.address'),
           9: this.$t('device.switchBrand'),
-          10: this.$t('device.goodsToMerchants'),
+          10: this.$t('device.goodsToPartners'),
           11: '设备软件升级',
           12: '系统状态设置'
         }
@@ -357,7 +357,7 @@
           {
             key: 'onlineStatus',
             val: true,
-            name: this.$t('public.presence')
+            name: this.$t('public.powerbankStatus')
           },
           {
             key: 'trafficCardId',

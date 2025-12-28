@@ -3,9 +3,9 @@
     <div class="mb-10" v-if="isEdit">
       <el-input v-model="keyword" :placeholder="$t('components.inputText')" />
       <!-- <div class="mt-10 flex align-center">
-        <div>经度：</div>
+        <div>经度: </div>
         <el-input class="mr-10 flex1" v-model="center.lat" placeholder="经度" />
-        <div class="ml-10">纬度：</div>
+        <div class="ml-10">纬度: </div>
         <el-input class="flex1" v-model="center.lng" placeholder="纬度" />
       </div> -->
     </div>

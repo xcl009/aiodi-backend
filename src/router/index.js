@@ -32,50 +32,50 @@ export const constantRoutes = [
     component: () => import('@/views/factory/eject'),
     hidden: true
   },
-  {
-    path: '/user',
-    component: Layout,
-    redirect: '/user/index',
-    meta: {
-      title: '个人信息',
-      icon: 'user'
-    },
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        name: 'userInfo',
-        component: () => import('@/views/user/index'),
-        meta: {
-          title: '个人信息'
-        }
-      },
-      {
-        path: 'lpwd',
-        name: 'loginPwd',
-        component: () => import('@/views/user/loginPwd'),
-        meta: {
-          title: '登陆密码'
-        }
-      },
-      {
-        path: 'opwd',
-        name: 'operatePwd',
-        component: () => import('@/views/user/operatePwd'),
-        meta: {
-          title: '操作密码'
-        }
-      },
-      {
-        path: 'checkPwd',
-        name: 'checkPwd',
-        component: () => import('@/views/user/checkPwd'),
-        meta: {
-          title: '安全验证'
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/user',
+  //   component: Layout,
+  //   redirect: '/user/index',
+  //   meta: {
+  //     title: '个人信息',
+  //     icon: 'user'
+  //   },
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'userInfo',
+  //       component: () => import('@/views/user/index'),
+  //       meta: {
+  //         title: '个人信息'
+  //       }
+  //     },
+  //     {
+  //       path: 'lpwd',
+  //       name: 'loginPwd',
+  //       component: () => import('@/views/user/loginPwd'),
+  //       meta: {
+  //         title: '登陆密码'
+  //       }
+  //     },
+  //     {
+  //       path: 'opwd',
+  //       name: 'operatePwd',
+  //       component: () => import('@/views/user/operatePwd'),
+  //       meta: {
+  //         title: '操作密码'
+  //       }
+  //     },
+  //     {
+  //       path: 'checkPwd',
+  //       name: 'checkPwd',
+  //       component: () => import('@/views/user/checkPwd'),
+  //       meta: {
+  //         title: '安全验证'
+  //       }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/activity',
   //   component: Layout,

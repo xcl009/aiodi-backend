@@ -174,7 +174,7 @@ const util = {
   /**
    * 手机号隐藏中间4位
    */
-  dealPhone: (tel, start = 3, end = 7, symbol = '****') => {
+  dealPhone: (tel, start = 0, end = 8, symbol = '*******') => {
     if (!tel) return tel
     tel = '' + tel
     return tel.substr(0, start) + symbol + tel.substring(end, tel.length)
@@ -285,7 +285,8 @@ const util = {
       return '--';
     }
 
-    const format = cFormat || '{y}-{m}-{d} {h}:{i}';
+    const format = cFormat || '{d}-{m}-{y} {h}:{i}';
+    // const format = cFormat || '{y}-{m}-{d} {h}:{i}';
     let date;
 
     if (typeof time === 'object') {
@@ -614,9 +615,9 @@ const util = {
        if(mode.stepList){
         mode.stepList.map(item => {
           if(item.endTime){
-            stepStr += (i18n.t('public.stepList1')).i18Format(item.endTime, util.formatCurrency(item.maxAmount, 1))
+            stepStr += (i18n.t('public.stepList1')).i18Format(item.endTime, util.formatCurrency(item.maxAmount))
           }else{
-            stepStr += (i18n.t('public.stepList2')).i18Format(item.startingTime, util.formatCurrency(item.maxAmount, 1))
+            stepStr += (i18n.t('public.stepList2')).i18Format(item.startingTime, util.formatCurrency(item.maxAmount))
           }
         })
        }
@@ -624,12 +625,12 @@ const util = {
       }
       return fee
     } else {
-      let fee = `${mode.startingTime}${i18n.t('public.minute')}${util.formatCurrency(mode.startingAmount, 1)}`
+      let fee = `${mode.startingTime}${i18n.t('public.minute')}${util.formatCurrency(mode.startingAmount)}`
       if (mode.startingTime != mode.overBillingUnit || mode.startingAmount != mode.unitPrice) {
-        fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${util.formatCurrency(mode.startingAmount, 1)}，${i18n.t('public.afterExceeding')}${mode.overBillingUnit}${i18n.t('public.minute')}${util.formatCurrency(mode.unitPrice,1)}`
+        fee = `${i18n.t('public.front')}${mode.startingTime}${i18n.t('public.minute')}${util.formatCurrency(mode.startingAmount)}，${i18n.t('public.afterExceeding')}${mode.overBillingUnit}${i18n.t('public.minute')}${util.formatCurrency(mode.unitPrice,1)}`
       }
       if (stype == 2) {
-        fee = `${fee}，${mode.maxBillingTimeUnit == 1440 ? i18n.t('public.dailyCapping') : mode.maxBillingTimeUnit + i18n.t('public.minCap')}${util.formatCurrency(currencySymbolL, 1)}${util.formatCurrency(mode.maxBillingTimePrice || 19.9, 1)}，${i18n.t('public.totalCapping')}${util.formatCurrency(mode.maxAmount, 1)}`
+        fee = `${fee}，${mode.maxBillingTimeUnit == 1440 ? i18n.t('public.dailyCapping') : mode.maxBillingTimeUnit + i18n.t('public.minCap')}${util.formatCurrency(currencySymbolL)}${util.formatCurrency(mode.maxBillingTimePrice || 19.9)}，${i18n.t('public.totalCapping')}${util.formatCurrency(mode.maxAmount0)}`
       }
       if(mode.feeTime > 0){
         fee = `${i18n.t('public.free')}${mode.feeTime}${i18n.t('public.minute')}${fee}`
@@ -643,7 +644,7 @@ const util = {
    */
   showFeeName: (type) => {
     let obj = {
-      "1": i18n.t('public.package'),
+      "1": i18n.t('public.paymentRule'),
       "2": i18n.t('public.freeOfCharge'),
       "3": i18n.t('payType.balance')
     }
@@ -908,22 +909,38 @@ const util = {
   },
 
   formatCurrency: (number, type = 0) => {
-  	if (!number) number = 0
-    if(agentInfo && agentInfo.brandId.indexOf(['1299125168689397761']) > '-1'){
-      type = 1
-    }
-    if (number >= 1000 && type == 0) {
-      number = parseFloat((number / 1000)) + 'K'
-    }
-    const types = util.currencySymbolposition();
-  	// 将数字转换为字符串
-  	const numberStr = number.toString()
-  	// 使用正则表达式去除末尾的 .00
-  	const trimmedNumber = numberStr.replace(/\.00$/, '')
-  	// 应用千位格式化
-  	const formattedNumber = trimmedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-    return `${types ? (type > 0 ? currencySymbol : ''):''}${formattedNumber}${types ? '':  (type > 0 ? currencySymbol : '') }`
+    if (!number) number = 0
+
+    const isInteger = Number(number) % 1 === 0
+
+    // If it's an integer: no decimals, add ',-' later | 如果是整数: 不显示小数，稍后添加 ',-'
+    // If it's a decimal: always show 2 decimals | 如果是小数: 始终保留两位小数
+    const baseNumber = isInteger 
+      ? Math.floor(number).toString() 
+      : Number(number).toFixed(2)
+
+    // Add thousand separators
+    // 添加千位分隔符
+    const formattedNumber = baseNumber.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
+    return `${currencySymbol} ${formattedNumber}${isInteger ? ',-' : ''}`
   },
+
+  // 货币符号位置
+  randomPassword: (length = 12) => {
+    const allowSpecialCharacters = true; //是否允许特殊字符
+
+    const chars = allowSpecialCharacters
+      ? 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?'
+      : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+    let password = ''; 
+    for (let i = 0; i < length; i++) {
+      let randomIndex = Math.floor(Math.random() * chars.length);
+      password += chars[randomIndex];
+    }
+    return password;
+  }
 }
 
 export const param2Obj = util.param2Obj
@@ -968,3 +985,4 @@ export const trim = util.trim
 export const ossThumbnail = util.ossThumbnail
 export const formatCurrency = util.formatCurrency
 export const currencySymbolposition = util.currencySymbolposition
+export const randomPassword = util.randomPassword

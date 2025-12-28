@@ -119,7 +119,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" min-width="120" :fixed="device == 'desktop' ? 'right' : false">
+          <el-table-column :label="$t('public.actions')" min-width="120" :fixed="device == 'desktop' ? 'right' : false">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="getDetail(scope.row)">{{ $t('public.orderDetail')
               }}</el-button>
@@ -148,7 +148,7 @@
 
       <template v-if="orderDivide.length > 0">
         <el-table border :data="orderDivide" :span-method="fenRunSpanMethod" class="custom">
-          <el-table-column :label="$t('public.orderMoeny')" align="center">
+          <el-table-column :label="$t('public.orderMoney')" align="center">
             <template slot-scope="scope">
               {{ amountPaid }}
             </template>

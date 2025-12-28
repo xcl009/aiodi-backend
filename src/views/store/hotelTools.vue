@@ -149,7 +149,7 @@ export default {
 
     /**
      * 操作行
-     * @param {Object} dialogType dialog内容显示类型 0: '跳转' 3: 改状态 其他：弹出
+     * @param {Object} dialogType dialog内容显示类型 0: '跳转' 3: 改状态 其他: 弹出
      * @param {Object} row 选择当前数据
      */
     setRow(dialogType, row, srow) {

@@ -1,5 +1,5 @@
 /* 改变主题色变量 */
-$--color-primary: #165DFF;
+$--color-primary: #ca0414;
 $--background-color-base: #F2F3F5;
 $--border-color-extra-light: #F2F3F5;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
@@ -18,10 +18,11 @@ html {
 }
 
 body {
+  --primary-color: #ca0414;
   --red: #e54d42;
   --orange: #FF644F;
   --yellow: #FFA32B;
-  --olive: #165DFF;
+  --olive: #165DFF; /* olive should be green */
   --green: #07C160;
   /* --green: rgba(32, 172, 123, 1); */
   --cyan: #00D9EB;
@@ -49,7 +50,7 @@ body {
   --pinkLight: #f9d7ea;
   --brownLight: #ede1d9;
   --greyLight: #F2F3F5;
-  --bodyBg: #F2F8FF;
+  --bodyBg: #fafafa;
   /* 渐变色 */
   --gradualRed: linear-gradient(45deg, #f43f3b, #ec008c);
   --gradualOrange: linear-gradient(45deg, #ff9700, #ed1c24);
@@ -77,7 +78,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Inter,-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,noto sans,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-family: LeagueSpartan,Inter,-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,noto sans,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
   background: var(--bodyBg);
   font-size: 14px;
   line-height: 1.4;
@@ -134,13 +135,13 @@ div:focus {
 ::-webkit-scrollbar-thumb
 {
   border-radius: 4px;  /*滚动条的圆角*/
-  background-color: #e9e9ea;/*滚动条的背景颜色*/
+  background-color: var(--primary-color);/*滚动条的背景颜色*/
 }
 
 ::-moz-scrollbar-thumb
 {
   border-radius: 4px;  /*滚动条的圆角*/
-  background-color: #e9e9ea;/*滚动条的背景颜色*/
+  background-color: var(--primary-color);/*滚动条的背景颜色*/
 }
 
 .clearfix {
@@ -686,7 +687,7 @@ div:focus {
 }
 
 .text-primary{
-  color: var(--olive);
+  color: var(--primary-color);
 }
 
 .text-white{
