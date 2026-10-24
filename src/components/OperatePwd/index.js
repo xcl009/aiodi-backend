@@ -1,28 +1,33 @@
-import OperatePwd from "./index.vue"
+import Vue from 'vue'
+import OperatePwd from './index.vue'
+import i18n from '@/lang'
+import router from '@/router'
+
 let instance = null
-export default {
-  install(Vue) {
-    if (!instance) {
-      //构造器 /子类
-      let Pwd = Vue.extend(OperatePwd)
-      instance = new Pwd({
-        //创建一个div,并挂载上去
-        el: document.createElement('div')
-      })
-      document.body.appendChild(instance.$el);
-    }
+let pendingVerification = null
 
-    //自定义方法
-    let customMethods = {
-      showDialog() {
-        instance.dialogStatus = true
-      }
-    }
-
-    //挂载到自定义方法vue示例上
-    if (!Vue.$OperatePwd) {
-      Vue.$OperatePwd = customMethods
-      Vue.prototype.$OperatePwd = Vue.$OperatePwd
-    }
+function getInstance() {
+  if (!instance) {
+    // Resolve the store lazily: it also imports the request module.
+    const storeModule = require('@/store')
+    const store = storeModule.default || storeModule
+    const Pwd = Vue.extend(OperatePwd)
+    instance = new Pwd({
+      el: document.createElement('div'),
+      i18n,
+      router,
+      store
+    })
+    document.body.appendChild(instance.$el)
   }
+  return instance
+}
+
+export default function verifyOperatePwd() {
+  if (!pendingVerification) {
+    pendingVerification = getInstance().open().finally(() => {
+      pendingVerification = null
+    })
+  }
+  return pendingVerification
 }

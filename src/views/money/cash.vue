@@ -175,6 +175,7 @@
 <script>
 import upload from "@/components/upload/";
 import { unixTime, accSub } from "@/utils/index";
+const CASH_DRAFT_KEY = 'moneyCashWithdrawDraft';
 export default {
   components: {
     upload,
@@ -219,14 +220,49 @@ export default {
       ];
     },
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === '/user/opwd') this.saveCashDraft();
+    else this.clearCashDraft();
+    next();
+  },
   mounted() {
+    this.cashDraft = this.readCashDraft();
     if (this.isStore()) {
       this.cutStoreId = this.agentInfo.storeIds[0];
     }
     this.getCashType();
     this.getBalance();
+    this.applyCashDraft();
   },
   methods: {
+    readCashDraft() {
+      try {
+        const saved = sessionStorage.getItem(CASH_DRAFT_KEY);
+        return saved ? JSON.parse(saved) : null;
+      } catch (error) {
+        return null;
+      }
+    },
+    saveCashDraft() {
+      sessionStorage.setItem(CASH_DRAFT_KEY, JSON.stringify({
+        form: this.form,
+        bindCardInfo: this.bindCardInfo,
+        aliQrcodeInfo: this.aliQrcodeInfo,
+        wxQrcodeInfo: this.wxQrcodeInfo
+      }));
+    },
+    clearCashDraft() {
+      this.cashDraft = null;
+      sessionStorage.removeItem(CASH_DRAFT_KEY);
+    },
+    applyCashDraft() {
+      const draft = this.cashDraft;
+      if (!draft) return;
+      if (draft.form) this.form = Object.assign({}, this.form, draft.form);
+      if (draft.bindCardInfo) this.bindCardInfo = Object.assign({}, this.bindCardInfo, draft.bindCardInfo);
+      if (draft.aliQrcodeInfo) this.aliQrcodeInfo = Object.assign({}, this.aliQrcodeInfo, draft.aliQrcodeInfo);
+      if (draft.wxQrcodeInfo) this.wxQrcodeInfo = Object.assign({}, this.wxQrcodeInfo, draft.wxQrcodeInfo);
+    },
     /**
      * 获取提现配置
      */
@@ -314,6 +350,7 @@ export default {
         this.form.withdrawType = withdrawType[0].val;
         this.withdrawType = withdrawType;
         this.form.day = this.configList[0].day;
+        this.applyCashDraft();
         let types = this.arrayKeys(withdrawType, "val");
         if (types.indexOf("2") > -1 || types.indexOf("4") > -1) {
           this.qrcodeInfo();
@@ -372,6 +409,7 @@ export default {
       this.$get("iot-saas-pay/api/pay/withdraw/bankcard").then((res) => {
         if (res) res.cardName = res.userName;
         this.bindCardInfo = res || {};
+        this.applyCashDraft();
       });
     },
 
@@ -383,12 +421,14 @@ export default {
         qrcodeType: 2,
       }).then((res) => {
         this.aliQrcodeInfo = res || {};
+        this.applyCashDraft();
       });
 
       this.$get("iot-saas-pay/api/pay/withdraw/qrcode", {
         qrcodeType: 1,
       }).then((res) => {
         this.wxQrcodeInfo = res || {};
+        this.applyCashDraft();
       });
     },
 

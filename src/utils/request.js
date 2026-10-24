@@ -1,4 +1,4 @@
-import router from '../router';
+import verifyOperatePwd from '@/components/OperatePwd'
 import Vue from 'vue'
 import axios from 'axios'
 import qs from 'qs'
@@ -82,6 +82,21 @@ service.interceptors.request.use(
   }
 )
 
+const isOperatePwdRequired = code => code == 19876 || code == '19876'
+
+const retryAfterOperatePwd = (config, error) => {
+  if (!config || config.skipOperatePwd) {
+    if (error && error.message) {
+      Message({ message: error.message, type: 'error' })
+    }
+    return Promise.reject(error)
+  }
+  return verifyOperatePwd().then(() => {
+    config.skipOperatePwd = true
+    return service(config)
+  }).catch(() => Promise.reject(error))
+}
+
 service.interceptors.response.use(
   res => {
     if (res.config.headers['Content-Type'] === 'application/vnd.ms-excel;charset=UTF-8') {
@@ -101,11 +116,8 @@ service.interceptors.response.use(
         break
       default:
         Message.closeAll(res.data.code)
-        if (['19876', 19876].indexOf(res.data.code) > -1) {
-          router.push({
-            path: '/user/checkPwd'
-          })
-          return Promise.reject(res.data)
+        if (isOperatePwdRequired(res.data.code)) {
+          return retryAfterOperatePwd(res.config, res.data)
         } else if (['10601', '10603', '10604', '10605'].indexOf(res.data.code) > -1) {
           Message({
             message: res.data.message || i18n.t('lang.message1'),
@@ -140,10 +152,8 @@ service.interceptors.response.use(
         window.loginTimeOut = setTimeout(() => {
           location.href = '/login'
         }, 1000)
-      } else if (['19876', 19876].indexOf(res.code) > -1) {
-        router.push({
-          path: '/user/checkPwd'
-        })
+      } else if (isOperatePwdRequired(res.code)) {
+        return retryAfterOperatePwd(error.config, res)
       } else if (res.message) {
         Message({
           message: res.message,
@@ -186,9 +196,9 @@ export function $get(url, params = {}) {
   })
 }
 
-export function $post(url, data = {}) {
+export function $post(url, data = {}, config = {}) {
   data = filterNull(data)
-  return service.post(url, data)
+  return service.post(url, data, config)
 }
 
 export function $put(url, data = {}) {

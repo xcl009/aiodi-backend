@@ -53,6 +53,7 @@
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(5, {})" v-if="isSaas()">清除设备缓存</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isBrand() || isSaas()">设备软件升级</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 14)" v-if="isBrand() || isSaas()">解除品牌限制</div>
         <table-column-set storageKey="deviceSortwareTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
       </div>
@@ -139,6 +140,7 @@
       <div class="rel flex justify-center">
         <div class="abs flex pagination-left">
           <el-button type="primary" size="mini" :disabled="selID.length == 0" @click="setRows(3, {}, 11)">设备软件升级</el-button>
+          <el-button class="ml-10" type="primary" size="mini" :disabled="selID.length == 0" @click="setRows(3, {}, 14)">解除品牌限制</el-button>
         </div>
         <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
           @pagination="getList" />
@@ -146,7 +148,7 @@
     </div>
 
     <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus"
-      :close-on-click-modal="[11].indexOf(dialogType) == -1" :wrapperClosable="[11].indexOf(dialogType) == -1">
+      :close-on-click-modal="[11, 14].indexOf(dialogType) == -1" :wrapperClosable="[11, 14].indexOf(dialogType) == -1">
       <template v-if="dialogType == 7">
         <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()">
           <el-form-item :label="$t('public.deviceSn')">
@@ -214,11 +216,18 @@
           </el-form-item>
         </el-form>
       </template>
-      <template v-if="[3, 6, 7, 11, 12].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 14">
+        <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()" style="width: 600px;">
+          <el-form-item label="设备二维码">
+            <el-input v-model="dform.deviceSns" placeholder="多设备英文逗号隔开" type="textarea" rows="4" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[3, 6, 7, 11, 12, 14].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
-          <el-popconfirm :title="dialogType == 11 ? '请仔细确认升级设备和软件类型及版本是否匹配，不匹配会导致设备出现异常' : '确定提交吗？'"
+          <el-popconfirm :title="dialogType == 11 ? '请仔细确认升级设备和软件类型及版本是否匹配，不匹配会导致设备出现异常' : dialogType == 14 ? '确定解除所选设备的品牌限制吗？' : '确定提交吗？'"
             @onConfirm="dialogConfirm()">
             <el-button size="medium" type="primary" :disabled="clickSubmit"
               slot="reference">{{ $t('public.confirm') }}</el-button>
@@ -323,7 +332,8 @@
           9: this.$t('device.switchBrand'),
           10: this.$t('device.goodsToPartners'),
           11: '设备软件升级',
-          12: '系统状态设置'
+          12: '系统状态设置',
+          14: '解除品牌限制'
         }
       },
       defaultColumn() {
@@ -616,6 +626,11 @@
                 updateType: '1',
               }
             }
+            if (dialogType == 14) {
+              let deviceSns = ''
+              if (this.selSnArr.length > 0) deviceSns = this.selSnArr.join(',')
+              this.dform = { deviceSns }
+            }
             break
           case 5:
             this.$prompt('请输入设备二维码(多设备用英文逗号隔开)', '温馨提示', {
@@ -702,6 +717,20 @@
               this.clickSubmit = false
             })
             break
+        case 14:
+          if (!params.deviceSns) {
+            this.$message({ message: '设备二维码不能为空', type: 'error' })
+            this.clickSubmit = false
+            return
+          }
+          this.$post('iot-saas-device/admin/device/configCmdALL', { deviceSns: params.deviceSns }).then(res => {
+            this.$message({ message: this.$t('public.operationSuccessful'), type: 'success' })
+            this.drawerStatus = false
+            this.clickSubmit = false
+          }).catch(err => {
+            this.clickSubmit = false
+          })
+          break
         }
       },
 

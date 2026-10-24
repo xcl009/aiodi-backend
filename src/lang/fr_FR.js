@@ -1631,6 +1631,8 @@ export default {
     },
     device: {
         counting: "Actualiser les statistiques de l'appareil",
+    deviceUpdate: "Mise à jour logicielle de l'appareil",
+    removeBrandLimit: "Lever la restriction de marque",
         unfoldRecord: "Enregistrer les enregistrements",
         passwordLine: "Ligne de mot de passe",
         allSort: "Nombre total de bouches/disponibles pour le prêt",

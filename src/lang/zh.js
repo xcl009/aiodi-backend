@@ -1696,6 +1696,8 @@ export default {
   },
   device: {
     counting: '刷新设备数量统计',
+    deviceUpdate: "设备软件升级",
+    removeBrandLimit: "解除品牌限制",
     unfoldRecord: '铺解记录',
     passwordLine: '密码线',
     allSort: '总口数/可借',

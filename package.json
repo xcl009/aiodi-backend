@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",
+    "postbuild:prod": "npm run check:maps-secrets",
+    "check:maps-secrets": "node scripts/check-google-maps-secrets.js",
     "build:stage": "vue-cli-service build --mode staging",
+    "postbuild:stage": "npm run check:maps-secrets",
     "preview": "node build/index.js --preview",
     "lint": "eslint --ext .js,.vue src",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",

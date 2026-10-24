@@ -1632,6 +1632,8 @@ export default {
     },
     device: {
         counting: "Gerätestatistiken aktualisieren",
+    deviceUpdate: "Gerätesoftware-Upgrade",
+    removeBrandLimit: "Markenbeschränkung aufheben",
         unfoldRecord: "Datensätze speichern",
         passwordLine: "Kennwortzeile",
         allSort: "Gesamtzahl der für die Ausleihe verfügbaren Münder",

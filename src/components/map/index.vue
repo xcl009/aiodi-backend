@@ -1,13 +1,13 @@
 <template>
   <div class="map">
     <div class="mb-10 mapLeftStyle" v-if="isEdit">
-      <el-input v-model="keyword" :placeholder="$t('components.inputText')" @input="changeAddress"></el-input>
+      <el-input v-model="keyword" :disabled="!placesReady" :placeholder="$t('components.inputText')" @input="changeAddress"></el-input>
       <div class="card" v-if="list.length > 0 && cardShow">
-        <div class="item" v-for="(item, index) in list" :key="index">
+        <div class="item" v-for="item in list" :key="item.placeId">
           <div @click="confirm(item)">
-            <div class="title">{{ item.structured_formatting.main_text }}</div>
+            <div class="title">{{ item.mainText }}</div>
             <div class="address">
-              {{ item.structured_formatting.secondary_text }}
+              {{ item.secondaryText }}
             </div>
           </div>
         </div>
@@ -23,13 +23,6 @@
   import {
     Loader
   } from "@googlemaps/js-api-loader"; //引入
-  // 输入框模糊查询
-  let searchBox = undefined;
-  // 搜索地点和检索地点详细信息
-  let service = undefined;
-  // 对请求进行地理编码
-  let geocoder = undefined;
-  let marker = undefined;
   export default {
     props: {
       center: {
@@ -100,7 +93,6 @@
     },
     data() {
       return {
-        apiKey: "AIzaSyB_ZeNcO-7lC3bHJIGbIN7NYd_kLnv4iUs",
         map: {},
         keyword: "",
         googleMapCenter: {
@@ -115,14 +107,35 @@
         graphicalPath: [],
         // 模糊匹配数据
         list: [],
-        cardShow: false
+        cardShow: false,
+        placesReady: false
       }
+    },
+    created() {
+      this.placesApi = null
+      this.geocoder = null
+      this.autocompleteSessionToken = null
+      this.searchRequestId = 0
+      this.geocodeRequestId = 0
     },
     mounted() {
       this.init()
     },
+    beforeDestroy() {
+      this.searchRequestId++
+      this.geocodeRequestId++
+      clearTimeout(this.searchTimer)
+      clearTimeout(this.iTime)
+      if (this.mapCenterListener) this.mapCenterListener.remove()
+      this.autocompleteSessionToken = null
+    },
     methods: {
       init() {
+        if (!this.$googleMapsApiKey) {
+          this.$emit('locationOk', this.center)
+          this.$message.error(this.$t('public.fail'))
+          return
+        }
         let lang =  localStorage.getItem('lang');
         let language = '';
         if(lang == 'zh_CN'){
@@ -152,13 +165,13 @@
         }else if(lang == 'km_MM'){
            language = 'en'
         }
-        console.log(lang,'lang')
+        this.mapLanguage = language
         this.$nextTick(() => {
           try{
             const loader = new Loader({
-              apiKey: this.apiKey, //之前的key
+              apiKey: this.$googleMapsApiKey,
               version: "weekly", //版本
-              libraries: ["places", "drawing"], //插件库places为基础库 drawing为绘制工具库
+              libraries: ["places"],
               region: "Canada",
               language: language,
             })
@@ -171,25 +184,25 @@
 
             loader
               .load()
-              .then((google) => {
+              .then(async(google) => {
+                const placesApi = await google.maps.importLibrary('places')
+                if (this._isDestroyed) return
                 const map = new google.maps.Map(
                   document.getElementById(this.mapID),
                   mapOptions
                 )
                 this.googleMap = map
                 this.googleApi = google
-                // 自动完成请求 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service?hl=en
-                searchBox = new google.maps.places.AutocompleteService()
-                // 搜索地点和检索地点详细信息 参考文档：https://developers.google.com/maps/documentation/javascript/reference/places-service?hl=en
-                service = new google.maps.places.PlacesService(map)
+                this.placesApi = placesApi
+                this.placesReady = true
                 // 对请求进行地理编码 参考文档：https://developers.google.com/maps/documentation/javascript/reference/geocoder?hl=en
-                geocoder = new google.maps.Geocoder()
+                this.geocoder = new google.maps.Geocoder()
                 // marker = new google.maps.Marker({
                 //   map: map,
                 //   position: {},
                 //   draggable: true,
                 // })
-                google.maps.event.addListener(map, 'center_changed', () => {
+                this.mapCenterListener = google.maps.event.addListener(map, 'center_changed', () => {
                   this.center.lng = map.getCenter().lng()
                   this.center.lat = map.getCenter().lat()
                   this.update()
@@ -197,6 +210,7 @@
                 this.update()
               })
               .catch((e) => {
+                if (this._isDestroyed) return
                 this.$emit('locationOk', this.center)
                 console.log(e);
               })
@@ -209,14 +223,22 @@
       /**
        * 向父组件更新
        */
-      update() {
+      update(address) {
+        const requestId = ++this.geocodeRequestId
         this.center.keyword = this.keyword
         clearTimeout(this.iTime)
+        if (address) {
+          this.center.address = address
+          this.$emit('locationOk', this.center)
+          return
+        }
+        const location = { lng: this.center.lng, lat: this.center.lat }
         this.iTime = setTimeout(() => {
-          geocoder.geocode({
-            location: this.center,
+          this.geocoder.geocode({
+            location,
           }, (results, status) => {
-            if (results && results.length > 0) {
+            if (requestId !== this.geocodeRequestId || this._isDestroyed) return
+            if (status === 'OK' && results && results.length > 0) {
               this.center.address = results[0].formatted_address
             }
             this.$emit('locationOk', this.center)
@@ -227,37 +249,70 @@
 
       /**
        * 搜索地点和检索地点详细信息
-       * @param {Object} e
+       * @param {Object} item
        */
-      confirm(e) {
-        service.getDetails({
-          placeId: e.place_id
-        }, (event, status) => {
-          if (status === "OK") {
-            this.keyword = event.name
-            this.cardShow = false
-            let str = event.name
-            geocoder.geocode({
-              address: str
-            }, (results, status) => {
-              this.googleMap.setCenter(results[0].geometry.location)
-            })
-          } else {}
-        })
+      async confirm(item) {
+        const requestId = ++this.searchRequestId
+        clearTimeout(this.searchTimer)
+        this.cardShow = false
+        this.list = []
+        this.autocompleteSessionToken = null
+        try {
+          const place = item.prediction.toPlace()
+          await place.fetchFields({
+            fields: ['displayName', 'formattedAddress', 'location']
+          })
+          if (requestId !== this.searchRequestId || this._isDestroyed) return
+          if (!place.location) throw new Error('Selected place has no coordinates')
+          this.keyword = place.displayName || item.mainText
+          this.center.lng = place.location.lng()
+          this.center.lat = place.location.lat()
+          this.googleMap.setCenter(place.location)
+          this.update(place.formattedAddress)
+        } catch (error) {
+          if (requestId !== this.searchRequestId || this._isDestroyed) return
+          console.error('Google Places details failed', error)
+          this.$message.error(this.$t('public.fail'))
+        }
       },
 
-      changeAddress(e) {
-        searchBox.getPlacePredictions({
-          input: e
-        }, (event, status) => {
-          if (status === "OK") {
-            this.list = event || []
-            this.list = this.list.filter((x) => x.place_id)
-            this.cardShow = true
-          } else {
-            this.list = []
+      changeAddress(value) {
+        const requestId = ++this.searchRequestId
+        const input = value.trim()
+        clearTimeout(this.searchTimer)
+        this.list = []
+        this.cardShow = false
+        if (!input || !this.placesApi) {
+          this.autocompleteSessionToken = null
+          return
+        }
+        if (!this.autocompleteSessionToken) {
+          this.autocompleteSessionToken = new this.placesApi.AutocompleteSessionToken()
+        }
+        const sessionToken = this.autocompleteSessionToken
+        this.searchTimer = setTimeout(async() => {
+          try {
+            const { suggestions } = await this.placesApi.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+              input,
+              sessionToken,
+              language: this.mapLanguage || undefined
+            })
+            if (requestId !== this.searchRequestId || this._isDestroyed) return
+            this.list = suggestions
+              .filter(suggestion => suggestion.placePrediction)
+              .map(({ placePrediction }) => ({
+                placeId: placePrediction.placeId,
+                mainText: placePrediction.mainText ? placePrediction.mainText.text : placePrediction.text.text,
+                secondaryText: placePrediction.secondaryText ? placePrediction.secondaryText.text : '',
+                prediction: placePrediction
+              }))
+            this.cardShow = this.list.length > 0
+          } catch (error) {
+            if (requestId !== this.searchRequestId || this._isDestroyed) return
+            console.error('Google Places autocomplete failed', error)
+            this.$message.error(this.$t('public.fail'))
           }
-        })
+        }, 250)
       },
     },
   };

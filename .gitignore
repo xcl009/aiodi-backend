@@ -17,3 +17,9 @@ run.bat
 *.njsproj
 *.sln
 *.history
+
+# Deployment-owned Maps configuration; never commit real keys.
+/public/maps-config.json
+/dist/maps-config.json
+/staging/maps-config.json
+/maps-config.local.json

@@ -55,7 +55,8 @@
         <div class="flex1 fs-c1 text-black">{{ $t('public.enquiryForm') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(4, {})" v-if="isSaas()">{{ $t('device.counting') }}</div>
         <div class="ml-20 text-primary cursor line-1" @click="setRows(1, {}, 3)" v-if="false">{{ $t('device.unfoldRecord')}}</div>
-        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas()">{{ $t('device.deviceUpdate') || 'Device Upgrade'}}</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 11)" v-if="isSaas()">{{ $t('device.deviceUpdate') }}</div>
+        <div class="ml-20 text-primary cursor line-1" @click="setRows(3, {}, 12)" v-if="isSaas()">{{ $t('device.removeBrandLimit') }}</div>
         <div v-show="false">{{ screenfull }}</div>
         <table-column-set storageKey="deviceTableColumn" :showColumn.sync="showColumn"
           :defaultColumn="defaultColumn"></table-column-set>
@@ -330,7 +331,8 @@
           </el-button> -->
         </div>
         <div class="abs flex pagination-left" v-else-if="isSaas()">
-          <el-button type="primary" size="mini" :disabled="selID.length == 0" @click="setRows(3, {}, 11)">设备软件升级</el-button>
+          <el-button type="primary" size="mini" :disabled="selID.length == 0" @click="setRows(3, {}, 11)">{{ $t('device.deviceUpdate') }}</el-button>
+          <el-button class="ml-10" type="primary" size="mini" :disabled="selID.length == 0" @click="setRows(3, {}, 12)">{{ $t('device.removeBrandLimit') }}</el-button>
         </div>
         <pagination :page.sync="listQuery.page" :limit.sync="listQuery.size" :total="parseInt(listTotal)"
           @pagination="getList" />
@@ -377,7 +379,7 @@
       </div>
     </el-dialog>
 
-    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :close-on-click-modal="[11].indexOf(dialogType) == -1" :wrapperClosable="[11].indexOf(dialogType) == -1">
+    <el-drawer :title="dialogTitle[dialogType]" :visible.sync="drawerStatus" :close-on-click-modal="[11, 12].indexOf(dialogType) == -1" :wrapperClosable="[11, 12].indexOf(dialogType) == -1">
       <template v-if="dialogType == 1 && deviceInfo[curRow.deviceSn]">
         <div class="owner-user">
           <template v-for="(item, idx) in deviceInfo[curRow.deviceSn].deviceOwnerUserList">
@@ -650,12 +652,19 @@
           </el-form-item>
         </el-form>
       </template>
-      <template v-if="[3, 6, 7, 11].indexOf(dialogType) > -1">
+      <template v-if="dialogType == 12">
+        <el-form class="custom-form pl-20 pr-20" @submit.native.prevent="dialogConfirm()" style="width: 600px;">
+          <el-form-item label="设备二维码">
+            <el-input v-model="dform.deviceSns" placeholder="多设备英文逗号隔开" type="textarea" rows="4" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-if="[3, 6, 7, 11, 12].indexOf(dialogType) > -1">
         <div style="height: 66px;"></div>
         <div class="p-15 mt-30 abs bfixed bg-white text-right l-t">
           <el-button size="medium" class="bg-body" @click="drawerStatus = false">{{ $t('public.cancel') }}</el-button>
           <el-popconfirm
-            :title="dialogType == 11 ? '请仔细确认升级设备和软件类型及版本是否匹配，不匹配会导致设备出现异常' : '确定提交吗？'"
+            :title="dialogType == 11 ? '请仔细确认升级设备和软件类型及版本是否匹配，不匹配会导致设备出现异常' : dialogType == 12 ? '确定解除所选设备的品牌限制吗？' : '确定提交吗？'"
             @onConfirm="dialogConfirm()"
           >
             <el-button size="medium" type="primary" :disabled="clickSubmit" slot="reference">{{ $t('public.confirm') }}</el-button>
@@ -811,7 +820,8 @@ export default {
         8: this.$t('device.distributionEquipment'),
         9: this.$t('device.switchBrand'),
         10: this.$t('public.allocateToPartner'),
-        11: '设备软件升级',
+        11: this.$t('device.deviceUpdate'),
+        12: this.$t('device.removeBrandLimit'),
       }
     },
     defaultColumn() {
@@ -1306,6 +1316,10 @@ export default {
             deviceSns: deviceSns,
             updateType: '1',
           }
+        } else if (dialogType == 12) {
+          let deviceSns = ''
+          if (this.selSnArr.length > 0) deviceSns = this.selSnArr.join(',')
+          this.dform = { deviceSns }
         }
         break
       case 4:
@@ -1568,6 +1582,20 @@ export default {
             this.clickSubmit = false
           })
           break
+      case 12:
+        if (!params.deviceSns) {
+          this.$message({ message: '设备二维码不能为空', type: 'error' })
+          this.clickSubmit = false
+          return
+        }
+        this.$post('iot-saas-device/admin/device/configCmdALL', { deviceSns: params.deviceSns }).then(res => {
+          this.$message({ message: this.$t('public.operationSuccessful'), type: 'success' })
+          this.drawerStatus = false
+          this.clickSubmit = false
+        }).catch(err => {
+          this.clickSubmit = false
+        })
+        break
       }
     },
 

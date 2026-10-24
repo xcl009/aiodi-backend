@@ -1682,6 +1682,8 @@ export default {
   },
   device: {
     counting: "Apparaatstatistieken vernieuwen",
+    deviceUpdate: "Apparaatsoftware-upgrade",
+    removeBrandLimit: "Merkbeperking opheffen",
     unfoldRecord: "Winkelgegevens",
     passwordLine: "Wachtwoordregel",
     allSort: "Totaal aantal monden/beschikbaar voor uitleen",

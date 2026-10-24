@@ -1732,6 +1732,8 @@ export default {
   },
   device: {
     counting: "Refresh device count statistics",
+    deviceUpdate: "Device Upgrade",
+    removeBrandLimit: "Remove brand restriction",
     unfoldRecord: "Unfold Record",
     passwordLine: "Password line",
     allSort: "Total number of mouths/available for borrowing",
