@@ -31,7 +31,7 @@
               </el-input>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" width="100">
+          <el-table-column :label="$t('public.actions')" width="100">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" class="ml-0" @click="setRows(1, scope.row, 1)">{{
                 $t('goods.selectCommodity') }}</el-button>
@@ -64,11 +64,11 @@
           </el-table-column>
           <el-table-column :label="$t('public.price')">
             <template slot-scope="scope">
-              <div>{{ $t('goods.costPrice') }}：{{ scope.row.costPrice }}</div>
-              <div>{{ $t('goods.retailPrice') }}：{{ scope.row.retailPrice }}</div>
+              <div>{{ $t('goods.costPrice') }}: {{ scope.row.costPrice }}</div>
+              <div>{{ $t('goods.retailPrice') }}: {{ scope.row.retailPrice }}</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" width="120">
+          <el-table-column :label="$t('public.actions')" width="120">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="selGoods(scope.row)">{{ $t('goods.selectCommodity')
               }}</el-button>

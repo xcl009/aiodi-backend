@@ -1,3 +1,5 @@
+@use "~@/styles/variables.scss" as *;
+
 #app {
 
   .main-container {
@@ -72,13 +74,10 @@
     .el-submenu__title {
       height: 40px;
       line-height: 40px;
-      &:hover {
-        background-color: $menuHover !important;
-      }
     }
 
     .is-active>.el-submenu__title {
-      color: $menuActiveText !important;
+      // color: $menuActiveText !important;
     }
 
     & .nest-menu .el-submenu>.el-submenu__title,
@@ -86,11 +85,8 @@
       min-width: initial !important;
       border-radius: 2px;
       background-color: $subMenuBg !important;
-      &:hover {
-        background-color: $subMenuHover !important;
-      }
       &.is-active {
-        background: linear-gradient(90deg, #0089FB 0%, rgba(0, 137, 251, 0) 100%) !important;
+        background-color: $menuActiveBg !important;
         font-weight: 600;
       }
     }
@@ -191,14 +187,6 @@
   &>.el-menu {
     .svg-icon {
       margin-right: 16px;
-    }
-  }
-
-  .nest-menu .el-submenu>.el-submenu__title,
-  .el-menu-item {
-    &:hover {
-      // you can use $subMenuHover
-      background-color: $menuHover !important;
     }
   }
 

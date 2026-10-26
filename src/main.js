@@ -26,12 +26,7 @@ import App from './App'
 import store from './store'
 import router from './router'
 import * as VueGoogleMaps from 'vue2-google-maps'
-Vue.use(VueGoogleMaps, {
-  load: {
-    key: 'AIzaSyD_5Qm99I7RxKkxkw6QF-sNy6lh5OWUbUM',
-    libraries: 'places',
-  }
-})
+import { loadGoogleMapsApiKey } from '@/utils/google-maps-config'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -157,7 +152,17 @@ Vue.directive('currency', {
 
 import axios from 'axios'
 let startApp = function () {
-  axios.get('/config.json').then((res) => {
+  axios.get('/config.json').then(async (res) => {
+    let googleMapsApiKey = ''
+    try {
+      googleMapsApiKey = await loadGoogleMapsApiKey()
+    } catch (error) {
+      console.warn('Google Maps runtime configuration is unavailable')
+    }
+    Vue.prototype.$googleMapsApiKey = googleMapsApiKey
+    Vue.use(VueGoogleMaps, {
+      load: { key: googleMapsApiKey, libraries: 'places' }
+    })
     // 基础地址
     Vue.prototype.BASE_URL = res.data.BASE_URL
     Vue.prototype.config = res.data
@@ -180,4 +185,6 @@ let startApp = function () {
     }
   })
 }
+
+
 startApp()

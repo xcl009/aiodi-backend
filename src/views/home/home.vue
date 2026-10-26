@@ -1,89 +1,77 @@
 <template>
   <div class="rel pb-20 home-box mb-20">
 
-    <el-image class="abs quadrangle tl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
-    <el-image class="abs quadrangle tr" :src="require('@/assets/home/quadrangle.svg')"></el-image>
-    <el-image class="abs quadrangle bl" :src="require('@/assets/home/quadrangle.svg')"></el-image>
-    <el-image class="abs quadrangle br" :src="require('@/assets/home/quadrangle.svg')"></el-image>
-    <el-image class="abs pieces l" :src="require('@/assets/home/pieces.svg')"></el-image>
-    <el-image class="abs pieces r" :src="require('@/assets/home/pieces.svg')"></el-image>
-
-    <div class="abs blur-box"></div>
-    <el-row :gutter="10" type="flex" class="stat-box text-center">
-      <el-col :span="24" class="rel">
-        <div class="abs p-all flex justify-center">
+    <el-row :gutter="10" type="flex" class="stat-box text-center mb-20">
+      <!-- Total "GMV" -->
+      <el-col :span="12" class="rel mb-20">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({ path: `/money/monthMoney` })">
-            <div class="flex align-center fs-b5 baby-blue">
-              {{currencySymbolpositionType ?  siteInfo.currencySymbol: ''  }}
-              <count-to :start-val="0"
-                :end-val="delComma(orderStat.orderAmount)" :duration="2600" :decimals="2" />{{currencySymbolpositionType ?  '': siteInfo.currencySymbol }}</div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.transactionAmount') }}</div>
-            <img class="mt-10 type-icon" :src="require('@/assets/home/amout.svg')" alt="" />
+            <div class="fs-b5 text-primary">
+                {{ formatCurrency(orderStat.orderAmount) }}
+              </div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.transactionAmount') }}</div>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/money-bag.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon b"></div>
       </el-col>
-      <el-col :span="24" class="rel">
-        <div class="abs p-all flex justify-center">
+      <!-- Orders -->
+      <el-col :span="12" class="rel mb-20">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="Ability['order'] ? $router.push({ path: `/order/allOrder` }) : ''">
-            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="delComma(orderStat.orderNumber)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allOrderNum') }}</div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allOrderNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/order.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon y"></div>
       </el-col>
-      <el-col :span="24" class="rel">
-        <div class="abs p-all flex justify-center">
+      <!-- Cables -->
+      <el-col :span="12" class="rel mb-20">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor" @click="$router.push({ path: isSaas() ? `/device` : `/device` })">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="delComma(deviceStat.deviceNumber)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allDevicesNum') }}</div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allDevicesNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/device.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon b"></div>
       </el-col>
-      <el-col :span="24" class="rel" v-if="!isStore()">
-        <div class="abs p-all flex justify-center">
+      <!-- "Agents" -->
+      <el-col :span="12" class="rel mb-20" v-if="!isStore()">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 y-yellow"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.agentCount)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allAgentNum') }}</div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allAgentNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon y"></div>
       </el-col>
-      <el-col :span="24" class="rel" v-if="!isStore()">
-        <div class="abs p-all flex justify-center">
+      <!-- Partners -->
+      <el-col :span="12" class="rel mb-20" v-if="!isStore()">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(agentStoreStat.storeCount)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allStoreNum') }}</div>
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allStoreNum') }}</div>
             <img class="mt-10 type-icon" :src="require('@/assets/home/store.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon b"></div>
       </el-col>
-      <el-col :span="24" class="rel" v-if="isBrand() || isSaas()">
-        <div class="abs p-all flex justify-center">
+      <!-- Total Users -->
+      <el-col :span="12" class="rel mb-20" v-if="isBrand() || isSaas()">
+        <div class="flex justify-center">
           <div class="o-v card-panel cursor">
-            <div class="fs-b5 baby-blue"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber || 0)"
+            <div class="fs-b5 text-primary"><count-to :start-val="0" :end-val="parseInt(userStat.userNumber || 0)"
                 :duration="2600" /></div>
-            <div class="mt-5 fs-c1 text-white">{{ $t('home.allUserNum') || 'Total Users' }}</div>
-            <img class="mt-10 type-icon" :src="require('@/assets/home/users.svg')" alt="" />
+            <div class="mt-5 fs-c1 text-black text-bold">{{ $t('home.allUserNum') || 'Total Users' }}</div>
+            <img class="mt-10 type-icon" :src="require('@/assets/home/agent.svg')" alt="" />
           </div>
         </div>
-        <div class="dodge-icon b"></div>
       </el-col>
     </el-row>
 
-    <div class="pl-20 pr-20 trapezoid-box">
-      <div class="trapezoid"></div>
-      <div class="trapezoid-strip"></div>
-    </div>
+    <hr />
 
     <el-row :gutter="20" type="flex" class="two-box mt-20 pl-20 pr-20 text-white"
       v-if="roomList['BD'] || roomList['VG'] || roomList['AV']">
@@ -108,7 +96,7 @@
       </template>
     </el-row>
 
-    <el-row :gutter="20" type="flex" class="two-box  location flex-wrap mt-20 pl-20 pr-20 text-white"
+    <el-row :gutter="20" type="flex" class="two-box location flex-wrap mt-20 pl-20 pr-20"
       v-show="!isStoreType">
       <el-col :sm="24" :lg="(checkHotel() && isStore()) || !isStore() ? 8 : 12">
         <div class="p-20 item-box">
@@ -120,8 +108,8 @@
                 @click="contrast_type = index; $refs.contrastCarusel.setActiveItem(index)">{{ item }}</div>
             </div>
           </div>
-          <el-carousel height="300px" ref="contrastCarusel" @change="contrastChange" v-if="querHistogram.today">
-            <el-carousel-item v-for="(item, index) in contrast_arr" :interval="5000" :initial-index="contrast_type">
+          <el-carousel height="300px" ref="contrastCarusel" arrow="never" :autoplay="false" @change="contrastChange" v-if="querHistogram.today">
+            <el-carousel-item v-for="(item, index) in contrast_arr" :initial-index="contrast_type">
               <div class="flex">
                 <div class="label">
                   <div>{{ $t('public.today') }}</div>
@@ -142,7 +130,7 @@
                 <div class="label">
                   <template v-for="key in ['today', 'yesterday', 'week', 'lastWeek', 'month', 'lastMonth']">
                     <div>
-                      {{ index == 0 ? formatCurrency(querHistogram[key].amount, 1): index == 1 ? querHistogram[key].orderNumber : formatCurrency(querHistogram[key].unitPrice, 1) }}
+                      {{ index == 0 ? formatCurrency(querHistogram[key].amount): index == 1 ? querHistogram[key].orderNumber : formatCurrency(querHistogram[key].unitPrice) }}
                     </div>
                   </template>
                 </div>
@@ -157,35 +145,34 @@
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.statisticsNum') }}</div>
           </div>
-          <div class="chart-device" ref="chart_device" style="height: 330px;"></div>
+          <!-- todo: 100% of the devices will be "Powerbank". Let's show the charging status instead-->
+          <div class="chart-device" ref="chart_device" style="height: 350px;"></div>
         </div>
       </el-col>
 
       <el-col :sm="24" :lg="8" v-if="!isStore()">
-
+        
         <div class="pl-20 pr-20 pt-20 item-box ">
           <div class="flex align-center">
             <div class="line"></div>
             <div class="flex1 fs-b2">{{ $t('home.storeStatistics') }}</div>
-            <div class="cursor flex_c" style="color:rgba(255, 255, 255, 0.80);" @click="isCheckChange(true)"><img
-                :src="require('@/assets/home/unfild.svg')" class="mr-10" /> {{ $t('public.adds') }}</div>
+            <div class="cursor flex_c" @click="isCheckChange(true)"><img
+                :src="require('@/assets/home/expand-bk.svg')" class="mr-10" /> {{ $t('public.adds') }}</div>
           </div>
-          <el-table class="store-table text-white" :highlight-current-row="false"
+          <el-table class="store-table" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
-            :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
-            :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="storeList"
+            :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
+            :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#ca0414' }" :data="storeList"
             style="background:none">
             <el-table-column :label="$t('home.ranking')" width="70">
               <template slot-scope="scope">
-                <span class="fs-c1 text-bold"
-                  :class="{ 'y-yellow': scope.$index == 0, 'baby-blue': scope.$index == 2, 'text-primary': scope.$index == 1 }">NO.{{
-                    scope.$index + 1 }}</span>
+                <span class="fs-c1 text-bold text-primary">NO. {{scope.$index + 1 }}</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('public.storeName')" min-width="120">
               <template slot-scope="scope">
-                <span class="y-yellow" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
-                <span class="y-yellow" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
+                <span class="text-primary" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
+                <span class="text-primary" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.orderNum')" min-width="90">
@@ -195,22 +182,22 @@
             </el-table-column>
             <el-table-column :label="$t('public.aTurnover')" min-width="120">
               <template slot-scope="scope">
-                {{ formatCurrency(scope.row.amount, 1) || 0 }}
+                {{ formatCurrency(scope.row.amount) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('public.income')" min-width="90">
               <template slot-scope="scope">
-                {{ formatCurrency(scope.row.amountDivide, 1) || 0 }}
+                {{ formatCurrency(scope.row.amountDivide) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.seizuresNum')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
-                {{ formatCurrency(scope.row.amountDeposit, 1) || 0 }}
+                {{ formatCurrency(scope.row.amountDeposit) || 0 }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.alldeposit')" min-width="120" v-if="isSaas() || isBrand()">
               <template slot-scope="scope">
-                {{ formatCurrency(scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) - Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0, 1) }}
+                {{ formatCurrency(scope.row.amountDeposit && scope.row.amountUnrefund ? (Number(scope.row.amountDeposit) - Number(scope.row.amountUnrefund)).toFixed(2) || 0 : 0) }}
               </template>
             </el-table-column>
             <el-table-column :label="$t('home.allRefunded')" min-width="160" v-if="isSaas() || isBrand()">
@@ -250,13 +237,13 @@
         <el-row v-show="isadd">
           <div class="pl-10 pr-10 " :class="{ 'pt-15': isStore() }">
             <div class=" align-center pt-15 mb-15">
-              <div class="flex fs-c1 text-white">
+              <div class="flex fs-c1">
                 <div class="flex pl-10">
                   <div class="line"></div>
                   <div>{{ $t('home.storeStatistics') }}</div>
                 </div>
-                <div class="m_l_a mr-20 cursor" style="color:rgba(255, 255, 255, 0.80);" @click="isStoreType = false">
-                  <img :src="require('@/assets/home/up.svg')" /> {{ $t('components.retract') }}
+                <div class="m_l_a mr-20 cursor" @click="isStoreType = false">
+                  <img :src="require('@/assets/home/shrink-bk.svg')" /> {{ $t('components.retract') }}
                 </div>
               </div>
               <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery" :exportStatus="false"
@@ -317,22 +304,21 @@
                 :defaultColumn="defaultColumn"></table-column-set> -->
             </div>
 
-            <el-table class="store-table text-white" :highlight-current-row="false"
+            <!-- Expanded partner table -->
+            <el-table class="store-table" :highlight-current-row="false"
               :header-row-style="{ background: 'none' }"
-              :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
-              :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#143F84' }" :data="list"
+              :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
+              :row-style="{ background: 'none' }" :cell-style="{ borderColor: '#ca0414' }" :data="list"
               style="background:none" @sort-change="sortChange">
               <el-table-column :label="$t('home.ranking')" width="120">
                 <template slot-scope="scope">
-                  <span class="fs-c1 text-bold"
-                    :class="{ 'y-yellow': scope.$index == 0, 'baby-blue': scope.$index == 2, 'text-primary': scope.$index == 1 }">NO.{{
-                      scope.$index + 1 }}</span>
+                  <span class="fs-c1 text-bold text-primary">NO. {{ scope.$index + 1 }}</span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('public.storeName')" min-width="120">
                 <template slot-scope="scope">
-                  <span class="y-yellow" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
-                  <span class="y-yellow" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
+                  <span class="text-primary" v-if="['1299125168689397761'].indexOf(agentInfo.brandId) > -1">{{ scope.row.storeName }}</span>
+                  <span class="text-primary" v-else>{{ scope.row.storeName ? scope.row.storeName.substring(0, 2) : '' }}**</span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('home.orderNum')" min-width="90" column-key="orderAllNumber" sortable>
@@ -377,36 +363,38 @@
       </transition>
     </div>
 
-    <el-row :gutter="20" type="flex" class="three-box flex-wrap mt-20 pl-20 pr-20 text-white"
+    <el-row :gutter="20" type="flex" class="three-box flex-wrap mt-20 pl-20 pr-20"
       v-show="Ability['order'] && !isStoreType">
       <el-col :md="24" :lg="12">
         <div class="pl-20 pr-20 pt-20 item-box">
           <div class="flex align-center">
             <div class="line"></div>
-            <div class="flex1 fs-b2">{{ $t('home.orderNumDetails') }}</div>
+            <div class="flex1 fs-b2">{{ $t('home.recentOrders') }}</div>
           </div>
-          <el-table ref="orderTable" class="order-table text-white" height="460px" :highlight-current-row="false"
+          <!-- todo: Disable autoscroll -->
+          <!-- todo: Delete unneeded columns -->
+          <el-table ref="orderTable" class="order-table" height="460px" :highlight-current-row="false"
             :header-row-style="{ background: 'none' }"
-            :header-cell-style="{ background: 'none', color: '#1CB9FB', border: 'none', fontSize: '16px' }"
-            :row-style="{ background: '#0D2749' }" :cell-style="{ border: 'none' }" :data="orderList"
+            :header-cell-style="{ background: 'none', color: '#ca0414', border: 'none', fontSize: '16px' }"
+            :row-style="{ background: 'rgba(0, 0, 0, 0.05)' }" :cell-style="{ border: 'none' }" :data="orderList"
             style="background:none">
-            <el-table-column :label="`${$t('home.serialNumber')}`" width="60">
+            <el-table-column width="60">
               <template slot-scope="scope">
-                <div class="fs-c1 text-bold idx text-center" :class="'idx_' + scope.$index % 3">{{ scope.$index + 1 }}
+                <div class="fs-c1 text-bold text-white idx text-center">{{ scope.$index + 1 }}
                 </div>
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.store')}`" width="120">
+            <el-table-column :label="`${$t('public.store')}`" width="120" v-if="isBrand() || isSaas()">
               <template slot-scope="scope">
                 <span>{{ scope.row.storeName }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.user')}`" width="80">
+            <el-table-column :label="`${$t('public.user')}`" width="100">
               <template slot-scope="scope">
-                {{ scope.row.userNickName ? scope.row.userNickName.substring(0, 1) : '' }}**
+                {{ scope.row.userNickName ? scope.row.userNickName.substring(0, 1) : '' }}*****
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('home.equipmentCategory')}`" width="100">
+            <el-table-column :label="`${$t('public.device')}`" width="100">
               <template slot-scope="scope">
                 <el-tooltip :content="myDeviceId[scope.row.deviceTypeCode]" placement="top">
                   <div class="text-cut">
@@ -417,22 +405,22 @@
             </el-table-column>
             <el-table-column :label="`${$t('home.source')}`" width="150">
               <template slot-scope="scope">
-                {{ Constant.PayType ? Constant.PayType[scope.row.payType] : '' }}
+                {{ customSourceMapping[scope.row.sourceType] || "--" }}
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.statrtTime')}`" width="180">
               <template slot-scope="scope">
-                {{ scope.row.chargeStartTime || "--" }}
+                {{ parseTime(scope.row.chargeStartTime) || "--" }}
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.endTime')}`" width="180">
               <template slot-scope="scope">
-                {{ scope.row.chargeEndTime || "--" }}
+                {{ parseTime(scope.row.chargeEndTime) || "--" }}
               </template>
             </el-table-column>
-            <el-table-column :label="`${$t('public.amount')}`">
+            <el-table-column :label="`${$t('public.income')}`" width="100">
               <template slot-scope="scope">
-                {{ scope.row.amount }}
+                {{ formatCurrency(scope.row.amount) }}
               </template>
             </el-table-column>
             <el-table-column :label="`${$t('public.status')}`">
@@ -522,7 +510,8 @@ import {
   accAdd,
   accMul,
   copyText,
-  currencySymbolposition
+  currencySymbolposition,
+  formatCurrency
 } from '@/utils/index'
 import DateUtil from '@/utils/date'
 import CountTo from 'vue-count-to'
@@ -832,6 +821,12 @@ export default {
     dialogTitle() {
       return {
         6: this.$t('home.suggestionsText')
+      }
+    },
+    customSourceMapping() {
+      return {
+        4: this.$t('public.mobileApp'),
+        5: this.$t('public.webBrowser'),
       }
     },
   },
@@ -1245,6 +1240,7 @@ export default {
           animationEasing: 'quadraticOut'
         }
         ]
+      // todo: Change white vertical line to gray | 将白色竖线改为灰色
       this.dayChartInit.setOption({
         color: ['#3CA1FE', '#FFA32B', '#07C160', '#FF5353'],
         xAxis: {
@@ -1256,7 +1252,7 @@ export default {
           axisLabel: { //x轴文字的配置
             show: true,
             textStyle: {
-              color: "#fff",
+              color: "#000",
             }
           },
         },
@@ -1273,14 +1269,13 @@ export default {
         },
         yAxis: {
           type: 'value',
-          axisLabel: { //x轴文字的配置
+          axisLabel: { //y轴文字的配置
             show: true,
             textStyle: {
-              color: "#fff",
+              color: "#000",
             }
           },
         },
-
         legend: {
           bottom: 20,
           data: legend,
@@ -1288,7 +1283,7 @@ export default {
             width: 0
           },
           textStyle: {
-            color: 'rgba(255, 255, 255, 0.6)'
+            color: '#000'
           }
         },
         series: series
@@ -1431,7 +1426,7 @@ export default {
       }) */
       this.$get('iot-saas-device/admin/device/count/queryByUser').then(res => {
         this.deviceStat = res
-        let deviceChartData = {}, idx = 0, colors = ['#2A9F9F', '#224278', '#82A8C6', '#9DA5B2', '#82B869', '#A01E57', '#E1B44F', '#D65C5C', '#4C65B2']
+        let deviceChartData = {}, idx = 0, colors = ['#ca0414', '#E78F97', '#F3C7CB', '#999999']
         if (res.deviceTypeDetail) {
           for (var i in res.deviceTypeDetail) {
             if (this.myDeviceId[i.substr(0, 2)]) {
@@ -1469,11 +1464,11 @@ export default {
 
     /**
      * 设备图表初始化
+     * Device Chart Initialization
      */
     deviceChart() {
       this.deviceChartInit = echarts.init(this.$refs.chart_device)
-      // 传入数据生成 option ; getPie3D(数据，透明的空心占比（调节中间空心范围的0就是普通饼1就很镂空）)
-      this.deviceChartOption = this.getPie3D(this.deviceChartData, 0.85);
+      this.deviceChartOption = this.getPie2D(this.deviceChartData, 0.55);
       //将配置项设置进去
       this.deviceChartInit.setOption(this.deviceChartOption);
       //鼠标移动上去特效效果
@@ -1595,244 +1590,78 @@ export default {
     },
 
     /**
-     * 配置构建 pieData 饼图数据 internalDiameterRatio:透明的空心占比
-     * @param {Object} pieData
-     * @param {Object} internalDiameterRatio
+     * 2D Device Chart | 2D设备图表
+     * @param {Array<{name:string,value:number,itemStyle?:{color?:string,opacity?:number}}>} pieData
+     * @param {number} internalDiameterRatio
      */
-    getPie3D(pieData, internalDiameterRatio) {
-      let that = this;
-      let series = [];
-      let sumValue = 0;
-      let startValue = 0;
-      let endValue = 0;
-      let legendData = [];
-      let legendBfb = [];
-      let k = 1 - internalDiameterRatio;
-      pieData.sort((a, b) => {
-        return (b.value - a.value);
+    getPie2D(pieData, internalDiameterRatio = 0) {
+      const data = (pieData || []).map(d => ({ ...d })).sort((a, b) => b.value - a.value);
+
+      const sumValue = data.reduce((s, d) => s + (d.value || 0), 0);
+      const legendNames = data.map(d => d.name);
+
+      // Radius
+      const outer = 70;
+      const inner = Math.max(0, Math.min(95, Math.round(outer * internalDiameterRatio)));
+
+      // Colors
+      const seriesData = data.map(d => {
+        const item = {
+          name: d.name,
+          value: d.value
+        };
+        if (d.itemStyle && (d.itemStyle.color || d.itemStyle.opacity != null)) {
+          item.itemStyle = {};
+          if (d.itemStyle.color) item.itemStyle.color = d.itemStyle.color;
+          if (d.itemStyle.opacity != null) item.itemStyle.opacity = d.itemStyle.opacity;
+        }
+        return item;
       });
-      // 为每一个饼图数据，生成一个 series-surface(参数曲面) 配置
-      for (let i = 0; i < pieData.length; i++) {
-        sumValue += pieData[i].value;
-        let seriesItem = {
-          //系统名称
-          name: typeof pieData[i].name === 'undefined' ? `series${i}` : pieData[i].name,
-          type: 'surface',
-          //是否为参数曲面（是）
-          parametric: true,
-          //曲面图网格线（否）上面一根一根的
-          wireframe: {
-            show: false
-          },
-          pieData: pieData[i],
-          pieStatus: {
-            selected: false,
-            hovered: false,
-            k: k
+
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: params => {
+            // params: {name, value, percent, marker}
+            return `${params.name}<br/>${params.marker}${params.value} (${params.percent}%)`;
           }
-        }
-        //曲面的颜色、不透明度等样式。
-        if (typeof pieData[i].itemStyle != 'undefined') {
-          let itemStyle = {};
-          typeof pieData[i].itemStyle.color != 'undefined' ? itemStyle.color = pieData[i].itemStyle.color : null;
-          typeof pieData[i].itemStyle.opacity != 'undefined' ? itemStyle.opacity = pieData[i].itemStyle.opacity :
-            null;
-          seriesItem.itemStyle = itemStyle;
-        }
-        series.push(seriesItem);
-      }
-      // 使用上一次遍历时，计算出的数据和 sumValue，调用 getParametricEquation 函数，
-      // 向每个 series-surface 传入不同的参数方程 series-surface.parametricEquation，也就是实现每一个扇形。
-      legendData = [];
-      legendBfb = [];
-      for (let i = 0; i < series.length; i++) {
-        endValue = startValue + series[i].pieData.value;
-        series[i].pieData.startRatio = startValue / sumValue;
-        series[i].pieData.endRatio = endValue / sumValue;
-        series[i].parametricEquation = this.getParametricEquation(series[i].pieData.startRatio, series[i].pieData
-          .endRatio,
-          false, false, k, series[i].pieData.value);
-        startValue = endValue;
-        let bfb = that.fomatFloat(series[i].pieData.value / sumValue, 4);
-        legendData.push({
-          name: series[i].name,
-          value: bfb
-        });
-        legendBfb.push({
-          name: series[i].name,
-          value: bfb
-        });
-      }
-      //(第二个参数可以设置你这个环形的高低程度)
-      let boxHeight = this.getHeight3D(series, 20); //通过传参设定3d饼/环的高度
-      let option = {
-        //图例组件
+        },
         legend: {
           show: true,
           bottom: 0,
-          data: legendData,
-          //图例列表的布局朝向。
           orient: 'horizontal',
-          //图例文字每项之间的间隔
           itemGap: 15,
-          textStyle: {
-            color: '#A1E2FF',
+          data: legendNames,
+          textStyle: { color: '#000000' },
+          formatter: name => {
+            const item = data.find(d => d.name === name);
+            const value = item ? item.value : 0;
+            return `${name}(${value})`;
+          }
+        },
+        series: [{
+          name: 'pie2d',
+          type: 'pie',
+          radius: [`${inner}%`, `${outer}%`],
+          center: ['50%', '45%'],
+          avoidLabelOverlap: true,
+          stillShowZeroSum: false,
+          selectedMode: false,
+          label: {
+            show: false,
           },
-          //icon: "circle",
-          formatter: (name) => {
-            var target;
-            for (var i = 0, l = pieData.length; i < l; i++) {
-              if (pieData[i].name == name) {
-                target = pieData[i].value;
-              }
-            }
-            return `${name}(${target})`;
-          }
-          // 这个可以显示百分比那种（可以根据你想要的来配置）
-          //   formatter: function(param) {
-          //       let item = legendBfb.filter(item => item.name == param)[0];
-          //       let bfs = that.fomatFloat(item.value * 100, 2) + "%";
-          //       console.log(item.name)
-          //       return `${item.name} :${bfs}`;
-          //   }
-        },
-        //移动上去提示的文本内容
-        tooltip: {
-          formatter: params => {
-            if (params.seriesName !== 'mouseoutSeries' && params.seriesName !== 'pie2d') {
-              return `${params.seriesName}<br/>` +
-                `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>` +
-                `${option.series[params.seriesIndex].pieData.value}`;
-            }
-          }
-        },
-        //这个可以变形
-        xAxis3D: {
-          min: -1,
-          max: 1
-        },
-        yAxis3D: {
-          min: -1,
-          max: 1
-        },
-        zAxis3D: {
-          min: -1,
-          max: 1
-        },
-        //此处是修改样式的重点
-        grid3D: {
-          show: false,
-          boxHeight: boxHeight, //圆环的高度
-          top: -40,
-          //这是饼图的位置
-          viewControl: { //3d效果可以放大、旋转等，请自己去查看官方配置
-            alpha: 30, //角度(这个很重要 调节角度的)
-            distance: 150, //调整视角到主体的距离，类似调整zoom(这是整体大小)
-            rotateSensitivity: 1, //设置为0无法旋转
-            zoomSensitivity: 0, //设置为0无法缩放
-            panSensitivity: 1, //设置为0无法平移
-            autoRotate: false //自动旋转
-          }
-        },
-        series: series
+          labelLine: { show: false },
+          // kleine “depth” look met randje (optioneel)
+          emphasis: {
+            scale: true,
+            scaleSize: 6,
+            label: { show: true, fontWeight: 'bold' }
+          },
+          data: seriesData
+        }]
       };
+
       return option;
-    },
-    /**
-     * 获取3d图的最高扇区的高度
-     * @param {Object} series
-     * @param {Object} height
-     */
-    getHeight3D(series, height) {
-      series.sort((a, b) => {
-        return (b.pieData.value - a.pieData.value)
-      })
-      let h = height * 25 / series[0].pieData.value
-      return h > 50 ? 50 : h
-    },
-
-    // 生成扇形的曲面参数方程，用于 series-surface.parametricEquation
-    getParametricEquation(startRatio, endRatio, isSelected, isHovered, k, h) {
-      // 计算
-      let midRatio = (startRatio + endRatio) / 2;
-      let startRadian = startRatio * Math.PI * 2;
-      let endRadian = endRatio * Math.PI * 2;
-      let midRadian = midRatio * Math.PI * 2;
-      // 如果只有一个扇形，则不实现选中效果。
-      if (startRatio === 0 && endRatio === 1) {
-        isSelected = false;
-      }
-      // 通过扇形内径/外径的值，换算出辅助参数 k（默认值 1/3）
-      k = typeof k !== 'undefined' ? k : 1 / 3;
-      // 计算选中效果分别在 x 轴、y 轴方向上的位移（未选中，则位移均为 0）
-      let offsetX = isSelected ? Math.cos(midRadian) * 0.1 : 0;
-      let offsetY = isSelected ? Math.sin(midRadian) * 0.1 : 0;
-      // 计算高亮效果的放大比例（未高亮，则比例为 1）
-      let hoverRate = isHovered ? 1.05 : 1;
-      // 返回曲面参数方程
-      return {
-        u: {
-          min: -Math.PI,
-          max: Math.PI * 3,
-          step: Math.PI / 32
-        },
-        v: {
-          min: 0,
-          max: Math.PI * 2,
-          step: Math.PI / 20
-        },
-        x: (u, v) => {
-          if (u < startRadian) {
-            return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
-          }
-          if (u > endRadian) {
-            return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
-          }
-          return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
-        },
-        y: (u, v) => {
-          if (u < startRadian) {
-            return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
-          }
-          if (u > endRadian) {
-            return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
-          }
-          return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
-        },
-        z: (u, v) => {
-          if (u < -Math.PI * 0.5) {
-            return Math.sin(u);
-          }
-          if (u > Math.PI * 2.5) {
-            return Math.sin(u) * h * .1;
-          }
-          return Math.sin(v) > 0 ? 1 * h * .1 : -1;
-        }
-      };
-    },
-
-    /**
-     * 自定义计算的方法
-     * @param {Object} num
-     * @param {Object} n
-     */
-    fomatFloat(num, n) {
-      var f = parseFloat(num);
-      if (isNaN(f)) {
-        return false;
-      }
-      f = Math.round(num * Math.pow(10, n)) / Math.pow(10, n); // n 幂
-      var s = f.toString();
-      var rs = s.indexOf('.');
-      //判定如果是整数，增加小数点再补0
-      if (rs < 0) {
-        rs = s.length;
-        s += '.';
-      }
-      while (s.length <= rs + n) {
-        s += '0';
-      }
-      return s;
     },
 
     checkHotel() {
@@ -1842,89 +1671,18 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.app-main {
-  &.is-home {
-    background-color: #001536;
-    background-image: url('../../assets/home_bg.png');
-    background-size: 100%;
-  }
-}
-</style>
 <style lang="scss" scoped>
 .home-box {
   margin: -2px 2px 0;
   padding-top: 2px;
-  border: 2px solid #1166B1;
+}
 
-  .quadrangle {
-    width: 102px;
-    height: 102px;
-    z-index: 1099;
-
-    &.tl {
-      top: 0;
-      left: -6px;
-    }
-
-    &.tr {
-      top: 0;
-      right: -6px;
-      transform: rotate(90deg);
-    }
-
-    &.bl {
-      bottom: -6px;
-      left: -6px;
-      transform: rotate(-90deg);
-    }
-
-    &.br {
-      bottom: -6px;
-      right: -6px;
-      transform: rotate(180deg);
-    }
-
-    /deep/ .el-image__placeholder {
-      display: none;
-    }
-  }
-
-  .pieces {
-    width: 23px;
-    height: 231px;
-    bottom: 296px;
-
-    &.l {
-      left: -23px;
-    }
-
-    &.r {
-      transform: rotate(180deg);
-      right: -23px;
-    }
-
-    /deep/ .el-image__placeholder {
-      display: none;
-    }
-  }
-
-  .blur-box {
-    height: 213px;
-    width: calc(100% - 40px);
-    left: 20px;
-    background: linear-gradient(180deg, rgba(0, 43, 81, 0) 0%, #002B51 100%);
-    filter: blur(15px);
-    transform: perspective(20px) rotateX(-1deg);
-  }
+hr {
+  border: 2px solid var(--primary-color);
 }
 
 .baby-blue {
   color: #08EFF0;
-}
-
-.y-yellow {
-  color: #FFD21D;
 }
 
 .stat-box {
@@ -1935,20 +1693,6 @@ export default {
     z-index: 3;
   }
 
-  .dodge-icon {
-    margin: 12px auto 0;
-    width: 154px;
-    height: 167px;
-
-    &.b {
-      animation: animateDodgeB 1s linear infinite;
-    }
-
-    &.y {
-      animation: animateDodgeY 1s linear infinite;
-    }
-  }
-
   .type-icon {
     width: 72px;
     height: 72px;
@@ -1956,50 +1700,6 @@ export default {
     /deep/ .el-image__placeholder {
       display: none;
     }
-  }
-}
-
-@keyframes animateDodgeB {
-  0% {
-    background: url('../../assets/home/blue_dodge_05.svg') 100%;
-  }
-
-  45% {
-    background: url('../../assets/home/blue_dodge_05.svg') 100%;
-  }
-
-  50% {
-    background: url('../../assets/home/blue_dodge_1.svg') 100%;
-  }
-
-  95% {
-    background: url('../../assets/home/blue_dodge_1.svg') 100%;
-  }
-
-  100% {
-    background: url('../../assets/home/blue_dodge_05.svg') 100%;
-  }
-}
-
-@keyframes animateDodgeY {
-  0% {
-    background: url('../../assets/home/yellow_dodge_05.svg') 100%;
-  }
-
-  45% {
-    background: url('../../assets/home/yellow_dodge_05.svg') 100%;
-  }
-
-  50% {
-    background: url('../../assets/home/yellow_dodge_1.svg') 100%;
-  }
-
-  95% {
-    background: url('../../assets/home/yellow_dodge_1.svg') 100%;
-  }
-
-  100% {
-    background: url('../../assets/home/yellow_dodge_05.svg') 100%;
   }
 }
 
@@ -2023,13 +1723,13 @@ export default {
   .btn {
     margin-right: -1px;
     padding: 7px 16px;
-    background: rgba(17, 102, 177, 0.1);
-    border: 1px solid #1166B1;
-    color: rgba(255, 255, 255, 0.8);
+    background: #ffffff;
+    border: 1px solid var(--primary-color);
+    color: #000000;
 
     &.act {
-      box-shadow: inset 0 0 12px #1166B1;
-      color: #1CB9FB;
+      background-color: var(--primary-color);
+      color: #ffffff;
     }
   }
 }
@@ -2038,19 +1738,20 @@ export default {
 .three-box {
   .item-box {
     height: 100%;
-    border: 2px solid #1166B1;
+    border: 2px solid var(--primary-color);
+    background-color: #ffffff;
 
     .line {
       margin-right: 8px;
       width: 5px;
       height: 20px;
-      background: #1CB9FB;
+      background: var(--primary-color);
     }
 
     .progress {
       margin: 25px;
       padding: 3px;
-      border: 1px solid #38E5A5;
+      border: 1px solid var(--primary-color);
       border-radius: 42px;
 
       /deep/ .el-progress-bar__outer {
@@ -2058,12 +1759,18 @@ export default {
       }
 
       /deep/ .el-progress-bar__inner {
-        background: linear-gradient(90deg, #38E5A5 0%, #FEF880 100%);
+        background: var(--primary-color);
       }
     }
 
     /deep/ .el-carousel__indicators {
       display: none;
+    }
+
+    /deep/ .el-carousel__arrow--left,
+    /deep/ .el-carousel__arrow--right {
+      background-color: var(--primary-color) !important;
+
     }
 
     .label {
@@ -2102,17 +1809,7 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 47px;
-    line-height: 20px;
-    color: #0A1B36;
-    background: #FC5354;
-
-    &.idx_1 {
-      background: #F59A23;
-    }
-
-    &.idx_2 {
-      background: #FFFF00;
-    }
+    background: var(--primary-color);
   }
 
   /deep/ &.el-table {
@@ -2143,7 +1840,6 @@ export default {
   .item-box {
     .box-grey {
       background: rgba(17, 102, 177, 0.1);
-      border: 1px solid #1166B1;
 
       /deep/ .el-input__inner {
         background: none;
@@ -2245,37 +1941,44 @@ export default {
 }
 
 /deep/.el-input__inner {
-  background: rgba(17, 102, 177, 0.1) !important;
-  border: 1px solid #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/deep/.el-range-input {
-  background: rgba(17, 102, 177, 0.1) !important;
+  background: #ffffff !important;
+  border: 1px solid #cccccc !important;
+  color: #000000 !important;
 }
 
 /deep/.el-button--primary,
-/deep/.icon-search.icon-refresh {
-  background-color: rgba(17, 102, 177, 0.1) !important;
-  border-color: #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+/deep/.icon-search.icon-refresh,
+/deep/.el-button--primary:hover,
+/deep/.icon-search.icon-refresh:hover,
+/deep/.el-button--primary:focus,
+/deep/.icon-search.icon-refresh:focus {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+  border-color: var(--primary-color) !important;
 }
 
 /deep/.el-radio-button__inner {
-  background-color: rgba(17, 102, 177, 0.1) !important;
-  border: 1px solid #1166B1 !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+  background-color: '#fff' !important;
+  border: 1px solid var(--primary-color) !important;
+  color: #000 !important;
+}
+/deep/.el-radio-button__orig-radio:checked+.el-radio-button__inner {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: none !important;
 }
 
 /deep/.butCheck {
-  border: 2px solid #1166B1;
+  border: 2px solid var(--primary-color);
   margin: 20px;
 
   .line {
     margin-right: 8px;
     width: 5px;
     height: 20px;
-    background: #1CB9FB;
+    background: var(--primary-color);
   }
 
 }
@@ -2285,13 +1988,6 @@ export default {
 //   box-shadow: 0px 0px 12px 0px #1166B1 inset !important;
 // }
 
-/deep/.el-pagination__total {
-  color: rgba(255, 255, 255, 0.80) !important;
-}
-
-// .storeBox {
-//   animation: bounce 5s reverse;
-// }
 .fade-enter-active {
   animation: bounce 3s reverse;
 }
@@ -2322,76 +2018,18 @@ export default {
   }
 }
 
-/* 模块上下浮动动画 module-move */
-@keyframes bounce {
-
-  //   from {width:150px;margin:0 auto;}
-  // to {width:2250px;margin:0 auto;}
-  // 0% {
-  //   width: 100%;
-  //   // transform-origin: 500px 500px;
-  // }
-
-  // 10% {
-  //   width: 90%;
-  //   // transform-origin: 600px 600px;
-  // }
-
-  // 20% {
-  //   width: 80%;
-  //   // transform-origin: 700px 700px;
-  // }
-
-  // 30% {
-  //   width: 70%;
-  //   // transform-origin: 800px 800px;
-  // }
-
-  // 40% {
-  //   width: 60%;
-  //   // transform-origin: 900px 900px;
-  // }
-
-  // 50% {
-  //   width: 50%;
-  //   // transform-origin: 1000px 1000px;
-  // }
-
-  // 60% {
-  //   width: 40%;
-  //   // transform-origin: 1100px 1100px;
-  // }
-
-  // 70% {
-  //   width: 30%;
-  //   // transform-origin: 1200px 1200px;
-  // }
-
-  // 80% {
-  //   width: 30%;
-  //   // transform-origin: 1300px 1300px;
-  // }
-
-  // 90% {
-  //   width: 30%;
-  //   // transform-origin: 1400px 1400px;
-  // }
-
-  // 100% {
-  //   width: 30%;/
-  //   // transform-origin: 1500px 1500px;
-  // }
-
-}
-
+/** What is this */
 /deep/.filterBox {
   max-height: 100% !important;
 }
 .checkType{
   /deep/.is-active{
-  box-shadow: inset 0 0 12px #1166B1;
-      color: #1CB9FB;
+  // box-shadow: inset 0 0 12px #1166B1;
+  color: #ffffff;
 }
+}
+.el-range-editor--small .el-range-separator {
+  line-height: 32px !important;
 }
 
 </style>

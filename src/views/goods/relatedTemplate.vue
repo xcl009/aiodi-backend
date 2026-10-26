@@ -19,7 +19,7 @@
             {{ scope.row.merchandiseQty }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')">
+        <el-table-column :label="$t('public.actions')">
           <template slot-scope="scope">
             <el-button class="ml-0" size="mini" type="primary"
               @click="$router.push({ path: `/goods/relatedGoods?id=${scope.row.id}&positionQty=${scope.row.positionQty}` })">{{

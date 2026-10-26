@@ -23,7 +23,7 @@
             <div>{{ scope.row.positionTypeName }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')">
+        <el-table-column :label="$t('public.actions')">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="showDialog(scope.row)" v-if="isSaas()">{{ $t('public.edit')
             }}</el-button>

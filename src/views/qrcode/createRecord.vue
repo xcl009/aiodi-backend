@@ -18,7 +18,7 @@
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="200">
+        <el-table-column :label="$t('public.actions')" width="200">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="exportAll(scope.row)">{{ $t('public.export') }}</el-button>
           </template>

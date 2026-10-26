@@ -50,7 +50,7 @@
             {{ parseTime(scope.row.updateTime) }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" align="center" width="320"
+        <el-table-column :label="$t('public.actions')" align="center" width="320"
           :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap">

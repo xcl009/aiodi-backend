@@ -118,7 +118,7 @@
       </template>
     </el-drawer>
 
-    <xlsx ref="toXlsx" :fileName="$t('moeny.revenueRecords')"></xlsx>
+    <xlsx ref="toXlsx" :fileName="$t('money.revenueRecords')"></xlsx>
   </div>
 </template>
 

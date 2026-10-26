@@ -8,13 +8,13 @@
       </el-table-column>
       <el-table-column :label="$t('public.link')">
         <template slot-scope="scope">
-          <div v-if="scope.row.deviceTypeCode">{{ $t('system.ewmLink') }}：{{ scope.row.link }}</div>
-          <div class="mt-10" v-if="scope.row.deviceTypeCode">{{ $t('system.xcxLink') }}：{{
+          <div v-if="scope.row.deviceTypeCode">{{ $t('system.ewmLink') }}: {{ scope.row.link }}</div>
+          <div class="mt-10" v-if="scope.row.deviceTypeCode">{{ $t('system.xcxLink') }}: {{
             config.xcx_page[scope.row.deviceTypeCode] }}</div>
           <div v-else>{{ scope.row.link }}</div>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('public.operate')">
+      <el-table-column :label="$t('public.actions')">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain @click="copyLink(scope.row)">{{ $t('layout.copyLink') }}</el-button>
         </template>
@@ -22,7 +22,7 @@
     </el-table>
     <div class="pt-20 fs-s4">
       <div class="mb-15">
-        {{ $t('system.text10') }}：<a class="text-blue"
+        {{ $t('system.text10') }}: <a class="text-blue"
           href="https://developers.weixin.qq.com/miniprogram/introduction/qrcode.html#%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B"
           target="_blank">{{ $t('payType.wx') }}</a>、<a class="text-blue" href="https://opendocs.alipay.com/mini/operation/vzd5v0"
           target="_blank">{{ $t('payType.zfb') }}</a>。{{ $t('system.text11') }}。

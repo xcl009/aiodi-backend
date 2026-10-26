@@ -66,10 +66,10 @@
             <template slot-scope="scope">
               <div>
                 {{ scope.row.cycleFreeTimes == cycleFreeTimes ? $t('membership.unlimitedTimes') :
-                  `${$t('membership.freeNum')}：${scope.row.cycleFreeTimes}${$t('public.few')}` }}
+                  `${$t('membership.freeNum')}: ${scope.row.cycleFreeTimes}${$t('public.few')}` }}
               </div>
               <div>
-                {{ scope.row.freeTime == 10000 ? $t('membership.unlimitedDuration') : `${$t('membership.singleFree')}：${scope.row.freeTime}${$t('public.huor')}` }}
+                {{ scope.row.freeTime == 10000 ? $t('membership.unlimitedDuration') : `${$t('membership.singleFree')}: ${scope.row.freeTime}${$t('public.huor')}` }}
               </div>
             </template>
           </el-table-column>
@@ -79,7 +79,7 @@
               <div v-if="scope.row.depositAmount > 0 && scope.row.overTime > 0">{{ $t('public.exceed') }}{{ scope.row.overTime }}{{ $t('membership.noRefund') }}</div>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')">
+          <el-table-column :label="$t('public.actions')">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="setRows(1, scope.row, 1)">{{ $t('public.edit') }}</el-button>
               <el-button size="mini" type="danger" @click="setRows(2, scope.row, scope.$index)" v-if="scope.row.id">{{ $t('public.delete') }}</el-button>
@@ -218,7 +218,7 @@
               {{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}') || '1970-01-01 00:00' }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')">
+          <el-table-column :label="$t('public.actions')">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" class="ml-0" @click="curRow = scope.row; dialogConfirm()">{{
                 $t('public.add') }}</el-button>

@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="p-20 bg-white">
-      <div class="fs-c1 text-black">{{ $t('moeny.khbNum') }}</div>
+      <div class="fs-c1 text-black">{{ $t('money.khbNum') }}</div>
       <div class="mt-10 mb-10 cursor">
         <span class="text-primary khcoin">{{ money.happyCurrencyNum || 0 }}</span>
-        <span class="ml-10 fs-s3 text-gray" @click="khyCoinIntroDialog = true">{{ $t('moeny.whyKhb') }}</span>
+        <span class="ml-10 fs-s3 text-gray" @click="khyCoinIntroDialog = true">{{ $t('money.whyKhb') }}</span>
       </div>
       <div>
         <el-button type="primary" size="small" class="fs-s3" @click="$refs.rechargeCoin.show()">{{ $t('public.recharge')
@@ -13,7 +13,7 @@
     </div>
 
     <div class="pt-10 pl-10 pr-10 bg-white">
-      <div class="mt-10 pb-10 pl-10 fs-c1 text-black">{{ $t('moeny.overview') }}</div>
+      <div class="mt-10 pb-10 pl-10 fs-c1 text-black">{{ $t('money.overview') }}</div>
     </div>
 
     <div class="pt-10 pl-20 pr-20 bg-white">
@@ -49,31 +49,31 @@
         <div class="mb-20 flex">
           <div class="fs-c1">1、</div>
           <div>
-            <div class="mb-10 text-black">{{ $t('moeny.khbWhy') }}</div>
-            <div>{{ $t('moeny.khbWhyText') }}</div>
+            <div class="mb-10 text-black">{{ $t('money.khbWhy') }}</div>
+            <div>{{ $t('money.khbWhyText') }}</div>
           </div>
         </div>
         <div class="mb-20 flex">
           <div class="fs-c1">2、</div>
           <div>
-            <div class="mb-10 text-black">{{ $t('moeny.khbHowToAarn') }}</div>
-            <div>{{ $t('moeny.khbHowToAarnText') }}</div>
+            <div class="mb-10 text-black">{{ $t('money.khbHowToAarn') }}</div>
+            <div>{{ $t('money.khbHowToAarnText') }}</div>
           </div>
         </div>
         <div class="mb-20 flex">
           <div class="fs-c1">3、</div>
           <div v-if="checkRoles(['factory'])">
-            <div class="mb-10 text-black">{{ $t('moeny.khbHowToUseIt') }}</div>
-            <div>{{ $t('moeny.text') }}</div>
+            <div class="mb-10 text-black">{{ $t('money.khbHowToUseIt') }}</div>
+            <div>{{ $t('money.text') }}</div>
           </div>
           <div v-else>
-            <div class="mb-10 text-black">{{ $t('moeny.khbHowToUseIt') }}</div>
-            <div>{{ $t('moeny.khbHowToUseItText') }}</div>
+            <div class="mb-10 text-black">{{ $t('money.khbHowToUseIt') }}</div>
+            <div>{{ $t('money.khbHowToUseItText') }}</div>
           </div>
         </div>
         <div>
           <el-button type="primary" @click="khyCoinIntroDialog = false" style="margin-left: 25px;">{{
-            $t('moeny.understood') }}</el-button>
+            $t('money.understood') }}</el-button>
         </div>
       </div>
     </el-dialog>

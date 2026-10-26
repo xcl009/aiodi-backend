@@ -20,17 +20,17 @@
             </div>
           </h4>
           <div class="flex">
-            <el-form-item :label="`${$t('public.every')}：`">
+            <el-form-item :label="`${$t('public.every')}: `">
               <el-input type="number" v-model="form.notCloseRule.orderNum">
                 <template slot="append">{{ $t('public.one') }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('steal.delayed')}：`">
+            <el-form-item :label="`${$t('steal.delayed')}: `">
               <el-input type="number" v-model="form.notCloseRule.notCloseNum">
                 <template slot="append">{{ $t('public.one') }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('steal.delayed')}：`">
+            <el-form-item :label="`${$t('steal.delayed')}: `">
               <el-input type="number" v-model="form.notCloseRule.rentTimes">
                 <template slot="append">{{ $t('steal.returnInMinutes') }}</template>
               </el-input>
@@ -38,7 +38,7 @@
           </div>
           <div class="mb-5 pl-15 text-black">{{ $t('steal.delayTimePeriod') }}</div>
           <div class="flex align-start flex-wrap" v-for="(item, index) in form.notCloseRule.timeRules">
-            <el-form-item class="mr-20" :label="`${$t('public.statrtTime')}：`">
+            <el-form-item class="mr-20" :label="`${$t('public.statrtTime')}: `">
               <el-time-select v-model="item.startTime" :picker-options="{
                 start: '00:00',
                 step: '00:01',
@@ -46,7 +46,7 @@
               }" :placeholder="$t('public.statrtTime')">
               </el-time-select>
             </el-form-item>
-            <el-form-item class="mr-20" :label="`${$t('public.endTime')}：`">
+            <el-form-item class="mr-20" :label="`${$t('public.endTime')}: `">
               <el-time-select v-model="item.endTime" :picker-options="{
                 start: '00:00',
                 step: '00:01',
@@ -63,7 +63,7 @@
               @click="form.notCloseRule.timeRules.splice(index, 1)"></el-button>
           </div>
           <div class="flex">
-            <el-form-item :label="`${$t('steal.deductionDelay')}：`">
+            <el-form-item :label="`${$t('steal.deductionDelay')}: `">
               <el-input type="number" v-model="form.notCloseRule.delayTimes">
                 <template slot="append">{{ $t('public.minute') }}</template>
               </el-input>
@@ -75,7 +75,7 @@
 
         <h4 class="mb-20 mt-10">{{ $t('steal.ddStatus') }}</h4>
         <div class="flex">
-          <el-form-item :label="`${$t('steal.isItEnabled')}：`">
+          <el-form-item :label="`${$t('steal.isItEnabled')}: `">
             <div class="flex align-center">
               <el-switch v-model="form.enable" :active-value="1" :inactive-value="2" />
               <span class="ml-10 fs-s3">{{ $t('steal.isItEnabledText') }}<span
@@ -101,7 +101,7 @@
             </div>
           </h4>
           <div class="flex align-start flex-wrap" v-for="(item, index) in form.notDisplayRule.timeRules">
-            <el-form-item class="mr-20" :label="`${$t('public.statrtTime')}：`">
+            <el-form-item class="mr-20" :label="`${$t('public.statrtTime')}: `">
               <el-time-select v-model="item.startTime" :picker-options="{
                 start: '00:00',
                 step: '00:01',
@@ -109,7 +109,7 @@
               }" :placeholder="$t('public.statrtTime')">
               </el-time-select>
             </el-form-item>
-            <el-form-item class="mr-20" :label="`${$t('public.endTime')}：`">
+            <el-form-item class="mr-20" :label="`${$t('public.endTime')}: `">
               <el-time-select v-model="item.endTime" :picker-options="{
                 start: '00:00',
                 step: '00:01',
@@ -142,22 +142,22 @@
             </div>
           </h4>
           <div class="flex">
-            <el-form-item :label="`${$t('public.every')}：`">
+            <el-form-item :label="`${$t('public.every')}: `">
               <el-input type="number" v-model="form.complateRule.orderBaseNum">
                 <template slot="append">{{ $t('public.one') }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('steal.leak')}：`">
+            <el-form-item :label="`${$t('steal.leak')}: `">
               <el-input type="number" v-model="form.complateRule.loseNum">
                 <template slot="append">{{ $t('public.one') }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('steal.leakageAmount')}：`">
+            <el-form-item :label="`${$t('steal.leakageAmount')}: `">
               <el-input type="number" v-model="form.complateRule.startAmount">
                 <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('steal.afterOffline')}：`" class="ml-10">
+            <el-form-item :label="`${$t('steal.afterOffline')}: `" class="ml-10">
               <el-switch v-model="form.complateRule.minute" :active-value="1" :inactive-value="0" />
             </el-form-item>
           </div>
@@ -177,7 +177,7 @@
             </div>
           </h4>
           <div class="flex">
-            <el-form-item :label="`${$t('steal.times')}：`">
+            <el-form-item :label="`${$t('steal.times')}: `">
               <el-input type="number" v-model="form.minuteLimitRule">
                 <template slot="append">{{ $t('public.minute') }}</template>
               </el-input>
@@ -201,12 +201,12 @@
             </div>
           </h4>
           <div class="flex">
-            <el-form-item :label="`${$t('steal.deductionTime')}：`">
+            <el-form-item :label="`${$t('steal.deductionTime')}: `">
               <el-input type="number" v-model="form.minuteRule">
                 <template slot="append">{{ $t('public.minute') }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('steal.leakageTime')}：`">
+            <el-form-item :label="`${$t('steal.leakageTime')}: `">
               <el-input type="number" v-model="form.loseMinute">
                 <template slot="append">{{ $t('public.minute') }}</template>
               </el-input>
@@ -228,17 +228,17 @@
             </div>
           </h4>
           <div class="flex">
-            <el-form-item :label="`${$t('public.every')}：`">
+            <el-form-item :label="`${$t('public.every')}: `">
               <el-input type="number" v-model="form.failRule.orderBaseNum">
                 <template slot="append">{{ $t('public.one') }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('public.fail')}：`">
+            <el-form-item :label="`${$t('public.fail')}: `">
               <el-input type="number" v-model="form.failRule.loseNum">
                 <template slot="append">{{ $t('public.one') }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item :label="`${$t('steal.leakageAmount')}：`">
+            <el-form-item :label="`${$t('steal.leakageAmount')}: `">
               <el-input type="number" v-model="form.failRule.startAmount">
                 <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
               </el-input>

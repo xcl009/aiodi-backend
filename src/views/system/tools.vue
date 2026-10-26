@@ -627,7 +627,7 @@
                      </div>
                      <div class="flex_c mt-5 text-center">
                        <div class="text-center">
-                        {{$t('system.taxPoints')}}:{{item.taxRate}}%
+                        {{$t('system.tax')}}:{{item.taxRate}}%
                        </div>
                        <div class="ml-10 text-center">
                         {{$t('system.singleStroke')}}:{{item.handlingFee}}

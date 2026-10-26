@@ -9,19 +9,19 @@
       </div>
       <el-row class="fs-s4">
         <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-          <div class="mb-10">{{ $t('userManage.complainantId') }}：{{ info.payer_openid }}</div>
+          <div class="mb-10">{{ $t('userManage.complainantId') }}: {{ info.payer_openid }}</div>
         </el-col>
         <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-          <div class="mb-10">{{ $t('public.contactInformation') }}：{{ info.payer_phone }}</div>
+          <div class="mb-10">{{ $t('public.contactInformation') }}: {{ info.payer_phone }}</div>
         </el-col>
         <template v-for="item in info.complaint_order_info">
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-            <div class="mb-10">{{ $t('public.transactionNum') }}：{{ item.transaction_id }}</div>
-            <div class="mb-10 cursor" @click="copyText(item.out_trade_no)">{{ $t('public.orderNo') }}：{{
+            <div class="mb-10">{{ $t('public.transactionNum') }}: {{ item.transaction_id }}</div>
+            <div class="mb-10 cursor" @click="copyText(item.out_trade_no)">{{ $t('public.orderNo') }}: {{
               item.out_trade_no }} <span class="text-primary">{{ $t('public.copy') }}</span></div>
           </el-col>
           <el-col :xs="{ span: 24 }" :sm="{ span: 12 }">
-            <div class="mb-10">{{ $t('public.orderMoeny') }}：{{ item.amount / 100 }}</div>
+            <div class="mb-10">{{ $t('public.orderMoney') }}: {{ item.amount / 100 }}</div>
           </el-col>
         </template>
       </el-row>

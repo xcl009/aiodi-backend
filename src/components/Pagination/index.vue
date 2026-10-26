@@ -104,14 +104,16 @@ export default {
 /deep/ .el-pagination {
   .btn-prev, .btn-next{
     background: none !important;
+    color: #000000 !important;
   }
   .el-pager{
     li{
       background: none !important;
       &.active{
-        background: #E8F8FF !important;
+        background: var(--primary-color) !important;
         border-radius: 2px;
-        color: var(--olive) !important;
+        color: #ffffff !important;
+        font-weight: bold;
       }
     }
   }

@@ -19,8 +19,8 @@
             :end-placeholder="$t('public.endDate')" @change="toQuery()">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('moeny.withdrawalMethod')">
-          <el-select v-model="form.withdrawType" :placeholder="$t('moeny.withdrawalMethod')" @change="toQuery()">
+        <el-form-item :label="$t('money.withdrawalMethod')">
+          <el-select v-model="form.withdrawType" :placeholder="$t('money.withdrawalMethod')" @change="toQuery()">
             <el-option :label="$t('public.all')" value="" />
             <el-option :label="item" :value="index" v-for="(item, index) in siteInfo.withdrawType" />
           </el-select>
@@ -62,7 +62,7 @@
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" :max-height="tableMaxH">
-        <el-table-column :label="$t('cash.withdrawalNumber')" width="120">
+        <el-table-column :label="$t('money.requestId')" width="120">
           <template slot-scope="scope">
             <div>{{ scope.row.id || '--' }}</div>
           </template>
@@ -90,33 +90,33 @@
             <div>{{ scope.row.userMobile || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.withdrawalTime')" width="94">
+        <el-table-column :label="$t('money.requestedAt')" width="94">
           <template slot-scope="scope">
             {{ scope.row.createTime || '--' }}
           </template>
         </el-table-column>
         <el-table-column :label="`${$t('public.withdrawalAmount')}`">
           <template slot-scope="scope">
-            {{ scope.row.amount || '0.00' }}
+            {{ formatCurrency(scope.row.amount || '0.00') }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('public.commission')}`">
+        <el-table-column :label="`${$t('money.withdrawalFee')}`" width="100">
           <template slot-scope="scope">
-            <div>{{ $t('system.singleStroke') }}：{{ scope.row.feeDeal || '0.00' }}</div>
-            <div>{{ $t('system.taxPoints') }}：{{ scope.row.feePercent || '0.00' }}</div>
+            <div>{{ $t('money.withdrawalFee') }}: {{ formatCurrency(scope.row.feeDeal || '0.00') }}</div>
+            <div>{{ $t('system.tax') }}: {{ formatCurrency(scope.row.feePercent || '0.00') }}</div>
           </template>
         </el-table-column>
         <el-table-column :label="`${$t('cash.accountsReceivable')}`">
           <template slot-scope="scope">
-            {{ accSub(accSub(scope.row.amount, scope.row.feeDeal), scope.row.feePercent) }}
+            {{ formatCurrency(accSub(accSub(scope.row.amount, scope.row.feeDeal), scope.row.feePercent)) }}
           </template>
         </el-table-column>
-        <el-table-column :label="`${$t('moeny.actualReceipt')}`">
+        <el-table-column :label="`${$t('money.actualReceipt')}`">
           <template slot-scope="scope">
-            {{ scope.row.amountReceived || '0.00' }}
+            {{ formatCurrency(scope.row.amountReceived || '0.00') }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('moeny.toAccount')" width="220">
+        <el-table-column :label="$t('money.toAccount')" width="220">
           <template slot-scope="scope" >
             
            <div v-if="agentInfo.brandId != '1273675260975865857'">
@@ -157,12 +157,12 @@
            </div>
            <div v-else>
             <div v-if="scope.row.withdrawType == 5">
-              <div>{{$t('echarge.text')}}：{{ scope.row.bankName || '' }}</div>
-              <div>{{$t('echarge.text1')}}：{{ scope.row.accountType || '' }}</div>
-              <div>{{$t('echarge.text2')}}：{{ scope.row.branchName || '' }}</div>
-              <div>{{$t('echarge.text3')}}：{{ scope.row.cardNo || '' }}</div>
-              <div>{{$t('echarge.text4')}}：{{ scope.row.cardName || '' }}</div>
-              <div>{{$t('echarge.text5')}}：{{ scope.row.accountName || '' }}</div>
+              <div>{{$t('echarge.text')}}: {{ scope.row.bankName || '' }}</div>
+              <div>{{$t('echarge.text1')}}: {{ scope.row.accountType || '' }}</div>
+              <div>{{$t('echarge.text2')}}: {{ scope.row.branchName || '' }}</div>
+              <div>{{$t('echarge.text3')}}: {{ scope.row.cardNo || '' }}</div>
+              <div>{{$t('echarge.text4')}}: {{ scope.row.cardName || '' }}</div>
+              <div>{{$t('echarge.text5')}}: {{ scope.row.accountName || '' }}</div>
               <!-- <div>{{ scope.row.cardName }}</div>
               <div>{{ scope.row.bankName }}<span class="ml-10">{{ scope.row.branchName }}</span></div>
               <div>{{ scope.row.cardNo }}</div> -->
@@ -194,12 +194,17 @@
            </div>
           </template>
         </el-table-column>
+        <el-table-column label="Afas customer ID">
+          <template slot-scope="scope">
+            {{ scope.row.afasClientNumber || '' }}
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('public.name')" width="120">
           <template slot-scope="scope">
             <div class="el-link">{{ scope.row.userName || '--' }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('moeny.withdrawalMethod')" width="120">
+        <el-table-column :label="$t('money.withdrawalMethod')" width="120">
           <template slot-scope="scope">
             {{ siteInfo.withdrawType[scope.row.withdrawType] }}
           </template>
@@ -216,14 +221,14 @@
         <el-table-column :label="$t('public.remark')" width="170">
           <template slot-scope="scope"><span class="text-danger">{{ scope.row.remark }}</span></template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="165" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.actions')" width="165" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap operate">
               <el-button type="text" @click="setRows(1, scope.row, 2)" :disabled="scope.row.status != 0">{{
-                $t('public.passThrough') }}</el-button>
+                $t('public.approve') }}</el-button>
               <el-button type="text" @click="setRows(1, scope.row, 1)" :disabled="scope.row.status != 0">{{
                 $t('public.refuse') }}</el-button>
-              <el-button type="text" @click="copyText(scope.row.wechatOpenid)" :disabled="!scope.row.wechatOpenid">{{
+              <el-button type="text" @click="copyText(scope.row.wechatOpenid)" v-if="scope.row.wechatOpenid">{{
                 $t('cash.wxId') }}</el-button>
             </div>
           </template>
@@ -268,7 +273,8 @@ import selectSearch from '@/components/condition/selectSearch'
 import xlsx from '@/components/xlsx/'
 import {
   accSub,
-  copyText
+  copyText,
+  formatCurrency
 } from '@/utils/index'
 export default {
   name: 'agentWithdraw',

@@ -41,7 +41,7 @@
               {{ scope.row.expandMode == 1 ? $t('advert.extendedLongGraph') : $t('advert.jumpAdvertisement') }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operate')" align="center">
+          <el-table-column :label="$t('public.actions')" align="center">
             <template slot-scope="scope">
               <el-button type="primary" size="mini"
                 @click="$router.push({ path: `/advert/addPoster?advertTypeCode=${advertTypeCode}&id=${scope.row.id}` })">{{

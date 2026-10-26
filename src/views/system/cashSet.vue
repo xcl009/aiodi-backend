@@ -22,7 +22,7 @@
                 <span class="ml-10 fs-s3">{{ $t('system.text3') }}</span>
                 <el-popover placement="right" title="" width="400" trigger="hover">
                   <div>
-                    <div class="mb-15 text-bold text-black">{{ $t('moeny.withdrawalMethod') }}</div>
+                    <div class="mb-15 text-bold text-black">{{ $t('money.withdrawalMethod') }}</div>
                     {{ $t('system.text4') }}<span v-if="false">{{ $t('system.text5') }}</span>{{ $t('system.text6')
                     }}<br><br>
                     {{ $t('system.text7') }}<span v-if="false">{{ $t('system.text5') }}</span>{{ $t('system.text8')
@@ -35,13 +35,13 @@
               </div>
             </el-form-item>
 
-            <el-form-item :label="$t('moeny.withdrawalMethod')">
+            <el-form-item :label="$t('money.withdrawalMethod')">
               <el-checkbox-group v-model="sellType" @change="change">
                 <el-checkbox :label="item.type" v-for="(item, key) in withdrawTypesList">{{ item.name }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
 
-            <h4>{{ $t('moeny.withdrawableTime') }}</h4>
+            <h4>{{ $t('money.withdrawableTime') }}</h4>
             <el-form-item :label="$t('market.cycle')">
               <el-radio-group v-model="form.timeLimit.type">
                 <el-radio label="DAY">{{ $t('public.everyDay') }}</el-radio>
@@ -107,7 +107,7 @@
                     @click="swapItems(form.supportType, idx, idx - 1)"></i>
                 </h4>
 
-                <!-- <el-form-item :label="$t('system.taxPoints')">
+                <!-- <el-form-item :label="$t('system.tax')">
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.taxRate" class="flex1 mr-10">
                       <template slot="append">%</template>
@@ -129,7 +129,7 @@
                     </el-select>
                     <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('public.name') }}</div>
                     <el-input v-model="ritem.name" class="flex1 ml-10 mr-10"></el-input>
-                    <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('system.taxPoints')}}</div>
+                    <div class="ml-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('system.tax')}}</div>
                     <el-input type="number" v-model="ritem.taxRate" class="flex1 ml-10 mr-10">
                       <template slot="append">%</template>
                     </el-input>
@@ -142,12 +142,12 @@
                   </div>
                 </el-form-item>
 
-                <el-form-item :label="$t('system.minMoeny')">
+                <el-form-item :label="$t('system.minMoney')">
                   <div class="flex align-center flex-wrap">
                     <el-input type="number" v-model="item.minAmount" class="flex1 mr-10">
                       <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
-                    <div class="ml-30">{{ $t('system.maxMoeny') }}</div>
+                    <div class="ml-30">{{ $t('system.maxMoney') }}</div>
                     <el-input type="number" v-model="item.maxAmount" class="flex1 ml-10 mr-10">
                       <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
                     </el-input>
@@ -473,7 +473,7 @@ export default {
       }
       if(supportType.length == 0){
         this.$message({
-          message: that.$t('moeny.pleaseSelect') + that.$t('moeny.withdrawalMethod'),
+          message: that.$t('money.pleaseSelect') + that.$t('money.withdrawalMethod'),
           type: 'error'
         })
         return

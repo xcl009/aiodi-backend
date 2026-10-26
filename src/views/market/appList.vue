@@ -134,7 +134,7 @@
           </div>
           <div class="flex align-center mb-10">
             <div class="mr-15 w-60 text-grey">{{ $t('public.payType') }}</div>
-            <div>{{ $t('payType.khb') }}（{{ $t('payType.balance') }}：{{ money.happyCurrencyNum || 0 }}{{
+            <div>{{ $t('payType.khb') }}（{{ $t('payType.balance') }}: {{ money.happyCurrencyNum || 0 }}{{
               $t('public.individual') }}）</div>
           </div>
           <div class="flex align-center mb-10">
@@ -216,7 +216,7 @@
           </div>
           <div class="flex align-center mb-10">
             <div class="mr-20 w-60 text-grey">{{ $t('public.payType') }}</div>
-            <div>{{ $t('payType.khb') }}（{{ $t('payType.balance') }}：{{ money.happyCurrencyNum || 0
+            <div>{{ $t('payType.khb') }}（{{ $t('payType.balance') }}: {{ money.happyCurrencyNum || 0
             }}{{ $t('public.individual') }}）</div>
           </div>
           <div class="flex align-center mb-10">
@@ -466,7 +466,7 @@ export default {
      * 操作行
      * @param {Object} type 1 dialog类型  2 drawer类型
      * @param {Object} row 选择当前数据
-     * @param {Object} dialogType dialog内容显示类型 1: '查看详情' 2：'确认购买'
+     * @param {Object} dialogType dialog内容显示类型 1: '查看详情' 2: '确认购买'
      * @param {Object} idx 当前数据所在位置
      */
     setRows(type, row, dialogType, idx) {

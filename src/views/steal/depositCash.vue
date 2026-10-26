@@ -59,7 +59,7 @@
               <template :slot="currencySymbolpositionType ? 'prepend':'append'">{{ siteInfo.currencySymbol }}</template>
             </el-input>
             <div>
-              {{ $t('system.userMoeny') }}{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}{{ $t('system.freeOfChargeLease') }}
+              {{ $t('system.userMoney') }}{{ form.walletBalance > 0 ? form.walletBalance : 0.1 }}{{ $t('system.freeOfChargeLease') }}
             </div>
           </el-form-item>
 

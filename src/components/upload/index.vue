@@ -21,7 +21,7 @@
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
-    <div class="el-upload__tip" v-if="ratio">{{ $t('components.size') }}：{{ ratio }}</div>
+    <div class="el-upload__tip" v-if="ratio">{{ $t('components.size') }}: {{ ratio }}</div>
   </div>
 </template>
 

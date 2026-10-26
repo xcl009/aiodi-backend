@@ -3,13 +3,13 @@
     <div class="bg-white">
       <condition ref="condition" :clickSubmit="clickSubmit" @reset="reset" @query="toQuery">
         <template v-slot:defult>
-          <el-form-item :label="$t('public.moenyType')">
-            <el-select v-model="form.capitalType" :placeholder="$t('public.moenyType')" @change="toQuery()">
+          <el-form-item :label="$t('public.moneyType')">
+            <el-select v-model="form.capitalType" :placeholder="$t('public.moneyType')" @change="toQuery()">
               <el-option :label="$t('payType.regularWallet')" :value="1" />
-              <el-option :label="$t('payType.khbMoeny')" :value="2" />
+              <el-option :label="$t('payType.khbMoney')" :value="2" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('payType.khbMoeny')">
+          <el-form-item :label="$t('payType.khbMoney')">
           <el-date-picker
             class="range-day flex align-center"
               v-model="form.date"
@@ -40,12 +40,12 @@
             <div>{{ scope.row.mobile || '' }}</div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.moenyType')">
+        <el-table-column :label="$t('public.moneyType')">
           <template slot-scope="scope">
-            <span>{{ scope.row.happyCurrencyNum > 0 ? $t('payType.khbMoeny') : $t('payType.regularWallet') }}</span>
+            <span>{{ scope.row.happyCurrencyNum > 0 ? $t('payType.khbMoney') : $t('payType.regularWallet') }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('moeny.rechargeTime')">
+        <el-table-column :label="$t('money.rechargeTime')">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
@@ -55,8 +55,8 @@
             <span>{{ scope.row.pay_type == 2 ? $t('payType.zfb') : $t('payType.wx')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('moeny.rechargeAmount')" prop="amount" sortable></el-table-column>
-        <el-table-column :label="$t('moeny.actualReceipt')">
+        <el-table-column :label="$t('money.rechargeAmount')" prop="amount" sortable></el-table-column>
+        <el-table-column :label="$t('money.actualReceipt')">
           <template slot-scope="scope">
             <span>{{ scope.row.actualAmount || scope.row.happyCurrencyNum || 0 }}</span>
           </template>

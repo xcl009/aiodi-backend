@@ -23,7 +23,7 @@
     <div class="pl-10 pr-10 bg-white">
       <el-table class="ptd-5" id="list_table" ref="list_table" v-loading="listLoading" :data="list"
         element-loading-text="Loading" highlight-current-row :max-height="tableMaxH">
-        <el-table-column :label="$t('brand.brandMerchants')" width="120">
+        <el-table-column :label="$t('brand.brandPartners')" width="120">
           <template slot-scope="scope">
             <div>{{ brandUser[scope.row.brandId] ? brandUser[scope.row.brandId].name : '--' }}</div>
             <el-tooltip class="item" effect="dark" :content="brandUser[scope.row.brandId].mobile" placement="top"
@@ -52,9 +52,9 @@
         <el-table-column :label="$t('brand.numberOfDevices')">
           <template slot-scope="scope">
             <div class="cursor inline text-left" @click="$router.push({ path: `/device?agentId=${scope.row.id}` })">
-              <div>{{ $t('public.all') }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}
+              <div>{{ $t('public.all') }}: {{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].deviceNumber : '0' }}
               </div>
-              <div>{{ $t('public.shipped') }}：{{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber :
+              <div>{{ $t('public.shipped') }}: {{ deviceCount[scope.row.id] ? deviceCount[scope.row.id].bindStoreNumber :
                 '0' }}</div>
             </div>
           </template>
@@ -69,8 +69,8 @@
         <el-table-column :label="`${$t('public.amount')}`" width="140">
           <template slot-scope="scope">
             <div class="inline">
-              <div>{{ $t('public.aTurnover') }}：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
-              <div>{{ $t('public.totalRevenue') }}：{{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}</div>
+              <div>{{ $t('public.aTurnover') }}: {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amount : '0.00' }}</div>
+              <div>{{ $t('public.totalRevenue') }}: {{ orderCount[scope.row.id] ? orderCount[scope.row.id].amountDivide : '0.00' }}</div>
             </div>
           </template>
         </el-table-column>
@@ -88,7 +88,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('public.operate')" width="245" :fixed="device == 'desktop' ? 'right' : false">
+        <el-table-column :label="$t('public.actions')" width="245" :fixed="device == 'desktop' ? 'right' : false">
           <template slot-scope="scope">
             <div class="flex flex-wrap">
               <el-button type="primary" size="mini"
